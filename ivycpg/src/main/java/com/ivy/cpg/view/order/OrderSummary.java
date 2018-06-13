@@ -934,8 +934,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
 
             //Calculating with hold tax
-            double withHoldDiscount=0;
-            if(BModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT){
+            double withHoldDiscount = 0;
+            if (BModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
                 discountHelper.downloadBillWiseWithHoldDiscount(getApplicationContext());
                 withHoldDiscount = discountHelper.calculateWithHoldDiscount(totalOrderValue);
             }
@@ -952,8 +952,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
             // with hold tax should be removed after tax applied.
-            totalOrderValue-=withHoldDiscount;
-            orderHelper.withHoldDiscount=withHoldDiscount;
+            totalOrderValue -= withHoldDiscount;
+            orderHelper.withHoldDiscount = withHoldDiscount;
 
             listView.setAdapter(new ProductExpandableAdapter());
             for (int i = 0; i < mOrderedProductList.size(); i++) {
@@ -1022,7 +1022,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Vector<ProductMasterBO> bill1Products = new Vector<>();
             Vector<ProductMasterBO> bill2Products = new Vector<>();
             double bill1Value = 0, bill2Value = 0;
-            int totalQunatity = 0;
 
             for (int i = 0; i < productsCount; i++) {
                 productBO = productList.elementAt(i);
@@ -1030,8 +1029,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         || productBO.getOrderedPcsQty() > 0
                         || productBO.getOrderedOuterQty() > 0) {
 
-                    int qunatity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
-                    totalQunatity += qunatity;
+                    int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
+                    totalQuantityOrdered = totalQuantityOrdered + totalQuantity;
 
                     mOrderedProductList.add(productBO);
 
@@ -1041,6 +1040,16 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             .getSrp())
                             + (productBO.getOrderedOuterQty() * productBO
                             .getOsrp());
+
+                    productBO.setDiscount_order_value(lineValue);
+                    productBO.setSchemeAppliedValue(lineValue);
+                    productBO.setOrderPricePiece(productBO.getSrp());
+
+                    productBO.setCompanyTypeDiscount(0);
+                    productBO.setDistributorTypeDiscount(0);
+                    // clear scheme free products stored in product obj
+                    productBO.setSchemeProducts(new ArrayList<SchemeProductBO>());
+
 
                     if (productBO.isSeparateBill()) {
                         bill2Products.add(productBO);
@@ -1052,12 +1061,24 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
 
+            if (BModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
+                mSortedList = new Vector<>();
+                mOrderedProductList = orderHelper.organizeProductsByUserEntry();
+                mSortedList.addAll(mOrderedProductList);
+            }
+
+
+            listView.setAdapter(new ProductExpandableAdapter());
+            for (int i = 0; i < mOrderedProductList.size(); i++) {
+                listView.expandGroup(i);
+            }
+
             text_LPC.setText(String.valueOf(bill1Products.size() + bill2Products.size()));
             textbill1.setText(BModel.formatValue(bill1Value));
             textbill2.setText(BModel.formatValue(bill2Value));
             linesBill1.setText(String.valueOf(bill1Products.size()));
             linesBill2.setText(String.valueOf(bill2Products.size()));
-            text_totalOrderedQuantity.setText(String.valueOf(totalQunatity));
+            text_totalOrderedQuantity.setText(String.valueOf(totalQuantityOrdered));
 
             listView.setAdapter(new ProductExpandableAdapter());
             for (int i = 0; i < mOrderedProductList.size(); i++) {
