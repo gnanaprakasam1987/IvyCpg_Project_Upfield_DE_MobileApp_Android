@@ -27,6 +27,7 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 
 import java.util.ArrayList;
@@ -182,88 +183,94 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     @Override
     public void onStart() {
         super.onStart();
-        loadedFilterValues = new HashMap<>();
-        sequence = new Vector<>();
 
-        if (isFrom != null) {
-            switch (isFrom) {
-                case "STK":
-                    if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER)
-                        bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
-                    loadedFilterValues.putAll(bmodel.productHelper.getFiveLevelFilters());
-                    sequence.addAll(bmodel.productHelper.getSequenceValues());
-                    break;
-                case "SF":
-                    loadedFilterValues.putAll(mSFHelper.getFiveLevelFilters());
-                    sequence.addAll(mSFHelper.getSequenceValues());
-                    break;
-                case "SVR":
-                    loadedFilterValues.putAll(bmodel.reportHelper.getMfilterlevelBo());
-                    sequence.addAll(bmodel.reportHelper.getSequencevalues());
-                    break;
-                default:
-                    loadedFilterValues.putAll(bmodel.productHelper.getRetailerModuleFilerContentBySequenct());
-                    sequence.addAll(bmodel.productHelper.getRetailerModuleSequenceValues());
-                    break;
+        try {
+            loadedFilterValues = new HashMap<>();
+            sequence = new Vector<>();
+
+            if (isFrom != null) {
+                switch (isFrom) {
+                    case "STK":
+                        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER)
+                            bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
+                        loadedFilterValues.putAll(bmodel.productHelper.getFiveLevelFilters());
+                        sequence.addAll(bmodel.productHelper.getSequenceValues());
+                        break;
+                    case "SF":
+                        loadedFilterValues.putAll(mSFHelper.getFiveLevelFilters());
+                        sequence.addAll(mSFHelper.getSequenceValues());
+                        break;
+                    case "SVR":
+                        loadedFilterValues.putAll(bmodel.reportHelper.getMfilterlevelBo());
+                        sequence.addAll(bmodel.reportHelper.getSequencevalues());
+                        break;
+                    default:
+                        loadedFilterValues.putAll(bmodel.productHelper.getRetailerModuleFilerContentBySequenct());
+                        sequence.addAll(bmodel.productHelper.getRetailerModuleSequenceValues());
+                        break;
+                }
+            } else {
+                loadedFilterValues.putAll(bmodel.productHelper.getFiveLevelFilters());
+                sequence.addAll(bmodel.productHelper.getSequenceValues());
             }
-        } else {
-            loadedFilterValues.putAll(bmodel.productHelper.getFiveLevelFilters());
-            sequence.addAll(bmodel.productHelper.getSequenceValues());
-        }
 
-        if (loadedFilterValues != null) {
-            if (isAttributeFilter && loadedFilterValues.get(-1) == null) {
-                if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
-                    int newAttributeId = 0;
-                    for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
-                        newAttributeId -= 1;
-                        sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
-                        Vector<LevelBO> lstAttributes = new Vector<>();
-                        LevelBO attLevelBO;
-                        for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
-                            attLevelBO = new LevelBO();
-                            if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
-                                attLevelBO.setProductID(attrBO.getAttributeId());
-                                attLevelBO.setLevelName(attrBO.getAttributeName());
-                                lstAttributes.add(attLevelBO);
+            if (loadedFilterValues != null) {
+                if (isAttributeFilter && loadedFilterValues.get(-1) == null) {
+                    if (bmodel.productHelper.getmAttributesList() != null && bmodel.productHelper.getmAttributesList().size() > 0) {
+                        int newAttributeId = 0;
+                        for (AttributeBO bo : bmodel.productHelper.getmAttributeTypes()) {
+                            newAttributeId -= 1;
+                            sequence.add(new LevelBO(bo.getAttributeTypename(), newAttributeId, -1));
+                            Vector<LevelBO> lstAttributes = new Vector<>();
+                            LevelBO attLevelBO;
+                            for (AttributeBO attrBO : bmodel.productHelper.getmAttributesList()) {
+                                attLevelBO = new LevelBO();
+                                if (bo.getAttributeTypeId() == attrBO.getAttributeLovId()) {
+                                    attLevelBO.setProductID(attrBO.getAttributeId());
+                                    attLevelBO.setLevelName(attrBO.getAttributeName());
+                                    lstAttributes.add(attLevelBO);
+                                }
                             }
-                        }
-                        loadedFilterValues.put(newAttributeId, lstAttributes);
+                            loadedFilterValues.put(newAttributeId, lstAttributes);
 
+                        }
                     }
                 }
             }
-        }
 
-        if (sequence == null) {
-            sequence = new Vector<>();
-        }
-
-        if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
-            mSelectedIdByLevelId = new HashMap<>();
-
-            for (LevelBO levelBO : sequence) {
-
-                mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+            if (sequence == null) {
+                sequence = new Vector<>();
             }
-        }
+
+            if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
+                mSelectedIdByLevelId = new HashMap<>();
+
+                for (LevelBO levelBO : sequence) {
+
+                    mSelectedIdByLevelId.put(levelBO.getProductID(), 0);
+                }
+            }
 
 
-        if (!sequence.isEmpty()) {
-            adapter = new FilterAdapter(sequence);
-            filterlistview.setAdapter(adapter);
-            mSelectedLevelBO = sequence.get(0);
+            if (!sequence.isEmpty()) {
+                adapter = new FilterAdapter(sequence);
+                filterlistview.setAdapter(adapter);
+                mSelectedLevelBO = sequence.get(0);
 
-            int levelID = sequence.get(0).getProductID();
-            // To restrict filter's based on tagged products
-            if (bmodel.configurationMasterHelper.IS_FILTER_TAG_PRODUCTS && isTagged)
-                loadTagProductFilters(levelID);
-            Vector<LevelBO> filterValues = new Vector<>();
-            filterValues.addAll(loadedFilterValues.get(levelID));
+                int levelID = sequence.get(0).getProductID();
+                // To restrict filter's based on tagged products
+                if (bmodel.configurationMasterHelper.IS_FILTER_TAG_PRODUCTS && isTagged)
+                    loadTagProductFilters(levelID);
+                Vector<LevelBO> filterValues = new Vector<>();
+                filterValues.addAll(loadedFilterValues.get(levelID));
 
-            gridadapter = new FilterGridAdapter(filterValues);
-            filtergridview.setAdapter(gridadapter);
-            gridadapter.notifyDataSetChanged();
+                gridadapter = new FilterGridAdapter(filterValues);
+                filtergridview.setAdapter(gridadapter);
+                gridadapter.notifyDataSetChanged();
+            }
+
+        } catch (Exception ex){
+            Commons.printException(ex);
         }
 
     }

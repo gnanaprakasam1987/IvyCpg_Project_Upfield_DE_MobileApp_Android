@@ -216,8 +216,9 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
     @Override
     public void updateFiveFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
-        mAssetList.clear();
-        ArrayList<AssetTrackingBO> mAssetTrackingList = mBModel.productHelper.getInStoreLocation().get(mSelectedLocationIndex).getAssetTrackingList();
+        try {
+            mAssetList.clear();
+            ArrayList<AssetTrackingBO> mAssetTrackingList = mBModel.productHelper.getInStoreLocation().get(mSelectedLocationIndex).getAssetTrackingList();
         if (mAssetTrackingList != null
                 && mAssetTrackingList.size() > 0) {
             if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
@@ -301,7 +302,11 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
             }
         }
 
-        mAssetView.updateFiveFilteredList(mAssetList);
+            mAssetView.updateFiveFilteredList(mAssetList);
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
     }
 
 

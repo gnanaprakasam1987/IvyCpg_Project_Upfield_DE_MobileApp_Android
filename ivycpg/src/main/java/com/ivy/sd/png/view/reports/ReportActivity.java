@@ -162,8 +162,12 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             CurrentStockBatchViewFragment currentStockBatchViewFragment = (CurrentStockBatchViewFragment) fm
                     .findFragmentByTag(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
+            SalesVolumeReportFragment salesVolumeReportFragment = (SalesVolumeReportFragment) fm
+                    .findFragmentByTag(StandardListMasterConstants.MENU_SKU_REPORT);
             if (currentStockBatchViewFragment != null) {
                 currentStockBatchViewFragment.onBackButtonClick();
+            }else if(salesVolumeReportFragment!=null){
+                salesVolumeReportFragment.onBackButtonClick();
             } else {
                 if (fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
                     finish();
@@ -286,7 +290,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
             SalesVolumeReportFragment salesVolumeReportFragment = new SalesVolumeReportFragment();
             salesVolumeReportFragment.setArguments(getIntent().getExtras());
-            transaction.replace(R.id.fragment_content, salesVolumeReportFragment);
+            transaction.replace(R.id.fragment_content, salesVolumeReportFragment,StandardListMasterConstants.MENU_SKU_REPORT);
 
             commitFragment(transaction, config);
 
