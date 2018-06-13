@@ -215,7 +215,8 @@ public class SchemeBO {
      */
     public List<SchemeProductBO> getFreeProducts() {
         if (freeProducts == null)
-            return new ArrayList<>();
+            freeProducts=new ArrayList<>();
+
         return freeProducts;
     }
 

@@ -683,9 +683,7 @@ public class SchemeDetailsMasterHelper {
                     schemeBO.setFreeType(c.getString(17));
                     schemeBO.setEveryUomId(c.getInt(19));
                     schemeBO.setEveryQty(c.getInt(20));
-                    if (schemeBO.getFreeProducts() == null) {
-                        schemeBO.setFreeProducts(new ArrayList<SchemeProductBO>());
-                    }
+
 
 
                     //updating stock for free products
@@ -695,12 +693,13 @@ public class SchemeDetailsMasterHelper {
 
                     schemeBO.getFreeProducts().add(productBO);
 
-                    mFreeGroupTypeByFreeGroupName.put(
-                            schemeID + productBO.getGroupName(),
-                            productBO.getGroupLogic());
 
                     //Preparing list of groupName by its slab Id
                     if (productBO.getGroupName() != null) {
+                        mFreeGroupTypeByFreeGroupName.put(
+                                schemeID + productBO.getGroupName(),
+                                productBO.getGroupLogic());
+
                         if (mFreeGroupNameListBySchemeId.get(productBO.getSchemeId()) != null) {
                             ArrayList<String> mGroupNames = mFreeGroupNameListBySchemeId.get(productBO.getSchemeId());
                             if (!mGroupNames.contains(productBO.getGroupName())) {

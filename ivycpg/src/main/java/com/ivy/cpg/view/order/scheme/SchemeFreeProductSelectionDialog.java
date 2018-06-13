@@ -20,6 +20,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -316,6 +317,9 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                         holder.quantityET.selectAll();
                         holder.quantityET.requestFocus();
                         QUANTITY.setCursorVisible(false);
+                        InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.hideSoftInputFromWindow(
+                                holder.quantityET.getWindowToken(), 0);
                         return true;
                     }
                 });

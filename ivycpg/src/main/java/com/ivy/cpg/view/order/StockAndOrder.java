@@ -513,9 +513,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 @Override
                 public void beforeTextChanged(CharSequence s, int start,
                                               int count, int after) {
-                    if (mEdt_searchproductName.getText().toString().length() < 3) {
+                   /* if (mEdt_searchproductName.getText().toString().length() < 3) {
                         mylist.clear();
-                    }
+                    }*/
                     if (searchAsync.getStatus() == AsyncTask.Status.RUNNING) {
                         searchAsync.cancel(true);
                     }
