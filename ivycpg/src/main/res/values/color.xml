@@ -306,5 +306,6 @@
     <color name="grey_odd">#f2f2f2</color>
     <color name="outlet_item_bg">#e0eefe</color>
     <color name="tootl_tip_bg">#6d6d6d</color>
+    <color name="white_trans">#4DFFFFFF</color>
 
 </resources>

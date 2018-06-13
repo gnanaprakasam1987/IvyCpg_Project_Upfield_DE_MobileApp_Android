@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -272,20 +274,17 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                 intent.putExtra("Screen","Outlet");
                 startActivity(intent);
             }
+        });;
+
+        view.findViewById(R.id.seller_view_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(),SellerPerformanceListActivity.class);
+                intent.putExtra("Screen","Seller Performance");
+                startActivity(intent);
+            }
         });
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            startActivity(new Intent(getActivity(),
-                    HomeScreenActivity.class));
-            getActivity().finish();
-            return true;
-        }
-
-        return false;
     }
 
     @Override
@@ -491,7 +490,37 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         return true;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_supervisor_screen, menu);
+    }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            startActivity(new Intent(getActivity(),
+                    HomeScreenActivity.class));
+            getActivity().finish();
+            return true;
+        }
+        else if(item.getItemId() == R.id.menu_dashboard){
+            if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN ||
+                    bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            else {
+                if(mRecyclerView.getVisibility() == View.GONE)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                else{
+                    bottomSheetBehavior.setHideable(true);
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+
+            }
+        }
+
+        return false;
+    }
 
     private void showInfoWindow(final Marker marker){
 

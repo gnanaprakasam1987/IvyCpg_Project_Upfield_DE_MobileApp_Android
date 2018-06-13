@@ -28,8 +28,8 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/dimens_10dp"
         android:clipToPadding="false"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
+        android:paddingLeft="@dimen/_40sdp"
+        android:paddingRight="@dimen/_40sdp"
         app:rvp_singlePageFling="true"
         app:rvp_triggerOffset="0.1"/>
 

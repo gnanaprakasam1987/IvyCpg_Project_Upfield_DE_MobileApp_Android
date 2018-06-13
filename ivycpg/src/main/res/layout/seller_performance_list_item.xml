@@ -4,9 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dimen_10dp"
-    android:layout_marginRight="@dimen/dimen_10dp"
+    android:layout_marginLeft="@dimen/padding_l"
+    android:layout_marginRight="@dimen/padding_l"
     android:layout_marginTop="@dimen/dimen_5dp"
+    android:layout_marginBottom="@dimen/dimen_5dp"
     app:cardElevation="@dimen/dimen_4dp"
     app:cardBackgroundColor="@color/white">
 
@@ -14,14 +15,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="@dimen/dimen_5dp"
+        android:layout_margin="@dimen/dimen_6dp"
         android:gravity="center_vertical"
         android:weightSum="1">
 
         <com.ivy.cpg.view.supervisor.helper.CircleImageView
             android:layout_width="@dimen/mvpbadgelayoutwidth"
             android:layout_height="@dimen/mvpbadgelayoutwidth"
-            android:src="@drawable/user_default"/>
+            android:src="@drawable/user_default"
+            android:padding="@dimen/dimen_5dp"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -38,9 +40,9 @@
                 android:layout_weight="0.4"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/dimen_8dp"
-                android:text="Sales Volume sfffsffs ffsff dvddv vdvdv"
+                android:text="Sales Volume sfffsffs"
                 android:textColor="#de000000"
-                android:textSize="@dimen/dimen_18dp" />
+                android:textSize="@dimen/dimen_16dp" />
 
             <TextView
                 android:id="@+id/seller_position"

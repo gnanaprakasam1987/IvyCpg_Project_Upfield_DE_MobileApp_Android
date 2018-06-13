@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
-    android:layout_marginBottom="@dimen/dimen_10dp"
+    android:layout_marginBottom="@dimen/_10sdp"
     android:orientation="vertical"
     android:visibility="visible">
 
@@ -14,10 +14,10 @@
         android:id="@+id/cardview_ttl_seller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_5dp"
+        android:layout_margin="@dimen/_5sdp"
         app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="5dp"
+        app:cardCornerRadius="@dimen/_1sdp"
+        app:cardElevation="@dimen/_4sdp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         app:contentPadding="0dp">
@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dimen_10dp">
+                android:layout_marginTop="@dimen/_10sdp">
 
                 <com.ivy.cpg.view.supervisor.helper.CircleImageView
                     android:layout_width="@dimen/dimens_60dp"

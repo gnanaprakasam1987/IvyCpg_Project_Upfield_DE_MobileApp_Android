@@ -1,16 +1,10 @@
 package com.ivy.cpg.view.supervisor;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -25,17 +19,16 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 
 import java.util.ArrayList;
 
-import static android.graphics.Color.WHITE;
 import static android.graphics.Color.rgb;
 
-public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
+public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar {
 
-    private RecyclerView recyclerView;
     private CombinedChart mChart;
     private final int itemcount = 12;
     private String[] mMonths = new String[] {
@@ -45,10 +38,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seller_performance_list);
-
-        recyclerView = findViewById(R.id.seller_list_recycler);
-
+        setContentView(R.layout.activity_seller_performance_detail);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -62,19 +52,19 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
 
         setScreenTitle("Seller Performance");
 
-        prepareScreenData();
         combinedChart();
 
+        findViewById(R.id.bottom_outlet_btn_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
+                outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+                outletPagerDialogFragment.setCancelable(false);
+                outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+            }
+        });
     }
 
-    private void prepareScreenData(){
-
-        MyAdapter myAdapter = new MyAdapter();
-        recyclerView.setAdapter(myAdapter);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -85,45 +75,6 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-
-            public MyViewHolder(View view) {
-                super(view);
-
-            }
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.seller_performance_list_item, parent, false);
-
-            return new MyViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(final MyViewHolder holder, final int position) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Intent intent = new Intent(SellerPerformanceListActivity.this,SellerPerformanceDetailActivity.class);
-                    startActivity(intent);
-
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-//            return detailsBos.size();
-            return 15;
-        }
     }
 
     private void combinedChart(){
@@ -255,9 +206,4 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
 
         return d;
     }
-
-    private float getRandom(float range, float startsfrom) {
-        return (float) (Math.random() * range) + startsfrom;
-    }
-
 }

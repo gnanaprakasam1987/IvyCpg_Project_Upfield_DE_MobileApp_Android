@@ -368,8 +368,6 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             }
         });
 
-
-
         mRecyclerView.addOnPageChangedListener(new RecyclerViewPager.OnPageChangedListener() {
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
@@ -436,10 +434,15 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-            OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
-            outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
-            outletPagerDialogFragment.setCancelable(false);
-            outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
+                    outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+                    outletPagerDialogFragment.setCancelable(false);
+                    outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+                }
+            });
 
         }
 

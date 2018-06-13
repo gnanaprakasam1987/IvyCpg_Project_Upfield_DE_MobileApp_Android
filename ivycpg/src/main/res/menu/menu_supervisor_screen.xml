@@ -7,7 +7,7 @@
         android:iconTint="@color/white"
         android:title="route"
         ivydist:showAsAction="always"
-        android:visible="true"
+        android:visible="false"
         />
 
     <item
@@ -15,6 +15,21 @@
         android:icon="@drawable/ic_navigation_icon"
         android:title="navigate"
         ivydist:showAsAction="always"
+        android:visible="false"/>
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/icon_search"
+        android:title="navigate"
+        ivydist:showAsAction="always"
         android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_dashboard"
+        android:icon="@drawable/ic_dashboard_icon"
+        android:title="navigate"
+        ivydist:showAsAction="always"
+        android:visible="true"
+        android:iconTint="@color/white"/>
+
 
 </menu>

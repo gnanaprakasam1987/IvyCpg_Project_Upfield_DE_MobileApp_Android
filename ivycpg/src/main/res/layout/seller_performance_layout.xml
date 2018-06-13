@@ -5,10 +5,10 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dimen_10dp"
     android:layout_marginRight="@dimen/dimen_10dp"
-    android:layout_marginTop="@dimen/dimen_5dp"
-    android:layout_marginBottom="@dimen/dimen_5dp"
+    android:layout_marginTop="@dimen/dimen_10dp"
     app:cardBackgroundColor="@color/white"
-    app:cardElevation="@dimen/dimen_4dp">
+    app:cardElevation="@dimen/dimen_4dp"
+    android:layout_below="@+id/chart_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -395,6 +395,7 @@
             android:textSize="@dimen/dimen_14dp" />
 
         <LinearLayout
+            android:id="@+id/call_status_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/calls_status_text"
@@ -535,12 +536,13 @@
 
         </LinearLayout>
 
-
         <RelativeLayout
+            android:layout_below="@+id/call_status_layout"
+            android:id="@+id/bottom_outlet_btn_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/total_seller_bg"
-            android:layout_alignParentBottom="true">
+            android:layout_marginTop="@dimen/dimen_10dp"
+            android:background="@drawable/total_seller_bg">
 
             <TextView
                 android:id="@+id/seller_performance_btn"
@@ -559,7 +561,6 @@
                 android:layout_centerInParent="true"/>
 
         </RelativeLayout>
-
 
     </RelativeLayout>
 

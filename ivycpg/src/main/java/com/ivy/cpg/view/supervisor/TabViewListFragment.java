@@ -154,16 +154,16 @@ public class TabViewListFragment extends IvyBaseFragment{
 
 
 
-//            holder.routeText.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(getContext(), SellerMapViewActivity.class);
-//                    intent.putExtra("SellerId", String.valueOf(detailsBos.get(position).getUserId()));
-//                    intent.putExtra("screentitle", detailsBos.get(position).getUserName() );
-//                    intent.putExtra("TrackingType", 2);
-//                    startActivity(intent);
-//                }
-//            });
+            holder.routeText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), SellerMapViewActivity.class);
+                    intent.putExtra("SellerId", 1695);
+                    intent.putExtra("screentitle", detailsBos.get(position).getUserName() );
+                    intent.putExtra("TrackingType", 2);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override

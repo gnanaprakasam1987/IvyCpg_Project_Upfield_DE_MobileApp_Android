@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -174,6 +175,14 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        tvSellerPerformanceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SellerMapViewActivity.this,SellerPerformanceListActivity.class);
+                startActivity(intent);
             }
         });
 
