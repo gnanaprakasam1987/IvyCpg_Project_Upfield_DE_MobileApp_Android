@@ -1454,12 +1454,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
 
 
         Commons.print("OnStart Called");
-        // Configuration to Show Multi Seletion in Filter Fragment
-        if (bmodel.configurationMasterHelper.SHOW_MULTISELECT_FILTER) {
-            multiSelectProductFilterFragment();
-        } else {
-            productFilterClickedFragment(); // Normal Filter Fragment
-        }
+        productFilterClickedFragment(); // Normal Filter Fragment
         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
             loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
             sequence = bmodel.productHelper.getSequenceValues();
@@ -3559,12 +3554,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                 mSelectedFilterMap.put("General", GENERAL);
             }
 
-            // Configuration to Show Multi Seletion in Filter Fragment
-            if (bmodel.configurationMasterHelper.SHOW_MULTISELECT_FILTER) {
-                multiSelectProductFilterFragment();
-            } else {
-                productFilterClickedFragment(); // Normal Filter Fragment
-            }
+            productFilterClickedFragment(); // Normal Filter Fragment
             return true;
         } else if (i == R.id.menu_remarks) {
 
@@ -3771,51 +3761,6 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
 
             // set Fragmentclass Arguments
             FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e + "");
-        }
-    }
-
-    private void multiSelectProductFilterFragment() {
-        try {
-            QUANTITY = null;
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFagmentMultiSelection<?> frag = (FilterFagmentMultiSelection<?>) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("filterHeader", bmodel.productHelper
-                    .getChildLevelBo().get(0).getProductLevel());
-            bundle.putBoolean("isFormBrand", true);
-            bundle.putBoolean("hideBrandFilter", true);
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-
-            if (bmodel.productHelper.getParentLevelBo() != null
-                    && bmodel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-            // set Fragmentclass Arguments
-            FilterFagmentMultiSelection fragobj = new FilterFagmentMultiSelection(
-                    mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "filter");
             ft.commit();

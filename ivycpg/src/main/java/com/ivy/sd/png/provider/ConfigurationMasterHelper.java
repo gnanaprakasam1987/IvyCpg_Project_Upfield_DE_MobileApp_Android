@@ -736,7 +736,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_ICO;
     public boolean SHOW_SO_SPLIT;
     public boolean ALLOW_SO_COPY;
-    public boolean SHOW_MULTISELECT_FILTER; // ORD33 [ 1- show multi selection
     // in filter fragment]
     // Added in 41 version
     public boolean SHOW_MULTIPAYMENT = true;
@@ -1993,7 +1992,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_STKPRO_SPL_FILTER = hashMapHHTModuleConfig.get(CODE_STKPRO_SPL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_STKPRO_SPL_FILTER) : false;
         this.SHOW_SO_SPLIT = hashMapHHTModuleConfig.get(CODE_SO_SPLIT) != null ? hashMapHHTModuleConfig.get(CODE_SO_SPLIT) : false;
         this.ALLOW_SO_COPY = hashMapHHTModuleConfig.get(CODE_SO_COPY) != null ? hashMapHHTModuleConfig.get(CODE_SO_COPY) : false;
-        this.SHOW_MULTISELECT_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_MULTISELECTION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MULTISELECTION) : false;
         this.ALLOW_BACK_DATE = hashMapHHTModuleConfig.get(CODE_ALLOW_BACK_DATE) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_BACK_DATE) : false;
         this.SHOW_TOTAL_LINES = hashMapHHTModuleConfig.get(CODE_TOTAL_LINES) != null ? hashMapHHTModuleConfig.get(CODE_TOTAL_LINES) : false;
         if (hashMapHHTModuleOrder.get(CODE_TOTAL_LINES) != null) {
