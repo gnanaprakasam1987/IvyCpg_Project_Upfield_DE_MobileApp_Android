@@ -183,7 +183,7 @@ public class ChannelMasterHelper {
 
 
     public String getChannelHierarchy(int channelId, Context mContext) {
-        String sql, sql1 = "", str = "0,";
+        String sql, sql1 = "", str = "";
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
