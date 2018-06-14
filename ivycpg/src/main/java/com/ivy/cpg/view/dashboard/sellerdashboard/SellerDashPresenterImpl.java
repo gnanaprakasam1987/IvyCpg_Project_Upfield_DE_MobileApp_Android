@@ -409,8 +409,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -444,8 +444,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -477,8 +477,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -509,8 +509,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -537,8 +537,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -568,8 +568,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -602,8 +602,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -636,8 +636,8 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
