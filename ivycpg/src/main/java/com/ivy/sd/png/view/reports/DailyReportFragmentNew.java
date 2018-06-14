@@ -248,8 +248,8 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
                 for (OrderReportBO ret : mylist) {
                     try {
                         String str[] = ret.getDist().split("/");
-                        pre = pre + Integer.parseInt(str[0]);
-                        post = post + Integer.parseInt(str[1]);
+                        pre = pre + SDUtil.convertToInt(str[0]);
+                        post = post + SDUtil.convertToInt(str[1]);
                     } catch (Exception e) {
                         // TODO: handle exception
                         Commons.printException(e);

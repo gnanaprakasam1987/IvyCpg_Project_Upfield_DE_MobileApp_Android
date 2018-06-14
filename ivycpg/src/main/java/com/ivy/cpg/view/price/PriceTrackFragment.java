@@ -833,7 +833,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 for (LevelBO levelBO : parentidList) {
                     for (ProductMasterBO sku : items) {
                         if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1) &&
-                                (mAttributeProducts.contains(Integer.parseInt(sku.getProductID())))) {
+                                (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID())))) {
                             mylist.add(sku);
                         }
                     }
@@ -849,7 +849,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             } else if (mAttributeProducts != null && parentidList.isEmpty()) {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
-                        if ((pid == Integer.parseInt(sku.getProductID())) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
+                        if ((pid == SDUtil.convertToInt(sku.getProductID())) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
                             mylist.add(sku);
                         }
                     }
@@ -868,7 +868,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     for (ProductMasterBO sku : items) {
                         if ((levelBO.getProductID() == sku.getParentid()) &&
                                 (sku.getIsSaleable() == 1 && sku.getOwn() == 0) &&
-                                (mAttributeProducts.contains(Integer.parseInt(sku.getProductID())))) {
+                                (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID())))) {
                             mylist.add(sku);
                         }
                     }
@@ -885,7 +885,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             } else if (mAttributeProducts != null && parentidList.isEmpty()) {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
-                        if ((pid == Integer.parseInt(sku.getProductID())) &&
+                        if ((pid == SDUtil.convertToInt(sku.getProductID())) &&
                                 (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
                             mylist.add(sku);
                         }
@@ -904,7 +904,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     for (ProductMasterBO sku : items) {
                         if ((levelBO.getProductID() == sku.getParentid()) &&
                                 (sku.getIsSaleable() == 1) &&
-                                (mAttributeProducts.contains(Integer.parseInt(sku.getProductID())))) {
+                                (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID())))) {
                             mylist.add(sku);
                         }
                     }
@@ -921,7 +921,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             } else if (mAttributeProducts != null && parentidList.isEmpty()) {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
-                        if ((pid == Integer.parseInt(sku.getProductID())) &&
+                        if ((pid == SDUtil.convertToInt(sku.getProductID())) &&
                                 (sku.getIsSaleable() == 1)) {
                             mylist.add(sku);
                         }

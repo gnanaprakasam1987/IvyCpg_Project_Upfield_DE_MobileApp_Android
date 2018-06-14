@@ -377,16 +377,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     holder.tv_target_value.setVisibility(View.VISIBLE);
 
                     holder.seekBar.setEnabled(false);
-                    holder.seekBar.setProgress((int) Double.parseDouble(configlist.get(position).getKpiAchieved()));
-                    holder.seekBar.setMax((int) Double.parseDouble(configlist.get(position).getKpiTarget()));
+                    holder.seekBar.setProgress((int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved()));
+                    holder.seekBar.setMax((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()));
 
 
-                    holder.tv_achieved_value.setText(bmodel.formatValue(Double.parseDouble(configlist.get(position).getKpiAchieved())));
-                    holder.tv_target_value.setText("/" + bmodel.formatValue(Double.parseDouble(configlist.get(position).getKpiTarget())));
+                    holder.tv_achieved_value.setText(bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiAchieved())));
+                    holder.tv_target_value.setText("/" + bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiTarget())));
 
-                    if ((int) Double.parseDouble(configlist.get(position).getKpiTarget()) > 0) {
-                        int ach = (int) Double.parseDouble(configlist.get(position).getKpiAchieved());
-                        int tgt = (int) Double.parseDouble(configlist.get(position).getKpiTarget());
+                    if ((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()) > 0) {
+                        int ach = (int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved());
+                        int tgt = (int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget());
                         int percent = (ach * 100) / tgt;
                         if (percent > 100) {
                             percent = 100;

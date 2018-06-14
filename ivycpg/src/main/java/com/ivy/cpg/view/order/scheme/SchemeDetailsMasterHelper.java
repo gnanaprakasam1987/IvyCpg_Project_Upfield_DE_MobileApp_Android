@@ -1637,7 +1637,7 @@ public class SchemeDetailsMasterHelper {
 
         ArrayList<String> mAlreadyAppliedProducts = null;
         if (getProductIdListByAlreadyAppliedSchemeId() != null) {
-            mAlreadyAppliedProducts = getProductIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
+            mAlreadyAppliedProducts = getProductIdListByAlreadyAppliedSchemeId().get(SDUtil.convertToInt(schemeBO.getSchemeId()));
         }
 
         for (SchemeProductBO schemeProductBo : schemeBuyProducts) {
@@ -1660,7 +1660,7 @@ public class SchemeDetailsMasterHelper {
 
                     //Just reducing quantity which is used already for applying scheme.
                     if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()) != null) {
-                        int totalAppliedQty = Integer.parseInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()).toString());
+                        int totalAppliedQty = SDUtil.convertToInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()).toString());
                         orderedTotalQuantityUomWise = orderedTotalQuantityUomWise - totalAppliedQty;
 
                     }
@@ -1709,7 +1709,7 @@ public class SchemeDetailsMasterHelper {
 
         ArrayList<String> mAlreadyAppliedProductList = null;
         if (getProductIdListByAlreadyAppliedSchemeId() != null) {
-            mAlreadyAppliedProductList = getProductIdListByAlreadyAppliedSchemeId().get(Integer.parseInt(schemeBO.getSchemeId()));
+            mAlreadyAppliedProductList = getProductIdListByAlreadyAppliedSchemeId().get(SDUtil.convertToInt(schemeBO.getSchemeId()));
         }
 
         for (SchemeProductBO schemeProductBo : schemeBuyProducts) {
@@ -1729,7 +1729,7 @@ public class SchemeDetailsMasterHelper {
 
                     //Just reducing quantity which is used already for applying scheme.
                     if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()) != null) {
-                        int totalAppliedQty = Integer.parseInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()).toString());
+                        int totalAppliedQty = SDUtil.convertToInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()).toString());
                         orderedTotalQuantityByUOMWise = orderedTotalQuantityByUOMWise - totalAppliedQty;
                     }
 
@@ -1938,7 +1938,7 @@ public class SchemeDetailsMasterHelper {
                 //Removing already used quantity if any
                 if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
                     if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + schemeProductBO.getProductId()) != null) {
-                        quantity = quantity - Integer.parseInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + schemeProductBO.getProductId()).toString());
+                        quantity = quantity - SDUtil.convertToInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + schemeProductBO.getProductId()).toString());
                     }
                 }
 
@@ -2028,7 +2028,7 @@ public class SchemeDetailsMasterHelper {
 
                     if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
                         if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentId + schemeProductBO.getProductId()) != null) {
-                            totalValue = totalValue - Integer.parseInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentId + schemeProductBO.getProductId()).toString());
+                            totalValue = totalValue - SDUtil.convertToInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentId + schemeProductBO.getProductId()).toString());
                         }
                     }
 
@@ -2121,7 +2121,7 @@ public class SchemeDetailsMasterHelper {
                     //Quantity used(if previous slab applied) for scheme are reduced here.
                     if (processType.equals(PROCESS_TYPE_MTS) || processType.equals(PROCESS_TYPE_PRORATA)) {
                         if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + schemeProductBO.getProductId()) != null) {
-                            quantity = quantity - Integer.parseInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + schemeProductBO.getProductId()).toString());
+                            quantity = quantity - SDUtil.convertToInt(mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(parentID + schemeProductBO.getProductId()).toString());
                         }
                     }
 
@@ -3839,16 +3839,16 @@ public class SchemeDetailsMasterHelper {
 
                 if (schemeBO.isPriceTypeSeleted()) {
 
-                    if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) >= Double.parseDouble(SDUtil.format(schemeBO.getActualPrice(), 2, 0))
-                            && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumPrice(), 2, 0))
-                            && Double.parseDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) > 0)) {
+                    if (!(SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) >= SDUtil.convertToDouble(SDUtil.format(schemeBO.getActualPrice(), 2, 0))
+                            && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) <= SDUtil.convertToDouble(SDUtil.format(schemeBO.getMaximumPrice(), 2, 0))
+                            && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) > 0)) {
                         return false;
                     }
 
                 } else if (schemeBO.isAmountTypeSelected()) {
-                    if (!(Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) >= Double.parseDouble(SDUtil.format(schemeBO.getMinimumAmount(), 2, 0))
-                            && Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) <= Double.parseDouble(SDUtil.format(schemeBO.getMaximumAmount(), 2, 0))
-                            && Double.parseDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) > 0)) {
+                    if (!(SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) >= SDUtil.convertToDouble(SDUtil.format(schemeBO.getMinimumAmount(), 2, 0))
+                            && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) <= SDUtil.convertToDouble(SDUtil.format(schemeBO.getMaximumAmount(), 2, 0))
+                            && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) > 0)) {
                         return false;
                     }
 

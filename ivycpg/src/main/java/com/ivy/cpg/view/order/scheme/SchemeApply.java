@@ -851,7 +851,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         if (s != null) {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
-                                priceEntered = Double.parseDouble(s.toString());
+                                priceEntered = SDUtil.convertToDouble(s.toString());
                             }
                         }
 
@@ -881,7 +881,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         if (s != null) {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
-                                amountEntered = Double.parseDouble(s.toString());
+                                amountEntered = SDUtil.convertToDouble(s.toString());
                             }
                         }
 
@@ -911,7 +911,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         if (s != null) {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
-                                percentEntered = Double.parseDouble(s
+                                percentEntered = SDUtil.convertToDouble(s
                                         .toString());
                             }
                         }

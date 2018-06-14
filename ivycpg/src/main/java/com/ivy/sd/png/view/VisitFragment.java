@@ -55,6 +55,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.VisitConfiguration;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -1314,8 +1315,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                                 if (!profileClick) {
                                     profileClick = true;
-                                    if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
-                                        bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
+                                    if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                        bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
                                     }
                                     Intent i = new Intent(getActivity(), ProfileActivity.class);
                                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1350,8 +1351,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                             if (!profileClick) {
                                 profileClick = true;
-                                if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
-                                    bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
+                                if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                    bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
                                 }
                                 Intent i = new Intent(getActivity(), ProfileActivity.class);
                                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1500,7 +1501,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
 
                 if ("1".equals(mRetailerProp.get("RTPRTY07"))) {
-                    if (Integer.parseInt(retailerObj.getCredit_invoice_count()) > 0) {
+                    if (SDUtil.convertToInt(retailerObj.getCredit_invoice_count()) > 0) {
                         holder.iv_dead_gold_store.setImageResource(R.drawable.ic_dashboard_indicative);
                         holder.iv_dead_gold_store.setVisibility(View.VISIBLE);
                     } else if (retailerObj.isBomAchieved()) {
@@ -1996,8 +1997,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                         if (!profileClick) {
                             profileClick = true;
-                            if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && Integer.parseInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
-                                bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(Integer.parseInt(holder.retailerObjectHolder.getRetailerID()));
+                            if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
                             }
                             Intent i = new Intent(getActivity(), ProfileActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

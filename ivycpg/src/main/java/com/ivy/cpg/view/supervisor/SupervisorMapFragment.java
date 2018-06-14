@@ -31,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -290,8 +291,8 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             String inTime = value.get("inTime")!=null?value.get("inTime").toString():"0";
             String outTime = value.get("outTime")!=null?value.get("outTime").toString():"0";
             int batteryStatus = Integer.valueOf(value.get("batterStatus")!=null?value.get("batterStatus").toString():"0");
-            double lat = Double.parseDouble(value.get("latitude")!= null?value.get("latitude").toString():"0");
-            double lng = Double.parseDouble(value.get("latitude")!= null?value.get("longitude").toString():"0");
+            double lat = SDUtil.convertToDouble(value.get("latitude")!= null?value.get("latitude").toString():"0");
+            double lng = SDUtil.convertToDouble(value.get("latitude")!= null?value.get("longitude").toString():"0");
 
             String syncTime =  value.get("time")!=null?value.get("time").toString():"0";
 

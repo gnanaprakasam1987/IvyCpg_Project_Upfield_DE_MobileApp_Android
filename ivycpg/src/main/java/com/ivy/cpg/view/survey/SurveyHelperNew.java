@@ -799,8 +799,8 @@ public class SurveyHelperNew {
                     if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
                         if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
                             if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
-                                if (!isInRange(Float.parseFloat(qus.getFromValue()), Float.parseFloat(qus.getToValue()),
-                                        Float.parseFloat(qus.getSelectedAnswer().get(0)))) {
+                                if (!isInRange(SDUtil.convertToFloat(qus.getFromValue()), SDUtil.convertToFloat(qus.getToValue()),
+                                        SDUtil.convertToFloat(qus.getSelectedAnswer().get(0)))) {
                                     notInRange.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                                     notInRange.append("\n");
                                 }
@@ -882,9 +882,9 @@ public class SurveyHelperNew {
                     if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
                         if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
                             if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
-                                if (!isInRange(Float.parseFloat(qus.getFromValue()),
-                                        Float.parseFloat(qus.getToValue()),
-                                        Float.parseFloat(qus.getSelectedAnswer().get(0)))) {
+                                if (!isInRange(SDUtil.convertToFloat(qus.getFromValue()),
+                                        SDUtil.convertToFloat(qus.getToValue()),
+                                        SDUtil.convertToFloat(qus.getSelectedAnswer().get(0)))) {
                                     notInRange.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                                     notInRange.append("\n");
                                 }
@@ -970,8 +970,8 @@ public class SurveyHelperNew {
                     if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
                         if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
                             if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
-                                if (!isInRange(Float.parseFloat(qus.getFromValue()), Float.parseFloat(qus.getToValue()),
-                                        Float.parseFloat(qus.getSelectedAnswer().get(0)))) {
+                                if (!isInRange(SDUtil.convertToFloat(qus.getFromValue()), SDUtil.convertToFloat(qus.getToValue()),
+                                        SDUtil.convertToFloat(qus.getSelectedAnswer().get(0)))) {
                                     notInRange.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                                     notInRange.append("\n");
                                 }

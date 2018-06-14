@@ -218,7 +218,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
-                                if (mAttributeProducts.contains(Integer.parseInt(sku.getProductID()))) {
+                                if (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID()))) {
                                     stockList.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
                                 }
@@ -238,7 +238,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
-                        if (pid == Integer.parseInt(sku.getProductID())) {
+                        if (pid == SDUtil.convertToInt(sku.getProductID())) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
@@ -258,7 +258,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
-                                if (mAttributeProducts.contains(Integer.parseInt(sku.getProductID()))) {
+                                if (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID()))) {
                                     stockList.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
                                 }
@@ -278,7 +278,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
-                        if (pid == Integer.parseInt(sku.getProductID())) {
+                        if (pid == SDUtil.convertToInt(sku.getProductID())) {
                             if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
@@ -298,7 +298,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
                             if (sku.getIsSaleable() == 1)
-                                if (mAttributeProducts.contains(Integer.parseInt(sku.getProductID()))) {
+                                if (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID()))) {
                                     stockList.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
                                 }
@@ -318,7 +318,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             } else if (mAttributeProducts != null && !parentidList.isEmpty()) {
                 for (int pid : mAttributeProducts) {// Attribute filter alone selected
                     for (ProductMasterBO sku : items) {
-                        if (pid == Integer.parseInt(sku.getProductID())) {
+                        if (pid == SDUtil.convertToInt(sku.getProductID())) {
                             if (sku.getIsSaleable() == 1)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());

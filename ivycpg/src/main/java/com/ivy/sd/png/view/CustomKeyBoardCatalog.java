@@ -614,7 +614,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             if (caseValue.equals("-1"))
                 pdtBO.getLocations().get(0).setShelfCase(-1);
             else
-                pdtBO.getLocations().get(0).setShelfCase(Integer.parseInt(caseValue));
+                pdtBO.getLocations().get(0).setShelfCase(SDUtil.convertToInt(caseValue));
 
             String outerValue = outer_case_typed_value.getText().toString();
             if (outerValue.endsWith("."))
@@ -622,7 +622,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             if (outerValue.equals("-1"))
                 pdtBO.getLocations().get(0).setShelfOuter(-1);
             else
-                pdtBO.getLocations().get(0).setShelfOuter(Integer.parseInt(outerValue));
+                pdtBO.getLocations().get(0).setShelfOuter(SDUtil.convertToInt(outerValue));
 
             String pcsValue = pcs_typed_value.getText().toString();
             if (pcsValue.endsWith("."))
@@ -630,7 +630,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             if (pcsValue.equals("-1"))
                 pdtBO.getLocations().get(0).setShelfPiece(-1);
             else
-                pdtBO.getLocations().get(0).setShelfPiece(Integer.parseInt(pcsValue));
+                pdtBO.getLocations().get(0).setShelfPiece(SDUtil.convertToInt(pcsValue));
 
             if (caseValue.equals("-1") && pcsValue.equals("-1") && outerValue.equals("-1")) {
                 orderBtn.setText("STOCK");

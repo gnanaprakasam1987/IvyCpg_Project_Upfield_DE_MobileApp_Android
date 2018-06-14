@@ -573,13 +573,13 @@ public class CollectionHelper {
         String columns = "uid,discountValue,discountPerc";
         discountValue = ((totalCollected * 100) / (100 - discountPer)) - totalCollected;
         if (bmodel.configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
-            discountValue = Double.parseDouble(SDUtil.format(discountValue,
+            discountValue = SDUtil.convertToDouble(SDUtil.format(discountValue,
                     0,
                     0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
         }
 
         //applying currency rule config
-        discountValue = Double.parseDouble(bmodel.formatValueBasedOnConfig(discountValue));
+        discountValue = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(discountValue));
 
         String values = uid + "," + bmodel.QT(BigDecimal.valueOf(discountValue)
                 .toPlainString()) + "," + discountPer;
@@ -621,15 +621,15 @@ public class CollectionHelper {
 
 
                     if (bmodel.configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
-                        totalRemaingDisc = Double.parseDouble(SDUtil.format(totalRemaingDisc,
+                        totalRemaingDisc = SDUtil.convertToDouble(SDUtil.format(totalRemaingDisc,
                                 0,
                                 0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
                     } else {
-                        totalRemaingDisc = Double.parseDouble(bmodel.formatValueBasedOnConfig(totalRemaingDisc));
+                        totalRemaingDisc = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(totalRemaingDisc));
                     }
                     discountedAmount = totalBalanceWithDisc - totalRemaingDisc;
 
-                    discountedAmount = Double.parseDouble(bmodel.formatValueBasedOnConfig(discountedAmount));
+                    discountedAmount = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(discountedAmount));
 
                     updateQuery = "update invoicemaster set discountedAmount=invnetAmount-(paidAmount+"
                             + (totalDisc + totalRemaingDisc) + ")"
@@ -650,7 +650,7 @@ public class CollectionHelper {
                             + bmodel.QT(invoiceHeaderBO.getInvoiceNo());
 
                     db.executeQ(updateQuery);
-                    invoiceHeaderBO.setBalance(Double.parseDouble(SDUtil.roundIt(totalBalanceWithDisc, 2)));
+                    invoiceHeaderBO.setBalance(SDUtil.convertToDouble(SDUtil.roundIt(totalBalanceWithDisc, 2)));
                 }
                 invoiceHeaderBO.setRemainingDiscountAmt(totalRemaingDisc);
                 invoiceHeaderBO.setChkBoxChecked(true);
@@ -861,7 +861,7 @@ public class CollectionHelper {
                     }
                     totalInvoiceDisc = totalInvoiceDisc + balanceDiscAmt;
                     if (bmodel.configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
-                        totalInvoiceDisc = Double.parseDouble(SDUtil.format(totalInvoiceDisc,
+                        totalInvoiceDisc = SDUtil.convertToDouble(SDUtil.format(totalInvoiceDisc,
                                 0,
                                 0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
                     }
@@ -898,7 +898,7 @@ public class CollectionHelper {
 
     private void updateBalanceAndDiscount(InvoiceHeaderBO invoiceHeader, double totalDiscount) {
         if (bmodel.configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
-            totalDiscount = Double.parseDouble(SDUtil.format(totalDiscount,
+            totalDiscount = SDUtil.convertToDouble(SDUtil.format(totalDiscount,
                     0,
                     0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
         }
@@ -935,7 +935,7 @@ public class CollectionHelper {
                 totalDiscountAmt = totalDiscountAmt + invoiceHeaderBO.getRemainingDiscountAmt();
             }
         }
-        totalInvoiceAmt = Double.parseDouble(bmodel.formatValueBasedOnConfig(totalInvoiceAmt));
+        totalInvoiceAmt = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(totalInvoiceAmt));
         if (selectedMode.equals(StandardListMasterConstants.CREDIT_NOTE)) {
             totalInvoiceAmt = totalInvoiceAmt + totalDiscountAmt;
         }
@@ -943,7 +943,7 @@ public class CollectionHelper {
         for (PaymentBO paymentBO : paymentList) {
             totalPaidAmt = totalPaidAmt + paymentBO.getAmount();
         }
-        totalPaidAmt = Double.parseDouble(SDUtil.format(totalPaidAmt,
+        totalPaidAmt = SDUtil.convertToDouble(SDUtil.format(totalPaidAmt,
                 bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                 0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 

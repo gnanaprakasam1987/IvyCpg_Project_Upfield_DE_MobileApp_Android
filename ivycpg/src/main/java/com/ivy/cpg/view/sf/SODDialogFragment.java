@@ -300,7 +300,7 @@ public class SODDialogFragment extends DialogFragment {
                 String data = s.toString();
                 if (editText.getId() == R.id.edtTxtBlock) {
                     if (!"".equals(data))
-                        mBlockCount = Integer.parseInt(data);
+                        mBlockCount = SDUtil.convertToInt(data);
                     else
                         mBlockCount = 0;
 
@@ -314,7 +314,7 @@ public class SODDialogFragment extends DialogFragment {
 
                 } else if (editText.getId() == R.id.edtTxtShelf) {
                     if (!"".equals(data))
-                        mShelfCount = Integer.parseInt(data);
+                        mShelfCount = SDUtil.convertToInt(data);
                     else
                         mShelfCount = 0;
 

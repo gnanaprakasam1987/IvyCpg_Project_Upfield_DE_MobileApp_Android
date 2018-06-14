@@ -159,16 +159,16 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
 
                     for (OutletReportBO outletReport : outLetReportList) {
                         if (user.getUserId() == outletReport.getUserId()) {
-                            actual += Double.parseDouble(outletReport.getSalesValue());
-                            salesVolume += Integer.parseInt(outletReport.getSalesVolume());
-                            fitScore += Double.parseDouble(outletReport.getFitScore());
+                            actual += SDUtil.convertToDouble(outletReport.getSalesValue());
+                            salesVolume += SDUtil.convertToInt(outletReport.getSalesVolume());
+                            fitScore += SDUtil.convertToDouble(outletReport.getFitScore());
                             if (outletReport.getIsPlanned() == 1)
                                 plannedCall += 1;
                             if (outletReport.getIsPlanned() == 0 && outletReport.getIsVisited() == 1)
                                 deviateCall += 1;
                             if (outletReport.getIsVisited() == 1)
                                 actualCall += 1;
-                            if (outletReport.getIsVisited() == 1 && Double.parseDouble(outletReport.getSalesValue()) > 0)
+                            if (outletReport.getIsVisited() == 1 && SDUtil.convertToDouble(outletReport.getSalesValue()) > 0)
                                 productiveCall += 1;
 
                             //parse date and sum up intervals

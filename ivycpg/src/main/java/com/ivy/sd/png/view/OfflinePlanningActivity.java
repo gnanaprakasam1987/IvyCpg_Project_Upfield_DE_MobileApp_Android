@@ -679,7 +679,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
             cBO = new CalenderBO();
             Date result = calendar.getTime();
             SimpleDateFormat df1 = new SimpleDateFormat("dd", Locale.US);
-            int d = Integer.parseInt(df1.format(result));
+            int d = SDUtil.convertToInt(df1.format(result));
             SimpleDateFormat outFormat = new SimpleDateFormat("EE", Locale.getDefault());
             String goal = outFormat.format(result);
             calendar.add(Calendar.DATE, 1);
@@ -861,23 +861,23 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
             for (int i = 0; i < strArray.length; i++) {
                 switch (i) {
                     case 1:
-                        int day = Integer.parseInt(strArray[i]);
+                        int day = SDUtil.convertToInt(strArray[i]);
                         if (day > 0)
-                            date[i] = Integer.parseInt(strArray[i]) - 1;
+                            date[i] = SDUtil.convertToInt(strArray[i]) - 1;
                         else {
-                            date[i] = Integer.parseInt(strArray[i]) + 11;
+                            date[i] = SDUtil.convertToInt(strArray[i]) + 11;
                             pass = false;
                         }
                         break;
                     case 2:
                         if (pass)
-                            date[i] = Integer.parseInt(strArray[i]);
+                            date[i] = SDUtil.convertToInt(strArray[i]);
                         else {
-                            date[i] = Integer.parseInt(strArray[i]) - 1;
+                            date[i] = SDUtil.convertToInt(strArray[i]) - 1;
                         }
                         break;
                     default:
-                        date[i] = Integer.parseInt(strArray[i]);
+                        date[i] = SDUtil.convertToInt(strArray[i]);
                         break;
                 }
 

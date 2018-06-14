@@ -754,11 +754,10 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         if (bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR) {
                             for (int i = 0; i < items.size(); i++) {
                                 CompetitorBO ATB = (CompetitorBO) items.get(i);
-                                if (ATB.getCompetitorpid() == Integer
-                                        .parseInt(bbid)) {
+                                if (ATB.getCompetitorpid() == SDUtil.convertToInt(bbid)) {
                                     ArrayList<CompetetorPOSMBO> trackingList = ATB.getCompetitoreason();
                                     for (CompetetorPOSMBO cmp : trackingList) {
-                                        if (cmp.getId() == Integer.parseInt(bbid)) {
+                                        if (cmp.getId() == SDUtil.convertToInt(bbid)) {
                                             cmp.setImageName("");
                                             cmp.setImagePath("");
                                         }
@@ -769,8 +768,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         } else {
                             for (int i = 0; i < items.size(); i++) {
                                 CompetitorBO ATB = (CompetitorBO) items.get(i);
-                                if (ATB.getCompetitorpid() == Integer
-                                        .parseInt(bbid)) {
+                                if (ATB.getCompetitorpid() == SDUtil.convertToInt(bbid)) {
                                     ATB.setImageName("");
                                     ATB.setImagePath("");
                                 }

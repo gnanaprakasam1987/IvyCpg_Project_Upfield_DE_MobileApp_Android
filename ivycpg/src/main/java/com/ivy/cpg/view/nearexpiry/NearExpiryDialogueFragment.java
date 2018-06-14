@@ -840,9 +840,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
-                        int day = Integer.parseInt(formatDate.substring(8, 10));
-                        int month = Integer.parseInt(formatDate.substring(5, 7));
-                        int year = Integer.parseInt(formatDate.substring(0, 4));
+                        int day = SDUtil.convertToInt(formatDate.substring(8, 10));
+                        int month = SDUtil.convertToInt(formatDate.substring(5, 7));
+                        int year = SDUtil.convertToInt(formatDate.substring(0, 4));
 
                         mDay = day;
                         mMonth = month - 1;
@@ -1017,9 +1017,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
-                        int day = Integer.parseInt(formatDate.substring(8, 10));
-                        int month = Integer.parseInt(formatDate.substring(5, 7));
-                        int year = Integer.parseInt(formatDate.substring(0, 4));
+                        int day = SDUtil.convertToInt(formatDate.substring(8, 10));
+                        int month = SDUtil.convertToInt(formatDate.substring(5, 7));
+                        int year = SDUtil.convertToInt(formatDate.substring(0, 4));
 
                         mDay = day;
                         mMonth = month - 1;
@@ -1191,9 +1191,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
-                        int day = Integer.parseInt(formatDate.substring(8, 10));
-                        int month = Integer.parseInt(formatDate.substring(5, 7));
-                        int year = Integer.parseInt(formatDate.substring(0, 4));
+                        int day = SDUtil.convertToInt(formatDate.substring(8, 10));
+                        int month = SDUtil.convertToInt(formatDate.substring(5, 7));
+                        int year = SDUtil.convertToInt(formatDate.substring(0, 4));
 
                         mDay = day;
                         mMonth = month - 1;
@@ -1363,9 +1363,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
-                        int day = Integer.parseInt(formatDate.substring(8, 10));
-                        int month = Integer.parseInt(formatDate.substring(5, 7));
-                        int year = Integer.parseInt(formatDate.substring(0, 4));
+                        int day = SDUtil.convertToInt(formatDate.substring(8, 10));
+                        int month = SDUtil.convertToInt(formatDate.substring(5, 7));
+                        int year = SDUtil.convertToInt(formatDate.substring(0, 4));
 
                         mDay = day;
                         mMonth = month - 1;
@@ -1537,9 +1537,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
-                        int day = Integer.parseInt(formatDate.substring(8, 10));
-                        int month = Integer.parseInt(formatDate.substring(5, 7));
-                        int year = Integer.parseInt(formatDate.substring(0, 4));
+                        int day = SDUtil.convertToInt(formatDate.substring(8, 10));
+                        int month = SDUtil.convertToInt(formatDate.substring(5, 7));
+                        int year = SDUtil.convertToInt(formatDate.substring(0, 4));
 
                         mDay = day;
                         mMonth = month - 1;
@@ -1707,9 +1707,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         String formatDate = mNearExpiryHelper
                                 .changeMonthNameToNoyyyymmdd(boDate);
 
-                        int day = Integer.parseInt(formatDate.substring(8, 10));
-                        int month = Integer.parseInt(formatDate.substring(5, 7));
-                        int year = Integer.parseInt(formatDate.substring(0, 4));
+                        int day = SDUtil.convertToInt(formatDate.substring(8, 10));
+                        int month = SDUtil.convertToInt(formatDate.substring(5, 7));
+                        int year = SDUtil.convertToInt(formatDate.substring(0, 4));
 
                         mDay = day;
                         mMonth = month - 1;

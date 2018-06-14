@@ -9,6 +9,7 @@ import android.telephony.TelephonyManager;
 import com.ivy.lib.rest.MyKsoapConnection;
 import com.ivy.lib.rest.MyKsoapConnection.ResponseListener;
 import com.ivy.sd.png.bo.ActivationBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -165,9 +166,9 @@ public class ActivationHelper {
                             + "onFailure Response->" + status + " Content : "
                             + message);
                     if (status == DataMembers.IVY_CODE_CUSTOM) {
-                        downloadReponse = Integer.parseInt(message);
+                        downloadReponse = SDUtil.convertToInt(message);
                     } else if (status == DataMembers.IVY_CODE_EXCEPTION) {
-                        downloadReponse = Integer.parseInt(message);
+                        downloadReponse = SDUtil.convertToInt(message);
                     } else
                         downloadReponse = 2;
                 }
@@ -267,9 +268,9 @@ public class ActivationHelper {
                             + message);
 
                     if (status == DataMembers.IVY_CODE_CUSTOM) {
-                        downloadReponse = Integer.parseInt(message);
+                        downloadReponse = SDUtil.convertToInt(message);
                     } else if (status == DataMembers.IVY_CODE_EXCEPTION) {
-                        downloadReponse = Integer.parseInt(message);
+                        downloadReponse = SDUtil.convertToInt(message);
                     } else
                         downloadReponse = 2;
                 }

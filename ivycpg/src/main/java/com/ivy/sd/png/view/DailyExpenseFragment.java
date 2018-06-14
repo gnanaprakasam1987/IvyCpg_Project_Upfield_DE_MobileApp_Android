@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ExpensesBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -101,7 +102,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
                 list.setAdapter(adapter);
                 double total_amount = 0;
                 for (ExpensesBO expAmount : selectedDateExpenses) {
-                    total_amount = total_amount + Double.parseDouble(expAmount.getAmount());
+                    total_amount = total_amount + SDUtil.convertToDouble(expAmount.getAmount());
                 }
                 //tvTotalAmount.setText(String.format("%.2f", total_amount));
                 tvTotalAmount.setText(bmodel.formatValue(total_amount));
@@ -177,7 +178,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
                     ConfigurationMasterHelper.outDateFormat));
 
             holder.tvExpType.setText(holder.expensesBO.getTypeName());
-            holder.tvAmount.setText(bmodel.formatValue(Double.parseDouble("" + holder.expensesBO.getAmount())));
+            holder.tvAmount.setText(bmodel.formatValue(SDUtil.convertToDouble("" + holder.expensesBO.getAmount())));
 
             holder.tvProof.setText("" + holder.expensesBO.getImageList().size());
 

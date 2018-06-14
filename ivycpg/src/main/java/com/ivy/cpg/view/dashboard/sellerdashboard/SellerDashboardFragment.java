@@ -243,7 +243,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                     for (int j = 0; j < distributors.size(); j++) {
                         KeyPairBoolData h = new KeyPairBoolData();
-                        h.setId(Integer.parseInt(distributors.get(j).getDId()));
+                        h.setId(SDUtil.convertToInt(distributors.get(j).getDId()));
                         h.setName(distributors.get(j).getDName());
                         h.setSelected(true);
                         distArray.add(h);
@@ -941,7 +941,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
             } else if (menuid == R.id.distributorSpinner) {
                 int mSelectedDistributorId;
-                mSelectedDistributorId = Integer.parseInt(distributorMasterBOArrayAdapter.getItem(position).getDId());
+                mSelectedDistributorId = SDUtil.convertToInt(distributorMasterBOArrayAdapter.getItem(position).getDId());
                 userMasterBOArrayAdapter.clear();
                 userMasterBOArrayAdapter.add(new UserMasterBO(0, getResources().getString(R.string.all)));
                 userSpinner.setAdapter(userMasterBOArrayAdapter);

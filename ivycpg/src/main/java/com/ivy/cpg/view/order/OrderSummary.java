@@ -654,7 +654,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         else
             minimumAmount = totalOrderValue - creditBalance;
 
-        minimumAmount = Double.parseDouble(BModel.formatValue(minimumAmount));
+        minimumAmount = SDUtil.convertToDouble(BModel.formatValue(minimumAmount));
 
         if (!isClicked) {
             isClicked = true;
@@ -1673,9 +1673,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             + collectionbo.getChequeamt() + collectionbo.getCreditamt();
                 }
 
-                collectedAmount = Double.parseDouble(BModel.formatValue(collectedAmount));
+                collectedAmount = SDUtil.convertToDouble(BModel.formatValue(collectedAmount));
                 pendingAmount = collectedAmount + pendingAmount;
-                pendingAmount = Double.parseDouble(BModel.formatValue(pendingAmount));
+                pendingAmount = SDUtil.convertToDouble(BModel.formatValue(pendingAmount));
 
                 if (totalOrderValue > pendingAmount) {
                     isClick = false;
@@ -1926,7 +1926,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 //Applying bill wise tax
                 if (BModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                     BModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
-                    totalOrderValue = Double.parseDouble(SDUtil.format(totalOrderValue, BModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0, BModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+                    totalOrderValue = SDUtil.convertToDouble(SDUtil.format(totalOrderValue, BModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0, BModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
                     if (BModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
                         totalOrderValue += BModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
                 }

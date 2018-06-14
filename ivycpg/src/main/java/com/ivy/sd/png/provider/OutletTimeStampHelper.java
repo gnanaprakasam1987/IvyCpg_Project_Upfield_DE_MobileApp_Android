@@ -177,7 +177,7 @@ public class OutletTimeStampHelper {
 					+ QT(LocationUtil.accuracy+"")+","
 					+ QT(distance+"")+","
 					+ (dist<bmodel.getRetailerMasterBO().getGpsDistance()?1:0)+","
-					+ (getLastRetailerId()==Integer.parseInt(bmodel.getRetailerMasterBO().getRetailerID())? getLastRetailerSequence():(getLastRetailerSequence()+1))
+					+ (getLastRetailerId()==SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID())? getLastRetailerSequence():(getLastRetailerSequence()+1))
 					+","+bmodel.retailerMasterBO.getDistributorId()
 					+","+getBatteryPercentage(context)
 					+","+QT(LocationUtil.mProviderName)

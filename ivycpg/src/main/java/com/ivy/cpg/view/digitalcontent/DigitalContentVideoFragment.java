@@ -113,7 +113,7 @@ public class DigitalContentVideoFragment extends IvyBaseFragment {
                 String current_month_year = today.split(mCurrentDay)[0];
                 String current_month = today.split("/")[1];
                 String mCurrentYear = today.split("/")[0];
-                String previous_month_year = mCurrentYear + "/" + (Integer.parseInt(current_month) - 1) + "/";
+                String previous_month_year = mCurrentYear + "/" + (SDUtil.convertToInt(current_month) - 1) + "/";
 
                 month_wise_group.put("THIS MONTH", new ArrayList<DigitalContentBO>());
                 month_wise_group.put("PREVIOUS MONTH", new ArrayList<DigitalContentBO>());

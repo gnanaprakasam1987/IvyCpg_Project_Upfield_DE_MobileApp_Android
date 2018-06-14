@@ -22,6 +22,7 @@ public class DataMembers {
 
     // Sync
     public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
+    //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";

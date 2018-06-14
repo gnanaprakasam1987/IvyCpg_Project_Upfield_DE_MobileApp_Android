@@ -933,7 +933,7 @@ public class ProfileHelper {
                 c1.close();
             }
             db.closeDB();
-            return Integer.parseInt(prodLevel) - Integer.parseInt(giveLevelID) + 1;
+            return SDUtil.convertToInt(prodLevel) - SDUtil.convertToInt(giveLevelID) + 1;
         } catch (NumberFormatException e) {
             Commons.printException(e);
             return 0;

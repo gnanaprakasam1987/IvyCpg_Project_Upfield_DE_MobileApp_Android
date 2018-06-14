@@ -970,7 +970,7 @@ public class BusinessModel extends Application {
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
                     if (configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
-                        remaingAmount = Double.parseDouble(SDUtil.format(remaingAmount,
+                        remaingAmount = SDUtil.convertToDouble(SDUtil.format(remaingAmount,
                                 0,
                                 0, configurationMasterHelper.IS_DOT_FOR_GROUP));
                     }
@@ -1577,7 +1577,7 @@ public class BusinessModel extends Application {
                     retailer.setDistributorId(c.getInt(c.getColumnIndex("RetDistributorId")));
                     retailer.setDistParentId(c.getInt(c.getColumnIndex("RetDistParentId")));
                     try {
-                        retailer.setCredit_balance(Double.parseDouble(c.getString(c.getColumnIndex("RField1"))));
+                        retailer.setCredit_balance(SDUtil.convertToDouble(c.getString(c.getColumnIndex("RField1"))));
                     } catch (Exception e) {
                         Commons.printException(e);
                         retailer.setCredit_balance(0.0);
@@ -1730,7 +1730,7 @@ public class BusinessModel extends Application {
 
             sql = "select RDP.pid,CSD.Shelfpqty,CSD.Shelfcqty,CSD.shelfoqty,OD.pieceqty,OD.caseQty,OD.outerQty from RtrWiseDeadProducts RDP " +
                     "left join ClosingStockDetail CSD on CSD.ProductID = RDP.pid And CSD.retailerid = RDP.rid " +
-                    "left join OrderDetail OD on OD.retailerid = RDP.rid And OD.ProductID = RDP.pid where RDP.rid = " + Integer.parseInt(Retailer.getRetailerID());
+                    "left join OrderDetail OD on OD.retailerid = RDP.rid And OD.ProductID = RDP.pid where RDP.rid = " + SDUtil.convertToInt(Retailer.getRetailerID());
 
             c = db.selectSQL(sql);
             if (c != null) {
@@ -1764,7 +1764,7 @@ public class BusinessModel extends Application {
         for (int i = 0; i < siz; ++i) {
             ProductMasterBO product = productHelper
                     .getProductMaster().get(i);
-            if (Integer.parseInt(product.getProductID()) == pdtId) {
+            if (SDUtil.convertToInt(product.getProductID()) == pdtId) {
                 for (int j = 0; j < product.getLocations().size(); j++) {
                     if ((product.getLocations().get(j).getShelfPiece() > -1 ||
                             product.getLocations().get(j).getShelfCase() > -1 ||
@@ -2841,8 +2841,8 @@ public class BusinessModel extends Application {
                     fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
                     fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
 
-                    int integerValue = (int) Double.parseDouble(tempVal);
-                    int fractionValue = Integer.parseInt(fractionalStr);
+                    int integerValue = (int) SDUtil.convertToDouble(tempVal);
+                    int fractionValue = SDUtil.convertToInt(fractionalStr);
 
                     formattedValue = (integerValue + getCurrencyActualValue(fractionValue) + "");
 
@@ -7530,8 +7530,8 @@ public class BusinessModel extends Application {
 
                             try {
                                 String value = mRules.get(i).substring(mRules.get(i).lastIndexOf(",") + 1, mRules.get(i).lastIndexOf("}")).replace(" ", "");
-                                mComputeID.append(splitYear(Integer.parseInt(mYear[0]), value));
-                                mComputeID.append("-" + splitYear(Integer.parseInt(mYear[1]), value));
+                                mComputeID.append(splitYear(SDUtil.convertToInt(mYear[0]), value));
+                                mComputeID.append("-" + splitYear(SDUtil.convertToInt(mYear[1]), value));
                             } catch (Exception e) {
                                 Commons.printException(e);
                                 mComputeID.append(appendZero(seqNo, "0000"));
@@ -7687,7 +7687,7 @@ public class BusinessModel extends Application {
     }
 
     private String splitYear(int year, String value) {
-        int divider = Integer.parseInt("1" + value);
+        int divider = SDUtil.convertToInt("1" + value);
         return "" + year % divider;
     }
 
@@ -7872,13 +7872,13 @@ public class BusinessModel extends Application {
                             productHelper.getProductMasterBOById(productId).setOuterMapped(true);
                     }
                 } else if (type == 2) {
-                    if (productHelper.getLoadManagementBOById(Integer.parseInt(productId)) != null) {
-                        if (productHelper.getLoadManagementBOById(Integer.parseInt(productId)).getPiece_uomid() == uomId)
-                            productHelper.getLoadManagementBOById(Integer.parseInt(productId)).setPieceMapped(true);
-                        else if (productHelper.getLoadManagementBOById(Integer.parseInt(productId)).getdUomid() == uomId)
-                            productHelper.getLoadManagementBOById(Integer.parseInt(productId)).setCaseMapped(true);
-                        else if (productHelper.getLoadManagementBOById(Integer.parseInt(productId)).getdOuonid() == uomId)
-                            productHelper.getLoadManagementBOById(Integer.parseInt(productId)).setOuterMapped(true);
+                    if (productHelper.getLoadManagementBOById(SDUtil.convertToInt(productId)) != null) {
+                        if (productHelper.getLoadManagementBOById(SDUtil.convertToInt(productId)).getPiece_uomid() == uomId)
+                            productHelper.getLoadManagementBOById(SDUtil.convertToInt(productId)).setPieceMapped(true);
+                        else if (productHelper.getLoadManagementBOById(SDUtil.convertToInt(productId)).getdUomid() == uomId)
+                            productHelper.getLoadManagementBOById(SDUtil.convertToInt(productId)).setCaseMapped(true);
+                        else if (productHelper.getLoadManagementBOById(SDUtil.convertToInt(productId)).getdOuonid() == uomId)
+                            productHelper.getLoadManagementBOById(SDUtil.convertToInt(productId)).setOuterMapped(true);
                     }
                 }
             } else {
@@ -7923,13 +7923,13 @@ public class BusinessModel extends Application {
                                     productHelper.getProductMasterBOById(c.getString(0)).setOuterMapped(true);
                             }
                         } else if (type == 2) {
-                            if (productHelper.getLoadManagementBOById(Integer.parseInt(c.getString(0))) != null) {
-                                if (productHelper.getLoadManagementBOById(Integer.parseInt(c.getString(0))).getPiece_uomid() == uomId)
-                                    productHelper.getLoadManagementBOById(Integer.parseInt(c.getString(0))).setPieceMapped(true);
-                                else if (productHelper.getLoadManagementBOById(Integer.parseInt(c.getString(0))).getdUomid() == uomId)
-                                    productHelper.getLoadManagementBOById(Integer.parseInt(c.getString(0))).setCaseMapped(true);
-                                else if (productHelper.getLoadManagementBOById(Integer.parseInt(c.getString(0))).getdOuonid() == uomId)
-                                    productHelper.getLoadManagementBOById(Integer.parseInt(c.getString(0))).setOuterMapped(true);
+                            if (productHelper.getLoadManagementBOById(SDUtil.convertToInt(c.getString(0))) != null) {
+                                if (productHelper.getLoadManagementBOById(SDUtil.convertToInt(c.getString(0))).getPiece_uomid() == uomId)
+                                    productHelper.getLoadManagementBOById(SDUtil.convertToInt(c.getString(0))).setPieceMapped(true);
+                                else if (productHelper.getLoadManagementBOById(SDUtil.convertToInt(c.getString(0))).getdUomid() == uomId)
+                                    productHelper.getLoadManagementBOById(SDUtil.convertToInt(c.getString(0))).setCaseMapped(true);
+                                else if (productHelper.getLoadManagementBOById(SDUtil.convertToInt(c.getString(0))).getdOuonid() == uomId)
+                                    productHelper.getLoadManagementBOById(SDUtil.convertToInt(c.getString(0))).setOuterMapped(true);
                             }
                         }
                     }
@@ -8504,7 +8504,7 @@ public class BusinessModel extends Application {
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
                     if (configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
-                        remaingAmount = Double.parseDouble(SDUtil.format(remaingAmount,
+                        remaingAmount = SDUtil.convertToDouble(SDUtil.format(remaingAmount,
                                 0,
                                 0, configurationMasterHelper.IS_DOT_FOR_GROUP));
                     }

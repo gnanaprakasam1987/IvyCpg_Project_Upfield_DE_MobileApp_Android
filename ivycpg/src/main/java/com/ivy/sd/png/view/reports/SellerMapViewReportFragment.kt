@@ -30,6 +30,7 @@ import com.google.maps.android.ui.IconGenerator
 import com.ivy.maplib.MapWrapperLayout
 import com.ivy.sd.png.asean.view.R
 import com.ivy.sd.png.bo.OutletReportBO
+import com.ivy.sd.png.commons.SDUtil
 import com.ivy.sd.png.model.BusinessModel
 import com.ivy.sd.png.provider.ConfigurationMasterHelper
 import com.ivy.sd.png.util.Commons
@@ -429,7 +430,7 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
 
             try {
                 infoTitle.text = marker.title
-                val retailerd = Integer.parseInt(marker.snippet)
+                val retailerd = SDUtil.convertToInt(marker.snippet)
                 for (bo in lstReports!!) {
                     if (bo.retailerId == retailerd) {
                         infoLocName.text = bo.locationName
@@ -618,8 +619,8 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
                 for (j in path.indices) {
                     val point = path[j]
 
-                    val lat = java.lang.Double.parseDouble(point["lat"])
-                    val lng = java.lang.Double.parseDouble(point["lng"])
+                    val lat = SDUtil.convertToDouble(point["lat"])
+                    val lng = SDUtil.convertToDouble(point["lng"])
                     val position = LatLng(lat, lng)
 
                     points.add(position)

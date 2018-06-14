@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ExpenseSheetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DateUtil;
@@ -53,7 +54,7 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
     public String sumExpenses(ArrayList<ExpenseSheetBO> expenseList) {
         Double sum = 0.0;
         for (ExpenseSheetBO expobj : expenseList)
-            sum = sum + Double.parseDouble(expobj.getAmount());
+            sum = sum + SDUtil.convertToDouble(expobj.getAmount());
         return bmodel.formatValue(sum);
     }
 
@@ -112,7 +113,7 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
             holder.tvDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.expenseSheetBO.getDate(),
                     ConfigurationMasterHelper.outDateFormat));
             holder.tvExpType.setText(holder.expenseSheetBO.getTypeName());
-            holder.tvAmount.setText(bmodel.formatValue(Double.parseDouble("" + holder.expenseSheetBO.getAmount())));
+            holder.tvAmount.setText(bmodel.formatValue(SDUtil.convertToDouble("" + holder.expenseSheetBO.getAmount())));
 
             if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("S"))
                 holder.ivStatus.setImageResource(R.drawable.ok_tick);

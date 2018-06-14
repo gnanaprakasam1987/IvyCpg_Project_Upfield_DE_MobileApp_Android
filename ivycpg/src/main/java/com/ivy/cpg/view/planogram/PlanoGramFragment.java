@@ -151,7 +151,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         .getItem(mBModel.productHelper.getmSelectedGLobalLocationIndex());
                 mSelectedLocationIndex = mBModel.productHelper.getmSelectedGLobalLocationIndex();
                 if (selectedId != null) {
-                    mSelectedLocationId = Integer.parseInt(selectedId
+                    mSelectedLocationId = SDUtil.convertToInt(selectedId
                             .getListID());
                     locationName = " -" + selectedId.getListName();
                 }
@@ -814,7 +814,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                                 .getItem(item);
                         mSelectedLocationIndex = item;
                         if (selectedId != null) {
-                            mSelectedLocationId = Integer.parseInt(selectedId
+                            mSelectedLocationId = SDUtil.convertToInt(selectedId
                                     .getListID());
                             locationName = " -" + selectedId.getListName();
                         }

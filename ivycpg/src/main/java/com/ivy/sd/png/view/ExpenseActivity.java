@@ -377,7 +377,7 @@ public class ExpenseActivity extends IvyBaseActivityNoActionBar {
             try {
                 if (isHeaderExists) {
                     double totalAmount = 0;
-                    totalAmount = bmodel.expenseSheetHelper.getExpenseTotal(Tid, dateValue) + Double.parseDouble(amountValue);
+                    totalAmount = bmodel.expenseSheetHelper.getExpenseTotal(Tid, dateValue) + SDUtil.convertToDouble(amountValue);
                     bmodel.expenseSheetHelper.updateHeaderInsert(Tid, totalAmount, amountValue, exp_type, imagesList, exp_type + "" + SDUtil
                             .now(SDUtil.DATE_TIME_ID));
                 } else {

@@ -265,8 +265,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     if (validateEditProfile()) {
 
                         if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                            if ((lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("")
-                                    || Double.parseDouble(longitude) == 0)
+                            if ((lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("")
+                                    || SDUtil.convertToDouble(longitude) == 0)
                                     || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0
                                     && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
                                 Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
@@ -760,7 +760,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     int id = retailerObj.getChannelID();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
-                            id = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
+                            id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
                     totalView.addView(
                             getSpinnerView(mNumber, mName, configCode, id
@@ -769,7 +769,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     int id = retailerObj.getSubchannelid();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
-                            id = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
+                            id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
                     totalView.addView(
                             getSpinnerView(mNumber, mName, configCode, id
@@ -778,7 +778,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     int id = retailerObj.getContractLovid();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
-                            id = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
+                            id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
                     totalView.addView(
                             getSpinnerView(mNumber, mName, configCode, id
@@ -930,7 +930,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         int id = retailerObj.getLocationId();
                         if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                             if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
-                                id = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
+                                id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
                         totalView.addView(
                                 getSpinnerView(mNumber, title, configCode, id
@@ -947,14 +947,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 locid, true);
                         if (loc2 != null) {
 
-                            loc2id = Integer.parseInt(loc2[0]);
+                            loc2id = SDUtil.convertToInt(loc2[0]);
                             title = loc2[2];
 
                         }
                         int id = retailerObj.getLocationId();
                         if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                             if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
-                                id = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
+                                id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
                         totalView.addView(
                                 getSpinnerView(mNumber, title, configCode, id
@@ -975,7 +975,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         int id = retailerObj.getLocationId();
                         if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                             if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
-                                id = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
+                                id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
                         totalView.addView(
                                 getSpinnerView(mNumber, title, configCode, id
@@ -1082,7 +1082,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         if (text.equals(""))
                             text = "0";
                         totalView.addView(
-                                getSpinnerView(mNumber, mName, configCode, Integer.parseInt(text)
+                                getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
                 } else if (configCode.equals("PROFILE53") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
@@ -1110,7 +1110,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         if (text.equals(""))
                             text = "0";
                         totalView.addView(
-                                getSpinnerView(mNumber, mName, configCode, Integer.parseInt(text)
+                                getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
                 } else if (configCode.equals("PROFILE54") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
@@ -1135,7 +1135,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         if (text.equals(""))
                             text = "0";
                         totalView.addView(
-                                getSpinnerView(mNumber, mName, configCode, Integer.parseInt(text)
+                                getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
                 } else if (configCode.equals("PROFILE55") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
@@ -1152,7 +1152,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         if (text.equals(""))
                             text = "0";
                         totalView.addView(
-                                getSpinnerView(mNumber, mName, configCode, Integer.parseInt(text)
+                                getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
                 }
@@ -1791,7 +1791,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
                     if (!qty.equals("")) {
-                        if (Integer.parseInt(qty) > bmodel.configurationMasterHelper.MAX_CREDIT_DAYS) {
+                        if (SDUtil.convertToInt(qty) > bmodel.configurationMasterHelper.MAX_CREDIT_DAYS) {
                             //Delete the last entered number and reset the qty
                             editText[mNumber].setText(qty.length() > 1 ? qty.substring(0,
                                     qty.length() - 1) : "0");
@@ -2283,12 +2283,12 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 if (len != null && !len.isEmpty()) {
                     if (len.contains(",")) {
                         try {
-                            fil = new InputFilter.LengthFilter(Integer.parseInt(len.split(",")[1]));
+                            fil = new InputFilter.LengthFilter(SDUtil.convertToInt(len.split(",")[1]));
                         } catch (Exception ex) {
                             Commons.printException("regex length split", ex);
                         }
                     } else {
-                        fil = new InputFilter.LengthFilter(Integer.parseInt(len));
+                        fil = new InputFilter.LengthFilter(SDUtil.convertToInt(len));
                     }
                 }
             }
@@ -2637,7 +2637,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     loc1id = loc1[0];
                 }
                 for (LocationBO loc : mLocationMasterList1) {
-                    if (loc.getLocId() == Integer.parseInt(loc1id)) {
+                    if (loc.getLocId() == SDUtil.convertToInt(loc1id)) {
                         setPos = pos;
                     }
                     pos++;
@@ -2683,7 +2683,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     loc2id = loc2[0];
                 }
                 for (LocationBO loc : mLocationMasterList2) {
-                    if (loc.getLocId() == Integer.parseInt(loc2id)) {
+                    if (loc.getLocId() == SDUtil.convertToInt(loc2id)) {
                         setPos = pos;
                     }
                     pos++;
@@ -2733,7 +2733,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     locid = loc3[0];
                 }
                 for (LocationBO loc : mLocationMasterList3) {
-                    if (loc.getLocId() == Integer.parseInt(locid)) {
+                    if (loc.getLocId() == SDUtil.convertToInt(locid)) {
                         setPos = pos;
                     }
                     pos++;
@@ -2936,7 +2936,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         int subChannelID = bmodel.getRetailerMasterBO().getSubchannelid();
         if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null)
             if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07").equals(subChannelID + ""))
-                subChannelID = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"));
+                subChannelID = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"));
         for (int i = 0; i < siz; ++i) {
             SubchannelBO ret = (SubchannelBO) items.elementAt(i);
             if (channelid != 0) {
@@ -3232,7 +3232,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             retailerButton.setVisibility(View.GONE);
             mSelectedIds = mNearbyRetIds;
         } else {
-            bmodel.newOutletHelper.getNearbyRetailersEditRequest(Integer.parseInt(bmodel.getRetailerMasterBO().getRetailerID()));
+            bmodel.newOutletHelper.getNearbyRetailersEditRequest(SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID()));
             if (bmodel.newOutletHelper.getLstEditRequests().size() > 0) {
 
                 ArrayList<String> tempIds = new ArrayList<>();
@@ -3321,7 +3321,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     mChannelAttributeList = new ArrayList<>();
                     int subChannelID;
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null)
-                        subChannelID = Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"));
+                        subChannelID = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"));
                     else subChannelID = bmodel.getRetailerMasterBO().getSubchannelid();
                     mChannelAttributeList.addAll(mAttributeListByChannelId.get(subChannelID));
                 }
@@ -3950,7 +3950,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     lat = LocationUtil.latitude + "";
                     longitude = LocationUtil.longitude + "";
 
-                    if (lat.equals("") || Double.parseDouble(lat) == 0 || longitude.equals("") || Double.parseDouble(longitude) == 0) {
+                    if (lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("") || SDUtil.convertToDouble(longitude) == 0) {
                         Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     } else {
                         if (!isLatLong) {

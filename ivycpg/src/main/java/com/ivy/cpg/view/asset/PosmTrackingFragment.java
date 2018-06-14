@@ -855,7 +855,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                                 StandardListBO reasonBO = (StandardListBO) holder.mLocationSpin
                                         .getSelectedItem();
 
-                                holder.assetBO.setLocationID(Integer.parseInt(reasonBO
+                                holder.assetBO.setLocationID(SDUtil.convertToInt(reasonBO
                                         .getListID()));
                             }
 
