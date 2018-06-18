@@ -16,10 +16,10 @@
         android:gravity="center"
         android:text="Total Store 8"
         android:textColor="#FFFFFF"
-        android:textSize="@dimen/dimen_20dp"
-        android:padding="@dimen/dimen_5dp"
+        android:textSize="@dimen/_20sdp"
+        android:padding="@dimen/_5sdp"
         android:layout_above="@+id/pager_layout"
-        android:layout_marginBottom="@dimen/dimens_80dp"/>
+        android:layout_marginBottom="@dimen/_60sdp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/viewpager"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="@dimen/_50sdp"
             app:spi_dotSelectedColor="@color/colorPrimaryDark"
             app:spi_dotColor="@color/new_grey"
             app:spi_visibleDotCount="9"/>
@@ -76,6 +76,6 @@
         android:src="@drawable/ic_close_icon_white"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dimens_50dp"/>
+        android:layout_marginBottom="@dimen/_40sdp"/>
 
 </RelativeLayout>

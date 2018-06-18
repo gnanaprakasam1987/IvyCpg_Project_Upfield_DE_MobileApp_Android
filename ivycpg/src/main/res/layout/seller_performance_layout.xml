@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dimen_10dp"
-    android:layout_marginRight="@dimen/dimen_10dp"
-    android:layout_marginTop="@dimen/dimen_10dp"
+    android:layout_marginLeft="@dimen/_10sdp"
+    android:layout_marginRight="@dimen/_10sdp"
+    android:layout_marginTop="@dimen/_10sdp"
     app:cardBackgroundColor="@color/white"
-    app:cardElevation="@dimen/dimen_4dp"
+    app:cardElevation="@dimen/_4sdp"
     android:layout_below="@+id/chart_layout">
 
     <RelativeLayout
@@ -18,20 +18,20 @@
             android:id="@+id/seller_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_5dp"
+            android:layout_margin="@dimen/_5sdp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:weightSum="1">
 
             <com.ivy.cpg.view.supervisor.helper.CircleImageView
-                android:layout_width="@dimen/mvpbadgelayoutwidth"
-                android:layout_height="@dimen/mvpbadgelayoutwidth"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
                 android:src="@drawable/user_default" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginLeft="@dimen/_5sdp"
                 android:layout_weight="0.8"
                 android:orientation="vertical">
 
@@ -42,10 +42,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
                     android:maxLines="1"
-                    android:paddingLeft="@dimen/dimen_8dp"
+                    android:paddingLeft="@dimen/_8sdp"
                     android:text="Sales Volume sfffsffs ffsff dvddv vdvdv"
                     android:textColor="#de000000"
-                    android:textSize="@dimen/dimen_18dp" />
+                    android:textSize="@dimen/_14sdp" />
 
                 <TextView
                     android:id="@+id/seller_position"
@@ -54,10 +54,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
                     android:maxLines="1"
-                    android:paddingLeft="@dimen/dimen_8dp"
+                    android:paddingLeft="@dimen/_8sdp"
                     android:text="Sales Volume"
                     android:textColor="#8b000000"
-                    android:textSize="@dimen/dimen_14dp" />
+                    android:textSize="@dimen/_12sdp" />
 
             </LinearLayout>
 
@@ -70,8 +70,8 @@
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="@dimen/_55sdp"
+                    android:layout_height="@dimen/_55sdp"
                     android:layout_centerInParent="true"
                     android:background="@drawable/circular_progress"
                     android:indeterminate="false"
@@ -81,13 +81,13 @@
 
                 <TextView
                     style="?attr/customListItemPrimary"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/_45sdp"
+                    android:layout_height="@dimen/_45sdp"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:text="70%"
+                    android:text="170%"
                     android:textColor="#262e4f"
-                    android:textSize="@dimen/dimen_14dp" />
+                    android:textSize="@dimen/_12sdp" />
 
 
             </RelativeLayout>
@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/seller_layout"
-            android:layout_marginTop="@dimen/dimen_5dp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:background="@color/white"
             android:minHeight="?attr/actionBarSize"
             app:tabGravity="fill"
@@ -133,10 +133,10 @@
             android:layout_below="@+id/tab_layout"
             android:background="#ded8db"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/dimen_6dp"
-            android:paddingLeft="@dimen/dimen_4dp"
-            android:paddingRight="@dimen/dimen_4dp"
-            android:paddingTop="@dimen/dimen_6dp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:paddingLeft="@dimen/_4sdp"
+            android:paddingRight="@dimen/_4sdp"
+            android:paddingTop="@dimen/_6sdp"
             android:weightSum="1">
 
             <TextView
@@ -146,10 +146,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_8dp"
+                android:paddingLeft="@dimen/_8sdp"
                 android:text="Sales Volume"
                 android:textColor="#de000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/store_text"
@@ -161,7 +161,7 @@
                 android:maxLines="1"
                 android:text="Target"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/time_in_text"
@@ -173,7 +173,7 @@
                 android:maxLines="1"
                 android:text="Actual"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/time_out_text"
@@ -185,7 +185,7 @@
                 android:maxLines="1"
                 android:text="%"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 
@@ -196,10 +196,10 @@
             android:layout_below="@+id/outlet_header_layout"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/dimen_6dp"
-            android:paddingLeft="@dimen/dimen_4dp"
-            android:paddingRight="@dimen/dimen_4dp"
-            android:paddingTop="@dimen/dimen_6dp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:paddingLeft="@dimen/_4sdp"
+            android:paddingRight="@dimen/_4sdp"
+            android:paddingTop="@dimen/_6sdp"
             android:weightSum="1">
 
             <TextView
@@ -209,10 +209,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_8dp"
+                android:paddingLeft="@dimen/_8sdp"
                 android:text="Value"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/value_target"
@@ -224,7 +224,7 @@
                 android:maxLines="1"
                 android:text="1245678.21"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/value_actual"
@@ -236,7 +236,7 @@
                 android:maxLines="1"
                 android:text="12457.23"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/value_percent"
@@ -248,7 +248,7 @@
                 android:maxLines="1"
                 android:text="60%"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 
@@ -259,10 +259,10 @@
             android:layout_below="@+id/value_layout"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/dimen_6dp"
-            android:paddingLeft="@dimen/dimen_4dp"
-            android:paddingRight="@dimen/dimen_4dp"
-            android:paddingTop="@dimen/dimen_6dp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:paddingLeft="@dimen/_4sdp"
+            android:paddingRight="@dimen/_4sdp"
+            android:paddingTop="@dimen/_6sdp"
             android:weightSum="1">
 
             <TextView
@@ -272,10 +272,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_8dp"
+                android:paddingLeft="@dimen/_8sdp"
                 android:text="Coverage"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/coverage_target"
@@ -287,7 +287,7 @@
                 android:maxLines="1"
                 android:text="1245678.21"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/coverage_actual"
@@ -299,7 +299,7 @@
                 android:maxLines="1"
                 android:text="12457.23"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/coverage_percent"
@@ -311,7 +311,7 @@
                 android:maxLines="1"
                 android:text="60%"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 
@@ -322,10 +322,10 @@
             android:layout_below="@+id/coverage_layout"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/dimen_6dp"
-            android:paddingLeft="@dimen/dimen_4dp"
-            android:paddingRight="@dimen/dimen_4dp"
-            android:paddingTop="@dimen/dimen_6dp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:paddingLeft="@dimen/_4sdp"
+            android:paddingRight="@dimen/_4sdp"
+            android:paddingTop="@dimen/_6sdp"
             android:weightSum="1">
 
             <TextView
@@ -335,10 +335,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_8dp"
+                android:paddingLeft="@dimen/_8sdp"
                 android:text="Lines"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/lines_target"
@@ -350,7 +350,7 @@
                 android:maxLines="1"
                 android:text="1245678.21"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/lines_actual"
@@ -362,7 +362,7 @@
                 android:maxLines="1"
                 android:text="12457.23"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/lines_percent"
@@ -374,7 +374,7 @@
                 android:maxLines="1"
                 android:text="60%"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 
@@ -386,23 +386,23 @@
             android:layout_below="@+id/lines_layout"
             android:background="#ded8db"
             android:maxLines="1"
-            android:paddingBottom="@dimen/dimen_6dp"
-            android:paddingLeft="@dimen/dimen_12dp"
-            android:paddingRight="@dimen/dimen_4dp"
-            android:paddingTop="@dimen/dimen_6dp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_4sdp"
+            android:paddingTop="@dimen/_6sdp"
             android:text="Calls Status"
             android:textColor="#de000000"
-            android:textSize="@dimen/dimen_14dp" />
+            android:textSize="@dimen/_12sdp" />
 
         <LinearLayout
             android:id="@+id/call_status_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/calls_status_text"
-            android:layout_marginBottom="@dimen/padding_l"
+            android:layout_marginBottom="@dimen/_15sdp"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/dimen_12dp"
-            android:paddingRight="@dimen/dimen_12dp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp"
             android:weightSum="1">
 
             <LinearLayout
@@ -417,25 +417,25 @@
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dimen_2dp"
+                    android:layout_margin="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="Planned"
                     android:textColor="#8b000000"
-                    android:textSize="@dimen/dimen_14dp" />
+                    android:textSize="@dimen/_12sdp" />
 
                 <TextView
                     android:id="@+id/planned_value"
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="50"
                     android:textColor="#4a90e2"
-                    android:textSize="@dimen/dimen_18dp" />
+                    android:textSize="@dimen/_16sdp" />
             </LinearLayout>
 
             <LinearLayout
@@ -449,25 +449,25 @@
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dimen_2dp"
+                    android:layout_margin="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="Deviated"
                     android:textColor="#8b000000"
-                    android:textSize="@dimen/dimen_14dp" />
+                    android:textSize="@dimen/_12sdp" />
 
                 <TextView
                     android:id="@+id/deviated_value"
                     style="?attr/customListItemPrimary"
                     android:layout_width="92dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="10"
                     android:textColor="#4a90e2"
-                    android:textSize="@dimen/dimen_18dp" />
+                    android:textSize="@dimen/_16sdp" />
             </LinearLayout>
 
             <LinearLayout
@@ -481,25 +481,25 @@
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dimen_2dp"
+                    android:layout_margin="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="Duration"
                     android:textColor="#8b000000"
-                    android:textSize="@dimen/dimen_14dp" />
+                    android:textSize="@dimen/_12sdp" />
 
                 <TextView
                     android:id="@+id/visited_value"
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="25"
                     android:textColor="#4a90e2"
-                    android:textSize="@dimen/dimen_18dp" />
+                    android:textSize="@dimen/_16sdp" />
             </LinearLayout>
 
             <LinearLayout
@@ -513,25 +513,25 @@
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dimen_2dp"
+                    android:layout_margin="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="Productive"
                     android:textColor="#8b000000"
-                    android:textSize="@dimen/dimen_14dp" />
+                    android:textSize="@dimen/_12sdp" />
 
                 <TextView
                     android:id="@+id/productive_value"
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="45"
                     android:textColor="#4a90e2"
-                    android:textSize="@dimen/dimen_18dp" />
+                    android:textSize="@dimen/_16sdp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -541,23 +541,23 @@
             android:id="@+id/bottom_outlet_btn_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_10dp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/total_seller_bg">
 
             <TextView
                 android:id="@+id/seller_performance_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:gravity="center"
-                android:paddingBottom="@dimen/dimen_10dp"
-                android:paddingTop="@dimen/dimen_10dp"
+                android:paddingBottom="@dimen/_10sdp"
+                android:paddingTop="@dimen/_10sdp"
                 android:text="View Seller Performance Outlet wise"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/_14sdp"
                 android:drawableLeft="@drawable/ic_store_icon"
-                android:paddingLeft="@dimen/dimen_5dp"
-                android:drawablePadding="@dimen/dimen_10dp"
+                android:paddingLeft="@dimen/_5sdp"
+                android:drawablePadding="@dimen/_10sdp"
                 android:layout_centerInParent="true"/>
 
         </RelativeLayout>

@@ -21,6 +21,7 @@
         android:minHeight="?attr/actionBarSize"
         app:tabGravity="fill"
         app:tabMode="fixed"
+        app:tabMaxWidth="0dp"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="#ddd">
 
@@ -69,11 +70,11 @@
             android:id="@+id/cardview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_10dp"
-            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="3dp"
+            app:cardCornerRadius="@dimen/_2sdp"
+            app:cardElevation="@dimen/_3sdp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true"
             app:contentPadding="0dp">
@@ -82,20 +83,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingBottom="@dimen/dimen_2dp"
-                android:paddingLeft="@dimen/dimen_5dp"
-                android:paddingRight="@dimen/dimen_5dp"
-                android:paddingTop="@dimen/dimen_2dp">
+                android:paddingBottom="@dimen/_2sdp"
+                android:paddingLeft="@dimen/_5sdp"
+                android:paddingRight="@dimen/_5sdp"
+                android:paddingTop="@dimen/_2sdp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/dimen_2dp">
+                    android:padding="@dimen/_2sdp">
 
                     <View
                         android:id="@+id/planned_color_view"
-                        android:layout_width="@dimen/dimen_14dp"
-                        android:layout_height="@dimen/dimen_14dp"
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
                         android:layout_centerVertical="true"
                         android:background="@drawable/planned_gradient_grey" />
 
@@ -105,26 +106,26 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dimen_5dp"
+                        android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_toRightOf="@+id/planned_color_view"
                         android:gravity="center"
                         android:maxLines="1"
                         android:text="Planned"
                         android:textColor="#de000000"
-                        android:textSize="@dimen/dimen_12dp" />
+                        android:textSize="@dimen/_10sdp" />
 
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
-                    android:padding="@dimen/dimen_2dp">
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:padding="@dimen/_2sdp">
 
                     <View
                         android:id="@+id/covered_color_view"
-                        android:layout_width="@dimen/dimen_14dp"
-                        android:layout_height="@dimen/dimen_14dp"
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
                         android:layout_centerVertical="true"
                         android:background="@drawable/covered_green" />
 
@@ -134,26 +135,26 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dimen_5dp"
+                        android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_toRightOf="@+id/covered_color_view"
                         android:gravity="center"
                         android:maxLines="1"
                         android:text="Covered"
                         android:textColor="#de000000"
-                        android:textSize="@dimen/dimen_12dp" />
+                        android:textSize="@dimen/_10sdp" />
 
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
-                    android:padding="@dimen/dimen_2dp">
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:padding="@dimen/_2sdp">
 
                     <View
                         android:id="@+id/unbilled_color_view"
-                        android:layout_width="@dimen/dimen_14dp"
-                        android:layout_height="@dimen/dimen_14dp"
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
                         android:layout_centerVertical="true"
                         android:background="@drawable/unbilled_gradient_red" />
 
@@ -163,27 +164,27 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dimen_5dp"
+                        android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_toRightOf="@+id/unbilled_color_view"
                         android:gravity="center"
                         android:maxLines="1"
                         android:text="Unbilled"
                         android:textColor="#de000000"
-                        android:textSize="@dimen/dimen_12dp" />
+                        android:textSize="@dimen/_10sdp" />
 
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
-                    android:padding="@dimen/dimen_2dp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:padding="@dimen/_2sdp"
                     android:visibility="gone">
 
                     <View
                         android:id="@+id/skipped_color_view"
-                        android:layout_width="@dimen/dimen_14dp"
-                        android:layout_height="@dimen/dimen_14dp"
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
                         android:layout_centerVertical="true"
                         android:background="@drawable/unbilled_gradient_red" />
 
@@ -193,13 +194,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dimen_5dp"
+                        android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_toRightOf="@+id/skipped_color_view"
                         android:gravity="center"
                         android:maxLines="1"
                         android:text="Unbilled"
                         android:textColor="#de000000"
-                        android:textSize="@dimen/dimen_12dp" />
+                        android:textSize="@dimen/_10sdp" />
 
                 </RelativeLayout>
 
@@ -212,10 +213,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/dimens_10dp"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:clipToPadding="false"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
+            android:paddingLeft="@dimen/_40sdp"
+            android:paddingRight="@dimen/_40sdp"
             app:rvp_singlePageFling="true"
             app:rvp_triggerOffset="0.1"
             android:layout_below="@+id/cardview"/>

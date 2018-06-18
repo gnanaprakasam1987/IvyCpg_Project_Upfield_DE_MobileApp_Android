@@ -1,11 +1,14 @@
 package com.ivy.cpg.view.supervisor;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.ActionBar;
@@ -52,7 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SupervisorMapFragment extends IvyBaseFragment implements
-        OnMapReadyCallback, Seller,View.OnClickListener,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener {
+        OnMapReadyCallback, Seller, View.OnClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
 
     private BusinessModel bmodel;
     View view;
@@ -60,22 +63,21 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     private GoogleMap mMap;
     boolean isFirst = true;
     private BottomSheetBehavior bottomSheetBehavior;
-    private TextView totalSeller,absentSeller,marketSeller
+    private TextView totalSeller, absentSeller, marketSeller
 //            ,outSeller
             ;
     private int totalSellerCount = 0;
     MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
-    private TextView tvMapInfoUserName,tvUserName , tvTimeIn, tvAddress, tvOutletCovered,tvOutletTarget
-            ,tvCoveredOutlet,tvUnbilledOutlet,tvTotalOutlet,tvOrderValue;
-    private LinearLayout routeLayout,infoWindowLayout;
+    private TextView tvMapInfoUserName, tvUserName, tvTimeIn, tvAddress, tvOutletCovered, tvOutletTarget, tvCoveredOutlet, tvUnbilledOutlet, tvTotalOutlet, tvOrderValue;
+    private LinearLayout routeLayout, infoWindowLayout;
 
     private int trackingType; //0 - RealTime, 1 - Movement Tracking, 2 - Call analysis
     private RecyclerViewPager mRecyclerView;
 
     private MyAdapter myAdapter;
 
-    ArrayList<DetailsBo>  detailsBos = new ArrayList<>();
+    ArrayList<DetailsBo> detailsBos = new ArrayList<>();
 
 
     @Override
@@ -111,7 +113,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         Bundle extras = getArguments();
         //Set Screen Title
         try {
-            if (extras != null){
+            if (extras != null) {
                 trackingType = extras.getInt("TrackingType");
                 setScreenTitle(extras.getString("screentitle"));
             }
@@ -128,12 +130,12 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         return view;
     }
 
-    private void initViews(final View view){
+    private void initViews(final View view) {
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        this.mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_info_window, null);
+        this.mymarkerview = (ViewGroup) getLayoutInflater().inflate(R.layout.map_custom_info_window, null);
 
         totalSeller = view.findViewById(R.id.tv_ttl_seller);
         absentSeller = view.findViewById(R.id.tv_ttl_absent_seller);
@@ -155,13 +157,13 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         routeLayout = view.findViewById(R.id.route_layout);
 
         //Bottom sheet layout Typeface
-        ((TextView)view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_txt_ttl_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_txt_covered_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_txt_unbilled_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_txt_order_value)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_covered_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_unbilled_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_order_value)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
 
         totalSeller.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -179,8 +181,8 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         tvOutletTarget.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         tvOutletCovered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
-        ((TextView)view.findViewById(R.id.tv_message)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)view.findViewById(R.id.tv_route)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_message)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_route)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
         mapWrapperLayout = view.findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(SupervisorMapFragment.this.getActivity(), 39 + 20));
@@ -196,9 +198,9 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         return (int) (dp * scale + 0.5f);
     }
 
-    private void setviewValues(){
+    private void setviewValues() {
 
-        if(trackingType == 2)
+        if (trackingType == 2)
             view.findViewById(R.id.bottomSheetLayout).setVisibility(View.VISIBLE);
         else
             view.findViewById(R.id.bottomSheetLayout).setVisibility(View.GONE);
@@ -229,19 +231,19 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         //Total Seller count under Supervisor
-        totalSellerCount = SupervisorActivityHelper.getInstance().getSellersCount(getContext(),bmodel);
+        totalSellerCount = SupervisorActivityHelper.getInstance().getSellersCount(getContext(), bmodel);
 
         totalSeller.setText(String.valueOf(totalSellerCount));
 
         //Initialize the firebase instance and update the seller details
-        SupervisorActivityHelper.getInstance().subscribeSellersUpdates(getContext(),this);
+        SupervisorActivityHelper.getInstance().subscribeSellersUpdates(getContext(), this);
 
         view.findViewById(R.id.ttl_seller_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),SellerListActivity.class);
-                intent.putExtra("TabPos",0);
-                intent.putExtra("Screen","Seller");
+                Intent intent = new Intent(getActivity(), SellerListActivity.class);
+                intent.putExtra("TabPos", 0);
+                intent.putExtra("Screen", "Seller");
                 startActivity(intent);
             }
         });
@@ -249,9 +251,9 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         view.findViewById(R.id.ttl_outlet_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),OutletMapListActivity.class);
-                intent.putExtra("TabPos",0);
-                intent.putExtra("Screen","Outlet");
+                Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
+                intent.putExtra("TabPos", 0);
+                intent.putExtra("Screen", "Outlet");
                 startActivity(intent);
             }
         });
@@ -259,9 +261,9 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         view.findViewById(R.id.covered_outlet_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),OutletMapListActivity.class);
-                intent.putExtra("TabPos",1);
-                intent.putExtra("Screen","Outlet");
+                Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
+                intent.putExtra("TabPos", 1);
+                intent.putExtra("Screen", "Outlet");
                 startActivity(intent);
             }
         });
@@ -269,18 +271,19 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         view.findViewById(R.id.unbilled_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),OutletMapListActivity.class);
-                intent.putExtra("TabPos",2);
-                intent.putExtra("Screen","Outlet");
+                Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
+                intent.putExtra("TabPos", 2);
+                intent.putExtra("Screen", "Outlet");
                 startActivity(intent);
             }
-        });;
+        });
+        ;
 
         view.findViewById(R.id.seller_view_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(),SellerPerformanceListActivity.class);
-                intent.putExtra("Screen","Seller Performance");
+                Intent intent = new Intent(getContext(), SellerPerformanceListActivity.class);
+                intent.putExtra("Screen", "Seller Performance");
                 startActivity(intent);
             }
         });
@@ -291,7 +294,15 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMaxZoomPreference(24);
-        mMap.getUiSettings().setMapToolbarEnabled(false);
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+
+        }else{
+            mMap.setMyLocationEnabled(true);
+        }
+
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
         //map style restricting landmarks
 //        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
@@ -315,6 +326,22 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                 else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
+            }
+        });
+
+        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
+            @Override
+            public boolean onMyLocationButtonClick()
+            {
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+                for (DetailsBo detailsBo : userHashmap.values()) {
+                    builder.include(detailsBo.getMarker().getPosition());
+                }
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
+
+                return false;
             }
         });
 
@@ -656,8 +683,11 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             public void OnPageChanged(int oldPosition, int newPosition) {
 
                 double angle = 130.0;
-                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;
-                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
+//                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;
+//                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
+
+                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen._3_4sdp);
+                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen._0_7sdp));
                 detailsBos.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(detailsBos.get(newPosition).getMarker().getPosition()));

@@ -6,10 +6,10 @@
     android:layout_height="wrap_content"
     android:layout_below="@+id/seller_info_layout"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/dimen_14dp"
-    android:paddingLeft="@dimen/dimen_4dp"
-    android:paddingRight="@dimen/dimen_4dp"
-    android:paddingTop="@dimen/dimen_14dp"
+    android:paddingBottom="@dimen/_12sdp"
+    android:paddingLeft="@dimen/_4sdp"
+    android:paddingRight="@dimen/_4sdp"
+    android:paddingTop="@dimen/_12sdp"
     android:weightSum="1">
 
     <TextView
@@ -21,7 +21,7 @@
         android:maxLines="1"
         android:text="1"
         android:textColor="#8b000000"
-        android:textSize="@dimen/dimen_14dp" />
+        android:textSize="@dimen/_10sdp" />
 
     <TextView
         android:id="@+id/store_text"
@@ -32,7 +32,7 @@
         android:maxLines="1"
         android:text="Vairam electricals ltd"
         android:textColor="#8b000000"
-        android:textSize="@dimen/dimen_14dp" />
+        android:textSize="@dimen/_10sdp" />
 
     <TextView
         android:id="@+id/time_in_text"
@@ -44,7 +44,7 @@
         android:maxLines="1"
         android:text="10:15 Am"
         android:textColor="#8b000000"
-        android:textSize="@dimen/dimen_14dp" />
+        android:textSize="@dimen/_10sdp" />
 
     <TextView
         android:id="@+id/time_out_text"
@@ -56,6 +56,6 @@
         android:maxLines="1"
         android:text="11:20 AM"
         android:textColor="#8b000000"
-        android:textSize="@dimen/dimen_14dp" />
+        android:textSize="@dimen/_10sdp" />
 
 </LinearLayout>

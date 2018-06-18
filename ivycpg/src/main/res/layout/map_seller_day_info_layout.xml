@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:visibility="visible"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="140dp"
+    app:behavior_peekHeight="@dimen/_130sdp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <RelativeLayout
@@ -21,10 +21,10 @@
             android:id="@+id/cardview_ttl_seller"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_5dp"
+            android:layout_margin="@dimen/_5sdp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="3dp"
+            app:cardCornerRadius="@dimen/_2sdp"
+            app:cardElevation="@dimen/_3sdp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true"
             app:contentPadding="0dp">
@@ -33,29 +33,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dimen_10dp">
+                android:paddingBottom="@dimen/_10sdp">
 
                 <LinearLayout
                     android:id="@+id/seller_info_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dimen_10dp"
-                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
                     android:orientation="horizontal">
 
                     <com.ivy.cpg.view.supervisor.helper.CircleImageView
-                        android:layout_width="@dimen/dimens_100dp"
-                        android:layout_height="@dimen/dimens_100dp"
-                        android:layout_marginLeft="@dimen/dimen_10dp"
-                        android:layout_marginRight="@dimen/dimen_5dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
+                        android:layout_width="@dimen/_80sdp"
+                        android:layout_height="@dimen/_80sdp"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
                         android:src="@drawable/face" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/dimen_4dp">
+                        android:padding="@dimen/_4sdp">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -66,20 +66,20 @@
                                 style="?attr/customListItemPrimary"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/dimen_2dp"
+                                android:layout_margin="@dimen/_2sdp"
                                 android:layout_toLeftOf="@+id/message_img"
                                 android:gravity="center_vertical|left"
                                 android:maxLines="1"
                                 android:text="Sandy"
                                 android:textColor="#de000000"
-                                android:textSize="@dimen/dimen_16dp" />
+                                android:textSize="@dimen/_14sdp" />
 
                             <ImageView
                                 android:id="@+id/message_img"
-                                android:layout_width="@dimen/dimen_22dp"
-                                android:layout_height="@dimen/dimen_22dp"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
                                 android:layout_alignParentRight="true"
-                                android:layout_marginRight="@dimen/dimen_5dp"
+                                android:layout_marginRight="@dimen/_5sdp"
                                 android:src="@drawable/ic_email_dark" />
 
                         </RelativeLayout>
@@ -90,32 +90,32 @@
                             style="?attr/customListItemSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dimen_2dp"
-                            android:layout_marginRight="@dimen/dimen_2dp"
+                            android:layout_marginLeft="@dimen/_2sdp"
+                            android:layout_marginRight="@dimen/_2sdp"
                             android:maxLines="1"
                             android:text="Day start : 09:35 AM"
                             android:textColor="#8b000000"
-                            android:textSize="@dimen/dimen_14dp" />
+                            android:textSize="@dimen/_12sdp" />
 
                         <TextView
                             android:id="@+id/tv_address"
                             style="?attr/customListItemSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dimen_2dp"
-                            android:layout_marginRight="@dimen/dimen_2dp"
-                            android:layout_marginTop="@dimen/dimen_1dp"
+                            android:layout_marginLeft="@dimen/_2sdp"
+                            android:layout_marginRight="@dimen/_2sdp"
+                            android:layout_marginTop="@dimen/_1sdp"
                             android:maxLines="1"
                             android:text="Last visit : ECR"
                             android:textColor="#8b000000"
-                            android:textSize="@dimen/dimen_14dp" />
+                            android:textSize="@dimen/_12sdp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dimen_2dp"
-                            android:layout_marginRight="@dimen/dimen_2dp"
-                            android:layout_marginTop="@dimen/dimen_5dp"
+                            android:layout_marginLeft="@dimen/_2sdp"
+                            android:layout_marginRight="@dimen/_2sdp"
+                            android:layout_marginTop="@dimen/_5sdp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -125,11 +125,12 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/target_bg_gradient"
                                 android:maxLines="1"
-                                android:paddingBottom="@dimen/dimen_5dp"
-                                android:paddingLeft="@dimen/dimen_10dp"
-                                android:paddingRight="@dimen/dimen_10dp"
-                                android:paddingTop="@dimen/dimen_5dp"
+                                android:paddingBottom="@dimen/_5sdp"
+                                android:paddingLeft="@dimen/_10sdp"
+                                android:paddingRight="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_5sdp"
                                 android:text="Targeted 05"
+                                android:textSize="@dimen/_12sdp"
                                 android:textColor="@color/WHITE" />
 
                             <TextView
@@ -137,14 +138,15 @@
                                 style="?attr/customListItemSecondary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dimen_10dp"
+                                android:layout_marginLeft="@dimen/_10sdp"
                                 android:background="@drawable/covered_bg_gradient"
                                 android:maxLines="1"
-                                android:paddingBottom="@dimen/dimen_5dp"
-                                android:paddingLeft="@dimen/dimen_10dp"
-                                android:paddingRight="@dimen/dimen_10dp"
-                                android:paddingTop="@dimen/dimen_5dp"
+                                android:paddingBottom="@dimen/_5sdp"
+                                android:paddingLeft="@dimen/_10sdp"
+                                android:paddingRight="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_5sdp"
                                 android:text="Covered 05"
+                                android:textSize="@dimen/_12sdp"
                                 android:textColor="@color/WHITE" />
 
                         </LinearLayout>
@@ -160,10 +162,10 @@
                     android:layout_below="@+id/seller_info_layout"
                     android:background="#ded8db"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/dimen_6dp"
-                    android:paddingLeft="@dimen/dimen_4dp"
-                    android:paddingRight="@dimen/dimen_4dp"
-                    android:paddingTop="@dimen/dimen_6dp"
+                    android:paddingBottom="@dimen/_6sdp"
+                    android:paddingLeft="@dimen/_4sdp"
+                    android:paddingRight="@dimen/_4sdp"
+                    android:paddingTop="@dimen/_6sdp"
                     android:weightSum="1">
 
                     <TextView
@@ -175,7 +177,7 @@
                         android:maxLines="1"
                         android:text="#"
                         android:textColor="#de000000"
-                        android:textSize="@dimen/dimen_14dp" />
+                        android:textSize="@dimen/_12sdp" />
 
                     <TextView
                         android:id="@+id/store_text"
@@ -186,7 +188,7 @@
                         android:maxLines="1"
                         android:text="Store Name"
                         android:textColor="#de000000"
-                        android:textSize="@dimen/dimen_14dp" />
+                        android:textSize="@dimen/_12sdp" />
 
                     <TextView
                         android:id="@+id/time_in_text"
@@ -198,7 +200,7 @@
                         android:maxLines="1"
                         android:text="In time"
                         android:textColor="#de000000"
-                        android:textSize="@dimen/dimen_14dp" />
+                        android:textSize="@dimen/_12sdp" />
 
                     <TextView
                         android:id="@+id/time_out_text"
@@ -210,7 +212,7 @@
                         android:maxLines="1"
                         android:text="Out Time"
                         android:textColor="#de000000"
-                        android:textSize="@dimen/dimen_14dp" />
+                        android:textSize="@dimen/_12sdp" />
 
                 </LinearLayout>
 
@@ -228,16 +230,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/padding_l"
-                    android:layout_marginRight="@dimen/padding_l"
-                    android:layout_marginTop="@dimen/dimen_5dp"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:layout_marginRight="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:background="@drawable/total_seller_bg"
                     android:gravity="center"
-                    android:paddingBottom="@dimen/dimen_10dp"
-                    android:paddingTop="@dimen/dimen_10dp"
+                    android:paddingBottom="@dimen/_10sdp"
+                    android:paddingTop="@dimen/_10sdp"
                     android:text="View Seller Performance"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/font_medium" />
+                    android:textSize="@dimen/_14sdp" />
 
             </RelativeLayout>
 

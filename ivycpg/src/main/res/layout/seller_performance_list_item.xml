@@ -4,32 +4,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/padding_l"
-    android:layout_marginRight="@dimen/padding_l"
-    android:layout_marginTop="@dimen/dimen_5dp"
-    android:layout_marginBottom="@dimen/dimen_5dp"
-    app:cardElevation="@dimen/dimen_4dp"
+    android:layout_marginLeft="@dimen/_15sdp"
+    android:layout_marginRight="@dimen/_15sdp"
+    android:layout_marginTop="@dimen/_5sdp"
+    android:layout_marginBottom="@dimen/_5sdp"
+    app:cardElevation="@dimen/_4sdp"
     app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="@dimen/dimen_6dp"
+        android:layout_margin="@dimen/_6sdp"
         android:gravity="center_vertical"
         android:weightSum="1">
 
         <com.ivy.cpg.view.supervisor.helper.CircleImageView
-            android:layout_width="@dimen/mvpbadgelayoutwidth"
-            android:layout_height="@dimen/mvpbadgelayoutwidth"
-            android:src="@drawable/user_default"
-            android:padding="@dimen/dimen_5dp"/>
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:src="@drawable/user_default"/>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="@dimen/dimen_5dp"
+            android:layout_marginLeft="@dimen/_5sdp"
             android:layout_weight="0.8">
 
             <TextView
@@ -39,10 +38,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_8dp"
+                android:paddingLeft="@dimen/_8sdp"
                 android:text="Sales Volume sfffsffs"
                 android:textColor="#de000000"
-                android:textSize="@dimen/dimen_16dp" />
+                android:textSize="@dimen/_14sdp" />
 
             <TextView
                 android:id="@+id/seller_position"
@@ -51,10 +50,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_8dp"
+                android:paddingLeft="@dimen/_8sdp"
                 android:text="Sales Volume"
                 android:textColor="#8b000000"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 
@@ -67,8 +66,8 @@
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/_55sdp"
+                android:layout_height="@dimen/_55sdp"
                 android:background="@drawable/circular_progress"
                 android:indeterminate="false"
                 android:max="100"
@@ -78,13 +77,13 @@
 
             <TextView
                 style="?attr/customListItemPrimary"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="@dimen/_45sdp"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:text="70%"
+                android:text="100%"
                 android:textColor="#262e4f"
-                android:textSize="@dimen/dimen_14dp" />
+                android:textSize="@dimen/_12sdp" />
 
 
         </RelativeLayout>

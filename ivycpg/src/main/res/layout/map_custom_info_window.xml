@@ -4,8 +4,8 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="@dimen/pp_row_upc"
-        android:layout_height="@dimen/dimen_30dp"
+        android:layout_width="@dimen/_130sdp"
+        android:layout_height="@dimen/_30sdp"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -14,8 +14,8 @@
 
 
         <ImageView
-            android:layout_width="@dimen/dimen_30dp"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_30sdp"
             android:scaleType="fitXY"
             android:src="@drawable/marker_info_seller" />
 
@@ -27,11 +27,11 @@
             android:background="@color/white"
             android:ellipsize="middle"
             android:gravity="center_vertical"
-            android:padding="@dimen/dimen_2dp"
+            android:padding="@dimen/_2sdp"
             android:singleLine="true"
             android:text="Big info window to test the size of the info window XML values"
             android:textColor="#de000000"
-            android:textSize="@dimen/font_nano_small" />
+            android:textSize="@dimen/_12sdp" />
 
     </LinearLayout>
 

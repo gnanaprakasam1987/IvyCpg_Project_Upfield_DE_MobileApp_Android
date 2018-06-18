@@ -6,22 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="5dp"
+    app:cardCornerRadius="@dimen/_2sdp"
+    app:cardElevation="@dimen/_5sdp"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true"
     app:contentPadding="0dp"
     android:layout_gravity="bottom"
-    android:layout_marginLeft="@dimen/dimen_10dp"
-    android:layout_marginRight="@dimen/dimen_10dp"
-    android:layout_marginBottom="@dimen/dimens_20dp"
+    android:layout_marginBottom="@dimen/_20sdp"
     android:layout_alignParentBottom="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="@dimen/dimen_10dp">
+        android:layout_margin="@dimen/_10sdp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,7 +30,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginLeft="@dimen/_5sdp"
                 android:layout_weight="0.7"
                 android:orientation="vertical">
 
@@ -41,31 +39,31 @@
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dimen_2dp"
+                    android:layout_margin="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="Alagusamy Malligai"
                     android:textColor="#de000000"
-                    android:textSize="@dimen/dimen_16dp" />
+                    android:textSize="@dimen/_16sdp" />
 
                 <TextView
                     android:id="@+id/tv_address"
                     style="?attr/customListItemSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
                     android:maxLines="1"
                     android:text="103 Voc St Kb nagar"
                     android:textColor="#64000000"
-                    android:textSize="@dimen/dimen_12dp" />
+                    android:textSize="@dimen/_12sdp" />
             </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:padding="@dimen/dimen_2dp">
+                android:padding="@dimen/_2sdp">
 
                 <TextView
                     android:id="@+id/tv_status_text"
@@ -73,21 +71,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_margin="@dimen/dimen_2dp"
+                    android:layout_margin="@dimen/_2sdp"
                     android:layout_toLeftOf="@+id/status_color_view"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="Covered"
                     android:textColor="#de000000"
-                    android:textSize="@dimen/dimen_12dp" />
+                    android:textSize="@dimen/_12sdp" />
 
                 <View
                     android:id="@+id/status_color_view"
-                    android:layout_width="@dimen/padding_l"
-                    android:layout_height="@dimen/padding_l"
+                    android:layout_width="@dimen/_12sdp"
+                    android:layout_height="@dimen/_12sdp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dimen_10dp"
+                    android:layout_marginLeft="@dimen/_5sdp"
                     android:background="@drawable/covered_green" />
 
             </RelativeLayout>
@@ -99,12 +97,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="1"
-            android:layout_marginTop="@dimen/dimens_30dp">
+            android:layout_marginTop="@dimen/_25sdp">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginLeft="@dimen/_5sdp"
                 android:layout_weight="0.7"
                 android:orientation="vertical">
 
@@ -113,30 +111,30 @@
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dimen_2dp"
+                    android:layout_margin="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="Assigned Seller"
                     android:textColor="#de000000"
-                    android:textSize="@dimen/dimen_12dp" />
+                    android:textSize="@dimen/_12sdp" />
 
                 <TextView
                     android:id="@+id/tv_seller_name"
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
                     android:maxLines="1"
                     android:text="Ravi Sastri"
                     android:textColor="#4a90e2"
-                    android:textSize="@dimen/dimen_16dp" />
+                    android:textSize="@dimen/_14sdp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginLeft="@dimen/_5sdp"
                 android:layout_weight="0.3"
                 android:orientation="vertical">
 
@@ -145,25 +143,25 @@
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dimen_2dp"
+                    android:layout_margin="@dimen/_2sdp"
                     android:gravity="center_vertical|right"
                     android:maxLines="1"
                     android:text="Order Value"
                     android:textColor="#de000000"
-                    android:textSize="@dimen/dimen_14dp" />
+                    android:textSize="@dimen/_12sdp" />
 
                 <TextView
                     android:id="@+id/tv_order_value"
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
-                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
                     android:maxLines="1"
                     android:gravity="center_vertical|right"
                     android:text="121258.14"
                     android:textColor="#d0021b"
-                    android:textSize="@dimen/dimen_18dp" />
+                    android:textSize="@dimen/_16sdp" />
             </LinearLayout>
 
         </LinearLayout>
