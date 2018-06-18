@@ -60,6 +60,9 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.appmodule.AppComponent;
 import com.ivy.appmodule.AppModule;
 import com.ivy.appmodule.DaggerAppComponent;
+import com.ivy.core.di.component.DaggerIvyAppComponent;
+import com.ivy.core.di.component.IvyAppComponent;
+import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
@@ -401,6 +404,9 @@ public class BusinessModel extends Application {
     private String availablilityShare;
     private int printSequenceLevelID;
     private String dashboardUserFilterString;
+
+
+    private IvyAppComponent mApplicationComponent;
 
     public BusinessModel() {
 
@@ -752,10 +758,22 @@ public class BusinessModel extends Application {
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
             appComponent.inject(this);
 
+            mApplicationComponent = DaggerIvyAppComponent.builder()
+                    .ivyAppModule(new IvyAppModule(this)).build();
+
+            mApplicationComponent.inject(this);
+
+
+            mApplicationComponent.inject(this);
+
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    public IvyAppComponent getComponent() {
+        return mApplicationComponent;
     }
 
     public AppComponent getAppComponent() {
