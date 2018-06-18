@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.SerialNoInterface;
 
@@ -120,7 +121,7 @@ public class SerialNoFragment extends IvyBaseFragment {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        serialNoInterface.updateSerialNo(Integer.parseInt(holder.productBO.getProductID()));
+                        serialNoInterface.updateSerialNo(SDUtil.convertToInt(holder.productBO.getProductID()));
                     }
                 });
                 convertView.setTag(holder);

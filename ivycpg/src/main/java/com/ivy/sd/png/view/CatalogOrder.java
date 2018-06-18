@@ -920,7 +920,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         for (LevelBO levelBO : parentIdList) {
             for (ProductMasterBO productBO : items) {
                 if (productBO.getIsSaleable() == 1) {
-                    if (levelBO.getProductID() == Integer.parseInt(productBO.getProductID())) {
+                    if (levelBO.getProductID() == SDUtil.convertToInt(productBO.getProductID())) {
                         //  filtertext = levelBO.getLevelName();
                         mylist.add(productBO);
                     }
@@ -963,7 +963,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                             if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
                                 // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
+                                if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
                                     //filtertext = levelBO.getLevelName();
                                     mylist.add(productBO);
                                     fiveFilter_productIDs.add(productBO.getProductID());
@@ -981,7 +981,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 && productBO.getSIH() > 0)
                                 || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
 
-                            if (pid == Integer.parseInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
+                            if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                                 mylist.add(productBO);
                                 fiveFilter_productIDs.add(productBO.getProductID());
                             }

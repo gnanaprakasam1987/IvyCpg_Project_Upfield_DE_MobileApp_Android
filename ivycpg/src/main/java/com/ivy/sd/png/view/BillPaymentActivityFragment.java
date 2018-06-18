@@ -367,7 +367,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 }
             }
         }
-        totalPayableAmt = Double.parseDouble(bmodel.formatValueBasedOnConfig(totalPayableAmt));
+        totalPayableAmt = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(totalPayableAmt));
         if (totalCollected > totalPayableAmt) {
             flag = true;
         }
@@ -850,7 +850,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(doPrintAddSpace(0, 9));
                 sb.append(doPrintFormatingLeft("Type", 10));
                 sb.append(doPrintFormatingLeft("Date", 12));
-                sb.append(doPrintFormatingLeft("Chq Num", 8));
+                sb.append(doPrintFormatingLeft("Ref Num", 8));
                 sb.append(doPrintFormatingLeft(String.format("%10s", "Total"), 13));
                 sb.append(LineFeed(1));
 

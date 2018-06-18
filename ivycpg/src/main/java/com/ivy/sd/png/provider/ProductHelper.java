@@ -3421,7 +3421,7 @@ public class ProductHelper {
                     LoadManagementBO loadManagementBO = null;
                     ProductMasterBO productBo = null;
                     if (module.equals("MENU_LOAD_MANAGEMENT")) {
-                        int pid = Integer.parseInt(bomMasterBO.getPid());
+                        int pid = SDUtil.convertToInt(bomMasterBO.getPid());
                         loadManagementBO = mLoadManagementBOByProductId.get(pid);
                         pieceUomid = loadManagementBO.getPiece_uomid();
                         srp = loadManagementBO.getBaseprice();
@@ -3771,7 +3771,7 @@ public class ProductHelper {
 
             }
             for (ProductMasterBO indicativeProductBO : mIndicateOrderList) {
-                int prodcutID = Integer.parseInt(indicativeProductBO
+                int prodcutID = SDUtil.convertToInt(indicativeProductBO
                         .getProductID());
                 if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER) {
                     // No need to update on ordered qty's

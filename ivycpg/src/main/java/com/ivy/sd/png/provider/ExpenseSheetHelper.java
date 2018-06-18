@@ -9,6 +9,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ExpenseSheetBO;
 import com.ivy.sd.png.bo.ExpensesBO;
 import com.ivy.sd.png.bo.SpinnerBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -109,7 +110,7 @@ public class ExpenseSheetHelper {
                 String filterText = "";
                 while (c.moveToNext()) {
                     // for add month in the same list
-                    int monthValue = Integer.parseInt(c.getString(6));
+                    int monthValue = SDUtil.convertToInt(c.getString(6));
                     if (monthValue > 0 && monthValue <= 12) {
                         ExpenseSheetBO pastExps = new ExpenseSheetBO();
                         pastExps.setUserId(c.getInt(0));
@@ -493,7 +494,7 @@ public class ExpenseSheetHelper {
             db.deleteSQL(DataMembers.tbl_expenseimagedetails, "Refid="
                     + QT(refID), false); // QT(ImageName));
 
-            double update_total = getExpenseTotal(Tid, date) - Double.parseDouble(amount);
+            double update_total = getExpenseTotal(Tid, date) - SDUtil.convertToDouble(amount);
 
             //Updating toatal value in Expense Header
             sql = "UPDATE ExpenseHeader SET TotalAmount = " + update_total

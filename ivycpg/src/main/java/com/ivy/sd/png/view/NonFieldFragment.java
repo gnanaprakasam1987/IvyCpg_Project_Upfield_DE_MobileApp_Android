@@ -37,6 +37,7 @@ import com.ivy.sd.png.bo.LeaveSpinnerBO;
 import com.ivy.sd.png.bo.NonFieldBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -573,7 +574,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                             nonfieldBO.setLeaveLovId(leaveTypeLovId);
                             //server has small int so 0.5 not allowed so if 0.5 changed to 1
                             //In server side will convert to 1 based on session id AN od FN
-                            double leave = Double.parseDouble(txt_total_value.getText().toString());
+                            double leave = SDUtil.convertToDouble(txt_total_value.getText().toString());
                             if (leave < 1)
                                 leave = 1;
 
@@ -793,7 +794,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                                     isAvailable = false;
                                     break;
                                 } else
-                                    total += Double.parseDouble(obj.getAppliedDays());
+                                    total += SDUtil.convertToDouble(obj.getAppliedDays());
                             }
 
                             if (isAvailable) {
@@ -844,7 +845,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                     isAvailable = false;
                     break;
                 } else
-                    total += Double.parseDouble(obj.getAppliedDays());
+                    total += SDUtil.convertToDouble(obj.getAppliedDays());
             }
             String strTotal = total + "";
             txt_total_value.setText(strTotal);

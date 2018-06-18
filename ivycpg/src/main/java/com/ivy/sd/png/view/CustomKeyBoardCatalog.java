@@ -98,6 +98,18 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         } else {
             value_keyboard.setText(context.getResources().getString(R.string.value) + " : " + bmodel.formatValue(pdtBO.getTotalamount()));
             //mSelectedTV = tv;
+
+            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                selectedTextView = case_typed_value;
+                setColor();
+            } else if (bmodel.configurationMasterHelper.SHOW_DIST_ORDER_OUTER) {
+                selectedTextView = outer_case_typed_value;
+                setColor();
+            } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                selectedTextView = pcs_typed_value;
+                setColor();
+            }
+
             setCaseKeyboard(pdtBO.getOrderedCaseQty() + "");
             setOuterKeyboard(pdtBO.getOrderedOuterQty() + "");
             setPcsKeyboard(pdtBO.getOrderedPcsQty() + "");
@@ -130,6 +142,10 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
     }
 
     private void initializeViews() {
+        case_typed_value = (TextView) findViewById(R.id.case_typed_value);
+        outer_case_typed_value = (TextView) findViewById(R.id.outer_case_typed_value);
+        pcs_typed_value = (TextView) findViewById(R.id.pcs_typed_value);
+
         number_one = (Button) findViewById(R.id.num_one);
         number_two = (Button) findViewById(R.id.num_two);
         number_three = (Button) findViewById(R.id.num_three);
@@ -176,15 +192,18 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             try {
                 ((TextView) findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.caseTitle).getTag()) != null)
+                        R.id.caseTitle).getTag()) != null) {
                     ((TextView) findViewById(R.id.caseTitle))
                             .setText(bmodel.labelsMasterHelper
                                     .applyLabels(findViewById(
                                             R.id.caseTitle).getTag()));
-                caseTitleText = bmodel.labelsMasterHelper
-                        .applyLabels(findViewById(
-                                R.id.caseTitle).getTag());
+                    caseTitleText = bmodel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.caseTitle).getTag());
+                } else
+                    caseTitleText = getContext().getResources().getString(R.string.item_case);
             } catch (Exception e) {
+                caseTitleText = getContext().getResources().getString(R.string.item_case);
                 Commons.printException(e + "");
             }
         }
@@ -204,7 +223,12 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                             .setText(bmodel.labelsMasterHelper
                                     .applyLabels(findViewById(
                                             R.id.pcsTitle).getTag()));
+                else
+                    ((TextView) findViewById(R.id.pcsTitle))
+                            .setText(getContext().getResources().getString(R.string.item_piece));
             } catch (Exception e) {
+                ((TextView) findViewById(R.id.pcsTitle))
+                        .setText(getContext().getResources().getString(R.string.item_piece));
                 Commons.printException(e + "");
             }
         }
@@ -222,7 +246,12 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                                     .applyLabels(findViewById(
                                             R.id.outercaseTitle)
                                             .getTag()));
+                else
+                    ((TextView) findViewById(R.id.outercaseTitle))
+                            .setText(getContext().getResources().getString(R.string.item_outer));
             } catch (Exception e) {
+                ((TextView) findViewById(R.id.outercaseTitle))
+                        .setText(getContext().getResources().getString(R.string.item_outer));
                 Commons.printException(e + "");
             }
         }
@@ -237,7 +266,6 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         if (s.equals("-1"))
             casevalue = "0";
 
-        case_typed_value = (TextView) findViewById(R.id.case_typed_value);
         case_typed_value.setText(casevalue);
 
         if (pdtBO.getCaseUomId() == 0 || !pdtBO.isCaseMapped()) {
@@ -340,7 +368,6 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         if (s.equals("-1"))
             outervalue = "0";
 
-        outer_case_typed_value = (TextView) findViewById(R.id.outer_case_typed_value);
         outer_case_typed_value.setText(outervalue);
 
         if (pdtBO.getOuUomid() == 0 || !pdtBO.isOuterMapped()) {
@@ -443,7 +470,6 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         if (s.equals("-1"))
             pcsvalue = "0";
 
-        pcs_typed_value = (TextView) findViewById(R.id.pcs_typed_value);
         pcs_typed_value.setText(pcsvalue);
 
         if (pdtBO.getPcUomid() == 0 || !pdtBO.isPieceMapped()) {
@@ -588,7 +614,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             if (caseValue.equals("-1"))
                 pdtBO.getLocations().get(0).setShelfCase(-1);
             else
-                pdtBO.getLocations().get(0).setShelfCase(Integer.parseInt(caseValue));
+                pdtBO.getLocations().get(0).setShelfCase(SDUtil.convertToInt(caseValue));
 
             String outerValue = outer_case_typed_value.getText().toString();
             if (outerValue.endsWith("."))
@@ -596,7 +622,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             if (outerValue.equals("-1"))
                 pdtBO.getLocations().get(0).setShelfOuter(-1);
             else
-                pdtBO.getLocations().get(0).setShelfOuter(Integer.parseInt(outerValue));
+                pdtBO.getLocations().get(0).setShelfOuter(SDUtil.convertToInt(outerValue));
 
             String pcsValue = pcs_typed_value.getText().toString();
             if (pcsValue.endsWith("."))
@@ -604,7 +630,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             if (pcsValue.equals("-1"))
                 pdtBO.getLocations().get(0).setShelfPiece(-1);
             else
-                pdtBO.getLocations().get(0).setShelfPiece(Integer.parseInt(pcsValue));
+                pdtBO.getLocations().get(0).setShelfPiece(SDUtil.convertToInt(pcsValue));
 
             if (caseValue.equals("-1") && pcsValue.equals("-1") && outerValue.equals("-1")) {
                 orderBtn.setText("STOCK");

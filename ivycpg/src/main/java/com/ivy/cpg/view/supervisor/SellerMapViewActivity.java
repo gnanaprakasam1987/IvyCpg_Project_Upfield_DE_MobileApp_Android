@@ -250,8 +250,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             String inTime = value.get("inTime")!=null?value.get("inTime").toString():"0";
             String outTime = value.get("outTime")!=null?value.get("outTime").toString():"0";
             int batteryStatus = Integer.valueOf(value.get("batterStatus")!=null?value.get("batterStatus").toString():"0");
-            double lat = Double.parseDouble(value.get("latitude")!= null?value.get("latitude").toString():"0");
-            double lng = Double.parseDouble(value.get("latitude")!= null?value.get("longitude").toString():"0");
+            double lat = SDUtil.convertToDouble(value.get("latitude")!= null?value.get("latitude").toString():"0");
+            double lng = SDUtil.convertToDouble(value.get("latitude")!= null?value.get("longitude").toString():"0");
 
             String retailerName = value.get("RetailerName")!=null?value.get("RetailerName").toString():"";
             String orderValue = value.get("orderValue")!=null?value.get("orderValue").toString():"";
@@ -524,8 +524,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
                         HashMap<String, String> point = path.get(j);
 
-                        double lat = Double.parseDouble(point.get("lat"));
-                        double lng = Double.parseDouble(point.get("lng"));
+                        double lat = SDUtil.convertToDouble(point.get("lat"));
+                        double lng = SDUtil.convertToDouble(point.get("lng"));
                         LatLng position = new LatLng(lat, lng);
 
                         points.add(position);

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -111,7 +112,7 @@ public class ChannelMasterHelper {
                         .getRetailerMaster().get(ii).getIsToday() == 1)) || bmodel.getRetailerMaster().get(ii).getIsDeviated()
                         .equals("Y")) {
                     temp = new RetailerMasterBO();
-                    temp.setTretailerId(Integer.parseInt(bmodel.getRetailerMaster().get(ii).getRetailerID()));
+                    temp.setTretailerId(SDUtil.convertToInt(bmodel.getRetailerMaster().get(ii).getRetailerID()));
                     temp.setTretailerName(bmodel.getRetailerMaster().get(ii).getRetailerName());
                     retailerMaster.add(temp);
                 }
@@ -183,7 +184,7 @@ public class ChannelMasterHelper {
 
 
     public String getChannelHierarchy(int channelId, Context mContext) {
-        String sql, sql1 = "", str = "0,";
+        String sql, sql1 = "", str = "";
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

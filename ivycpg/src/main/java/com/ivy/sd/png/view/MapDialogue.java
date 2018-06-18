@@ -41,6 +41,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.CustomMapFragment;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MapWrapperLayout.OnDragListener;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
@@ -207,9 +208,9 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
         if (mMap != null) {
             mMap.setMyLocationEnabled(true);
             if (mMarkerParentView != null &&
-                    mMarkerParentView.findViewById(Integer.parseInt("1")) != null) {
+                    mMarkerParentView.findViewById(SDUtil.convertToInt("1")) != null) {
                 // Get the button view
-                View locationButton = ((View) mMarkerParentView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+                View locationButton = ((View) mMarkerParentView.findViewById(SDUtil.convertToInt("1")).getParent()).findViewById(SDUtil.convertToInt("2"));
                 // and next place it, on bottom right (as Google Maps app)
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
                         locationButton.getLayoutParams();

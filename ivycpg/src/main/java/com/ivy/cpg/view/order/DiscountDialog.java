@@ -723,7 +723,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
 
             holder.d1.setText(holder.productObj.getD1() + "");
 
-            result=Double.parseDouble(""+holder.productObj.getD1());
+            result=SDUtil.convertToDouble(""+holder.productObj.getD1());
             if (holder.productObj.getOuUomid() == 0 || !holder.productObj.isOuterMapped()) {
                 holder.outerQty.setEnabled(false);
             } else {

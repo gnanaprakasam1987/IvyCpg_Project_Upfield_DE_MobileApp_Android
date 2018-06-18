@@ -741,9 +741,9 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 @Override
                 public void beforeTextChanged(CharSequence s, int start,
                                               int count, int after) {
-                    if (mEdtSearchproductName.getText().toString().length() < 3) {
+                  /*  if (mEdtSearchproductName.getText().toString().length() < 3) {
                         list.clear();
-                    }
+                    }*/
                     if (searchAsync.getStatus() == AsyncTask.Status.RUNNING) {
                         searchAsync.cancel(true);
                     }

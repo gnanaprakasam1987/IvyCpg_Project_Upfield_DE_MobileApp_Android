@@ -642,7 +642,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                 }
 
                 height = x + (size * 330) + (rowItemSize * 95) + 460;
-                height = Integer.parseInt(count) * height;
+                height = SDUtil.convertToInt(count) * height;
                 Commons.print(TAG + "Heigt:" + height);
                 String Printitem = "! 0 200 200 " + height + " 1\r\n"
                         + "CENTER\r\n";
@@ -906,7 +906,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                 int height = 0;
                 int x = 280;
                 height = x + mDetails.size() * 350 + 600;
-                height = Integer.parseInt(count) * height;
+                height = SDUtil.convertToInt(count) * height;
                 Commons.print(TAG + "Heigt:" + height);
                 String Printitem = "! 0 200 200 " + height + " 1\r\n"
                         + "CENTER\r\n";
@@ -1243,7 +1243,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             if (PRINT_STATE != null && PRINT_STATE.equals("TRUE")) {
 
 
-                printTextLeft(printDataforBixolon3inchCollectionReport(Integer.parseInt(count)), DataMembers.PRINT_TEXT_SIZE);
+                printTextLeft(printDataforBixolon3inchCollectionReport(SDUtil.convertToInt(count)), DataMembers.PRINT_TEXT_SIZE);
 
 
                 DemoSleeper.sleep(1500);
@@ -1451,7 +1451,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     aemPrinter.setFontType(AEMPrinter.FONT_NORMAL);
                     aemPrinter.setFontSize(fontSize);
-                    aemPrinter.print(printDataforBixolon3inchCollectionReport(Integer.parseInt(count)));
+                    aemPrinter.print(printDataforBixolon3inchCollectionReport(SDUtil.convertToInt(count)));
                     aemPrinter.setCarriageReturn();
 
 

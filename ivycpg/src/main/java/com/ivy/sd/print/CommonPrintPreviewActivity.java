@@ -664,7 +664,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
-                    mPrintCountInput = Integer.parseInt((String) parent.getSelectedItem());
+                    mPrintCountInput = SDUtil.convertToInt((String) parent.getSelectedItem());
                 }
 
                 @Override

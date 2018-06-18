@@ -1279,7 +1279,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                                 ReasonMaster reString = (ReasonMaster) holder.reason
                                         .getSelectedItem();
 
-                                holder.assetTrackingBO.setReasonID(Integer.parseInt(reString.getReasonID()));
+                                holder.assetTrackingBO.setReasonID(SDUtil.convertToInt(reString.getReasonID()));
 
                             }
 
@@ -1296,7 +1296,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                                 ReasonMaster reString = (ReasonMaster) holder.location
                                         .getSelectedItem();
 
-                                holder.assetTrackingBO.setLocationID(Integer.parseInt(reString.getReasonID()));
+                                holder.assetTrackingBO.setLocationID(SDUtil.convertToInt(reString.getReasonID()));
 
                             }
 

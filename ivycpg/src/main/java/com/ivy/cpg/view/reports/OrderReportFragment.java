@@ -298,8 +298,8 @@ public class OrderReportFragment extends IvyBaseFragment implements OnClickListe
             for (OrderReportBO ret : list) {
                 try {
                     String str[] = ret.getDist().split("/");
-                    pre = pre + Integer.parseInt(str[0]);
-                    post = post + Integer.parseInt(str[1]);
+                    pre = pre + SDUtil.convertToInt(str[0]);
+                    post = post + SDUtil.convertToInt(str[1]);
                 } catch (Exception e) {
                     Commons.printException(e);
                 }

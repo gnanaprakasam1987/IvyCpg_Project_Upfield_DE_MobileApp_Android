@@ -175,7 +175,7 @@ public class CollectionReportHelper {
         try {
             for (PaymentBO tempParentBO : parentPaymentList) {
                 if (tempParentBO.getBillNumber().equals(invoiceNo)) {
-                    balance = Double.parseDouble(SDUtil.format((tempParentBO.getInvoiceAmount()
+                    balance = SDUtil.convertToDouble(SDUtil.format((tempParentBO.getInvoiceAmount()
                             - paidTotal - tempParentBO.getPreviousPaidAmount() - totalAppliedDiscount), 2, 0));
                     tempParentBO.setBalance(balance);
                     break;

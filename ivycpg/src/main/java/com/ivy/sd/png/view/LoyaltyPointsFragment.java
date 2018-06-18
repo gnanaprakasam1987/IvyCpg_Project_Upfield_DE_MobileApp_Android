@@ -203,7 +203,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
 
-                            mSelectedPointTypeId = Integer.parseInt(lstPointTypes.get(position).getListID());
+                            mSelectedPointTypeId = SDUtil.convertToInt(lstPointTypes.get(position).getListID());
 
                             updateTotalPoints(lstLoyalty.get(mSelectedLoyaltyIndex).getLoyaltyId());
                             updateloadLoyaltyBeniftsProducts(lstLoyalty.get(mSelectedLoyaltyIndex).getLoyaltyId());
@@ -218,7 +218,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                 } else {
 
                     spn_point_type.setVisibility(View.GONE);
-                    mSelectedPointTypeId = Integer.parseInt(lstPointTypes.get(0).getListID());
+                    mSelectedPointTypeId = SDUtil.convertToInt(lstPointTypes.get(0).getListID());
 
                     updateTotalPoints(lstLoyalty.get(0).getLoyaltyId());
                     updateloadLoyaltyBeniftsProducts(lstLoyalty.get(0).getLoyaltyId());
@@ -377,7 +377,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                             if ((items.get(position).getBenifitPoints() + loyaltyBO.getSelectedPoints()) > loyaltyBO.getGivenPoints())
                                 snackBarShow("Points Should Not be exceed");
                             else {
-                                items.get(position).setBenifitQty((Integer.parseInt(holder.productQtyTxt.getText().toString()) + 1));
+                                items.get(position).setBenifitQty((SDUtil.convertToInt(holder.productQtyTxt.getText().toString()) + 1));
                                 bPoints = items.get(position).getBenifitPoints();
                                 totlaSelectedPoints += bPoints;
                                 updatePoints(totlaSelectedPoints);
@@ -396,8 +396,8 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                 @Override
                 public void onClick(View v) {
 
-                    if (Integer.parseInt(holder.productQtyTxt.getText().toString()) != 0) {
-                        items.get(position).setBenifitQty((Integer.parseInt(holder.productQtyTxt.getText().toString()) - 1));
+                    if (SDUtil.convertToInt(holder.productQtyTxt.getText().toString()) != 0) {
+                        items.get(position).setBenifitQty((SDUtil.convertToInt(holder.productQtyTxt.getText().toString()) - 1));
                         bPoints = items.get(position).getBenifitPoints();
                         totlaSelectedPoints -= bPoints;
                         updatePoints(totlaSelectedPoints);

@@ -283,7 +283,7 @@ public class CommonPrintHelper {
                                 product_name_single_line = product_name_single_line == null ? "no" : product_name_single_line;
 
                                 String product_header_border_string = xmlParser.getAttributeValue(null, "length");
-                                product_header_border_char_length = product_header_border_string == null ? property_total_length : Integer.parseInt(product_header_border_string);
+                                product_header_border_char_length = product_header_border_string == null ? property_total_length : SDUtil.convertToInt(product_header_border_string);
 
                                 product_header_border_char = xmlParser.getAttributeValue(null, "text");
                                 product_header_border_char = product_header_border_char == null ? "-" : product_header_border_char;
@@ -302,7 +302,7 @@ public class CommonPrintHelper {
                             lineValue = "";
                         } else if (name.equals("view")) {
                             String attr_name = xmlParser.getAttributeValue(null, "name");
-                            int attr_length = Integer.parseInt(xmlParser.getAttributeValue(null, "length"));
+                            int attr_length = SDUtil.convertToInt(xmlParser.getAttributeValue(null, "length"));
 
                             String attr_text = xmlParser.getAttributeValue(null, "text");
                             attr_text = attr_text == null ? "" : attr_text;
@@ -314,10 +314,10 @@ public class CommonPrintHelper {
                             attr_padding = attr_padding == null ? "left" : attr_padding;
 
                             String attr_space_str = xmlParser.getAttributeValue(null, "space");
-                            int attr_space = attr_space_str == null ? 0 : Integer.parseInt(attr_space_str);
+                            int attr_space = attr_space_str == null ? 0 : SDUtil.convertToInt(attr_space_str);
 
                             String attr_precision_str = xmlParser.getAttributeValue(null, "precision_count");
-                            int attr_precision = attr_precision_str == null ? -1 : Integer.parseInt(attr_precision_str);
+                            int attr_precision = attr_precision_str == null ? -1 : SDUtil.convertToInt(attr_precision_str);
 
                             String attr_align = xmlParser.getAttributeValue(null, "align");
                             attr_align = attr_align == null ? "left" : attr_align;
@@ -444,12 +444,12 @@ public class CommonPrintHelper {
                                 mAttributeList.add(attr);
                             }
                         } else if (name.equals("property")) {
-                            property_total_length = Integer.parseInt(xmlParser.getAttributeValue(null, "total_length"));
+                            property_total_length = SDUtil.convertToInt(xmlParser.getAttributeValue(null, "total_length"));
                             mPaperLenghtInChar = property_total_length;
                             property_special = xmlParser.getAttributeValue(null, "special");
                             property_special = property_special == null ? "" : property_special;
                             String pres_str = xmlParser.getAttributeValue(null, "precision_count");
-                            mGlobalPrecision = pres_str == null ? -1 : Integer.parseInt(pres_str);
+                            mGlobalPrecision = pres_str == null ? -1 : SDUtil.convertToInt(pres_str);
                             String isFromLabel = xmlParser.getAttributeValue(null, "isFromLabel");
                             isFromLabelMaster = (isFromLabel == null ? false : ((isFromLabel.equalsIgnoreCase("yes")) ? true : false));
                         } else if (name.equalsIgnoreCase("logo")) {
@@ -458,7 +458,7 @@ public class CommonPrintHelper {
                             isSignatureEnabled = true;
                         } else if (name.equalsIgnoreCase("newline")) {
                             String attr_count_str = xmlParser.getAttributeValue(null, "count");
-                            int attr_count = attr_count_str == null ? 1 : Integer.parseInt(attr_count_str);
+                            int attr_count = attr_count_str == null ? 1 : SDUtil.convertToInt(attr_count_str);
                             for (int n = 0; n < attr_count; n++) {
                                 sb.append(newline);
                             }
@@ -835,13 +835,13 @@ public class CommonPrintHelper {
                     mProductValue = (prod.getOrderedPcsQty()
                             + (prod.getOrderedCaseQty() * prod.getCaseSize())
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
-                    mProductQtyInPieceTotal = mProductQtyInPieceTotal + Integer.parseInt(mProductValue);
+                    mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
                     double lineValue = (prod.getOrderedOuterQty() * prod.getOsrp())
                             + (prod.getOrderedCaseQty() * prod.getCsrp())
                             + (prod.getOrderedPcsQty() * prod.getSrp());
                     mProductValue = formatValueInPrint(lineValue, attr.getmAttributePrecision());
-                    mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue.replace(",", ""));
+                    mProductLineValueTotal = mProductLineValueTotal + SDUtil.convertToDouble(mProductValue.replace(",", ""));
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
                     mProductValue = formatValueInPrint(prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value(), attr.getmAttributePrecision());
                     mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + (prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value());
@@ -887,7 +887,7 @@ public class CommonPrintHelper {
                     mProductValue = getPromoType(context, prod);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
                     mProductValue = String.valueOf(prod.getFoc());
-                    mProductQtyInPieceTotal = mProductQtyInPieceTotal + Integer.parseInt(mProductValue);
+                    mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
                     int totalQty = prod.getOrderedPcsQty()
                             + prod.getOrderedCaseQty()
@@ -1028,19 +1028,19 @@ public class CommonPrintHelper {
                                 mProductValue = (batchProductBO.getOrderedPcsQty()
                                         + (batchProductBO.getOrderedCaseQty() * prod.getCaseSize())
                                         + (batchProductBO.getOrderedOuterQty() * prod.getOutersize())) + "";
-                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + Integer.parseInt(mProductValue);
+                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
                                 double lineValue = (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp())
                                         + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCsrp())
                                         + (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp());
                                 mProductValue = formatValueInPrint(lineValue, attr.getmAttributePrecision());
-                                mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue);
+                                mProductLineValueTotal = mProductLineValueTotal + SDUtil.convertToDouble(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
                                 mProductValue = formatValueInPrint(batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getDiscount_order_value(), attr.getmAttributePrecision());
-                                mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + Double.parseDouble(mProductValue);
+                                mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + SDUtil.convertToDouble(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                                 mProductValue = formatValueInPrint(batchProductBO.getDiscount_order_value(), attr.getmAttributePrecision());
-                                mProductLineValueIncludingTaxTotal = mProductLineValueIncludingTaxTotal + Double.parseDouble(mProductValue);
+                                mProductLineValueIncludingTaxTotal = mProductLineValueIncludingTaxTotal + SDUtil.convertToDouble(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REPLACE_QTY_PIECE)) {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + "";
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SUM_QTY_PIECE_WITH_REP)) {
@@ -1053,7 +1053,7 @@ public class CommonPrintHelper {
                                 mProductValue = getPromoType(context, prod);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FOC)) {
                                 mProductValue = String.valueOf(prod.getFoc());
-                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + Integer.parseInt(mProductValue);
+                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
                                 int totalQty = prod.getOrderedPcsQty()
                                         + prod.getOrderedCaseQty()
@@ -1185,7 +1185,7 @@ public class CommonPrintHelper {
                                         && freeProduct.getPcUomid() != 0) {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
                                 }
-                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + Integer.parseInt(mProductValue);
+                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
                                 mProductValue = formatValueInPrint(schemeProductBO.getLineValue(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
@@ -1648,7 +1648,7 @@ public class CommonPrintHelper {
         } else {
             discountValue = discount;
         }
-        mBillLevelDiscountValue = Double.parseDouble(SDUtil.format(discountValue, 2, 0));
+        mBillLevelDiscountValue = SDUtil.convertToDouble(SDUtil.format(discountValue, 2, 0));
     }
 
     private void getBillLevelTaxValue() {
@@ -1688,7 +1688,7 @@ public class CommonPrintHelper {
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax = Double.parseDouble(bmodel.formatValueBasedOnConfig(mTotalIncludeTax));
+                    mTotalIncludeTax = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(mTotalIncludeTax));
 
                     double taxValue;
                     double taxTotal = 0;
@@ -1709,7 +1709,7 @@ public class CommonPrintHelper {
                     }
 
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax = Double.parseDouble(SDUtil.format(mTotalIncludeTax, 2, 0));
+                    mTotalIncludeTax = SDUtil.convertToDouble(SDUtil.format(mTotalIncludeTax, 2, 0));
 
                     double mTotalExcludeTaxAmount = mTotalIncludeTax / (1 + taxTotal / 100);
 
@@ -1862,11 +1862,11 @@ public class CommonPrintHelper {
             String[] splits = formatTotal.split(Pattern.quote("."));
             NumberToWord numberToWord = new NumberToWord();
             for (int i = 0; i < splits.length; i++) {
-                long splitvalue = Long.parseLong(splits[i]);
+                long splitvalue = SDUtil.convertToLong(splits[i]);
                 if (i == 1 && splitvalue > 0) {
                     convertBuffer.append(" and ");
                 }
-                convertBuffer.append(numberToWord.convertNumberToWords(Long.parseLong(splits[i].toString())));
+                convertBuffer.append(numberToWord.convertNumberToWords(SDUtil.convertToLong(splits[i].toString())));
                 if (i == 0) {
                     convertBuffer.append(" Rupees ");
                 } else if (i == 1) {
@@ -2048,7 +2048,7 @@ public class CommonPrintHelper {
                         fractionalStr = fractionalStr + "0";
 
                     int integerValue = (int) value;
-                    int fractionValue = Integer.parseInt(fractionalStr);
+                    int fractionValue = SDUtil.convertToInt(fractionalStr);
 
                     formattedValue = (integerValue + bmodel.getCurrencyActualValue(fractionValue) + "");
 

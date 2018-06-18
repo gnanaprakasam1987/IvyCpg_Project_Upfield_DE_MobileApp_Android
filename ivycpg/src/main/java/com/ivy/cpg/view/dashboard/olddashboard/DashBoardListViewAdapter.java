@@ -194,19 +194,19 @@ public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardList
                 dec_inc = appendZero(String.valueOf(dashboardData.getIncentive()).substring(String.valueOf(dashboardData.getIncentive()).indexOf(".")).substring(1));
                 inc = dashBoardHelper.getWhole(dashboardData.getIncentive() + "");
 
-                if (Integer.parseInt(dec_target) >= 25)
+                if (SDUtil.convertToInt(dec_target) >= 25)
                     holder.target.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget()) + ""));
                 else
                     holder.target.setText(target);
-                if (Integer.parseInt(dec_ach) >= 25)
+                if (SDUtil.convertToInt(dec_ach) >= 25)
                     holder.acheived.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getAcheived()) + ""));
                 else
                     holder.acheived.setText(ach);
-                if (Integer.parseInt(dec_balance) >= 25)
+                if (SDUtil.convertToInt(dec_balance) >= 25)
                     holder.balance.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget() - dashboardData.getAcheived()) + ""));
                 else
                     holder.balance.setText(balance);
-                if (Integer.parseInt(dec_inc) >= 25)
+                if (SDUtil.convertToInt(dec_inc) >= 25)
                     holder.incentive.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getIncentive()) + ""));
                 else
                     holder.incentive.setText(inc);
@@ -246,19 +246,19 @@ public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardList
                 dec_inc = appendZero(String.valueOf(dashboardData.getIncentive()).substring(String.valueOf(dashboardData.getIncentive()).indexOf(".")).substring(1));
                 inc = dashBoardHelper.getWhole(dashboardData.getIncentive() + "");
 
-                if (Integer.parseInt(dec_target) >= 25)
+                if (SDUtil.convertToInt(dec_target) >= 25)
                     holder.target.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget()) + ""));
                 else
                     holder.target.setText(target);
-                if (Integer.parseInt(dec_ach) >= 25)
+                if (SDUtil.convertToInt(dec_ach) >= 25)
                     holder.acheived.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getAcheived()) + ""));
                 else
                     holder.acheived.setText(ach);
-                if (Integer.parseInt(dec_balance) >= 25)
+                if (SDUtil.convertToInt(dec_balance) >= 25)
                     holder.balance.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getTarget() - dashboardData.getAcheived()) + ""));
                 else
                     holder.balance.setText(balance);
-                if (Integer.parseInt(dec_inc) >= 25)
+                if (SDUtil.convertToInt(dec_inc) >= 25)
                     holder.incentive.setText(dashBoardHelper.getWhole(Math.ceil(dashboardData.getIncentive()) + ""));
                 else
                     holder.incentive.setText(inc);

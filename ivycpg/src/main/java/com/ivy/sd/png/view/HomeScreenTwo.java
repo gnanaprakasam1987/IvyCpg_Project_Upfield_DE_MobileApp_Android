@@ -614,7 +614,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         String rSalesType = bmodel.getStandardListCode(bmodel.getRetailerMasterBO().getSalesTypeId());
         if (bmodel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID && rSalesType.equalsIgnoreCase("INDIRECT")) {
 
-            bmodel.retailerMasterBO.setDistributorId(Integer.parseInt(bmodel.retailerMasterBO.getRetailerID()));
+            bmodel.retailerMasterBO.setDistributorId(SDUtil.convertToInt(bmodel.retailerMasterBO.getRetailerID()));
             bmodel.retailerMasterBO.setDistParentId(0);
             if (bmodel.retailerMasterBO.getAddress3() != null)
                 retailerCodeTxt.setText(bmodel.retailerMasterBO.getAddress3());

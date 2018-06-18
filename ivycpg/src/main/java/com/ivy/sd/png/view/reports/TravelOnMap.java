@@ -154,7 +154,7 @@ public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
 
     private String getMapsApiDirectionsUrl(String srclat, String srclon, String destlat, String destlon) {
 
-        String OriDest = "origin=" + Double.parseDouble(srclat) + "," + Double.parseDouble(srclon) + "&destination=" + Double.parseDouble(destlat) + "," + Double.parseDouble(destlon);
+        String OriDest = "origin=" + SDUtil.convertToDouble(srclat) + "," + SDUtil.convertToDouble(srclon) + "&destination=" + SDUtil.convertToDouble(destlat) + "," + SDUtil.convertToDouble(destlon);
 
         String sensor = "sensor=false&mode=walking";   //&mode=walking
         String params = OriDest + "&" + sensor;
@@ -311,8 +311,8 @@ public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
                     for (int j = 0; j < path.size(); j++) {
                         HashMap<String, String> point = path.get(j);
 
-                        double lat = Double.parseDouble(point.get("lat"));
-                        double lng = Double.parseDouble(point.get("lng"));
+                        double lat = SDUtil.convertToDouble(point.get("lat"));
+                        double lng = SDUtil.convertToDouble(point.get("lng"));
                         LatLng position = new LatLng(lat, lng);
 
                         points.add(position);
@@ -460,7 +460,7 @@ public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
                 mRouteNameList = new ArrayList<>();
                 while (c.moveToNext()) {
                     {
-                        mRoutecoordinateList.add(new LatLng(Double.parseDouble(c.getString(1)), Double.parseDouble(c.getString(2))));
+                        mRoutecoordinateList.add(new LatLng(SDUtil.convertToDouble(c.getString(1)), SDUtil.convertToDouble(c.getString(2))));
                         mRouteNameList.add(c.getString(0));
                     }
                 }
@@ -491,7 +491,7 @@ public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
                 mRetailerNameList = new ArrayList<>();
                 while (c.moveToNext()) {
                     {
-                        geocoordinateList.add(new LatLng(Double.parseDouble(c.getString(2)), Double.parseDouble(c.getString(3))));
+                        geocoordinateList.add(new LatLng(SDUtil.convertToDouble(c.getString(2)), SDUtil.convertToDouble(c.getString(3))));
                         mRetailerNameList.add(c.getString(0));
                     }
                 }

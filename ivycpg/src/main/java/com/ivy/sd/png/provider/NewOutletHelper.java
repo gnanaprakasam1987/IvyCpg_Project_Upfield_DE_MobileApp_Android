@@ -1558,7 +1558,7 @@ public class NewOutletHelper {
                             String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
                             if (!minlen.isEmpty()) {
                                 try {
-                                    ConfigureBO.setMaxLengthNo(Integer.parseInt(minlen));
+                                    ConfigureBO.setMaxLengthNo(SDUtil.convertToInt(minlen));
                                 } catch (Exception ex) {
                                     Commons.printException("min len in new outlet helper", ex);
                                 }

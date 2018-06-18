@@ -838,7 +838,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                 int count = 0;
                 for (BankMasterBO bankBO : mBankDetailsList) {
                     count = count + 1;
-                    if (bankBO.getBankId() == Integer.parseInt(mSelectedPaymentBO.getBankID())) {
+                    if (bankBO.getBankId() == SDUtil.convertToInt(mSelectedPaymentBO.getBankID())) {
                         break;
                     }
                 }

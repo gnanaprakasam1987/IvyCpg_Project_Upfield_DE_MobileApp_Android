@@ -157,7 +157,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
                 String qty = s.toString();
                 if (!qty.equals("")) {
                     if (mStorewiseDiscountBO != null) {
-                        double discValue = Double.parseDouble(qty);
+                        double discValue = SDUtil.convertToDouble(qty);
                         mStorewiseDiscountBO.setAppliedDiscount(discValue);
                     }
 
@@ -278,7 +278,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
     }
 
     private boolean isValidate() {
-        double enteredeValue = Double.parseDouble(mDiscountET.getText().toString());
+        double enteredeValue = SDUtil.convertToDouble(mDiscountET.getText().toString());
         if (enteredeValue < mStorewiseDiscountBO.getDiscount() || enteredeValue > mStorewiseDiscountBO.getToDiscount()) {
             return false;
         }

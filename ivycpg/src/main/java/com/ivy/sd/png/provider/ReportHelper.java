@@ -1395,7 +1395,7 @@ public class ReportHelper {
         try {
             for (PaymentBO tempParentBO : parentPaymentList) {
                 if (tempParentBO.getBillNumber().equals(invoiceNo)) {
-                    balance = Double.parseDouble(SDUtil.format((tempParentBO.getInvoiceAmount()
+                    balance = SDUtil.convertToDouble(SDUtil.format((tempParentBO.getInvoiceAmount()
                             - paidTotal - tempParentBO.getPreviousPaidAmount() - totalAppliedDiscount), 2, 0));
                     tempParentBO.setBalance(balance);
                     break;
@@ -1491,7 +1491,7 @@ public class ReportHelper {
                 if (retailerMasterBO.getIsToday() == 1
                         || retailerMasterBO.getIsDeviated().equals("Y")) {
                     outlet = new TaskReportBo();
-                    outlet.setmRetailerId(Integer.parseInt(retailerMasterBO.getRetailerID()));
+                    outlet.setmRetailerId(SDUtil.convertToInt(retailerMasterBO.getRetailerID()));
                     outlet.setmRetailerName(retailerMasterBO.getRetailerName());
                     if (retailerList.size() > 0) {
                         HashMap<String, Boolean> menuMap = new HashMap<>();
@@ -2114,7 +2114,7 @@ public class ReportHelper {
 
             if (!timelist.isEmpty()) {
                 time = timelist.get(0).split("-");
-                starttime = String.valueOf(Integer.parseInt(time[0].trim()) - 1);
+                starttime = String.valueOf(SDUtil.convertToInt(time[0].trim()) - 1);
                 if (starttime.length() == 1) {
                     starttime = "0" + starttime;
                 }
@@ -2123,17 +2123,17 @@ public class ReportHelper {
 
                 for (int i = 0; i < timelist.size(); i++) {
                     time = timelist.get(i).split("-");
-                    looptime = String.valueOf(Integer.parseInt(time[1].trim()) - 1);
+                    looptime = String.valueOf(SDUtil.convertToInt(time[1].trim()) - 1);
                     if (looptime.length() == 1) {
                         looptime = "0" + looptime;
                     }
-                    sql.append("UNION SELECT '" + time[0].trim() + ":00 - " + String.valueOf(Integer.parseInt(looptime) + 1) + ":00' as PERIOD,(SELECT count(DISTINCT RetailerID)  FROM OutletTimestamp  WHERE VisitDate = '" + today + "' AND time(replace(TimeIn,'/','-')) BETWEEN '" + time[0].trim() + ":00:00' and '" + looptime + ":59:59') as TC,count(*) as PC,ifnull(SUM(OrderValue),0) as Value,ifnull(SUM(LinesPerCall),0) as LinesSold FROM OrderHeader WHERE upload!='X' and OrderDate = '" + today + "' AND time(replace(orderTakenTime,'/','-')) BETWEEN '" + time[0].trim() + ":00:00' and '" + looptime + ":59:59'");
+                    sql.append("UNION SELECT '" + time[0].trim() + ":00 - " + String.valueOf(SDUtil.convertToInt(looptime) + 1) + ":00' as PERIOD,(SELECT count(DISTINCT RetailerID)  FROM OutletTimestamp  WHERE VisitDate = '" + today + "' AND time(replace(TimeIn,'/','-')) BETWEEN '" + time[0].trim() + ":00:00' and '" + looptime + ":59:59') as TC,count(*) as PC,ifnull(SUM(OrderValue),0) as Value,ifnull(SUM(LinesPerCall),0) as LinesSold FROM OrderHeader WHERE upload!='X' and OrderDate = '" + today + "' AND time(replace(orderTakenTime,'/','-')) BETWEEN '" + time[0].trim() + ":00:00' and '" + looptime + ":59:59'");
 
 
                 }
 
                 time = timelist.get(timelist.size() - 1).split("-");
-                endtime = String.valueOf(Integer.parseInt(time[1].trim()));
+                endtime = String.valueOf(SDUtil.convertToInt(time[1].trim()));
                 if (endtime.length() == 1) {
                     endtime = "0" + endtime;
                 }
@@ -3353,7 +3353,7 @@ public class ReportHelper {
                     product.setIsSaleable(c.getInt(5));
                     product.setBrandname(c.getString(6));
                     product.setcParentid(c.getInt(7));
-                    product.setTotalamount(Double.parseDouble(c.getString(8)));
+                    product.setTotalamount(SDUtil.convertToDouble(c.getString(8)));
 
                     productMaster.add(product);
                     parentIds.add(product.getParentid());
@@ -3660,7 +3660,7 @@ public class ReportHelper {
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     temp = new RetailerMasterBO();
-                    temp.setTretailerId(Integer.parseInt(cursor.getString(0)));
+                    temp.setTretailerId(SDUtil.convertToInt(cursor.getString(0)));
                     temp.setTretailerName(cursor.getString(1));
                     retailerMaster.add(temp);
                 }

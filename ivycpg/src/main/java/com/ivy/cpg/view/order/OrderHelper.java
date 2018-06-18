@@ -709,6 +709,7 @@ public class OrderHelper {
                 double entryLevelDistSum = 0;
                 Vector<ProductMasterBO> mOrderedProductList = new Vector<>();
                 double totalWeight = 0;
+                double mOrderValue = 0; // for Order Header
                 for (int i = 0; i < finalProductList.size(); ++i) {
                     product = finalProductList.elementAt(i);
 
@@ -719,7 +720,12 @@ public class OrderHelper {
                         mOrderedProductList.add(product);
                         entryLevelDistSum = entryLevelDistSum + product.getApplyValue();
                         totalWeight += product.getWeight();
-
+                        mOrderValue = mOrderValue + (product.getOrderedCaseQty() * product
+                                .getCsrp())
+                                + (product.getOrderedPcsQty() * product
+                                .getSrp())
+                                + (product.getOrderedOuterQty() * product
+                                .getOsrp());
                         if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
                                 && businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                             if (product.getBatchwiseProductCount() > 0) {
@@ -897,7 +903,7 @@ public class OrderHelper {
                         + ","
                         + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID())
                         + ","
-                        + businessModel.QT(businessModel.formatValueBasedOnConfig(businessModel.getOrderHeaderBO().getOrderValue()))
+                        + businessModel.QT(businessModel.formatValueBasedOnConfig(mOrderValue))
                         + ","
                         + businessModel.getRetailerMasterBO().getBeatID()
                         + ","
@@ -1574,7 +1580,7 @@ public class OrderHelper {
                             businessModel.productHelper.getmProductidOrderByEntry().add(orderDetailCursor.getString(0));
 
                         int qty = pieceQty + (caseQty * caseSize) + (outerQty * outerSize);
-                        businessModel.productHelper.getmProductidOrderByEntryMap().put(Integer.parseInt(productId), qty);
+                        businessModel.productHelper.getmProductidOrderByEntryMap().put(SDUtil.convertToInt(productId), qty);
 
                     }
 
@@ -1862,12 +1868,12 @@ public class OrderHelper {
             sb.append(businessModel.formatValueBasedOnConfig(orderValue) + ",");
             double discountedAmount;
 
-            orderValue = Double.parseDouble(businessModel.formatValueBasedOnConfig(orderValue));
+            orderValue = SDUtil.convertToDouble(businessModel.formatValueBasedOnConfig(orderValue));
             if (businessModel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                 if (discountPercentage > 0) {
 
                     double remainingAmount = (orderValue * discountPercentage) / 100;
-                    remainingAmount = Double.parseDouble(businessModel.formatValueBasedOnConfig(remainingAmount));
+                    remainingAmount = SDUtil.convertToDouble(businessModel.formatValueBasedOnConfig(remainingAmount));
 
                     discountedAmount = orderValue
                             - remainingAmount;
@@ -2549,7 +2555,7 @@ public class OrderHelper {
             for (ProductMasterBO productBO : businessModel.productHelper.getProductMaster()) {
                 if (productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0) {
 
-                    ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductId.get(Integer.parseInt(productBO.getProductID()));
+                    ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductId.get(SDUtil.convertToInt(productBO.getProductID()));
                     if (serialNoList != null) {
                         for (SerialNoBO serialNoBo : serialNoList) {
                             if (serialNoBo.getScannedQty() > 0) {
@@ -2640,14 +2646,14 @@ public class OrderHelper {
                     if (productBO.getScannedProduct() == 1) {
                         serialNo = new ArrayList<>();
 
-                        ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductId.get(Integer.parseInt(productBO.getProductID()));
+                        ArrayList<SerialNoBO> serialNoList = mSerialNoListByProductId.get(SDUtil.convertToInt(productBO.getProductID()));
                         if (serialNoList != null) {
                             for (SerialNoBO serialNoBO : serialNoList) {
 
                                 for (int i = 0; i < serialNoBO.getScannedQty(); i++) {
                                     try {
 
-                                        int number = Integer.parseInt(serialNoBO.getFromNo()) + i;
+                                        int number = SDUtil.convertToInt(serialNoBO.getFromNo()) + i;
 
                                         if (!serialNo.contains(number)) {
                                             serialNo.add(number);

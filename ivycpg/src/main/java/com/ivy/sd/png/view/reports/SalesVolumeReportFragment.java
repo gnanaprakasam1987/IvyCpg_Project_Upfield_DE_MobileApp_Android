@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view.reports;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +58,13 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
         view = inflater.inflate(R.layout.fragment_sales_volume_report, container,
                 false);
+
+        FrameLayout drawer =view.findViewById(R.id.right_drawer);
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
+
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
@@ -133,6 +143,14 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
+        menu.findItem(R.id.menu_filter).setVisible(!drawerOpen);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
         int i = item.getItemId();
@@ -141,7 +159,21 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
             productFilterClickedFragment();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onBackButtonClick() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+            mDrawerLayout.closeDrawers();
+        else {
+            Intent i = new Intent(getActivity(), HomeScreenActivity.class);
+            i.putExtra("menuCode", "MENU_REPORT");
+            i.putExtra("title", "aaa");
+            startActivity(i);
+            getActivity().finish();
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
     }
 
     private void productFilterClickedFragment() {

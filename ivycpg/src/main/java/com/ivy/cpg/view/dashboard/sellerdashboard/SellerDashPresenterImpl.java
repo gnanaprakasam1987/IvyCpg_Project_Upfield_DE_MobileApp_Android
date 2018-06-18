@@ -108,7 +108,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -134,7 +134,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -161,7 +161,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -188,7 +188,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -215,7 +215,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 int kpiTarget;
 
                 try {
-                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                    kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
                 } catch (Exception e) {
                     kpiTarget = 0;
                     Commons.printException(e + "");
@@ -402,34 +402,195 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 if (totalcalls == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
-                    dashBoardBO.setKpiAcheived((((float)visitedcalls / (float)totalcalls) * 100) + "");
+                    dashBoardBO.setKpiAcheived((((float) visitedcalls / (float) totalcalls) * 100) + "");
                 }
+
+                int kpiAcheived = 0;
+                int kpiTarget;
+
+                try {
+                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_SALE)) {
                 int productivecalls = businessModel.getProductiveCallsForTheDayExcludingDeviatedVisits();
                 if (totalcalls == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
-                    dashBoardBO.setKpiAcheived((((float)productivecalls / (float)totalcalls) * 100) + "");
+                    dashBoardBO.setKpiAcheived((((float) productivecalls / (float) totalcalls) * 100) + "");
                 }
+
+                int kpiAcheived = 0;
+                int kpiTarget;
+
+                try {
+                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_DROP_SIZE_INV)) {
                 if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
                     dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp.getTotValues()) / SDUtil.convertToDouble(dailrp.getTotLines())) + "");
                 }
+
+                int kpiAcheived = 0;
+                int kpiTarget;
+
+                try {
+                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_DROP_SIZE_ORD)) {
                 if (SDUtil.convertToDouble(dailyrp_order.getTotLines()) == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
                     dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailyrp_order.getTotValues()) / SDUtil.convertToDouble(dailyrp_order.getTotLines())) + "");
                 }
+                int kpiAcheived = 0;
+                int kpiTarget;
+
+                try {
+                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_SALES_VS_WEEKLY_OBJ)) {
                 dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp.getTotValues())) + "");
+                int kpiAcheived = 0;
+                int kpiTarget;
+
+                try {
+                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_INIT_VS_WEEKLY_OBJ)) {
                 //in getFocusBrandInvoiceAmt getTotValues refers sum of invoice amt of focus brands
                 DailyReportBO dailrp_focus_brand = businessModel.getFocusBrandInvoiceAmt();
                 dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp_focus_brand.getTotValues())) + "");
+
+                int kpiAcheived = 0;
+                int kpiTarget;
+
+                try {
+                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
+
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE_INV)) {
                 double sales_ret_val = businessModel.getSalesReturnValue();
                 if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
@@ -437,6 +598,33 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 } else {
                     dashBoardBO.setKpiAcheived(((sales_ret_val / SDUtil.convertToDouble(dailrp.getTotValues())) * 100) + "");
                 }
+                int kpiAcheived = 0;
+                int kpiTarget;
+
+                try {
+                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
+
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE_ORD)) {
                 double sales_ret_val = businessModel.getSalesReturnValue();
                 if (SDUtil.convertToDouble(dailyrp_order.getTotValues()) == 0) {
@@ -444,6 +632,33 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 } else {
                     dashBoardBO.setKpiAcheived(((sales_ret_val / SDUtil.convertToDouble(dailyrp_order.getTotValues())) * 100) + "");
                 }
+                int kpiAcheived = 0;
+                int kpiTarget;
+
+                try {
+                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
+
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_FULLFILLMENT)) {
                 DailyReportBO dailyReportBO = businessModel.getFullFillmentValue();
                 if (dailyReportBO.getLoaded() == 0) {
@@ -451,6 +666,33 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 } else {
                     dashBoardBO.setKpiAcheived(((dailyReportBO.getDelivered() / dailyReportBO.getLoaded()) * 100) + "");
                 }
+
+                int kpiAcheived = 0;
+                int kpiTarget;
+
+                try {
+                    kpiAcheived = (int) Double.parseDouble(dashBoardBO.getKpiAcheived());
+                    kpiTarget = (int) Double.parseDouble(dashBoardBO.getKpiTarget());
+                } catch (Exception e) {
+                    kpiTarget = 0;
+                    Commons.printException(e + "");
+                }
+
+                if (kpiTarget == 0) {
+                    dashBoardBO.setCalculatedPercentage(0);
+                } else {
+                    dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+                }
+                if (dashBoardBO.getCalculatedPercentage() >= 100) {
+                    dashBoardBO.setConvTargetPercentage(0);
+                    dashBoardBO.setConvAcheivedPercentage(100);
+                } else {
+                    dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                            .getCalculatedPercentage());
+                    dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                            .getCalculatedPercentage());
+                }
+
             }
 
         }

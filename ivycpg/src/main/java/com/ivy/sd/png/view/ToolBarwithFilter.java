@@ -1349,7 +1349,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                         if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
 
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
+                            if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
                                 mylist.add(productBO);
                                 fiveFilter_productIDs.add(productBO.getProductID());
                             }
@@ -1360,7 +1360,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
 
-                        if (pid == Integer.parseInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
+                        if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                             mylist.add(productBO);
                             fiveFilter_productIDs.add(productBO.getProductID());
                         }

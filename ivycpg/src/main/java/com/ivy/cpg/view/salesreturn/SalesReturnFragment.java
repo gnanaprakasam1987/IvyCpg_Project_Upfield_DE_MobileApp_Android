@@ -967,7 +967,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                     for (ProductMasterBO productBO : items) {
                         if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
+                            if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
                                 mylist.add(productBO);
                                 fiveFilter_productIDs.add(productBO.getProductID());
                             }
@@ -977,7 +977,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             } else {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
-                        if (pid == Integer.parseInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
+                        if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                             mylist.add(productBO);
                             fiveFilter_productIDs.add(productBO.getProductID());
                         }

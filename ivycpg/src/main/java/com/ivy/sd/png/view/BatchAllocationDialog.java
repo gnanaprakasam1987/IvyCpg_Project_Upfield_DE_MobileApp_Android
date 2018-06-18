@@ -301,7 +301,7 @@ public class BatchAllocationDialog extends Dialog {
                         if (s != null) {
                             String qty = s.toString();
                             if (!qty.equals("")) {
-                                int pieceQty = Integer.parseInt(qty);
+                                int pieceQty = SDUtil.convertToInt(qty);
 
                                 if (pieceQty <= holder.productObj.getSIH()) {
                                     if (bmodel.batchAllocationHelper
@@ -406,7 +406,7 @@ public class BatchAllocationDialog extends Dialog {
                                     double total = 0.0;
                                     String qty = s.toString();
                                     if (!qty.equals("")) {
-                                        int caseQty = Integer.parseInt(qty);
+                                        int caseQty = SDUtil.convertToInt(qty);
                                         if ((caseQty * productBO.getCaseSize()) <= holder.productObj
                                                 .getSIH()) {
                                             if (bmodel.batchAllocationHelper
@@ -533,7 +533,7 @@ public class BatchAllocationDialog extends Dialog {
                             double total = 0.0;
                             String qty = s.toString();
                             if (!qty.equals("")) {
-                                int outerQty = Integer.parseInt(qty);
+                                int outerQty = SDUtil.convertToInt(qty);
                                 if ((outerQty * productBO.getOutersize()) <= holder.productObj
                                         .getSIH()) {
                                     if (bmodel.batchAllocationHelper

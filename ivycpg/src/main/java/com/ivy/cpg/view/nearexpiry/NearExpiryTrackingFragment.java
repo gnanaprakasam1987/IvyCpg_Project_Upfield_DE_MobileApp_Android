@@ -835,7 +835,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         for (ProductMasterBO productBO : items) {
                             if (productBO.getIsSaleable() == 1
                                     && levelBO.getProductID() == productBO.getParentid()
-                                    && mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
+                                    && mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
                                 // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                                 myList.add(productBO);
                             }
@@ -844,7 +844,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 } else {
                     for (int pid : mAttributeProducts) {
                         for (ProductMasterBO productBO : items) {
-                            if (pid == Integer.parseInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
+                            if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                                 myList.add(productBO);
                             }
                         }

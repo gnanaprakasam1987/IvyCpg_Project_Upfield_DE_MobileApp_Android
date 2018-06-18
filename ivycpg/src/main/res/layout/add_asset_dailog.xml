@@ -131,8 +131,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_20dp"
-        android:layout_marginTop="@dimen/dimen_40dp">
+        android:layout_marginBottom="@dimen/dimens_14dp"
+        android:layout_marginTop="@dimen/dimens_12dp">
 
         <include
             android:id="@+id/keypad"

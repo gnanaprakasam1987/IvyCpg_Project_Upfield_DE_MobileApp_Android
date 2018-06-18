@@ -736,7 +736,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_ICO;
     public boolean SHOW_SO_SPLIT;
     public boolean ALLOW_SO_COPY;
-    public boolean SHOW_MULTISELECT_FILTER; // ORD33 [ 1- show multi selection
     // in filter fragment]
     // Added in 41 version
     public boolean SHOW_MULTIPAYMENT = true;
@@ -1505,7 +1504,7 @@ public class ConfigurationMasterHelper {
                             String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
                             if (!minlen.isEmpty()) {
                                 try {
-                                    con.setMaxLengthNo(Integer.parseInt(minlen));
+                                    con.setMaxLengthNo(SDUtil.convertToInt(minlen));
                                 } catch (Exception ex) {
                                     Commons.printException("min len in new outlet helper", ex);
                                 }
@@ -1993,7 +1992,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_STKPRO_SPL_FILTER = hashMapHHTModuleConfig.get(CODE_STKPRO_SPL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_STKPRO_SPL_FILTER) : false;
         this.SHOW_SO_SPLIT = hashMapHHTModuleConfig.get(CODE_SO_SPLIT) != null ? hashMapHHTModuleConfig.get(CODE_SO_SPLIT) : false;
         this.ALLOW_SO_COPY = hashMapHHTModuleConfig.get(CODE_SO_COPY) != null ? hashMapHHTModuleConfig.get(CODE_SO_COPY) : false;
-        this.SHOW_MULTISELECT_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_MULTISELECTION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MULTISELECTION) : false;
         this.ALLOW_BACK_DATE = hashMapHHTModuleConfig.get(CODE_ALLOW_BACK_DATE) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_BACK_DATE) : false;
         this.SHOW_TOTAL_LINES = hashMapHHTModuleConfig.get(CODE_TOTAL_LINES) != null ? hashMapHHTModuleConfig.get(CODE_TOTAL_LINES) : false;
         if (hashMapHHTModuleOrder.get(CODE_TOTAL_LINES) != null) {
@@ -3533,9 +3531,9 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
                     codeValue = c.getString(0);
                     String[] camera_params = codeValue.split(",");
-                    CAMERA_PICTURE_WIDTH = Integer.parseInt(camera_params[0]);
-                    CAMERA_PICTURE_HEIGHT = Integer.parseInt(camera_params[1]);
-                    CAMERA_PICTURE_QUALITY = Integer.parseInt(camera_params[2]) >= 40 ? Integer.parseInt(camera_params[2]) : 40;
+                    CAMERA_PICTURE_WIDTH = SDUtil.convertToInt(camera_params[0]);
+                    CAMERA_PICTURE_HEIGHT = SDUtil.convertToInt(camera_params[1]);
+                    CAMERA_PICTURE_QUALITY = SDUtil.convertToInt(camera_params[2]) >= 40 ? SDUtil.convertToInt(camera_params[2]) : 40;
                 }
                 c.close();
             }
@@ -3561,8 +3559,8 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
                     codeValue = c.getString(0);
                     String[] min_max_params = codeValue.split(",");
-                    CHQ_MIN_DATE = Integer.parseInt(min_max_params[0]);
-                    CHQ_MAX_DATE = Integer.parseInt(min_max_params[1]);
+                    CHQ_MIN_DATE = SDUtil.convertToInt(min_max_params[0]);
+                    CHQ_MAX_DATE = SDUtil.convertToInt(min_max_params[1]);
                 }
                 c.close();
             }
@@ -4056,9 +4054,9 @@ public class ConfigurationMasterHelper {
             if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
                 if (codeSplit[0] != null && !codeSplit[0].equals(""))
-                    DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = Integer.parseInt(codeSplit[0]);
+                    DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
                 if (codeSplit[1] != null && !codeSplit[1].equals(""))
-                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = Integer.parseInt(codeSplit[1]);
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
             }
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -5300,15 +5298,15 @@ public class ConfigurationMasterHelper {
 
                 if (CODE_PSWD_MIN_LEN.equals(con.getRuleKey())
                         && con.getValue() != null)
-                    this.PSWD_MIN_LEN = Integer.parseInt(con.getValue());
+                    this.PSWD_MIN_LEN = SDUtil.convertToInt(con.getValue());
                 else if (CODE_PSWD_MAX_LEN.equals(con.getRuleKey())
                         && con.getValue() != null)
-                    this.PSWD_MAX_LEN = Integer.parseInt(con.getValue());
+                    this.PSWD_MAX_LEN = SDUtil.convertToInt(con.getValue());
                 else if (CODE_PSWD_EXPIRY.equals(con.getRuleKey())
                         && con.getValue() != null)
-                    this.PSWD_EXPIRY = Integer.parseInt(con.getValue());
+                    this.PSWD_EXPIRY = SDUtil.convertToInt(con.getValue());
                 else if (CODE_SAME_LOGIN.equals(con.getRuleKey())) {
-                    if (Integer.parseInt(con.getValue()) == 1) {
+                    if (SDUtil.convertToInt(con.getValue()) == 1) {
                         IS_SAME_LOGIN = true;
                     } else {
                         IS_SAME_LOGIN = false;
@@ -5727,7 +5725,7 @@ public class ConfigurationMasterHelper {
 
         try {
             COMPUTE_DUE_DATE = true;
-            COMPUTE_DUE_DATE = true;
+            COMPUTE_DUE_DAYS = true;
             String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='SR01' and ForSwitchSeller = 0";
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,

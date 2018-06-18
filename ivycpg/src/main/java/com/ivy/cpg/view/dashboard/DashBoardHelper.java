@@ -152,7 +152,7 @@ public class DashBoardHelper {
             int index = 0;
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    int monthValue = Integer.parseInt(c.getString(0));
+                    int monthValue = SDUtil.convertToInt(c.getString(0));
                     if (monthValue > 0 && monthValue <= 12) {
                         monthNoList.add(MONTH_NAME[monthValue - 1]);
                         index++;
@@ -185,7 +185,7 @@ public class DashBoardHelper {
             int index = 0;
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    int monthValue = Integer.parseInt(c.getString(0));
+                    int monthValue = SDUtil.convertToInt(c.getString(0));
                     if (monthValue > 0 && monthValue <= 12) {
                         monthNoList.add(MONTH_NAME[monthValue - 1]);
                         index++;
@@ -220,7 +220,7 @@ public class DashBoardHelper {
             if (c.getCount() > 0) {
                 int count = 0;
                 while (c.moveToNext()) {
-                    int month = Integer.parseInt(c.getString(0)) - 1;
+                    int month = SDUtil.convertToInt(c.getString(0)) - 1;
                     count++;
 
                     if (c.getCount() > 1) {
@@ -312,7 +312,7 @@ public class DashBoardHelper {
                     sbo.setBeatDescription(c.getString(7));
                     sbo.setIncentive(c.getDouble(8));
                     sbo.setIsFlip(c.getInt(9));
-                    int value = Integer.parseInt(c.getString(10));
+                    int value = SDUtil.convertToInt(c.getString(10));
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
 
@@ -360,7 +360,7 @@ public class DashBoardHelper {
                     sbo.setType(c.getString(6));
                     sbo.setRouteID(c.getInt(7));
                     sbo.setBeatDescription(c.getString(8));
-                    int value = Integer.parseInt(c.getString(10));
+                    int value = SDUtil.convertToInt(c.getString(10));
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
 
@@ -768,7 +768,7 @@ public class DashBoardHelper {
         else
             tempMonth = month;
 
-        mon = Integer.parseInt(tempMonth) - 1;
+        mon = SDUtil.convertToInt(tempMonth) - 1;
 
         DashBoardBO temp;
 
@@ -934,7 +934,7 @@ public class DashBoardHelper {
                             Map.Entry mapEntry = (Map.Entry) mapiterator.next();
                             String keyValue = (String) mapEntry.getKey();
                             ArrayList<String> value = (ArrayList<String>) mapEntry.getValue();
-                            if (kpiList.getKpiTypeLovID() == Integer.parseInt(keyValue)) {
+                            if (kpiList.getKpiTypeLovID() == SDUtil.convertToInt(keyValue)) {
 
                                 target = SDUtil.convertToFloat(value.get(0));
                                 achieved = SDUtil.convertToFloat(value.get(1));
@@ -963,7 +963,7 @@ public class DashBoardHelper {
                             Map.Entry mapEntry = (Map.Entry) mapiterator.next();
                             String keyValue = (String) mapEntry.getKey();
                             ArrayList<String> value = (ArrayList<String>) mapEntry.getValue();
-                            if (kpiList.getKpiTypeLovID() == Integer.parseInt(keyValue)) {
+                            if (kpiList.getKpiTypeLovID() == SDUtil.convertToInt(keyValue)) {
 
                                 if (!value.get(0).equals("0")) {
 
@@ -1070,7 +1070,7 @@ public class DashBoardHelper {
                     sbo.setSubDataCount(c.getInt(9));
                     sbo.setCode(c.getString(10));
                     sbo.setKpiFlex(c.getString(c.getColumnIndex("kpiFlex1")));
-                    int value = Integer.parseInt(c.getString(11));
+                    int value = SDUtil.convertToInt(c.getString(11));
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
 //                    if (!c.getString(10).equals("INV")) {
@@ -1139,7 +1139,7 @@ public class DashBoardHelper {
                     sbo.setSubDataCount(getSubdataCount(sbo.getKpiTypeLovID()));
                     sbo.setCode(c.getString(9));
                     sbo.setKpiFlex(c.getString(c.getColumnIndex("kpiFlex1")));
-                    int value = Integer.parseInt(c.getString(10));
+                    int value = SDUtil.convertToInt(c.getString(10));
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
 //                    if (!c.getString(9).equals("INV")) {
@@ -1234,7 +1234,7 @@ public class DashBoardHelper {
                     sbo.setFlex1(c.getInt(8));
                     sbo.setSubDataCount(getSubdataCount(sbo.getKpiTypeLovID()));
                     sbo.setCode(c.getString(9));
-                    int value = Integer.parseInt(c.getString(10));
+                    int value = SDUtil.convertToInt(c.getString(10));
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
                     getP3mChartList().add(sbo);

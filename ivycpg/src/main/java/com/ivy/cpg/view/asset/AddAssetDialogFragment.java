@@ -133,17 +133,19 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int arg2, long arg3) {
+                                       int position, long arg3) {
 
                 assetTrackingHelper
                         .downloadAssetBrand(getActivity().getApplicationContext(), assetTrackingHelper
                                 .getAssetPosmIds(mAsset.getSelectedItem()
                                         .toString()));
 
-                if (assetTrackingHelper.getAssetBrandNames().size() > 0)
+                if (position != 0
+                        && assetTrackingHelper.getAssetBrandNames().size() > 0) {
                     loadBrandData();
-                else {
-                    ((TextView) getView().findViewById(R.id.brand_spinner_txt)).setVisibility(View.GONE);
+                }else {
+                    if (position == 0 || assetTrackingHelper.getAssetBrandNames().size() == 0)
+                        ((TextView) getView().findViewById(R.id.brand_spinner_txt)).setVisibility(View.GONE);
                     mBrand.setVisibility(View.GONE);
                 }
             }
@@ -232,6 +234,8 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
      * Load brands
      */
     private void loadBrandData() {
+        ((TextView) getView().findViewById(R.id.brand_spinner_txt)).setVisibility(View.VISIBLE);
+        mBrand.setVisibility(View.VISIBLE);
         ArrayAdapter<CharSequence> mAssetBrandsAdapter = new ArrayAdapter<>(
                 getActivity(), R.layout.spinner_bluetext_layout);
         mAssetBrandsAdapter

@@ -507,9 +507,9 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
-                        holder.mSKUBO.setRetPieceQty(Integer.parseInt(qty));
-                        double totalAmount = Integer.parseInt(qty)
-                                * Double.parseDouble(holder.mSKUBO.getPrice());
+                        holder.mSKUBO.setRetPieceQty(SDUtil.convertToInt(qty));
+                        double totalAmount = SDUtil.convertToInt(qty)
+                                * SDUtil.convertToDouble(holder.mSKUBO.getPrice());
                         holder.mSKUBO.setTotalamount(totalAmount);
                     }
 

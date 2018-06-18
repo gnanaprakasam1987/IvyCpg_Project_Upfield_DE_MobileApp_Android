@@ -548,12 +548,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
     protected void onStart() {
         super.onStart();
         Commons.print("OnStart Called");
-        // Configuration to Show Multi Seletion in Filter Fragment
-        if (bmodel.configurationMasterHelper.SHOW_MULTISELECT_FILTER) {
-            multiSelectProductFilterFragment();
-        } else {
-            productFilterClickedFragment(); // Normal Filter Fragment
-        }
+        productFilterClickedFragment(); // Normal Filter Fragment
         mDrawerLayout.closeDrawer(GravityCompat.END);
     }
 
@@ -1512,7 +1507,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 }
                 bmodel.getOrderHeaderBO().setTotalWeight(totalWeight);
                 bmodel.getOrderHeaderBO().setOrderValue(line_total_price);
-                bmodel.getOrderHeaderBO().setLinesPerCall(Integer.parseInt(lpcText.getText().toString()));
+                bmodel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt(lpcText.getText().toString()));
 
 
                 if (bmodel.configurationMasterHelper.IS_MUST_SELL
@@ -2293,12 +2288,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 mSelectedFilterMap.put("General", GENERAL);
             }
 
-            // Configuration to Show Multi Seletion in Filter Fragment
-            if (bmodel.configurationMasterHelper.SHOW_MULTISELECT_FILTER) {
-                multiSelectProductFilterFragment();
-            } else {
-                productFilterClickedFragment(); // Normal Filter Fragment
-            }
+            productFilterClickedFragment(); // Normal Filter Fragment
             return true;
         } else if (i == R.id.menu_remarks) {
 
@@ -2505,51 +2495,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
             // set Fragmentclass Arguments
             FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e + "");
-        }
-    }
-
-    private void multiSelectProductFilterFragment() {
-        try {
-            QUANTITY = null;
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            FragmentManager fm = getSupportFragmentManager();
-            FilterFagmentMultiSelection<?> frag = (FilterFagmentMultiSelection<?>) fm
-                    .findFragmentByTag("filter");
-            FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("filterHeader", bmodel.productHelper
-                    .getChildLevelBo().get(0).getProductLevel());
-            bundle.putBoolean("isFormBrand", true);
-            bundle.putBoolean("hideBrandFilter", true);
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-
-            if (bmodel.productHelper.getParentLevelBo() != null
-                    && bmodel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-            // set Fragmentclass Arguments
-            FilterFagmentMultiSelection fragobj = new FilterFagmentMultiSelection(
-                    mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "filter");
             ft.commit();
@@ -2906,7 +2851,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
                                 if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
                                     // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                    if (mAttributeProducts.contains(Integer.parseInt(productBO.getProductID()))) {
+                                    if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
 
                                         if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                             continue;
@@ -2930,7 +2875,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
-                                if (pid == Integer.parseInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
+                                if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                         continue;
                                     mylist.add(productBO);
@@ -3047,21 +2992,21 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
         if (qty == 0) {
             bmodel.productHelper.getmProductidOrderByEntry().remove((String) productBO.getProductID());
-            bmodel.productHelper.getmProductidOrderByEntryMap().remove(Integer.parseInt(productBO.getProductID()));
+            bmodel.productHelper.getmProductidOrderByEntryMap().remove(SDUtil.convertToInt(productBO.getProductID()));
         } else {
             int lastQty = 0;
-            if (bmodel.productHelper.getmProductidOrderByEntryMap().get(Integer.parseInt(productBO.getProductID())) != null)
-                lastQty = bmodel.productHelper.getmProductidOrderByEntryMap().get(Integer.parseInt(productBO.getProductID()));
+            if (bmodel.productHelper.getmProductidOrderByEntryMap().get(SDUtil.convertToInt(productBO.getProductID())) != null)
+                lastQty = bmodel.productHelper.getmProductidOrderByEntryMap().get(SDUtil.convertToInt(productBO.getProductID()));
             if (lastQty == qty) {
                 // Dont do any thing
             } else {
                 if (bmodel.productHelper.getmProductidOrderByEntry().contains(productBO.getProductID())) {
                     bmodel.productHelper.getmProductidOrderByEntry().remove((String) productBO.getProductID());
                     bmodel.productHelper.getmProductidOrderByEntry().add(productBO.getProductID());
-                    bmodel.productHelper.getmProductidOrderByEntryMap().put(Integer.parseInt(productBO.getProductID()), qty);
+                    bmodel.productHelper.getmProductidOrderByEntryMap().put(SDUtil.convertToInt(productBO.getProductID()), qty);
                 } else {
                     bmodel.productHelper.getmProductidOrderByEntry().add(productBO.getProductID());
-                    bmodel.productHelper.getmProductidOrderByEntryMap().put(Integer.parseInt(productBO.getProductID()), qty);
+                    bmodel.productHelper.getmProductidOrderByEntryMap().put(SDUtil.convertToInt(productBO.getProductID()), qty);
                 }
             }
         }

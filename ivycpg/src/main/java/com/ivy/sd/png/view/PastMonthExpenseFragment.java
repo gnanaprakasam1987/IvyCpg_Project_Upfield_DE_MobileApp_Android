@@ -117,7 +117,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
     public String sumExpenses(ArrayList<ExpenseSheetBO> expenseList) {
         Double sum = 0.0;
         for (ExpenseSheetBO expobj : expenseList) {
-            sum = sum + Double.parseDouble(expobj.getAmount());
+            sum = sum + SDUtil.convertToDouble(expobj.getAmount());
         }
         return bmodel.formatValue(sum);
     }
@@ -134,15 +134,15 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
             ExpenseSheetBO expobj = expenseList.get(i);
 
             if (monthName.length() == 0)
-                sum = sum + Double.parseDouble(expobj.getAmount());
+                sum = sum + SDUtil.convertToDouble(expobj.getAmount());
 
             else if (monthName.equals(expobj.getMonth()))
-                sum = sum + Double.parseDouble(expobj.getAmount());
+                sum = sum + SDUtil.convertToDouble(expobj.getAmount());
 
             else if (!monthName.equals(expobj.getMonth())) {
                 expMonthWiseBos.add(new ExpMonthWiseBo(monthName, bmodel.formatValue(sum)));
                 sum = 0.0;
-                sum = sum + Double.parseDouble(expobj.getAmount());
+                sum = sum + SDUtil.convertToDouble(expobj.getAmount());
             }
             monthName = expobj.getMonth();
 
