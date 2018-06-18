@@ -20,6 +20,7 @@ import com.ivy.core.di.component.DaggerActivityComponent;
 import com.ivy.core.di.module.ActivityModule;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.utils.NetworkUtils;
 
 import butterknife.Unbinder;
 
@@ -30,6 +31,11 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     private Unbinder mUnBinder;
 
+
+    /**
+     * Always set you layout reference using this method
+     * @return
+     */
     @LayoutRes
     public abstract int getLayoutId();
 
@@ -114,9 +120,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         showMessage(getString(resId));
     }
 
+    /**
+     * To validate if network is connected
+     *
+     * @return true if Connected. False if not connected
+     */
+
     @Override
     public boolean isNetworkConnected() {
-        return false;
+        return NetworkUtils.isNetworkConnected(this);
     }
 
     @Override
@@ -133,6 +145,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     /**
      * Set the unBinder object from butter knife so that the unbinding can be
      * taken care from the base activity on destroy
+     *
      * @param unBinder unBinder of the ButterKnife
      */
     public void setUnBinder(Unbinder unBinder) {
@@ -148,11 +161,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         super.onDestroy();
     }
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
 
     /**
      * Abstract method which can be used to get the data
@@ -160,6 +168,9 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
      */
     protected abstract void getMessageFromAliens();
 
+    /**
+     * Set up the views.
+     */
     protected abstract void setUpViews();
 
 }

@@ -764,7 +764,6 @@ public class BusinessModel extends Application {
             mApplicationComponent.inject(this);
 
 
-            mApplicationComponent.inject(this);
 
         } catch (Exception ex) {
             Commons.printException(ex);
