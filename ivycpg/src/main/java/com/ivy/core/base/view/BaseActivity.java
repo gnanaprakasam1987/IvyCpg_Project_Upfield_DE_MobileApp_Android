@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -20,10 +21,17 @@ import com.ivy.core.di.module.ActivityModule;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 
-public class BaseActivity extends AppCompatActivity implements BaseIvyView {
+import butterknife.Unbinder;
+
+public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView {
 
 
     private ActivityComponent mActivityComponent;
+
+    private Unbinder mUnBinder;
+
+    @LayoutRes
+    public abstract int getLayoutId();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +40,12 @@ public class BaseActivity extends AppCompatActivity implements BaseIvyView {
                 .activityModule(new ActivityModule(this))
                 .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
                 .build();
+
+        this.setContentView(this.getLayoutId());
+
+        getMessageFromAliens();
+
+        setUpViews();
     }
 
     public ActivityComponent getActivityComponent() {
@@ -115,8 +129,37 @@ public class BaseActivity extends AppCompatActivity implements BaseIvyView {
         }
     }
 
+
+    /**
+     * Set the unBinder object from butter knife so that the unbinding can be
+     * taken care from the base activity on destroy
+     * @param unBinder unBinder of the ButterKnife
+     */
+    public void setUnBinder(Unbinder unBinder) {
+        mUnBinder = unBinder;
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        if (mUnBinder != null) {
+            mUnBinder.unbind();
+        }
+        super.onDestroy();
+    }
+
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+
+    /**
+     * Abstract method which can be used to get the data
+     * via intent for other activities
+     */
+    protected abstract void getMessageFromAliens();
+
+    protected abstract void setUpViews();
+
 }
