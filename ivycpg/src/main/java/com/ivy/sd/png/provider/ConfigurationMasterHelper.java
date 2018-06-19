@@ -547,7 +547,6 @@ public class ConfigurationMasterHelper {
     public boolean IS_VISITSCREEN_DEV_ALLOW;
     public boolean IS_DATE_VALIDATION_REQUIRED;
     public boolean IS_INITIATIVE;
-    public boolean IS_CNT01;
     public boolean IS_HST01;//history fragment
     public boolean IS_HST02;//history fragment
     public boolean IS_HST03;//history fragment
@@ -977,7 +976,7 @@ public class ConfigurationMasterHelper {
     public boolean HIDE_SALES_VALUE_FIELD;
 
     // TO show sync status report in Sync screen.
-    public static final String CODE_SYNC_INTERNAL_REPORT="SYNC11";
+    public static final String CODE_SYNC_INTERNAL_REPORT = "SYNC11";
     public boolean SHOW_SYNC_INTERNAL_REPORT;
 
 
@@ -1920,7 +1919,6 @@ public class ConfigurationMasterHelper {
         this.IS_VISITSCREEN_DEV_ALLOW = hashMapHHTModuleConfig.get(CODE_VISITSCREEN_DEV_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_VISITSCREEN_DEV_ALLOW) : false;
         this.IS_DATE_VALIDATION_REQUIRED = hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) != null ? hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) : false;
         this.IS_INITIATIVE = hashMapHHTModuleConfig.get(CODE_INITIATIVE) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE) : false;
-        this.IS_CNT01 = hashMapHHTModuleConfig.get(CODE_CNT01) != null ? hashMapHHTModuleConfig.get(CODE_CNT01) : false;
         /*this.IS_HST01 = hashMapHHTModuleConfig.get(CODE_HST01) != null ? hashMapHHTModuleConfig.get(CODE_HST01) : false;//history fragment
         this.IS_HST02 = hashMapHHTModuleConfig.get(CODE_HST02) != null ? hashMapHHTModuleConfig.get(CODE_HST02) : false;//history fragment
         this.IS_HST03 = hashMapHHTModuleConfig.get(CODE_HST03) != null ? hashMapHHTModuleConfig.get(CODE_HST03) : false;//history fragment
@@ -2425,7 +2423,7 @@ public class ConfigurationMasterHelper {
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
         this.IS_SHOW_ONLY_SERVER_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) : false;
         this.IS_FOCUS_PACK_NOT_DONE = hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) != null ? hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) : false;
-        this.IS_DOWNLOAD_WAREHOUSE_STOCK= hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) : false;
+        this.IS_DOWNLOAD_WAREHOUSE_STOCK = hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) : false;
         this.IS_LOAD_ONLY_SUBD = hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) : false;
         this.IS_LOAD_NON_FIELD = hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) : false;
         this.IS_PLAN_RETIALER_NON_FIELD = hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) != null ? hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) : false;
@@ -2453,16 +2451,16 @@ public class ConfigurationMasterHelper {
             loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
-        if(hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL)!=null&&hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL)==1) {
-            IS_ATTACH_PDF=true;
+        if (hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null && hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) == 1) {
+            IS_ATTACH_PDF = true;
         }
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
 
         this.IS_ALLOW_CONTINUOUS_PRINT = hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
 
         this.SHOW_VOLUME_QTY = hashMapHHTModuleConfig.get(CODE_ORDER_RPT_VOLUME) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_RPT_VOLUME) : false;
-        this.HIDE_SALES_VALUE_FIELD=hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) != null ? hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) :false;
-        this.SHOW_SYNC_INTERNAL_REPORT=hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT)!=null?hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT):false;
+        this.HIDE_SALES_VALUE_FIELD = hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) != null ? hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) : false;
+        this.SHOW_SYNC_INTERNAL_REPORT = hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT) : false;
 
         this.retailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
         this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
@@ -2472,7 +2470,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_PRINT_HEADERS = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) : false;
 
         this.IS_ORD_SR_VALUE_VALIDATE = hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) != null ? hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) : false;
-        this.IS_SHOW_JOINT_CALL_REMARKS=hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) : false;
+        this.IS_SHOW_JOINT_CALL_REMARKS = hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) : false;
 
         this.IS_INDICATIVE_SR = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
 
@@ -4233,15 +4231,14 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     int value = c.getInt(0);
-                    if(value==0||value==2){
+                    if (value == 0 || value == 2) {
                         IS_SUPPLIER_CREDIT_LIMIT = false;
-                        if(value==2)
-                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT=true;
-                    }
-                    else if (value == 1||value==3) {
+                        if (value == 2)
+                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT = true;
+                    } else if (value == 1 || value == 3) {
                         IS_SUPPLIER_CREDIT_LIMIT = true;
-                        if(value==3)
-                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT=true;
+                        if (value == 3)
+                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT = true;
                     }
                 }
                 c.close();
@@ -5710,8 +5707,8 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
 
                 while (c.moveToNext()) {
-                    if(c.getInt(0)==1)
-                      IS_SHOW_ORDER_REASON = true;
+                    if (c.getInt(0) == 1)
+                        IS_SHOW_ORDER_REASON = true;
                 }
                 c.close();
             }

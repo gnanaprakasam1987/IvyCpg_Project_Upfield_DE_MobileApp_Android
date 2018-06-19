@@ -628,9 +628,6 @@
             android:name="com.ivy.sd.png.view.TimeTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.planogram.CounterPlanogramActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.sd.png.view.TLAttendanceActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -955,8 +955,6 @@ SynchronizationHelper {
                     "union select count(uid) from CS_CustomerConcernDetails where upload='N'" +
                     "union select count(uid) from CS_CustomerSaleDetails where upload='N'" +
                     "union select count(uid) from CS_CustomerSampleGivenDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerTrialDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerVisitHeader where upload='N'" +
                     "union select count(Tid) from ExpenseHeader where upload='N'" +
                     "union select count(Tid) from RetailerContractRenewalDetails where upload='N'" +
                     "union select count(uid) from LeaveApprovalDetails where upload='N'" +
@@ -974,7 +972,6 @@ SynchronizationHelper {
                     "union select count(pid) from CS_SIHDetails where upload='N'" +
                     "union select count(receipt_id) from CS_StockReceiptHeader where upload='N'" +
                     "union select count(uid) from CS_RejectedVarianceStatus where upload='N'" +
-                    "union select count(uid) from CS_GroomingHeader where upload='N'" +
                     "union select count(uid) from CS_StockEntryVarianceHeader where upload='N'" +
                     "union select count(Tid) from ModuleActivityDetails where upload='N'" +
                     "union select count(uid) from AttendanceTimeDetails where upload='N'" +

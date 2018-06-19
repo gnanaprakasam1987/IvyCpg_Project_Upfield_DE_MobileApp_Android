@@ -423,9 +423,6 @@ public class AttendanceHelper {
             String columns = "Tid, DateIn,Atd_ID,ReasonID, FromDate, ToDate, Session, Remarks,Timezone,Status,jointUserId,LeaveType_LovId,TotalDays,TimeSpent,userid";
 
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-            if (bmodel.configurationMasterHelper.IS_CNT01) {
-                userid = bmodel.getSelectedUserId();
-            }
 
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID) + "";
@@ -466,9 +463,7 @@ public class AttendanceHelper {
         getMonthList(context);
         try {
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-            if (bmodel.configurationMasterHelper.IS_CNT01) {
-                userid = bmodel.getSelectedUserId();
-            }
+
             nonFieldList.clear();
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -610,9 +605,6 @@ public class AttendanceHelper {
         getNonFieldTwoBoList().clear();
 
         int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-        if (bmodel.configurationMasterHelper.IS_CNT01) {
-            userid = bmodel.getSelectedUserId();
-        }
 
         DBUtil db = null;
         try {
@@ -683,9 +675,6 @@ public class AttendanceHelper {
                 db.openDataBase();
 
                 int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-                if (bmodel.configurationMasterHelper.IS_CNT01) {
-                    userid = bmodel.getSelectedUserId();
-                }
 
                 String inTime = nonFieldTwoBo.getInTime() != null ? nonFieldTwoBo.getInTime() : " ";
 
@@ -1067,9 +1056,6 @@ public class AttendanceHelper {
             String columns = "Tid, DateIn,Atd_ID,ReasonID,FromDate,ToDate,Session,Remarks,Timezone,Status,jointUserId,LeaveType_LovId,TotalDays,userid";
 
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-            if (bmodel.configurationMasterHelper.IS_CNT01) {
-                userid = bmodel.getSelectedUserId();
-            }
 
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID) + "";
@@ -1129,9 +1115,6 @@ public class AttendanceHelper {
         String sesCode = "";
         int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
         try {
-            if (bmodel.configurationMasterHelper.IS_CNT01) {
-                userid = bmodel.getSelectedUserId();
-            }
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
