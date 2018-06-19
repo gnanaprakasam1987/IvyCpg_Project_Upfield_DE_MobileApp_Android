@@ -1,4 +1,4 @@
-package com.ivy.core.base.view;
+package com.ivy.cpg.view.common;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public abstract class BaseFragment extends Fragment {
-
+public abstract class CommonFragment extends Fragment {
 
     private Unbinder mUnBinder;
 
@@ -46,5 +45,6 @@ public abstract class BaseFragment extends Fragment {
         }
 
     }
+
 
 }

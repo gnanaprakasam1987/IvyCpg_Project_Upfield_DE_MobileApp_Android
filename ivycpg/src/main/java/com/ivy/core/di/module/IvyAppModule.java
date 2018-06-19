@@ -15,6 +15,7 @@ import com.ivy.core.data.sharedpreferences.SharedPreferenceHelperImpl;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.PreferenceInfo;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Module
@@ -23,6 +24,7 @@ public class IvyAppModule {
     private Context mContext;
 
 
+    @Inject
     public IvyAppModule(Context context) {
         mContext = context;
     }

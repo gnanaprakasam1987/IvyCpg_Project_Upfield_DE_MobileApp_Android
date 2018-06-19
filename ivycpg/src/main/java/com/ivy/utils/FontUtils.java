@@ -1,0 +1,45 @@
+package com.ivy.utils;
+
+import android.content.Context;
+import android.graphics.Typeface;
+
+public class FontUtils {
+
+
+    public static enum FontType {
+        LIGHT, MEDIUM, THIN, REGULAR
+    }
+
+
+    public static Typeface getFontBalooHai(FontType mFontType, Context mContext) {
+        Typeface mFontBaloobhaiRegular;
+        if (mFontType == FontType.REGULAR) {
+            mFontBaloobhaiRegular = Typeface.createFromAsset(mContext.getAssets(), "font/baloobhai_regular.ttf");
+
+            return mFontBaloobhaiRegular;
+        }
+
+        return Typeface.createFromAsset(mContext.getAssets(), "font/baloobhai_regular.ttf");
+    }
+
+    public static Typeface getFontRoboto(FontType mFontType, Context context) {
+
+        Typeface mFontRobotoThin;
+        if (mFontType == FontType.LIGHT) {
+            mFontRobotoThin = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Light.ttf");
+            return mFontRobotoThin;
+        } else if (mFontType == FontType.MEDIUM) {
+            mFontRobotoThin = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
+            return mFontRobotoThin;
+        } else if (mFontType == FontType.THIN) {
+            mFontRobotoThin = Typeface.createFromAsset(context.getAssets(), "font/Roboto-Thin.ttf");
+            return mFontRobotoThin;
+        }
+
+        return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
+    }
+
+    public Typeface getProductNameFont(Context context) {
+        return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
+    }
+}
