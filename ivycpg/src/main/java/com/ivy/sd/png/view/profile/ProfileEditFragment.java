@@ -2950,7 +2950,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 }
             }
         }
-        subchannel.setAdapter(subchannelAdapter);
+        if(subchannel != null && subchannelAdapter != null) {
+            subchannel.setAdapter(subchannelAdapter);
+        }
         subchannel.setSelection(setPos);
         subchannel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {

@@ -4943,11 +4943,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         // Change color if Filter is selected
-        if (!generalbutton.equals(GENERAL))
+        if (generalbutton != null && !generalbutton.equals(GENERAL))
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
 
-        if (!brandbutton.equals(BRAND)) {
+        if (brandbutton != null && !brandbutton.equals(BRAND)) {
             menu.findItem(R.id.menu_product_filter).setIcon(
                     R.drawable.ic_action_filter_select);
         }
@@ -4983,7 +4983,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.productHelper.getInStoreLocation().size() < 2)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
         }
-        if (screenCode.equals(ConfigurationMasterHelper.MENU_ORDER))
+        if (screenCode != null && screenCode.equals(ConfigurationMasterHelper.MENU_ORDER))
             menu.findItem(R.id.menu_loc_filter).setVisible(false);
 
         menu.findItem(R.id.menu_survey).setVisible(bmodel.configurationMasterHelper.floating_Survey);

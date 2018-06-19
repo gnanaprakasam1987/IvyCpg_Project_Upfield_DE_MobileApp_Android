@@ -331,166 +331,167 @@ public class ProfileFragment extends IvyBaseFragment {
         profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
         int size = 0;
-        if (profileConfig != null)
+        if (profileConfig != null) {
             size = profileConfig.size();
-        for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++) {
 
-            int flag = profileConfig.get(i).isFlag();
-            String configCode = profileConfig.get(i).getConfigCode();
+                int flag = profileConfig.get(i).isFlag();
+                String configCode = profileConfig.get(i).getConfigCode();
 
-            if (flag == 1) {
-                switch (configCode) {
-                    case "PROFILE01":
+                if (flag == 1) {
+                    switch (configCode) {
+                        case "PROFILE01":
 
-                        if (retailerObj.getRetailerCode() != null) {
-                            rcodeTxt.setVisibility(View.VISIBLE);
-                            rcodeTxt.setText(retailerObj
-                                    .getRetailerCode());
-                        } else {
-                            rcodeTxt.setVisibility(View.GONE);
-                        }
-
-                        break;
-                    case "PROFILE02":
-                        if (retailerObj.getRetailerName() != null) {
-                            storeTxt.setVisibility(View.VISIBLE);
-                            storeTxt.setText(retailerObj
-                                    .getRetailerName());
-                        } else {
-                            storeTxt.setVisibility(View.GONE);
-                        }
-
-                        break;
-                    case "PROFILE03":
-                        if (retailerObj.getAddress1() != null) {
-                            addressTxt.setVisibility(View.VISIBLE);
-                            addressTxt.setText(retailerObj
-                                    .getAddress1());
-                        } else {
-                            addressTxt.setVisibility(View.GONE);
-                        }
-
-                        break;
-                    case "PROFILE04":
-                        if (retailerObj.getAddress2() != null || addressTxt.getText().toString().length() > 0) {
-                            addressTxt.setVisibility(View.VISIBLE);
-                            if (addressTxt.getText().toString().length() > 0)
-                                addressTxt.append(", " + retailerObj
-                                        .getAddress2());
-                            else
-                                addressTxt.append(retailerObj
-                                        .getAddress2());
-                        } else {
-                            addressTxt.setVisibility(View.GONE);
-                        }
-
-                        break;
-                    case "PROFILE05":
-                        if (retailerObj.getAddress3() != null) {
-                            addressTxt3.setVisibility(View.VISIBLE);
-                            addressTxt3.setText(retailerObj
-                                    .getAddress3());
-                        } else {
-                            addressTxt3.setVisibility(View.GONE);
-                        }
-
-
-                        break;
-                    case "PROFILE30":
-                        if (retailerObj.getContactnumber() != null) {
-                            rContTxt.setVisibility(View.VISIBLE);
-                            contact_lay.setVisibility(View.VISIBLE);
-                            rContTxt.setText(retailerObj.getContactnumber());
-                        } else {
-                            rContTxt.setVisibility(View.GONE);
-                            contact_lay.setVisibility(View.GONE);
-                        }
-
-                        break;
-
-                    case "PROFILE38": {
-                        switch (configCode) {
-                            case "PROFILE39":
-                                if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
-                                    cspTxt.setText(retailerObj.getCity());
-                                break;
-                            case "PROFILE40":
-                                if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
-                                    cspTxt.append(", " + retailerObj.getState());
-                                break;
-                            case "PROFILE38":
-                                if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
-                                    cspTxt.append(" -" + retailerObj.getPincode());
-                                break;
-                        }
-                        cspTxt.setVisibility(View.VISIBLE);
-                        break;
-                    }
-                    case "PROFILE39": {
-                        switch (configCode) {
-                            case "PROFILE39":
-                                if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
-                                    cspTxt.setText(retailerObj.getCity());
-                                break;
-                            case "PROFILE40":
-                                if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
-                                    cspTxt.append(", " + retailerObj.getState());
-                                break;
-                            case "PROFILE38":
-                                if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
-                                    cspTxt.append(" -" + retailerObj.getPincode());
-                                break;
-                        }
-                        cspTxt.setVisibility(View.VISIBLE);
-                        break;
-                    }
-                    case "PROFILE40": {
-                        switch (configCode) {
-                            case "PROFILE39":
-                                if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
-                                    cspTxt.setText(retailerObj.getCity());
-                                break;
-                            case "PROFILE40":
-                                if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
-                                    cspTxt.append(", " + retailerObj.getState());
-                                break;
-                            case "PROFILE38":
-                                if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
-                                    cspTxt.append(" -" + retailerObj.getPincode());
-                                break;
-                        }
-                        cspTxt.setVisibility(View.VISIBLE);
-                        break;
-                    }
-                    case "PROFILE60":
-
-                        if (retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
-                            String[] imgPaths = retailerObj.getProfileImagePath().split("/");
-                            String path = imgPaths[imgPaths.length - 1];
-                            File imgFile = new File(getActivity().getExternalFilesDir(
-                                    Environment.DIRECTORY_DOWNLOADS)
-                                    + "/"
-                                    + bmodel.userMasterHelper.getUserMasterBO()
-                                    .getUserid()
-                                    + DataMembers.DIGITAL_CONTENT
-                                    + "/"
-                                    + DataMembers.PROFILE + "/"
-                                    + path);
-                            if (imgFile.exists()) {
-                                bmodel.getimageDownloadURL();
-                                bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                                initializeTransferUtility();
-                                HashMap<String, String> hashMap = new HashMap<>();
-                                hashMap.put(DataMembers.img_Down_URL + "" + retailerObj.getProfileImagePath(),
-                                        DataMembers.PROFILE);
-                                Thread downloaderThread = new DownloaderThreadNew(getActivity(),
-                                        activityHandler, hashMap,
-                                        bmodel.userMasterHelper.getUserMasterBO()
-                                                .getUserid(), transferUtility);
-                                downloaderThread.start();
+                            if (retailerObj.getRetailerCode() != null) {
+                                rcodeTxt.setVisibility(View.VISIBLE);
+                                rcodeTxt.setText(retailerObj
+                                        .getRetailerCode());
+                            } else {
+                                rcodeTxt.setVisibility(View.GONE);
                             }
+
+                            break;
+                        case "PROFILE02":
+                            if (retailerObj.getRetailerName() != null) {
+                                storeTxt.setVisibility(View.VISIBLE);
+                                storeTxt.setText(retailerObj
+                                        .getRetailerName());
+                            } else {
+                                storeTxt.setVisibility(View.GONE);
+                            }
+
+                            break;
+                        case "PROFILE03":
+                            if (retailerObj.getAddress1() != null) {
+                                addressTxt.setVisibility(View.VISIBLE);
+                                addressTxt.setText(retailerObj
+                                        .getAddress1());
+                            } else {
+                                addressTxt.setVisibility(View.GONE);
+                            }
+
+                            break;
+                        case "PROFILE04":
+                            if (retailerObj.getAddress2() != null || addressTxt.getText().toString().length() > 0) {
+                                addressTxt.setVisibility(View.VISIBLE);
+                                if (addressTxt.getText().toString().length() > 0)
+                                    addressTxt.append(", " + retailerObj
+                                            .getAddress2());
+                                else
+                                    addressTxt.append(retailerObj
+                                            .getAddress2());
+                            } else {
+                                addressTxt.setVisibility(View.GONE);
+                            }
+
+                            break;
+                        case "PROFILE05":
+                            if (retailerObj.getAddress3() != null) {
+                                addressTxt3.setVisibility(View.VISIBLE);
+                                addressTxt3.setText(retailerObj
+                                        .getAddress3());
+                            } else {
+                                addressTxt3.setVisibility(View.GONE);
+                            }
+
+
+                            break;
+                        case "PROFILE30":
+                            if (retailerObj.getContactnumber() != null) {
+                                rContTxt.setVisibility(View.VISIBLE);
+                                contact_lay.setVisibility(View.VISIBLE);
+                                rContTxt.setText(retailerObj.getContactnumber());
+                            } else {
+                                rContTxt.setVisibility(View.GONE);
+                                contact_lay.setVisibility(View.GONE);
+                            }
+
+                            break;
+
+                        case "PROFILE38": {
+                            switch (configCode) {
+                                case "PROFILE39":
+                                    if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
+                                        cspTxt.setText(retailerObj.getCity());
+                                    break;
+                                case "PROFILE40":
+                                    if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
+                                        cspTxt.append(", " + retailerObj.getState());
+                                    break;
+                                case "PROFILE38":
+                                    if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
+                                        cspTxt.append(" -" + retailerObj.getPincode());
+                                    break;
+                            }
+                            cspTxt.setVisibility(View.VISIBLE);
+                            break;
                         }
-                        break;
+                        case "PROFILE39": {
+                            switch (configCode) {
+                                case "PROFILE39":
+                                    if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
+                                        cspTxt.setText(retailerObj.getCity());
+                                    break;
+                                case "PROFILE40":
+                                    if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
+                                        cspTxt.append(", " + retailerObj.getState());
+                                    break;
+                                case "PROFILE38":
+                                    if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
+                                        cspTxt.append(" -" + retailerObj.getPincode());
+                                    break;
+                            }
+                            cspTxt.setVisibility(View.VISIBLE);
+                            break;
+                        }
+                        case "PROFILE40": {
+                            switch (configCode) {
+                                case "PROFILE39":
+                                    if ((retailerObj.getCity() != null) && (!retailerObj.getCity().equalsIgnoreCase("")) && (!retailerObj.getCity().equalsIgnoreCase("null")))
+                                        cspTxt.setText(retailerObj.getCity());
+                                    break;
+                                case "PROFILE40":
+                                    if ((retailerObj.getState() != null) && (!retailerObj.getState().equalsIgnoreCase("")) && (!retailerObj.getState().equalsIgnoreCase("null")))
+                                        cspTxt.append(", " + retailerObj.getState());
+                                    break;
+                                case "PROFILE38":
+                                    if ((retailerObj.getPincode() != null) && (!retailerObj.getPincode().equalsIgnoreCase("")) && (!retailerObj.getPincode().equalsIgnoreCase("null")))
+                                        cspTxt.append(" -" + retailerObj.getPincode());
+                                    break;
+                            }
+                            cspTxt.setVisibility(View.VISIBLE);
+                            break;
+                        }
+                        case "PROFILE60":
+
+                            if (retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
+                                String[] imgPaths = retailerObj.getProfileImagePath().split("/");
+                                String path = imgPaths[imgPaths.length - 1];
+                                File imgFile = new File(getActivity().getExternalFilesDir(
+                                        Environment.DIRECTORY_DOWNLOADS)
+                                        + "/"
+                                        + bmodel.userMasterHelper.getUserMasterBO()
+                                        .getUserid()
+                                        + DataMembers.DIGITAL_CONTENT
+                                        + "/"
+                                        + DataMembers.PROFILE + "/"
+                                        + path);
+                                if (imgFile.exists()) {
+                                    bmodel.getimageDownloadURL();
+                                    bmodel.configurationMasterHelper.setAmazonS3Credentials();
+                                    initializeTransferUtility();
+                                    HashMap<String, String> hashMap = new HashMap<>();
+                                    hashMap.put(DataMembers.img_Down_URL + "" + retailerObj.getProfileImagePath(),
+                                            DataMembers.PROFILE);
+                                    Thread downloaderThread = new DownloaderThreadNew(getActivity(),
+                                            activityHandler, hashMap,
+                                            bmodel.userMasterHelper.getUserMasterBO()
+                                                    .getUserid(), transferUtility);
+                                    downloaderThread.start();
+                                }
+                            }
+                            break;
+                    }
                 }
             }
         }

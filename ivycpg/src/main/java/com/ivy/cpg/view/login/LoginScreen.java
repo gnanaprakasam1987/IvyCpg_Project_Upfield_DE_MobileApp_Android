@@ -569,7 +569,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
      * If there is a progress dialog, dismiss it and set progressDialog to null.
      */
     private void dismissCurrentProgressDialog() {
-        if (progressDialog != null) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.hide();
             progressDialog.dismiss();
             progressDialog = null;
@@ -698,7 +698,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                     loginPresenter.applyOutletPerformancePref();
                     loginPresenter.callUpdateFinish();
                 } else if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
+                    updaterProgressMsg(updateTableCount + " Out of " + String.format("%1$s", totalTableCount) + " Masters Downloaded");
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
@@ -711,7 +711,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                 break;
             case SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
+                    updaterProgressMsg(updateTableCount + " Out of " + String.format("%1$s", totalTableCount) + " Masters Downloaded");
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
@@ -726,7 +726,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                 break;
             case SynchronizationHelper.LAST_VISIT_TRAN_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    updaterProgressMsg(updateTableCount + " " + String.format(getResources().getString(R.string.out_of), totalTableCount));
+                    updaterProgressMsg(updateTableCount + " Out of " + String.format("%1$s", totalTableCount) + " Masters Downloaded");
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
@@ -749,6 +749,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
         super.onDestroy();
         unregisterReceiver(receiver);
         LoginHelper.getInstance(LoginScreen.this).clearInstance();
+        dismissCurrentProgressDialog();
+        dismissAlertDialog();
     }
 
 
@@ -841,8 +843,9 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
 
     @Override
     public void dismissAlertDialog() {
-        if (alertDialog != null) {
+        if (alertDialog != null && alertDialog.isShowing()) {
             alertDialog.dismiss();
+            alertDialog = null;
         }
     }
 
@@ -880,6 +883,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
     }
 
     private void callProgressDialog(String title, String message, int maxValue, Message newMsg, boolean isHorizontalStyle) {
+        try {
+            if (LoginScreen.this.isFinishing()) {
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         progressDialog = new ProgressDialog(LoginScreen.this);
         progressDialog.setTitle(title);
         progressDialog.setMessage(message);
