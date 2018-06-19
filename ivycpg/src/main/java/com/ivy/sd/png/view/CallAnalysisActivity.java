@@ -1744,18 +1744,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
                     break;
-                case DataMembers.NOTIFY_COUNTER_SIH_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-                case DataMembers.NOTIFY_COUNTER_STOCK_APPLY_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-                case DataMembers.NOTIFY_CS_REJECTED_VARIANCE_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
                 case DataMembers.NOTIFY_LP_UPLOADED:
                     alertDialog.dismiss();
                     presenter.upload();

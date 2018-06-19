@@ -803,76 +803,7 @@ public class MyThread extends Thread {
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
             }
 
-        } else if (opt == DataMembers.COUNTER_SIH_UPLOAD) {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-            bmodel = (BusinessModel) ctx.getApplicationContext();
-            bmodel.setContext(ctx);
-
-            if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_SIH_UPLOAD,ctx.getApplicationContext());
-
-                if (bool == 2) {
-                    fragment.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_COUNTER_SIH_UPLOADED);
-                } else if (bool == -1) {
-                    fragment.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-                } else {
-                    fragment.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_UPLOAD_ERROR);
-                }
-            } else {
-                fragment.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_CONNECTION_PROBLEM);
-            }
-        } else if (opt == DataMembers.COUNTER_STOCK_APPLY_UPLOAD) {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-            bmodel = (BusinessModel) ctx.getApplicationContext();
-            bmodel.setContext(ctx);
-
-            if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.COUNTER_STOCK_APPLY_UPLOAD,ctx.getApplicationContext());
-
-                if (bool == 2) {
-                    fragment.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_COUNTER_STOCK_APPLY_UPLOADED);
-                } else if (bool == -1) {
-                    fragment.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-                } else {
-                    fragment.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_UPLOAD_ERROR);
-                }
-            } else {
-                fragment.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_CONNECTION_PROBLEM);
-            }
-        } else if (opt == DataMembers.CS_REJECTED_VARIANCE_UPLOAD) {
-            HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-            bmodel = (BusinessModel) ctx.getApplicationContext();
-            bmodel.setContext(ctx);
-
-            if (bmodel.isOnline()) {
-                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.CS_REJECTED_VARIANCE_UPLOAD,ctx.getApplicationContext());
-
-                if (bool == 2) {
-                    fragment.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_CS_REJECTED_VARIANCE_UPLOADED);
-                } else if (bool == -1) {
-                    fragment.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
-                } else {
-                    fragment.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_UPLOAD_ERROR);
-                }
-            } else {
-                fragment.getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_CONNECTION_PROBLEM);
-            }
-        } else if (opt == DataMembers.SYNCLYTYPTUPLOAD) {
+        }else if (opt == DataMembers.SYNCLYTYPTUPLOAD) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
 

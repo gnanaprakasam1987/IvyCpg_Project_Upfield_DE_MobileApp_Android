@@ -1030,8 +1030,6 @@ public class SurveyHelperNew {
             if ("MENU_SURVEY_SW".equalsIgnoreCase(menuCode)) {
                 type = "SELLER";
                 superwiserID = mSelectedSuperVisiorID;
-            } else if (bmodel.configurationMasterHelper.IS_CNT01 && "MENU_SURVEY01_SW".equalsIgnoreCase(menuCode)) {
-                userid = bmodel.getSelectedUserId();
             }
 
             if (!isFromHomeScreen()) {
@@ -1589,9 +1587,6 @@ public class SurveyHelperNew {
         int surveyId;
         String uid;
         int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
-        if (!isFromCSsurvey() && bmodel.configurationMasterHelper.IS_CNT01) {
-            userid = bmodel.getSelectedUserId();
-        }
 
         boolean isLocalData = false;// to check whether transaction record is there or not
 
@@ -1620,17 +1615,6 @@ public class SurveyHelperNew {
             }
             qsize = sBO.getQuestions().size();
             mAllQuestions.addAll(sBO.getQuestions());
-
-            if (!isFromCSsurvey() && bmodel.configurationMasterHelper.IS_CNT01) {
-                for (int ii = 0; ii < qsize; ii++) {
-                    questionBO = mAllQuestions.get(ii);
-                    if (surveyId == questionBO.getSurveyid()) {
-                        questionBO.getSelectedAnswer().clear();
-                        questionBO.getSelectedAnswerIDs().clear();
-
-                    }
-                }
-            }
 
             if (!"0".equals(uid)) {
 //                qsize = sBO.getQuestions().size();
@@ -1897,10 +1881,6 @@ public class SurveyHelperNew {
 
         String retailerid;
         retailerid = bmodel.getRetailerMasterBO().getRetailerID();
-
-        if (!isFromCSsurvey() && bmodel.configurationMasterHelper.IS_CNT01) {
-            supervisiorId = bmodel.getSelectedUserId();
-        }
         int qsize = 0;
 
 

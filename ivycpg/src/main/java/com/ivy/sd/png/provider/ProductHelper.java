@@ -3285,32 +3285,6 @@ public class ProductHelper {
 
     }
 
-
-    public void updateCounterSalesProductColor() {
-        try {
-            ProductMasterBO product;
-            int siz = productMaster.size();
-            for (int i = 0; i < siz; ++i) {
-                product = productMaster.get(i);
-
-                if (product.getIsMustSell() == 1
-                        && getFilterColor("Filt10") != 0)
-                    product.setTextColor(getFilterColor("Filt10"));
-                else if (product.getIsFocusBrand() == 1
-                        && getFilterColor("Filt11") != 0)
-                    product.setTextColor(getFilterColor("Filt11"));
-                else
-                    product.setTextColor(mContext.getResources().getColor(
-                            android.R.color.black));
-
-            }
-        } catch (Exception e) {
-
-            Commons.printException(e);
-        }
-
-    }
-
     private int getFilterColor(String filtername) {
 
         Vector<ConfigureBO> genfilter = bmodel.configurationMasterHelper

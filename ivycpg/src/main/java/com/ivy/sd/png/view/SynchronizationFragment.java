@@ -656,7 +656,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         else
             menu.findItem(R.id.menu_switch_user).setVisible(false);
 
-        if(!bmodel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT)
+        if (!bmodel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT)
             menu.findItem(R.id.menu_sync_report).setVisible(false);
 
     }
@@ -688,14 +688,14 @@ public class SynchronizationFragment extends IvyBaseFragment
             dialog.setCancelable(false);
             dialog.show(ft, "MENU_SYNC");
 
-        }else if(i==R.id.menu_sync_report){
+        } else if (i == R.id.menu_sync_report) {
             bmodel.reportHelper.downloadSyncStatusReport();
-            if(bmodel.reportHelper.getmSyncStatusBOList().size()>0){
+            if (bmodel.reportHelper.getmSyncStatusBOList().size() > 0) {
                 startActivity(new Intent(getActivity(), SyncStatusActivity.class));
                 getActivity().finish();
                 getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            }else{
-                bmodel.showAlert(getResources().getString(R.string.no_data_exists),0);
+            } else {
+                bmodel.showAlert(getResources().getString(R.string.no_data_exists), 0);
             }
         }
         return true;
@@ -806,18 +806,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
                     break;
-                case DataMembers.NOTIFY_COUNTER_SIH_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-                case DataMembers.NOTIFY_COUNTER_STOCK_APPLY_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-                case DataMembers.NOTIFY_CS_REJECTED_VARIANCE_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
                 case DataMembers.NOTIFY_LP_UPLOADED:
                     alertDialog.dismiss();
                     presenter.upload();
@@ -828,7 +816,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
                     break;
-
                 case DataMembers.NOTIFY_UPLOADED:
                     if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES)
                             && (presenter.getImageFilesCount() > 0 || presenter.getTextFilesCount() > 0)) {
@@ -1162,11 +1149,11 @@ public class SynchronizationFragment extends IvyBaseFragment
         public void handleMessage(Message msg) {
             setDayCloseEnableDisable();
             switch (msg.what) {
-            /*
-             * Handling MESSAGE_UPDATE_PROGRESS_BAR: 1. Get the current
-			 * progress, as indicated in the arg1 field of the Message. 2.
-			 * Update the progress bar.
-			 */
+                /*
+                 * Handling MESSAGE_UPDATE_PROGRESS_BAR: 1. Get the current
+                 * progress, as indicated in the arg1 field of the Message. 2.
+                 * Update the progress bar.
+                 */
                 case DataMembers.MESSAGE_UPDATE_PROGRESS_BAR:
                     if (progressDialog != null) {
                         int currentProgress = msg.arg1;
@@ -1174,12 +1161,12 @@ public class SynchronizationFragment extends IvyBaseFragment
                     }
                     break;
 
-			/*
-             * Handling MESSAGE_CONNECTING_STARTED: 1. Get the URL of the file
-			 * being downloaded. This is stored in the obj field of the Message.
-			 * 2. Create an indeterminate progress bar. 3. Set the message that
-			 * should be sent if user cancels. 4. Show the progress bar.
-			 */
+                /*
+                 * Handling MESSAGE_CONNECTING_STARTED: 1. Get the URL of the file
+                 * being downloaded. This is stored in the obj field of the Message.
+                 * 2. Create an indeterminate progress bar. 3. Set the message that
+                 * should be sent if user cancels. 4. Show the progress bar.
+                 */
                 case DataMembers.MESSAGE_CONNECTING_STARTED:
                     if (msg.obj != null && msg.obj instanceof String) {
                         String url = (String) msg.obj;
@@ -1210,15 +1197,15 @@ public class SynchronizationFragment extends IvyBaseFragment
                     }
                     break;
 
-			/*
-             * Handling MESSAGE_DOWNLOAD_STARTED: 1. Create a progress bar with
-			 * specified max value and current value 0; assign it to
-			 * progressDialog. The arg1 field will contain the max value. 2. Set
-			 * the title and text for the progress bar. The obj field of the
-			 * Message will contain a String that represents the name of the
-			 * file being downloaded. 3. Set the message that should be sent if
-			 * dialog is canceled. 4. Make the progress bar visible.
-			 */
+                /*
+                 * Handling MESSAGE_DOWNLOAD_STARTED: 1. Create a progress bar with
+                 * specified max value and current value 0; assign it to
+                 * progressDialog. The arg1 field will contain the max value. 2. Set
+                 * the title and text for the progress bar. The obj field of the
+                 * Message will contain a String that represents the name of the
+                 * file being downloaded. 3. Set the message that should be sent if
+                 * dialog is canceled. 4. Make the progress bar visible.
+                 */
                 case DataMembers.MESSAGE_DOWNLOAD_STARTED:
                     dismissCurrentProgressDialog();
                     // obj will contain a String representing the file name
@@ -1246,10 +1233,10 @@ public class SynchronizationFragment extends IvyBaseFragment
                     }
                     break;
 
-			/*
-             * Handling MESSAGE_APK_DOWNLOAD_COMPLETE: 1. Remove the progress bar
-			 * from the screen. 2. Display Toast that says download is complete.
-			 */
+                /*
+                 * Handling MESSAGE_APK_DOWNLOAD_COMPLETE: 1. Remove the progress bar
+                 * from the screen. 2. Display Toast that says download is complete.
+                 */
                 case DataMembers.MESSAGE_APK_DOWNLOAD_COMPLETE:
                     dismissCurrentProgressDialog();
                     // Here Code to call dwnloaded apk.
@@ -1290,12 +1277,12 @@ public class SynchronizationFragment extends IvyBaseFragment
 
                     break;
 
-			/*
-             * Handling MESSAGE_ENCOUNTERED_ERROR_APK: 1. Check the obj field of the
-			 * message for the actual error message that will be displayed to
-			 * the user. 2. Remove any progress bars from the screen. 3. Display
-			 * a Toast with the error message.
-			 */
+                /*
+                 * Handling MESSAGE_ENCOUNTERED_ERROR_APK: 1. Check the obj field of the
+                 * message for the actual error message that will be displayed to
+                 * the user. 2. Remove any progress bars from the screen. 3. Display
+                 * a Toast with the error message.
+                 */
                 case DataMembers.MESSAGE_ENCOUNTERED_ERROR_APK:
                     // obj will contain a string representing the error message
                     if (msg.obj != null && msg.obj instanceof String) {
@@ -2349,7 +2336,7 @@ public class SynchronizationFragment extends IvyBaseFragment
             withPhotosCheckBox.setChecked(false);
     }
 
-    private void updateUploadedTime(){
+    private void updateUploadedTime() {
         try {
             SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
             edt.putString("uploadDate",
@@ -2358,26 +2345,25 @@ public class SynchronizationFragment extends IvyBaseFragment
             edt.apply();
 
             updateLastTransactionTimeInView();
-        }
-        catch (Exception ex){
-            Commons.printException(ex);
-        }
-    }
-    private void updateDownloadTime(){
-        try{
-        SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
-        edt.putString("downloadDate",
-                SDUtil.now(SDUtil.DATE_GLOBAL));
-        edt.putString("downloadTime", SDUtil.now(SDUtil.TIME));
-        edt.apply();
-        updateLastTransactionTimeInView();
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
 
-    private void updateLastTransactionTimeInView(){
+    private void updateDownloadTime() {
+        try {
+            SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
+            edt.putString("downloadDate",
+                    SDUtil.now(SDUtil.DATE_GLOBAL));
+            edt.putString("downloadTime", SDUtil.now(SDUtil.TIME));
+            edt.apply();
+            updateLastTransactionTimeInView();
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+    }
+
+    private void updateLastTransactionTimeInView() {
         try {
             TextView textView = view.findViewById(R.id.text_last_sync);
             textView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2394,8 +2380,7 @@ public class SynchronizationFragment extends IvyBaseFragment
             } else {
                 textView.setVisibility(View.GONE);
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
