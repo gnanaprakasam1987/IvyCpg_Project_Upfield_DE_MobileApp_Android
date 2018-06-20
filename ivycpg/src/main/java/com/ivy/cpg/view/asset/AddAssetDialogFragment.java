@@ -97,7 +97,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         Window window = getDialog().getWindow();
         if (window != null) {
-            lp.copyFrom(window.getAttributes());
+            //lp.copyFrom(window.getAttributes()); cmd for device alignment issue
             window.setAttributes(lp);
         }
 
@@ -143,7 +143,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                 if (position != 0
                         && assetTrackingHelper.getAssetBrandNames().size() > 0) {
                     loadBrandData();
-                }else {
+                } else {
                     if (position == 0 || assetTrackingHelper.getAssetBrandNames().size() == 0)
                         ((TextView) getView().findViewById(R.id.brand_spinner_txt)).setVisibility(View.GONE);
                     mBrand.setVisibility(View.GONE);

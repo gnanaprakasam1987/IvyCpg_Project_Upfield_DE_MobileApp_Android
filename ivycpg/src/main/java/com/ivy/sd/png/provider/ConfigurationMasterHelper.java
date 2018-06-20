@@ -532,6 +532,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SUGGESTED_ORDER_LOGIC;//used order screen to calculate so column
     public boolean IS_STOCK_IN_HAND; // used order screen to hide SIH colom
     public boolean IS_INVOICE; // decide seller is van seller or preseller
+    public boolean IS_INVOICE_MASTER;
     public boolean IS_JUMP; // used to avoid jumping in activity menu
     public boolean IS_RETAILER_DEVIATION; // used to stop retailer deviation
     public boolean IS_MAP; // Not used yet
@@ -1664,6 +1665,7 @@ public class ConfigurationMasterHelper {
             this.SHOW_STORE_WISE_DISCOUNT_DLG = false;
             this.SHOW_TOTAL_DISCOUNT_EDITTEXT = false;
             this.IS_WSIH = false;
+            this.IS_INVOICE = false;
 
             ConfigureBO con;
 
@@ -1710,6 +1712,8 @@ public class ConfigurationMasterHelper {
                         this.SHOW_TOTAL_DISCOUNT_EDITTEXT = true;
                     if (configureBO.getConfigCode().equals(CODE_IS_WSIH))
                         this.IS_WSIH = true;
+                    if (configureBO.getConfigCode().equals(CODE_INVOICE))
+                        this.IS_INVOICE = true;
                 }
 
             }
@@ -1904,6 +1908,7 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_GPS_ENABLE_DIALOG = hashMapHHTModuleConfig.get(CODE_GPS_ENABLE) != null ? hashMapHHTModuleConfig.get(CODE_GPS_ENABLE) : false;
         this.IS_INVOICE = hashMapHHTModuleConfig.get(CODE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE) : false;
+        this.IS_INVOICE_MASTER = hashMapHHTModuleConfig.get(CODE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE) : false;
         this.IS_MAP = hashMapHHTModuleConfig.get(CODE_MAP) != null ? hashMapHHTModuleConfig.get(CODE_MAP) : false;
         this.IS_BAIDU_MAP = hashMapHHTModuleConfig.get(CODE_BAIDU_MAP) != null ? hashMapHHTModuleConfig.get(CODE_BAIDU_MAP) : false;
         this.IS_NEW_TASK = hashMapHHTModuleConfig.get(CODE_NEW_TASK) != null ? hashMapHHTModuleConfig.get(CODE_NEW_TASK) : false;
