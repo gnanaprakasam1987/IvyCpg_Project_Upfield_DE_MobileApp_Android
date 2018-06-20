@@ -24,6 +24,8 @@ public interface IvyAppComponent {
 
     DataManager dataManager();
 
+
+
     void inject(BusinessModel businessModel);
 
     void inject(BaseFragment baseFragment);

@@ -1,4 +1,4 @@
-package com.ivy.view.activation;
+package com.ivy.ui.activation;
 
 
 import android.Manifest;

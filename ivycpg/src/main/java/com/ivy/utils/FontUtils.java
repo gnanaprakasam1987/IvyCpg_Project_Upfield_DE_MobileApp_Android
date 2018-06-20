@@ -11,7 +11,7 @@ public class FontUtils {
     }
 
 
-    public static Typeface getFontBalooHai(FontType mFontType, Context mContext) {
+    public static Typeface getFontBalooHai(Context mContext, FontType mFontType) {
         Typeface mFontBaloobhaiRegular;
         if (mFontType == FontType.REGULAR) {
             mFontBaloobhaiRegular = Typeface.createFromAsset(mContext.getAssets(), "font/baloobhai_regular.ttf");

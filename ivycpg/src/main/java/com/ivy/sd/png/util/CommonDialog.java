@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 /**
  * Created by mayuri.v on 4/27/2017.
@@ -139,7 +140,7 @@ public class CommonDialog extends Dialog {
             if (!title.isEmpty() && !title.equals("")) {
                 txtTitle.setVisibility(View.VISIBLE);
                 txtTitle.setText(title);
-                txtTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                txtTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
             }
         }
 
@@ -147,7 +148,7 @@ public class CommonDialog extends Dialog {
 
         TextView msg_text = (TextView) view.findViewById(R.id.msg_text);
         msg_text.setText(msg);
-        msg_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        msg_text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
 
         if (imgDisplay) {
             dialog_img.setVisibility(View.VISIBLE);
@@ -174,7 +175,7 @@ public class CommonDialog extends Dialog {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(dialog_img);
             if (txtTitle.getVisibility() == View.GONE)
-                msg_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                msg_text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
         }
 
 
@@ -207,8 +208,8 @@ public class CommonDialog extends Dialog {
             }
         });
 
-        mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        mCancelBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mDoneBTN.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
+        mCancelBTN.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
 
         if (isMoveNext) {
             TextView text_move_next = (TextView) findViewById(R.id.text_move_next);

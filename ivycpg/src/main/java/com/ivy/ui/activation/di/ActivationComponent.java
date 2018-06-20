@@ -1,8 +1,8 @@
-package com.ivy.view.activation.di;
+package com.ivy.ui.activation.di;
 
 import com.ivy.core.di.component.IvyAppComponent;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.view.activation.view.ActivationActivity;
+import com.ivy.ui.activation.view.ActivationActivity;
 
 import javax.inject.Singleton;
 
