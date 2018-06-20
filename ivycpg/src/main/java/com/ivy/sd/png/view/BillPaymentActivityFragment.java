@@ -1174,7 +1174,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 }
                 sb.append(doPrintFormatingLeft("Total ", 7));
                 sb.append(doPrintAddSpace(0, 15));
-                sb.append(doPrintFormatingRight(String.format("%14s", bmodel.formatValueBasedOnConfig(total)), 13));
+                sb.append(doPrintFormatingRight(String.format("%14s", bmodel.formatValueBasedOnConfig(total) + " MXN"), 13));
                 sb.append(LineFeed(1));
 
                 for (int i = 0; i < 36; i++) {

@@ -21,5 +21,7 @@ To Release
 1. Set activation to true in AppConfiguration.java
 2. Sign using ivy.keystore
 
+Environment Pre-Requsite
 
+1. Create a filled call keystore.properties under source code folder.
 

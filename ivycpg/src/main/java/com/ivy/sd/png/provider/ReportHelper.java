@@ -998,7 +998,7 @@ public class ReportHelper {
             paymentList = new ArrayList<>();
             parentPaymentList = new ArrayList<>();
             childPaymentList = new ArrayList<>();
-
+            lstPaymentBObyGroupId = new HashMap<>();
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1016,7 +1016,7 @@ public class ReportHelper {
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
                 if (c.getCount() > 0) {
-                    lstPaymentBObyGroupId = new HashMap<>();
+
                     while (c.moveToNext()) {
                         PaymentBO paybo = new PaymentBO();
                         paybo.setRetailerName(c.getString(0));

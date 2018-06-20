@@ -1409,4 +1409,34 @@ public class SalesReturnHelper {
         return orderList;
 
     }
+
+    public void deleteSalesReturnByOrderId(DBUtil db,String orderId){
+
+        try {
+            String sb = "select uid from SalesReturnHeader where RetailerID=" +
+                    bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
+                    " and upload='N' and RefModuleTId=" + orderId;
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    String uid = c.getString(0);
+                    db.deleteSQL(DataMembers.tbl_SalesReturnHeader, "RefModuleTId="
+                            + DatabaseUtils.sqlEscapeString(uid), false);
+                    db.deleteSQL(DataMembers.tbl_SalesReturnDetails, "RefModuleTId="
+                            + DatabaseUtils.sqlEscapeString(uid), false);
+                    db.deleteSQL(DataMembers.tbl_SalesReturnReplacementDetails, "RefModuleTId=" + DatabaseUtils.sqlEscapeString(uid), false);
+
+                    if ((bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION
+                            || bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
+                            && bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase(CREDIT_TYPE))
+                        db.deleteSQL(DataMembers.tbl_credit_note, "refno="
+                                + DatabaseUtils.sqlEscapeString(uid), false);
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+    }
 }

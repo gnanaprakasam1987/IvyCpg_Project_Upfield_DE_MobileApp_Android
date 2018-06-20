@@ -232,6 +232,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         mWeekList.add(getResources().getString(R.string.week2));
         mWeekList.add(getResources().getString(R.string.week3));
         mWeekList.add(getResources().getString(R.string.week4));
+        mSelectedWeek=getResources().getString(R.string.all);
 
         // for mapping with db
         mWeekMap.put(getResources().getString(R.string.all), getResources()
@@ -290,15 +291,15 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         Commons.print("filter"
                                 + bmodel.getRetailerMaster().get(i).getWeekNo()
                                 + " "
-                                + spinnerbrand.getSelectedItem().toString()
+                                + mSelectedDay
                                 .substring(0, 3));
-                        if (!spinnerbrand.getSelectedItem().toString().equalsIgnoreCase("all")) {
+                        if (!mSelectedDay.equalsIgnoreCase("all")) {
                             if (bmodel
                                     .getRetailerMaster()
                                     .get(i)
                                     .getWeekNo()
                                     .contains(
-                                            spinnerbrand.getSelectedItem().toString()
+                                            mSelectedDay
                                                     .substring(0, 2).toUpperCase()))
                                 if (filter != null) {
                                     if (bmodel.getRetailerMaster().get(i)
@@ -331,16 +332,15 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         }
                     } else {
                         weekno = bmodel.getRetailerMaster().get(i).getWeekNo();
-                        if (!spinnerbrand.getSelectedItem().toString().equalsIgnoreCase("all")) {
+                        if (!mSelectedDay.equalsIgnoreCase("all")) {
                             if (bmodel
                                     .getRetailerMaster()
                                     .get(i)
                                     .getWeekNo()
                                     .contains(
-                                            spinnerbrand.getSelectedItem().toString()
+                                            mSelectedDay
                                                     .substring(0, 2).toUpperCase())) {
-                                start = weekno.indexOf(spinnerbrand.getSelectedItem()
-                                        .toString().substring(0, 2).toUpperCase());
+                                start = weekno.indexOf(mSelectedDay.substring(0, 2).toUpperCase());
                                 end = weekno.indexOf(";", start);
                                 if (weekno.substring(start, end).contains(
                                         mWeekMap.get(mSelectedWeek))) {
@@ -406,7 +406,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
     private void loadDataByBeatFilter(BeatMasterBO beatBo, String searchStr) {
         retailer = new ArrayList<>();
-        if (!("All").equals(beatBo.getBeatDescription())) {
+        if (!(getResources()
+                .getString(R.string.all)).equals(beatBo.getBeatDescription())) {
             for (RetailerMasterBO retailerMasterBO : bmodel.getRetailerMaster()) {
                 if (retailerMasterBO.getBeatID() == beatBo.getBeatId()) {
                     if (searchStr != null) {
@@ -689,8 +690,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
                 StandardListBO sdbo = (StandardListBO) parent
                         .getItemAtPosition(position);
-                mSelectedDay = sdbo.getListCode();
-                Commons.print("day" + mSelectedDay);
+                mSelectedDay = spinnerbrand.getSelectedItem().toString();
                 loadData(null);
             }
 
