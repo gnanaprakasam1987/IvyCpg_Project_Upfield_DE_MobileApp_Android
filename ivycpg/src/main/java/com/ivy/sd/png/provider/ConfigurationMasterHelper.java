@@ -868,6 +868,7 @@ public class ConfigurationMasterHelper {
     public int LOAD_STOCK_COMPETITOR = 0;
 
     public int DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+    public int MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     public int MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     private static final String CODE_LOCATION_TIMER_PERIOD = "LOCTIMER";
     public int LOCATION_TIMER_PERIOD = 20;
@@ -3663,6 +3664,7 @@ public class ConfigurationMasterHelper {
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
             DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+            MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
             MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
             LOAD_REMARKS_FIELD_STRING = "";
             SHOW_INCLUDE_BILL_TAX = false;
@@ -4054,7 +4056,15 @@ public class ConfigurationMasterHelper {
                 if (codeSplit[0] != null && !codeSplit[0].equals(""))
                     DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
                 if (codeSplit[1] != null && !codeSplit[1].equals(""))
-                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
+                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
+                if (codeSplit[2] != null && !codeSplit[2].equals(""))
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[2]);
+                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER < MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                }
+                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER > MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                }
             }
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
