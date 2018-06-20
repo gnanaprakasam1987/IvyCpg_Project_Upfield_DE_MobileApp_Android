@@ -3,6 +3,8 @@ package com.ivy.ui.activation.di;
 
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.activation.ActivationContract;
+import com.ivy.ui.activation.data.ActivationDataManager;
+import com.ivy.ui.activation.data.ActivationDataManagerImpl;
 import com.ivy.ui.activation.presenter.ActivationPresenterImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
@@ -14,6 +16,10 @@ import io.reactivex.disposables.CompositeDisposable;
 @Module
 public class ActivationModule {
 
+    @Provides
+    ActivationDataManager providesActivationDataManager() {
+        return new ActivationDataManagerImpl();
+    }
 
     @Provides
     CompositeDisposable provideCompositeDisposable() {

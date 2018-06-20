@@ -60,24 +60,26 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @OnClick(R.id.activate)
     void onActivateClick() {
-        if (hasPermission(Manifest.permission.READ_PHONE_STATE))
-            if (!DeviceUtils.getIMEINumber(this).matches("[0]+"))
-                mActivationPresenter.validateActivationKey(mActivationKeyEdt.getText().toString());
+        if (isNetworkConnected())
+            if (hasPermission(Manifest.permission.READ_PHONE_STATE))
+                if (!DeviceUtils.getIMEINumber(this).matches("[0]+"))
+                    mActivationPresenter.validateActivationKey(mActivationKeyEdt.getText().toString());
+                else
+                    showMessage(R.string.telephony_not_avail);
             else
-                showMessage(R.string.telephony_not_avail);
-        else
-            showMessage(getString(R.string.permission_enable_msg) + " " + getString(R.string.permission_phone));
+                showMessage(getString(R.string.permission_enable_msg) + " " + getString(R.string.permission_phone));
     }
 
     @OnClick(R.id.tv_already_activated)
-    void onAlreadyActivatedClick(){
-        if (hasPermission(Manifest.permission.READ_PHONE_STATE))
-            if (!DeviceUtils.getIMEINumber(this).matches("[0]+"))
-                mActivationPresenter.triggerIMEIActivation(DeviceUtils.getIMEINumber(this));
+    void onAlreadyActivatedClick() {
+        if (isNetworkConnected())
+            if (hasPermission(Manifest.permission.READ_PHONE_STATE))
+                if (!DeviceUtils.getIMEINumber(this).matches("[0]+"))
+                    mActivationPresenter.triggerIMEIActivation(DeviceUtils.getIMEINumber(this),AppUtils.getApplicationVersionName(this),AppUtils.getApplicationVersionNumber(this));
+                else
+                    showMessage(R.string.telephony_not_avail);
             else
-                showMessage(R.string.telephony_not_avail);
-        else
-            showMessage(getString(R.string.permission_enable_msg) + " " + getString(R.string.permission_phone));
+                showMessage(getString(R.string.permission_enable_msg) + " " + getString(R.string.permission_phone));
 
     }
 
@@ -85,6 +87,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     protected void getMessageFromAliens() {
 
     }
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -104,6 +107,11 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @Override
     public void navigateToLoginScreen() {
+
+    }
+
+    @Override
+    public void showInvalidUrlError() {
 
     }
 }

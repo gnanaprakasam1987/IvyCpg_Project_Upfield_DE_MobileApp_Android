@@ -14,6 +14,8 @@ public interface ActivationContract {
 
         void navigateToLoginScreen();
 
+        void showInvalidUrlError();
+
     }
 
     @PerActivity
@@ -21,7 +23,9 @@ public interface ActivationContract {
 
          void validateActivationKey(String activationKey);
 
-         void triggerIMEIActivation(String imei);
+         void triggerIMEIActivation(String imei, String versionName,String versionNumber);
+
+         void checkServerStatus(String url);
     }
 
 
