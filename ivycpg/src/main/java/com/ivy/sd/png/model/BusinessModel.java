@@ -3510,6 +3510,7 @@ public class BusinessModel extends Application {
                             DataMembers.actHomeScreenTwo);
                 } else if (idd == DataMembers.NOTIFY_CLOSE_HOME) {
                     HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) ctx).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                    if(currentFragment!=null)
                     currentFragment.refreshList(false);
                 } else if (idd == DataMembers.NOTIFY_SALES_RETURN_SAVED) {
                     SalesReturnSummery frm = (SalesReturnSummery) ctx;
@@ -7005,7 +7006,8 @@ public class BusinessModel extends Application {
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
         slbo = new StandardListBO();
-        slbo.setListName("All");
+        slbo.setListName(getResources()
+                .getString(R.string.all));
         slist.add(slbo);
         Cursor c = db
                 .selectSQL("select ListId,ListCode,ListName from StandardListMaster where ListType='WEEKDAY_TYPE'");

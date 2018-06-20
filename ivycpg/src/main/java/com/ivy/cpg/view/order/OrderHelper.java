@@ -1395,6 +1395,8 @@ public class OrderHelper {
                     + businessModel.QT(orderId) + " and upload='N'", false);
             db.deleteSQL(DataMembers.tbl_OrderDiscountDetail, "OrderID="
                     + businessModel.QT(orderId) + " and upload='N'", false);
+            SalesReturnHelper.getInstance(context).deleteSalesReturnByOrderId(db,orderId);
+
             // update SBD Distribution Percentage based on its history and ordered detail's
             SBDHelper.getInstance(context).calculateSBDDistribution(context.getApplicationContext());
             int sbdTgt = businessModel.getRetailerMasterBO()
@@ -3305,19 +3307,22 @@ public class OrderHelper {
 
     public boolean isPendingReplaceAmt() {
 
-        float totalReturnAmount = 0;
-        float totalReplaceAmount = 0;
+        double totalReturnAmount = 0;
+        double totalReplaceAmount = 0;
 
         for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
             if (reasonList != null) {
+                int totalReturnQty=0;
                 for (SalesReturnReasonBO reasonBO : reasonList) {
                     if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
                         //Calculate sales return total qty and price.
                         int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
-                        totalReturnAmount = totalReturnAmount + (totalQty * product.getSrp());
+
+                        totalReturnQty+=totalQty;
                     }
                 }
+                totalReturnAmount+=(totalReturnQty*product.getSrp());
             }
             // Calculate replacement qty price.
             int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());

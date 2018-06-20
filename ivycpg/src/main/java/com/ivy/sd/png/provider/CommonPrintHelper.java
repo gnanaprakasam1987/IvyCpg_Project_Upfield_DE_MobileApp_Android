@@ -570,8 +570,10 @@ public class CommonPrintHelper {
             value = label + SDUtil.now(SDUtil.TIME);
         } else if (tag.equalsIgnoreCase(TAG_DELIVERY_DATE)) {
             String deliveryDate = bmodel.getDeliveryDate(bmodel.getRetailerMasterBO().getRetailerID());
-            String delDate = DateUtil.convertFromServerDateToRequestedFormat(deliveryDate, bmodel.configurationMasterHelper.outDateFormat);
-            value = label + delDate;
+            if(!deliveryDate.equals("")) {
+                String delDate = DateUtil.convertFromServerDateToRequestedFormat(deliveryDate, bmodel.configurationMasterHelper.outDateFormat);
+                value = label + delDate;
+            }
         } else if (tag.equalsIgnoreCase(TAG_INVOICE_NUMBER)) {
             value = label + bmodel.invoiceNumber;
         } else if (tag.equalsIgnoreCase(TAG_DISTRIBUTOR_NAME)) {
@@ -1471,9 +1473,10 @@ public class CommonPrintHelper {
 
 
         // load tax details
-        bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+        bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(orderHelper.getOrderId().replaceAll("\'", ""));
         // load tax product details
-        bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+        bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(orderHelper.getOrderId().replaceAll("\'", ""));
+
 
         ArrayList<TaxBO> groupIdList = bmodel.productHelper.taxHelper.getGroupIdList();
 
@@ -2004,6 +2007,7 @@ public class CommonPrintHelper {
     }
 
     private void resetValues() {
+        mInvoiceData=new StringBuilder();
         total_line_value_incl_tax = 0;
         mBillLevelDiscountValue = 0;
         mEmptyTotalValue = 0;

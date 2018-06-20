@@ -4454,7 +4454,8 @@ public class ConfigurationMasterHelper {
         setGenFilter(new Vector<ConfigureBO>());
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPrefs.getString("languagePref", ApplicationConfigs.LANGUAGE);
+        String language = sharedPrefs.getString("languagePref",
+                ApplicationConfigs.LANGUAGE);
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4465,7 +4466,7 @@ public class ConfigurationMasterHelper {
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and lower(MenuType)="
                     + bmodel.QT("FILTER").toLowerCase()
-                    + " and lang='en' order by RField";
+                    + " and lang="+bmodel.QT(language)+" order by RField";
 
             Cursor c = db.selectSQL(sql);
 

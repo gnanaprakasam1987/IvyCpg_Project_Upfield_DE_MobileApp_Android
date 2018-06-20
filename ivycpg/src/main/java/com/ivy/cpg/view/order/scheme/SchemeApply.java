@@ -443,7 +443,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         .findViewById(R.id.qtyLayout);
                 holder.upArrow = view.findViewById(R.id.uparrow);
                 holder.tv_label_qtytitle = view.findViewById(R.id.tv_qtytitle);
-
+                holder.text_stock_availability = (TextView) view
+                        .findViewById(R.id.text_stock_availability);
                 //typeface
                 holder.productNameTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.schemeTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
@@ -458,6 +459,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.amountET.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.percentET.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.tv_label_qtytitle.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.text_stock_availability.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
                 ((TextView) view.findViewById(R.id.tv_qtytitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 ((TextView) view.findViewById(R.id.tv_pricetitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -554,6 +556,14 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
                                 QUANTITY = null;
                                 if (isChecked) {
+
+                                    holder.text_stock_availability.setVisibility(View.GONE);
+                                    if(!holder.schemeBO.isSihAvailableForFreeProducts()){
+                                        holder.text_stock_availability.setVisibility(View.VISIBLE);
+                                        holder.quantityCB.setChecked(false);
+                                        holder.showFreeBTN.setEnabled(false);
+                                        return;
+                                    }
 
                                     if (holder.schemeBO.isPriceTypeSeleted()) {
                                         holder.priceCB.setChecked(false);
@@ -1129,6 +1139,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.percentET.setEnabled(false);
                 holder.percentET.setClickable(false);
 
+                if(!holder.schemeBO.isSihAvailableForFreeProducts()){
+                    holder.quantityCB.setChecked(false);
+                    holder.showFreeBTN.setEnabled(false);
+                }
+
             } else if (holder.schemeBO.isPriceTypeSeleted()) {
 
                 holder.quantityCB.setChecked(false);
@@ -1334,7 +1349,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         ;
         // Range
         private TextView quantityRangeTV, percentRangeTV;
-        private TextView priceRangeTV, amountRangeTV;
+        private TextView priceRangeTV, amountRangeTV,text_stock_availability;
         // Entry
         private EditText priceET, amountET, percentET;
         // CheckBox

@@ -310,10 +310,10 @@ public class TaxHelper implements TaxInterface {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from invoicetaxdetails IT");
+            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from OrderTaxDetails IT");
             sb.append(" inner join taxmaster TM on IT.groupid=TM.Groupid and IT.TaxType=TM.taxtype ");
             sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
-            sb.append(" where invoiceid=" + mBusinessModel.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc");
+            sb.append(" where orderid=" + mBusinessModel.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 int groupid = 0;
@@ -392,10 +392,10 @@ public class TaxHelper implements TaxInterface {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from invoicetaxdetails IT");
+            sb.append("select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from OrderTaxDetails IT");
             sb.append(" left join taxmaster TM on IT.groupid=TM.Groupid");
             sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
-            sb.append(" where invoiceid=" + mBusinessModel.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate");
+            sb.append(" where orderid=" + mBusinessModel.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 String groupid = "";
@@ -703,9 +703,11 @@ public class TaxHelper implements TaxInterface {
         values.append(taxBO.getTaxType() + "," + taxvalue
                 + "," + mBusinessModel.getRetailerMasterBO().getRetailerID());
         values.append("," + taxBO.getGroupId() + ",0");
-        db.insertSQL("InvoiceTaxDetails", columns, values.toString());
+
         db.insertSQL("OrderTaxDetails", columns, values.toString());
-        values = null;
+        if( mBusinessModel.getRetailerMasterBO().getIsVansales()==1)
+            db.insertSQL("InvoiceTaxDetails", columns, values.toString());
+
 
 
     }
