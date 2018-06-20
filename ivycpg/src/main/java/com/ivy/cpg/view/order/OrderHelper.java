@@ -505,8 +505,8 @@ public class OrderHelper {
                 }
 
                 SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
-                if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                        || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                if (schemeHelper.IS_SCHEME_ON
+                        && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
                     schemeHelper.insertSchemeDetails(uid, db);
                 }
                 schemeHelper.insertAccumulationDetails(mContext, db, uid);
@@ -553,7 +553,8 @@ public class OrderHelper {
                 Commons.printException(e1);
             }
 
-            if (businessModel.configurationMasterHelper.TAX_SHOW_INVOICE && !businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && !businessModel.configurationMasterHelper.IS_INVOICE) {
+            if (businessModel.configurationMasterHelper.TAX_SHOW_INVOICE
+                    && !businessModel.configurationMasterHelper.IS_INVOICE) {
                 businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                 businessModel.productHelper.taxHelper.applyBillWiseTax(businessModel.getOrderHeaderBO().getOrderValue());
                 businessModel.productHelper.taxHelper.insertOrderTaxList(uid, db);
@@ -1044,7 +1045,8 @@ public class OrderHelper {
                     Commons.printException(e1);
                 }
 
-                if (businessModel.configurationMasterHelper.TAX_SHOW_INVOICE && !businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && !businessModel.configurationMasterHelper.IS_INVOICE) {
+                if (businessModel.configurationMasterHelper.TAX_SHOW_INVOICE
+                        && !businessModel.configurationMasterHelper.IS_INVOICE) {
                     businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                     businessModel.productHelper.taxHelper.applyBillWiseTax(businessModel.getOrderHeaderBO().getOrderValue());
                     businessModel.productHelper.taxHelper.insertOrderTaxList(uid, db);

@@ -1463,7 +1463,7 @@ public class BusinessModel extends Application {
                             + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
-                            + " and IsSystemComputed = 'YES') = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent"
+                            + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent"
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
@@ -2280,6 +2280,22 @@ public class BusinessModel extends Application {
                     || product.getOrderedPcsQty() > 0
                     || product.getOrderedOuterQty() > 0)
                 return true;
+
+
+            if (configurationMasterHelper.SHOW_STOCK_SP
+                    || configurationMasterHelper.SHOW_STOCK_SC
+                    || configurationMasterHelper.SHOW_SHELF_OUTER) {
+                int cSize2 = product.getLocations().size();
+                for (int f = 0; f < cSize2; f++) {
+                    if (product.getLocations().get(f).getAvailability() != -1
+                            || product.getLocations().get(f).getReasonId() != 0
+                            || product.getLocations().get(f).getShelfPiece() != -1
+                            || product.getLocations().get(f).getShelfCase() != -1
+                            || product.getLocations().get(f).getShelfOuter() != -1) {
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }
@@ -6036,7 +6052,7 @@ public class BusinessModel extends Application {
                     }
                 }
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -7047,9 +7063,14 @@ public class BusinessModel extends Application {
         negativeBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         negativeBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
 
-        Button postiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        postiveBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        postiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+        Button positiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        positiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        Button neutralBtn = dialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+        neutralBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        neutralBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
         // Set title divider color
         int titleDividerId = getResources().getIdentifier("titleDivider", "id", "android");
         View titleDivider = dialog.findViewById(titleDividerId);
