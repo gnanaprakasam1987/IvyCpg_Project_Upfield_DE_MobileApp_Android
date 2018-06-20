@@ -950,13 +950,6 @@ SynchronizationHelper {
                     "union select count(uid) from VanDeliveryDetail where upload='N'" +
                     "union select count(uid) from SalesReturnReplacementDetails where upload='N'" +
                     "union select count(uid) from SalesReturnTaxDetails where upload='N'" +
-                    "union select count(uid) from CS_StockEntryDetails where upload='N'" +
-                    "union select count(uid) from CS_StockEntryHeader where upload='N'" +
-                    "union select count(uid) from CS_CustomerConcernDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerSaleDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerSampleGivenDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerTrialDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerVisitHeader where upload='N'" +
                     "union select count(Tid) from ExpenseHeader where upload='N'" +
                     "union select count(Tid) from RetailerContractRenewalDetails where upload='N'" +
                     "union select count(uid) from LeaveApprovalDetails where upload='N'" +
@@ -971,11 +964,6 @@ SynchronizationHelper {
                     "union select count(RetailerId) from RetailerPriorityProducts where upload='N'" +
                     "union select count(UID) from LoyaltyRedemptionDetail where upload='N'" +
                     "union select count(UID) from LoyaltyRedemptionHeader where upload='N'" +
-                    "union select count(pid) from CS_SIHDetails where upload='N'" +
-                    "union select count(receipt_id) from CS_StockReceiptHeader where upload='N'" +
-                    "union select count(uid) from CS_RejectedVarianceStatus where upload='N'" +
-                    "union select count(uid) from CS_GroomingHeader where upload='N'" +
-                    "union select count(uid) from CS_StockEntryVarianceHeader where upload='N'" +
                     "union select count(Tid) from ModuleActivityDetails where upload='N'" +
                     "union select count(uid) from AttendanceTimeDetails where upload='N'" +
                     "union select count(UID) from NonFieldActivity where upload='N'" +
@@ -4103,38 +4091,6 @@ SynchronizationHelper {
 
     };
 
-
-    public boolean isSaleDrafted() {
-        DBUtil db = null;
-        boolean check = true;
-        try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            int counts = 0;
-
-            Cursor c = db
-                    .selectSQL("select COUNT(pid) from CS_CustomerSaleDetails where upload='I'");
-            if (c != null) {
-                if (c.moveToFirst())
-                    counts = c.getInt(0);
-            }
-            Commons.print("Count of isSaleDrafter not completed : ," + counts + "");
-            c.close();
-            db.close();
-
-            if (counts > 0) {
-                check = false;
-            } else {
-                check = true;
-            }
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return check;
-    }
 
     public File getStorageDir(String folderName) {
 

@@ -122,7 +122,6 @@ import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.ExpenseSheetHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
-import com.ivy.sd.png.provider.GroomingHelper;
 import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
@@ -278,7 +277,6 @@ public class BusinessModel extends Application {
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
     public AttendanceHelper mAttendanceHelper;
-    public GroomingHelper groomingHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
     public EmptyReconciliationHelper mEmptyReconciliationhelper;
     public EmptyReturnHelper mEmptyReturnHelper;
@@ -452,7 +450,6 @@ public class BusinessModel extends Application {
 
         //mPriceTrackingHelper = PriceTrackingHelper.getInstance(this);
         mAttendanceHelper = AttendanceHelper.getInstance(this);
-        groomingHelper = GroomingHelper.getInstance(this);
         competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
         mEmptyReconciliationhelper = EmptyReconciliationHelper
                 .getInstance(this);
@@ -7279,27 +7276,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    public void getCounterIdForUser() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        try {
-
-            db.openDataBase();
-            Cursor c = db.selectSQL("select CM.counter_id,counter_name from CS_CounterUserMapping CUM " +
-                    "INNER JOIN CS_CounterMaster CM ON CM.counter_id=CUM.counter_id " +
-                    "where userid=" + userMasterHelper.getUserMasterBO().getUserid());
-            if (c != null) {
-                if (c.moveToNext()) {
-                    userMasterHelper.getUserMasterBO().setCounterId(c.getInt(0));
-                    userMasterHelper.getUserMasterBO().setCounterName(c.getString(1));
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-    }
 
     private int counterId = 0;
 
