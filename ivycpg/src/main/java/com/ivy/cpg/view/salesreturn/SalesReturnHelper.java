@@ -557,8 +557,9 @@ public class SalesReturnHelper {
                         isData = true;
                     }
                 }
-                product.setSalesReturnReasonList(ProductHelper
-                        .cloneIsolateList(product));
+                if (!module.equals("ORDER"))
+                    product.setSalesReturnReasonList(ProductHelper
+                            .cloneIsolateList(product));
             }
 
             // insert sales replacement and decrease the stock in hand.

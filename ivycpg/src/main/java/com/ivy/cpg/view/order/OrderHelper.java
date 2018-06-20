@@ -578,7 +578,7 @@ public class OrderHelper {
             this.invoiceDiscount = businessModel.getOrderHeaderBO().getDiscount() + "";
 
             try {
-                if (!businessModel.configurationMasterHelper.IS_INVOICE)
+               // if (!businessModel.configurationMasterHelper.IS_INVOICE)
                     businessModel.getRetailerMasterBO().setVisit_Actual(
                             (float) getRetailerOrderValue(mContext, businessModel.retailerMasterBO
                                     .getRetailerID()));
@@ -2285,11 +2285,11 @@ public class OrderHelper {
         double f = 0;
         try {
             Cursor c;
-            if (businessModel.configurationMasterHelper.IS_INVOICE)
+          /*  if (businessModel.configurationMasterHelper.IS_INVOICE)
                 c = db.selectSQL("SELECT sum(invNetAmount) FROM InvoiceMaster where retailerid="
                         + retailerId);
 
-            else
+            else*/
                 c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' and retailerid=" + retailerId);
 
 

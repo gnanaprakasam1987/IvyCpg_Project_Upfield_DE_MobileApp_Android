@@ -182,7 +182,6 @@ import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
-import com.squareup.leakcanary.LeakCanary;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -737,11 +736,6 @@ public class BusinessModel extends Application {
     public void onCreate() {
         super.onCreate();
         try {
-            if (LeakCanary.isInAnalyzerProcess(this)) {
-// This process is dedicated to LeakCanary for heap analysis.
-// You should not init your app in this process.
-            }
-            LeakCanary.install(this);
 
             mInstance = this;
             //Glide - Circle Image Transform
@@ -2492,6 +2486,33 @@ public class BusinessModel extends Application {
 
         db.closeDB();
     }
+
+    /**
+     * kellogs specific
+     */
+    public void downloadDailyReportKellogs() {
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuffer sb = new StringBuffer();
+        Cursor c = null;
+
+        sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
+        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setKlgsEffCoverage(c.getString(0));
+                dailyRep.setKlgsTotLines(c.getInt(1) + "");
+                dailyRep.setKlgsTotValue(c.getDouble(2) + "");
+            }
+            c.close();
+        }
+
+        db.closeDB();
+    }
+
 
     /**
      * @param orderType 0 - piece; 1 - outer; 2 - case
@@ -4557,6 +4578,52 @@ public class BusinessModel extends Application {
         return productive_calls;
     }
 
+    public int getProductiveCallsForTheDayKlgs() {
+        int productive_calls = 0;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = null;
+
+            // c =
+            // db.selectSQL("select distinct(RetailerId) from OrderHeader");
+            loadProductiveCallsConfig();
+            if (PRD_FOR_ORDER) {
+                if (beatMasterHealper.getTodayBeatMasterBO() == null
+                        || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                    c = db.selectSQL("select  distinct(Retailerid) from OrderHeader where upload!='X'");
+                } else {
+                    c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
+                            + "o.retailerid=r.retailerid where o.upload!='X' ");// where
+                    // r.isdeviated='N'
+                }
+            } else if (PRD_FOR_SKT) {
+                if (beatMasterHealper.getTodayBeatMasterBO() == null
+                        || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                    c = db.selectSQL("select  distinct(RetailerID) from ClosingStockHeader");
+                } else {
+                    c = db.selectSQL("select  distinct(CSH.RetailerID) from ClosingStockHeader CSH INNER JOIN RetailerMaster RM on "
+                            + "CSH.RetailerID=RM.RetailerID ");
+                }
+            }
+
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    productive_calls = c.getCount();
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return productive_calls;
+    }
+
     /* This method will download the config for the productivecall. Based on the RField
      * value the productive config will turn ON and accordingly the productiveCalls values will be computed*/
 
@@ -4615,12 +4682,12 @@ public class BusinessModel extends Application {
                 ret.setVisit_Actual(0);
             }
 
-            if (configurationMasterHelper.IS_INVOICE) {
+           /* if (configurationMasterHelper.IS_INVOICE) {
                 c = db.selectSQL("select Retailerid, sum(invNetamount) from InvoiceMaster where invoicedate = "
                         + QT(userMasterHelper.getUserMasterBO().getDownloadDate()) + " group by retailerid");
-            } else {
-                c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
-            }
+            } else {*/
+            c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
+            //}
             if (c != null) {
                 while (c.moveToNext()) {
                     for (int i = 0; i < siz; i++) {
@@ -6036,7 +6103,7 @@ public class BusinessModel extends Application {
                     }
                 }
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -8824,7 +8891,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select count(distinct orderid),sum(ordervalue) from OrderHeader");
+                    .selectSQL("select count(distinct orderid),sum(ordervalue) from OrderHeader where invoicestatus =0 ");
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
