@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -21,16 +22,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.utils.NetworkUtils;
+
+import java.util.Locale;
 
 import butterknife.Unbinder;
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView {
 
 
-
     private Unbinder mUnBinder;
-
 
     /**
      * Always set you layout reference using this method
@@ -61,10 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         setUpViews();
 
         initVariables();
-
-        initializeDi();
     }
-
 
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -93,6 +92,41 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     @Override
     public void onError(int resId) {
         onError(getString(resId));
+    }
+
+
+    @Override
+    public void handleLayoutDirection(String language) {
+        /*Local Configuration Change Language and layout direction */
+        Configuration config = new Configuration();
+        Locale locale = config.locale;
+        if (!Locale.getDefault().equals(language)) {
+            locale = new Locale(language.substring(0, 2));
+            Locale.setDefault(locale);
+            config.locale = locale;
+            getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+
+            /*Below code used to change the layout direction */
+            if (locale.getLanguage().equalsIgnoreCase("ar"))
+                setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            else
+                setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+
+        }
+    }
+
+    /**
+     * Changes layout direction
+     *
+     * @param direction 0 or 1
+     *                  View.LAYOUT_DIRECTION_RTL 1
+     *                  View.LAYOUT_DIRECTION_LTR 0
+     */
+    @Override
+    public void setLayoutDirection(int direction) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            this.getWindow().getDecorView().setLayoutDirection(direction);
+        }
     }
 
     @Override
@@ -253,9 +287,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public void setScreenTitle(String title) {
         this.screenTitle = title;
         TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);
-       // mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        // mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mScreenTitleTV.setText(title);
-
 
 
     }
@@ -265,9 +298,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public String getScreenTitle() {
         return screenTitle;
     }
-
-
-
 
 
 }

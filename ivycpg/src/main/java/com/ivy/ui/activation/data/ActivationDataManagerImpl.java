@@ -10,6 +10,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class ActivationDataManagerImpl implements ActivationDataManager {
+
     @Override
     public Single<Boolean> isServerOnline(final String serverUrl) {
 
@@ -27,7 +28,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
                     return false;
             }
         });
-
-
     }
+
+
 }

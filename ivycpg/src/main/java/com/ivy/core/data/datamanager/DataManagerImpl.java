@@ -48,4 +48,14 @@ public class DataManagerImpl implements DataManager {
     public void setActivationKey(String activationKey) {
         mSharedPreferenceHelper.setActivationKey(getActivationKey());
     }
+
+    @Override
+    public String getPreferredLanguage() {
+        return mSharedPreferenceHelper.getPreferredLanguage();
+    }
+
+    @Override
+    public void setPreferredLanguage(String language) {
+        mSharedPreferenceHelper.setPreferredLanguage(language);
+    }
 }

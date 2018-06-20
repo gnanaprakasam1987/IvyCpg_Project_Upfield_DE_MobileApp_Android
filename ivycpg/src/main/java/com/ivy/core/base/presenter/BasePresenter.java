@@ -18,11 +18,13 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
     private V ivyView;
 
     @Inject
-    public BasePresenter(DataManager dataManager,SchedulerProvider schedulerProvider,
+    public BasePresenter(DataManager dataManager, SchedulerProvider schedulerProvider,
                          CompositeDisposable compositeDisposable) {
         this.mDataManager = dataManager;
         this.mSchedulerProvider = schedulerProvider;
         this.mCompositeDisposable = compositeDisposable;
+
+        getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
     }
 
 

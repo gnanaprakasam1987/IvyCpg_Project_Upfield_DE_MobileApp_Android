@@ -20,4 +20,7 @@ public interface BaseIvyView {
 
     void hideKeyboard();
 
+    void setLayoutDirection(int direction);
+
+    void handleLayoutDirection(String language);
 }
