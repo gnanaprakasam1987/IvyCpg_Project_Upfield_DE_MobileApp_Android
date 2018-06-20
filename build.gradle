@@ -22,3 +22,9 @@ allprojects {
 
 dependencies {
 }
+
+// Define versions in a single place
+ext {
+    rxjava2Version = '2.0.6'
+    rxandroidVersion = '2.0.1'
+}

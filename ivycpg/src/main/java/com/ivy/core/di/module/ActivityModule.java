@@ -4,9 +4,12 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
 import com.ivy.core.di.scope.ActivityContext;
+import com.ivy.utils.rx.AppSchedulerProvider;
+import com.ivy.utils.rx.SchedulerProvider;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public class ActivityModule {
@@ -26,6 +29,17 @@ public class ActivityModule {
     @Provides
     AppCompatActivity provideActivity() {
         return mActivity;
+    }
+
+
+    @Provides
+    CompositeDisposable provideCompositeDisposable() {
+        return new CompositeDisposable();
+    }
+
+    @Provides
+    SchedulerProvider provideSchedulerProvider() {
+        return new AppSchedulerProvider();
     }
 
 

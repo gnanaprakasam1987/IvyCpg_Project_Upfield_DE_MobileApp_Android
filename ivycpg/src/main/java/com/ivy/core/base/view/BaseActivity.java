@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -21,20 +20,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.core.di.component.ActivityComponent;
-import com.ivy.core.di.component.DaggerActivityComponent;
-import com.ivy.core.di.module.ActivityModule;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.utils.NetworkUtils;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import butterknife.Unbinder;
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView {
 
 
-    private ActivityComponent mActivityComponent;
 
     private Unbinder mUnBinder;
 
@@ -54,13 +47,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     protected abstract void initVariables();
 
 
+    public abstract void initializeDi();
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivityComponent = DaggerActivityComponent.builder()
-                .activityModule(new ActivityModule(this))
-                .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
-                .build();
 
         this.setContentView(this.getLayoutId());
 
@@ -69,11 +61,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         setUpViews();
 
         initVariables();
+
+        initializeDi();
     }
 
-    public ActivityComponent getActivityComponent() {
-        return mActivityComponent;
-    }
 
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -206,7 +197,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         if (isReplace) {
             for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
-                Log.v("LOG", "LOGS FOR STACK CLEAR: " + " i: " + i + "    " + fragmentManager.getBackStackEntryAt(i).getName());
                 fragmentManager.popBackStack();
             }
             fragmentManager.executePendingTransactions();
