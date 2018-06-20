@@ -6026,13 +6026,20 @@ public class BusinessModel extends Application {
 
     public int[] getGoldenPoints() {
         int i[] = new int[2];
-        for (RetailerMasterBO tempObj : retailerMaster) {
-            if (tempObj.getIsToday() == 1
-                    || tempObj.getIsDeviated().equals("Y")) {
-                i[0] += tempObj.getSbdDistributionAchieve();
-                i[1] += tempObj.getSbdDistributionTarget();
+        try {
+            if (retailerMaster != null) {
+                for (RetailerMasterBO tempObj : retailerMaster) {
+                    if (tempObj.getIsToday() == 1
+                            || (tempObj.getIsDeviated() != null && (tempObj.getIsDeviated().equals("Y")))) {
+                        i[0] += tempObj.getSbdDistributionAchieve();
+                        i[1] += tempObj.getSbdDistributionTarget();
+                    }
+                }
             }
+        } catch(Exception e){
+            e.printStackTrace();
         }
+
         return i;
     }
 
