@@ -67,6 +67,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.UnknownFormatConversionException;
 
 
 public class LoginScreen extends IvyBaseActivityNoActionBar
@@ -698,7 +699,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                     loginPresenter.applyOutletPerformancePref();
                     loginPresenter.callUpdateFinish();
                 } else if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    updaterProgressMsg(updateTableCount + " Out of " + String.format("%1$s", totalTableCount) + " Masters Downloaded");
+                    updateProgress(updateTableCount,totalTableCount);
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
@@ -711,7 +712,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                 break;
             case SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    updaterProgressMsg(updateTableCount + " Out of " + String.format("%1$s", totalTableCount) + " Masters Downloaded");
+                    updateProgress(updateTableCount,totalTableCount);
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
@@ -726,7 +727,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                 break;
             case SynchronizationHelper.LAST_VISIT_TRAN_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    updaterProgressMsg(updateTableCount + " Out of " + String.format("%1$s", totalTableCount) + " Masters Downloaded");
+                    updateProgress(updateTableCount,totalTableCount);
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
@@ -742,6 +743,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
             default:
                 break;
         }
+    }
+
+    private void updateProgress(int updateTableCount, int totalTableCount){
+        String formattedString = "";
+        try {
+            formattedString = String.format(getResources().getString(R.string.out_of), totalTableCount);
+        } catch (UnknownFormatConversionException e) {
+            e.printStackTrace();
+        }
+        updaterProgressMsg(updateTableCount + " " + formattedString);
     }
 
     @Override
