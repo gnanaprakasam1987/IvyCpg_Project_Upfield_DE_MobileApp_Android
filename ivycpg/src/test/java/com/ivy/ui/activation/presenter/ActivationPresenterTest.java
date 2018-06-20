@@ -4,6 +4,7 @@ import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.ui.activation.ActivationContract;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +23,7 @@ public class ActivationPresenterTest {
     private
     ActivationContract.ActivationView mActivationView;
 
-    private ActivationPresenterImpl mPresenter;
+    private ActivationPresenterImpl<ActivationContract.ActivationView> mPresenter;
 
     private TestScheduler testScheduler= new TestScheduler();
 
@@ -36,7 +37,7 @@ public class ActivationPresenterTest {
     public void setup() {
 
         TestSchedulerProvider testSchedulerProvider = new TestSchedulerProvider(testScheduler);
-        mPresenter = new ActivationPresenterImpl(mDataManager, testSchedulerProvider, mockDisposable);
+        mPresenter = new ActivationPresenterImpl<>(mDataManager, testSchedulerProvider, mockDisposable);
         mPresenter.onAttach(mActivationView);
     }
 
@@ -50,6 +51,11 @@ public class ActivationPresenterTest {
     public void testInvalidActivationKey(){
         mPresenter.validateActivationKey("abcdef");
         Mockito.verify(mActivationView).showInvalidActivationError();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mPresenter.onDetach();
     }
 
 }
