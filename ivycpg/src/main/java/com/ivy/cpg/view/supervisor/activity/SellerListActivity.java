@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.fragments.TabViewListFragment;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;

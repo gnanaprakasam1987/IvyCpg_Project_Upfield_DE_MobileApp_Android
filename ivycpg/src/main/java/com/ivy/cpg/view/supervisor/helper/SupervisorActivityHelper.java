@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.helper;
 
 
 import android.animation.Animator;
@@ -41,8 +41,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ivy.cpg.locationservice.LocationConstants;
-import com.ivy.cpg.view.supervisor.helper.DetailsBo;
-import com.ivy.cpg.view.supervisor.helper.LatLngInterpolator;
+import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -73,7 +72,7 @@ public class SupervisorActivityHelper {
         return instance;
     }
 
-    HashMap<String, DetailsBo> getDetailsBoHashMap() {
+    public HashMap<String, DetailsBo> getDetailsBoHashMap() {
         return detailsBoHashMap;
     }
 
@@ -81,7 +80,7 @@ public class SupervisorActivityHelper {
         this.detailsBoHashMap = detailsBoHashMap;
     }
 
-    void loginToFirebase(final Context context) {
+    public void loginToFirebase(final Context context) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null || FirebaseDatabase.getInstance() == null) {
             String email = LocationConstants.FIREBASE_EMAIL;
@@ -107,7 +106,7 @@ public class SupervisorActivityHelper {
     /**
      * Get all Seller Complete details when updated or inserted
      */
-    void subscribeSellerLocationUpdates(Context context, final Seller seller, int trackingType) {
+    public void subscribeSellerLocationUpdates(Context context, final Seller seller, int trackingType) {
 
         if (FirebaseDatabase.getInstance() == null) {
             loginToFirebase(context);
@@ -152,7 +151,7 @@ public class SupervisorActivityHelper {
     /**
      * Get Seller Details when Attendance details updated
      */
-    void subscribeSellersUpdates(Context context, final Seller seller) {
+    public void subscribeSellersUpdates(Context context, final Seller seller) {
 
         if (FirebaseDatabase.getInstance() == null) {
             loginToFirebase(context);
@@ -176,7 +175,7 @@ public class SupervisorActivityHelper {
     /**
      * Selected Seller Details From Firebase
      */
-    void subscribeSellerDetails(final Context context, final Seller seller, String pathNode) {
+    public void subscribeSellerDetails(final Context context, final Seller seller, String pathNode) {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(LocationConstants.FIREBASE_BASE_PATH + pathNode);
 
@@ -210,7 +209,7 @@ public class SupervisorActivityHelper {
     /**
      * Return the seller Count under Supervisor
      */
-    int getSellersCount(Context context, BusinessModel bmodel) {
+    public int getSellersCount(Context context, BusinessModel bmodel) {
         int sellerCount = 0;
         DBUtil db = null;
         try {
@@ -258,7 +257,7 @@ public class SupervisorActivityHelper {
     /**
      * Will return Address from Latlong
      */
-    String getAddressLatLong(Context context, LatLng latLng) {
+    public String getAddressLatLong(Context context, LatLng latLng) {
         StringBuilder sb = new StringBuilder();
 
         Geocoder gc = new Geocoder(context, Locale.getDefault());
@@ -346,7 +345,7 @@ public class SupervisorActivityHelper {
         return -1;
     }
 
-    String getTimeFromMillis(String millis) {
+    public String getTimeFromMillis(String millis) {
         if (millis == null || millis.trim().length() == 0 || millis.equalsIgnoreCase("0"))
             return "";
 
@@ -391,7 +390,7 @@ public class SupervisorActivityHelper {
         return bitmap;
     }
 
-    void animateMarkerNew(final LatLng destination, final Marker marker, final GoogleMap googleMap) {
+    public void animateMarkerNew(final LatLng destination, final Marker marker, final GoogleMap googleMap) {
 
         if (marker != null) {
 

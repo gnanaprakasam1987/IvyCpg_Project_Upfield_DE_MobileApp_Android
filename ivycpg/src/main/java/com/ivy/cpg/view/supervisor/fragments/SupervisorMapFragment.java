@@ -1,16 +1,13 @@
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.fragments;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,9 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,13 +30,17 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
-import com.ivy.cpg.view.supervisor.adapter.EnhancedWrapContentViewPager;
+import com.ivy.cpg.view.supervisor.Seller;
+import com.ivy.cpg.view.supervisor.activity.OutletMapListActivity;
+import com.ivy.cpg.view.supervisor.activity.SellerListActivity;
+import com.ivy.cpg.view.supervisor.activity.SellerMapViewActivity;
+import com.ivy.cpg.view.supervisor.activity.SellerPerformanceListActivity;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
-import com.ivy.cpg.view.supervisor.helper.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.recyclerviewpager.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -53,7 +52,6 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class SupervisorMapFragment extends IvyBaseFragment implements
         OnMapReadyCallback, Seller, View.OnClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
@@ -430,8 +428,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                 SupervisorActivityHelper.getInstance().animateMarkerNew(destLatLng,userHashmap.get(key).getMarker(),mMap);
 
             }
-
-
 
 //            double angle = 130.0;
 //            double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;

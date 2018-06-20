@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -38,6 +38,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
+import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
+import com.ivy.cpg.view.supervisor.Seller;
+import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.helper.DataParser;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.helper.LatLngInterpolator;
@@ -405,7 +408,7 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
 //        String sensor = "sensor=false&units=metric";
         String alternatives = "alternatives=false&mode=driving";
-        String mapKey = "key=AIzaSyBrL2q-4N0xGxS7Y_f3FcF9Ec1XdL6VDk4";
+        String mapKey = "key="+getString(R.string.google_maps_api_key);
         String parameters = str_origin + "&" + str_dest + "&" + alternatives+"&"+mapKey;
         String output = "json";
 

@@ -16,11 +16,12 @@
         android:title="navigate"
         ivydist:showAsAction="always"
         android:visible="false"/>
+
     <item
-        android:id="@+id/menu_search"
-        android:icon="@drawable/icon_search"
-        android:title="navigate"
-        ivydist:showAsAction="always"
+        android:id="@+id/menu_date"
+        android:icon="@drawable/ic_calendar"
+        android:title="Today"
+        ivydist:showAsAction="always|withText"
         android:visible="true"/>
 
     <item
@@ -30,6 +31,13 @@
         ivydist:showAsAction="always"
         android:visible="true"
         android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/icon_search"
+        android:title="navigate"
+        ivydist:showAsAction="always"
+        android:visible="true"/>
 
 
 </menu>

@@ -1,10 +1,8 @@
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.fragments;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,12 +12,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.supervisor.activity.SellerMapViewActivity;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.tooltip.Tooltip;
 import com.ivy.sd.png.asean.view.R;
@@ -159,7 +156,7 @@ public class TabViewListFragment extends IvyBaseFragment{
                 public void onClick(View view) {
                     Intent intent = new Intent(getContext(), SellerMapViewActivity.class);
                     intent.putExtra("SellerId", 1695);
-                    intent.putExtra("screentitle", detailsBos.get(position).getUserName() );
+                    intent.putExtra("screentitle", "VSR01" );
                     intent.putExtra("TrackingType", 2);
                     startActivity(intent);
                 }

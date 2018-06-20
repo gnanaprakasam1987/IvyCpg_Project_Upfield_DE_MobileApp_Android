@@ -12,7 +12,7 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
-        style="?attr/tablayout"
+        android:background="@drawable/total_outlet_bg_gradient"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
@@ -22,7 +22,7 @@
         app:tabGravity="fill"
         app:tabMode="fixed"
         app:tabMaxWidth="0dp"
-        app:tabSelectedTextColor="@color/white"
+        app:tabSelectedTextColor="@color/WHITE"
         app:tabTextColor="#ddd">
 
         <android.support.design.widget.TabItem
@@ -208,7 +208,7 @@
         </android.support.v7.widget.CardView>
 
 
-        <com.ivy.cpg.view.supervisor.helper.RecyclerViewPager
+        <com.ivy.cpg.view.supervisor.recyclerviewpager.RecyclerViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,7 +30,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 
 import java.util.ArrayList;
 
-import static android.graphics.Color.WHITE;
 import static android.graphics.Color.rgb;
 
 public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {

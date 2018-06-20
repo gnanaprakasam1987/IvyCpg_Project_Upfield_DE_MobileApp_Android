@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.supervisor.helper.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.scrollingpagerindicator.ScrollingPagerIndicator;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ivy.cpg.view.supervisor;
+package com.ivy.cpg.view.supervisor.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.supervisor.activity.SellerMapViewActivity;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.sd.png.asean.view.R;
 

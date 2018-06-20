@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.helper;
+package com.ivy.cpg.view.supervisor.recyclerviewpager;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

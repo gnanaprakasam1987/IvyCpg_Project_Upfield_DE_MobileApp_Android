@@ -956,9 +956,12 @@ public class PlanningMapFragment extends SupportMapFragment implements
         else
             mode = "mode=driving";
 
+        String mapKey = "key="+getString(R.string.google_maps_api_key);
+
         return "https://maps.googleapis.com/maps/api/directions/json" +
                 "?origin=" + Double.toString(sourcelat) + "," + Double.toString(sourcelog) +
-                "&destination=" + Double.toString(destlat) + "," + Double.toString(destlog) + "&sensor=false&" + mode + "&alternatives=true";
+                "&destination=" + Double.toString(destlat) + "," + Double.toString(destlog) +
+                "&sensor=false&" + mode + "&alternatives=true"+"&"+mapKey;
     }
 
     public void drawPath(String result) {

@@ -522,8 +522,12 @@ class SellerMapViewReportFragment : SupportMapFragment(), SellerListFragment.Sel
             waypoints += point.latitude.toString() + "," + point.longitude + "|"
         }
 
+
+        val mapKey = "key=" + getString(R.string.google_maps_api_key)
+
+
         // Building the parameters to the web service
-        val parameters = "$str_origin&$str_dest&$sensor&$waypoints"
+        val parameters = "$str_origin&$str_dest&$sensor&$waypoints&$mapKey"
         val output = "json"
 
         return "https://maps.googleapis.com/maps/api/directions/$output?$parameters"

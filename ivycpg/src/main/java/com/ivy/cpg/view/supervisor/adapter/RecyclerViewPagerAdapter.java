@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ivy.cpg.view.supervisor.helper.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.recyclerviewpager.RecyclerViewPager;
 
 /**
  * RecyclerViewPagerAdapter </br>
