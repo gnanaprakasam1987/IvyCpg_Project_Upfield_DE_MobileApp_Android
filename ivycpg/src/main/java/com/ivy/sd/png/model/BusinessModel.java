@@ -182,7 +182,6 @@ import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
-import com.squareup.leakcanary.LeakCanary;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -737,11 +736,6 @@ public class BusinessModel extends Application {
     public void onCreate() {
         super.onCreate();
         try {
-            if (LeakCanary.isInAnalyzerProcess(this)) {
-// This process is dedicated to LeakCanary for heap analysis.
-// You should not init your app in this process.
-            }
-            LeakCanary.install(this);
 
             mInstance = this;
             //Glide - Circle Image Transform
