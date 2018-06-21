@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -17,6 +18,8 @@ import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.TestScheduler;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,7 +32,7 @@ public class ActivationPresenterTest {
 
     private ActivationPresenterImpl<ActivationContract.ActivationView> mPresenter;
 
-    private TestScheduler testScheduler= new TestScheduler();
+    private TestScheduler testScheduler = new TestScheduler();
 
     @Mock
     private
@@ -44,46 +47,55 @@ public class ActivationPresenterTest {
     public void setup() {
 
         TestSchedulerProvider testSchedulerProvider = new TestSchedulerProvider(testScheduler);
-        mPresenter = new ActivationPresenterImpl<>(mDataManager, testSchedulerProvider, mockDisposable,mActivationDataManager);
+        mPresenter = new ActivationPresenterImpl<>(mDataManager, testSchedulerProvider, mockDisposable, mActivationDataManager);
         mPresenter.onAttach(mActivationView);
     }
 
     @Test
-    public void testEmptyActivationKey(){
+    public void testEmptyActivationKey() {
         mPresenter.validateActivationKey("");
-        Mockito.verify(mActivationView).showActivationEmptyError();
+
+        then(mActivationView).should().showActivationEmptyError();
     }
 
     @Test
-    public void testInvalidActivationKey(){
+    public void testInvalidActivationKey() {
+
+        //When
         mPresenter.validateActivationKey("abcdef");
-        Mockito.verify(mActivationView).showInvalidActivationError();
+
+        then(mActivationView).should().showInvalidActivationError();
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testTriggerImeiActivation() {
+        //When
+        mPresenter.triggerIMEIActivation("abcd", "abcd", "acbd");
+
+        then(mActivationView).shouldHaveZeroInteractions();
     }
 
     @Test
-    public void testValidUrlSuccess(){
-        doReturn(Single.just(true))
-                .when(mActivationDataManager)
-                .isServerOnline("www.google.com");
+    public void testValidUrlSuccess() {
+        given(mActivationDataManager.isServerOnline("www.google.com")).willReturn(Single.just(true));
 
+        //When
         mPresenter.checkServerStatus("www.google.com");
-
         testScheduler.triggerActions();
 
-        Mockito.verify(mActivationView).navigateToLoginScreen();
+        then(mActivationView).should().navigateToLoginScreen();
     }
 
     @Test
-    public void testValidUrlFailure(){
-        doReturn( Single.just(false))
-                .when(mActivationDataManager)
-                .isServerOnline("www.google.com");
+    public void testValidUrlFailure() {
+        given(mActivationDataManager.isServerOnline("www.google.com")).willReturn(Single.just(false));
 
+        //When
         mPresenter.checkServerStatus("www.google.com");
-
         testScheduler.triggerActions();
 
-        Mockito.verify(mActivationView).showInvalidUrlError();
+        then(mActivationView).should().showInvalidUrlError();
+
     }
 
     @After

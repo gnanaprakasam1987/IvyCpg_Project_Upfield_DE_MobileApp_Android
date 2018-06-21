@@ -36,4 +36,6 @@ ext {
     mockitoVersion = '2.8.9'
 
     dagger2Version = '2.13'
+
+    hamcrestVersion = '1.3'
 }

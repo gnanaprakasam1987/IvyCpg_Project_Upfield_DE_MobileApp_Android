@@ -35,7 +35,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     @Override
     public void triggerIMEIActivation(String imei, String versionName, String versionNumber) {
-
+        throw new UnsupportedOperationException("Unsupported operation");
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.ivy.core.di.scope.PerActivity;
 
 public interface ActivationContract {
 
-    interface ActivationView extends BaseIvyView{
+    interface ActivationView extends BaseIvyView {
 
         void showActivationEmptyError();
 
@@ -19,13 +19,13 @@ public interface ActivationContract {
     }
 
     @PerActivity
-    interface ActivationPresenter<V extends ActivationView> extends BaseIvyPresenter<V>{
+    interface ActivationPresenter<V extends ActivationView> extends BaseIvyPresenter<V> {
 
-         void validateActivationKey(String activationKey);
+        void validateActivationKey(String activationKey);
 
-         void triggerIMEIActivation(String imei, String versionName,String versionNumber);
+        void triggerIMEIActivation(String imei, String versionName, String versionNumber);
 
-         void checkServerStatus(String url);
+        void checkServerStatus(String url);
     }
 
 

@@ -24,13 +24,14 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
         this.mSchedulerProvider = schedulerProvider;
         this.mCompositeDisposable = compositeDisposable;
 
-        getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
+
     }
 
 
     @Override
     public void onAttach(V mvpView) {
         ivyView = mvpView;
+        getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
     }
 
     @Override
