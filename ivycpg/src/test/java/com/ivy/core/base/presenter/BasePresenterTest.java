@@ -2,7 +2,6 @@ package com.ivy.core.base.presenter;
 
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.ui.activation.presenter.ActivationPresenterImpl;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
 import org.junit.Before;
@@ -24,7 +23,7 @@ public class BasePresenterTest {
 
     @Mock
     private
-    BaseIvyView mActivationView;
+    BaseIvyView ivyView;
 
     private TestScheduler testScheduler = new TestScheduler();
 
@@ -41,7 +40,7 @@ public class BasePresenterTest {
     public void setup() {
         TestSchedulerProvider testSchedulerProvider = new TestSchedulerProvider(testScheduler);
         mPresenter = new BasePresenter<>(mDataManager, testSchedulerProvider, mockDisposable);
-        mPresenter.onAttach(mActivationView);
+        mPresenter.onAttach(ivyView);
     }
 
     @Test
@@ -52,7 +51,7 @@ public class BasePresenterTest {
         mPresenter.getAppTheme();
         testScheduler.triggerActions();
 
-        then(mActivationView).should().setBlueTheme();
+        then(ivyView).should().setBlueTheme();
     }
 
     @Test
@@ -63,7 +62,7 @@ public class BasePresenterTest {
         mPresenter.getAppTheme();
         testScheduler.triggerActions();
 
-        then(mActivationView).should().setPinkTheme();
+        then(ivyView).should().setPinkTheme();
     }
 
     @Test
@@ -74,7 +73,7 @@ public class BasePresenterTest {
         mPresenter.getAppTheme();
         testScheduler.triggerActions();
 
-        then(mActivationView).should().setOrangeTheme();
+        then(ivyView).should().setOrangeTheme();
     }
 
     @Test
@@ -85,7 +84,7 @@ public class BasePresenterTest {
         mPresenter.getAppTheme();
         testScheduler.triggerActions();
 
-        then(mActivationView).should().setRedTheme();
+        then(ivyView).should().setRedTheme();
     }
 
 
@@ -97,7 +96,7 @@ public class BasePresenterTest {
         mPresenter.getAppTheme();
         testScheduler.triggerActions();
 
-        then(mActivationView).should().setNavyBlueTheme();
+        then(ivyView).should().setNavyBlueTheme();
     }
 
 
@@ -109,7 +108,15 @@ public class BasePresenterTest {
         mPresenter.getAppTheme();
         testScheduler.triggerActions();
 
-        then(mActivationView).should().setGreenTheme();
+        then(ivyView).should().setGreenTheme();
+    }
+
+
+    @Test(expected = BasePresenter.IvyViewNotAttachedException.class)
+    public void testIsViewAttached(){
+        mPresenter.checkViewAttached();
+
+        then(ivyView).shouldHaveZeroInteractions();
     }
 
 }

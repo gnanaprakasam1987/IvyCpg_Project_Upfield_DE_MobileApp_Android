@@ -17,11 +17,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.utils.NetworkUtils;
@@ -52,9 +54,17 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     public abstract void initializeDi();
 
+    private BasePresenter mBasePresenter;
+
+    public void setBasePresenter(BasePresenter presenter) {
+        mBasePresenter = presenter;
+    }
+
+    ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -63,11 +73,17 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         this.setContentView(this.getLayoutId());
 
+        initializeDi();
+
         getMessageFromAliens();
 
         setUpViews();
 
         initVariables();
+
+        if (mBasePresenter != null)
+            mBasePresenter.getAppTheme();
+
     }
 
 
@@ -205,6 +221,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         if (mUnBinder != null) {
             mUnBinder.unbind();
         }
+
+        if (mBasePresenter != null)
+            mBasePresenter.onDetach();
+
         super.onDestroy();
     }
 
@@ -298,6 +318,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     }
 
+
     private String screenTitle;
 
     public String getScreenTitle() {
@@ -328,7 +349,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public void setOrangeTheme() {
         setTheme(R.style.MVPTheme_Orange);
     }
-
 
     @Override
     public void setRedTheme() {
