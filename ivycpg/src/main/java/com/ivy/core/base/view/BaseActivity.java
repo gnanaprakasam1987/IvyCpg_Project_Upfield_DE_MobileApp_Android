@@ -304,5 +304,34 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         return screenTitle;
     }
 
+    @Override
+    public void setBlueTheme() {
+        setTheme(R.style.MVPTheme_Blue);
+    }
 
+    @Override
+    public void setPinkTheme() {
+        setTheme(R.style.MVPTheme_Pink);
+    }
+
+    @Override
+    public void setGreenTheme() {
+        setTheme(R.style.MVPTheme_Green);
+    }
+
+    @Override
+    public void setNavyBlueTheme() {
+        setTheme(R.style.MVPTheme_NBlue);
+    }
+
+    @Override
+    public void setOrangeTheme() {
+        setTheme(R.style.MVPTheme_Orange);
+    }
+
+
+    @Override
+    public void setRedTheme() {
+        setTheme(R.style.MVPTheme_Red);
+    }
 }

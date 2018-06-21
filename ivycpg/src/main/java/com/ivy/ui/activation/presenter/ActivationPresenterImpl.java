@@ -6,6 +6,8 @@ import com.ivy.ui.activation.data.ActivationDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 import com.ivy.ui.activation.ActivationContract;
 
+import org.reactivestreams.Subscriber;
+
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -50,6 +52,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                             getIvyView().navigateToLoginScreen();
                         else
                             getIvyView().showInvalidUrlError();
+
                     }
                 }));
     }

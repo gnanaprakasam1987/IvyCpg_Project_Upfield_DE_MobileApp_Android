@@ -13,7 +13,10 @@ import com.ivy.core.data.db.DbHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelperImpl;
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
+import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.util.DataMembers;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -41,6 +44,7 @@ public class IvyAppModule {
         return IvyConstants.IVY_PREFERENCE_NAME;
     }
 
+
     @Provides
     @Singleton
     protected DbHelper providesDbHelper(DBHelperImpl dbHelper) {
@@ -51,6 +55,13 @@ public class IvyAppModule {
     @Singleton
     protected SharedPreferenceHelper providesSharedPreferenceHelper(SharedPreferenceHelperImpl sharedPreferenceHelper) {
         return sharedPreferenceHelper;
+    }
+
+    @Provides
+    @DataBaseInfo
+    protected DBUtil providesDBUtil(){
+        return new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
     }
 
 

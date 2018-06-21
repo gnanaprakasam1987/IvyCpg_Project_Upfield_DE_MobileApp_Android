@@ -8,4 +8,6 @@ public interface BaseIvyPresenter<V extends BaseIvyView> {
 
     void onDetach();
 
+    void getAppTheme();
+
 }

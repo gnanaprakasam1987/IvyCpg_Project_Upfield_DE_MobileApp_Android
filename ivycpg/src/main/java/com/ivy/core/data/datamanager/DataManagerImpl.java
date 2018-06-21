@@ -2,21 +2,26 @@ package com.ivy.core.data.datamanager;
 
 import android.content.Context;
 
+import com.ivy.core.data.db.DbHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.di.scope.ApplicationContext;
 
 import javax.inject.Inject;
+
+import io.reactivex.Single;
 
 public class DataManagerImpl implements DataManager {
 
     private Context mContext;
 
     private SharedPreferenceHelper mSharedPreferenceHelper;
+    private DbHelper dbHelper;
 
     @Inject
-    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper) {
+    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper) {
         this.mContext = context;
         this.mSharedPreferenceHelper = sharedPreferenceHelper;
+        this.dbHelper = dbHelper;
     }
 
     @Override
@@ -57,5 +62,10 @@ public class DataManagerImpl implements DataManager {
     @Override
     public void setPreferredLanguage(String language) {
         mSharedPreferenceHelper.setPreferredLanguage(language);
+    }
+
+    @Override
+    public Single<String> getThemeColor() {
+        return dbHelper.getThemeColor();
     }
 }

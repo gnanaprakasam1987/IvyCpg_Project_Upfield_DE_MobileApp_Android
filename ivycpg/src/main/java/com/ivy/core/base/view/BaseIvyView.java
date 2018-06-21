@@ -23,4 +23,16 @@ public interface BaseIvyView {
     void setLayoutDirection(int direction);
 
     void handleLayoutDirection(String language);
+
+    void setBlueTheme();
+
+    void setRedTheme();
+
+    void setOrangeTheme();
+
+    void setGreenTheme();
+
+    void setPinkTheme();
+
+    void setNavyBlueTheme();
 }
