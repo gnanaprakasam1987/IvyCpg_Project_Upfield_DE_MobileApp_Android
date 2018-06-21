@@ -4099,24 +4099,6 @@ public class BusinessModel extends Application {
 
     }
 
-    public void setIsPlanned() {
-        RetailerMasterBO retailer;
-        int siz = retailerMaster.size();
-        if (siz == 0)
-            return;
-
-        for (int i = 0; i < siz; ++i) {
-            retailer = retailerMaster.get(i);
-            if (retailer.getRetailerID().equals(
-                    getRetailerMasterBO().getRetailerID())) {
-                retailer.setIsPlanned("Y");
-                retailerMaster.setElementAt(retailer, i);
-                return;
-            }
-        }
-
-    }
-
     void setIsInvoiceDone() {
         RetailerMasterBO retailer;
         int siz = retailerMaster.size();
@@ -4173,21 +4155,6 @@ public class BusinessModel extends Application {
             db.openDataBase();
             db.executeQ("update " + DataMembers.tbl_retailerMaster
                     + " set isOrderMerch=" + QT(flag) + " where retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID()));
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public void setIsPlannedInDB() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            db.executeQ("update " + DataMembers.tbl_retailerMaster
-                    + " set isPlanned=" + QT("Y") + " where retailerid="
                     + QT(getRetailerMasterBO().getRetailerID()));
             db.closeDB();
         } catch (Exception e) {
