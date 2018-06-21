@@ -260,7 +260,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private static final int REQUEST_CODE_UPSELLING = 4;
 
     SearchAsync searchAsync;
-    private int sbdHistory = 0;
     private int loadStockedProduct;
 
     private AlertDialog alertDialog;
@@ -483,7 +482,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lvwplist.setCacheColorHint(0);
 
         SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext()); //sbd calculation
-        sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
         productList = filterWareHouseProducts();
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
             setTaggingDetails();
@@ -3516,6 +3514,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         Vector<ProductMasterBO> items;
         double temp;
         int sbdAchievement = 0;
+        Vector<ProductMasterBO> orderedList;
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -3525,6 +3524,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             int siz = items.size();
             if (siz == 0)
                 return null;
+
+            orderedList = new Vector<>();
 
             for (int i = 0; i < siz; i++) {
                 ProductMasterBO ret = items.elementAt(i);
@@ -3537,9 +3538,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     totalvalue = totalvalue + temp;
 
                     totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
-                    sbdAchievement += SBDHelper.getInstance(StockAndOrder.this).getAchievedSBD(ret);
+                    orderedList.add(ret);
                 }
             }
+
+            sbdAchievement = SBDHelper.getInstance(StockAndOrder.this).getAchievedSBD(orderedList);
 
             return null;
         }
@@ -3558,7 +3561,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             String strFormatValue = bmodel.formatValue(totalvalue) + "";
             totalValueText.setText(strFormatValue);
             totalQtyTV.setText("" + totalAllQty);
-            distValue.setText((sbdAchievement + sbdHistory) + "/" + bmodel.getRetailerMasterBO()
+            distValue.setText(sbdAchievement + "/" + bmodel.getRetailerMasterBO()
                     .getSbdDistributionTarget());
         }
     }

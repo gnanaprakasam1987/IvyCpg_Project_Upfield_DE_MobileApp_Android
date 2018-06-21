@@ -207,7 +207,7 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
 
         @Override
         protected Void doInBackground(String... params) {
-            bmodel.synchronizationHelper.updateAuthenticateToken();
+            bmodel.synchronizationHelper.updateAuthenticateToken(false);
             return null;
         }
 

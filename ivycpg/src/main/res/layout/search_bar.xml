@@ -40,6 +40,7 @@
             android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="@dimen/font_small"
             tools:Text="test text"
+            android:imeOptions="actionDone"
             tools:hint="test" />
 
         <Button

@@ -7530,7 +7530,8 @@ public class BusinessModel extends Application {
 
                     // Download Date
                     else if (mRules.get(i).contains("YYYY")) {
-                        mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), mRules.get(i)));
+                        mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(),
+                                mRules.get(i).replace("{", "").replace("}","")));
                     }
 
                     // Get Sequence ID
@@ -8799,7 +8800,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select count(distinct InvoiceNo),sum(invNetamount) from Invoicemaster");
+                    .selectSQL("select count(distinct InvoiceNo),sum(invNetamount) from Invoicemaster where invoicedate = "
+                            + QT(userMasterHelper.getUserMasterBO().getDownloadDate()));
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {

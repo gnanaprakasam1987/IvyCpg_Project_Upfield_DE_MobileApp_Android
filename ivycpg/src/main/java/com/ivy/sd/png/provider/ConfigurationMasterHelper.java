@@ -5049,12 +5049,14 @@ public class ConfigurationMasterHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+            String language = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
 
             String sql = "select hhtCode,MName,MNumber,hasLink from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and lower(MenuType)="
                     + bmodel.QT("PRODUCT_DETAILS").toLowerCase()
-                    + " and lang='en' order by RField";
+                    + " and lang=" + bmodel.QT(language) + " order by RField";
 
             Cursor c = db.selectSQL(sql);
 

@@ -2484,7 +2484,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     position++;
                 }
             channel.setAdapter(channelAdapter);
-            channel.setSelection(setPos);
+            channel.setSelection(setPos, false);
             channel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     ChannelBO tempBo = (ChannelBO) parent.getSelectedItem();
@@ -2951,7 +2951,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 }
             }
             subchannel.setAdapter(subchannelAdapter);
-            subchannel.setSelection(setPos);
+            subchannel.setSelection(setPos, false);
             subchannel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     //SpinnerBO tempBo = (SpinnerBO) parent.getSelectedItem();

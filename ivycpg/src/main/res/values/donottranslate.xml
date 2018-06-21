@@ -146,4 +146,12 @@
     <string name="allocation">Allocation</string>
     <string name="you_have_unchecked_applicable_scheme">You have unchecked few applicable scheme ?</string>
 
+    <!--Label for collection Print-->
+    <string name="rcpt_date">Rcpt Date</string>
+    <string name="rcpt_no">Rcpt NO</string>
+    <string name="seller_code">Seller Code</string>
+    <!--END-->
+
+    <string name="pls_enter_rtgsno">Please Enter RTGS No </string>
+    <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
 </resources>

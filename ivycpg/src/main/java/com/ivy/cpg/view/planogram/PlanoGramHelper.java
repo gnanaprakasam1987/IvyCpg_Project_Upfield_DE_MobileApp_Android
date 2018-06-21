@@ -310,7 +310,7 @@ public class PlanoGramHelper {
                         + " BETWEEN P.startdate AND P.enddate";
             }
 
-            query = query + " GROUP BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId,PM.Pid ORDER BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId";
+            query = query + " GROUP BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId,PM.Pid,PlanogramID ORDER BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId";
 
             Cursor c = db.selectSQL(query);
 

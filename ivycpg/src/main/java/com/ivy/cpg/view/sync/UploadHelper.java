@@ -765,7 +765,7 @@ public class UploadHelper {
                 Commons.printException("" + e);
             }
 
-            String url = businessModel.synchronizationHelper.generateChecksum("UPLDSEQ");
+            String url = businessModel.synchronizationHelper.getUploadUrl("UPLDSEQ");
             if (url.length() == 0)
                 return 1;
             Vector<String> responseVector = businessModel.synchronizationHelper.getUploadResponse(jsonFormatter.getDataInJson(),

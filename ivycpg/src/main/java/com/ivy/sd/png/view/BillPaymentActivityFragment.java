@@ -1042,20 +1042,20 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 total = 0;
 
                 if (payHeaderBO.getAdvancePaymentId() != null) {
-                    tempStr = "Rcpt Date:" + payHeaderBO.getAdvancePaymentDate();
+                    tempStr = getResources().getString(R.string.rcpt_date) + ":" + payHeaderBO.getAdvancePaymentDate();
                 } else {
-                    tempStr = "Rcpt Date:" + payHeaderBO.getCollectionDateTime();
+                    tempStr = getResources().getString(R.string.rcpt_date) + ":" + payHeaderBO.getCollectionDateTime();
                 }
                 sb.append(doPrintFormatingLeft(tempStr, 30));
                 sb.append(" ");
                 sb.append(LineFeed(1));
 
-                tempStr = "Rcpt NO  :" + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", "");
+                tempStr = getResources().getString(R.string.rcpt_no) + "  :" + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", "");
                 sb.append(doPrintFormatingLeft(tempStr, 30));
                 sb.append(" ");
                 sb.append(LineFeed(1));
 
-                tempStr = "Seller Code";
+                tempStr = getResources().getString(R.string.seller_code);
                 sb.append(doPrintFormatingLeft(tempStr, 12));
                 sb.append(" ");
                 sb.append(LineFeed(1));
@@ -1065,7 +1065,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(LineFeed(1));
 
 
-                tempStr = "Seller Name";
+                tempStr = getResources().getString(R.string.musername);
                 sb.append(doPrintFormatingLeft(tempStr, 12));
                 sb.append(" ");
                 sb.append(LineFeed(1));
@@ -1080,11 +1080,11 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                     tempStr = payHeaderBO.getRetailerName();
                 }
 
-                sb.append(doPrintFormatingLeft("CustName :" + tempStr, 30));
+                sb.append(doPrintFormatingLeft(getResources().getString(R.string.cust_name) + tempStr, 30));
                 sb.append(" ");
                 sb.append(LineFeed(1));
 
-                tempStr = "CustCode :" + payHeaderBO.getRetailerCode();
+                tempStr = getResources().getString(R.string.cust_code) + payHeaderBO.getRetailerCode();
                 sb.append(doPrintFormatingLeft(tempStr, 30));
                 sb.append(" ");
                 sb.append(LineFeed(1));
@@ -1094,16 +1094,16 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 }
                 sb.append(LineFeed(1));
 
-                sb.append(doPrintFormatingLeft("Inv No", 10));
+                sb.append(doPrintFormatingLeft(getResources().getString(R.string.invno), 10));
                 sb.append(LineFeed(1));
 
                 //sb.append(doPrintAddSpace(0, 3));
-                sb.append(doPrintFormatingLeft("Type", 7));
+                sb.append(doPrintFormatingLeft(getResources().getString(R.string.type), 7));
                 sb.append(doPrintAddSpace(0, 1));
-                sb.append(doPrintFormatingLeft("Date", 10));
+                sb.append(doPrintFormatingLeft(getResources().getString(R.string.date_label), 10));
                 sb.append(doPrintAddSpace(0, 1));
-                sb.append(doPrintFormatingLeft("Chq Num", 8));
-                sb.append(doPrintFormatingLeft(String.format("%10s", "Total"), 10));
+                sb.append(doPrintFormatingLeft(getResources().getString(R.string.ref_no), 8));
+                sb.append(doPrintFormatingLeft(String.format("%10s", getResources().getString(R.string.total)), 10));
                 sb.append(LineFeed(1));
 
                 for (int i = 0; i < 36; i++) {
@@ -1167,14 +1167,14 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(LineFeed(1));
 
                 if (totalDiscount > 0) {
-                    sb.append(doPrintFormatingLeft("Discount ", 10));
+                    sb.append(doPrintFormatingLeft(getResources().getString(R.string.discount) + " ", 10));
                     sb.append(doPrintAddSpace(0, 18));
                     sb.append(doPrintFormatingRight(bmodel.formatValueBasedOnConfig(totalDiscount), 13));
                     sb.append(LineFeed(1));
                 }
-                sb.append(doPrintFormatingLeft("Total ", 7));
+                sb.append(doPrintFormatingLeft(getResources().getString(R.string.total) + " ", 7));
                 sb.append(doPrintAddSpace(0, 15));
-                sb.append(doPrintFormatingRight(String.format("%14s", bmodel.formatValueBasedOnConfig(total)), 13));
+                sb.append(doPrintFormatingRight(String.format("%13s", bmodel.formatValueBasedOnConfig(total)), 13));
                 sb.append(LineFeed(1));
 
                 for (int i = 0; i < 36; i++) {
@@ -1183,9 +1183,9 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(LineFeed(1));
 
                 sb.append(LineFeed(1));
-                sb.append(doPrintFormatingLeft("Comments: ----------------------------------------------", 36));
+                sb.append(doPrintFormatingLeft(getResources().getString(R.string.comments) + ": ----------------------------------------------", 36));
                 sb.append(LineFeed(2));
-                sb.append(doPrintFormatingLeft("Signature: ---------------------------------------------", 36));
+                sb.append(doPrintFormatingLeft(getResources().getString(R.string.customer_sign) + ": ---------------------------------------------", 36));
                 sb.append(LineFeed(2));
                 sb.append(LineFeed(2));
 
