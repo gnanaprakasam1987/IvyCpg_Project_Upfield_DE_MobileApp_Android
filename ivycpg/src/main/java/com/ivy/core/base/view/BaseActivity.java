@@ -58,6 +58,11 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     public void setBasePresenter(BasePresenter presenter) {
         mBasePresenter = presenter;
+        if (mBasePresenter != null) {
+            mBasePresenter.getAppTheme();
+            mBasePresenter.getAppFontSize();
+        }
+
     }
 
 
@@ -80,10 +85,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         initVariables();
 
-        if (mBasePresenter != null) {
-            mBasePresenter.getAppTheme();
-            mBasePresenter.getAppFontSize();
-        }
 
     }
 
