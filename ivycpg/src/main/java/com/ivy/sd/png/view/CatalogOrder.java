@@ -28,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +38,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,7 +92,7 @@ import java.util.Vector;
 /**
  * Created by dharmapriya.k on 10/14/2016,11:34 AM.
  */
-public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, MOQHighlightDialog.savePcsValue {
+public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, MOQHighlightDialog.savePcsValue, TextView.OnEditorActionListener {
     private static final String BRAND = "Brand";
     public static final String GENERAL = "General";
     private final String mCommon = "Filt01";
@@ -173,7 +176,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     public Timer orderTimer;
     private MOQHighlightDialog mMOQHighlightDialog;
     SearchAsync searchAsync;
-    private int sbdHistory = 0;
 
     private AlertDialog alertDialog;
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
@@ -194,6 +196,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         bottom_layout = (LinearLayout) findViewById(R.id.bottom_layout);
 
         search_txt = (EditText) search_toolbar.findViewById(R.id.search_txt);
+        search_txt.setOnEditorActionListener(this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -239,7 +242,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         screenCode = HomeScreenTwo.MENU_CATALOG_ORDER;
         OrderedFlag = HomeScreenTwo.MENU_CATALOG_ORDER;
         SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext()); //sbd calculation
-        sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
 
         Bundle extras = getIntent().getExtras();
         if (savedInstanceState == null) {
@@ -519,6 +521,16 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
             registerReceiver();
         }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            return true;
+        }
+        return false;
     }
 
     private class SearchAsync extends
@@ -1630,6 +1642,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         Vector<ProductMasterBO> items;
         double temp;
         int sbdAchievement = 0;
+        Vector<ProductMasterBO> orderedList;
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -1639,6 +1652,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             int siz = items.size();
             if (siz == 0)
                 return null;
+
+            orderedList = new Vector<>();
 
             for (int i = 0; i < siz; i++) {
                 ProductMasterBO ret = items.elementAt(i);
@@ -1651,10 +1666,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     totalvalue = totalvalue + temp;
 
                     totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
-                    sbdAchievement += SBDHelper.getInstance(CatalogOrder.this).getAchievedSBD(ret);
+                    orderedList.add(ret);
                 }
             }
 
+            sbdAchievement = SBDHelper.getInstance(CatalogOrder.this).getAchievedSBD(orderedList);
             return null;
         }
 
@@ -1673,7 +1689,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             String strFormatValue = bmodel.formatValue(totalvalue) + "";
             totalValueText.setText(strFormatValue);
             totalQtyTV.setText("" + totalAllQty);
-            distValue.setText((sbdAchievement + sbdHistory) + "/" + bmodel.getRetailerMasterBO()
+            distValue.setText(sbdAchievement + "/" + bmodel.getRetailerMasterBO()
                     .getSbdDistributionTarget());
         }
     }
@@ -2347,7 +2363,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+                bmodel.synchronizationHelper.updateAuthenticateToken(false);
 
             } catch (Exception e) {
                 Commons.printException("" + e);

@@ -121,6 +121,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     SubDSelectionDialog subDSelectionDialog;
     private int mSelectedSubId = -1;
+    private TextView tv_target1;
+    private TextView tv_target;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -491,7 +493,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             img_beatloc.setImageResource(R.drawable.arealocation);
         }
 
-        TextView tv_target = view.findViewById(R.id.tv_tgt);
+        tv_target = view.findViewById(R.id.tv_tgt);
         tv_target.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
@@ -532,7 +534,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         }
 
-        TextView tv_target1 = view.findViewById(R.id.tv_tgt1);
+        tv_target1 = view.findViewById(R.id.tv_tgt1);
         tv_target1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
@@ -701,6 +703,16 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+
+        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
+            tv_target.setText(String.valueOf(getStoreVisited()));
+        else
+            tv_target.setText(getTotalVisitActual());
+
+        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
+            tv_target1.setText(String.valueOf(getStoreVisited()));
+        else
+            tv_target1.setText(getTotalVisitActual());
 
     }
 
@@ -1948,7 +1960,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         @Override
         protected String doInBackground(String... params) {
-            bmodel.synchronizationHelper.updateAuthenticateToken();
+            bmodel.synchronizationHelper.updateAuthenticateToken(false);
             String response = bmodel.synchronizationHelper.sendPostMethod(Url, jsonObject);
             String errorCode = "E01";
             try {

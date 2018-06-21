@@ -578,10 +578,14 @@ public class OrderDeliveryHelper {
 
                         discountedAmount = SDUtil.convertToDouble(getOrderDeliveryTotalValue()) - remainingAmount;
                     } else {
-                        discountedAmount = SDUtil.convertToDouble(getOrderDeliveryTotalValue());
+                        //discountedAmount = SDUtil.convertToDouble(getOrderDeliveryTotalValue());
+                        discountedAmount = (SDUtil.convertToDouble(getOrderDeliveryTaxAmount()) +
+                                SDUtil.convertToDouble(getOrderDeliveryTotalValue())) - SDUtil.convertToDouble(getOrderDeliveryDiscountAmount());
                     }
                 } else {
-                    discountedAmount = SDUtil.convertToDouble(getOrderDeliveryTotalValue());
+                    //discountedAmount = SDUtil.convertToDouble(getOrderDeliveryTotalValue());
+                    discountedAmount = (SDUtil.convertToDouble(getOrderDeliveryTaxAmount()) +
+                            SDUtil.convertToDouble(getOrderDeliveryTotalValue())) - SDUtil.convertToDouble(getOrderDeliveryDiscountAmount());
                 }
             } catch (Exception e) {
                 Commons.printException(e);
@@ -667,10 +671,10 @@ public class OrderDeliveryHelper {
                         "orderid,ImageName,discount,invoiceAmount,latitude,longitude,return_amt," +
                         "discount_type,LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
                         "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,discountedAmount)" +
-                        " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid,ordervalue,orderid," +
-                        "imagename,discount,ordervalue,latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
+                        " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," + businessModel.QT(businessModel.formatValueBasedOnConfig(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
+                        ",orderid,imagename,discount," + businessModel.QT(getOrderDeliveryTotalValue()) +",latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
                         "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," +
-                        businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + discountedAmount +
+                        businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + businessModel.QT(businessModel.formatValueBasedOnConfig(discountedAmount)) +
                         " from OrderHeader where OrderId = " + businessModel.QT(orderId);
 
                 db.executeQ(invoiceHeaderQry);

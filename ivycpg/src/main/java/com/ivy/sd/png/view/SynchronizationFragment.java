@@ -1381,7 +1381,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (bmodel.isOnline()) {
-                    bmodel.synchronizationHelper.updateAuthenticateToken();
+                    bmodel.synchronizationHelper.updateAuthenticateToken(true);
                     if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
                         return bmodel.synchronizationHelper.checkForAutoUpdate();
                     else

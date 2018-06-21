@@ -2094,7 +2094,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+                bmodel.synchronizationHelper.updateAuthenticateToken(false);
                 bmodel.synchronizationHelper.downloadUserRetailerTranUrl();
                 return Boolean.TRUE;
             } catch (Exception e) {

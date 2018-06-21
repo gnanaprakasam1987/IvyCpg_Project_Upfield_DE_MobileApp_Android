@@ -272,17 +272,17 @@ public class BackUpSellerFragment extends IvyBaseFragment {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
                 String rid = mUploadHelper.uploadBackupSeller(backupSellerId, getHandler());
 
-                if (rid.equals("0")) {
+                if ("0".equals(rid)) {
                     getHandler().sendEmptyMessage(0);
                     return false;
-                } else if (rid.equals("E29")) {
+                } else if ("E29".equals(rid)) {
                     getHandler().sendEmptyMessage(1);
                     return false;
-                } else if (rid.equals("E30")) {
+                } else if ("E30".equals(rid)) {
                     getHandler().sendEmptyMessage(2);
                     return false;
 
-                } else if (rid.equals("E28")) {
+                } else if ("E28".equals(rid)) {
                     getHandler().sendEmptyMessage(3);
                     return false;
                 } else {

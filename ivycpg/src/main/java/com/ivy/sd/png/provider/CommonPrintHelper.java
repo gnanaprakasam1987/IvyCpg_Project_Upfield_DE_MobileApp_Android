@@ -1685,7 +1685,7 @@ public class CommonPrintHelper {
                                         s = doAlign("", ALIGNMENT_RIGHT, taxDesc.length());
                                     }
 
-                                    s = s + " " + taxpercentege + "% on Rs " + formatValueInPrint(totalExcludeValue, precision);
+                                    s = s + " " + taxpercentege + "% on " + formatValueInPrint(totalExcludeValue, precision);
 
                                     s = alignWithLabelForSingleLine(s, formatValueInPrint(totalTax, precision));
 
