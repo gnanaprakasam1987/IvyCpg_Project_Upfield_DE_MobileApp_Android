@@ -1093,7 +1093,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
     class MyAdapter extends ArrayAdapter<LoadManagementBO> {
         ArrayList<LoadManagementBO> items;
-        LoadManagementBO product;
+        //LoadManagementBO product;
 
         MyAdapter(ArrayList<LoadManagementBO> items) {
             super(ManualVanLoadActivity.this, R.layout.van_load, items);
@@ -1123,7 +1123,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
             final ViewHolder holder;
 
-            product = items.get(position);
+            //product = items.get(position);
             View row = convertView;
             try {
                 if (row == null) {
@@ -1144,7 +1144,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     holder.totQty = (TextView) row.findViewById(R.id.totalQty);
                     holder.listLayout = (LinearLayout) row.findViewById(R.id.inv_view_layout);
                     holder.rowLayout = (LinearLayout) row.findViewById(R.id.list_header_lty);
-
+                    holder.productBO = items.get(position);
                     holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.totQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1367,7 +1367,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 } else {
                     holder = (ViewHolder) row.getTag();
                 }
-                holder.productBO = product;
+                holder.productBO = items.get(position);
                 holder.pname = holder.productBO.getProductname();
                 holder.psname.setText(holder.productBO.getProductshortname());
                 String tvt = holder.productBO.getSih() + "";
