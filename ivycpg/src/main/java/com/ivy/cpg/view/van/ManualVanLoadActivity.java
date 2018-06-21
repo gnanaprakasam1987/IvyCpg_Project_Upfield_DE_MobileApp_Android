@@ -114,8 +114,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             isAddBatchDialogClicked = false;
             batchEntryDialog.dismiss();
             Toast.makeText(ManualVanLoadActivity.this, R.string.batch_created_successfully, Toast.LENGTH_LONG).show();
-            mSchedule = new MyAdapter(list);
-            lvwplist.setAdapter(mSchedule);
+            if(list != null && list.size() > 0) {
+                mSchedule = new MyAdapter(list);
+                lvwplist.setAdapter(mSchedule);
+            }
         }
     };
     android.content.DialogInterface.OnDismissListener cancelBatch = new android.content.DialogInterface.OnDismissListener() {
@@ -526,9 +528,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     + "(" + list.size() + ")");
         else
             tvSelectedFilter.setText(mFilterText + "(" + list.size() + ")");
-
-        mSchedule = new MyAdapter(list);
-        lvwplist.setAdapter(mSchedule);
+        if(list != null && list.size() > 0) {
+            mSchedule = new MyAdapter(list);
+            lvwplist.setAdapter(mSchedule);
+        }
     }
 
     @Override
@@ -780,9 +783,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         }
 
         protected void onPostExecute(Boolean result) {
-
-            mSchedule = new MyAdapter(list);
-            lvwplist.setAdapter(mSchedule);
+            if(list != null && list.size() > 0) {
+                mSchedule = new MyAdapter(list);
+                lvwplist.setAdapter(mSchedule);
+            }
 
         }
     }
@@ -976,8 +980,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
         }
-        mSchedule = new MyAdapter(filterlist);
-        lvwplist.setAdapter(mSchedule);
+        if(filterlist != null && filterlist.size() > 0) {
+            mSchedule = new MyAdapter(filterlist);
+            lvwplist.setAdapter(mSchedule);
+        }
 
         mDrawerLayout.closeDrawers();
         // TO DO Auto-generated method stub
@@ -1075,8 +1081,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
         }
-        mSchedule = new MyAdapter(filterlist);
-        lvwplist.setAdapter(mSchedule);
+        if(filterlist != null && filterlist.size() > 0) {
+            mSchedule = new MyAdapter(filterlist);
+            lvwplist.setAdapter(mSchedule);
+        }
 
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 

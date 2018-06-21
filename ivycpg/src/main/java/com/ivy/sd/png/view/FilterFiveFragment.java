@@ -272,10 +272,11 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     loadTagProductFilters(levelID);
                 Vector<LevelBO> filterValues = new Vector<>();
                 filterValues.addAll(loadedFilterValues.get(levelID));
-
-                gridadapter = new FilterGridAdapter(filterValues);
-                filtergridview.setAdapter(gridadapter);
-                gridadapter.notifyDataSetChanged();
+                if(filterValues != null && filterValues.size() > 0) {
+                    gridadapter = new FilterGridAdapter(filterValues);
+                    filtergridview.setAdapter(gridadapter);
+                    gridadapter.notifyDataSetChanged();
+                }
             }
 
         } catch (Exception ex){
@@ -410,8 +411,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     if (position < (sequence.size() - size)) {
                         //Product Level
                         Vector<LevelBO> filterList = updateFilterSelection(position);
-                        gridadapter = new FilterGridAdapter(filterList);
-                        filtergridview.setAdapter(gridadapter);
+                        if(filterList != null && filterList.size() > 0) {
+                            gridadapter = new FilterGridAdapter(filterList);
+                            filtergridview.setAdapter(gridadapter);
+                        }
                     } else {
                         //Attribute level
                         if (isFilterContentSelected(position)) {
@@ -447,14 +450,17 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                                 }
 
                             }
-
-                            gridadapter = new FilterGridAdapter(filterList);
-                            filtergridview.setAdapter(gridadapter);
+                            if(filterList != null && filterList.size() > 0) {
+                                gridadapter = new FilterGridAdapter(filterList);
+                                filtergridview.setAdapter(gridadapter);
+                            }
 
                         } else {
                             Vector<LevelBO> filterList = updateFilterSelection(position);
-                            gridadapter = new FilterGridAdapter(filterList);
-                            filtergridview.setAdapter(gridadapter);
+                            if(filterList != null && filterList.size() > 0) {
+                                gridadapter = new FilterGridAdapter(filterList);
+                                filtergridview.setAdapter(gridadapter);
+                            }
                         }
                     }
 
