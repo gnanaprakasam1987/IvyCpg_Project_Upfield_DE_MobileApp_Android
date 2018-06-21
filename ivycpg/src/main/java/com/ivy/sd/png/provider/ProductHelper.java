@@ -3033,6 +3033,10 @@ public class ProductHelper {
                 product.setDeliveredCaseQty(0);
                 product.setDeliveredOuterQty(0);
                 product.setDeliveredPcsQty(0);
+
+                //clear suggested Qty
+                product.setSocInventory(0);
+                product.setSoInventory(0);
             }
         }
 

@@ -144,7 +144,8 @@ public class NativeCameraActivity extends Activity {
 
         }
         try {
-            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.ARGB_8888);
+            if (actualWidth > 0 && actualHeight > 0)
+                scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.ARGB_8888);
         } catch (OutOfMemoryError exception) {
             Commons.printException("" + exception);
         }

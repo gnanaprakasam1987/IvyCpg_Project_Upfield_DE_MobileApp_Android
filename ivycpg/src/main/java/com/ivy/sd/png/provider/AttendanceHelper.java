@@ -920,6 +920,25 @@ public class AttendanceHelper {
         return isWeekOff;
     }
 
+    public void downWeekOffs(Context context) {
+        try {
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("SELECT WeekOff from AppVariables");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    weekOffDays = c.getString(0).split(",");
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Leaves Type Loading Exception", e);
+        }
+
+    }
 
     public void computeLeaves(int lovId, String fromDate, String toDate, int flag, int session, Context context) {
         leavesBo = new ArrayList<LeaveRuleBO>();

@@ -4900,8 +4900,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         menu.findItem(R.id.menu_oppr).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR);
         menu.findItem(R.id.menu_order).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER);
 
-        if (screenMode == EDIT)
-            menu.findItem(R.id.menu_capture).setVisible(false);
+        if (bmodel.configurationMasterHelper.IS_NEWOUTLET_IMAGETYPE
+                && screenMode == EDIT)
+            menu.findItem(R.id.menu_capture).setVisible(true);
         else if (screenMode == VIEW) {
             menu.findItem(R.id.menu_capture).setVisible(false);
             menu.findItem(R.id.menu_oppr).setVisible(false);
@@ -5006,8 +5007,19 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                                                     .get(item).getListId();
                                             imageName = moduleName + uID + "_"
                                                     + ImageId + "_img.jpg";
-                                            String fnameStarts = moduleName + uID
-                                                    + "_" + ImageId;
+                                            String fnameStarts = "";
+                                            if (screenMode == EDIT) {
+                                                for (String img : outlet.getImageName()) {
+                                                    if ((img).contains(ImageId + "")) {
+                                                        fnameStarts = img;
+                                                        break;
+                                                    }
+                                                }
+                                            } else {
+                                                fnameStarts = moduleName + uID
+                                                        + "_" + ImageId;
+                                            }
+
                                             Commons.print(TAG + ",FName Starts :"
                                                     + fnameStarts);
                                             boolean nfiles_there = bmodel.checkForNFilesInFolder(
@@ -5710,6 +5722,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         bmodel.synchronizationHelper.deleteFiles(PHOTO_PATH,
                                 imageNameStarts);
                         dialog.dismiss();
+                        outlet.getImageName().remove(imageNameStarts);
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -6036,6 +6049,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         if (resultCode == RESULT_OK) {
+
+            outlet.getImageName().add(imageName);
             if (data.hasExtra("lat") && data.hasExtra("isChanged")) {
 
                 lattitude = data.getExtras().getDouble("lat");

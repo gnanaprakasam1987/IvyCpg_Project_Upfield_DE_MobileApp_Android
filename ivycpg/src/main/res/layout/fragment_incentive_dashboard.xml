@@ -50,9 +50,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimen_0dp"
-                            android:layout_weight="0.35"
+                            android:layout_weight="0.45"
                             android:gravity="center"
                             android:text="@string/total_payout_earned"
+                            android:textSize="@dimen/font_micro_small"
+                            android:textStyle="normal"
                             android:textColor="@color/store_label" />
 
                         <TextView
@@ -62,8 +64,10 @@
                             android:layout_weight="0.55"
                             android:gravity="center"
                             android:text=""
+                            android:textSize="@dimen/value_text_size"
                             android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/font_large" />
+                            android:textStyle="normal"
+                            />
 
                     </LinearLayout>
 
@@ -77,9 +81,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimen_0dp"
-                            android:layout_weight="0.40"
+                            android:layout_weight="0.45"
                             android:gravity="center"
+                            android:textSize="@dimen/font_micro_small"
                             android:text="@string/max_possible_payout"
+                            android:textStyle="normal"
                             android:textColor="@color/store_label" />
 
                         <TextView
@@ -87,10 +93,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimen_0dp"
                             android:layout_weight="0.55"
-                            android:gravity="center_horizontal"
+                            android:gravity="center"
                             android:text=""
+                            android:textSize="@dimen/value_text_size"
+                            android:textStyle="normal"
                             android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/font_large" />
+                            />
 
                     </LinearLayout>
 
@@ -107,30 +115,44 @@
 
 
                     <ImageView
+                        android:id="@+id/regularIncentiveImageView"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.25"
+                        android:clickable="true"
                         android:src="@drawable/barchart" />
 
                     <TextView
                         android:id="@+id/tv_textRegularIncentive"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.85"
-                        android:gravity="center"
+                        android:layout_weight="1.65"
+                        android:clickable="true"
+                        android:paddingLeft="@dimen/dimen_10dp"
+                        android:gravity="center_vertical"
+                        android:textStyle="normal"
+                        android:textSize="@dimen/font_micro_small"
                         android:text="" />
 
                     <ImageView
+                        android:id="@+id/regularIncentiveDetailsImageView"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.25"
+                        android:clickable="true"
+                        android:textSize="@dimen/font_micro_small"
                         android:src="@drawable/info" />
 
                     <TextView
+                        android:id="@+id/regularIncentiveDetailsTextView"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.20"
-                        android:gravity="center"
+                        android:layout_weight="1.65"
+                        android:clickable="true"
+                        android:paddingLeft="@dimen/dimen_10dp"
+                        android:gravity="center_vertical"
+                        android:textStyle="normal"
+                        android:textSize="@dimen/font_micro_small"
                         android:text="DETAILS" />
                 </LinearLayout>
 
@@ -178,9 +200,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimen_0dp"
-                            android:layout_weight="0.35"
+                            android:layout_weight="0.45"
                             android:gravity="center"
                             android:text="@string/total_payout_earned"
+                            android:textStyle="normal"
+                            android:textSize="@dimen/font_micro_small"
                             android:textColor="@color/store_label" />
 
                         <TextView
@@ -190,8 +214,9 @@
                             android:layout_weight="0.55"
                             android:gravity="center"
                             android:text=""
+                            android:textStyle="normal"
                             android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/font_large" />
+                            android:textSize="@dimen/value_text_size" />
 
                     </LinearLayout>
 
@@ -205,8 +230,10 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimen_0dp"
-                            android:layout_weight="0.40"
+                            android:layout_weight="0.45"
                             android:gravity="center"
+                            android:textSize="@dimen/font_micro_small"
+                            android:textStyle="normal"
                             android:text="@string/max_possible_payout"
                             android:textColor="@color/store_label" />
 
@@ -215,10 +242,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimen_0dp"
                             android:layout_weight="0.55"
-                            android:gravity="center_horizontal"
+                            android:gravity="center"
                             android:text=""
+                            android:textStyle="normal"
+                            android:textSize="@dimen/value_text_size"
                             android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/font_large" />
+                            />
 
                     </LinearLayout>
 
@@ -235,8 +264,10 @@
 
 
                     <ImageView
+                        android:id="@+id/topupIncentiveImageview"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="match_parent"
+                        android:clickable="true"
                         android:layout_weight="0.25"
                         android:src="@drawable/barchart" />
 
@@ -244,21 +275,32 @@
                         android:id="@+id/tv_TopupIncentive"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.85"
-                        android:gravity="center"
+                        android:clickable="true"
+                        android:layout_weight="1.65"
+                        android:gravity="center_vertical"
+                        android:textStyle="normal"
+                        android:paddingLeft="@dimen/dimen_10dp"
+                        android:textSize="@dimen/font_micro_small"
                         android:text="" />
 
                     <ImageView
+                        android:id="@+id/topupIncentiveDetailImageView"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.25"
+                        android:clickable="true"
                         android:src="@drawable/info" />
 
                     <TextView
+                        android:id="@+id/topupIncentiveDetailTextView"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.20"
-                        android:gravity="center"
+                        android:layout_weight="1.60"
+                        android:gravity="center_vertical"
+                        android:textStyle="normal"
+                        android:clickable="true"
+                        android:paddingLeft="@dimen/dimen_10dp"
+                        android:textSize="@dimen/font_micro_small"
                         android:text="DETAILS" />
                 </LinearLayout>
 
@@ -283,7 +325,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1.25"
             android:gravity="center"
+            android:textSize="@dimen/font_micro_small"
             android:text="@string/total_payout"
+            android:textStyle="normal"
             android:textColor="@color/store_label" />
 
         <TextView
@@ -291,7 +335,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:textStyle="normal"
             android:text="@string/total_payout_earned"
+            android:textSize="@dimen/font_micro_small"
             android:textColor="@color/store_label" />
 
         <TextView
@@ -301,8 +347,10 @@
             android:layout_weight="0.80"
             android:gravity="center"
             android:text=""
+            android:textStyle="normal"
+            android:textSize="@dimen/value_text_size"
             android:textColor="?attr/primarycolor"
-            android:textSize="@dimen/font_large" />
+            />
 
         <TextView
             android:layout_width="@dimen/dimen_0dp"
@@ -310,6 +358,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/max_possible_payout"
+            android:textStyle="normal"
+            android:textSize="@dimen/font_micro_small"
             android:textColor="@color/store_label" />
 
         <TextView
@@ -320,7 +370,8 @@
             android:gravity="center"
             android:text=""
             android:textColor="?attr/primarycolor"
-            android:textSize="@dimen/font_large" />
+            android:textStyle="normal"
+            android:textSize="@dimen/value_text_size" />
 
     </LinearLayout>
 

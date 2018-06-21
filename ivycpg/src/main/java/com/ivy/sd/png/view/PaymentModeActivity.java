@@ -158,7 +158,7 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
         if (!isFinishing()) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragment, mFragmentList.get(selectedPosition));
-            ft.commit();
+            ft.commitAllowingStateLoss();
         }
         super.onResume();
     }

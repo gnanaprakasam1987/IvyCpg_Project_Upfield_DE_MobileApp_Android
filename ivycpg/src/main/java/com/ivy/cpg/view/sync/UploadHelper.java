@@ -930,15 +930,6 @@ public class UploadHelper {
 
 
                 }
-            } else {
-                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
-                    if (errorMsg != null) {
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
-                    }
-                }
             }
         } catch (SQLException | JSONException e) {
             Commons.printException("" + e);

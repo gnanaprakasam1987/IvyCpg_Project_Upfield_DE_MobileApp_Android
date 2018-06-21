@@ -1012,6 +1012,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
         boolean isStoreCheckMenu = false;
+        boolean isStockOrder=false;
 
         menuDB = bmodel.configurationMasterHelper.getActivityMenu();
 
@@ -1026,7 +1027,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                         + getResources().getString(R.string.is_not_done) + "\n");
             }
 
+            if(config.getHasLink() == 1 && !config.isDone()
+                    && config.getConfigCode().equals("MENU_STK_ORD")){
+                isStockOrder=true;
+            }
+
         }
+
+
 
         if (isStoreCheckMenu) {
             mInStoreMenu = bmodel.configurationMasterHelper
@@ -1042,9 +1050,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             }
         }
         //focus pack not ordered
-        if (bmodel.configurationMasterHelper.IS_FOCUS_PACK_NOT_DONE) {
-            if (bmodel.getTotalFocusBrandLines() < 1) {
-                sb.append(getResources().getString(R.string.order_not_placed_focus_pack) + "\n");
+        if (bmodel.configurationMasterHelper.IS_FOCUS_PACK_NOT_DONE && !isStockOrder) {
+            bmodel.getOrderedFocusBrandList();
+            if (bmodel.getTotalFocusBrandLines() < bmodel.getTotalFocusBrands()) {
+                String msg="";
+                for (String focusBrand:bmodel.getTotalFocusBrandList()){
+                    if(!bmodel.getOrderedFocusBrands().contains(focusBrand))
+                        msg+=focusBrand+", ";
+                }
+
+                sb.append(getResources().getString(R.string.order_not_placed_focus_pack)+" " +msg.trim().substring(0,msg.trim().length()-1)+ ". \n");
             }
         }
 
