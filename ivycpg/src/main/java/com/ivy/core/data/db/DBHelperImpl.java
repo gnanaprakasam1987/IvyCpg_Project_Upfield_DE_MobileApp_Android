@@ -27,6 +27,7 @@ public class DBHelperImpl implements DbHelper {
         return Single.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
+                String theme = "blue";
                 try {
                     mDbUtil.createDataBase();
                     mDbUtil.openDataBase();
@@ -35,7 +36,7 @@ public class DBHelperImpl implements DbHelper {
                     Cursor c = mDbUtil.selectSQL(query);
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
-                            return c.getString(0);
+                            theme = c.getString(0);
                         }
                     }
                     mDbUtil.close();
@@ -44,10 +45,40 @@ public class DBHelperImpl implements DbHelper {
                     Commons.printException("" + e);
                 }
 
-                return "blue";
+                return theme;
             }
         });
 
+
+    }
+
+    @Override
+    public Single<String> getFontSize() {
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                String fontSize = "Small";
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+
+                    String query = "select RField from HhtModuleMaster where hhtcode='THEME02' and flag=1 and  ForSwitchSeller = 0";
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            fontSize = c.getString(0);
+
+                        }
+                    }
+                    c.close();
+                    mDbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+
+                return fontSize;
+            }
+        });
 
     }
 

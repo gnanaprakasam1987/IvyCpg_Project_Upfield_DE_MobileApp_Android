@@ -10,4 +10,6 @@ public interface BaseIvyPresenter<V extends BaseIvyView> {
 
     void getAppTheme();
 
+    void getAppFontSize();
+
 }

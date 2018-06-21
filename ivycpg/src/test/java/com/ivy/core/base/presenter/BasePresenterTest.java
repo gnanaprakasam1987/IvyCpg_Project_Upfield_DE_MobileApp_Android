@@ -4,6 +4,7 @@ import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,12 +112,21 @@ public class BasePresenterTest {
         then(ivyView).should().setGreenTheme();
     }
 
+    @Test
+    public void testSetFontSize() {
+        given(mDataManager.getFontSize()).willReturn(Single.just("Small"));
 
-    @Test(expected = BasePresenter.IvyViewNotAttachedException.class)
-    public void testIsViewAttached(){
-        mPresenter.checkViewAttached();
+        //When
+        mPresenter.getAppFontSize();
+        testScheduler.triggerActions();
 
-        then(ivyView).shouldHaveZeroInteractions();
+        then(ivyView).should().setFontSize("Small");
+    }
+
+
+    @After
+    public void tearDown() throws Exception {
+        mPresenter.onDetach();
     }
 
 }

@@ -35,4 +35,6 @@ public interface BaseIvyView {
     void setPinkTheme();
 
     void setNavyBlueTheme();
+
+    void setFontSize(String fontSize);
 }

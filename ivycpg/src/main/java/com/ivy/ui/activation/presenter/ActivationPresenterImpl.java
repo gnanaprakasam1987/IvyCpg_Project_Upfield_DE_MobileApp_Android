@@ -47,7 +47,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(Boolean response) throws Exception {
+                    public void accept(Boolean response) {
                         if (response)
                             getIvyView().navigateToLoginScreen();
                         else

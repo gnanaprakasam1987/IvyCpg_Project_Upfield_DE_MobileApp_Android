@@ -60,7 +60,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         mBasePresenter = presenter;
     }
 
-    ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,8 +80,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         initVariables();
 
-        if (mBasePresenter != null)
+        if (mBasePresenter != null) {
             mBasePresenter.getAppTheme();
+            mBasePresenter.getAppFontSize();
+        }
 
     }
 
@@ -354,4 +355,11 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public void setRedTheme() {
         setTheme(R.style.MVPTheme_Red);
     }
+
+    @Override
+    public void setFontSize(String fontSize) {
+        setFontStyle(fontSize);
+    }
 }
+
+

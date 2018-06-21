@@ -68,4 +68,9 @@ public class DataManagerImpl implements DataManager {
     public Single<String> getThemeColor() {
         return dbHelper.getThemeColor();
     }
+
+    @Override
+    public Single<String> getFontSize() {
+        return dbHelper.getFontSize();
+    }
 }

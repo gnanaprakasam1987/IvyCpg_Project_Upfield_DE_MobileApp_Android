@@ -30,8 +30,8 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
 
 
     @Override
-    public void onAttach(V mvpView) {
-        ivyView = mvpView;
+    public void onAttach(V ivyView) {
+        this.ivyView = ivyView;
         getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
     }
 
@@ -48,21 +48,34 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<String>() {
                     @Override
-                    public void accept(String response) throws Exception {
-                        if (response.equalsIgnoreCase("red"))
+                    public void accept(String theme) throws Exception {
+                        if (theme.equalsIgnoreCase("red"))
                             getIvyView().setRedTheme();
-                        else if (response.equalsIgnoreCase("orange"))
+                        else if (theme.equalsIgnoreCase("orange"))
                             getIvyView().setOrangeTheme();
-                        else if (response.equalsIgnoreCase("green"))
+                        else if (theme.equalsIgnoreCase("green"))
                             getIvyView().setGreenTheme();
-                        else if (response.equalsIgnoreCase("pink"))
+                        else if (theme.equalsIgnoreCase("pink"))
                             getIvyView().setPinkTheme();
-                        else if (response.equalsIgnoreCase("nblue"))
+                        else if (theme.equalsIgnoreCase("nblue"))
                             getIvyView().setNavyBlueTheme();
                         else
                             getIvyView().setBlueTheme();
 
 
+                    }
+                }));
+    }
+
+    @Override
+    public void getAppFontSize() {
+        getCompositeDisposable().add(getDataManager().getFontSize()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String fontSize) throws Exception {
+                        getIvyView().setFontSize(fontSize);
                     }
                 }));
     }
