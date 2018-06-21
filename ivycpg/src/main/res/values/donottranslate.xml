@@ -90,6 +90,8 @@
     <string name="top_up_incentive">TOP UP INCENTIVE</string>
     <string name="top_up_incentive_small">Top Up Incentive</string>
     <string name="factor_InscDash">Factor</string>
+    <string name="sales_parameter">Sales Parameter</string>
+    <string name="max_opportunity">Payout Opportunity</string>
     <string name="achived">Achived</string>
     <string name="ach">Ach(%)</string>
     <string name="payout_earned">Payout Earned</string>
@@ -145,5 +147,7 @@
     <string name="error_connecting_printer">Error connecting Printer</string>
     <string name="allocation">Allocation</string>
     <string name="you_have_unchecked_applicable_scheme">You have unchecked few applicable scheme ?</string>
+    <string name="regular_incentive_detail">Regular Incentive Detail</string>
+    <string name="top_up_incentive_detail">Top Up Incentive Detail</string>
 
 </resources>
