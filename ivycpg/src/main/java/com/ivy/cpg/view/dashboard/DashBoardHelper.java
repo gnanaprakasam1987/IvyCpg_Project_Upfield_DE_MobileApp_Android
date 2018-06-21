@@ -2950,17 +2950,17 @@ public class DashBoardHelper {
 
 
 
-    public void downloadIncentiveList() {
+    public ArrayList<IncentiveDashboardBO> downloadIncentiveList(String type) {
         incentiveList = new ArrayList<>();
-        incentiveGroups = new ArrayList<>();
-        incentiveType = new ArrayList<>();
+        incentiveType=new ArrayList<>();
 
+        String groupName="0";
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql = "SELECT * FROM " + DataMembers.tbl_IncentiveDashboard;
+            String sql = "SELECT * FROM " + DataMembers.tbl_IncentiveDashboard +" Where inctype='"+type+"'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -2976,11 +2976,16 @@ public class DashBoardHelper {
                     con.setFactor(c.getString(c.getColumnIndex("factor")));
                     con.setAchper(c.getString(c.getColumnIndex("achper")));
                     con.setAch(c.getString(c.getColumnIndex("ach")));
+                    if(con.getGroups().equalsIgnoreCase("")||!groupName.equalsIgnoreCase(con.getGroups())){
+                        con.setIsNewGroup(true);
+                        groupName=con.getGroups();
+                    }else{
+                        con.setIsNewGroup(false);
+                    }
 
                     incentiveList.add(con);
                 }
             }
-
 
             sql = "SELECT distinct inctype FROM " + DataMembers.tbl_IncentiveDashboard;
 
@@ -2992,21 +2997,85 @@ public class DashBoardHelper {
                 }
             }
 
-            sql = "SELECT distinct groups FROM " + DataMembers.tbl_IncentiveDashboard;
-
-            c = db.selectSQL(sql);
-
-            if (c != null) {
-                while (c.moveToNext()) {
-                    incentiveGroups.add(c.getString(0));
-                }
-            }
-
             c.close();
             db.closeDB();
+
+            return incentiveList;
         } catch (Exception e) {
             Commons.print("" + e);
         }
+
+        return new ArrayList<>();
+    }
+
+
+
+
+
+    public ArrayList<IncentiveDashboardDefinitionBO> downloadIncentiveDetails(String type){
+        try{
+
+            String groupName="0";
+            String factorName="0";
+            String groupPackage="0";
+
+            ArrayList<IncentiveDashboardDefinitionBO> list=new ArrayList<>();
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "SELECT * FROM IncentiveDashboardDefinition where inctype='"+type+"'";
+            Cursor c = db.selectSQL(sql);
+
+            while (c.moveToNext()){
+                IncentiveDashboardDefinitionBO incentiveDashboardDefinitionBO=new IncentiveDashboardDefinitionBO();
+
+                incentiveDashboardDefinitionBO.setFactor(c.getString(0));
+                incentiveDashboardDefinitionBO.setSalesParam(c.getString(1));
+                incentiveDashboardDefinitionBO.setAchPercentage(c.getString(2));
+                incentiveDashboardDefinitionBO.setMaxOpportunity(c.getString(3));
+                if(c.getString(4)!=null)
+                    incentiveDashboardDefinitionBO.setGroups(c.getString(4));
+                else
+                    incentiveDashboardDefinitionBO.setGroups("");
+                incentiveDashboardDefinitionBO.setIncentiveType(c.getString(5));
+
+                if(incentiveDashboardDefinitionBO.getSalesParam().trim().equalsIgnoreCase("")||!groupName.equalsIgnoreCase(incentiveDashboardDefinitionBO.getSalesParam())){
+                    incentiveDashboardDefinitionBO.setIsNewGroup(true);
+                    groupName=incentiveDashboardDefinitionBO.getSalesParam();
+                }else{
+                    incentiveDashboardDefinitionBO.setIsNewGroup(false);
+                }
+
+                if(!incentiveDashboardDefinitionBO.getFactor().equalsIgnoreCase(factorName)){
+                    incentiveDashboardDefinitionBO.setIsNewFactor(true);
+                    factorName=incentiveDashboardDefinitionBO.getFactor();
+                }else{
+                    incentiveDashboardDefinitionBO.setIsNewFactor(false);
+                }
+
+                if(incentiveDashboardDefinitionBO.getGroups().trim().equalsIgnoreCase("")||!incentiveDashboardDefinitionBO.getGroups().equalsIgnoreCase(groupPackage)){
+                    incentiveDashboardDefinitionBO.setNewPackage(true);
+                    groupPackage=incentiveDashboardDefinitionBO.getGroups();
+                }else{
+                    incentiveDashboardDefinitionBO.setNewPackage(false);
+                }
+
+
+                list.add(incentiveDashboardDefinitionBO);
+
+            }
+            c.close();
+            db.closeDB();
+
+            return list;
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        return new ArrayList<>();
     }
 
     public ArrayList<String> getIncentiveType() {

@@ -399,6 +399,14 @@ public class BusinessModel extends Application {
     private int printSequenceLevelID;
     private String dashboardUserFilterString;
 
+    private final String mFocusBrand = "Filt11";
+    private final String mFocusBrand2 = "Filt12";
+    private final String mFocusBrand3 = "Filt20";
+    private final String mFocusBrand4 = "Filt21";
+
+    private ArrayList<String> orderedBrands=new ArrayList<>();
+    private ArrayList<String> totalFocusBrandList=new ArrayList<>();
+
     public BusinessModel() {
 
         /** Create objects for Helpers **/
@@ -1817,6 +1825,118 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
+
+    public int getTotalFocusBrands(){
+        try{
+
+            int focusBrandCount=0;
+
+            int focusBrandProducts1 = 0;
+            int focusBrandProducts2 = 0;
+            int focusBrandProducts3 = 0;
+            int focusBrandProducts4 = 0;
+
+            Vector<ProductMasterBO> products=productHelper.getProductMaster();
+            if(products!=null){
+                for(int index=0;index<products.size();index++){
+                    if(products.get(index).getIsFocusBrand()==1)
+                        focusBrandProducts1=1;
+                    else if (products.get(index).getIsFocusBrand2()==1)
+                        focusBrandProducts2=1;
+                    else if(products.get(index).getIsFocusBrand3()==1)
+                        focusBrandProducts3=1;
+                    else if(products.get(index).getIsFocusBrand4()==1)
+                        focusBrandProducts4=1;
+
+                }
+            }
+
+            getTotalFocusBrandList().clear();
+            if(focusBrandProducts1==1){
+                getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand));
+            }
+            if(focusBrandProducts2==1){
+                getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand2));
+            }
+            if(focusBrandProducts3==1){
+                getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand3));
+            }
+            if(focusBrandProducts4==1){
+                getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand4));
+            }
+
+            focusBrandCount=focusBrandProducts1+focusBrandProducts2+focusBrandProducts3+focusBrandProducts4;
+
+            return focusBrandCount;
+
+        }catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+        return 0;
+    }
+
+    public void getOrderedFocusBrandList(){
+
+        try {
+
+            ArrayList<String> mOrderedProductList=new ArrayList<>();
+
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select distinct ProductID from "
+                    + DataMembers.tbl_orderDetails + " where retailerid="
+                    + QT(retailerMasterBO.getRetailerID()) + " and upload='N'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    mOrderedProductList.add(c.getString(0));
+                }
+                c.close();
+            }
+            db.closeDB();
+
+            int focusBrandProducts1 = 0;
+            int focusBrandProducts2 = 0;
+            int focusBrandProducts3 = 0;
+            int focusBrandProducts4 = 0;
+
+            for (String productID : mOrderedProductList) {
+
+                ProductMasterBO bo=productHelper.getProductMasterBOById(productID);
+                if (bo.getIsFocusBrand() == 1) {
+                    focusBrandProducts1 = 1;
+                }
+                if (bo.getIsFocusBrand2() == 1) {
+                    focusBrandProducts2 = 1;
+                }
+                if (bo.getIsFocusBrand3() == 1) {
+                    focusBrandProducts3 = 1;
+                }
+                if (bo.getIsFocusBrand4() == 1) {
+                    focusBrandProducts4 = 1;
+                }
+            }
+
+            getOrderedFocusBrands().clear();
+            if (focusBrandProducts1 == 1) {
+                getOrderedFocusBrands().add(getFocusFilterName(mFocusBrand));
+            }
+            if (focusBrandProducts2 == 1) {
+                getOrderedFocusBrands().add(getFocusFilterName(mFocusBrand2));
+            }
+            if (focusBrandProducts3 == 1) {
+                getOrderedFocusBrands().add(getFocusFilterName(mFocusBrand3));
+            }
+            if (focusBrandProducts4 == 1) {
+                getOrderedFocusBrands().add(getFocusFilterName(mFocusBrand4));
+            }
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+    }
+
 
     private void getMSLValues() {
         DBUtil db = null;
@@ -6149,6 +6269,52 @@ public class BusinessModel extends Application {
         return 0;
     }
 
+    public int getRetailerTarget() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT RKD.Target FROM RetailerKPI RK inner join RetailerKPIDetail RKD on RKD.KPIID= RK.KPIID  inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId where ListCode='TLS' and retailerid ="
+                            + QT(getRetailerMasterBO().getRetailerID()));
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int count = c.getInt(0);
+                    return count;
+                }
+            }
+            c.close();
+            db.closeDB();
+            return 0;
+        } catch (Exception e) {
+            Commons.printException(e);
+            return 0;
+        }
+    }
+
+    public int getRetailerVisitTarget() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT RKD.Target FROM RetailerKPI RK inner join RetailerKPIDetail RKD on RKD.KPIID= RK.KPIID  inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId where ListCode='VIP' and retailerid ="
+                            + QT(getRetailerMasterBO().getRetailerID()));
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int count = c.getInt(0);
+                    return count;
+                }
+            }
+            c.close();
+            db.closeDB();
+            return 0;
+        } catch (Exception e) {
+            Commons.printException(e);
+            return 0;
+        }
+    }
+
     public ArrayList<ConfigureBO> getFITscore() {
         try {
             ArrayList<ConfigureBO> lst = new ArrayList<>();
@@ -9103,6 +9269,32 @@ public class BusinessModel extends Application {
         }
         return collectedList;
 
+    }
+
+    public ArrayList<String> getOrderedFocusBrands() {
+        return orderedBrands;
+    }
+
+    public void setOrderedFocusBrands(ArrayList<String> orderedBrands) {
+        this.orderedBrands = orderedBrands;
+    }
+
+    public ArrayList<String> getTotalFocusBrandList() {
+        return totalFocusBrandList;
+    }
+
+    public void setTotalFocusBrandList(ArrayList<String> totalFocusBrandList) {
+        this.totalFocusBrandList = totalFocusBrandList;
+    }
+
+    private String getFocusFilterName(String filtername) {
+        Vector<ConfigureBO> genfilter = configurationMasterHelper
+                .getGenFilter();
+        for (int i = 0; i < genfilter.size(); i++) {
+            if (genfilter.get(i).getConfigCode().equals(filtername))
+                filtername = genfilter.get(i).getMenuName();
+        }
+        return filtername;
     }
 }
 
