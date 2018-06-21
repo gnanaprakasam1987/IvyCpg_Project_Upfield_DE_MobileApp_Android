@@ -6821,7 +6821,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+                bmodel.synchronizationHelper.updateAuthenticateToken(false);
 
             } catch (Exception e) {
                 Commons.printException("" + e);
