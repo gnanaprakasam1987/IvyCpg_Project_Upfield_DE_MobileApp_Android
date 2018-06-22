@@ -255,7 +255,7 @@ public class SBDHelper {
         return mSBDGapProductsByGroup;
     }
 
-    public int getAchievedSBD(ProductMasterBO orderedProduct) {
+    public int getAchievedSBD(Vector<ProductMasterBO> orderedList) {
         int achievedGroupCount = 0;
         try {
 
@@ -266,40 +266,14 @@ public class SBDHelper {
                         int orderedQty = 0;
 
                         //calculating ordered qty
-                        String productHierarchy = orderedProduct.getParentHierarchy();
-                        List<String> hierarchy = Arrays.asList(productHierarchy.split("/"));
-                        if (hierarchy.contains(productId + "")) {
+                        for (ProductMasterBO orderedProduct : orderedList) {
+                            String productHierarchy = orderedProduct.getParentHierarchy();
+                            List<String> hierarchy = Arrays.asList(productHierarchy.split("/"));
+                            if (hierarchy.contains(productId + "")) {
 
-                            orderedQty = getOrderedQty(orderedProduct);
+                                orderedQty += getOrderedQty(orderedProduct);
+                            }
                         }
-
-                        if (orderedQty >= mProductList.get(productId)) {
-                            achievedGroupCount += 1;
-                            break;
-                        }
-
-                    }
-
-                }
-            }
-        } catch (Exception ex) {
-
-            Commons.printException(ex);
-        }
-
-
-        return achievedGroupCount;
-    }
-
-    public int getHistorySBD() {
-        int achievedGroupCount = 0;
-        try {
-
-            if (getmProductIdListByGroupName() != null) {
-                for (String groupName : getmProductIdListByGroupName().keySet()) {
-                    HashMap<Integer, Integer> mProductList = getmProductIdListByGroupName().get(groupName);
-                    for (int productId : mProductList.keySet()) {
-                        int orderedQty = 0;
 
                         // calculating ordered qty from history records
                         HashMap<Integer, Integer> mHistoryProductList = getmHistoryOrderedListByGroupName().get(groupName);

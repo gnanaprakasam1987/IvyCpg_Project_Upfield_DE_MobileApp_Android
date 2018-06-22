@@ -86,7 +86,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
         btnOK.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                try {
                 int size = sequence.size();
                 for (int i = size - 1; i >= 0; i--) {
                     if (mSelectedIdByLevelId.get(sequence.get(i).getProductID()) != null && mSelectedIdByLevelId.get(sequence.get(i).getProductID()) > 0) {
@@ -147,6 +147,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
                 brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, filterText);
                 brandInterface.updateCancel();
+                }
+                catch (Exception ex){
+                    Commons.printException(ex);
+                }
 
             }
         });
@@ -154,8 +158,13 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                try{
                 mSelectedIdByLevelId.clear();
                 onStart();
+                }
+                catch (Exception ex){
+                    Commons.printException(ex);
+                }
             }
         });
 

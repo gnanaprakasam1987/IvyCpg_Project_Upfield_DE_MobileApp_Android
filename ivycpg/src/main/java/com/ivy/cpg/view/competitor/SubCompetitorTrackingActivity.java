@@ -66,7 +66,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 
 public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     BusinessModel bmodel;
@@ -136,11 +135,13 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
 
     }
+
     @Override
     public void onStart() {
         super.onStart();
         loadReasons();
     }
+
     private void initializeView() {
         et_feedback = (EditText) findViewById(R.id.edt_feedback);
         lvwplist = (ListView) findViewById(R.id.list);
@@ -352,19 +353,19 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         .findViewById(R.id.edt_competitor_feedback);
                 holder.edtQty = (EditText) convertView
                         .findViewById(R.id.et_qty);
-                holder.spnReason=(Spinner)convertView
+                holder.spnReason = (Spinner) convertView
                         .findViewById(R.id.spn_reason);
 
                 if (!bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR) {
                     ((LinearLayout) convertView.findViewById(R.id.ll_photoView)).setVisibility(View.GONE);
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_TIME_VIEW) {
-                    ((Button)convertView.findViewById(R.id.btn_fromdate)).setVisibility(View.GONE);
-                    ((Button)convertView.findViewById(R.id.btn_todate)).setVisibility(View.GONE);
+                    ((Button) convertView.findViewById(R.id.btn_fromdate)).setVisibility(View.GONE);
+                    ((Button) convertView.findViewById(R.id.btn_todate)).setVisibility(View.GONE);
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_SPINNER) {
-                    ((Spinner)convertView.findViewById(R.id.spn_reason)).setVisibility(View.GONE);
+                    ((Spinner) convertView.findViewById(R.id.spn_reason)).setVisibility(View.GONE);
                 }
 
                 holder.checkBox
@@ -410,6 +411,9 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         btn = holder.btnFromDate;
                         btn.setTag(holder.mCompTrackBO);
                         DialogFragment newFragment = new DatePickerFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("date", holder.mCompTrackBO.getToDate());
+                        newFragment.setArguments(bundle);
                         newFragment.show(getSupportFragmentManager(), "datePicker1");
                     }
                 });
@@ -420,6 +424,9 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         btn = holder.btnToDate;
                         btn.setTag(holder.mCompTrackBO);
                         DialogFragment newFragment = new DatePickerFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("date", holder.mCompTrackBO.getToDate());
+                        newFragment.setArguments(bundle);
                         newFragment.show(getSupportFragmentManager(), "datePicker2");
                     }
                 });
@@ -455,8 +462,8 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                                                     R.string.its_highly_recommend_you_to_upload_the_images_before_capturing_new_image),
                                     Toast.LENGTH_SHORT).show();
                         else {*/
-                            trackinglistId = holder.mCompTrackBO.getId();
-                            takephoto(bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR);
+                        trackinglistId = holder.mCompTrackBO.getId();
+                        takephoto(bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR);
                         //}
                     }
                 });
@@ -496,8 +503,6 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
                     }
                 });
-
-
 
 
                 convertView.setTag(holder);
@@ -632,11 +637,11 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 .centerCrop()
                 .placeholder(new BitmapDrawable(getResources(), defaultIcon))
                 .into(new BitmapImageViewTarget(imageView) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                imageView.setImageDrawable(new BitmapDrawable(getResources(), getCircularBitmapFrom(resource)));
-            }
-        });
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        imageView.setImageDrawable(new BitmapDrawable(getResources(), getCircularBitmapFrom(resource)));
+                    }
+                });
     }
 
     private void takephoto(boolean isCompPhoto) {
@@ -885,14 +890,30 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
+        String date;
+        Date selectionDate = null;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar c = Calendar.getInstance();
+            if (getArguments() != null) {
+                date = getArguments().getString("date", "");
+            }
+            /* param   - date (selected date will return in this string obj)
+             * return  - To update selectionDate into date picker dialog
+             * default - Show current date in date picker dialog
+             */
+            if (!date.isEmpty())
+                selectionDate = DateUtil.convertStringToDateObject(
+                        date, outPutDateFormat);
+
+            Calendar c = Calendar.getInstance();
+
+            if (selectionDate != null)
+                c.setTime(selectionDate);
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle, this, year, month, day);
+            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -990,6 +1011,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
         }
     }*/
+
     /**
      * Initialize Adapter and add reason
      */
@@ -1018,6 +1040,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
         }
         spinnerAdapter.add(reason);
     }
+
     /**
      * Get the selected reason id, iterate and get position and set in the
      * spinner item

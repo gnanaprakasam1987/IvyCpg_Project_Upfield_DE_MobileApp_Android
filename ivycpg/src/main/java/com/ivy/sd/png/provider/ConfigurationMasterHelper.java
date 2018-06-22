@@ -532,6 +532,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SUGGESTED_ORDER_LOGIC;//used order screen to calculate so column
     public boolean IS_STOCK_IN_HAND; // used order screen to hide SIH colom
     public boolean IS_INVOICE; // decide seller is van seller or preseller
+    public boolean IS_INVOICE_MASTER;
     public boolean IS_JUMP; // used to avoid jumping in activity menu
     public boolean IS_RETAILER_DEVIATION; // used to stop retailer deviation
     public boolean IS_MAP; // Not used yet
@@ -868,6 +869,7 @@ public class ConfigurationMasterHelper {
     public int LOAD_STOCK_COMPETITOR = 0;
 
     public int DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+    public int MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     public int MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     private static final String CODE_LOCATION_TIMER_PERIOD = "LOCTIMER";
     public int LOCATION_TIMER_PERIOD = 20;
@@ -1665,6 +1667,7 @@ public class ConfigurationMasterHelper {
             this.SHOW_STORE_WISE_DISCOUNT_DLG = false;
             this.SHOW_TOTAL_DISCOUNT_EDITTEXT = false;
             this.IS_WSIH = false;
+            this.IS_INVOICE = false;
 
             ConfigureBO con;
 
@@ -1711,6 +1714,8 @@ public class ConfigurationMasterHelper {
                         this.SHOW_TOTAL_DISCOUNT_EDITTEXT = true;
                     if (configureBO.getConfigCode().equals(CODE_IS_WSIH))
                         this.IS_WSIH = true;
+                    if (configureBO.getConfigCode().equals(CODE_INVOICE))
+                        this.IS_INVOICE = true;
                 }
 
             }
@@ -1905,6 +1910,7 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_GPS_ENABLE_DIALOG = hashMapHHTModuleConfig.get(CODE_GPS_ENABLE) != null ? hashMapHHTModuleConfig.get(CODE_GPS_ENABLE) : false;
         this.IS_INVOICE = hashMapHHTModuleConfig.get(CODE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE) : false;
+        this.IS_INVOICE_MASTER = hashMapHHTModuleConfig.get(CODE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE) : false;
         this.IS_MAP = hashMapHHTModuleConfig.get(CODE_MAP) != null ? hashMapHHTModuleConfig.get(CODE_MAP) : false;
         this.IS_BAIDU_MAP = hashMapHHTModuleConfig.get(CODE_BAIDU_MAP) != null ? hashMapHHTModuleConfig.get(CODE_BAIDU_MAP) : false;
         this.IS_NEW_TASK = hashMapHHTModuleConfig.get(CODE_NEW_TASK) != null ? hashMapHHTModuleConfig.get(CODE_NEW_TASK) : false;
@@ -3665,6 +3671,7 @@ public class ConfigurationMasterHelper {
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
             DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+            MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
             MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
             LOAD_REMARKS_FIELD_STRING = "";
             SHOW_INCLUDE_BILL_TAX = false;
@@ -4056,7 +4063,15 @@ public class ConfigurationMasterHelper {
                 if (codeSplit[0] != null && !codeSplit[0].equals(""))
                     DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
                 if (codeSplit[1] != null && !codeSplit[1].equals(""))
-                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
+                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
+                if (codeSplit[2] != null && !codeSplit[2].equals(""))
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[2]);
+                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER < MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                }
+                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER > MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                }
             }
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -4451,7 +4466,8 @@ public class ConfigurationMasterHelper {
         setGenFilter(new Vector<ConfigureBO>());
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPrefs.getString("languagePref", ApplicationConfigs.LANGUAGE);
+        String language = sharedPrefs.getString("languagePref",
+                ApplicationConfigs.LANGUAGE);
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4462,7 +4478,7 @@ public class ConfigurationMasterHelper {
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and lower(MenuType)="
                     + bmodel.QT("FILTER").toLowerCase()
-                    + " and lang='en' order by RField";
+                    + " and lang="+bmodel.QT(language)+" order by RField";
 
             Cursor c = db.selectSQL(sql);
 
@@ -5051,12 +5067,14 @@ public class ConfigurationMasterHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+            String language = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
 
             String sql = "select hhtCode,MName,MNumber,hasLink from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and lower(MenuType)="
                     + bmodel.QT("PRODUCT_DETAILS").toLowerCase()
-                    + " and lang='en' order by RField";
+                    + " and lang=" + bmodel.QT(language) + " order by RField";
 
             Cursor c = db.selectSQL(sql);
 

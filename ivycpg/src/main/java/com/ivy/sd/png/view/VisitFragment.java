@@ -1950,7 +1950,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         @Override
         protected String doInBackground(String... params) {
-            bmodel.synchronizationHelper.updateAuthenticateToken();
+            bmodel.synchronizationHelper.updateAuthenticateToken(false);
             String response = bmodel.synchronizationHelper.sendPostMethod(Url, jsonObject);
             String errorCode = "E01";
             try {

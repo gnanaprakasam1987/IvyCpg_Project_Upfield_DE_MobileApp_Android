@@ -1390,6 +1390,7 @@ public class NewOutletHelper {
                         retailer.setMobile(c.getString(c.getColumnIndex("Mobile")));
                         retailer.setUserId(c.getInt(c.getColumnIndex("userid")));
                         retailer.setGstNum(c.getString(c.getColumnIndex("GSTNumber")));
+                        retailer.setImageName(loadImgList(retailer.getRetailerId(), db));
                         retailer.setEditAttributeList(loadEditAttributes(retailer.getRetailerId(), db));
                         lst.add(retailer);
                         mNewRetailerById.put(retailer.getRetailerId(), retailer);
@@ -1404,6 +1405,33 @@ public class NewOutletHelper {
             db.closeDB();
         }
         return lst;
+    }
+
+
+    private Vector<String> loadImgList(String retailerID, DBUtil db) {
+        Vector<String> imgList = new Vector<>();
+        try {
+            Cursor c1;
+            String query = "Select ImageName from NewOutletImage where RetailerId=" + bmodel.QT(retailerID);
+            c1 = db.selectSQL(query);
+            if (c1 != null) {
+                if (c1.getCount() > 0) {
+                    String attrName = "";
+                    while (c1.moveToNext()) {
+
+                        attrName = c1.getString(0)
+                                .substring(c1.getString(0)
+                                        .indexOf("/NO") + 1, c1.getString(0).indexOf(".jpg"));
+                        imgList.add(attrName);
+
+                    }
+                }
+                c1.close();
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return imgList;
     }
 
 
@@ -2130,14 +2158,14 @@ public class NewOutletHelper {
             String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
                     ? (SDUtil.truncateDecimal(outlet.getNewOutletlattitude(), -1) + "").substring(0, 20)
                     : ((outlet.getNewOutletlattitude() + "").length() > 20
-                                ? (outlet.getNewOutletlattitude() + "").substring(0, 20)
-                                : (outlet.getNewOutletlattitude() + ""));
+                    ? (outlet.getNewOutletlattitude() + "").substring(0, 20)
+                    : (outlet.getNewOutletlattitude() + ""));
 
             String longitude = (outlet.getNewOutletLongitude() + "").contains("E")
                     ? (SDUtil.truncateDecimal(outlet.getNewOutletLongitude(), -1) + "").substring(0, 20)
                     : ((outlet.getNewOutletLongitude() + "").length() > 20
-                                ? (outlet.getNewOutletLongitude() + "").substring(0, 20)
-                                : (outlet.getNewOutletLongitude() + ""));
+                    ? (outlet.getNewOutletLongitude() + "").substring(0, 20)
+                    : (outlet.getNewOutletLongitude() + ""));
 
             if (outlet.getmAddressByTag() != null) {
                 for (String addressType : outlet.getmAddressByTag().keySet()) {

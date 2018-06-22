@@ -32,6 +32,7 @@ public class SalesReturnEntryActivity extends IvyBaseActivityNoActionBar {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private int holderPosition, holderTop;
+    PagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class SalesReturnEntryActivity extends IvyBaseActivityNoActionBar {
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
@@ -85,12 +86,12 @@ public class SalesReturnEntryActivity extends IvyBaseActivityNoActionBar {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_text_return)));
+        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_text_return)).setTag("return"));
         if (salesReturnHelper.SHOW_STOCK_REPLACE_PCS || salesReturnHelper.SHOW_STOCK_REPLACE_CASE || salesReturnHelper.SHOW_STOCK_REPLACE_OUTER)
-            tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_text_replace)));
+            tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_text_replace)).setTag("replace"));
         changeTabsFont();
 
-        final PagerAdapter adapter = new PagerAdapter
+       adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         adapter.notifyDataSetChanged();
         viewPager.setAdapter(adapter);
