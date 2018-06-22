@@ -787,7 +787,9 @@ public class SurveyHelperNew {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
 
                 for (QuestionBO qus : mParentQuestions) {
-                    if (qus.getSelectedAnswer().isEmpty() && qus.getSelectedAnswerIDs().isEmpty()) {
+                    if ((qus.getSelectedAnswer().isEmpty() || qus.getSelectedAnswer().contains(context.getResources().
+                            getString(R.string.plain_select)))
+                            && (qus.getSelectedAnswerIDs().isEmpty() || qus.getSelectedAnswerIDs().contains(-1))) {
                         return false;
                     }
                     if (qus.getQuestionType().equals("EMAIL")) {
@@ -853,8 +855,9 @@ public class SurveyHelperNew {
                     qus.setIsMandatoryQuestNotAnswered(false);
                     if (qus.getIsSubQuestion() == 0) {
                         if (qus.getIsMandatory() == 1) {
-                            if (qus.getSelectedAnswer().isEmpty()
-                                    && qus.getSelectedAnswerIDs().isEmpty()) {
+                            if ((qus.getSelectedAnswer().isEmpty() || qus.getSelectedAnswer().contains(context.getResources().
+                                    getString(R.string.plain_select)))
+                                    && (qus.getSelectedAnswerIDs().isEmpty() || qus.getSelectedAnswerIDs().contains(-1))) {
                                 //parent question itself not answered
                                 qus.setIsMandatoryQuestNotAnswered(true);
                                 returnFlag = false;
@@ -925,8 +928,9 @@ public class SurveyHelperNew {
                             subQBO.setIsMandatoryQuestNotAnswered(false);
                             if (subQBO.getIsMandatory() == 1) {
                                 if (subQBO.getIsMandatory() == 1
-                                        && subQBO.getSelectedAnswer().isEmpty()
-                                        && subQBO.getSelectedAnswerIDs().isEmpty()) {
+                                        && (subQBO.getSelectedAnswer().isEmpty() || qus.getSelectedAnswer().contains(context.getResources().
+                                        getString(R.string.plain_select)))
+                                        && (subQBO.getSelectedAnswerIDs().isEmpty() || qus.getSelectedAnswerIDs().contains(-1))) {
                                     subQBO.setIsMandatoryQuestNotAnswered(true);
                                     returnFlag = false;
 
@@ -958,7 +962,7 @@ public class SurveyHelperNew {
                             contains(context.getResources().
                                     getString(R.string.plain_select))) && qus.getSelectedAnswerIDs() != null
                             && (!qus.getSelectedAnswerIDs().isEmpty() ||
-                            !qus.getSelectedAnswerIDs().contains(-1))) {
+                            !qus.getSelectedAnswerIDs().contains(-1)) && !qus.getQuestionType().equals("EMAIL")) {
                         return true;
                     }
                     if (qus.getQuestionType().equals("EMAIL")) {
@@ -981,10 +985,10 @@ public class SurveyHelperNew {
                 }
             }
         }
-        if (!invalidEmails.toString().isEmpty()) {
+        if (invalidEmails.toString().isEmpty()) {
             return true;
         }
-        if (!notInRange.toString().isEmpty()) {
+        if (notInRange.toString().isEmpty()) {
             return true;
         }
         return false;
@@ -997,8 +1001,9 @@ public class SurveyHelperNew {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
-                    if (qus.getIsPhotoReq() > 0 && (!qus.getSelectedAnswer().isEmpty()
-                            || !qus.getSelectedAnswerIDs().isEmpty())
+                    if (qus.getIsPhotoReq() > 0 && ((!qus.getSelectedAnswer().isEmpty() || !qus.getSelectedAnswer().contains(context.getResources().
+                            getString(R.string.plain_select)))
+                            || (!qus.getSelectedAnswerIDs().isEmpty() || !qus.getSelectedAnswerIDs().contains(-1)))
                             && qus.getMinPhoto() > qus.getImageNames().size()) {
                         highlightQuest = true;
                         return false;
