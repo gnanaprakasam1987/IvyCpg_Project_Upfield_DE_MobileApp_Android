@@ -2,14 +2,19 @@ package com.ivy.ui.activation.view;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.view.ActivationDialog;
+import com.ivy.sd.png.view.ScreenActivationFragment;
 import com.ivy.ui.activation.ActivationContract;
+import com.ivy.ui.activation.data.ActivationError;
 import com.ivy.ui.activation.di.ActivationModule;
 import com.ivy.ui.activation.di.DaggerActivationComponent;
 import com.ivy.utils.AppUtils;
@@ -35,6 +40,8 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     @BindView(R.id.version)
     TextView mVersionNameTxt;
 
+    private ActivationDialog activation;
+
     @Override
     public int getLayoutId() {
         return R.layout.fragment_screen_activation;
@@ -42,6 +49,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @Override
     protected void initVariables() {
+        setUnBinder(ButterKnife.bind(this));
     }
 
     @Override
@@ -54,9 +62,6 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
         mActivationPresenter.onAttach(this);
 
-        setUnBinder(ButterKnife.bind(this));
-
-        setBasePresenter((BasePresenter) mActivationPresenter);
 
     }
 
@@ -65,7 +70,9 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
         if (isNetworkConnected())
             if (hasPermission(Manifest.permission.READ_PHONE_STATE))
                 if (!DeviceUtils.getIMEINumber(this).matches("[0]+"))
-                    mActivationPresenter.validateActivationKey(mActivationKeyEdt.getText().toString());
+                    mActivationPresenter.validateActivationKey(mActivationKeyEdt.getText().toString(),
+                            AppUtils.getApplicationVersionName(this), AppUtils.getApplicationVersionNumber(this),
+                            DeviceUtils.getIMEINumber(this));
                 else
                     showMessage(R.string.telephony_not_avail);
             else
@@ -77,7 +84,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
         if (isNetworkConnected())
             if (hasPermission(Manifest.permission.READ_PHONE_STATE))
                 if (!DeviceUtils.getIMEINumber(this).matches("[0]+"))
-                    mActivationPresenter.triggerIMEIActivation(DeviceUtils.getIMEINumber(this),AppUtils.getApplicationVersionName(this),AppUtils.getApplicationVersionNumber(this));
+                    mActivationPresenter.triggerIMEIActivation(DeviceUtils.getIMEINumber(this), AppUtils.getApplicationVersionName(this), AppUtils.getApplicationVersionNumber(this));
                 else
                     showMessage(R.string.telephony_not_avail);
             else
@@ -94,6 +101,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     @SuppressLint("SetTextI18n")
     @Override
     protected void setUpViews() {
+
         mVersionNameTxt.setText(getString(R.string.version) + AppUtils.getApplicationVersionName(this));
     }
 
@@ -116,4 +124,78 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     public void showInvalidUrlError() {
 
     }
+
+    //private ProgressDialog progressDialogue;
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
+
+    @Override
+    public void showLoading() {
+        super.showLoading();
+
+        builder = new AlertDialog.Builder(this);
+        alertDialog = builder.create();
+        // alertDialog.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideLoading();
+        if (alertDialog != null)
+            alertDialog.dismiss();
+    }
+
+    @Override
+    public void showActivationError(ActivationError activationError) {
+        Toast.makeText(this, "" + activationError.getMessage() + activationError.getStatus(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showAppUrlIsEmptyError() {
+
+    }
+
+    @Override
+    public void showJsonExceptionError() {
+
+    }
+
+    @Override
+    public void showServerError() {
+
+    }
+
+    @Override
+    public void showActivatedSuccessMessage() {
+
+    }
+
+    @Override
+    public void showPreviousActivationError() {
+        showMessage(R.string.previous_activation_not_done_for_this_device);
+    }
+
+    @Override
+    public void showActivationDialog() {
+        ActivationDialog activation = new ActivationDialog(
+                this, addUrl);
+        activation.setCancelable(false);
+        activation.show();
+    }
+
+    @Override
+    public void showTryValidKeyError() {
+
+    }
+
+    DialogInterface.OnDismissListener addUrl = new DialogInterface.OnDismissListener() {
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            activation.dismiss();
+            mActivationPresenter.doActionForActivationDismiss();
+
+        }
+    };
+
 }
