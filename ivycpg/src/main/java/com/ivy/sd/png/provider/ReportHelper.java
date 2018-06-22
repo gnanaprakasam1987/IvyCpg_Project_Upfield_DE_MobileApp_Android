@@ -2026,11 +2026,11 @@ public class ReportHelper {
                             "LEFT JOIN (SELECT BM.Pid as BrandId,BM.Pname as Brand,ifnull(count(distinct OD.retailerid),0) as ProductiveCall,ifnull(SUM(OD.totalamount),0) as ValuePerDay,ifnull(SUM(Qty),0) as Lines FROM ProductMaster BM " +
                             "INNER JOIN ProductMaster PM on PM.ParentID = Bm.PId " +
                             "INNER JOIN OrderDetail OD on OD.ProductID = PM.PId " +
-                            "INNER JOIN OrderHeader OH ON OH.OrderID = OD.OrderID AND OH.OrderDate = '" + today + "'" +
-                            "WHERE BM.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand')  GROUP BY  BM.Pid,BM.Pname ) AS B on A. Pid = B.BrandId " +
+                            "INNER JOIN OrderHeader OH ON OH.OrderID = OD.OrderID AND OH.OrderDate = '" + today + "' " +
+                            "WHERE BM.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand') and OH.upload !='X' GROUP BY  BM.Pid,BM.Pname ) AS B on A. Pid = B.BrandId " +
                             "LEFT JOIN (SELECT ST.Pid,ifnull(ST.Ach,0) as Achieve ,ifnull(ST.Tgt,0) as Target  FROM ProductMaster PM " +
                             "INNER JOIN SkuWiseTarget ST ON PM.PID = ST.Pid where PM.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand')) as C ON C.Pid = A.PID " +
-                            "WHERE OH.upload!='X' and A.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand') ORDER BY A.PName");
+                            "WHERE A.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand') ORDER BY A.PName");
 
             if (c != null) {
                 brandperformancelist = new ArrayList<>();
@@ -2174,9 +2174,9 @@ public class ReportHelper {
                             "Value FROM StandardListMaster SM " +
                             "INNER JOIN RetailerMaster RM ON RM.classid = SM.ListId " +
                             "LEFT JOIN (SELECT RM.ClassId,COUNT(DISTINCT OH.RetailerId) TotalCount,SUM(OH.OrderValue) TotalOrder FROM RetailerMaster RM " +
-                            "INNER JOIN OrderHeader OH ON OH.RetailerID = RM.RetailerID  AND OH.OrderDate = '" + today + "' GROUP BY RM.ClassId) OD ON OD.ClassId=RM.ClassId " +
+                            "INNER JOIN OrderHeader OH ON OH.RetailerID = RM.RetailerID  AND OH.OrderDate = '" + today + "' AND OH.upload !='X' GROUP BY RM.ClassId) OD ON OD.ClassId=RM.ClassId " +
                             "LEFT JOIN OutletTimestamp OT ON OT.RetailerID = RM.RetailerID AND OT.VisitDate = '" + today + "' " +
-                            "WHERE OH.upload!='X' and SM.ListType = 'CLASS_TYPE' GROUP BY SM.ListId");
+                            "WHERE SM.ListType = 'CLASS_TYPE' GROUP BY SM.ListId");
 
             if (c != null) {
                 mProductivityReportList = new ArrayList<>();
