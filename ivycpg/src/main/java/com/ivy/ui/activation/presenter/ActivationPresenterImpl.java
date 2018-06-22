@@ -89,19 +89,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             @Override
             public void onError(Throwable e) {
                 ActivationError activationError = (ActivationError) e;
-                activationError.setMessage(e.getMessage());
-                activationError.setStatus(((ActivationError) e).getStatus());
-
-                if (((ActivationError) e).getStatus() == DataMembers.IVY_CODE_CUSTOM) {
-                    getIvyView().showTryValidKeyError();
-                    int downloadReponse = SDUtil.convertToInt(e.getMessage());
-                } else if (((ActivationError) e).getStatus() == DataMembers.IVY_CODE_EXCEPTION) {
-                    int downloadReponse = SDUtil.convertToInt(e.getMessage());
-                } else
-                    //2--->
-                    getIvyView().showActivationError(activationError);
-
-
+                handleError(activationError);
             }
 
             @Override
@@ -161,6 +149,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             @Override
             public void onError(Throwable e) {
                 ActivationError activationError = (ActivationError) e;
+                handleError(activationError);
                 getIvyView().showActivationError(activationError);
             }
 
@@ -169,6 +158,18 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
             }
         };
+    }
+
+    private void handleError(ActivationError activationError) {
+        if (activationError.getStatus() == DataMembers.IVY_CODE_CUSTOM) {
+            getIvyView().showTryValidKeyError();
+            // int downloadReponse = SDUtil.convertToInt(e.getMessage());
+        } else if ((activationError).getStatus() == DataMembers.IVY_CODE_EXCEPTION) {
+            int downloadReponse = SDUtil.convertToInt(activationError.getMessage());
+        } else
+            //2--->
+            getIvyView().showActivationError(activationError);
+
     }
 
     /*
@@ -193,23 +194,15 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                 getIvyView().showPreviousActivationError();
 
             } else {
-
-                Context context = null;
                 if (jsonArray.length() == 1) {
                     jsonObject = (JSONObject) jsonArray.get(0);
-                    SharedPreferences.Editor editor = PreferenceManager
-                            .getDefaultSharedPreferences(context)
-                            .edit();
-
                     if (jsonObject.getString("SyncServiceURL").isEmpty())
                         // ---> 10;
                         getIvyView().showAppUrlIsEmptyError();
                     else {
-                        editor.putString("appUrlNew", jsonObject
-                                .getString("SyncServiceURL").replace(" ", ""));
-                        editor.putString("application", jsonObject
-                                .getString("ApplicationName"));
-                        editor.commit();
+                        setValueToPreference(jsonObject.getString("SyncServiceURL").replace(" ", ""),
+                                jsonObject.getString("ApplicationName"));
+                        // ----> 8
                         doActionThree3();
                     }
                 } else {
@@ -239,6 +232,12 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     }
 
+    private void setValueToPreference(String url, String appName) {
+        dataManager.setBaseUrl(url);
+        dataManager.setApplicationName(appName);
+
+    }
+
     private void showActivationDialog() {
 
         if (getAppUrls() == null || getAppUrls().size() == 0) {
@@ -250,25 +249,16 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
     private void clearAppUrl() {
-
-
-        //dataManager.setAppUrlNew();
-        //SharedPreferences.Editor editor = PreferenceManager
-        // .getDefaultSharedPreferences(context)
-        // .edit();
-        // editor.putString("appUrlNew", "");
-        // editor.putString("application", "");
-        // editor.putString("activationKey", "");
-        // editor.commit();
+        dataManager.setBaseUrl("");
+        dataManager.setApplicationName("");
+        dataManager.setActivationKey("");
     }
 
     private void doActionThree3() {
-
         // ---> 8
-
-        //   appUrl = appPreferences.getString("appUrlNew", "");
-        // bmodel.activationHelper.setSERVER_URL(appUrl);
-        checkServerStatus("");
+        String appUrl = dataManager.getBaseUrl();
+        setSERVER_URL(appUrl);
+        checkServerStatus(appUrl);
 
     }
 
