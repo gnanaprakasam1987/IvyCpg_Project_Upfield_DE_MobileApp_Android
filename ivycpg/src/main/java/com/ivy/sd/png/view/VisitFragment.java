@@ -115,14 +115,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private ArrayList<StandardListBO> mRetailerSelectionList;
 
     private TextView tv_storeVisit;
+    TextView tv_target1, tv_target;
 
     private int mSelectedPostion = -1;
     private StandardListBO mSelectedMenuBO;
 
     SubDSelectionDialog subDSelectionDialog;
     private int mSelectedSubId = -1;
-    private TextView tv_target1;
-    private TextView tv_target;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -497,12 +496,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         tv_target.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
-            tv_target.setText(String.valueOf(getStoreVisited()));
-        else
-            tv_target.setText(getTotalVisitActual());
-
-
         try {
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.label_BeatLoc).getTag()) != null)
@@ -537,11 +530,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         tv_target1 = view.findViewById(R.id.tv_tgt1);
         tv_target1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
-            tv_target1.setText(String.valueOf(getStoreVisited()));
-        } else {
-            tv_target1.setText(getTotalVisitActual());
-        }
 
         TextView lbl_TodayTgt1 = view.findViewById(R.id.label_TodayTgt1);
         lbl_TodayTgt1.setTypeface(bmodel.configurationMasterHelper
@@ -709,10 +697,12 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         else
             tv_target.setText(getTotalVisitActual());
 
+
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
             tv_target1.setText(String.valueOf(getStoreVisited()));
         else
             tv_target1.setText(getTotalVisitActual());
+
 
     }
 
