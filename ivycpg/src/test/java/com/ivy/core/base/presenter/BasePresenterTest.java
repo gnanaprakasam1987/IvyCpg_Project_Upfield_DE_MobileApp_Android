@@ -9,12 +9,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.TestScheduler;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -121,6 +124,16 @@ public class BasePresenterTest {
         testScheduler.triggerActions();
 
         then(ivyView).should().setFontSize("Small");
+    }
+
+    @Test
+    public void testIsViewAttached(){
+        assertEquals(mPresenter.isViewAttached(),true);
+    }
+
+    @Test
+    public void testIsViewAttachedNotEquals(){
+        assertNotEquals(mPresenter.isViewAttached(),true);
     }
 
 
