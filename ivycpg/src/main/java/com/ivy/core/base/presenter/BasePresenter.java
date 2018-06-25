@@ -88,21 +88,12 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
         return ivyView;
     }
 
-    public void checkViewAttached() {
-        if (!isViewAttached()) throw new IvyViewNotAttachedException();
-    }
 
     public DataManager getDataManager() {
         return mDataManager;
     }
 
 
-    public static class IvyViewNotAttachedException extends RuntimeException {
-        public IvyViewNotAttachedException() {
-            super("Please call Presenter.onAttach(MvpView) before" +
-                    " requesting data to the Presenter");
-        }
-    }
 
 
     public SchedulerProvider getSchedulerProvider() {

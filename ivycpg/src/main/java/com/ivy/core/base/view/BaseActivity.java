@@ -84,6 +84,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         this.setContentView(this.getLayoutId());
 
+        setUpDefaults();
+
         initializeDi();
 
         getMessageFromAliens();
@@ -91,6 +93,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         setUpViews();
 
         initVariables();
+
+
 
     }
 

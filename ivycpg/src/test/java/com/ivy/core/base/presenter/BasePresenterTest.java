@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.reactivex.Single;
@@ -127,15 +128,14 @@ public class BasePresenterTest {
     }
 
     @Test
-    public void testIsViewAttached(){
-        assertEquals(mPresenter.isViewAttached(),true);
+    public void testIsViewAttached() {
+        assertEquals(mPresenter.isViewAttached(), true);
     }
 
     @Test
-    public void testIsViewAttachedNotEquals(){
-        assertNotEquals(mPresenter.isViewAttached(),false);
+    public void testIsViewAttachedNotEquals() {
+        assertNotEquals(mPresenter.isViewAttached(), false);
     }
-
 
     @After
     public void tearDown() throws Exception {
