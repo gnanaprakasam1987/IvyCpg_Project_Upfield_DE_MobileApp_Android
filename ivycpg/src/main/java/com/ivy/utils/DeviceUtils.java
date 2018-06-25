@@ -20,6 +20,7 @@ public class DeviceUtils {
     }
 
 
+    @SuppressLint("MissingPermission")
     public static String getIMEINumber(Context context) {
         String deviceId = "";
         try {
@@ -41,5 +42,8 @@ public class DeviceUtils {
                 Settings.Secure.ANDROID_ID);
 
     }
+
+
+
 
 }

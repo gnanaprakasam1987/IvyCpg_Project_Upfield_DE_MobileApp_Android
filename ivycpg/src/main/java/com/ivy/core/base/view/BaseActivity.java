@@ -24,8 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.NetworkUtils;
 
 import java.util.Locale;
@@ -35,7 +38,11 @@ import butterknife.Unbinder;
 public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView {
 
 
+    private ConfigurationMasterHelper configurationMasterHelper;
+
     private Unbinder mUnBinder;
+
+    private NFCManager nfcManager;
 
     /**
      * Always set you layout reference using this method
@@ -85,7 +92,36 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         initVariables();
 
+    }
 
+    private void setUpDefaults() {
+
+        AppUtils.useNetworkProvidedValues(this);
+
+        configurationMasterHelper = ConfigurationMasterHelper.getInstance(this);
+
+        if (configurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER) {
+            nfcManager = new NFCManager(this);
+            nfcManager.onActivityCreate();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (configurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER && nfcManager != null) {
+            nfcManager.onActivityResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (configurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER && nfcManager != null) {
+            nfcManager.onActivityPause();
+        }
     }
 
 
