@@ -1273,4 +1273,7 @@
         <item>Sat</item>
     </string-array>
 
+    <string name="sales_return_allowed_only_for_ordered_products">Retorno de ventas Permitido solo para productos pedidos</string>
+    <string name="total_collected">Total recogido</string>
+
 </resources>
