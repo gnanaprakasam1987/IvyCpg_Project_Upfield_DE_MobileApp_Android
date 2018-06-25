@@ -133,7 +133,7 @@ public class BasePresenterTest {
 
     @Test
     public void testIsViewAttachedNotEquals(){
-        assertNotEquals(mPresenter.isViewAttached(),true);
+        assertNotEquals(mPresenter.isViewAttached(),false);
     }
 
 

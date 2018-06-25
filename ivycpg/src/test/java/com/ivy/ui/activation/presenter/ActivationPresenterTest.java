@@ -1,8 +1,10 @@
 package com.ivy.ui.activation.presenter;
 
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.activation.ActivationContract;
 import com.ivy.ui.activation.data.ActivationDataManager;
+import com.ivy.ui.activation.data.ActivationError;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
 import org.junit.After;
@@ -12,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.TestScheduler;
@@ -98,6 +101,21 @@ public class ActivationPresenterTest {
         testScheduler.triggerActions();
 
         then(mActivationView).should().showInvalidUrlError();
+
+    }
+
+    @Test
+    public void testInvalidActivationKeyError(){
+
+        ActivationError myError = new ActivationError(DataMembers.IVY_CODE_CUSTOM, "Failed");
+
+        given(mActivationDataManager.doActivationAtHttp("abcd","12345","10","12345"))
+                .willReturn(Observable.error(myError));
+
+        mPresenter.doActivation("abcd","12345","10","12345");
+        testScheduler.triggerActions();
+
+        then(mActivationView).should().showTryValidKeyError();
 
     }
 
