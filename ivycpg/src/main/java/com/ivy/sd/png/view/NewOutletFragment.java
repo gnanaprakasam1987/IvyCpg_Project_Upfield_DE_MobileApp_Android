@@ -3193,11 +3193,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             if (outlet.getLocid() != 0) {
                 String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
                         leastlocId, true);
-                int loc2id = SDUtil.convertToInt((loc2[0]).toString());
+                int loc2id = SDUtil.convertToInt(loc2[0]);
 
                 String[] loc3 = bmodel.mRetailerHelper.getParentLevelName(
                         loc2id, true);
-                int loc3id = SDUtil.convertToInt((loc3[0]).toString());
+                int loc3id = SDUtil.convertToInt(loc3[0]);
                 for (int i = 0; i < locationAdapter3.getCount(); i++) {
                     if (locationAdapter3.getItem(i).getLocId() == loc3id) {
                         return i;
@@ -5376,7 +5376,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     rfield3 = true;
 
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        outlet.setRfield3("0");
+                        outlet.setRfield3("");
                     } else {
                         outlet.setRfield3(bmodel.validateInput(editText[i].getText().toString()));
                     }
@@ -5621,7 +5621,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 outlet.setTinExpDate("");
             }
             if (!rfield3) {
-                outlet.setRfield3("0");
+                outlet.setRfield3("");
             }
             if (!rfield5) {
                 outlet.setRfield5("0");

@@ -1378,7 +1378,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             mLocTimer.purge();
         }
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
+                && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON) {
             mLocTimer = new Timer();
             timerTask = new LocationFetchTimer();
             mLocTimer.schedule(timerTask, 0, 1000);
@@ -1507,7 +1507,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void validationToProceed() {
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
+                && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON) {
 
             if ((LocationUtil.latitude == 0 && LocationUtil.longitude == 0)) {
                 if (timerTask != null && timerTask.isRunning) {
@@ -2094,7 +2094,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+                bmodel.synchronizationHelper.updateAuthenticateToken(false);
                 bmodel.synchronizationHelper.downloadUserRetailerTranUrl();
                 return Boolean.TRUE;
             } catch (Exception e) {

@@ -258,7 +258,7 @@ public class ProductHelper {
 
     public Vector<ProductMasterBO> getProductMaster() {
         if (productMaster == null)
-            return new Vector<ProductMasterBO>();
+            productMaster = new Vector<>();
         return productMaster;
     }
 
@@ -1480,6 +1480,9 @@ public class ProductHelper {
                         + ((filter21) ? "A.pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A.tagDescription as tagDescription,"
+                        + "A.HSNId as HSNId,"
+                        + "HSN.HSNCode as HSNCode,"
+                        + "A.IsDrug as IsDrug,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
                         + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
@@ -1501,6 +1504,7 @@ public class ProductHelper {
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                         + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A.pid"
+                        + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
                         + " WHERE A.isSalable = 1 AND A.PLid IN(" + mContentLevelId + ")"
                         + " group by A.pid ORDER BY " + filter + " A.rowid";
 
@@ -5896,6 +5900,8 @@ public class ProductHelper {
     }
 
     public ArrayList<AttributeBO> getmAttributeTypes() {
+        if (mAttributeTypes == null)
+            mAttributeTypes = new ArrayList<>();
         return mAttributeTypes;
     }
 
@@ -6116,10 +6122,11 @@ public class ProductHelper {
         double totSchemeAmountValue = 0;
         double totTaxValue = 0;
         double totPriceOffValue = 0;
+        double totalInvoiceAmount = 0;
         StringBuffer sb = new StringBuffer();
         // sum of product discount , scheme amount and tax amount
 
-        sb.append("select sum(SchemeAmount),sum(DiscountAmount),sum(TaxAmount),sum(priceoffvalue) from invoicedetails ");
+        sb.append("select sum(SchemeAmount),sum(DiscountAmount),sum(TaxAmount),sum(priceoffvalue),sum(qty*rate) from invoicedetails ");
         sb.append(" where invoiceid=" + bmodel.QT(invoiceid));
         Cursor c = db.selectSQL(sb.toString());
         if (c.getCount() > 0) {
@@ -6128,6 +6135,7 @@ public class ProductHelper {
                 totDiscVaue = totDiscVaue + c.getDouble(1);
                 totTaxValue = totTaxValue + c.getDouble(2);
                 totPriceOffValue = totPriceOffValue + c.getDouble(3);
+                totalInvoiceAmount = totalInvoiceAmount + c.getDouble(4);
             }
         }
 
@@ -6154,6 +6162,7 @@ public class ProductHelper {
         sb = new StringBuffer();
         sb.append("update invoiceMaster set schemeAmount=" + totSchemeAmountValue);
         sb.append(",discount=" + totDiscVaue + ",taxAmount=" + totTaxValue + ",priceoffAmount=" + totPriceOffValue);
+        sb.append(",invoiceAmount=" + bmodel.QT(bmodel.formatValue(totalInvoiceAmount)));
         sb.append(" where invoiceno=" + bmodel.QT(invoiceid));
         db.updateSQL(sb.toString());
 
@@ -6228,7 +6237,7 @@ public class ProductHelper {
         sb.append("discount=" + totDiscVaue);
         sb.append(" where orderid=" + orderId);
         db.updateSQL(sb.toString());
-
+        bmodel.getOrderHeaderBO().setDiscount(totDiscVaue);
         c.close();
 
 

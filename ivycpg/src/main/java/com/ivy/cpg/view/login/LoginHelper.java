@@ -278,7 +278,7 @@ public class LoginHelper {
 
                     businessModel.regid = gcm.register(SENDER_ID);
                     msg = "Device registered, registration ID=" + businessModel.regid;
-                    businessModel.synchronizationHelper.updateAuthenticateToken();
+                    businessModel.synchronizationHelper.updateAuthenticateToken(false);
                 } catch (Exception ex) {
                     msg = "Error :" + ex.getMessage();
                     Commons.printException(ex);

@@ -150,4 +150,14 @@
     <string name="regular_incentive_detail">Regular Incentive Detail</string>
     <string name="top_up_incentive_detail">Top Up Incentive Detail</string>
 
+    <!--Label for collection Print-->
+    <string name="rcpt_date">Rcpt Date</string>
+    <string name="rcpt_no">Rcpt NO</string>
+    <string name="seller_code">Seller Code</string>
+    <!--END-->
+
+    <string name="pls_enter_rtgsno">Please Enter RTGS No </string>
+    <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
+    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for order products.</string>
+
 </resources>

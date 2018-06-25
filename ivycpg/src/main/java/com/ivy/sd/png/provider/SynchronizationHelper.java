@@ -2181,7 +2181,7 @@ SynchronizationHelper {
     public Vector<String> getUploadResponse(String headerinfo, String data,
                                             String appendurl) {
         // Update Security key
-        updateAuthenticateToken();
+        updateAuthenticateToken(false);
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
@@ -2212,7 +2212,7 @@ SynchronizationHelper {
     public Vector<String> getUploadResponseForSalesReturn(String headerinfo, String data,
                                                           String appendurl) {
         // Update Security key
-        updateAuthenticateToken();
+        updateAuthenticateToken(false);
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
@@ -2240,7 +2240,7 @@ SynchronizationHelper {
     public Vector<String> getOtpGenerateResponse(String headerinfo, String data,
                                                           String appendurl) {
         // Update Security key
-        updateAuthenticateToken();
+        updateAuthenticateToken(false);
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
@@ -2272,7 +2272,7 @@ SynchronizationHelper {
         // Update Security key
         // updateAuthenticateToken();
         if (isChangePassword)
-            updateAuthenticateToken();
+            updateAuthenticateToken(false);
         else
             updateAuthenticateTokenWithoutPassword();
 
@@ -2374,7 +2374,7 @@ SynchronizationHelper {
     }
 
 
-    public void updateAuthenticateToken() {
+    public void updateAuthenticateToken(boolean isInsertUser) {
 
         try {
             mSecurityKey = "";
@@ -2414,7 +2414,7 @@ SynchronizationHelper {
                             mAuthErrorCode = jsonObject.get("ErrorCode").toString();
                             mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
 
-                            if (mAuthErrorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (mAuthErrorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE) && isInsertUser) {
                                 bmodel.synchronizationHelper.parseJSONAndInsert(jsonObject, true);
                                 bmodel.userMasterHelper.downloadUserDetails();
                             }
@@ -3444,7 +3444,7 @@ SynchronizationHelper {
     }
 
     public String downloadSessionId(String url) {
-        updateAuthenticateToken();
+        updateAuthenticateToken(false);
         String sessionId = "";
         if (getAuthErroCode().equals(AUTHENTICATION_SUCCESS_CODE)) {
             try {

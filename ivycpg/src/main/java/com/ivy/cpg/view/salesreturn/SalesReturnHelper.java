@@ -411,6 +411,11 @@ public class SalesReturnHelper {
                 }
             }
 
+            // insert sales replacement and decrease the stock in hand.
+            if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
+                saveReplacementDetails(db, getSalesReturnID(), module);
+            }
+
             isData = false;
             String columns;
             String values;
@@ -557,13 +562,9 @@ public class SalesReturnHelper {
                         isData = true;
                     }
                 }
-                product.setSalesReturnReasonList(ProductHelper
-                        .cloneIsolateList(product));
-            }
-
-            // insert sales replacement and decrease the stock in hand.
-            if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
-                saveReplacementDetails(db, getSalesReturnID(), module);
+                if (!module.equals("ORDER"))
+                    product.setSalesReturnReasonList(ProductHelper
+                            .cloneIsolateList(product));
             }
 
             if (isData) {

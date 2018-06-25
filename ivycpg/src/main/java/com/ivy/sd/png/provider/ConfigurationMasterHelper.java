@@ -873,6 +873,7 @@ public class ConfigurationMasterHelper {
     public int MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     private static final String CODE_LOCATION_TIMER_PERIOD = "LOCTIMER";
     public int LOCATION_TIMER_PERIOD = 20;
+    public boolean IS_LOC_TIMER_ON;
 
     public String LOAD_REMARKS_FIELD_STRING = "";
     public String LOAD_ORDER_SUMMARY_REMARKS_FIELD_STRING = "";
@@ -2444,6 +2445,7 @@ public class ConfigurationMasterHelper {
 
         if (hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD) != null
                 && hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD)) {
+            this.IS_LOC_TIMER_ON = hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD) != null ? hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD) : false;
             if (hashMapHHTModuleOrder.get(CODE_LOCATION_TIMER_PERIOD) > 0) {
                 LOCATION_TIMER_PERIOD = hashMapHHTModuleOrder.get(CODE_LOCATION_TIMER_PERIOD);
             }
@@ -5065,12 +5067,14 @@ public class ConfigurationMasterHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+            String language = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
 
             String sql = "select hhtCode,MName,MNumber,hasLink from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and lower(MenuType)="
                     + bmodel.QT("PRODUCT_DETAILS").toLowerCase()
-                    + " and lang='en' order by RField";
+                    + " and lang=" + bmodel.QT(language) + " order by RField";
 
             Cursor c = db.selectSQL(sql);
 

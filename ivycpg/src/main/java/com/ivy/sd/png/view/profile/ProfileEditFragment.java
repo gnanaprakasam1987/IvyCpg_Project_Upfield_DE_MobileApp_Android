@@ -2484,7 +2484,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     position++;
                 }
             channel.setAdapter(channelAdapter);
-            channel.setSelection(setPos);
+            channel.setSelection(setPos, false);
             channel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     ChannelBO tempBo = (ChannelBO) parent.getSelectedItem();
@@ -2951,7 +2951,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 }
             }
             subchannel.setAdapter(subchannelAdapter);
-            subchannel.setSelection(setPos);
+            subchannel.setSelection(setPos, false);
             subchannel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     //SpinnerBO tempBo = (SpinnerBO) parent.getSelectedItem();
@@ -4685,6 +4685,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         );
                     }
                 } else if (configCode.equals("PROFILE11") && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals("PROFILE12") && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {

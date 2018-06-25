@@ -269,6 +269,8 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
     public void updateUI(PaymentBO paymentBO) {
         mPaymentBO = paymentBO;
         String strAmt = mPaymentBO.getAmount() + "";
+        if ("0.0".equals(strAmt))
+            strAmt = "0";
         mCollectAmtET.setText(strAmt);
         mCollectAmtET.setSelection(mCollectAmtET.getText().length());
         CollectionFragmentNew.CaseMODE caseMODE = CollectionFragmentNew.CaseMODE.valueOf(mPaymentBO.getCashMode());
@@ -386,7 +388,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
 
     private void eff() {
         String s = QUANTITY.getText().toString();
-        if (!"0".equals(s) && !"0.0".equals(s)) {
+        if (!"0".equals(s)) {
             String strQuantity = QUANTITY.getText() + append;
             QUANTITY.setText(strQuantity);
         } else

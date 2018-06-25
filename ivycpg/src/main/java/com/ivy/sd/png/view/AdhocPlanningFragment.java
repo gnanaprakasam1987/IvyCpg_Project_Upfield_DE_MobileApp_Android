@@ -666,7 +666,7 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
 
         @Override
         protected Void doInBackground(String... params) {
-            bmodel.synchronizationHelper.updateAuthenticateToken();
+            bmodel.synchronizationHelper.updateAuthenticateToken(false);
             return null;
         }
 
@@ -709,7 +709,7 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
 
         @Override
         protected Void doInBackground(String... params) {
-            bmodel.synchronizationHelper.updateAuthenticateToken();
+            bmodel.synchronizationHelper.updateAuthenticateToken(false);
             return null;
         }
 
