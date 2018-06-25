@@ -1,6 +1,5 @@
 package com.ivy.sd.png.view.reports;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,10 +24,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -47,40 +44,23 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
-/**
- * Created by vikraman.a on 05-05-2017.
- * <p>
- * 1. Prepare the menu Fragment
- * . get the menu item from database hht table
- * . prepare the adapter for the given menu Items
- * . Based on the item click  send the postRequest
- * . Base the response will move to the corresponding screens
- */
 
 public class ReportMenufragment extends IvyBaseFragment {
 
-    private View view;
-
     private BusinessModel bmodel;
     private static final HashMap<String, Integer> menuIcons = new HashMap<>();
-    private Vector<ConfigureBO> menuDB = new Vector<>();
-
-    private ActionBar actionBar;
-
-
-    @SuppressLint("NewApi")
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragmentnew_reportmenu, container, false);
+        View view = inflater.inflate(R.layout.fragmentnew_reportmenu, container, false);
 
         try {
             bmodel = (BusinessModel) getActivity().getApplicationContext();
             bmodel.setContext(getActivity());
 
-            actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
             if (actionBar != null) {
                 actionBar.setTitle(null);
@@ -174,7 +154,7 @@ public class ReportMenufragment extends IvyBaseFragment {
              *
              *  downloadNewActivityMenu  from Database  HHTTable
              */
-            menuDB = bmodel.configurationMasterHelper
+            Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
                     .downloadNewActivityMenu(StandardListMasterConstants.REPORT_MENU);
 
 
