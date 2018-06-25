@@ -56,17 +56,19 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
 
     @Override
-    public void validateActivationKey(String activationKey, String applicationVersionName, String applicationVersionNumber, String ieMiNumber) {
+    public void validateActivationKey(String activationKey) {
         if (activationKey.length() <= 0) {
             getIvyView().showActivationEmptyError();
         } else if (activationKey.length() != 16) {
             getIvyView().showInvalidActivationError();
         } else {
-            doActivation(activationKey, applicationVersionName, applicationVersionNumber, ieMiNumber);
+            getIvyView().doValidationSuccess();
+            // doActivation(activationKey, applicationVersionName, applicationVersionNumber, ieMiNumber);
         }
     }
 
-    private void doActivation(String key, String applicationVersionName, String applicationVersionNumber, String imEiNumber) {
+    @Override
+    public void doActivation(String key, String applicationVersionName, String applicationVersionNumber, String imEiNumber) {
 
         //   getIvyView().showLoading();
         getCompositeDisposable().add((Disposable) activationDataManager.doActivationAtHttp(key, applicationVersionName,

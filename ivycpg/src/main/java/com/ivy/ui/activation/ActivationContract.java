@@ -33,12 +33,15 @@ public interface ActivationContract {
 
         void showTryValidKeyError();
 
+        void doValidationSuccess();
+
+
     }
 
     @PerActivity
     interface ActivationPresenter<V extends ActivationView> extends BaseIvyPresenter<V>{
 
-         void validateActivationKey(String key, String applicationVersionName, String applicationVersionNumber, String activationKey);
+         void validateActivationKey(String key);
 
          void triggerIMEIActivation(String imei, String versionName,String versionNumber);
 
@@ -46,6 +49,7 @@ public interface ActivationContract {
 
         void doActionForActivationDismiss();
 
+        void doActivation(String activationKey, String imei, String versionName,String versionNumber);
     }
 
 

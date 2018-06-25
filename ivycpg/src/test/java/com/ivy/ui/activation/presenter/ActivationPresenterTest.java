@@ -64,6 +64,12 @@ public class ActivationPresenterTest {
         then(mActivationView).should().showInvalidActivationError();
     }
 
+    @Test
+    public void testValidActivation(){
+        mPresenter.validateActivationKey("1234567891234567");
+        then(mActivationView).should().doValidationSuccess();
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void testTriggerImeiActivation() {
         //When
@@ -99,5 +105,8 @@ public class ActivationPresenterTest {
     public void tearDown() throws Exception {
         mPresenter.onDetach();
     }
+
+
+
 
 }

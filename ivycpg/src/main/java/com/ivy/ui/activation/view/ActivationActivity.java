@@ -70,9 +70,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
         if (isNetworkConnected())
             if (hasPermission(Manifest.permission.READ_PHONE_STATE))
                 if (!DeviceUtils.getIMEINumber(this).matches("[0]+"))
-                    mActivationPresenter.validateActivationKey(mActivationKeyEdt.getText().toString(),
-                            AppUtils.getApplicationVersionName(this), AppUtils.getApplicationVersionNumber(this),
-                            DeviceUtils.getIMEINumber(this));
+                    mActivationPresenter.validateActivationKey(mActivationKeyEdt.getText().toString());
                 else
                     showMessage(R.string.telephony_not_avail);
             else
@@ -185,6 +183,15 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @Override
     public void showTryValidKeyError() {
+
+    }
+
+    @Override
+    public void doValidationSuccess() {
+        mActivationPresenter.doActivation(mActivationKeyEdt.getText().toString(),
+                DeviceUtils.getIMEINumber(this),
+                AppUtils.getApplicationVersionName(this),
+                AppUtils.getApplicationVersionNumber(this));
 
     }
 

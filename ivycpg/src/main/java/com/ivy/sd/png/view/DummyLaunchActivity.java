@@ -11,6 +11,7 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.model.ApplicationConfigs;
+import com.ivy.ui.activation.view.ActivationActivity;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -34,7 +35,7 @@ public class DummyLaunchActivity extends Activity {
             appUrl = appPreferences.getString("appUrlNew", "");
             if (appUrl.equals("")) {
                 Intent in = new Intent(DummyLaunchActivity.this,
-                        ScreenActivationActivity.class);
+                        ActivationActivity.class);
                 in.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(in);
                 finish();
