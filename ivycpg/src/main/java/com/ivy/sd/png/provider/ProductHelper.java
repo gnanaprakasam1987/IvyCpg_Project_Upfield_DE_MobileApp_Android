@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -7579,6 +7580,31 @@ public class ProductHelper {
         return total;
     }
 
+    public boolean isDrugOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
+        for (ProductMasterBO bo : mOrderedProductList) {
+            if (bo.getIsDrug() == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isDLDateExpired() {
+
+        String expiryDate = DateUtil.convertFromServerDateToRequestedFormat(
+                bmodel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd");
+        try {
+            if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(expiryDate))//this for checking today date since before method not woking for today date
+                if (DateUtil.convertStringToDateObject(
+                        bmodel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd").before(new Date())) {
+                    return true;
+                }
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        }
+        return false;
+    }
 }
 
 

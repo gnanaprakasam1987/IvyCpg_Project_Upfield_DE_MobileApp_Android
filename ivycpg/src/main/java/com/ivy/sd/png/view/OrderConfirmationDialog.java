@@ -265,8 +265,8 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_order_value_label.setText(configureBO.getMenuName());
 
 
-                } else if (configureBO.getConfigCode().equals(ORDER_DRUG) && isDLDateExpired()) {
-                    if (isDrugOrder(mOrderedProductList)) {
+                } else if (configureBO.getConfigCode().equals(ORDER_DRUG) && businessModel.productHelper.isDLDateExpired()) {
+                    if (businessModel.productHelper.isDrugOrder(mOrderedProductList)) {
                         layout_drug_note.setVisibility(View.VISIBLE);
                         try {
                             if (businessModel.labelsMasterHelper.applyLabels(text_drug_note.getTag()) != null)
@@ -292,32 +292,6 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
             Commons.printException(ex);
         }
 
-    }
-
-    private boolean isDrugOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
-        for (ProductMasterBO bo : mOrderedProductList) {
-            if (bo.getIsDrug() == 1) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isDLDateExpired() {
-
-        String expiryDate = DateUtil.convertFromServerDateToRequestedFormat(
-                businessModel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd");
-        try {
-            if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(expiryDate))//this for checking today date since before method not woking for today date
-                if (DateUtil.convertStringToDateObject(
-                        businessModel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd").before(new Date())) {
-                    return true;
-                }
-        } catch (Exception e) {
-            Commons.printException(e);
-            return false;
-        }
-        return false;
     }
 
     private void initializeViews() {
