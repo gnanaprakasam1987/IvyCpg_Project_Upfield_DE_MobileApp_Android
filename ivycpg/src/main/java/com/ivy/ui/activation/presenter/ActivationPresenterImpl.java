@@ -70,7 +70,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     @Override
     public void doActivation(String key, String applicationVersionName, String applicationVersionNumber, String imEiNumber) {
 
-        //   getIvyView().showLoading();
+        getIvyView().showLoading();
         getCompositeDisposable().add((Disposable) activationDataManager.doActivationAtHttp(key, applicationVersionName,
                 applicationVersionNumber, imEiNumber)
                 .subscribeOn(getSchedulerProvider().io())
@@ -175,15 +175,15 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
     /*
-    *  7 -----> NOTIFY_ACTIVATION_LIST
-    *
-    *  8 -----> NOTIFY_ACTIVATION_LIST_SINGLE
-    *
-    *  9 -----> NOTIFY_ACTIVATION_LIST_NULL
-    *
-    * 10 -----> NOTIFY_URL_EMPTY
-    *
-    * */
+     *  7 -----> NOTIFY_ACTIVATION_LIST
+     *
+     *  8 -----> NOTIFY_ACTIVATION_LIST_SINGLE
+     *
+     *  9 -----> NOTIFY_ACTIVATION_LIST_NULL
+     *
+     * 10 -----> NOTIFY_URL_EMPTY
+     *
+     * */
 
     private void doActionBasedOnImEiActivationResult(JSONObject jsonObj) {
         Commons.printInformation("Activation" + "onSucess Response"

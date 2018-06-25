@@ -6,6 +6,10 @@ public interface BaseIvyView {
 
     void showLoading();
 
+    void showLoading(String message);
+
+    void showLoading(int strinRes);
+
     void hideLoading();
 
     void onError(@StringRes int resId);

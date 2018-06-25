@@ -1,6 +1,7 @@
 package com.ivy.core.base.view;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -15,7 +16,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -26,8 +26,9 @@ import android.widget.Toast;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.NetworkUtils;
 
@@ -43,6 +44,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     private Unbinder mUnBinder;
 
     private NFCManager nfcManager;
+
+    private AlertDialog.Builder builder;
+
+    private AlertDialog alertDialog;
+
+    private TextView progressMsgTxt;
 
     /**
      * Always set you layout reference using this method
@@ -95,7 +102,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         initVariables();
 
 
-
     }
 
     private void setUpDefaults() {
@@ -108,6 +114,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
             nfcManager = new NFCManager(this);
             nfcManager.onActivityCreate();
         }
+    }
+
+    private void setUpProgressDialog() {
+        builder = new AlertDialog.Builder(this);
     }
 
     @Override
@@ -144,12 +154,49 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void showLoading() {
+        createProgressDialog();
 
+        progressMsgTxt.setText(R.string.loading);
+
+        showProgress();
+    }
+
+    @Override
+    public void showLoading(String message) {
+        createProgressDialog();
+
+        progressMsgTxt.setText(message);
+
+        showProgress();
+    }
+
+    private void showProgress() {
+        if (!alertDialog.isShowing())
+            alertDialog.show();
+    }
+
+
+    @Override
+    public void showLoading(int strinRes) {
+        createProgressDialog();
+
+        progressMsgTxt.setText(getString(strinRes));
+
+        showProgress();
+    }
+
+    private void createProgressDialog() {
+        if (builder == null)
+            createDialogBuilder();
+
+        if (alertDialog == null) {
+            alertDialog = builder.create();
+        }
     }
 
     @Override
     public void hideLoading() {
-
+        alertDialog.dismiss();
     }
 
     @Override
@@ -360,6 +407,23 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     }
 
+
+    private void createDialogBuilder() {
+        if (builder == null)
+            try {
+                View view = View.inflate(this, R.layout.custom_alert_dialog, null);
+
+                TextView title = (TextView) view.findViewById(R.id.title);
+                title.setText(DataMembers.SD);
+                progressMsgTxt = (TextView) view.findViewById(R.id.text);
+
+                builder.setView(view);
+                builder.setCancelable(false);
+
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+    }
 
     private String screenTitle;
 
