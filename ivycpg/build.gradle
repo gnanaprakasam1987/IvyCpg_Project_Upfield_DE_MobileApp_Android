@@ -192,5 +192,7 @@ dependencies {
 
     testAnnotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
 
+    testCompile 'org.json:json:20140107'
+
 }
 apply plugin: 'com.google.gms.google-services'

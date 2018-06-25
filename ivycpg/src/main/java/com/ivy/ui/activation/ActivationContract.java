@@ -35,6 +35,7 @@ public interface ActivationContract {
 
         void doValidationSuccess();
 
+        void showActivationFailedError();
 
     }
 

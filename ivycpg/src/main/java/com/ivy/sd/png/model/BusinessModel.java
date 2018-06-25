@@ -188,6 +188,7 @@ import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
+import com.ivy.ui.activation.view.ActivationActivity;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.json.JSONArray;
@@ -545,7 +546,7 @@ public class BusinessModel extends Application {
             myIntent = new Intent(ctxx, Synchronization.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actactivationscreen)) {
-            myIntent = new Intent(ctxx, ScreenActivationActivity.class);
+            myIntent = new Intent(ctxx, ActivationActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actclosingstock)) {
             myIntent = new Intent(ctxx, StockCheckActivity.class);

@@ -25,7 +25,6 @@ import io.reactivex.Single;
 public class ActivationDataManagerImpl implements ActivationDataManager {
 
 
-
     @Override
     public Single<Boolean> isServerOnline(final String serverUrl) {
 
@@ -97,7 +96,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
     }
 
     @Override
-    public Observable doIMEIActivationAtHttp(final String imEi, final String versionName, final String versionNumber) {
+    public Observable<JSONObject> doIMEIActivationAtHttp(final String imEi, final String versionName, final String versionNumber) {
         return Observable.create(new ObservableOnSubscribe<JSONObject>() {
             @Override
             public void subscribe(final ObservableEmitter<JSONObject> subscriber) throws Exception {
@@ -115,14 +114,9 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
 
                     @Override
                     public void onFailure(int status, String message) {
-
                         ActivationError myError = new ActivationError(status, message);
-                        Throwable throwable = new Throwable(String.valueOf(status));
-                        Throwable throwableObj = new Throwable(message, throwable);
-                        if (myError instanceof Throwable) {
-                            subscriber.onError(myError);
-                        } else
-                            subscriber.onError(throwableObj);
+                        subscriber.onError(myError);
+
 
                     }
 
@@ -132,10 +126,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
                     }
 
                 });
-
                 subscriber.onComplete();
-
-
             }
 
         });

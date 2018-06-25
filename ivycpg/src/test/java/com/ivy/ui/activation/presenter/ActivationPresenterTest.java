@@ -1,5 +1,6 @@
 package com.ivy.ui.activation.presenter;
 
+import com.ivy.TestDataFactory;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.activation.ActivationContract;
@@ -7,6 +8,7 @@ import com.ivy.ui.activation.data.ActivationDataManager;
 import com.ivy.ui.activation.data.ActivationError;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +56,6 @@ public class ActivationPresenterTest {
     @Test
     public void testEmptyActivationKey() {
         mPresenter.validateActivationKey("");
-
         then(mActivationView).should().showActivationEmptyError();
     }
 
@@ -68,17 +69,68 @@ public class ActivationPresenterTest {
     }
 
     @Test
-    public void testValidActivation(){
+    public void testValidActivation() {
         mPresenter.validateActivationKey("1234567891234567");
         then(mActivationView).should().doValidationSuccess();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testTriggerImeiActivation() {
+
+    @Test
+    public void testDoActivation() {
+        JSONObject jsonObject = TestDataFactory.getValidActivationObject();
+
+        given(mActivationDataManager.doActivationAtHttp("abcd", "abcd",
+                "abcd", "abcd")).willReturn(Observable.just(jsonObject));
+
+        given(mActivationDataManager.isServerOnline("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx")).willReturn(Single.just(true));
+
+        mPresenter.doActivation("abcd", "abcd",
+                "abcd", "abcd");
+        testScheduler.triggerActions();
+
+        then(mActivationView).should().hideLoading();
+        then(mActivationView).should().navigateToLoginScreen();
+    }
+
+    @Test
+    public void testDoActivationEmptyUrl() {
+
+        JSONObject jsonObject = TestDataFactory.getValidActivationFailureObject();
+
+        given(mActivationDataManager.doActivationAtHttp("abcd", "abcd",
+                "abcd", "abcd")).willReturn(Observable.just(jsonObject));
+
+        mPresenter.doActivation("abcd", "abcd",
+                "abcd", "abcd");
+        testScheduler.triggerActions();
+
+        then(mActivationView).should().hideLoading();
+        then(mActivationView).should().showAppUrlIsEmptyError();
+
+    }
+
+
+   // @Test(expected = UnsupportedOperationException.class)
+ //   public void testTriggerImeiActivation() {
+        //When
+       // mPresenter.triggerIMEIActivation("abcd", "abcd", "acbd");
+
+       //then(mActivationView).shouldHaveZeroInteractions();
+  //  }
+
+    @Test
+    public void testTriggerImEiActivation() {
+
+        JSONObject jsonObject = TestDataFactory.getValidateImEiResponse();
+
+        given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
+                "abcd")).willReturn(Observable.just(jsonObject));
         //When
         mPresenter.triggerIMEIActivation("abcd", "abcd", "acbd");
 
-        then(mActivationView).shouldHaveZeroInteractions();
+        testScheduler.triggerActions();
+        then(mActivationView).should().hideLoading();
+
     }
 
     @Test
@@ -105,17 +157,41 @@ public class ActivationPresenterTest {
     }
 
     @Test
-    public void testInvalidActivationKeyError(){
+    public void testInvalidActivationKeyError() {
 
         ActivationError myError = new ActivationError(DataMembers.IVY_CODE_CUSTOM, "Failed");
 
-        given(mActivationDataManager.doActivationAtHttp("abcd","12345","10","12345"))
+        given(mActivationDataManager.doActivationAtHttp("abcd", "12345", "10", "12345"))
                 .willReturn(Observable.error(myError));
 
-        mPresenter.doActivation("abcd","12345","10","12345");
+        mPresenter.doActivation("abcd", "12345", "10", "12345");
         testScheduler.triggerActions();
 
         then(mActivationView).should().showTryValidKeyError();
+
+    }
+
+
+    @Test
+    public void testHandleError() {
+        ActivationError activationError = new ActivationError(2002, "Failed");
+        mPresenter.handleError(activationError);
+        then(mActivationView).should().showTryValidKeyError();
+    }
+
+    @Test
+    public void testHandleErrorValidCode() {
+        ActivationError activationError = new ActivationError(2001, "");
+        mPresenter.handleError(activationError);
+        then(mActivationView).should().showActivationFailedError();
+
+    }
+
+    @Test
+    public void testHandleErrorInValidCode() {
+        ActivationError activationError = new ActivationError(0, "");
+        mPresenter.handleError(activationError);
+        then(mActivationView).should().showActivationError(activationError);
 
     }
 
@@ -123,8 +199,6 @@ public class ActivationPresenterTest {
     public void tearDown() throws Exception {
         mPresenter.onDetach();
     }
-
-
 
 
 }

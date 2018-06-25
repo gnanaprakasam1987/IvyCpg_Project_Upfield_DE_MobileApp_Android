@@ -1,20 +1,12 @@
 package com.ivy.ui.activation.presenter;
 
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.widget.Toast;
-
+import com.ivy.core.IvyConstants;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ActivationBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.ScreenActivationFragment;
 import com.ivy.ui.activation.data.ActivationDataManager;
 import com.ivy.ui.activation.data.ActivationError;
 import com.ivy.utils.rx.SchedulerProvider;
@@ -29,7 +21,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -43,7 +34,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     private List<ActivationBO> appUrls;
 
-    public String SERVER_URL;
+    private String SERVER_URL;
 
     @Inject
     public ActivationPresenterImpl(DataManager dataManager,
@@ -63,7 +54,6 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             getIvyView().showInvalidActivationError();
         } else {
             getIvyView().doValidationSuccess();
-            // doActivation(activationKey, applicationVersionName, applicationVersionNumber, ieMiNumber);
         }
     }
 
@@ -96,7 +86,6 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
             @Override
             public void onComplete() {
-
             }
         };
     }
@@ -111,36 +100,43 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             JSONObject jsonObject = (JSONObject) jsonArray.get(0);
 
             if (jsonObject.getString("SyncServiceURL").isEmpty())
+                //---->10
                 getIvyView().showAppUrlIsEmptyError();
             else {
-                setResponseInPreference(jsonObj);
+                //---->4
+                setValueToPreference(jsonObject.getString("SyncServiceURL").replace(" ", ""),
+                        jsonObject.getString("ApplicationName"));
+                setSERVER_URL(jsonObject.getString("SyncServiceURL").replace(" ", ""));
                 checkServerStatus(jsonObject.getString("SyncServiceURL"));
             }
         } catch (JSONException e) {
-            Commons.printException(e);
+            // Commons.printException(e);
+            //--->16
             getIvyView().showJsonExceptionError();
         } catch (Exception e) {
-            Commons.printException(e);
+            // Commons.printException(e);
+
+            //---->2
             getIvyView().showServerError();
         }
     }
 
-    private void setResponseInPreference(JSONObject jsonObj) {
-
-    }
-
-
     @Override
     public void triggerIMEIActivation(String imEi, String versionName, String versionNumber) {
-        getCompositeDisposable().add((Disposable) activationDataManager.doIMEIActivationAtHttp(imEi, versionName,
-                versionNumber)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(getImEiObserver()));
+        try {
+            getCompositeDisposable().add((Disposable) activationDataManager.
+                    doIMEIActivationAtHttp(imEi, versionName, versionNumber)
+                    .subscribeOn(getSchedulerProvider().io())
+                    .observeOn(getSchedulerProvider().ui())
+                    .subscribeWith(getImEiObserver()));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
-    private Observer getImEiObserver() {
+    private DisposableObserver<JSONObject>  getImEiObserver() {
         getIvyView().hideLoading();
         return new DisposableObserver<JSONObject>() {
             @Override
@@ -152,7 +148,6 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             public void onError(Throwable e) {
                 ActivationError activationError = (ActivationError) e;
                 handleError(activationError);
-                getIvyView().showActivationError(activationError);
             }
 
             @Override
@@ -162,12 +157,13 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
         };
     }
 
-    private void handleError(ActivationError activationError) {
+    public void handleError(ActivationError activationError) {
         if (activationError.getStatus() == DataMembers.IVY_CODE_CUSTOM) {
             getIvyView().showTryValidKeyError();
             // int downloadReponse = SDUtil.convertToInt(e.getMessage());
         } else if ((activationError).getStatus() == DataMembers.IVY_CODE_EXCEPTION) {
-            int downloadReponse = SDUtil.convertToInt(activationError.getMessage());
+            //int downloadReponse = SDUtil.convertToInt(activationError.getMessage());
+            getIvyView().showActivationFailedError();
         } else
             //2--->
             getIvyView().showActivationError(activationError);
@@ -188,7 +184,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     private void doActionBasedOnImEiActivationResult(JSONObject jsonObj) {
         Commons.printInformation("Activation" + "onSucess Response"
                 + jsonObj.toString());
-        JSONObject jsonObject;
+
         try {
             JSONArray jsonArray = (JSONArray) jsonObj.get("Table");
             if (jsonArray == null || jsonArray.length() == 0) {
@@ -197,13 +193,14 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
             } else {
                 if (jsonArray.length() == 1) {
-                    jsonObject = (JSONObject) jsonArray.get(0);
+                    JSONObject jsonObject = (JSONObject) jsonArray.get(0);
                     if (jsonObject.getString("SyncServiceURL").isEmpty())
                         // ---> 10;
                         getIvyView().showAppUrlIsEmptyError();
                     else {
                         setValueToPreference(jsonObject.getString("SyncServiceURL").replace(" ", ""),
                                 jsonObject.getString("ApplicationName"));
+                        setSERVER_URL(jsonObject.getString("SyncServiceURL").replace(" ", ""));
                         // ----> 8
                         doActionThree3();
                     }
@@ -212,9 +209,8 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                         setAppUrls(new ArrayList<ActivationBO>());
                     else
                         getAppUrls().clear();
-                    int size = jsonArray.length();
-                    for (int i = 0; i < size; i++) {
-                        jsonObject = (JSONObject) jsonArray.get(i);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                         ActivationBO bo = new ActivationBO();
                         bo.setUrl(jsonObject
                                 .getString("SyncServiceURL").replace(" ", ""));
@@ -223,7 +219,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                         getAppUrls().add(bo);
                     }
 
-                    // ---->7
+                    // ---->7  NOTIFY_ACTIVATION_LIST
                     showActivationDialog();
                 }
             }
@@ -251,15 +247,14 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
     private void clearAppUrl() {
-        dataManager.setBaseUrl("");
-        dataManager.setApplicationName("");
-        dataManager.setActivationKey("");
+        dataManager.setBaseUrl(IvyConstants.EMPTY_STRING);
+        dataManager.setApplicationName(IvyConstants.EMPTY_STRING);
+        dataManager.setActivationKey(IvyConstants.EMPTY_STRING);
     }
 
     private void doActionThree3() {
-        // ---> 8
+        // ---> 8  NOTIFY_ACTIVATION_LIST_SINGLE
         String appUrl = dataManager.getBaseUrl();
-        setSERVER_URL(appUrl);
         checkServerStatus(appUrl);
 
     }
@@ -283,9 +278,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     @Override
     public void doActionForActivationDismiss() {
-        Context context = null;
-        // String appUrl = appPreferences.getString("appUrlNew", "");
-        String appUrl = "";
+        String appUrl = dataManager.getBaseUrl();
         if (appUrl.isEmpty()) {
             clearAppUrl();
             getIvyView().showAppUrlIsEmptyError();
@@ -298,19 +291,19 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
 
-    public String getSERVER_URL() {
-        return SERVER_URL;
-    }
-
-    public void setSERVER_URL(String SERVER_URL) {
+    /*  private String getSERVER_URL() {
+          return SERVER_URL;
+      }
+  */
+    private void setSERVER_URL(String SERVER_URL) {
         this.SERVER_URL = SERVER_URL;
     }
 
-    public List<ActivationBO> getAppUrls() {
+    private List<ActivationBO> getAppUrls() {
         return appUrls;
     }
 
-    public void setAppUrls(List<ActivationBO> appUrls) {
+    private void setAppUrls(List<ActivationBO> appUrls) {
         this.appUrls = appUrls;
     }
 }
