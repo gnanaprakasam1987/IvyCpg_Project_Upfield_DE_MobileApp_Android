@@ -173,6 +173,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String mStock = "Filt17";
     private final String mDiscount = "Filt18";
     private final String mSuggestedOrder = "Filt25";
+    private final String mDrugProducts = "Filt28";
 
     private boolean isSbd;
     private boolean isSbdGaps;
@@ -190,6 +191,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private boolean isNMustSell;
     private boolean isStock;
     private boolean isDiscount;
+    private boolean isDrugProducts;
 
     private MustSellReasonDialog dialog;
     /**
@@ -3734,6 +3736,28 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (vw == mBtnNext) {
 
+            if (bmodel.configurationMasterHelper.IS_ENABLE_LICENSE_VALIDATION) {
+                boolean isDrugLicenseExpired = false;
+                LinkedList<ProductMasterBO> mOrderedProductList = new LinkedList<>();
+                for (int j = 0; j < bmodel.productHelper.getProductMaster().size(); ++j) {
+                    ProductMasterBO product = bmodel.productHelper.getProductMaster().get(j);
+                    if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 ||
+                            product.getOrderedOuterQty() > 0) {
+                        mOrderedProductList.add(product);
+                    }
+                }
+                if (bmodel.productHelper.isDrugOrder(mOrderedProductList) && bmodel.productHelper.isDLDateExpired()) {
+                    isDrugLicenseExpired = true;
+                }
+                if (isDrugLicenseExpired) {
+                    if (!bmodel.configurationMasterHelper.IS_SOFT_LICENSE_VALIDATION) {
+                        bmodel.showAlert(getResources().getString(R.string.drug_license_expired), 0);
+                        return;
+                    } else {
+                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.drug_license_expired), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                 if(isReturnDoneForUnOrderedProduct()) {
                     Toast.makeText(StockAndOrder.this, getResources().getString(R.string.sales_return_allowed_only_for_ordered_products), Toast.LENGTH_SHORT).show();
@@ -4716,6 +4740,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     isDiscount = true;
                 else if (bo.getConfigCode().equals(mStock))
                     isStock = true;
+                else if (bo.getConfigCode().equals(mDrugProducts))
+                    isDrugProducts = true;
             }
         }
     }
@@ -4955,7 +4981,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
                 || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
                 || (generaltxt.equalsIgnoreCase(mShelf) && (ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1))
-                || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0);
+                || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0)
+                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1);
     }
 
     private String getFilterName(String filtername) {
@@ -5752,12 +5779,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private boolean applyCommonFilterConfig(ProductMasterBO ret) {
         return (isSbd && ret.isRPS()) || (isSbdGaps && ret.isRPS() && !ret.isSBDAcheived()) || (isOrdered && (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedOuterQty() > 0))
-                || (isPurchased && ret.getIsPurchased() == 1) || (isInitiative && ret.getIsInitiativeProduct() == 1) || (isOnAllocation && ret.isAllocation() == 1
-                && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) || (isInStock && ret.getWSIH() > 0) || (isPromo && ret.isPromo()) || (isMustSell && ret.getIsMustSell() == 1)
+                || (isPurchased && ret.getIsPurchased() == 1) || (isInitiative && ret.getIsInitiativeProduct() == 1) || (isOnAllocation && ret.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION)
+                || (isInStock && ret.getWSIH() > 0) || (isPromo && ret.isPromo()) || (isMustSell && ret.getIsMustSell() == 1)
                 || (isFocusBrand && ret.getIsFocusBrand() == 1) || (isFocusBrand2 && ret.getIsFocusBrand2() == 1) || (isSIH && ret.getSIH() > 0) || (isOOS && ret.getOos() == 0)
                 || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && (ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1
                 || ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1 || ret.getLocations().get(mSelectedLocationIndex).getWHPiece() > 0
-                || ret.getLocations().get(mSelectedLocationIndex).getWHCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getWHOuter() > 0 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1)) || (isDiscount && ret.getIsDiscountable() == 1);
+                || ret.getLocations().get(mSelectedLocationIndex).getWHCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getWHOuter() > 0 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1))
+                || (isDiscount && ret.getIsDiscountable() == 1) || (isDrugProducts && ret.getIsDrug() == 1);
     }
 
     private boolean hasStockOnly() {
