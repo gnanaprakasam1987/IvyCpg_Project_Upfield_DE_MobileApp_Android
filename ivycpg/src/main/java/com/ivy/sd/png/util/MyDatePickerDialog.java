@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.widget.DatePicker;
 
-public class MyDatePickerDialog extends DatePickerDialog {
+import com.ivy.sd.png.asean.view.R;
+
+public class MyDatePickerDialog extends DatePickerDialog implements DialogInterface.OnClickListener{
 
     private CharSequence title;
     private OnDateSetListener callBack;
@@ -21,6 +23,10 @@ public class MyDatePickerDialog extends DatePickerDialog {
         this.mMonth = monthOfYear;
         this.mDay = dayOfMonth;
         this.callBack = callBack;
+        this.getDatePicker().setDescendantFocusability(DatePicker.FOCUS_BLOCK_DESCENDANTS);
+        setButton(BUTTON_POSITIVE, context.getResources().getString(R.string.ok), this);
+        setButton(BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), this);
+        this.setCancelable(false);
     }
 
     public void setPermanentTitle(CharSequence title) {

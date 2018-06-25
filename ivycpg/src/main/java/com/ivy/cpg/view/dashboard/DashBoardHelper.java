@@ -2948,133 +2948,19 @@ public class DashBoardHelper {
         this.dashboardBO = dashboardBO;
     }
 
-    public void downloadLorealSkuDetails(int kpiID, int kpiTypeLovID, String interval) {
 
 
-        SKUWiseTargetBO temp;
-        ArrayList<LevelBO> levelList = new ArrayList<>();
-        try {
-
-
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String sql = "select distinct (Sksd.levelid),pl.sequence from SellerKPISKUDetail sksd" +
-                    " inner join Productlevel pl on pl.levelid =sksd.levelid where kpiid=" + kpiID;
-
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        mSellerKpiMaxLevel = c.getInt(0);
-                        mSellerKpiMaxSeqLevel = c.getInt(1);
-                    }
-                }
-                c.close();
-            }
-
-
-            sql = "select distinct (levelid),sequence from Productlevel where parentid=0";
-            c = db.selectSQL(sql);
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        mSellerKpiMinLevel = c.getInt(0);
-                        mSellerKpiMinSeqLevel = c.getInt(1);
-                    }
-                }
-                c.close();
-            }
-
-            sql = "select distinct (Sksd.levelid),pl.sequence from SellerKPISKUDetail sksd" +
-                    " inner join Productlevel pl on pl.levelid =sksd.levelid where kpiid=" + kpiID;
-
-            c = db.selectSQL(sql);
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        LevelBO levelBO = new LevelBO();
-                        levelBO.setProductID(c.getInt(0));
-                        levelBO.setSequence(c.getInt(1));
-                        levelList.add(levelBO);
-                    }
-                }
-                c.close();
-            }
-            sellerKpiSku = new Vector<>();
-            kpiSkuMasterById = new HashMap<>();
-            for (int i = 0; i < levelList.size(); i++) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("SELECT P.PID, P.pname, P.psname, P.pcode, P.parentId,p.plid ,IFNULL(SKSD .kpiid,0), IFNULL(SKSD .Target,0)");
-                sb.append(", IFNULL(SKSD .Achievement,0), ROUND(CASE WHEN (100-((SKSD .Achievement*100)/((SKSD ");
-                sb.append(".Target)*1.0))) < 0 THEN 100 ELSE ((SKSD .Achievement*100)/((SKSD .Target)*1.0)) END ,2) AS acheived,SKSD.LevelId  from ProductMaster p");
-                sb.append(" INNER JOIN SellerKPISKUDetail SKSD ON SKSD .pid = p.pid and SKSD.kpiid=");
-                sb.append(kpiID);
-                sb.append(" and SKSD.KPIParamLovId=");
-                sb.append(kpiTypeLovID);
-                sb.append(" and SKSD.LevelId=");
-                sb.append(levelList.get(i).getProductID());
-
-                c = db.selectSQL(sb.toString());
-
-                if (c != null) {
-
-                    while (c.moveToNext()) {
-                        temp = new SKUWiseTargetBO();
-                        temp.setPid(c.getInt(0));
-                        temp.setProductName(c.getString(1));
-                        temp.setProductShortName(c.getString(2));
-                        temp.setProductCode(c.getString(3));
-
-                        if (i == 0)
-                            temp.setParentID(c.getInt(4));
-                        else
-                            temp.setParentID(getParentId(levelList.get(i).getProductID(), levelList.get(i - 1).getProductID(), c.getInt(4)));
-
-                        temp.setLevelID(c.getInt(5));
-                        temp.setKpiID(c.getInt(6));
-                        temp.setTarget(c.getDouble(7));
-                        temp.setAchieved(c.getDouble(8));
-                        temp.setCalculatedPercentage(c.getFloat(9));
-                        temp.setSequence(i + 1);
-                        if (temp.getCalculatedPercentage() >= 100) {
-                            temp.setConvTargetPercentage(0);
-                            temp.setConvAcheivedPercentage(100);
-                        } else {
-                            temp.setConvTargetPercentage(100 - temp
-                                    .getCalculatedPercentage());
-                            temp.setConvAcheivedPercentage(temp
-                                    .getCalculatedPercentage());
-                        }
-
-
-                        sellerKpiSku.add(temp);
-                        kpiSkuMasterById.put(new Integer(temp.getPid()), new Integer(temp.getParentID()));
-                    }
-                    c.close();
-                }
-                if (interval.equals("DAY")) {
-                    calculateLorealDayAcheivement(levelList.size());
-                }
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    public void downloadIncentiveList() {
+    public ArrayList<IncentiveDashboardBO> downloadIncentiveList(String type) {
         incentiveList = new ArrayList<>();
-        incentiveGroups = new ArrayList<>();
-        incentiveType = new ArrayList<>();
+        incentiveType=new ArrayList<>();
 
+        String groupName="0";
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql = "SELECT * FROM " + DataMembers.tbl_IncentiveDashboard;
+            String sql = "SELECT * FROM " + DataMembers.tbl_IncentiveDashboard +" Where inctype='"+type+"'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -3090,11 +2976,16 @@ public class DashBoardHelper {
                     con.setFactor(c.getString(c.getColumnIndex("factor")));
                     con.setAchper(c.getString(c.getColumnIndex("achper")));
                     con.setAch(c.getString(c.getColumnIndex("ach")));
+                    if(con.getGroups().equalsIgnoreCase("")||!groupName.equalsIgnoreCase(con.getGroups())){
+                        con.setIsNewGroup(true);
+                        groupName=con.getGroups();
+                    }else{
+                        con.setIsNewGroup(false);
+                    }
 
                     incentiveList.add(con);
                 }
             }
-
 
             sql = "SELECT distinct inctype FROM " + DataMembers.tbl_IncentiveDashboard;
 
@@ -3106,21 +2997,85 @@ public class DashBoardHelper {
                 }
             }
 
-            sql = "SELECT distinct groups FROM " + DataMembers.tbl_IncentiveDashboard;
-
-            c = db.selectSQL(sql);
-
-            if (c != null) {
-                while (c.moveToNext()) {
-                    incentiveGroups.add(c.getString(0));
-                }
-            }
-
             c.close();
             db.closeDB();
+
+            return incentiveList;
         } catch (Exception e) {
             Commons.print("" + e);
         }
+
+        return new ArrayList<>();
+    }
+
+
+
+
+
+    public ArrayList<IncentiveDashboardDefinitionBO> downloadIncentiveDetails(String type){
+        try{
+
+            String groupName="0";
+            String factorName="0";
+            String groupPackage="0";
+
+            ArrayList<IncentiveDashboardDefinitionBO> list=new ArrayList<>();
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "SELECT * FROM IncentiveDashboardDefinition where inctype='"+type+"'";
+            Cursor c = db.selectSQL(sql);
+
+            while (c.moveToNext()){
+                IncentiveDashboardDefinitionBO incentiveDashboardDefinitionBO=new IncentiveDashboardDefinitionBO();
+
+                incentiveDashboardDefinitionBO.setFactor(c.getString(0));
+                incentiveDashboardDefinitionBO.setSalesParam(c.getString(1));
+                incentiveDashboardDefinitionBO.setAchPercentage(c.getString(2));
+                incentiveDashboardDefinitionBO.setMaxOpportunity(c.getString(3));
+                if(c.getString(4)!=null)
+                    incentiveDashboardDefinitionBO.setGroups(c.getString(4));
+                else
+                    incentiveDashboardDefinitionBO.setGroups("");
+                incentiveDashboardDefinitionBO.setIncentiveType(c.getString(5));
+
+                if(incentiveDashboardDefinitionBO.getSalesParam().trim().equalsIgnoreCase("")||!groupName.equalsIgnoreCase(incentiveDashboardDefinitionBO.getSalesParam())){
+                    incentiveDashboardDefinitionBO.setIsNewGroup(true);
+                    groupName=incentiveDashboardDefinitionBO.getSalesParam();
+                }else{
+                    incentiveDashboardDefinitionBO.setIsNewGroup(false);
+                }
+
+                if(!incentiveDashboardDefinitionBO.getFactor().equalsIgnoreCase(factorName)){
+                    incentiveDashboardDefinitionBO.setIsNewFactor(true);
+                    factorName=incentiveDashboardDefinitionBO.getFactor();
+                }else{
+                    incentiveDashboardDefinitionBO.setIsNewFactor(false);
+                }
+
+                if(incentiveDashboardDefinitionBO.getGroups().trim().equalsIgnoreCase("")||!incentiveDashboardDefinitionBO.getGroups().equalsIgnoreCase(groupPackage)){
+                    incentiveDashboardDefinitionBO.setNewPackage(true);
+                    groupPackage=incentiveDashboardDefinitionBO.getGroups();
+                }else{
+                    incentiveDashboardDefinitionBO.setNewPackage(false);
+                }
+
+
+                list.add(incentiveDashboardDefinitionBO);
+
+            }
+            c.close();
+            db.closeDB();
+
+            return list;
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        return new ArrayList<>();
     }
 
     public ArrayList<String> getIncentiveType() {
@@ -3160,91 +3115,7 @@ public class DashBoardHelper {
         return parentId;
     }
 
-    public void calculateLorealDayAcheivement(int size) {
-        int maxLevel = 0, minLevel = 0;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        StringBuilder sb = new StringBuilder();
-        sb.append("select Distinct p.PLid,pl.sequence from productmaster p ");
-        sb.append(" inner join Productlevel pl on pl.levelid =p.PLid where P.PID in (select distinct(pid) from CS_CustomerSaleDetails)");
 
-        Cursor c = db.selectSQL(sb.toString());
-        if (c != null) {
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    maxLevel = c.getInt(1);
-                }
-            }
-            c.close();
-        }
-
-
-        String sql = "select distinct (levelid),sequence from Productlevel where parentid=0";
-        c = db.selectSQL(sql);
-        if (c != null) {
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    minLevel = c.getInt(1);
-                }
-            }
-            c.close();
-        }
-
-
-        int loopEnd = maxLevel - minLevel + 1;
-
-        for (int j = 0; j < size; j++) {
-            int temploopEnd = loopEnd - j;
-            sb = new StringBuilder();
-            sb.append(" SELECT PM");
-            sb.append(temploopEnd);
-            sb.append(".PId, SUM (value) FROM CS_CustomerSaleDetails OD");
-            sb.append(" INNER JOIN ProductMaster PM1 ON PM1.PId = OD.PId");
-
-            for (int i = 2; i <= temploopEnd; i++) {
-                sb.append(" INNER JOIN ProductMaster PM");
-                sb.append(i);
-                sb.append(" ON PM");
-                sb.append(i);
-                sb.append(".PId = PM");
-                sb.append((i - 1));
-                sb.append(".ParentId");
-
-            }
-            sb.append(" GROUP BY PM");
-            sb.append(temploopEnd);
-            sb.append(".PId");
-
-            c = db.selectSQL(sb.toString());
-            if (c != null) {
-                while (c.moveToNext()) {
-
-                    for (SKUWiseTargetBO sBO : sellerKpiSku) {
-                        if (c.getInt(0) == sBO.getPid()) {
-                            sBO.setAchieved(c.getInt(1));
-                            sBO.setCalculatedPercentage(SDUtil.convertToFloat(SDUtil.format(((sBO.getAchieved() / sBO.getTarget()) * 100),
-                                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                                    0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP)));
-                            if (sBO.getCalculatedPercentage() >= 100) {
-                                sBO.setConvTargetPercentage(0);
-                                sBO.setConvAcheivedPercentage(100);
-                            } else {
-                                sBO.setConvTargetPercentage(100 - sBO
-                                        .getCalculatedPercentage());
-                                sBO.setConvAcheivedPercentage(sBO
-                                        .getCalculatedPercentage());
-                            }
-                        }
-
-                    }
-
-
-                }
-                c.close();
-            }
-
-        }
-    }
 
 
     public int getPromotionDetail(String flag) {
@@ -3403,37 +3274,6 @@ public class DashBoardHelper {
         }
 
         return count;
-
-    }
-
-    public int transactionPerDay, avgUnitsPerBill, avgSellingPrice, avgBillValue;
-
-    public void getCounterSalesDetail() {
-        DBUtil db = null;
-
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("SELECT count(distinct uid)as TRN,(count(pid)/count(distinct uid)) as avgUnitsBill,");
-            sb.append("(sum(price)/count(pid)) as avgSellBill ,(sum(value)/count(distinct uid)) as avgBill ");
-            sb.append("FROM CS_CustomerSaleDetails");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    transactionPerDay = c.getInt(0);
-                    avgUnitsPerBill = c.getInt(1);
-                    avgSellingPrice = c.getInt(2);
-                    avgBillValue = c.getInt(3);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
 
     }
 

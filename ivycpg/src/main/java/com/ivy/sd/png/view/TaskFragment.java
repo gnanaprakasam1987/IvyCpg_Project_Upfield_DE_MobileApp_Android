@@ -99,14 +99,18 @@ public class TaskFragment extends IvyBaseFragment {
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
-        Bundle extras = getArguments();
+        Bundle extras;
+        if (getActivity().getIntent().getExtras() != null)
+            extras = getActivity().getIntent().getExtras();
+        else
+            extras = getArguments();
         //Set Screen Title
         try {
-            if (getArguments() == null || !getArguments().containsKey("screentitle")
-                    || getArguments().getString("screentitle") == null)
+            if (extras == null || !extras.containsKey("screentitle")
+                    || extras.getString("screentitle") == null)
                 setScreenTitle(bmodel.getMenuName("MENU_TASK_NEW"));
             else
-                setScreenTitle(getArguments().getString("screentitle"));
+                setScreenTitle(extras.getString("screentitle"));
         } catch (Exception e) {
 
             setScreenTitle(getResources().

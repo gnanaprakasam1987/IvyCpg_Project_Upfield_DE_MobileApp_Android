@@ -470,100 +470,89 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     private void ValidateandDownloadMasters() {
+        if(profileConfig != null) {
+            for (int i = 0; i < profileConfig.size(); i++) {
+                if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("CHANNEL")) {
+                    isChannel = true;
+                    channelMaster = bmodel.channelMasterHelper.getChannelMaster();
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("SUBCHANNEL")) {
+                    subchannelMaster = bmodel.subChannelMasterHelper
+                            .getSubChannelMaster();
+                    issubChannel = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("ROUTE")) {
+                    beatMaster = bmodel.beatMasterHealper.getBeatMaster();
+                    isRoute = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("LOCATION")) {
+                    leastlocId = outlet.getLocid();
+                    isLocation = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("LOCATION01")) {
 
-        for (int i = 0; i < profileConfig.size(); i++) {
-            if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("CHANNEL")) {
-                isChannel = true;
-                channelMaster = bmodel.channelMasterHelper.getChannelMaster();
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("SUBCHANNEL")) {
-                subchannelMaster = bmodel.subChannelMasterHelper
-                        .getSubChannelMaster();
-                issubChannel = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("ROUTE")) {
-                beatMaster = bmodel.beatMasterHealper.getBeatMaster();
-                isRoute = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("LOCATION")) {
-                leastlocId = outlet.getLocid();
-                isLocation = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("LOCATION01")) {
+                    isLocation1 = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("LOCATION02")) {
 
-                isLocation1 = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("LOCATION02")) {
+                    isLocation2 = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("USER")) {
+                    mUserList = bmodel.userMasterHelper.downloadAllUser();
 
-                isLocation2 = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("USER")) {
-                mUserList = bmodel.userMasterHelper.downloadAllUser();
+                } else if ("ATTRIBUTE"
+                        .equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
+                    isAttribute = true;
+                    bmodel.newOutletAttributeHelper.downloadAttributeParentList();
+                    bmodel.newOutletAttributeHelper.downloadRetailerAttribute();
+                    mAttributeParentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+                    attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
 
-            } else if ("ATTRIBUTE"
-                    .equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
-                isAttribute = true;
-                bmodel.newOutletAttributeHelper.downloadAttributeParentList();
-                bmodel.newOutletAttributeHelper.downloadRetailerAttribute();
-                mAttributeParentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
-                attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
-
-                bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
+                    bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
 
 
+                }
             }
         }
 
         if (isAttribute && issubChannel)
             mAttributeListByChannelID = bmodel.newOutletAttributeHelper.downloadChannelWiseAttributeList();
 
-        if (isChannel && channelMaster.size() == 0) {
+        if (isChannel && (channelMaster == null || channelMaster.size() == 0)) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.no_channels_download),
                     Toast.LENGTH_LONG).show();
-        } else if (issubChannel && subchannelMaster.size() == 0) {
+        } else if (issubChannel && (subchannelMaster == null || subchannelMaster.size() == 0)) {
             Toast.makeText(
                     getActivity(),
                     getResources().getString(R.string.no_sub_channels_download),
                     Toast.LENGTH_LONG).show();
-        } else if (isRoute && beatMaster.size() == 0) {
+        } else if (isRoute && (beatMaster == null || beatMaster.size() == 0)) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.no_beats_download),
                     Toast.LENGTH_LONG).show();
         } else if (isLocation) {
-            if (mLocationMasterList1 == null) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.no_location_download),
-                        Toast.LENGTH_LONG).show();
-            } else if (mLocationMasterList1.size() == 0) {
+            if (mLocationMasterList1 == null || mLocationMasterList1.size() == 0) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.no_location_download),
                         Toast.LENGTH_LONG).show();
             }
 
         } else if (isLocation1) {
-            if (mLocationMasterList2 == null) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.no_location_download),
-                        Toast.LENGTH_LONG).show();
-            } else if (mLocationMasterList2.size() == 0) {
+            if (mLocationMasterList2 == null || mLocationMasterList2.size() == 0) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.no_location_download),
                         Toast.LENGTH_LONG).show();
             }
 
         } else if (isLocation2) {
-            if (mLocationMasterList3 == null) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.no_location_download),
-                        Toast.LENGTH_LONG).show();
-            } else if (mLocationMasterList3.size() == 0) {
+            if (mLocationMasterList3 == null || mLocationMasterList3.size() == 0) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.no_location_download),
                         Toast.LENGTH_LONG).show();
             }
-        } else if (isAttribute && mAttributeParentList.isEmpty()) {
+        } else if (isAttribute && (mAttributeParentList == null || mAttributeParentList.isEmpty())) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.no_retailer_attribute),
                     Toast.LENGTH_LONG).show();
@@ -3204,11 +3193,11 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             if (outlet.getLocid() != 0) {
                 String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
                         leastlocId, true);
-                int loc2id = SDUtil.convertToInt((loc2[0]).toString());
+                int loc2id = SDUtil.convertToInt(loc2[0]);
 
                 String[] loc3 = bmodel.mRetailerHelper.getParentLevelName(
                         loc2id, true);
-                int loc3id = SDUtil.convertToInt((loc3[0]).toString());
+                int loc3id = SDUtil.convertToInt(loc3[0]);
                 for (int i = 0; i < locationAdapter3.getCount(); i++) {
                     if (locationAdapter3.getItem(i).getLocId() == loc3id) {
                         return i;
@@ -4900,8 +4889,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         menu.findItem(R.id.menu_oppr).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR);
         menu.findItem(R.id.menu_order).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER);
 
-        if (screenMode == EDIT)
-            menu.findItem(R.id.menu_capture).setVisible(false);
+        if (bmodel.configurationMasterHelper.IS_NEWOUTLET_IMAGETYPE
+                && screenMode == EDIT)
+            menu.findItem(R.id.menu_capture).setVisible(true);
         else if (screenMode == VIEW) {
             menu.findItem(R.id.menu_capture).setVisible(false);
             menu.findItem(R.id.menu_oppr).setVisible(false);
@@ -5006,8 +4996,19 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                                                     .get(item).getListId();
                                             imageName = moduleName + uID + "_"
                                                     + ImageId + "_img.jpg";
-                                            String fnameStarts = moduleName + uID
-                                                    + "_" + ImageId;
+                                            String fnameStarts = "";
+                                            if (screenMode == EDIT) {
+                                                for (String img : outlet.getImageName()) {
+                                                    if ((img).contains(ImageId + "")) {
+                                                        fnameStarts = img;
+                                                        break;
+                                                    }
+                                                }
+                                            } else {
+                                                fnameStarts = moduleName + uID
+                                                        + "_" + ImageId;
+                                            }
+
                                             Commons.print(TAG + ",FName Starts :"
                                                     + fnameStarts);
                                             boolean nfiles_there = bmodel.checkForNFilesInFolder(
@@ -5375,7 +5376,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     rfield3 = true;
 
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        outlet.setRfield3("0");
+                        outlet.setRfield3("");
                     } else {
                         outlet.setRfield3(bmodel.validateInput(editText[i].getText().toString()));
                     }
@@ -5620,7 +5621,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 outlet.setTinExpDate("");
             }
             if (!rfield3) {
-                outlet.setRfield3("0");
+                outlet.setRfield3("");
             }
             if (!rfield5) {
                 outlet.setRfield5("0");
@@ -5710,6 +5711,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         bmodel.synchronizationHelper.deleteFiles(PHOTO_PATH,
                                 imageNameStarts);
                         dialog.dismiss();
+                        outlet.getImageName().remove(imageNameStarts);
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -6036,6 +6038,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         if (resultCode == RESULT_OK) {
+
+            outlet.getImageName().add(imageName);
             if (data.hasExtra("lat") && data.hasExtra("isChanged")) {
 
                 lattitude = data.getExtras().getDouble("lat");

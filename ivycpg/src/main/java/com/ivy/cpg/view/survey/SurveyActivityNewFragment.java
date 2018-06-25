@@ -298,20 +298,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         bmodel.setContext(getActivity());
         if (surveyHelperNew.ENABLE_MULTIPLE_PHOTO)
             isMultiPhotoCaptureEnabled = true;
-        //condition to check CNT01
-        if (!mMenuCode.equals("MENU_SURVEY_CS") && bmodel.configurationMasterHelper.IS_CNT01) {
-            //if CNT01 is enabled
-            if (objDialog != null) {
-                if (!objDialog.isShowing()) {
-//                    showUserDialog();
-                }
-            } else {
-                showUserDialog();
-            }
-        } else {
-            //if CNT01 is disabled
-            loadListData();
-        }
+        loadListData();
+
     }
 
     private void loadListData() {
@@ -1068,13 +1056,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     @Override
     public void onResume() {
         super.onResume();
-        if (bmodel.configurationMasterHelper.IS_CNT01
-                && mMenuCode.equals("MENU_SURVEY_BA_CS")) {
-            setScreenTitle(bmodel.mSelectedActivityName + " (" +
-                    childUserName + ")");
-        } else {
-            setScreenTitle(bmodel.mSelectedActivityName);
-        }
+
+        setScreenTitle(bmodel.mSelectedActivityName);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
     }
@@ -1938,15 +1922,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             menu.findItem(R.id.menu_joint_call_survey).setVisible(false);
             menu.findItem(R.id.menu_save).setVisible(false);
         }
-        if (!mMenuCode.equals("MENU_SURVEY_CS") && bmodel.configurationMasterHelper.IS_CNT01) {
-//            menu.findItem(R.id.menu_select).setVisible(true);
-            if (hide_selectuser_icon) {
-                menu.findItem(R.id.menu_select).setVisible(false);
-            } else
-                menu.findItem(R.id.menu_select).setVisible(true);
-        } else {
-            menu.findItem(R.id.menu_select).setVisible(false);
-        }
+
+        menu.findItem(R.id.menu_select).setVisible(false);
+
         if (mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
                 || mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
                 || mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS"))

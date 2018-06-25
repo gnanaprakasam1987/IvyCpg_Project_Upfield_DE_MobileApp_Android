@@ -115,6 +115,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private ArrayList<StandardListBO> mRetailerSelectionList;
 
     private TextView tv_storeVisit;
+    TextView tv_target1, tv_target;
 
     private int mSelectedPostion = -1;
     private StandardListBO mSelectedMenuBO;
@@ -491,15 +492,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             img_beatloc.setImageResource(R.drawable.arealocation);
         }
 
-        TextView tv_target = view.findViewById(R.id.tv_tgt);
+        tv_target = view.findViewById(R.id.tv_tgt);
         tv_target.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
-            tv_target.setText(String.valueOf(getStoreVisited()));
-        else
-            tv_target.setText(getTotalVisitActual());
-
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
@@ -532,14 +527,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         }
 
-        TextView tv_target1 = view.findViewById(R.id.tv_tgt1);
+        tv_target1 = view.findViewById(R.id.tv_tgt1);
         tv_target1.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
-            tv_target1.setText(String.valueOf(getStoreVisited()));
-        } else {
-            tv_target1.setText(getTotalVisitActual());
-        }
 
         TextView lbl_TodayTgt1 = view.findViewById(R.id.label_TodayTgt1);
         lbl_TodayTgt1.setTypeface(bmodel.configurationMasterHelper
@@ -701,6 +691,18 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+
+        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
+            tv_target.setText(String.valueOf(getStoreVisited()));
+        else
+            tv_target.setText(getTotalVisitActual());
+
+
+        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
+            tv_target1.setText(String.valueOf(getStoreVisited()));
+        else
+            tv_target1.setText(getTotalVisitActual());
+
 
     }
 
@@ -1948,7 +1950,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         @Override
         protected String doInBackground(String... params) {
-            bmodel.synchronizationHelper.updateAuthenticateToken();
+            bmodel.synchronizationHelper.updateAuthenticateToken(false);
             String response = bmodel.synchronizationHelper.sendPostMethod(Url, jsonObject);
             String errorCode = "E01";
             try {

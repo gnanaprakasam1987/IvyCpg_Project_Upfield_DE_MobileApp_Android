@@ -157,7 +157,7 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
         TypedArray defaultArray = context.obtainStyledAttributes(new int[]{R.attr.colorControlNormal, R.attr.colorAccent});
         int defaultBaseColor = ContextCompat.getColor(context, R.color.profile_edit_spinner_color);
         int defaultHighlightColor = defaultArray.getColor(1, 0);
-        int defaultErrorColor = context.getResources().getColor(R.color.dark_red);
+        int defaultErrorColor = context.getResources().getColor(R.color.RED);
         int defaultfloatinglabelColor = context.getResources().getColor(R.color.GRAY_TEXT);
         defaultArray.recycle();
 
@@ -265,7 +265,7 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
         //floatingLabelBottomSpacing = getResources().getDimensionPixelSize(R.dimen.dimen_8dp);
         //rightLeftSpinnerPadding = alignLabels ? getResources().getDimensionPixelSize(R.dimen.right_left_spinner_padding) : 0;
         floatingLabelInsideSpacing = getResources().getDimensionPixelSize(R.dimen.dimen_10dp);
-        errorLabelSpacing = (int) getResources().getDimension(R.dimen.dimen_6dp);
+        errorLabelSpacing = (int) getResources().getDimension(R.dimen.card_margin);
         minContentHeight = (int) getResources().getDimension(R.dimen.dimen_18dp);
     }
 
@@ -740,7 +740,7 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
             if (position == 0) {
                 // Set the hint text color for 0th position of mSpinneradapter
 
-                textView.setTextColor(R.color.GRAY_TEXT);
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.GRAY_TEXT));
             } else {
 
                 textView.setTextColor(ContextCompat.getColor(mContext, R.color.filer_level_text_color));

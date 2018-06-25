@@ -18,6 +18,10 @@ public class DailyReportBO {
 	private String totAdhocProductive;
 	private double delivered;
 	private double loaded;
+	private String klgsEffCoverage;
+	private String klgsTotLines;
+	private String klgsTotValue;
+
 
 	public String getEffCoverage() {
 		return effCoverage;
@@ -146,5 +150,29 @@ public class DailyReportBO {
 
 	public void setLoaded(double loaded) {
 		this.loaded = loaded;
+	}
+
+	public String getKlgsEffCoverage() {
+		return klgsEffCoverage;
+	}
+
+	public void setKlgsEffCoverage(String klgsEffCoverage) {
+		this.klgsEffCoverage = klgsEffCoverage;
+	}
+
+	public String getKlgsTotLines() {
+		return klgsTotLines;
+	}
+
+	public void setKlgsTotLines(String klgsTotLines) {
+		this.klgsTotLines = klgsTotLines;
+	}
+
+	public String getKlgsTotValue() {
+		return klgsTotValue;
+	}
+
+	public void setKlgsTotValue(String klgsTotValue) {
+		this.klgsTotValue = klgsTotValue;
 	}
 }

@@ -137,14 +137,9 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if (bmodel.configurationMasterHelper.IS_CNT01) {
-            if (hide_selectuser_icon) {
-                menu.findItem(R.id.menu_select).setVisible(false);
-            } else
-                menu.findItem(R.id.menu_select).setVisible(true);
-        } else {
-            menu.findItem(R.id.menu_select).setVisible(false);
-        }
+
+        menu.findItem(R.id.menu_select).setVisible(false);
+
 
         if (bmodel.configurationMasterHelper.IS_SHOW_DELETE_OPTION)
             menu.findItem(menu_delete).setVisible(true);
@@ -252,20 +247,10 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         mSchedule = new MyAdapter();
         lvList.setAdapter(mSchedule);
 
-//condition to check CNT01
-        if (bmodel.configurationMasterHelper.IS_CNT01) {
-            //if CNT01 is enabled
-            if (objDialog != null) {
-                if (!objDialog.isShowing()) {
-                    loadListData();
-                }
-            } else {
-                showUserDialog();
-            }
-        } else {
-            //if CNT01 is disabled
-            loadListData();
-        }
+
+        //if CNT01 is disabled
+        loadListData();
+
     }
 
     private final class MyAdapter extends ArrayAdapter<NonFieldBO> {

@@ -30,10 +30,8 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
     /* Configuration details */
     public enum LOCATION_TYPE_CONFIG {
-        NATIVE_GPS(1),
-        NATIVE_GPS_WITH_VAL(2),
         FUSED(0),
-        FUSED_WITH_VAL(3);
+        NATIVE_GPS(1);
         private int value;
 
         LOCATION_TYPE_CONFIG(int value) {
@@ -102,13 +100,13 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
     public void startLocationListener() {
 
         /* Notify user that google play service is not available */
-        if ((gpsconfigcode == 0 || gpsconfigcode == 3) && !isGooglePlayServicesAvailable()) {
+        if (gpsconfigcode == 0 && !isGooglePlayServicesAvailable()) {
             Toast.makeText(context,
                     "Google play service not available.",
                     Toast.LENGTH_LONG).show();
         }
 
-        if ((gpsconfigcode == 0 || gpsconfigcode == 3) && isGooglePlayServicesAvailable()) {
+        if (gpsconfigcode == 0 && isGooglePlayServicesAvailable()) {
             mGoogleApiClient = new GoogleApiClient.Builder(context)
                     .addApi(LocationServices.API).addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this).build();
@@ -214,7 +212,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
      */
     public void stopLocationListener() {
 
-        if ((gpsconfigcode == 0 || gpsconfigcode == 3) && isGooglePlayServicesAvailable()) {
+        if (gpsconfigcode == 0 && isGooglePlayServicesAvailable()) {
             if (mGoogleApiClient != null) {
                 if (mGoogleApiClient.isConnected()) {
                     mGoogleApiClient.disconnect();
@@ -227,7 +225,6 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
                                 + mGoogleApiClient.isConnected());
                 Log.d(TAG, "onStop fired ..............");
             }
-
 
         } else {
             if (nativeLocationManager != null && nativeLocationListener != null) {
@@ -347,6 +344,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
 
     /**
      * To avoid exponential value and truncate decimal digits to 10
+     *
      * @param originalLocation Original Location
      * @return Truncated location
      */
@@ -360,7 +358,7 @@ public class LocationUtil implements LocationListener, GoogleApiClient.Connectio
             decimalFormat.setMaximumFractionDigits(10);
 
             val = Double.valueOf(decimalFormat.format(originalLocation));
-        }catch(Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
 

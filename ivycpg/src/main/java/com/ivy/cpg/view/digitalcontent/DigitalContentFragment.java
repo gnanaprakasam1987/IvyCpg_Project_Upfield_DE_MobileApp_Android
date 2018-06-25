@@ -144,7 +144,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
         // Set title to action bar
         if (extras != null) {
-            mScreenTitle = extras.getString("mScreenTitle");
+            mScreenTitle = extras.getString("screentitle");
         }
         //If this screen is called from Menu item or Order flow..
         if (screenCode.equals("MENU_STK_ORD")

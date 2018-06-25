@@ -238,44 +238,7 @@ public class UploadHelper {
                 }
                 Commons.print("jsonObjData.toString():3:"
                         + jsonObjData.toString());
-            } else if (flag == DataMembers.COUNTER_SIH_UPLOAD) {
-                Set<String> keys = DataMembers.uploadCounterSIHTable.keySet();
-
-                jsonObjData = new JSONObject();
-                for (String tableName : keys) {
-                    JSONArray jsonArray = prepareDataForUploadJSON(db,
-                            handlerr, tableName,
-                            DataMembers.uploadCounterSIHTable.get(tableName));
-
-                    if (jsonArray.length() > 0)
-                        jsonObjData.put(tableName, jsonArray);
-                }
-            } else if (flag == DataMembers.COUNTER_STOCK_APPLY_UPLOAD) {
-                Set<String> keys = DataMembers.uploadCSStockApplyTable.keySet();
-
-                jsonObjData = new JSONObject();
-                for (String tableName : keys) {
-                    JSONArray jsonArray = prepareDataForUploadJSON(db,
-                            handlerr, tableName,
-                            DataMembers.uploadCSStockApplyTable.get(tableName));
-
-                    if (jsonArray.length() > 0)
-                        jsonObjData.put(tableName, jsonArray);
-                }
-            } else if (flag == DataMembers.CS_REJECTED_VARIANCE_UPLOAD) {
-                Set<String> keys = DataMembers.uploadCSRejectedVarianceStatus.keySet();
-
-                jsonObjData = new JSONObject();
-                for (String tableName : keys) {
-                    JSONArray jsonArray = prepareDataForUploadJSON(db,
-                            handlerr, tableName,
-                            DataMembers.uploadCSRejectedVarianceStatus.get(tableName));
-
-                    if (jsonArray.length() > 0)
-                        jsonObjData.put(tableName, jsonArray);
-                }
             }
-
 
             if (businessModel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT) {
                 String id = SDUtil.now(SDUtil.DATE_TIME);
@@ -431,25 +394,7 @@ public class UploadHelper {
                     responseMessage = 2;
                     return responseMessage;
                 }
-            } else if (flag == DataMembers.COUNTER_STOCK_APPLY_UPLOAD) {
-                url = businessModel.synchronizationHelper.getUploadUrl("UPLDCSSTKRCPT");
-                if (url.length() == 0) {
-                    responseMessage = 2;
-                    return responseMessage;
-                }
-            } else if (flag == DataMembers.COUNTER_SIH_UPLOAD) {
-                url = businessModel.synchronizationHelper.getUploadUrl("UPLDCSSIH");
-                if (url.length() == 0) {
-                    responseMessage = 2;
-                    return responseMessage;
-                }
-            } else if (flag == DataMembers.CS_REJECTED_VARIANCE_UPLOAD) {
-                url = businessModel.synchronizationHelper.getUploadUrl("UPLDCSSTKVR");
-                if (url.length() == 0) {
-                    responseMessage = 2;
-                    return responseMessage;
-                }
-            } else
+            }else
                 url = businessModel.synchronizationHelper.getUploadUrl("UPLDTRAN");
 
             Vector<String> responseVector = businessModel.synchronizationHelper.getUploadResponse(jsonFormatter.getDataInJson(),
@@ -521,15 +466,6 @@ public class UploadHelper {
                 } else if (flag == DataMembers.ATTENDANCE_UPLOAD) {
                     updateUploadFlag(DataMembers.uploadAttendanceColumn, context.getApplicationContext());
                     responseMessage = 1;
-                } else if (flag == DataMembers.COUNTER_STOCK_APPLY_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadCSStockApplyTable, context.getApplicationContext());
-                    responseMessage = 2;
-                } else if (flag == DataMembers.COUNTER_SIH_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadCounterSIHTable, context.getApplicationContext());
-                    responseMessage = 2;
-                } else if (flag == DataMembers.CS_REJECTED_VARIANCE_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadCSRejectedVarianceStatus, context.getApplicationContext());
-                    responseMessage = 2;
                 } else {
                     updateUploadFlag(DataMembers.uploadColumn, context.getApplicationContext());
                     responseMessage = 1;
@@ -829,7 +765,7 @@ public class UploadHelper {
                 Commons.printException("" + e);
             }
 
-            String url = businessModel.synchronizationHelper.generateChecksum("UPLDSEQ");
+            String url = businessModel.synchronizationHelper.getUploadUrl("UPLDSEQ");
             if (url.length() == 0)
                 return 1;
             Vector<String> responseVector = businessModel.synchronizationHelper.getUploadResponse(jsonFormatter.getDataInJson(),
@@ -993,15 +929,6 @@ public class UploadHelper {
                     }
 
 
-                }
-            } else {
-                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
-                    if (errorMsg != null) {
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
-                    }
                 }
             }
         } catch (SQLException | JSONException e) {

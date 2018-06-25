@@ -90,6 +90,8 @@
     <string name="top_up_incentive">TOP UP INCENTIVE</string>
     <string name="top_up_incentive_small">Top Up Incentive</string>
     <string name="factor_InscDash">Factor</string>
+    <string name="sales_parameter">Sales Parameter</string>
+    <string name="max_opportunity">Payout Opportunity</string>
     <string name="achived">Achived</string>
     <string name="ach">Ach(%)</string>
     <string name="payout_earned">Payout Earned</string>
@@ -145,5 +147,17 @@
     <string name="error_connecting_printer">Error connecting Printer</string>
     <string name="allocation">Allocation</string>
     <string name="you_have_unchecked_applicable_scheme">You have unchecked few applicable scheme ?</string>
+    <string name="regular_incentive_detail">Regular Incentive Detail</string>
+    <string name="top_up_incentive_detail">Top Up Incentive Detail</string>
+
+    <!--Label for collection Print-->
+    <string name="rcpt_date">Rcpt Date</string>
+    <string name="rcpt_no">Rcpt NO</string>
+    <string name="seller_code">Seller Code</string>
+    <!--END-->
+
+    <string name="pls_enter_rtgsno">Please Enter RTGS No </string>
+    <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
+    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for order products.</string>
 
 </resources>

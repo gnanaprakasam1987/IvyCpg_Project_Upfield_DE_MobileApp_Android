@@ -265,8 +265,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
         // update empty bottle returns
-        if (!BModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                || BModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+        if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_ON &&
+                SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_SHOW_SCREEN) {
 
             if (!BModel.isEdit() || !BModel.isDoubleEdit_temp()) {
                 SchemeDetailsMasterHelper.getInstance(getApplicationContext())
@@ -563,10 +563,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             CollectionBeforeInvoiceCall();
             return true;
         } else if (i1 == R.id.menu_signature) {
-            if (BModel.getOrderHeaderBO().isSignCaptured()) {
-                showDialog(DIALOG_SIGNATURE_AVAILABLE);
-                return true;
-            }
+            if (BModel.getOrderHeaderBO() != null)
+                if (BModel.getOrderHeaderBO().isSignCaptured()) {
+                    showDialog(DIALOG_SIGNATURE_AVAILABLE);
+                    return true;
+                }
             Intent i = new Intent(OrderSummary.this,
                     CaptureSignatureActivity.class);
             i.putExtra("fromModule", "ORDER");
@@ -594,7 +595,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Toast.makeText(OrderSummary.this, "No Scanned products ", Toast.LENGTH_SHORT).show();
             }
         } else if (i1 == R.id.menu_edit) {
-            editOrder();
+            if (!isClick) {
+                isClick = true;
+                editOrder();
+            }
         } else if (i1 == R.id.menu_delete) {
             if (orderHelper.isStockCheckMenuEnabled())
                 showDialog(DIALOG_DELETE_STOCK_AND_ORDER);
@@ -788,10 +792,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 .getRetailerID()),
                         ConfigurationMasterHelper.outDateFormat));
             } else {
+                BModel.mAttendanceHelper.downWeekOffs(OrderSummary.this);
                 Calendar origDay = Calendar.getInstance();
                 origDay.add(Calendar.DAY_OF_YEAR, (BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
-                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(origDay.getTime(), ConfigurationMasterHelper.outDateFormat));
+                Calendar selectedDate = dateValidation(origDay);
+                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
 
             }
         } catch (Exception e) {
@@ -910,8 +916,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
             // Scheme calculations
-            if (!BModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                    || BModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+            if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_ON &&
+                    SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_SHOW_SCREEN) {
                 totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList, getApplicationContext());
                 totalOrderValue -= totalSchemeDiscValue;
             }
@@ -965,6 +971,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 //find the  range of discount by using total value
                 final double billWiseRangeDiscount = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
                 totalOrderValue = totalOrderValue - billWiseRangeDiscount;
+                enteredDiscAmtOrPercent = billWiseRangeDiscount;
 
             } else if (BModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && BModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
                 // Automatically apply bill wise discount
@@ -973,6 +980,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     BModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
                 }
                 totalOrderValue = totalOrderValue - billWiseDiscount;
+                enteredDiscAmtOrPercent = billWiseDiscount;
 
             } else {
                 // user manually enter bill wise discount
@@ -1283,12 +1291,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
-
-                                        BModel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        if (BModel.getOrderHeaderBO().getSignatureName() != null)
-                                            BModel.synchronizationHelper.deleteFiles(
-                                                    PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
-
+                                        if (BModel.getOrderHeaderBO() != null) {
+                                            BModel.getOrderHeaderBO().setIsSignCaptured(false);
+                                            if (BModel.getOrderHeaderBO().getSignatureName() != null)
+                                                BModel.synchronizationHelper.deleteFiles(
+                                                        PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
+                                        }
                                         if (!BModel.hasStockInOrder())
                                             BModel.deleteModuleCompletion("MENU_STK_ORD");
                                         // clear scheme free products
@@ -1317,13 +1325,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
-
-                                        // clear scheme free products
-                                        BModel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        if (BModel.getOrderHeaderBO().getSignatureName() != null)
-                                            BModel.synchronizationHelper.deleteFiles(
-                                                    PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
-
+                                        if (BModel.getOrderHeaderBO() != null) {
+                                            // clear scheme free products
+                                            BModel.getOrderHeaderBO().setIsSignCaptured(false);
+                                            if (BModel.getOrderHeaderBO().getSignatureName() != null)
+                                                BModel.synchronizationHelper.deleteFiles(
+                                                        PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
+                                        }
                                         discountHelper.clearSchemeFreeProduct(mOrderedProductList);
                                         BModel.deleteModuleCompletion("MENU_STK_ORD");
                                         new MyThread(OrderSummary.this,
@@ -1348,11 +1356,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         build = new AlertDialog.Builder(OrderSummary.this);
-                                        BModel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        if (BModel.getOrderHeaderBO().getSignatureName() != null)
-                                            BModel.synchronizationHelper.deleteFiles(
-                                                    PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
-
+                                        if (BModel.getOrderHeaderBO() != null) {
+                                            BModel.getOrderHeaderBO().setIsSignCaptured(false);
+                                            if (BModel.getOrderHeaderBO().getSignatureName() != null)
+                                                BModel.synchronizationHelper.deleteFiles(
+                                                        PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
+                                        }
                                         customProgressDialog(build, getResources().getString(R.string.deleting_order));
                                         alertDialog = build.create();
                                         alertDialog.show();
@@ -1467,10 +1476,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        BModel.getOrderHeaderBO().setIsSignCaptured(false);
-                                        if (BModel.getOrderHeaderBO().getSignatureName() != null)
-                                            BModel.synchronizationHelper.deleteFiles(
-                                                    PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
+                                        if (BModel.getOrderHeaderBO() != null) {
+                                            BModel.getOrderHeaderBO().setIsSignCaptured(false);
+                                            if (BModel.getOrderHeaderBO().getSignatureName() != null)
+                                                BModel.synchronizationHelper.deleteFiles(
+                                                        PHOTO_PATH, BModel.getOrderHeaderBO().getSignatureName());
+                                        }
                                         Intent i = new Intent(OrderSummary.this,
                                                 CaptureSignatureActivity.class);
                                         i.putExtra("fromModule", "ORDER");
@@ -1494,7 +1505,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             case DIALOG_DELIVERY_DATE_PICKER: {
 
                 Calendar c = Calendar.getInstance();
-                c.add(Calendar.DAY_OF_YEAR, (BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
+                Calendar maxCalendar = Calendar.getInstance();
+                if(BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0){
+                    c.add(Calendar.DAY_OF_YEAR,1);
+                } else {
+                    if (BModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
+                        c.add(Calendar.DAY_OF_MONTH, BModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
+                    } else {
+                        c.setTimeInMillis(System.currentTimeMillis() - 1000);
+                    }
+                    if (BModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
+                        maxCalendar.add(Calendar.DAY_OF_YEAR, BModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
+                    }
+                }
+                //c.add(Calendar.DAY_OF_YEAR, (BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
@@ -1503,15 +1527,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 MyDatePickerDialog dialog = new MyDatePickerDialog(this, R.style.DatePickerDialogStyle,
                         mDeliverDatePickerListener, year, month, day);
                 dialog.setPermanentTitle(getResources().getString(R.string.choose_date));
-                dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-
-                if (BModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
-                    Calendar maxCalendar = Calendar.getInstance();
-                    maxCalendar.add(Calendar.DAY_OF_YEAR, BModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
+                dialog.getDatePicker().setMinDate(c.getTimeInMillis());
+                if(BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0) {
                     dialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
                 }
-
-
                 return dialog;
             }
 
@@ -1576,15 +1595,16 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 } else {
 
                     totalOrderValue = totalOrderValue - getDiscountValue(enteredDiscAmtOrPercent, totalOrderValue);
-
-                    BModel.getOrderHeaderBO().setOrderValue(totalOrderValue);
-                    BModel.getOrderHeaderBO().setDiscount(enteredDiscAmtOrPercent);
-                    BModel.getOrderHeaderBO().setDiscountId(0);
-                    BModel.getOrderHeaderBO().setIsCompanyGiven(0);
-                    BModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
-                    BModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
-                            ConfigurationMasterHelper.outDateFormat));
-                    signatureName = BModel.getOrderHeaderBO().getSignatureName();
+                    if (BModel.getOrderHeaderBO() != null) {
+                        BModel.getOrderHeaderBO().setOrderValue(totalOrderValue);
+                        BModel.getOrderHeaderBO().setDiscount(enteredDiscAmtOrPercent);
+                        BModel.getOrderHeaderBO().setDiscountId(0);
+                        BModel.getOrderHeaderBO().setIsCompanyGiven(0);
+                        BModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
+                        BModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
+                                ConfigurationMasterHelper.outDateFormat));
+                        signatureName = BModel.getOrderHeaderBO().getSignatureName();
+                    }
 
 
                     // Don't write any code  after this dialog.. because it is just a confirmation dialog
@@ -1690,14 +1710,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
 
             totalOrderValue -= getDiscountValue(enteredDiscAmtOrPercent, totalOrderValue);
-
-            BModel.getOrderHeaderBO().setOrderValue(totalOrderValue);
-            BModel.getOrderHeaderBO().setDiscount(enteredDiscAmtOrPercent);
-            BModel.getOrderHeaderBO().setDiscountId(0);
-            BModel.getOrderHeaderBO().setIsCompanyGiven(0);
-            BModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
-            BModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(), ConfigurationMasterHelper.outDateFormat));
-            signatureName = BModel.getOrderHeaderBO().getSignatureName();
+            if (BModel.getOrderHeaderBO() != null) {
+                BModel.getOrderHeaderBO().setOrderValue(totalOrderValue);
+                BModel.getOrderHeaderBO().setDiscount(enteredDiscAmtOrPercent);
+                BModel.getOrderHeaderBO().setDiscountId(0);
+                BModel.getOrderHeaderBO().setIsCompanyGiven(0);
+                BModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
+                BModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(), ConfigurationMasterHelper.outDateFormat));
+                signatureName = BModel.getOrderHeaderBO().getSignatureName();
+            }
 
             if (!mOrderedProductList.isEmpty()) {
 
@@ -1774,8 +1795,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 discountValue = discount;
 
             }
-
-            BModel.getOrderHeaderBO().setDiscountValue(discountValue);
+            if (BModel.getOrderHeaderBO() != null)
+                BModel.getOrderHeaderBO().setDiscountValue(discountValue);
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -2678,15 +2699,21 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                               int dayOfMonth) {
             Calendar selectedDate = new GregorianCalendar(year, monthOfYear,
                     dayOfMonth);
+
+            String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+                    selectedDate.getTime(), "yyyy/MM/dd");
+            if (BModel.mAttendanceHelper.isHoliday(dbDateFormat, OrderSummary.this)
+                    || BModel.mAttendanceHelper.isWeekOff(dbDateFormat)) {
+                Toast.makeText(OrderSummary.this, "The Selected day is a holiday", Toast.LENGTH_SHORT).show();
+            }
+
             button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(),
                     ConfigurationMasterHelper.outDateFormat));
-
             Calendar currentCalendar = Calendar.getInstance();
             currentCalendar.add(Calendar.DAY_OF_YEAR, -1);
 
             if (currentCalendar.after(selectedDate)) {
-
                 Toast.makeText(
                         getApplicationContext(),
                         getResources().getString(
@@ -2700,6 +2727,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             view.updateDate(year, monthOfYear, dayOfMonth);
         }
     };
+
+    private Calendar dateValidation(Calendar selectedDate) {
+        String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+                selectedDate.getTime(), "yyyy/MM/dd");
+        if (BModel.mAttendanceHelper.isHoliday(dbDateFormat, OrderSummary.this)
+                || BModel.mAttendanceHelper.isWeekOff(dbDateFormat)) {
+            selectedDate.add(Calendar.DAY_OF_MONTH, 1);
+            return dateValidation(selectedDate);
+        } else {
+            return selectedDate;
+        }
+    }
 
 
     @SuppressLint("HandlerLeak")

@@ -330,7 +330,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
         @Override
         protected String doInBackground(String... params) {
-            bmodel.synchronizationHelper.updateAuthenticateToken();
+            bmodel.synchronizationHelper.updateAuthenticateToken(false);
             String response = bmodel.synchronizationHelper.sendPostMethod(bmodel.reportHelper.getPerformRptUrl(), jsonObject);
             try {
                 JSONObject jsonObject = new JSONObject(response);
