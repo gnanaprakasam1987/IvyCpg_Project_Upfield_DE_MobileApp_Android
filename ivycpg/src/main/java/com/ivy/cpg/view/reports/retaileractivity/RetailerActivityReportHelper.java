@@ -62,22 +62,10 @@ public class RetailerActivityReportHelper {
                 }
                 c.close();
             }
+
             // Below code commented because Retailer Daily Target sets using RetailerKPI table instead of RetailerTargetMaster
+            //TODO: Update Target based on KPI Table.
 
-            /*c = db.selectSQL("select RetailerID, DailyTarget from RetailerTargetMaster ");
-
-            if (c != null) {
-                while (c.moveToNext()) {
-                    for (int i = 0; i < retailer.size(); i++) {
-                        ret = retailer.get(i);
-                        if (ret.getRetailerID().equals(c.getString(0))) {
-                            ret.setDaily_target(c.getDouble(1));
-                            Commons.print("VIit tgt" + c.getDouble(1));
-                        }
-                    }
-                }
-                c.close();
-            }*/
             c = db.selectSQL("select retailerid,substr(timeIn,12,5),substr(timeout,12,5),timein,timeout " +
                     "from OutletTimestamp group by retailerid");
 
@@ -152,12 +140,6 @@ public class RetailerActivityReportHelper {
 
                 }
             }
-          /*  if(diffSeconds>0){
-                if(!duration.equals(""))
-                    duration+=":";
-
-                duration+=diffSeconds;
-            }*/
 
             if (duration.equals(""))
                 duration = "0";

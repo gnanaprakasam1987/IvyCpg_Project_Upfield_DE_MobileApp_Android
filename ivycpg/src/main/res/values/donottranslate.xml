@@ -160,6 +160,6 @@
     <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
 
 
-    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for order products.</string>
+
     <string name="drug_license_expired">Drug License Expired</string>
 </resources>

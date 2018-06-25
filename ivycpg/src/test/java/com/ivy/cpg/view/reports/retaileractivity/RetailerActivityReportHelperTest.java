@@ -16,9 +16,9 @@ public class RetailerActivityReportHelperTest {
     @Test
     public void timeDifference() throws Exception {
         RetailerActivityReportHelper retailerActivityReportHelper=new RetailerActivityReportHelper(null);
-        String str=retailerActivityReportHelper.timeDifference("2018/06/18 20:07:12","2018/06/19 20:08:13");
+        String str=retailerActivityReportHelper.timeDifference("2018/06/18 20:07:12","2018/06/18 20:08:13");
         System.out.print(str);
-        Assert.assertEquals("00:00:00",str);
+        Assert.assertEquals("00:01",str);
     }
 
 }

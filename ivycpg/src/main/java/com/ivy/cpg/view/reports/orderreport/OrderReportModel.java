@@ -2,7 +2,6 @@ package com.ivy.cpg.view.reports.orderreport;
 
 import android.content.Context;
 
-import com.ivy.cpg.view.reports.OrderReportBO;
 import com.ivy.cpg.view.reports.dayreport.DaggerReportComponent;
 import com.ivy.cpg.view.reports.dayreport.DayReportHelper;
 import com.ivy.cpg.view.reports.dayreport.ReportComponent;

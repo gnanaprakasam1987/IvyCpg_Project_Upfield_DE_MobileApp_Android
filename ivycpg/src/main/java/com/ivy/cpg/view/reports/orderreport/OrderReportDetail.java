@@ -1,8 +1,6 @@
-package com.ivy.cpg.view.reports;
+package com.ivy.cpg.view.reports.orderreport;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,13 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;

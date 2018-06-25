@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
-import com.ivy.cpg.view.reports.OrderReportBO;
+import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -55,8 +55,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
-
-import javax.inject.Inject;
 
 public class ReportHelper {
     private static ReportHelper instance = null;

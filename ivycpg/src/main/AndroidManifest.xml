@@ -378,7 +378,7 @@
             android:name="com.ivy.cpg.view.dashboard.olddashboard.SKUWiseTargetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.reports.OrderReportDetail"
+            android:name="com.ivy.cpg.view.reports.orderreport.OrderReportDetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity"

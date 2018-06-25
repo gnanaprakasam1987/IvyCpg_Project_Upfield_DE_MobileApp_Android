@@ -20,8 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.OrderReportBO;
-import com.ivy.cpg.view.reports.OrderReportDetail;
 import com.ivy.cpg.view.reports.dayreport.DaggerReportComponent;
 import com.ivy.cpg.view.reports.dayreport.ReportComponent;
 import com.ivy.cpg.view.reports.dayreport.ReportModule;
