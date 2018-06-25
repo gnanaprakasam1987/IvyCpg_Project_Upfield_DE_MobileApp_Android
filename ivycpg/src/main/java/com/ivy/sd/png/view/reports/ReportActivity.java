@@ -23,8 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.InvoiceReportFragment;
-import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
-import com.ivy.cpg.view.reports.beginstockreport.*;
+import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
 import com.ivy.cpg.view.reports.beginstockreport.BeginningStockFragment;
 import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
 import com.ivy.cpg.view.reports.currentreport.CurrentReportViewFragment;
