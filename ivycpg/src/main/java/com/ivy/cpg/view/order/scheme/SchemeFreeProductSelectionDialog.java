@@ -380,7 +380,8 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                             .getQuantityMaxiumCalculated() + "");
 
 
-            if (bModel.configurationMasterHelper.IS_INVOICE) {
+            if ( bModel.getRetailerMasterBO().getIsVansales()==1
+                    ||bModel.configurationMasterHelper.IS_INVOICE) {
                 holder.sihTV.setVisibility(View.VISIBLE);
             } else {
                 holder.sihTV.setVisibility(View.GONE);

@@ -562,6 +562,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                         holder.text_stock_availability.setVisibility(View.VISIBLE);
                                         holder.quantityCB.setChecked(false);
                                         holder.showFreeBTN.setEnabled(false);
+                                        holder.schemeBO
+                                                .setQuantityTypeSelected(false);
+                                        holder.showFreeBTN.setEnabled(true);
                                         return;
                                     }
 
@@ -1139,11 +1142,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.percentET.setEnabled(false);
                 holder.percentET.setClickable(false);
 
-                if(!holder.schemeBO.isSihAvailableForFreeProducts()){
-                    holder.quantityCB.setChecked(false);
-                    holder.showFreeBTN.setEnabled(false);
-                }
-
             } else if (holder.schemeBO.isPriceTypeSeleted()) {
 
                 holder.quantityCB.setChecked(false);
@@ -1318,6 +1316,14 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.priceET.setEnabled(true);
                 holder.amountET.setEnabled(true);
                 holder.percentET.setEnabled(true);
+            }
+
+            if(bModel.configurationMasterHelper.IS_SIH_VALIDATION
+                    &&!holder.schemeBO.isSihAvailableForFreeProducts()){
+                holder.quantityCB.setChecked(false);
+                holder.schemeBO
+                        .setQuantityTypeSelected(false);
+                holder.showFreeBTN.setEnabled(true);
             }
 
 

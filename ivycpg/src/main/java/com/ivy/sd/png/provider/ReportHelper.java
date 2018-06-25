@@ -1788,6 +1788,20 @@ public class ReportHelper {
             }
             c.close();
 
+            //Adding delivered stock - Delivery module
+            sb = new StringBuffer();
+            sb.append("select productid,sum(Qty),batchid as Qty from invoiceDetails OD inner join invoiceMaster OH on OH.invoiceno =OD.invoiceid");
+            sb.append(" inner join orderHeader AB ON AB.orderId=OH.orderid");
+            sb.append(" where  od.ordertype=0 and AB.upload='X' group by productid,batchid");
+            c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    setEODObject(c.getString(0), c.getString(2), c.getInt(1), QtyType.SOLD);
+                }
+            }
+            c.close();
+
+
             // get freeQty for crown FROM ORDER DETAIL
             sb = new StringBuffer();
             sb.append("select OD.Productid,sum(OD.Qty),batchid from orderDetail OD  inner join OrderHeader OH on ");
@@ -1882,7 +1896,7 @@ public class ReportHelper {
                                 stockReportBO.setFreeIssuedQty(qty
                                         + stockReportBO.getFreeIssuedQty());
                             } else if (type == QtyType.SOLD) {
-                                stockReportBO.setSoldQty(qty);
+                                stockReportBO.setSoldQty(qty+stockReportBO.getSoldQty());
                             } else if (type == QtyType.EMPTY) {
                                 stockReportBO.setEmptyBottleQty(qty);
                             } else if (type == QtyType.REPLACEMENT) {
