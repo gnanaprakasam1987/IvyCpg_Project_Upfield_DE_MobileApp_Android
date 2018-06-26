@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports;
+package com.ivy.cpg.view.reports.orderreport;
 
 import android.os.Parcel;
 import android.os.Parcelable;

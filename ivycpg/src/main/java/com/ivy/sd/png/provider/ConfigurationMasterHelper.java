@@ -514,6 +514,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
     public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
 
+    private static final String CODE_LICENSE_VALIDATION = "DRUG_LICENSE_VLD";
+    public boolean IS_ENABLE_LICENSE_VALIDATION;
+    public boolean IS_SOFT_LICENSE_VALIDATION;
     /**
      * RoadActivity config *
      */
@@ -2530,6 +2533,10 @@ public class ConfigurationMasterHelper {
         if (IS_ENABLE_USER_FILTER_DASHBOARD) {
             loadDashboardUserFilter();
         }
+        this.IS_ENABLE_LICENSE_VALIDATION = hashMapHHTModuleConfig.get(CODE_LICENSE_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_LICENSE_VALIDATION) : false;
+        if (IS_ENABLE_LICENSE_VALIDATION) {
+            loadLicenseValidationConfig();
+        }
     }
 
     private boolean isInOutModule() {
@@ -2627,6 +2634,27 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     bmodel.setDashboardUserFilterString(c.getString(0).replaceAll("^|$", "'").replaceAll(",", "','"));
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void loadLicenseValidationConfig() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_LICENSE_VALIDATION) + " and Flag=1 and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    IS_SOFT_LICENSE_VALIDATION = c.getString(0).equals("0");
                 }
                 c.close();
             }
