@@ -3,7 +3,6 @@ package com.ivy.cpg.view.order;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.InputType;
@@ -22,7 +21,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
@@ -48,7 +46,7 @@ public class ReturnProductDialog extends Dialog {
     private EditText QUANTITY;
     private Button btnSave;
     private OrderSummary orderSummaryActivity;
-    private Toolbar toolbar;
+
 
     public ReturnProductDialog(Context context, OrderSummary summaryActivity) {
         super(context);
@@ -68,10 +66,8 @@ public class ReturnProductDialog extends Dialog {
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.Product_details);
-        toolbar.setTitleTextColor(Color.WHITE);
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.tv_toolbar_title);
+
+        TextView mTitle = (TextView) findViewById(R.id.tv_toolbar_title);
         mTitle.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         setCancelable(true);
