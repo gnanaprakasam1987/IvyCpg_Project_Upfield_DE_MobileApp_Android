@@ -29,6 +29,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
+import java.util.Iterator;
+
 import static android.app.Activity.RESULT_OK;
 
 
@@ -448,6 +450,8 @@ public class ReplaceFragment extends IvyBaseFragment {
                 if(!isReasonAndOtherFieldsAvailable())
                     return;
 
+                removeEmptyRow();
+
                     Intent intent = new Intent();
                     intent.putExtra("position", holderPosition);
                     intent.putExtra("top", holderTop);
@@ -629,6 +633,21 @@ public class ReplaceFragment extends IvyBaseFragment {
         }
 
         return true;
+    }
+
+    private void removeEmptyRow() {
+        try {
+            Iterator<SalesReturnReasonBO> it = productMasterBO.getSalesReturnReasonList().iterator();
+            while (it.hasNext()) {
+                SalesReturnReasonBO srObj = it.next();
+                if (srObj.getCaseQty() == 0 && srObj.getPieceQty() == 0 && srObj.getOuterQty() == 0) {
+                    it.remove();
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
     }
 
 }

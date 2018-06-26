@@ -705,7 +705,7 @@ public class TaxHelper implements TaxInterface {
         values.append("," + taxBO.getGroupId() + ",0");
 
         db.insertSQL("OrderTaxDetails", columns, values.toString());
-        if( mBusinessModel.getRetailerMasterBO().getIsVansales()==1)
+        if( mBusinessModel.getRetailerMasterBO().getIsVansales()==1||mBusinessModel.configurationMasterHelper.IS_INVOICE)
             db.insertSQL("InvoiceTaxDetails", columns, values.toString());
 
 

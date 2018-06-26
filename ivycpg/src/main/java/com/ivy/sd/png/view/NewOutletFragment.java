@@ -470,100 +470,89 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     private void ValidateandDownloadMasters() {
+        if(profileConfig != null) {
+            for (int i = 0; i < profileConfig.size(); i++) {
+                if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("CHANNEL")) {
+                    isChannel = true;
+                    channelMaster = bmodel.channelMasterHelper.getChannelMaster();
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("SUBCHANNEL")) {
+                    subchannelMaster = bmodel.subChannelMasterHelper
+                            .getSubChannelMaster();
+                    issubChannel = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("ROUTE")) {
+                    beatMaster = bmodel.beatMasterHealper.getBeatMaster();
+                    isRoute = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("LOCATION")) {
+                    leastlocId = outlet.getLocid();
+                    isLocation = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("LOCATION01")) {
 
-        for (int i = 0; i < profileConfig.size(); i++) {
-            if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("CHANNEL")) {
-                isChannel = true;
-                channelMaster = bmodel.channelMasterHelper.getChannelMaster();
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("SUBCHANNEL")) {
-                subchannelMaster = bmodel.subChannelMasterHelper
-                        .getSubChannelMaster();
-                issubChannel = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("ROUTE")) {
-                beatMaster = bmodel.beatMasterHealper.getBeatMaster();
-                isRoute = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("LOCATION")) {
-                leastlocId = outlet.getLocid();
-                isLocation = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("LOCATION01")) {
+                    isLocation1 = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("LOCATION02")) {
 
-                isLocation1 = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("LOCATION02")) {
+                    isLocation2 = true;
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("USER")) {
+                    mUserList = bmodel.userMasterHelper.downloadAllUser();
 
-                isLocation2 = true;
-            } else if (profileConfig.get(i).getConfigCode()
-                    .equalsIgnoreCase("USER")) {
-                mUserList = bmodel.userMasterHelper.downloadAllUser();
+                } else if ("ATTRIBUTE"
+                        .equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
+                    isAttribute = true;
+                    bmodel.newOutletAttributeHelper.downloadAttributeParentList();
+                    bmodel.newOutletAttributeHelper.downloadRetailerAttribute();
+                    mAttributeParentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+                    attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
 
-            } else if ("ATTRIBUTE"
-                    .equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
-                isAttribute = true;
-                bmodel.newOutletAttributeHelper.downloadAttributeParentList();
-                bmodel.newOutletAttributeHelper.downloadRetailerAttribute();
-                mAttributeParentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
-                attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
-
-                bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
+                    bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
 
 
+                }
             }
         }
 
         if (isAttribute && issubChannel)
             mAttributeListByChannelID = bmodel.newOutletAttributeHelper.downloadChannelWiseAttributeList();
 
-        if (isChannel && channelMaster.size() == 0) {
+        if (isChannel && (channelMaster == null || channelMaster.size() == 0)) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.no_channels_download),
                     Toast.LENGTH_LONG).show();
-        } else if (issubChannel && subchannelMaster.size() == 0) {
+        } else if (issubChannel && (subchannelMaster == null || subchannelMaster.size() == 0)) {
             Toast.makeText(
                     getActivity(),
                     getResources().getString(R.string.no_sub_channels_download),
                     Toast.LENGTH_LONG).show();
-        } else if (isRoute && beatMaster.size() == 0) {
+        } else if (isRoute && (beatMaster == null || beatMaster.size() == 0)) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.no_beats_download),
                     Toast.LENGTH_LONG).show();
         } else if (isLocation) {
-            if (mLocationMasterList1 == null) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.no_location_download),
-                        Toast.LENGTH_LONG).show();
-            } else if (mLocationMasterList1.size() == 0) {
+            if (mLocationMasterList1 == null || mLocationMasterList1.size() == 0) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.no_location_download),
                         Toast.LENGTH_LONG).show();
             }
 
         } else if (isLocation1) {
-            if (mLocationMasterList2 == null) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.no_location_download),
-                        Toast.LENGTH_LONG).show();
-            } else if (mLocationMasterList2.size() == 0) {
+            if (mLocationMasterList2 == null || mLocationMasterList2.size() == 0) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.no_location_download),
                         Toast.LENGTH_LONG).show();
             }
 
         } else if (isLocation2) {
-            if (mLocationMasterList3 == null) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.no_location_download),
-                        Toast.LENGTH_LONG).show();
-            } else if (mLocationMasterList3.size() == 0) {
+            if (mLocationMasterList3 == null || mLocationMasterList3.size() == 0) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.no_location_download),
                         Toast.LENGTH_LONG).show();
             }
-        } else if (isAttribute && mAttributeParentList.isEmpty()) {
+        } else if (isAttribute && (mAttributeParentList == null || mAttributeParentList.isEmpty())) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.no_retailer_attribute),
                     Toast.LENGTH_LONG).show();

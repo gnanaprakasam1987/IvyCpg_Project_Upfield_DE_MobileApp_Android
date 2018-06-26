@@ -158,4 +158,8 @@
 
     <string name="pls_enter_rtgsno">Please Enter RTGS No </string>
     <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
+
+
+
+    <string name="drug_license_expired">Drug License Expired</string>
 </resources>

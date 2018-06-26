@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -22,9 +22,9 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.InvoiceReportFragment;
-import com.ivy.cpg.view.reports.RetailerActivityReportFragment;
-import com.ivy.cpg.view.reports.beginstockreport.*;
+import com.ivy.cpg.view.reports.invoicereport.InvoiceReportFragment;
+import com.ivy.cpg.view.reports.retailerProperty.RetailerPropertyReportFragment;
+import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
 import com.ivy.cpg.view.reports.beginstockreport.BeginningStockFragment;
 import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
 import com.ivy.cpg.view.reports.currentreport.CurrentReportViewFragment;
@@ -48,6 +48,32 @@ import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
 import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
+import com.ivy.sd.png.view.reports.AssetTrackingReportFragment;
+import com.ivy.sd.png.view.reports.AttendanceReport;
+import com.ivy.sd.png.view.reports.BrandwisePerformance;
+import com.ivy.sd.png.view.reports.ClosingStockReportFragment;
+import com.ivy.sd.png.view.reports.CreditNoteReportFragment;
+import com.ivy.sd.png.view.reports.DashboardReportFragment;
+import com.ivy.sd.png.view.reports.DeliveryStockReport;
+import com.ivy.sd.png.view.reports.DistOrderReportFragment;
+import com.ivy.sd.png.view.reports.DynamicReportFragment;
+import com.ivy.sd.png.view.reports.InventoryReportFragment;
+import com.ivy.sd.png.view.reports.LogReportFragment;
+import com.ivy.sd.png.view.reports.OpportunitiesReport;
+import com.ivy.sd.png.view.reports.OutletPerformanceReportFragmnet;
+import com.ivy.sd.png.view.reports.PndInvoiceReportFragment;
+import com.ivy.sd.png.view.reports.ProductivityReport;
+import com.ivy.sd.png.view.reports.PromotionTrackingReport;
+import com.ivy.sd.png.view.reports.QuestionReportFragment;
+import com.ivy.sd.png.view.reports.SOreportFragment;
+import com.ivy.sd.png.view.reports.SalesFundamentalGapReportFragment;
+import com.ivy.sd.png.view.reports.SalesReturnReportFragment;
+import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
+import com.ivy.sd.png.view.reports.SellerMapViewReportFragment;
+import com.ivy.sd.png.view.reports.SellerPerformanceReportFragment;
+import com.ivy.sd.png.view.reports.TaskExecutionReportFragment;
+import com.ivy.sd.png.view.reports.TimeAndTravelReport;
+import com.ivy.sd.png.view.reports.WebViewArchivalReportFragment;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -227,7 +253,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_RTR_RPT)) {
-            RetailerReportFragment retailerReportFragment = new RetailerReportFragment();
+            RetailerPropertyReportFragment retailerReportFragment = new RetailerPropertyReportFragment();
             Bundle bundle = new Bundle();
             bundle.putInt("type_retailer", config.getModule_Order());
             retailerReportFragment.setArguments(bundle);
