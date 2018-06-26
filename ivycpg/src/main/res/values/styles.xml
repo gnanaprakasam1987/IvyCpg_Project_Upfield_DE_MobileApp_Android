@@ -1298,4 +1298,8 @@ negative button and neutral button -->
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="MVPTheme.Blue.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="MVPTheme.Blue.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

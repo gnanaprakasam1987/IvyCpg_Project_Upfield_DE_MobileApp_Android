@@ -1272,5 +1272,7 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
+    <string name="title_activity_posm_image_gallery">PosmImageGallery</string>
+    <string name="title_activity_posm_gallery">PosmGallery</string>
 
 </resources>
