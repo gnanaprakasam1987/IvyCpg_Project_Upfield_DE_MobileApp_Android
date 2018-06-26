@@ -5,6 +5,7 @@ import com.ivy.core.IvyConstants;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.bo.ActivationBO;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.activation.ActivationContract;
@@ -39,8 +40,8 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     @Inject
     public ActivationPresenterImpl(DataManager dataManager,
                                    SchedulerProvider schedulerProvider,
-                                   CompositeDisposable compositeDisposable, ActivationDataManager activationDataManager) {
-        super(dataManager, schedulerProvider, compositeDisposable);
+                                   CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper, ActivationDataManager activationDataManager) {
+        super(dataManager, schedulerProvider, compositeDisposable,configurationMasterHelper);
         this.activationDataManager = activationDataManager;
         this.dataManager = dataManager;
     }

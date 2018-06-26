@@ -2,6 +2,7 @@ package com.ivy.core.base.presenter;
 
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import javax.inject.Inject;
@@ -14,18 +15,18 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
     private final DataManager mDataManager;
     private final SchedulerProvider mSchedulerProvider;
     private final CompositeDisposable mCompositeDisposable;
+    private final ConfigurationMasterHelper mConfigurationMasterHelper;
 
 
     private V ivyView;
 
     @Inject
     public BasePresenter(DataManager dataManager, SchedulerProvider schedulerProvider,
-                         CompositeDisposable compositeDisposable) {
+                         CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper) {
         this.mDataManager = dataManager;
         this.mSchedulerProvider = schedulerProvider;
         this.mCompositeDisposable = compositeDisposable;
-
-
+        this.mConfigurationMasterHelper = configurationMasterHelper;
     }
 
 
@@ -84,6 +85,23 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
         return ivyView != null;
     }
 
+    /**
+     * @return true if RTRS10 Config is turned on
+     */
+    @Override
+    public boolean getShowNFCValidation() {
+        return mConfigurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER;
+    }
+
+
+    /**
+     * @return true if FUN14 Config is turned on
+     */
+    @Override
+    public boolean getLocationConfiguration() {
+        return mConfigurationMasterHelper.SHOW_CAPTURED_LOCATION;
+    }
+
     public V getIvyView() {
         return ivyView;
     }
@@ -92,8 +110,6 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
     public DataManager getDataManager() {
         return mDataManager;
     }
-
-
 
 
     public SchedulerProvider getSchedulerProvider() {

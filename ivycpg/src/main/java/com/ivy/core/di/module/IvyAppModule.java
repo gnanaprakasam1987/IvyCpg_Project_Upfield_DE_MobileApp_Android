@@ -16,6 +16,8 @@ import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 
 import javax.inject.Inject;
@@ -59,11 +61,15 @@ public class IvyAppModule {
 
     @Provides
     @DataBaseInfo
-    protected DBUtil providesDBUtil(){
+    protected DBUtil providesDBUtil() {
         return new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
     }
 
+    @Provides
+    protected ConfigurationMasterHelper providesConfigurationHelper() {
+        return ((BusinessModel) mContext).configurationMasterHelper;
+    }
 
     @Provides
     @Singleton

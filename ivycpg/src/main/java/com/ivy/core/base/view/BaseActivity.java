@@ -46,8 +46,6 @@ import butterknife.Unbinder;
 public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView {
 
 
-    private ConfigurationMasterHelper configurationMasterHelper;
-
     private Unbinder mUnBinder;
 
     private NFCManager nfcManager;
@@ -114,29 +112,20 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     }
 
     private void setUpDefaults() {
-
         AppUtils.useNetworkProvidedValues(this);
 
-        //ToDo decouple from business model
-        baseApplication = (BusinessModel) getApplicationContext();
-
-        configurationMasterHelper = baseApplication.configurationMasterHelper;
-
-        if (configurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER) {
+        if (mBasePresenter.getShowNFCValidation()) {
             nfcManager = new NFCManager(this);
             nfcManager.onActivityCreate();
         }
     }
 
-    public ConfigurationMasterHelper getConfigurationMasterHelper() {
-        return configurationMasterHelper;
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (configurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER && nfcManager != null) {
+        if (mBasePresenter.getShowNFCValidation() && nfcManager != null) {
             nfcManager.onActivityResume();
         }
     }
@@ -145,7 +134,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     protected void onPause() {
         super.onPause();
 
-        if (configurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER && nfcManager != null) {
+        if (mBasePresenter.getShowNFCValidation() && nfcManager != null) {
             nfcManager.onActivityPause();
         }
     }
@@ -193,7 +182,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
             permissionStatus = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                if (baseApplication.configurationMasterHelper.checkLocationConfiguration()) {
+                if (mBasePresenter.getLocationConfiguration()) {
                     listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 }
             }
