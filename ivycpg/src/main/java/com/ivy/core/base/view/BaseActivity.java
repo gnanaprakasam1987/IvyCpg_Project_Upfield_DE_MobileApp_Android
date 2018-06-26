@@ -116,9 +116,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         }
     }
 
-    private void setUpProgressDialog() {
-        builder = new AlertDialog.Builder(this);
-    }
 
     @Override
     protected void onResume() {

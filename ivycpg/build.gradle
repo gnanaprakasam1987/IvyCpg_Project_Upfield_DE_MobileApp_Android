@@ -13,8 +13,9 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
-apply plugin: 'jacoco-android'
+//apply plugin: 'jacoco-android'
 
+apply from: '../jacoco.gradle'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -81,6 +82,8 @@ android {
             resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
+            testCoverageEnabled = true
+
         }
         release {
             def googleapikey = System.getenv('googleapikey')
@@ -117,6 +120,15 @@ android {
         exclude 'META-INF/license.txt'
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
     }
 
 }

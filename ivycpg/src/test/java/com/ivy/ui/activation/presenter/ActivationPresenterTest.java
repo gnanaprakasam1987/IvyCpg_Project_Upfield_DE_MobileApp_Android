@@ -136,7 +136,7 @@ public class ActivationPresenterTest {
     @Test
     public void testTriggerImEiActivation() {
 
-        JSONObject jsonObject = TestDataFactory.getValidateImEiResponse();
+        JSONObject jsonObject = TestDataFactory.getValidImeiResponse();
 
         given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
                 "abcd")).willReturn(Observable.just(jsonObject));
@@ -251,7 +251,7 @@ public class ActivationPresenterTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         mPresenter.onDetach();
     }
 

@@ -36,10 +36,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
                 int responseCode = urlConnection.getResponseCode();
                 Commons.print("Sync Url Success response code>>>>>>>>>>"
                         + responseCode);
-                if (responseCode == HttpURLConnection.HTTP_OK)
-                    return true;
-                else
-                    return false;
+                return responseCode == HttpURLConnection.HTTP_OK;
 
             }
         });
@@ -70,13 +67,8 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
                     public void onFailure(int status, String message) {
 
                         ActivationError myError = new ActivationError(status, message);
-                        Throwable throwable = new Throwable(String.valueOf(status));
-                        Throwable throwableObj = new Throwable(message, throwable);
 
-                        if (myError instanceof Throwable) {
-                            subscriber.onError(myError);
-                        } else
-                            subscriber.onError(throwableObj);
+                        subscriber.onError(myError);
 
                     }
 
@@ -97,6 +89,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
 
     @Override
     public Observable<JSONObject> doIMEIActivationAtHttp(final String imEi, final String versionName, final String versionNumber) {
+
         return Observable.create(new ObservableOnSubscribe<JSONObject>() {
             @Override
             public void subscribe(final ObservableEmitter<JSONObject> subscriber) throws Exception {

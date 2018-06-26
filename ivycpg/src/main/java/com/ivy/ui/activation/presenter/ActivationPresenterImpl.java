@@ -1,16 +1,16 @@
 package com.ivy.ui.activation.presenter;
 
 import com.ivy.core.IvyConstants;
+
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.bo.ActivationBO;
 import com.ivy.sd.png.util.Commons;
-
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.activation.ActivationContract;
 import com.ivy.ui.activation.data.ActivationDataManager;
 import com.ivy.ui.activation.data.ActivationError;
 import com.ivy.utils.rx.SchedulerProvider;
-import com.ivy.ui.activation.ActivationContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,11 +61,20 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     public void doActivation(String key, String applicationVersionName, String applicationVersionNumber, String imEiNumber) {
 
         getIvyView().showLoading();
-        getCompositeDisposable().add((Disposable) activationDataManager.doActivationAtHttp(key, applicationVersionName,
-                applicationVersionNumber, imEiNumber)
+        getCompositeDisposable().add((Disposable) activationDataManager.doActivationAtHttp(key, applicationVersionName, applicationVersionNumber, imEiNumber)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(getObserver()));
+
+
+    }
+
+    @Override
+    public void triggerIMEIActivation(String imEi, String versionName, String versionNumber) {
+        getCompositeDisposable().add((Disposable) activationDataManager.doIMEIActivationAtHttp(imEi, versionName, versionNumber)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(getImEiObserver()));
 
 
     }
@@ -121,22 +130,8 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
         }
     }
 
-    @Override
-    public void triggerIMEIActivation(String imEi, String versionName, String versionNumber) {
-        try {
-            getCompositeDisposable().add((Disposable) activationDataManager.
-                    doIMEIActivationAtHttp(imEi, versionName, versionNumber)
-                    .subscribeOn(getSchedulerProvider().io())
-                    .observeOn(getSchedulerProvider().ui())
-                    .subscribeWith(getImEiObserver()));
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
-
-    private DisposableObserver<JSONObject>  getImEiObserver() {
+    private DisposableObserver<JSONObject> getImEiObserver() {
         getIvyView().hideLoading();
         return new DisposableObserver<JSONObject>() {
             @Override
@@ -266,7 +261,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(Boolean response) throws Exception {
+                    public void accept(Boolean response) {
                         if (response)
                             getIvyView().navigateToLoginScreen();
                         else
