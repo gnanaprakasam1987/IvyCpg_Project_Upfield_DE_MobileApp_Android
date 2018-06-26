@@ -224,6 +224,7 @@ public class CommonPrintHelper {
     private Vector<AttributeListBO> mAttributeList;
 
     private int firstColumnWidth;
+    private int emptyFirstColumnWidth;
 
 
     /**
@@ -276,6 +277,7 @@ public class CommonPrintHelper {
 
             int mLengthUptoPName = 0;
             firstColumnWidth = 0;
+            emptyFirstColumnWidth = 0;
 
             int event = xmlParser.getEventType();
             while (event != XmlPullParser.END_DOCUMENT) {
@@ -463,6 +465,28 @@ public class CommonPrintHelper {
                                 }
                             }
 
+                            if (group_name != null && group_name.equalsIgnoreCase("empty_return")) {
+                                //mLengthUptoPName = mLengthUptoPName + attr_length + attr_space;
+                                if (empty_product_name_single_line.equalsIgnoreCase("YES")) {
+                                    emptyFirstColumnWidth = 0;
+                                    // If Empty product name is single line, then second line should be printed after the first column of first line
+                                    // So that bottom common labels will be aligned in straight to the first column(Ex:TAG_PRODUCT_LINE_TOTAL_WITH_QTY)..
+
+                                    if (emptyFirstColumnWidth == 0) {
+                                        emptyFirstColumnWidth = attr_length + attr_space;
+                                    }
+                                    if (attr_name.equalsIgnoreCase(EMPTY_PRODUCT_NAME)) {
+                                        sb.append("\n");
+                                        char emptySpace = ' ';
+                                        for (int sp = 0; sp < emptyFirstColumnWidth; sp++) {
+                                            sb.append(emptySpace);
+                                        }
+
+                                    }
+                                }
+                            }
+
+
                             if (group_name != null) {
                                 AttributeListBO attr = new AttributeListBO();
                                 attr.setAttributeName(attr_name);
@@ -518,7 +542,7 @@ public class CommonPrintHelper {
                                 if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
                                     getCollectionBeforeInvValue();
 
-                                total_net_payable = total_line_value_incl_tax - mBillLevelDiscountValue + mBillLevelTaxValue + mEmptyTotalValue;
+                                total_net_payable = (total_line_value_incl_tax + mBillLevelTaxValue + mEmptyTotalValue) - mBillLevelDiscountValue;
                                 mTotCredit = total_net_payable - (mCash + mCheque + mCreditNoteValue);
                             } else if (group_name != null && group_name.equalsIgnoreCase("empty_return")) {
                                 sb.append(newline);
@@ -736,18 +760,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL_QTY)) {
             value = getProductTotalQty(label);
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYMENT_PAID_MODE)) {
-            String mode = "";
-            if (mCash > 0) {
-                mode = " (cash)";
-                value = alignWithLabelForSingleLine((label + mode), formatValueInPrint(mCash, precisionCount));
-            } else if (mCheque > 0) {
-                mode = " (Cheque)";
-                value = alignWithLabelForSingleLine((label + mode), formatValueInPrint(mCheque, precisionCount));
-            } else if (mCreditNoteValue > 0) {
-                mode = " (Credit Note)";
-                value = alignWithLabelForSingleLine((label + mode), formatValueInPrint(mCreditNoteValue, precisionCount));
-            }
-
+            value = getCollectionAmount(label, precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_NET_CREDIT)) {
             mTotCredit = 0;
             value = alignWithLabelForSingleLine(label, formatValueInPrint(mTotCredit, precisionCount));
@@ -785,12 +798,12 @@ public class CommonPrintHelper {
                 mProductValue = formatValueInPrint(mProductLineValueExcludingTaxTotal, attr.getmAttributePrecision());
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
                 mProductValue = formatValueInPrint(mProductLineValueIncludingTaxTotal, attr.getmAttributePrecision());
-            }else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REPLACE_QTY_PIECE)) {
-                mProductValue = mProductRepQtyTotal+"";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REPLACE_QTY_PIECE)) {
+                mProductValue = mProductRepQtyTotal + "";
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_RETURN_QTY_PIECE)) {
-                mProductValue = mProductRetQtyTotal+"";
+                mProductValue = mProductRetQtyTotal + "";
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SUM_QTY_PIECE_WITH_REP)) {
-                mProductValue = mProductRepOrdInPieceTotal+"";
+                mProductValue = mProductRepOrdInPieceTotal + "";
             }
 
             if (!product_name_single_line.equalsIgnoreCase("YES")
@@ -813,6 +826,14 @@ public class CommonPrintHelper {
                 // To take first column width exactly
                 if (mProductValue.length() > attr.getAttributeLength()) {
                     mProductValue = mProductValue.substring(0, attr.getAttributeLength() - attr.getAttributeSpecialChar().length()) + attr.getAttributeSpecialChar();
+                } else {
+                    int diff = attr.getAttributeLength() - mProductValue.length();
+
+                    if (attr.getAttributePadding().equalsIgnoreCase(ALIGNMENT_RIGHT)) {
+                        mProductValue = doAlign(mProductValue, ALIGNMENT_RIGHT, diff);
+                    } else {
+                        mProductValue = doAlign(mProductValue, ALIGNMENT_LEFT, diff);
+                    }
                 }
             }
 
@@ -976,7 +997,7 @@ public class CommonPrintHelper {
                             + (prod.getOrderedCaseQty() * prod.getCaseSize())
                             + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
                     mProductRepOrdInPieceTotal = mProductRepOrdInPieceTotal + Integer.parseInt(mProductValue.replace(",", ""));
-                }  else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
+                } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                     mProductValue = prod.getDescription() + "";
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
                     mProductValue = prod.getProductCode();
@@ -1184,7 +1205,7 @@ public class CommonPrintHelper {
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SUM_QTY_PIECE_WITH_REP)) {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + (batchProductBO.getOrderedPcsQty() + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize())) + "";
                                 mProductRepOrdInPieceTotal = mProductRepOrdInPieceTotal + Integer.parseInt(mProductValue.replace(",", ""));
-                            }  else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
+                            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                                 mProductValue = prod.getDescription() + "";
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_HSN_CODE)) {
                                 mProductValue = prod.getProductCode();
@@ -1926,6 +1947,41 @@ public class CommonPrintHelper {
     }
 
 
+    private String getCollectionAmount(String label, int precisionCount) {
+        StringBuffer sb = new StringBuffer();
+        String mode = "";
+        String s = ""; // load collection paid amount's
+        if (mCash > 0) {
+            mode = " (cash)";
+            s = alignWithLabelForSingleLine((label + mode), formatValueInPrint(mCash, precisionCount));
+            if (!s.isEmpty())
+                sb.append(s);
+
+        }
+        if (mCheque > 0) {
+            if (mCash > 0)
+                sb.append("\n");
+            mode = " (Cheque)";
+            s = "";
+            s = alignWithLabelForSingleLine((label + mode), formatValueInPrint(mCheque, precisionCount));
+            if (!s.isEmpty())
+                sb.append(s);
+
+        }
+        if (mCreditNoteValue > 0) {
+            if (mCash > 0 || mCheque > 0)
+                sb.append("\n");
+            mode = " (Credit Note)";
+            s = "";
+            s = alignWithLabelForSingleLine((label + mode), formatValueInPrint(mCreditNoteValue, precisionCount));
+            if (!s.isEmpty())
+                sb.append(s);
+
+        }
+        return sb.toString();
+    }
+
+
     /**
      * load empty return details
      *
@@ -1953,7 +2009,7 @@ public class CommonPrintHelper {
 
             Collections.sort(mEmptyProducts, BomReturnBO.SKUWiseAscending);
             String mProductValue = "";
-
+            emptyFirstColumnWidth = 0;
             //Liable
             for (BomReturnBO prod : mEmptyProducts) {
                 mLengthUptoPName = 0;
@@ -1990,20 +2046,24 @@ public class CommonPrintHelper {
                         //print the text which is next to the product name into next line
                         if (empty_product_name_single_line.equalsIgnoreCase("YES")) {
                             mLengthUptoPName = mLengthUptoPName + attr.getAttributeLength() + attr.getAttributeSpace();
-
+                            if (emptyFirstColumnWidth == 0) {
+                                emptyFirstColumnWidth = attr.getAttributeLength() + attr.getAttributeSpace();
+                            }
                             if (attr.getAttributeName().equalsIgnoreCase(EMPTY_PRODUCT_NAME)) {
                                 sb.append("\n");
                                 char emptySpace = ' ';
-                                for (int sp = 0; sp < mLengthUptoPName; sp++) {
+                                for (int sp = 0; sp < emptyFirstColumnWidth; sp++) {
                                     sb.append(emptySpace);
                                 }
                             }
                         }
+
                     }
                     sb.append("\n");
                 }
             }
 
+            emptyFirstColumnWidth = 0;
             for (BomReturnBO prod : mEmptyProducts) {
                 mLengthUptoPName = 0;
                 if ((prod.getReturnQty() > 0)) {
@@ -2040,11 +2100,13 @@ public class CommonPrintHelper {
                         //print the text which is next to the product name into next line
                         if (empty_product_name_single_line.equalsIgnoreCase("YES")) {
                             mLengthUptoPName = mLengthUptoPName + attr.getAttributeLength() + attr.getAttributeSpace();
-
+                            if (emptyFirstColumnWidth == 0) {
+                                emptyFirstColumnWidth = attr.getAttributeLength() + attr.getAttributeSpace();
+                            }
                             if (attr.getAttributeName().equalsIgnoreCase(EMPTY_PRODUCT_NAME)) {
                                 sb.append("\n");
                                 char emptySpace = ' ';
-                                for (int sp = 0; sp < mLengthUptoPName; sp++) {
+                                for (int sp = 0; sp < emptyFirstColumnWidth; sp++) {
                                     sb.append(emptySpace);
                                 }
                             }

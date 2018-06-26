@@ -6049,8 +6049,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         if (resultCode == RESULT_OK) {
-
-            outlet.getImageName().add(imageName);
+            if (imageName != null)
+                outlet.getImageName().add(imageName);
             if (data.hasExtra("lat") && data.hasExtra("isChanged")) {
 
                 lattitude = data.getExtras().getDouble("lat");

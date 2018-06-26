@@ -8441,7 +8441,7 @@ public class BusinessModel extends Application {
     }
 
     public void writeToFile(String data, String filename, String foldername) {
-        String path = HomeScreenFragment.photoPath;
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
 
         File folder = new File(path);
         if (!folder.exists()) {

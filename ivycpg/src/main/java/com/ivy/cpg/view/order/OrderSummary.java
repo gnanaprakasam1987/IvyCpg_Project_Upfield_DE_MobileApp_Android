@@ -1005,6 +1005,16 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         discountDismissListener);
                 discountDialog.show();
             }
+
+
+
+            //Applying bill wise tax
+            if (BModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
+                BModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
+                totalOrderValue = SDUtil.convertToDouble(SDUtil.format(totalOrderValue, BModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
+                if (BModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
+                    totalOrderValue += BModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
+            }
             //updating footer labels
             text_totalOrderValue.setText(BModel.formatValue(totalOrderValue));
             text_LPC.setText(String.valueOf(mOrderedProductList.size()));
@@ -1943,14 +1953,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 //Adding accumulation scheme free products to the last ordered product list, so that it will listed on print
                 orderHelper.updateOffInvoiceSchemeInProductOBJ(mOrderedProductList, totalOrderValue, getApplicationContext());
-
-                //Applying bill wise tax
-                if (BModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
-                    BModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
-                    totalOrderValue = SDUtil.convertToDouble(SDUtil.format(totalOrderValue, BModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0, BModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
-                    if (BModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
-                        totalOrderValue += BModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
-                }
 
 
                 new MyThread(this, DataMembers.SAVEINVOICE).start();
