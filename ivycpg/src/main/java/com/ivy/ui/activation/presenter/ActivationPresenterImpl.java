@@ -182,8 +182,8 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
      * */
 
     private void doActionBasedOnImEiActivationResult(JSONObject jsonObj) {
-        Commons.printInformation("Activation" + "onSucess Response"
-                + jsonObj.toString());
+      //  Commons.printInformation("Activation" + "onSucess Response"
+             //   + jsonObj.toString());
 
         try {
             JSONArray jsonArray = (JSONArray) jsonObj.get("Table");
@@ -220,11 +220,10 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                     }
 
                     // ---->7  NOTIFY_ACTIVATION_LIST
-                    showActivationDialog();
+                    showActivationDialog(getAppUrls());
                 }
             }
         } catch (Exception e) {
-            Commons.printException(e);
             getIvyView().showServerError();
         }
 
@@ -236,9 +235,9 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     }
 
-    private void showActivationDialog() {
+    private void showActivationDialog(List<ActivationBO> appUrls) {
 
-        if (getAppUrls() == null || getAppUrls().size() == 0) {
+        if (appUrls == null || appUrls.size() == 0) {
             clearAppUrl();
             getIvyView().showPreviousActivationError();
         } else {

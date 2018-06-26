@@ -197,7 +197,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @Override
     public void showActivationFailedError() {
-
+        System.out.println("showActivationFailedError");
     }
 
     DialogInterface.OnDismissListener addUrl = new DialogInterface.OnDismissListener() {

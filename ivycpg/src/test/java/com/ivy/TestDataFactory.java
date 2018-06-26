@@ -58,6 +58,20 @@ public abstract class TestDataFactory {
             "}\n";
 
 
+    private static String singleImEiResponse = "{\n" +
+            "  \"Table\": [\n" +
+            "    {\n" +
+            "      \"ActivationRefNo\": 16047,\n" +
+            "      \"ApplicationName\": \"P&G MALAYSIA\",\n" +
+            "      \"SyncServiceURL\": \"https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx\",\n" +
+            "      \"OrganizationID\": 55,\n" +
+            "      \"ApplicationID\": 56,\n" +
+            "      \"OrganizationName\": \"P&G MY TEST\"\n" +
+            "    }\n" +
+            "    \n" +
+            "  ]\n" +
+            "}";
+
     public static JSONObject getValidActivationObject() {
 
         try {
@@ -83,6 +97,16 @@ public abstract class TestDataFactory {
 
         try {
             return new JSONObject(validateImEiResponse);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new JSONObject();
+    }
+
+    public static JSONObject getValidateSingleImEiResponse() {
+
+        try {
+            return new JSONObject(singleImEiResponse);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -115,7 +115,13 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
                     @Override
                     public void onFailure(int status, String message) {
                         ActivationError myError = new ActivationError(status, message);
-                        subscriber.onError(myError);
+                        Throwable throwable = new Throwable(String.valueOf(status));
+                        Throwable throwableObj = new Throwable(message, throwable);
+
+                        if (myError instanceof Throwable) {
+                            subscriber.onError(myError);
+                        } else
+                            subscriber.onError(throwableObj);
 
 
                     }
@@ -126,7 +132,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
                     }
 
                 });
-                subscriber.onComplete();
+              //  subscriber.onComplete();
             }
 
         });
