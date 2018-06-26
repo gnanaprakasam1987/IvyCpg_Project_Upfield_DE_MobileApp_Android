@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -45,7 +45,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 
-public class ReportMenufragment extends IvyBaseFragment {
+public class ReportMenuFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
     private static final HashMap<String, Integer> menuIcons = new HashMap<>();
@@ -54,7 +54,7 @@ public class ReportMenufragment extends IvyBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragmentnew_reportmenu, container, false);
+        View view = inflater.inflate(R.layout.fragment_report_menu, container, false);
 
         try {
             bmodel = (BusinessModel) getActivity().getApplicationContext();
@@ -69,42 +69,16 @@ public class ReportMenufragment extends IvyBaseFragment {
                 actionBar.setElevation(0);
             }
 
+            // Set screen title.
             setScreenTitle(bmodel.configurationMasterHelper.getTradecoveragetitle());
 
             if (getArguments().getString("screentitle") != null)
                 setScreenTitle(getArguments().getString("screentitle"));
             else
                 setScreenTitle(getResources().getString(R.string.report));
-            try {
-                LinearLayout bg = (LinearLayout) getActivity().findViewById(R.id.root);
-                File f = new File(
-                        getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                + "/"
-                                + bmodel.userMasterHelper.getUserMasterBO()
-                                .getUserid() + "APP");
-                if (f.isDirectory()) {
-                    File files[] = f.listFiles(new FilenameFilter() {
-                        public boolean accept(File directory, String fileName) {
-                            return fileName.startsWith("bg_menu");
-                        }
-                    });
-                    for (File temp : files) {
-                        Bitmap bitmapImage = BitmapFactory.decodeFile(temp
-                                .getAbsolutePath());
-                        Drawable bgrImage = new BitmapDrawable(this.getResources(), bitmapImage);
-                        int sdk = android.os.Build.VERSION.SDK_INT;
-                        if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                            bg.setBackgroundDrawable(bgrImage);
-                        } else {
-                            bg.setBackground(bgrImage);
-                        }
-                        break;
-                    }
 
-                }
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
+
+            setScreenBackground();
 
 
             menuIcons.put(StandardListMasterConstants.MENU_ORDER_REPORT,
@@ -158,7 +132,7 @@ public class ReportMenufragment extends IvyBaseFragment {
                     .downloadNewActivityMenu(StandardListMasterConstants.REPORT_MENU);
 
 
-            ListView listView = (ListView) view.findViewById(R.id.listView1);
+            ListView listView = view.findViewById(R.id.listView1);
             listView.setCacheColorHint(0);
             listView.setAdapter(new MenuBaseAdapter(menuDB));
 
@@ -167,6 +141,39 @@ public class ReportMenufragment extends IvyBaseFragment {
         }
 
         return view;
+    }
+
+    private void setScreenBackground() {
+        try {
+            LinearLayout bg = getActivity().findViewById(R.id.root);
+            File f = new File(
+                    getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                            + "/"
+                            + bmodel.userMasterHelper.getUserMasterBO()
+                            .getUserid() + "APP");
+            if (f.isDirectory()) {
+                File files[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
+                        return fileName.startsWith("bg_menu");
+                    }
+                });
+                for (File temp : files) {
+                    Bitmap bitmapImage = BitmapFactory.decodeFile(temp
+                            .getAbsolutePath());
+                    Drawable bgrImage = new BitmapDrawable(this.getResources(), bitmapImage);
+                    int sdk = android.os.Build.VERSION.SDK_INT;
+                    if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        bg.setBackgroundDrawable(bgrImage);
+                    } else {
+                        bg.setBackground(bgrImage);
+                    }
+                    break;
+                }
+
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 
 
@@ -306,13 +313,13 @@ public class ReportMenufragment extends IvyBaseFragment {
             if (convertView == null) {
 
                 LayoutInflater inflater = getActivity().getLayoutInflater();
-                convertView = inflater.inflate(R.layout.custom_loadmgt_list_item, parent,
+                convertView = inflater.inflate(R.layout.custom_newui_list_item, parent,
                         false);
                 holder = new ViewHolder();
-                holder.menuIcon = (ImageView) convertView
+                holder.menuIcon = convertView
                         .findViewById(R.id.list_item_icon_ib);
 
-                holder.menuBTN = (TextView) convertView
+                holder.menuBTN = convertView
                         .findViewById(R.id.list_item_menu_tv_loadmgt);
 
 

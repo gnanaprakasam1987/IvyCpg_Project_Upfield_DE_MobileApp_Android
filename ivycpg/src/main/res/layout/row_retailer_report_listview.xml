@@ -5,11 +5,11 @@
     android:padding="4dp" >
 
     <TextView
-        android:id="@+id/retailername"
+        android:id="@+id/retailerName"
         android:textSize="@dimen/font_small"
         android:textColor="@android:color/black"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_height="@dimen/dimen_40dp"
+        android:gravity="center_vertical"
         android:text="@string/retailer_name" />
 </LinearLayout>
