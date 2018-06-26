@@ -30,7 +30,6 @@
     <dimen name="whats_on_item_padding">10dp</dimen>
 
 
-
     <dimen name="space_between_edt">10dp</dimen>
 
     <!-- Filter width -->
@@ -275,8 +274,6 @@
     <dimen name="cheque_no_width">300dp</dimen>
     <dimen name="cheque_no_height">40dp</dimen>
     <dimen name="near_expiry_dialog_height">350dp</dimen>
-
-
 
 
     <dimen name="order_lay_height">35dp</dimen>
@@ -580,7 +577,6 @@
     <dimen name="profile_bistoyr_line_space">0.8dp</dimen>
 
 
-
     <!--photo capture screen-->
     <!--checked dimen in 600*1024-->
     <dimen name="photo_capture_app_bar_height">250dp</dimen>
@@ -823,4 +819,5 @@
     <dimen name="score_card_height">120dp</dimen>
     <dimen name="qn_text_margin_left">5dp</dimen>
     <dimen name="web_view_width">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

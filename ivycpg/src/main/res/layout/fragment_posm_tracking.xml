@@ -33,8 +33,7 @@
                     android:layout_height="@dimen/list_header_height"
                     android:layout_alignParentTop="true"
                     android:background="@color/list_title_bg_color"
-                    android:gravity="center_vertical"
-                    android:weightSum="10">
+                    android:gravity="center_vertical">
 
 
                     <TextView
@@ -51,7 +50,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3.5"
+                        android:layout_weight="2.5"
                         android:gravity="start"
                         android:tag="posm_name"
                         android:text="@string/posm_name" />
@@ -62,6 +61,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:tag="posm_target"
                         android:text="@string/target" />
 
@@ -71,6 +71,7 @@
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:tag="posm_actual"
                         android:text="@string/actual" />
 
@@ -80,6 +81,7 @@
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:tag="exeqty"
                         android:text="@string/executed_qty" />
 
@@ -89,17 +91,29 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:tag="posm_compqty"
                         android:text="@string/competitor_qty" />
 
                     <TextView
                         android:id="@+id/tv_store_loc"
                         style="?attr/customListTitle"
-                        android:layout_width="@dimen/beat_spinner_min"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
+                        android:gravity="center"
                         android:tag="posm_in_store_loc"
                         android:text="@string/location" />
+
+                    <TextView
+                        android:id="@+id/tvphoto"
+                        style="?attr/customListTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:tag="posm_in_photo"
+                        android:text="@string/photo" />
 
 
                 </LinearLayout>
@@ -121,13 +135,13 @@
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/ll_keypad"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_margin="@dimen/dimen_10dp"
                     android:elevation="@dimen/floating_btn_elevation"
                     android:src="@drawable/barcode_scan"
                     android:visibility="visible"
                     app:backgroundTint="@color/floating_bg"
-                    app:borderWidth="0dp"
-                    android:layout_alignParentRight="true" />
+                    app:borderWidth="0dp" />
 
                 <LinearLayout
                     android:id="@+id/ll_keypad"
@@ -158,10 +172,10 @@
                 android:id="@+id/btn_save"
                 style="?attr/roundedCustomButtonSmall"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="@string/save"
-                android:textAllCaps="false"
-                android:layout_alignParentRight="true" />
+                android:textAllCaps="false" />
         </RelativeLayout>
 
     </RelativeLayout>
