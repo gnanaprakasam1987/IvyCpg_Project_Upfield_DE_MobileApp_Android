@@ -9,6 +9,7 @@ import com.ivy.core.di.module.ActivityModule;
 import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import javax.inject.Singleton;
 
@@ -24,7 +25,7 @@ public interface IvyAppComponent {
 
     DataManager dataManager();
 
-
+    ConfigurationMasterHelper configurationMasterHelper();
 
     void inject(BusinessModel businessModel);
 

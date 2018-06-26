@@ -125,9 +125,6 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
         mUnBinder = unBinder;
     }
 
-    public ConfigurationMasterHelper getConfigurationMasterHelper() {
-        return ((BaseActivity) getActivity()).getConfigurationMasterHelper();
-    }
 
     @Override
     public void onDestroyView() {

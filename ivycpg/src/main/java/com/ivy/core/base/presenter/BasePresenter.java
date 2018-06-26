@@ -89,7 +89,7 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
      * @return true if RTRS10 Config is turned on
      */
     @Override
-    public boolean getShowNFCValidation() {
+    public boolean isNFCConfigurationEnabled() {
         return mConfigurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER;
     }
 
@@ -98,7 +98,7 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
      * @return true if FUN14 Config is turned on
      */
     @Override
-    public boolean getLocationConfiguration() {
+    public boolean isLocationConfigurationEnabled() {
         return mConfigurationMasterHelper.SHOW_CAPTURED_LOCATION;
     }
 

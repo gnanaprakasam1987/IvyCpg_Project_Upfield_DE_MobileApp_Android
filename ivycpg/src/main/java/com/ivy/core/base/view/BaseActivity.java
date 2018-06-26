@@ -29,9 +29,6 @@ import android.widget.Toast;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
@@ -56,7 +53,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     private TextView progressMsgTxt;
 
-    private BusinessModel baseApplication;
 
     /**
      * Always set you layout reference using this method
@@ -114,7 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     private void setUpDefaults() {
         AppUtils.useNetworkProvidedValues(this);
 
-        if (mBasePresenter.getShowNFCValidation()) {
+        if (mBasePresenter.isNFCConfigurationEnabled()) {
             nfcManager = new NFCManager(this);
             nfcManager.onActivityCreate();
         }
@@ -125,7 +121,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     protected void onResume() {
         super.onResume();
 
-        if (mBasePresenter.getShowNFCValidation() && nfcManager != null) {
+        if (mBasePresenter.isNFCConfigurationEnabled() && nfcManager != null) {
             nfcManager.onActivityResume();
         }
     }
@@ -134,7 +130,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     protected void onPause() {
         super.onPause();
 
-        if (mBasePresenter.getShowNFCValidation() && nfcManager != null) {
+        if (mBasePresenter.isNFCConfigurationEnabled() && nfcManager != null) {
             nfcManager.onActivityPause();
         }
     }
@@ -182,7 +178,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
             permissionStatus = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                if (mBasePresenter.getLocationConfiguration()) {
+                if (mBasePresenter.isLocationConfigurationEnabled()) {
                     listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 }
             }

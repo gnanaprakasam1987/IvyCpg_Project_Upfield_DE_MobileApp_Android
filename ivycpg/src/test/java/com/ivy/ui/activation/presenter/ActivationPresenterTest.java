@@ -1,7 +1,10 @@
 package com.ivy.ui.activation.presenter;
 
+import android.support.v4.content.res.ConfigurationHelper;
+
 import com.ivy.TestDataFactory;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.activation.ActivationContract;
 import com.ivy.ui.activation.data.ActivationDataManager;
@@ -45,11 +48,14 @@ public class ActivationPresenterTest {
 
     private CompositeDisposable mockDisposable = new CompositeDisposable();
 
+    @Mock
+    private ConfigurationMasterHelper mockConfigurationHelper;
+
     @Before
     public void setup() {
 
         TestSchedulerProvider testSchedulerProvider = new TestSchedulerProvider(testScheduler);
-        mPresenter = new ActivationPresenterImpl<>(mDataManager, testSchedulerProvider, mockDisposable, mActivationDataManager);
+        mPresenter = new ActivationPresenterImpl<>(mDataManager, testSchedulerProvider, mockDisposable, mockConfigurationHelper, mActivationDataManager);
         mPresenter.onAttach(mActivationView);
     }
 
@@ -159,7 +165,6 @@ public class ActivationPresenterTest {
 
 
         given(mDataManager.getBaseUrl()).willReturn("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx");
-
 
 
         given(mActivationDataManager.isServerOnline("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx"))

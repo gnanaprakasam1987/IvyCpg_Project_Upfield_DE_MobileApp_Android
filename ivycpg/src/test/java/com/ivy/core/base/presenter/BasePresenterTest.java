@@ -2,6 +2,7 @@ package com.ivy.core.base.presenter;
 
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
 import org.junit.After;
@@ -9,8 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.reactivex.Single;
@@ -36,6 +35,9 @@ public class BasePresenterTest {
     private
     DataManager mDataManager;
 
+    @Mock
+    private ConfigurationMasterHelper mockConfigurationHelper;
+
     private BasePresenter<BaseIvyView> mPresenter;
 
 
@@ -44,7 +46,7 @@ public class BasePresenterTest {
     @Before
     public void setup() {
         TestSchedulerProvider testSchedulerProvider = new TestSchedulerProvider(testScheduler);
-        mPresenter = new BasePresenter<>(mDataManager, testSchedulerProvider, mockDisposable);
+        mPresenter = new BasePresenter<>(mDataManager, testSchedulerProvider, mockDisposable, mockConfigurationHelper);
         mPresenter.onAttach(ivyView);
     }
 
@@ -135,6 +137,20 @@ public class BasePresenterTest {
     @Test
     public void testIsViewAttachedNotEquals() {
         assertNotEquals(mPresenter.isViewAttached(), false);
+    }
+
+    @Test
+    public void testIsLocationConfigurationEnabled() {
+        mockConfigurationHelper.SHOW_CAPTURED_LOCATION = true;
+
+        assertEquals(mPresenter.isLocationConfigurationEnabled(), true);
+    }
+
+    @Test
+    public void testIsNFCConfigurationEnabled() {
+        mockConfigurationHelper.SHOW_NFC_VALIDATION_FOR_RETAILER = true;
+
+        assertEquals(mPresenter.isNFCConfigurationEnabled(), true);
     }
 
     @After

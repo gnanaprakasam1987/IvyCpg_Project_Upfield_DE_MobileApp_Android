@@ -12,8 +12,8 @@ public interface BaseIvyPresenter<V extends BaseIvyView> {
 
     void getAppFontSize();
 
-    boolean getShowNFCValidation();
+    boolean isNFCConfigurationEnabled();
 
-    boolean getLocationConfiguration();
+    boolean isLocationConfigurationEnabled();
 
 }
