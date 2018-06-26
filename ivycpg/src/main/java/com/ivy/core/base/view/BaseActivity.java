@@ -1,5 +1,6 @@
 package com.ivy.core.base.view;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,8 +10,10 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -26,12 +29,16 @@ import android.widget.Toast;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.NetworkUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.Unbinder;
@@ -50,6 +57,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     private AlertDialog alertDialog;
 
     private TextView progressMsgTxt;
+
+    private BusinessModel baseApplication;
 
     /**
      * Always set you layout reference using this method
@@ -108,7 +117,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         AppUtils.useNetworkProvidedValues(this);
 
-        configurationMasterHelper = ConfigurationMasterHelper.getInstance(this);
+        //ToDo decouple from business model
+        baseApplication = (BusinessModel) getApplicationContext();
+
+        configurationMasterHelper = baseApplication.configurationMasterHelper;
 
         if (configurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER) {
             nfcManager = new NFCManager(this);
@@ -116,6 +128,9 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         }
     }
 
+    public ConfigurationMasterHelper getConfigurationMasterHelper() {
+        return configurationMasterHelper;
+    }
 
     @Override
     protected void onResume() {
@@ -136,6 +151,61 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     }
 
 
+    public boolean checkAndRequestPermissionAtRunTime(int mGroup) {
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int permissionStatus;
+        if (mGroup == 1) {
+            permissionStatus = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_PHONE_STATE);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
+            }
+
+            permissionStatus = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 1);
+                return false;
+            }
+        } else if (mGroup == 2) {
+            permissionStatus = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.CAMERA);
+            }
+
+            permissionStatus = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 2);
+                return false;
+            }
+        } else if (mGroup == 3) {
+            permissionStatus = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                if (baseApplication.configurationMasterHelper.checkLocationConfiguration()) {
+                    listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+                }
+            }
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 3);
+                return false;
+            }
+        }
+        return true;
+    }
+
     @TargetApi(Build.VERSION_CODES.M)
     public void requestPermissionsSafely(String[] permissions, int requestCode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -147,6 +217,41 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public boolean hasPermission(String permission) {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
                 checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean temp = false;
+        for (int i = 0; i < permissions.length; i++) {
+            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                //If Deny previously
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
+                    temp = true;
+                } else {// If Check Never again and Deny Previously
+                    String permissionName = "";
+                    switch (permissions[i]) {
+                        case Manifest.permission.READ_PHONE_STATE:
+                            permissionName = getString(R.string.permission_phone);
+                            break;
+                        case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                            permissionName = getString(R.string.permission_storage);
+                            break;
+                        case Manifest.permission.CAMERA:
+                            permissionName = getString(R.string.permission_camera);
+                            break;
+                        case Manifest.permission.ACCESS_FINE_LOCATION:
+                            permissionName = getString(R.string.permission_location);
+                            break;
+                    }
+
+                    Toast.makeText(this, getResources().getString(R.string.permission_enable_msg) +
+                            " " + permissionName, Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        if (temp) {
+            checkAndRequestPermissionAtRunTime(requestCode);
+        }
     }
 
     @Override
@@ -398,7 +503,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public void setScreenTitle(String title) {
         this.screenTitle = title;
         TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);
-        // mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mScreenTitleTV.setText(title);
 
 

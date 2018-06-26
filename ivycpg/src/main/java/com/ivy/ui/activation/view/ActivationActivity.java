@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -62,6 +63,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
         mActivationPresenter.onAttach(this);
 
+        setBasePresenter((BasePresenter) mActivationPresenter);
 
     }
 
