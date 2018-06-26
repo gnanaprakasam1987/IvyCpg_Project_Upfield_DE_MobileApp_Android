@@ -1,16 +1,14 @@
-package com.ivy.cpg.view.supervisor.adapter;
+package com.ivy.cpg.view.supervisor.customviews;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ivy.cpg.view.supervisor.recyclerviewpager.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 
 /**
  * RecyclerViewPagerAdapter </br>
  * Adapter wrapper.
- *
- * @author Green
  */
 public class RecyclerViewPagerAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     private final RecyclerViewPager mViewPager;

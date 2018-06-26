@@ -36,6 +36,7 @@
         android:id="@+id/menu_search"
         android:icon="@drawable/icon_search"
         android:title="navigate"
+        ivydist:actionViewClass="android.support.v7.widget.SearchView"
         ivydist:showAsAction="always"
         android:visible="true"/>
 

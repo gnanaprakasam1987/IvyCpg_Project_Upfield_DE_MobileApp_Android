@@ -208,7 +208,7 @@
         </android.support.v7.widget.CardView>
 
 
-        <com.ivy.cpg.view.supervisor.recyclerviewpager.RecyclerViewPager
+        <com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

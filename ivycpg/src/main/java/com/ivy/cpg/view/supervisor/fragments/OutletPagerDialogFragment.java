@@ -2,7 +2,6 @@ package com.ivy.cpg.view.supervisor.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,12 +12,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.supervisor.recyclerviewpager.RecyclerViewPager;
-import com.ivy.cpg.view.supervisor.scrollingpagerindicator.ScrollingPagerIndicator;
+import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.customviews.scrollingpagerindicator.ScrollingPagerIndicator;
+import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,26 +24,21 @@ import java.util.List;
 import me.relex.circleindicator.CircleIndicator;
 
 public class OutletPagerDialogFragment extends DialogFragment {
-    @Nullable
 
     private View rootView;
     private ViewPager viewPager;
     private ViewPagerAdapter viewPagerAdapter;
     private CircleIndicator circleIndicator;
     private TextView tvStoreCount;
-    private BusinessModel bmodel;
     private RecyclerViewPager mRecyclerView;
     private MyAdapter myAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        bmodel = (BusinessModel) getContext().getApplicationContext();
-
     }
 
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.outlet_pager_dialog_fragment, container, false);
 
         initViews(rootView);
@@ -72,7 +65,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
     protected void initViews(View rootView) {
         tvStoreCount = rootView.findViewById(R.id.tv_store_count);
 
-        tvStoreCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvStoreCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext().getApplicationContext()));
 
         viewPager = rootView.findViewById(R.id.outlet_view_pager);
         viewPagerAdapter = new ViewPagerAdapter(getContext(), new ArrayList<String>());
@@ -89,7 +82,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 false);
         mRecyclerView.setLayoutManager(layout);
 
-        myAdapter = new MyAdapter();
+        myAdapter = new MyAdapter(getContext().getApplicationContext());
         mRecyclerView.setAdapter(myAdapter);
 
         ScrollingPagerIndicator recyclerIndicator = rootView.findViewById(R.id.scroll_indicator);
@@ -105,17 +98,13 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int i, int i2) {
-//                mPositionText.setText("First: " + mRecyclerViewPager.getFirstVisiblePosition());
                 int childCount = mRecyclerView.getChildCount();
                 int width = mRecyclerView.getChildAt(0).getWidth();
                 int padding = (mRecyclerView.getWidth() - width) / 2;
-//                mCountText.setText("Count: " + childCount);
 
                 for (int j = 0; j < childCount; j++) {
                     View v = recyclerView.getChildAt(j);
-                    //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
                     float rate = 0;
-                    ;
                     if (v.getLeft() <= padding) {
                         if (v.getLeft() >= padding - v.getWidth()) {
                             rate = (padding - v.getLeft()) * 1f / v.getWidth();
@@ -126,7 +115,6 @@ public class OutletPagerDialogFragment extends DialogFragment {
                         v.setScaleX(1 - rate * 0.1f);
 
                     } else {
-                        //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
                         if (v.getLeft() <= recyclerView.getWidth() - padding) {
                             rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
                         }
@@ -181,10 +169,15 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
+        private Context context;
+
+        MyAdapter(Context context){
+            this.context = context;
+        }
+
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             TextView tvStoreName,tvStoreAddress,tvVisitStatus,tvInTime,tvOutTime,tvDuration,tvOrderValue;
-
 
             public MyViewHolder(View view) {
                 super(view);
@@ -197,18 +190,18 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 tvDuration = view.findViewById(R.id.tv_duration_val);
                 tvOrderValue = view.findViewById(R.id.tv_order_value);
 
-                ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView)view.findViewById(R.id.tv_outtime_txt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView)view.findViewById(R.id.tv_duration_txt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView)view.findViewById(R.id.tv_order_val_txt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                ((TextView)view.findViewById(R.id.tv_outtime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                ((TextView)view.findViewById(R.id.tv_duration_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                ((TextView)view.findViewById(R.id.tv_order_val_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
 
-                tvStoreName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tvStoreAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tvVisitStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tvInTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tvOutTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tvDuration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tvOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
+                tvStoreAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvVisitStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvInTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvOutTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvDuration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
 
             }
         }
@@ -279,18 +272,18 @@ public class OutletPagerDialogFragment extends DialogFragment {
             tvDuration = view.findViewById(R.id.tv_duration_val);
             tvOrderValue = view.findViewById(R.id.tv_order_value);
 
-            ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView)view.findViewById(R.id.tv_outtime_txt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView)view.findViewById(R.id.tv_duration_txt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView)view.findViewById(R.id.tv_order_val_txt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,mContext));
+            ((TextView)view.findViewById(R.id.tv_outtime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,mContext));
+            ((TextView)view.findViewById(R.id.tv_duration_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,mContext));
+            ((TextView)view.findViewById(R.id.tv_order_val_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,mContext));
 
-            tvStoreName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            tvStoreAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            tvVisitStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            tvInTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            tvOutTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            tvDuration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            tvOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+            tvStoreAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,mContext));
+            tvVisitStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,mContext));
+            tvInTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,mContext));
+            tvOutTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,mContext));
+            tvDuration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,mContext));
+            tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
 
 
             container.addView(view);

@@ -57,7 +57,7 @@
                         android:maxLines="1"
                         android:textColor="#de000000"
                         android:textSize="@dimen/_14sdp"
-                        android:text="Sandy" />
+                        android:text="Test" />
 
                     <TextView
                         android:id="@+id/tv_start_time"
@@ -197,7 +197,7 @@
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_marginRight="@dimen/_5sdp"
-                        android:src="@drawable/ic_location_icon" />
+                        android:src="@drawable/ic_location_icon"/>
 
                     <TextView
                         android:id="@+id/tv_route"

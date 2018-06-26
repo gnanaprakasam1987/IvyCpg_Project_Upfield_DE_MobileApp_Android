@@ -14,7 +14,7 @@
         <include
             android:id="@+id/toolbar"
             layout="@layout/material_tool_bar"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            app:layout_scrollFlags="scroll|enterAlways" />
 
         <com.ivy.maplib.MapWrapperLayout
             android:id="@+id/map_wrap_layout"
@@ -178,11 +178,9 @@
     </android.support.v7.widget.CardView>
 
 
-
-        <include
-            android:id="@+id/user_info_layout"
-            layout="@layout/map_seller_day_info_layout"
-            android:visibility="visible" />
-
+    <include
+        android:id="@+id/user_info_layout"
+        layout="@layout/map_seller_day_info_layout"
+        android:visibility="visible" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.supervisor.fragments;
 
 import android.Manifest;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,13 +37,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.ivy.cpg.view.supervisor.Seller;
-import com.ivy.cpg.view.supervisor.activity.OutletMapListActivity;
-import com.ivy.cpg.view.supervisor.activity.SellerListActivity;
-import com.ivy.cpg.view.supervisor.activity.SellerMapViewActivity;
-import com.ivy.cpg.view.supervisor.activity.SellerPerformanceListActivity;
+import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerListActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
-import com.ivy.cpg.view.supervisor.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -77,7 +81,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     private MyAdapter myAdapter;
 
     ArrayList<DetailsBo> detailsBos = new ArrayList<>();
-
 
     @Override
     public void onAttach(Context context) {
@@ -192,9 +195,108 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
     }
 
-    private int getPixelsFromDp(Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
+    protected void initViewPager() {
+        mRecyclerView = view.findViewById(R.id.viewpager);
+        mRecyclerView.setVisibility(View.GONE);
+        LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL,
+                false);
+        mRecyclerView.setLayoutManager(layout);
+
+        myAdapter = new MyAdapter(getContext().getApplicationContext());
+        mRecyclerView.setAdapter(myAdapter);
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLongClickable(true);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
+//                updateState(scrollState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int i, int i2) {
+//                mPositionText.setText("First: " + mRecyclerViewPager.getFirstVisiblePosition());
+                int childCount = mRecyclerView.getChildCount();
+                int width = mRecyclerView.getChildAt(0).getWidth();
+                int padding = (mRecyclerView.getWidth() - width) / 2;
+//                mCountText.setText("Count: " + childCount);
+
+                for (int j = 0; j < childCount; j++) {
+                    View v = recyclerView.getChildAt(j);
+                    //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
+                    float rate = 0;
+                    ;
+                    if (v.getLeft() <= padding) {
+                        if (v.getLeft() >= padding - v.getWidth()) {
+                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
+                        } else {
+                            rate = 1;
+                        }
+                        v.setScaleY(1 - rate * 0.1f);
+                        v.setScaleX(1 - rate * 0.1f);
+
+                    } else {
+                        //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
+                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
+                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
+                        }
+                        v.setScaleY(0.9f + rate * 0.1f);
+                        v.setScaleX(0.9f + rate * 0.1f);
+                    }
+                }
+            }
+        });
+
+        mRecyclerView.addOnPageChangedListener(new RecyclerViewPager.OnPageChangedListener() {
+            @Override
+            public void OnPageChanged(int oldPosition, int newPosition) {
+
+                double angle = 130.0;
+//                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;
+//                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
+
+                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen._3_4sdp);
+                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen._0_7sdp));
+                detailsBos.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(detailsBos.get(newPosition).getMarker().getPosition()));
+                detailsBos.get(newPosition).getMarker().showInfoWindow();
+
+//                onMarkerClick(detailsBos.get(newPosition).getMarker());
+
+            }
+        });
+
+        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (mRecyclerView.getChildCount() < 3) {
+                    if (mRecyclerView.getChildAt(1) != null) {
+                        if (mRecyclerView.getCurrentPosition() == 0) {
+                            View v1 = mRecyclerView.getChildAt(1);
+                            v1.setScaleY(0.9f);
+                            v1.setScaleX(0.9f);
+                        } else {
+                            View v1 = mRecyclerView.getChildAt(0);
+                            v1.setScaleY(0.9f);
+                            v1.setScaleX(0.9f);
+                        }
+                    }
+                } else {
+                    if (mRecyclerView.getChildAt(0) != null) {
+                        View v0 = mRecyclerView.getChildAt(0);
+                        v0.setScaleY(0.9f);
+                        v0.setScaleX(0.9f);
+                    }
+                    if (mRecyclerView.getChildAt(2) != null) {
+                        View v2 = mRecyclerView.getChildAt(2);
+                        v2.setScaleY(0.9f);
+                        v2.setScaleX(0.9f);
+                    }
+                }
+
+            }
+        });
     }
 
     private void setviewValues() {
@@ -276,7 +378,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                 startActivity(intent);
             }
         });
-        ;
 
         view.findViewById(R.id.seller_view_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -517,8 +618,26 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_supervisor_screen, menu);
-    }
 
+        SearchManager searchManager = (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getActivity().getComponentName()) : null);
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                displaySearchItem(newText);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -544,36 +663,6 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         }
 
         return false;
-    }
-
-    private void showInfoWindow(final Marker marker){
-
-        DetailsBo detailsBo = userHashmap.get(marker.getSnippet());
-
-        if(detailsBo != null) {
-
-            infoWindowLayout.setVisibility(View.VISIBLE);
-
-            tvUserName.setText(detailsBo.getUserName());
-
-            String address = "Last Visit : " +
-                    SupervisorActivityHelper.getInstance().getAddressLatLong(getContext(), detailsBo.getMarker().getPosition()) ;
-            tvAddress.setText(address);
-
-            tvTimeIn.setText("Day Start : " +
-                    SupervisorActivityHelper.getInstance().getTimeFromMillis(detailsBo.getInTime()));
-
-            routeLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getActivity(), SellerMapViewActivity.class);
-                    intent.putExtra("SellerId", marker.getSnippet());
-                    intent.putExtra("screentitle", marker.getTitle());
-                    intent.putExtra("TrackingType", trackingType);
-                    startActivity(intent);
-                }
-            });
-        }
     }
 
     @Override
@@ -604,6 +693,10 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
     }
 
+    private void displaySearchItem(String searchText){
+
+    }
+
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         @Override
@@ -623,120 +716,35 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
     }
 
-    protected void initViewPager() {
-        mRecyclerView = view.findViewById(R.id.viewpager);
-        mRecyclerView.setVisibility(View.GONE);
-        LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL,
-                false);
-        mRecyclerView.setLayoutManager(layout);
-
-        myAdapter = new MyAdapter();
-        mRecyclerView.setAdapter(myAdapter);
-
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLongClickable(true);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
-//                updateState(scrollState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int i, int i2) {
-//                mPositionText.setText("First: " + mRecyclerViewPager.getFirstVisiblePosition());
-                int childCount = mRecyclerView.getChildCount();
-                int width = mRecyclerView.getChildAt(0).getWidth();
-                int padding = (mRecyclerView.getWidth() - width) / 2;
-//                mCountText.setText("Count: " + childCount);
-
-                for (int j = 0; j < childCount; j++) {
-                    View v = recyclerView.getChildAt(j);
-                    //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
-                    float rate = 0;
-                    ;
-                    if (v.getLeft() <= padding) {
-                        if (v.getLeft() >= padding - v.getWidth()) {
-                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
-                        } else {
-                            rate = 1;
-                        }
-                        v.setScaleY(1 - rate * 0.1f);
-                        v.setScaleX(1 - rate * 0.1f);
-
-                    } else {
-                        //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
-                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
-                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
-                        }
-                        v.setScaleY(0.9f + rate * 0.1f);
-                        v.setScaleX(0.9f + rate * 0.1f);
-                    }
-                }
-            }
-        });
-
-        mRecyclerView.addOnPageChangedListener(new RecyclerViewPager.OnPageChangedListener() {
-            @Override
-            public void OnPageChanged(int oldPosition, int newPosition) {
-
-                double angle = 130.0;
-//                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;
-//                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
-
-                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen._3_4sdp);
-                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen._0_7sdp));
-                detailsBos.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
-
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(detailsBos.get(newPosition).getMarker().getPosition()));
-                detailsBos.get(newPosition).getMarker().showInfoWindow();
-
-//                onMarkerClick(detailsBos.get(newPosition).getMarker());
-
-            }
-        });
-
-        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (mRecyclerView.getChildCount() < 3) {
-                    if (mRecyclerView.getChildAt(1) != null) {
-                        if (mRecyclerView.getCurrentPosition() == 0) {
-                            View v1 = mRecyclerView.getChildAt(1);
-                            v1.setScaleY(0.9f);
-                            v1.setScaleX(0.9f);
-                        } else {
-                            View v1 = mRecyclerView.getChildAt(0);
-                            v1.setScaleY(0.9f);
-                            v1.setScaleX(0.9f);
-                        }
-                    }
-                } else {
-                    if (mRecyclerView.getChildAt(0) != null) {
-                        View v0 = mRecyclerView.getChildAt(0);
-                        v0.setScaleY(0.9f);
-                        v0.setScaleX(0.9f);
-                    }
-                    if (mRecyclerView.getChildAt(2) != null) {
-                        View v2 = mRecyclerView.getChildAt(2);
-                        v2.setScaleY(0.9f);
-                        v2.setScaleX(0.9f);
-                    }
-                }
-
-            }
-        });
-    }
-
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+
+        private Context context;
+        MyAdapter(Context context){
+            this.context = context;
+        }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView userName;
+            private TextView userNameTv,routeText,addressTv,startTimeTv,targertTv,outletCoveredTv,messageTv;
 
             public MyViewHolder(View view) {
                 super(view);
 
-                userName = view.findViewById(R.id.tv_user_name);
+                userNameTv = view.findViewById(R.id.tv_user_name);
+                startTimeTv = view.findViewById(R.id.tv_start_time);
+                addressTv = view.findViewById(R.id.tv_address);
+                targertTv = view.findViewById(R.id.tv_target_outlet);
+                outletCoveredTv = view.findViewById(R.id.tv_outlet_covered);
+                messageTv = view.findViewById(R.id.tv_message);
+                routeText = view.findViewById(R.id.tv_route);
+
+                userNameTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                routeText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                addressTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                startTimeTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                targertTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                outletCoveredTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                messageTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
 
             }
         }
@@ -756,7 +764,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 
             if(detailsBos!=null && detailsBos.size()>0) {
 
-                holder.userName.setText(detailsBos.get(position).getUserName() + "---" + detailsBos.get(position).getMarker().getSnippet());
+                holder.userNameTv.setText(detailsBos.get(position).getUserName() + "---" + detailsBos.get(position).getMarker().getSnippet());
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -765,6 +773,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                         intent.putExtra("SellerId", "1695");
                         intent.putExtra("screentitle", "Seller");
                         intent.putExtra("TrackingType", 1);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getContext().startActivity(intent);
                     }
                 });
@@ -781,6 +790,11 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         public int getItemCount() {
             return detailsBos.size();
         }
+    }
+
+    private int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
     }
 
 }

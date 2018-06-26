@@ -33,8 +33,8 @@
                 android:layout_marginTop="@dimen/_5sdp">
 
                 <com.ivy.cpg.view.supervisor.helper.CircleImageView
-                    android:layout_width="@dimen/_55sdp"
-                    android:layout_height="@dimen/_55sdp"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
                     android:layout_margin="@dimen/_5sdp"
                     android:src="@drawable/face" />
 
@@ -121,10 +121,10 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:background="@drawable/covered_bg_gradient"
-                            android:paddingBottom="@dimen/_2sdp"
+                            android:paddingBottom="@dimen/_4sdp"
                             android:paddingLeft="@dimen/_10sdp"
                             android:paddingRight="@dimen/_4sdp"
-                            android:paddingTop="@dimen/_2sdp">
+                            android:paddingTop="@dimen/_4sdp">
 
                             <TextView
                                 android:id="@+id/tv_status"

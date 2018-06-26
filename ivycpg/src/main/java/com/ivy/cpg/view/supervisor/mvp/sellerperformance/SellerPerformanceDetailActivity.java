@@ -1,10 +1,14 @@
-package com.ivy.cpg.view.supervisor.activity;
+package com.ivy.cpg.view.supervisor.mvp.sellerperformance;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -13,16 +17,17 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
+import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
 
@@ -30,11 +35,11 @@ import static android.graphics.Color.rgb;
 
 public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar {
 
-    private CombinedChart mChart;
-    private final int itemcount = 12;
-    private String[] mMonths = new String[] {
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
-    };
+    SellerPerformanceHelper sellerPerformanceHelper;
+    private String[] mMonths;
+    private TextView sellerNameTv,sellerPositionTv,sellerPerformPercentTv,valueTargetTv,valueActualTv,valuePercentTv,
+            coverageTargetTv,coverageActualtv,coveragePercenttv,linesTargetTv,linesActualTv,linesPercentTv,
+            plannedValueTv,deviatedTv,durationTv,productiveTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,10 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         }
 
         setScreenTitle("Seller Performance");
+        initViews();
+
+        sellerPerformanceHelper = new SellerPerformanceHelper();
+        mMonths = sellerPerformanceHelper.getSellerPerformanceList();
 
         combinedChart();
 
@@ -66,6 +75,82 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         });
     }
 
+    private void initViews(){
+
+        ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        ((TextView)findViewById(R.id.target_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.actual_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.percent_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        ((TextView)findViewById(R.id.value_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.coverage_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.lines_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.calls_status_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        ((TextView)findViewById(R.id.planned_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.deviated_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.duration_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.productive_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.seller_performance_btn)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+
+        sellerNameTv = findViewById(R.id.seller_name);
+        sellerPositionTv = findViewById(R.id.seller_position);
+        sellerPerformPercentTv = findViewById(R.id.seller_perform_percent);
+
+        valueTargetTv = findViewById(R.id.value_target);
+        valueActualTv = findViewById(R.id.value_actual);
+        valuePercentTv = findViewById(R.id.value_percent);
+        coverageTargetTv = findViewById(R.id.coverage_target);
+        coverageActualtv = findViewById(R.id.coverage_actual);
+        coveragePercenttv = findViewById(R.id.coverage_percent);
+        linesTargetTv = findViewById(R.id.lines_target);
+        linesActualTv = findViewById(R.id.lines_actual);
+        linesPercentTv = findViewById(R.id.lines_percent);
+        plannedValueTv = findViewById(R.id.planned_value);
+        deviatedTv = findViewById(R.id.deviated_value);
+        durationTv = findViewById(R.id.duration_value);
+        productiveTv = findViewById(R.id.productive_value);
+
+        sellerNameTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        sellerPositionTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        sellerPerformPercentTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        valueTargetTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        valueActualTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        valuePercentTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        coverageTargetTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        coverageActualtv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        coveragePercenttv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        linesTargetTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        linesActualTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        linesPercentTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        plannedValueTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        deviatedTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        durationTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        productiveTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                switch (tab.getPosition()) {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        changeTabsFont(tabLayout);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -79,7 +164,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
     }
 
     private void combinedChart(){
-        mChart = findViewById(R.id.combined_chart);
+        CombinedChart mChart = findViewById(R.id.combined_chart);
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
         mChart.setDrawBarShadow(false);
@@ -183,13 +268,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
     private BarData generateBarData() {
 
-        ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
-
-        for (int index = 0; index < itemcount; index++) {
-            entries1.add(new BarEntry(5,55));
-        }
-
-        BarDataSet set1 = new BarDataSet(entries1, "Bar 1");
+        BarDataSet set1 = new BarDataSet(sellerPerformanceHelper.getBarEntries(), "Bar 1");
         set1.setColor(ContextCompat.getColor(this,R.color.white_trans));
         set1.setValueTextColor((ContextCompat.getColor(this,R.color.white_trans)));
         set1.setValueTextSize(10f);
@@ -206,5 +285,21 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 //        d.groupBars(0, groupSpace, barSpace); // start at x = 0
 
         return d;
+    }
+
+    private void changeTabsFont(TabLayout tabLayout) {
+
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                }
+            }
+        }
     }
 }

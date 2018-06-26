@@ -9,7 +9,7 @@
         android:topLeftRadius="@dimen/dimen_2dp"/>
 
     <gradient
-        android:startColor="#ffceab"
+        android:startColor="#ff7a72"
         android:endColor="#ff7a72"
         android:angle="180" />
 </shape>

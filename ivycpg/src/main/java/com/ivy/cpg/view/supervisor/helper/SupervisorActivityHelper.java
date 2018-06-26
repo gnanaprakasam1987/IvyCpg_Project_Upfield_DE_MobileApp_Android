@@ -253,7 +253,6 @@ public class SupervisorActivityHelper {
         return sellerCount;
     }
 
-
     /**
      * Will return Address from Latlong
      */

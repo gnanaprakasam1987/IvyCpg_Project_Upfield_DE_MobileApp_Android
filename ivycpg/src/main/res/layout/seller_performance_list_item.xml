@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
             android:layout_weight="0.8">
 
             <TextView
@@ -39,7 +40,8 @@
                 android:layout_weight="0.4"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/_8sdp"
-                android:text="Sales Volume sfffsffs"
+                android:ellipsize="end"
+                android:text="Sales Volume sfffsffs Sales Volume sfffs ffs"
                 android:textColor="#de000000"
                 android:textSize="@dimen/_14sdp" />
 
@@ -83,7 +85,8 @@
                 android:gravity="center"
                 android:text="100%"
                 android:textColor="#262e4f"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/_12sdp"
+                android:id="@+id/seller_perform_percent"/>
 
 
         </RelativeLayout>

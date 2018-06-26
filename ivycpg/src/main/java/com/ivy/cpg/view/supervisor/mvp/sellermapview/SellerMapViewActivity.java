@@ -1,8 +1,9 @@
-package com.ivy.cpg.view.supervisor.activity;
+package com.ivy.cpg.view.supervisor.mvp.sellermapview;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -12,6 +13,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,18 +40,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
-import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
 import com.ivy.cpg.view.supervisor.Seller;
-import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
 import com.ivy.cpg.view.supervisor.helper.DataParser;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.helper.LatLngInterpolator;
+import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
+import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
@@ -80,11 +83,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName,tvSellerName,tvSellerStartTime,tvSellerLastVisit,tvSellerPerformanceBtn,tvTarget,tvCovered;
     private ImageView imgMessage;
-    private BusinessModel bmodel;
     private BottomSheetBehavior bottomSheetBehavior;
 
-
-    private LinearLayout infoWindowLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,8 +93,6 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        bmodel = (BusinessModel) getApplicationContext();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -139,7 +137,6 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
         mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_outlet_info_window, null);
 
-        infoWindowLayout = findViewById(R.id.user_info_layout);
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
 
         tvSellerName = findViewById(R.id.tv_user_name);
@@ -151,24 +148,24 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
         imgMessage = findViewById(R.id.message_img);
 
-        tvSellerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        tvSellerStartTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        tvSellerLastVisit.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        tvSellerPerformanceBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        tvTarget.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        tvCovered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        tvSellerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvSellerStartTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvSellerLastVisit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvSellerPerformanceBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvTarget.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvCovered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
 
-        ((TextView)findViewById(R.id.number_text)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)findViewById(R.id.store_text)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)findViewById(R.id.time_in_text)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView)findViewById(R.id.time_out_text)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.store_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.time_in_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.time_out_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
 
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, getPixelsFromDp(this, 39 + 20)));
 
         RecyclerView recyclerView = findViewById(R.id.outlet_list);;
 
-        MyAdapter myAdapter = new MyAdapter();
+        MyAdapter myAdapter = new MyAdapter(this);
         recyclerView.setAdapter(myAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -322,8 +319,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         Commons.print("on Marker Click called");
 
         double angle = 130.0;
-        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 3.9;
-        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 1.1);
+        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.map_4sdp);
+        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.map_0_7sdp));
         marker.setInfoWindowAnchor((float)x, (float)y);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
@@ -372,7 +369,32 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_supervisor_screen, menu);
+        getMenuInflater().inflate(R.menu.menu_supervisor_screen, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getComponentName()) : null);
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+//                displaySearchItem(newText);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.menu_dashboard).setVisible(false);
+        menu.findItem(R.id.menu_date).setVisible(false);
         return true;
     }
 
@@ -660,6 +682,11 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
+        private Context context;
+        MyAdapter(Context context){
+            this.context = context;
+        }
+
         public class MyViewHolder extends RecyclerView.ViewHolder {
             private LinearLayout linearLayout;
             private TextView tvSerialNumber,tvStoreName,tvTimeIn,tvTimeOut;
@@ -673,10 +700,10 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
                 tvTimeIn = view.findViewById(R.id.time_in_text);
                 tvTimeOut = view.findViewById(R.id.time_out_text);
 
-                tvSerialNumber.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tvStoreName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tvTimeIn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                tvTimeOut.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                tvSerialNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvTimeIn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvTimeOut.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
 
             }
         }

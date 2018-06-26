@@ -9,7 +9,7 @@
     app:behavior_hideable="true"
     android:clickable="true"
     android:paddingTop="@dimen/_12sdp"
-    app:behavior_peekHeight="@dimen/_50sdp"
+    app:behavior_peekHeight="@dimen/_45sdp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
 
@@ -29,10 +29,10 @@
             android:layout_weight="0.12"
             android:background="@drawable/curve_left_green"
             android:gravity="center"
-            android:padding="@dimen/_10sdp"
+            android:padding="@dimen/_5sdp"
             android:text="00"
             android:textColor="@color/white"
-            android:textSize="@dimen/_13sdp" />
+            android:textSize="@dimen/_16sdp" />
 
         <TextView
             android:id="@+id/tv_txt_ttl_market_seller"
@@ -73,10 +73,10 @@
             android:layout_weight="0.12"
             android:background="@drawable/curve_right_red"
             android:gravity="center"
-            android:padding="@dimen/_10sdp"
+            android:padding="@dimen/_5sdp"
             android:text="00"
             android:textColor="@color/white"
-            android:textSize="@dimen/_13sdp" />
+            android:textSize="@dimen/_16sdp" />
 
 
     </LinearLayout>
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="3"
-            android:layout_marginTop="@dimen/_10sdp">
+            android:layout_marginTop="@dimen/_5sdp">
 
             <android.support.v7.widget.CardView
                 android:layout_width="0dp"
@@ -127,7 +127,7 @@
                         android:padding="@dimen/_5sdp"
                         android:text="0"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_17sdp" />
+                        android:textSize="@dimen/_18sdp" />
 
                     <TextView
                         android:id="@+id/tv_txt_ttl_seller"
@@ -141,7 +141,7 @@
                         android:paddingTop="@dimen/_5sdp"
                         android:text="Total Sellers"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_12sdp" />
+                        android:textSize="@dimen/_11sdp" />
 
 
                 </RelativeLayout>
@@ -180,7 +180,7 @@
                         android:padding="@dimen/_5sdp"
                         android:text="0"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/_17sdp" />
+                        android:textSize="@dimen/_18sdp" />
 
                     <TextView
                         android:id="@+id/tv_txt_order_value"
@@ -194,7 +194,7 @@
                         android:paddingTop="@dimen/_5sdp"
                         android:text="Current Order Value"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/_12sdp" />
+                        android:textSize="@dimen/_11sdp" />
 
 
                 </RelativeLayout>
@@ -208,7 +208,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="3"
-            android:layout_marginTop="@dimen/_10sdp">
+            android:layout_marginTop="@dimen/_5sdp">
 
             <android.support.v7.widget.CardView
                 android:layout_width="0dp"
@@ -243,7 +243,7 @@
                         android:padding="@dimen/_5sdp"
                         android:text="0"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/_17sdp" />
+                        android:textSize="@dimen/_18sdp" />
 
                     <TextView
                         android:id="@+id/tv_txt_ttl_outlet"
@@ -257,7 +257,7 @@
                         android:paddingTop="@dimen/_5sdp"
                         android:text="Total Outlets"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/_12sdp" />
+                        android:textSize="@dimen/_11sdp" />
 
 
                 </RelativeLayout>
@@ -307,7 +307,7 @@
                             android:padding="@dimen/_5sdp"
                             android:text="0"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/_17sdp" />
+                            android:textSize="@dimen/_18sdp" />
 
                         <TextView
                             android:id="@+id/tv_txt_covered_outlet"
@@ -321,7 +321,7 @@
                             android:paddingTop="@dimen/_5sdp"
                             android:text="Covered outlets"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/_12sdp" />
+                            android:textSize="@dimen/_11sdp" />
 
 
                     </RelativeLayout>
@@ -361,7 +361,7 @@
                             android:padding="@dimen/_5sdp"
                             android:text="0"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/_17sdp" />
+                            android:textSize="@dimen/_18sdp" />
 
                         <TextView
                             android:id="@+id/tv_txt_unbilled_outlet"
@@ -375,7 +375,7 @@
                             android:paddingTop="@dimen/_5sdp"
                             android:text="Unbilled Outlets"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/_12sdp" />
+                            android:textSize="@dimen/_11sdp" />
 
 
                     </RelativeLayout>
@@ -394,7 +394,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:background="@color/white"
             android:gravity="center"
             app:cardBackgroundColor="@color/WHITE"
@@ -411,28 +411,31 @@
                 <RelativeLayout
                     android:id="@+id/progress_layout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2">
 
                     <ProgressBar
                         android:id="@+id/progressBar"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="@dimen/_70sdp"
-                        android:layout_height="@dimen/_70sdp"
+                        android:layout_width="@dimen/_55sdp"
+                        android:layout_height="@dimen/_55sdp"
+                        android:layout_centerInParent="true"
                         android:background="@drawable/circular_progress"
                         android:indeterminate="false"
                         android:max="100"
-                        android:progress="75"
+                        android:progress="70"
                         android:progressDrawable="@drawable/circle_progress_rotate" />
 
                     <TextView
                         style="?attr/customListItemPrimary"
-                        android:layout_width="@dimen/_50sdp"
-                        android:layout_height="@dimen/_50sdp"
+                        android:layout_width="@dimen/_45sdp"
+                        android:layout_height="@dimen/_45sdp"
                         android:layout_centerInParent="true"
                         android:gravity="center"
-                        android:text="75%"
+                        android:text="170%"
                         android:textColor="#262e4f"
-                        android:textSize="@dimen/_13sdp" />
+                        android:textSize="@dimen/_12sdp"
+                        android:id="@+id/seller_perform_percent"/>
 
 
                 </RelativeLayout>

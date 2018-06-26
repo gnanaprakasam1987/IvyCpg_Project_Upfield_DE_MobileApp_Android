@@ -24,7 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.supervisor.activity.SellerMapViewActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.sd.png.asean.view.R;
 

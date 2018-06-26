@@ -1,16 +1,21 @@
-package com.ivy.cpg.view.supervisor.activity;
+package com.ivy.cpg.view.supervisor.mvp.sellerperformance;
 
-import android.content.Intent;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -19,7 +24,6 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -27,6 +31,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.model.HideShowScrollListener;
 
 import java.util.ArrayList;
 
@@ -35,11 +40,11 @@ import static android.graphics.Color.rgb;
 public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
 
     private RecyclerView recyclerView;
-    private CombinedChart mChart;
-    private final int itemcount = 12;
-    private String[] mMonths = new String[] {
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
-    };
+
+    private LinearLayout bottomLayout;
+    private Animation slide_down, slide_up;
+    SellerPerformanceHelper sellerPerformanceHelper;
+    private String[] mMonths;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,12 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
         setContentView(R.layout.activity_seller_performance_list);
 
         recyclerView = findViewById(R.id.seller_list_recycler);
+        bottomLayout = findViewById(R.id.bottom_layout);
+
+        slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.out_to_bottom);
+        slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.bottom_layout_slideup);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
@@ -62,17 +73,78 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
         setScreenTitle("Seller Performance");
 
         prepareScreenData();
+
+        sellerPerformanceHelper = new SellerPerformanceHelper();
+        mMonths = sellerPerformanceHelper.getSellerPerformanceList();
+
         combinedChart();
 
     }
 
     private void prepareScreenData(){
 
-        MyAdapter myAdapter = new MyAdapter();
+        MyAdapter myAdapter = new MyAdapter(getApplicationContext());
         recyclerView.setAdapter(myAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+
+        recyclerView.addOnScrollListener(new HideShowScrollListener() {
+            @Override
+            public void onHide() {
+                if (bottomLayout.getVisibility() == View.VISIBLE) {
+                    bottomLayout.startAnimation(slide_down);
+                    bottomLayout.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onShow() {
+                if (bottomLayout.getVisibility() == View.GONE) {
+                    bottomLayout.setVisibility(View.VISIBLE);
+                    bottomLayout.startAnimation(slide_up);
+                }
+            }
+
+            @Override
+            public void onScrolled() {
+                // To load more data
+            }
+
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_supervisor_screen, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getComponentName()) : null);
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+//                displaySearchItem(newText);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.menu_dashboard).setVisible(false);
+        menu.findItem(R.id.menu_date).setVisible(false);
+        return true;
     }
 
     @Override
@@ -86,47 +158,8 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
         return super.onOptionsItemSelected(item);
     }
 
-    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-
-            public MyViewHolder(View view) {
-                super(view);
-
-            }
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.seller_performance_list_item, parent, false);
-
-            return new MyViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(final MyViewHolder holder, final int position) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Intent intent = new Intent(SellerPerformanceListActivity.this,SellerPerformanceDetailActivity.class);
-                    startActivity(intent);
-
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-//            return detailsBos.size();
-            return 15;
-        }
-    }
-
     private void combinedChart(){
-        mChart = findViewById(R.id.combined_chart);
+        CombinedChart mChart = findViewById(R.id.combined_chart);
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
         mChart.setDrawBarShadow(false);
@@ -183,7 +216,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
 
         LineData d = new LineData();
 
-        ArrayList<Entry> entries1 = new ArrayList<Entry>();
+        ArrayList<Entry> entries1 = new ArrayList<>();
         ArrayList<Entry> entries2 = new ArrayList<Entry>();
 
         entries1.add(new Entry(2f,10f));
@@ -230,13 +263,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
 
     private BarData generateBarData() {
 
-        ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
-
-        for (int index = 0; index < itemcount; index++) {
-            entries1.add(new BarEntry(5,55));
-        }
-
-        BarDataSet set1 = new BarDataSet(entries1, "Bar 1");
+        BarDataSet set1 = new BarDataSet(sellerPerformanceHelper.getBarEntries(), "Bar 1");
         set1.setColor(ContextCompat.getColor(this,R.color.white_trans));
         set1.setValueTextColor((ContextCompat.getColor(this,R.color.white_trans)));
         set1.setValueTextSize(10f);

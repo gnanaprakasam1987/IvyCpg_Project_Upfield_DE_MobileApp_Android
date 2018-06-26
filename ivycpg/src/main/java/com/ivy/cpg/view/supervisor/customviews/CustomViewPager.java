@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.adapter;
+package com.ivy.cpg.view.supervisor.customviews;
 
 import android.content.Context;
 import android.graphics.Canvas;

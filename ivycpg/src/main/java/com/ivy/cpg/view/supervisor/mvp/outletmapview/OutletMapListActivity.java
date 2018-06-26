@@ -1,18 +1,19 @@
-package com.ivy.cpg.view.supervisor.activity;
+package com.ivy.cpg.view.supervisor.mvp.outletmapview;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,27 +26,25 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
-import com.ivy.cpg.view.supervisor.recyclerviewpager.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
-    private BusinessModel businessModel;
     private TabLayout tabLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName;
     private MapWrapperLayout mapWrapperLayout;
     private int tabPos;
     private RecyclerViewPager mRecyclerView;
-    private MyAdapter myAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,8 +63,6 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        businessModel = (BusinessModel)getApplicationContext();
-
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
         setScreenTitle("Total Outlets");
@@ -82,6 +79,10 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_outlet_info_window, null);
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
+
+        ((TextView)findViewById(R.id.tv_planned_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.tv_covered_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.tv_unbilled_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
 
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, getPixelsFromDp(this, 39 + 20)));
@@ -218,8 +219,8 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         Commons.print("on Marker Click called");
 
         double angle = 130.0;
-        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 3.9;
-        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 1.1);
+        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.map_4sdp);
+        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.map_0_7sdp));
         marker.setInfoWindowAnchor((float)x, (float)y);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
@@ -286,6 +287,25 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_supervisor_screen, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getComponentName()) : null);
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+//                displaySearchItem(newText);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -317,7 +337,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             for (int i = 0; i < tabChildCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                 }
             }
         }
@@ -335,7 +355,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
                 false);
         mRecyclerView.setLayoutManager(layout);
 
-        myAdapter = new MyAdapter();
+        MyAdapter myAdapter = new MyAdapter(this);
         mRecyclerView.setAdapter(myAdapter);
 
         mRecyclerView.setHasFixedSize(true);
@@ -348,17 +368,13 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int i, int i2) {
-//                mPositionText.setText("First: " + mRecyclerViewPager.getFirstVisiblePosition());
                 int childCount = mRecyclerView.getChildCount();
                 int width = mRecyclerView.getChildAt(0).getWidth();
                 int padding = (mRecyclerView.getWidth() - width) / 2;
-//                mCountText.setText("Count: " + childCount);
 
                 for (int j = 0; j < childCount; j++) {
                     View v = recyclerView.getChildAt(j);
-                    //往左 从 padding 到 -(v.getWidth()-padding) 的过程中，由大到小
                     float rate = 0;
-                    ;
                     if (v.getLeft() <= padding) {
                         if (v.getLeft() >= padding - v.getWidth()) {
                             rate = (padding - v.getLeft()) * 1f / v.getWidth();
@@ -369,7 +385,6 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
                         v.setScaleX(1 - rate * 0.1f);
 
                     } else {
-                        //往右 从 padding 到 recyclerView.getWidth()-padding 的过程中，由大到小
                         if (v.getLeft() <= recyclerView.getWidth() - padding) {
                             rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
                         }
@@ -419,53 +434,5 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
             }
         });
-    }
-
-    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-            private TextView userName;
-
-            public MyViewHolder(View view) {
-                super(view);
-
-                userName = view.findViewById(R.id.tv_user_name);
-
-            }
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.outlet_info_window_layout, parent, false);
-
-            return new MyViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, final int position) {
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
-                    outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
-                    outletPagerDialogFragment.setCancelable(false);
-                    outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
-                }
-            });
-
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return position;
-        }
-
-        @Override
-        public int getItemCount() {
-            return 4;
-        }
     }
 }
