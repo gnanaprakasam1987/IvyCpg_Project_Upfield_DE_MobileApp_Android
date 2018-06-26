@@ -9,12 +9,13 @@ import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
 /**
  * Retailer wise Order and time stamp information will be shown.
  */
-public class RetailerActivityReportFragment extends Fragment {
+public class RetailerActivityReportFragment extends IvyBaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

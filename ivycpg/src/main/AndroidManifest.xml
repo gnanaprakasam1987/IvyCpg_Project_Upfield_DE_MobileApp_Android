@@ -483,7 +483,7 @@
             android:name="com.ivy.cpg.view.dashboard.sellerdashboard.SellerKPISKUActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.reports.InvoiceReportDetail"
+            android:name="com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.van.VanLoadStockView_activity"
@@ -564,7 +564,7 @@
             android:name="com.ivy.sd.png.view.RoadActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.reports.ReportActivity"
+            android:name="com.ivy.cpg.view.reports.ReportActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.promotion.PromotionTrackingActivity"
