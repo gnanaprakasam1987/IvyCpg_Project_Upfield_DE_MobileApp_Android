@@ -12,8 +12,12 @@ public class IvyConstants {
     }
 
     public static String IVY_PREFERENCE_NAME = "";
-
     public static String EMPTY_STRING = "";
+
+    //ActivationError
+    public static final int NOTIFY_URL_NOT_MAPPED_ERROR = 15;
+    public final static int NOTIFY_INVALID_KEY = 5;
+    public final static int NOTIFY_ACTIVATION_FAILED = 6;
 
     public static final String SOAP_ACTION_SECURITYPOLICY1 = "http://tempuri.org/GetKeySyncURL";
     public static final String SOAP_ACTION_SECURITYPOLICY2 = "http://tempuri.org/GetIMEISyncURL";

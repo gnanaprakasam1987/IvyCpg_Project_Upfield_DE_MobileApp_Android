@@ -195,6 +195,11 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
     @Override
+    public void showToastValidKeyContactAdmin() {
+        showMessage(getResources().getString(R.string.valid_key_oops_contact_device_admin));
+    }
+
+    @Override
     public void doValidationSuccess() {
         mActivationPresenter.doActivation(mActivationKeyEdt.getText().toString(),
                 DeviceUtils.getIMEINumber(this),

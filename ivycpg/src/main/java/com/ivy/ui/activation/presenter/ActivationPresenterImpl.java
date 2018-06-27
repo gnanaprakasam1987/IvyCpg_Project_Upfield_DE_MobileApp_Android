@@ -5,6 +5,7 @@ import com.ivy.core.IvyConstants;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.bo.ActivationBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.activation.ActivationContract;
@@ -34,10 +35,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     private ActivationDataManager activationDataManager;
 
     private DataManager dataManager;
-
     private List<ActivationBO> appUrls;
-
-    private String SERVER_URL;
 
     @Inject
     public ActivationPresenterImpl(DataManager dataManager,
@@ -119,26 +117,14 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                 //---->4
                 setValueToPreference(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""),
                         jsonObject.getString(APPLICATION_NAME));
-                setSERVER_URL(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""));
-                // checkServerStatus(jsonObject.getString("SyncServiceURL"));
+                // setSERVER_URL(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""));
+                checkServerStatusBasedOnActivation(jsonObject.getString(SYNC_SERVICE_URL));
 
-                boolean isValid = checkServerStatusBasedOnActivation(jsonObject.getString(SYNC_SERVICE_URL));
-                //----> 13 NOTIFY_SUCESSFULLY_ACTIVATED_EXTENDED
-                if (isValid)
-                    getIvyView().showSuccessfullyActivatedAlert();
-                else {
-                    clearAppUrl();
-                    //----> 11 NOTIFY_NOT_VALID_URL
-                    getIvyView().showToastAppUrlConfiguredMessage();
-                }
             }
         } catch (JSONException e) {
-            // Commons.printException(e);
             //--->16
             getIvyView().showJsonExceptionError();
         } catch (Exception e) {
-            // Commons.printException(e);
-
             //---->2
             getIvyView().showServerError();
         }
@@ -168,8 +154,8 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     public void handleError(ActivationError activationError) {
         if (activationError.getStatus() == DataMembers.IVY_CODE_CUSTOM) {
-            getIvyView().showTryValidKeyError();
-            // int downloadReponse = SDUtil.convertToInt(e.getMessage());
+            int downloadResponse = SDUtil.convertToInt(activationError.getMessage());
+            showValidError(downloadResponse);
         } else if ((activationError).getStatus() == DataMembers.IVY_CODE_EXCEPTION) {
             //int downloadReponse = SDUtil.convertToInt(activationError.getMessage());
             getIvyView().showActivationFailedError();
@@ -177,6 +163,32 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             //2--->
             getIvyView().showActivationError(activationError);
 
+    }
+
+    public void showValidError(int messageNumber) {
+        switch (messageNumber) {
+
+            //---->15 NOTIFY_URL_NOT_MAPPED_ERROR
+            case IvyConstants.NOTIFY_URL_NOT_MAPPED_ERROR:
+                clearAppUrl();
+                getIvyView().showToastValidKeyContactAdmin();
+                break;
+            //----> 6 NOTIFY_ACTIVATION_FAILED
+            case IvyConstants.NOTIFY_ACTIVATION_FAILED:
+                clearAppUrl();
+                getIvyView().showActivationFailedError();
+                break;
+            //----> 5 NOTIFY_INVALID_KEY
+            case IvyConstants.NOTIFY_INVALID_KEY:
+                clearAppUrl();
+                getIvyView().showTryValidKeyError();
+                break;
+            //----> 2 NOTIFY_SERVER_ERROR
+            default:
+
+                getIvyView().showServerError();
+
+        }
     }
 
     /*
@@ -209,7 +221,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                     else {
                         setValueToPreference(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""),
                                 jsonObject.getString(APPLICATION_NAME));
-                        setSERVER_URL(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""));
+                        //setSERVER_URL(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""));
                         // ----> 8
                         doActionThree3();
                     }
@@ -244,7 +256,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     }
 
-    private void showActivationDialog(List<ActivationBO> appUrls) {
+    public void showActivationDialog(List<ActivationBO> appUrls) {
 
         if (appUrls == null || appUrls.size() == 0) {
             clearAppUrl();
@@ -271,20 +283,24 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
 
-    public boolean checkServerStatusBasedOnActivation(String url) {
-        final boolean[] isValid = {false};
+    public void checkServerStatusBasedOnActivation(String url) {
         getCompositeDisposable().add(activationDataManager.isServerOnline(url)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean response) throws Exception {
-                        isValid[0] = response;
-                        if (!response)
-                            getIvyView().showInvalidUrlError();
+                        //----> 13 NOTIFY_SUCESSFULLY_ACTIVATED_EXTENDED
+                        if (response)
+                            getIvyView().showSuccessfullyActivatedAlert();
+                        else {
+                            //----> 11 NOTIFY_NOT_VALID_URL
+                            clearAppUrl();
+                            getIvyView().showToastAppUrlConfiguredMessage();
+                        }
                     }
                 }));
-        return isValid[0];
+
     }
 
     @Override
@@ -312,20 +328,12 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             getIvyView().showAppUrlIsEmptyError();
 
         } else {
-            setSERVER_URL(appUrl);
+            // setSERVER_URL(appUrl);
             checkServerStatus(appUrl);
         }
 
     }
 
-
-    /*  private String getSERVER_URL() {
-          return SERVER_URL;
-      }
-  */
-    private void setSERVER_URL(String SERVER_URL) {
-        this.SERVER_URL = SERVER_URL;
-    }
 
     private List<ActivationBO> getAppUrls() {
         return appUrls;

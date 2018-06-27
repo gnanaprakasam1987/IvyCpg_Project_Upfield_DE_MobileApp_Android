@@ -1,9 +1,8 @@
 package com.ivy.ui.activation.presenter;
 
-import android.support.v4.content.res.ConfigurationHelper;
-
 import com.ivy.TestDataFactory;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.sd.png.bo.ActivationBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.activation.ActivationContract;
@@ -18,6 +17,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -96,7 +97,7 @@ public class ActivationPresenterTest {
         testScheduler.triggerActions();
 
         then(mActivationView).should().hideLoading();
-        then(mActivationView).should().navigateToLoginScreen();
+        then(mActivationView).should().showSuccessfullyActivatedAlert();
     }
 
     @Test
@@ -152,6 +153,22 @@ public class ActivationPresenterTest {
         testScheduler.triggerActions();
         then(mActivationView).should().hideLoading();
         then(mActivationView).should().showActivationDialog();
+
+    }
+
+    @Test
+    public void testTriggerActivationWithJsonException() {
+
+        JSONObject jsonObject = TestDataFactory.getInValidResponse();
+
+        given(mActivationDataManager.doActivationAtHttp("abcd", "abcd",
+                "abcd", "abcd")).willReturn(Observable.just(jsonObject));
+        //When
+        mPresenter.doActivation("abcd", "abcd",
+                "abcd", "abcd");
+        testScheduler.triggerActions();
+        then(mActivationView).should().hideLoading();
+        then(mActivationView).should().showJsonExceptionError();
 
     }
 
@@ -219,25 +236,89 @@ public class ActivationPresenterTest {
     @Test
     public void testInvalidActivationKeyError() {
 
-        ActivationError myError = new ActivationError(DataMembers.IVY_CODE_CUSTOM, "Failed");
+        ActivationError myError = new ActivationError(DataMembers.IVY_CODE_CUSTOM, "6");
 
         given(mActivationDataManager.doActivationAtHttp("abcd", "12345", "10", "12345"))
                 .willReturn(Observable.error(myError));
 
         mPresenter.doActivation("abcd", "12345", "10", "12345");
         testScheduler.triggerActions();
-
-        then(mActivationView).should().showTryValidKeyError();
-
+        then(mActivationView).should().showActivationFailedError();
     }
 
 
     @Test
     public void testHandleError() {
-        ActivationError activationError = new ActivationError(2002, "Failed");
+        ActivationError activationError = new ActivationError(2002, "5");
         mPresenter.handleError(activationError);
         then(mActivationView).should().showTryValidKeyError();
     }
+
+    @Test
+    public void testShowValidError() {
+        mPresenter.showValidError(15);
+        testScheduler.triggerActions();
+        then(mActivationView).should().showToastValidKeyContactAdmin();
+
+    }
+
+    @Test
+    public void testShowValidErrorInValid() {
+        mPresenter.showValidError(5);
+        testScheduler.triggerActions();
+        then(mActivationView).should().showTryValidKeyError();
+
+    }
+
+    @Test
+    public void testShowValidErrorActivationFailed() {
+        mPresenter.showValidError(6);
+        testScheduler.triggerActions();
+        then(mActivationView).should().showActivationFailedError();
+
+    }
+
+    @Test
+    public void testActivationDismiss() {
+        given(mDataManager.getBaseUrl()).willReturn("");
+        mPresenter.doActionForActivationDismiss();
+        testScheduler.triggerActions();
+        then(mActivationView).should().showAppUrlIsEmptyError();
+    }
+
+    @Test
+    public void testActivationDismissValidUrl() {
+
+        given(mDataManager.getBaseUrl()).willReturn("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx");
+
+        given(mActivationDataManager.isServerOnline("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx"))
+                .willReturn(Single.just(true));
+        mPresenter.doActionForActivationDismiss();
+        testScheduler.triggerActions();
+        then(mActivationView).should().navigateToLoginScreen();
+    }
+
+
+    @Test
+    public void testCheckServerStatusBasedOnActivationInValidUrl() {
+
+        given(mActivationDataManager.isServerOnline("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx"))
+                .willReturn(Single.just(false));
+        mPresenter.checkServerStatusBasedOnActivation("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx");
+        testScheduler.triggerActions();
+        then(mActivationView).should().showToastAppUrlConfiguredMessage();
+    }
+
+
+   // showActivationDialog
+
+    @Test
+    public void  testShowActivationDialog(){
+        List<ActivationBO> activationBOList = null;
+        mPresenter.showActivationDialog(activationBOList);
+        then(mActivationView).should().showPreviousActivationError();
+    }
+
 
     @Test
     public void testHandleErrorValidCode() {

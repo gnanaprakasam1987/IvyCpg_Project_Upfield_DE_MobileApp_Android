@@ -39,6 +39,9 @@ public interface ActivationContract {
 
 
         void showToastAppUrlConfiguredMessage();
+
+        void showToastValidKeyContactAdmin();
+
     }
 
     @PerActivity

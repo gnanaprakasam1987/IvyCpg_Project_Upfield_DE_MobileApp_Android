@@ -23,7 +23,18 @@ public abstract class TestDataFactory {
             "    }\n" +
             "  ]\n" +
             "}";
-
+    private static String INVALID_ACTIVATION_INVALID_RESPONSE = "{\n" +
+            "  \"\": [\n" +
+            "    {\n" +
+            "      \"ActivationRefNo\": 16047,\n" +
+            "      \"ApplicationName\": \"P&G MALAYSIA\",\n" +
+            "      \"SyncServiceURL\": \"\",\n" +
+            "      \"OrganizationID\": 55,\n" +
+            "      \"ApplicationID\": 56,\n" +
+            "      \"OrganizationName\": \"P&G MY TEST\"\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
 
     private static String VALID_IMEI_RESPONSE = "{\n" +
             "    \"Table\": [\n" +
@@ -101,4 +112,15 @@ public abstract class TestDataFactory {
         }
         return new JSONObject();
     }
+
+    public static JSONObject getInValidResponse() {
+
+        try {
+            return new JSONObject(INVALID_ACTIVATION_INVALID_RESPONSE);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new JSONObject();
+    }
+
 }
