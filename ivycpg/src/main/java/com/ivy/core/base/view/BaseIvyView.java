@@ -2,6 +2,8 @@ package com.ivy.core.base.view;
 
 import android.support.annotation.StringRes;
 
+import com.ivy.sd.png.util.CommonDialog;
+
 public interface BaseIvyView {
 
     void showLoading();
@@ -43,5 +45,7 @@ public interface BaseIvyView {
     void setFontSize(String fontSize);
 
     void showAlert(String title,String msg);
+
+    void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener);
 
 }

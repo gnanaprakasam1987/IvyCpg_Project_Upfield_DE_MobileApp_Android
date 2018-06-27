@@ -21,7 +21,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.utils.FontUtils;
 
 /**
@@ -29,7 +28,7 @@ import com.ivy.utils.FontUtils;
  */
 public class CommonDialog extends Dialog {
 
-    public positiveOnClickListener posClickListener;
+    public PositiveClickListener posClickListener;
     public negativeOnClickListener negClickListener;
     private String title;
     private String msg;
@@ -44,7 +43,7 @@ public class CommonDialog extends Dialog {
 
 
     public CommonDialog(Context bContext, Context context, String title, String msg,
-                        boolean imgDisplay, String posBtnTxt, positiveOnClickListener posClickListener) {
+                        boolean imgDisplay, String posBtnTxt, PositiveClickListener posClickListener) {
         super(context);
         this.context = context;
         this.bContext = bContext;
@@ -69,9 +68,19 @@ public class CommonDialog extends Dialog {
 
     }
 
+    public CommonDialog(Context context, String title, String msg,
+                        String posBtnTxt,PositiveClickListener posClickListener) {
+        super(context);
+        this.context = context;
+        this.title = title;
+        this.msg = msg;
+        this.posBtnTxt = posBtnTxt;
+
+    }
+
     public CommonDialog(Context bContext, Context context, String title, String msg,
                         boolean imgDisplay, String posBtnTxt, String negBtnTxt,
-                        positiveOnClickListener posClickListener, negativeOnClickListener negClickListener) {
+                        PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
         this.bContext = bContext;
@@ -87,7 +96,7 @@ public class CommonDialog extends Dialog {
 
     public CommonDialog(Context bContext, Context context, String title, String msg,
                         boolean imgDisplay, String posBtnTxt, String negBtnTxt, boolean isMoveNext,
-                        positiveOnClickListener posClickListener, negativeOnClickListener negClickListener) {
+                        PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
         this.bContext = bContext;
@@ -105,7 +114,7 @@ public class CommonDialog extends Dialog {
     //Dialog with Dynamic Image
     public CommonDialog(Context bContext, Context context, String title, String msg,
                         boolean imgDisplay, String posBtnTxt, String negBtnTxt, boolean isMoveNext, String ImageSrc,
-                        positiveOnClickListener posClickListener, negativeOnClickListener negClickListener) {
+                        PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
         this.bContext = bContext;
@@ -125,7 +134,7 @@ public class CommonDialog extends Dialog {
 
 
     // This is my interface //
-    public interface positiveOnClickListener {
+    public interface PositiveClickListener {
         void onPositiveButtonClick();
     }
 

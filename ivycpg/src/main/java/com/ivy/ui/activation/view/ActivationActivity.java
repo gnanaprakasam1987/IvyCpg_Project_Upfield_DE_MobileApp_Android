@@ -13,6 +13,7 @@ import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.view.ActivationDialog;
 import com.ivy.ui.activation.ActivationContract;
 import com.ivy.ui.activation.di.ActivationModule;
@@ -184,7 +185,12 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @Override
     public void showSuccessfullyActivatedAlert() {
-        showMessage(getResources().getString(R.string.successfully_activated));
+        showAlert("", getString(R.string.successfully_activated), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                navigateToLoginScreen();
+            }
+        });
     }
 
     @Override

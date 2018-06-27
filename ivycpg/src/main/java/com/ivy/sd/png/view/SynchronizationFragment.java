@@ -2244,7 +2244,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 getResources().getString(R.string.deviceId_change_msg),
                 false, getResources().getString(R.string.yes),
                 getResources().getString(R.string.no),
-                new CommonDialog.positiveOnClickListener() {
+                new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
 

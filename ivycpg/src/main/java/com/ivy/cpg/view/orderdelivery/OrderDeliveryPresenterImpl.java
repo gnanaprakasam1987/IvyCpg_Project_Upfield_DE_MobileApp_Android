@@ -91,7 +91,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
         else if (orderDeliveryHelper.isSIHAvailable(isEdit)) {
 
             final CommonDialog dialog = new CommonDialog(context.getApplicationContext(), context, "", context.getResources().getString(R.string.order_delivery_approve), false,
-                    context.getResources().getString(R.string.ok), context.getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                    context.getResources().getString(R.string.ok), context.getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     new UpdateOrderDeliveryTable(orderId, context, isEdit).execute();

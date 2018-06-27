@@ -355,7 +355,7 @@ public class GroomingFragment extends IvyBaseFragment implements View.OnClickLis
                 @Override
                 public boolean onLongClick(View v) {
                     final View view = v;
-                    new CommonDialog(bmodel, getActivity(), "", "Image would be deleted", false, "OK", "Cancel", new CommonDialog.positiveOnClickListener() {
+                    new CommonDialog(bmodel, getActivity(), "", "Image would be deleted", false, "OK", "Cancel", new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             bmodel.groomingHelper.deleteGroomingEntry(holder.path);

@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
@@ -23,7 +22,6 @@ import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -66,7 +64,6 @@ import com.ivy.sd.png.view.UserSettingsActivity;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
-import java.util.Locale;
 
 
 public class LoginScreen extends IvyBaseActivityNoActionBar
@@ -238,7 +235,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
     @Override
     public void showGPSDialog() {
 
-        new CommonDialog(getApplicationContext(), this, "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
+        new CommonDialog(getApplicationContext(), this, "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 Intent myIntent = new Intent(
@@ -755,7 +752,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
     @Override
     public void showAppUpdateAlert(String msg) {
 
-        new CommonDialog(getApplicationContext(), this, "", msg, false, getResources().getString(R.string.ok), new CommonDialog.positiveOnClickListener() {
+        new CommonDialog(getApplicationContext(), this, "", msg, false, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 Commons.printInformation(businessModel.getUpdateURL());
@@ -775,7 +772,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                 getResources().getString(R.string.deviceId_change_msg),
                 false, getResources().getString(R.string.yes),
                 getResources().getString(R.string.no),
-                new CommonDialog.positiveOnClickListener() {
+                new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
 

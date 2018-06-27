@@ -258,7 +258,7 @@ public class ActivationPresenterTest {
     @Test
     public void testInvalidActivationKeyError() {
 
-        ActivationError myError = new ActivationError(DataMembers.IVY_CODE_CUSTOM, "6");
+        ActivationError myError = new ActivationError(DataMembers.IVY_SERVER_ERROR, "6");
 
         given(mActivationDataManager.doActivationAtHttp("abcd", "12345", "10", "12345"))
                 .willReturn(Observable.error(myError));

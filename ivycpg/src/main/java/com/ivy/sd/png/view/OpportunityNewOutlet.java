@@ -1166,7 +1166,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         switch (id) {
             case 0:
                 new CommonDialog(getApplicationContext(), this, "", getResources().getString(
-                        R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         if (bmodel.isEdit()) {

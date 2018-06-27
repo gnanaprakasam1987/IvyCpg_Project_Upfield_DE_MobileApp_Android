@@ -567,6 +567,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         dialog.show();
     }
 
+    @Override
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener) {
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 }
 
 

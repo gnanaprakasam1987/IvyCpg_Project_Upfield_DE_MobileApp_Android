@@ -49,7 +49,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.platform.comapi.map.A;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
@@ -106,7 +105,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -1645,7 +1643,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private void showMocLocationAlert() {
         CommonDialog dialog = new CommonDialog(getApplicationContext(), this, "", getResources().getString(R.string.mock_location_enabled), false,
-                getResources().getString(R.string.log_out), new CommonDialog.positiveOnClickListener() {
+                getResources().getString(R.string.log_out), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
 

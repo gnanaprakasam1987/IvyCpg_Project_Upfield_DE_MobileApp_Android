@@ -161,7 +161,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                     new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                             "", getActivity().getResources().getString(R.string.move_next_activity),
                             false, getActivity().getResources().getString(R.string.ok),
-                            getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                            getActivity().getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

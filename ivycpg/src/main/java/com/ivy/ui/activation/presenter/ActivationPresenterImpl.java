@@ -153,15 +153,17 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
     public void handleError(ActivationError activationError) {
-        if (activationError.getStatus() == DataMembers.IVY_CODE_CUSTOM) {
+        if (activationError.getStatus() == DataMembers.IVY_SERVER_ERROR) {
             int downloadResponse = SDUtil.convertToInt(activationError.getMessage());
             showValidError(downloadResponse);
-        } else if ((activationError).getStatus() == DataMembers.IVY_CODE_EXCEPTION) {
+        } else if ((activationError).getStatus() == DataMembers.IVY_APP_INTERNAL_EXCEPTION) {
             //int downloadReponse = SDUtil.convertToInt(activationError.getMessage());
-            getIvyView().showActivationFailedError();
-        } else
             //2--->
             getIvyView().showActivationError(activationError.getMessage());
+        } else
+            getIvyView().showActivationFailedError();
+
+
 
     }
 

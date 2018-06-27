@@ -246,7 +246,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 else if (orderDeliveryHelper.isSIHAvailable(false)) {
 
                     CommonDialog dialog = new CommonDialog(getApplicationContext(), OrderDeliveryActivity.this, "", getResources().getString(R.string.order_delivery_approve), false,
-                            getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                            getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
 

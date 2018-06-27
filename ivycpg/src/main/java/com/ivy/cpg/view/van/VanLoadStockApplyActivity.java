@@ -160,7 +160,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             if (uid != null && selected_position != -1) {
 
                 new CommonDialog(getApplicationContext(), this, "", getResources().getString(
-                        R.string.alert_text_accept_Stock), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        R.string.alert_text_accept_Stock), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         SIHApplyById.add(uid);
@@ -185,7 +185,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             if (uid != null && selected_position != -1) {
 
                 new CommonDialog(getApplicationContext(), this, "", getResources().getString(
-                        R.string.alert_text_reject_Stock), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        R.string.alert_text_reject_Stock), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         SIHApplyById.add(uid);

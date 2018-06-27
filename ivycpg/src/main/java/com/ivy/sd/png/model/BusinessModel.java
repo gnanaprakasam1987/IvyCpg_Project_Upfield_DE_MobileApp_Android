@@ -3403,7 +3403,7 @@ public class BusinessModel extends Application {
 
         final int idd = id;
 
-        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, "Ok", new CommonDialog.positiveOnClickListener() {
+        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, "Ok", new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick()
 

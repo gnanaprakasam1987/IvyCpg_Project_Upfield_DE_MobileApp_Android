@@ -686,7 +686,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                         "", getResources().getString(R.string.saved_successfully),
                         false, getActivity().getResources().getString(R.string.ok),
-                        null, new CommonDialog.positiveOnClickListener() {
+                        null, new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         if ("1".equals(calledBy)) {

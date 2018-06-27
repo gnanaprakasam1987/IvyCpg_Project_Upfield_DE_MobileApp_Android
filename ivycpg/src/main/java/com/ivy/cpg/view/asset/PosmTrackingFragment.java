@@ -1194,7 +1194,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 getResources().getString(R.string.no),
                 false,
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
-                new CommonDialog.positiveOnClickListener() {
+                new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         ArrayList<AssetTrackingBO> items = assetTrackingHelper
@@ -1347,7 +1347,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                     "", getResources().getString(R.string.saved_successfully),
                     false, getActivity().getResources().getString(R.string.ok),
-                    null, new CommonDialog.positiveOnClickListener() {
+                    null, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     Intent intent;

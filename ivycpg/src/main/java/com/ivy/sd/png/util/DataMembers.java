@@ -9,8 +9,8 @@ public class DataMembers {
     public static final String DB_NAME = ApplicationConfigs.DB_NAME;
 
     public static final String DB_PATH = "/data/data/com.ivy.sd.png.asean.view/databases/";
-    public static final int IVY_CODE_CUSTOM = 2002;
-    public static final int IVY_CODE_EXCEPTION = 2001;
+    public static final int IVY_SERVER_ERROR = 2002;
+    public static final int IVY_APP_INTERNAL_EXCEPTION = 2001;
 
     // Image Download URL
     public static String img_Down_URL;

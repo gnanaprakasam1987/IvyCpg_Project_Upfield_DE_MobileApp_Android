@@ -165,9 +165,9 @@ public class ActivationHelper {
                     Commons.printInformation("Activation"
                             + "onFailure Response->" + status + " Content : "
                             + message);
-                    if (status == DataMembers.IVY_CODE_CUSTOM) {
+                    if (status == DataMembers.IVY_SERVER_ERROR) {
                         downloadReponse = SDUtil.convertToInt(message);
-                    } else if (status == DataMembers.IVY_CODE_EXCEPTION) {
+                    } else if (status == DataMembers.IVY_APP_INTERNAL_EXCEPTION) {
                         downloadReponse = SDUtil.convertToInt(message);
                     } else
                         downloadReponse = 2;
@@ -267,9 +267,9 @@ public class ActivationHelper {
                             + "onFailure Response->" + status + " Content : "
                             + message);
 
-                    if (status == DataMembers.IVY_CODE_CUSTOM) {
+                    if (status == DataMembers.IVY_SERVER_ERROR) {
                         downloadReponse = SDUtil.convertToInt(message);
-                    } else if (status == DataMembers.IVY_CODE_EXCEPTION) {
+                    } else if (status == DataMembers.IVY_APP_INTERNAL_EXCEPTION) {
                         downloadReponse = SDUtil.convertToInt(message);
                     } else
                         downloadReponse = 2;
