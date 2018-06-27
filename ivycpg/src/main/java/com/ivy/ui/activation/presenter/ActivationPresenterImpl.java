@@ -28,6 +28,9 @@ import io.reactivex.observers.DisposableObserver;
 
 public class ActivationPresenterImpl<V extends ActivationContract.ActivationView> extends BasePresenter<V> implements ActivationContract.ActivationPresenter<V> {
 
+    private static final String SYNC_SERVICE_URL = "SyncServiceURL";
+    private static final String TABLE = "Table";
+    private static final String APPLICATION_NAME = "ApplicationName";
     private ActivationDataManager activationDataManager;
 
     private DataManager dataManager;
@@ -106,20 +109,20 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             return;
 
         try {
-            JSONArray jsonArray = (JSONArray) jsonObj.get("Table");
+            JSONArray jsonArray = (JSONArray) jsonObj.get(TABLE);
             JSONObject jsonObject = (JSONObject) jsonArray.get(0);
 
-            if (jsonObject.getString("SyncServiceURL").isEmpty())
+            if (jsonObject.getString(SYNC_SERVICE_URL).isEmpty())
                 //---->10
                 getIvyView().showAppUrlIsEmptyError();
             else {
                 //---->4
-                setValueToPreference(jsonObject.getString("SyncServiceURL").replace(" ", ""),
-                        jsonObject.getString("ApplicationName"));
-                setSERVER_URL(jsonObject.getString("SyncServiceURL").replace(" ", ""));
+                setValueToPreference(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""),
+                        jsonObject.getString(APPLICATION_NAME));
+                setSERVER_URL(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""));
                 // checkServerStatus(jsonObject.getString("SyncServiceURL"));
 
-                boolean isValid = checkServerStatusBasedOnActivation(jsonObject.getString("SyncServiceURL"));
+                boolean isValid = checkServerStatusBasedOnActivation(jsonObject.getString(SYNC_SERVICE_URL));
                 //----> 13 NOTIFY_SUCESSFULLY_ACTIVATED_EXTENDED
                 if (isValid)
                     getIvyView().showSuccessfullyActivatedAlert();
@@ -192,7 +195,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
         //   + jsonObj.toString());
 
         try {
-            JSONArray jsonArray = (JSONArray) jsonObj.get("Table");
+            JSONArray jsonArray = (JSONArray) jsonObj.get(TABLE);
             if (jsonArray == null || jsonArray.length() == 0) {
                 // ---> 9
                 getIvyView().showPreviousActivationError();
@@ -200,13 +203,13 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             } else {
                 if (jsonArray.length() == 1) {
                     JSONObject jsonObject = (JSONObject) jsonArray.get(0);
-                    if (jsonObject.getString("SyncServiceURL").isEmpty())
+                    if (jsonObject.getString(SYNC_SERVICE_URL).isEmpty())
                         // ---> 10;
                         getIvyView().showAppUrlIsEmptyError();
                     else {
-                        setValueToPreference(jsonObject.getString("SyncServiceURL").replace(" ", ""),
-                                jsonObject.getString("ApplicationName"));
-                        setSERVER_URL(jsonObject.getString("SyncServiceURL").replace(" ", ""));
+                        setValueToPreference(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""),
+                                jsonObject.getString(APPLICATION_NAME));
+                        setSERVER_URL(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""));
                         // ----> 8
                         doActionThree3();
                     }
@@ -219,9 +222,9 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                         JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                         ActivationBO bo = new ActivationBO();
                         bo.setUrl(jsonObject
-                                .getString("SyncServiceURL").replace(" ", ""));
+                                .getString(SYNC_SERVICE_URL).replace(" ", ""));
                         bo.setEnviroinment(jsonObject
-                                .getString("ApplicationName"));
+                                .getString(APPLICATION_NAME));
                         getAppUrls().add(bo);
                     }
 

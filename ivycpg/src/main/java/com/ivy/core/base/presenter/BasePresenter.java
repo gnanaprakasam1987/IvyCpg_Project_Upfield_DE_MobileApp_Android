@@ -12,6 +12,11 @@ import io.reactivex.functions.Consumer;
 
 public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V> {
 
+    public static final String RED = "red";
+    public static final String ORANGE = "orange";
+    public static final String GREEN = "green";
+    public static final String PINK = "pink";
+    public static final String NBLUE = "nblue";
     private final DataManager mDataManager;
     private final SchedulerProvider mSchedulerProvider;
     private final CompositeDisposable mCompositeDisposable;
@@ -50,15 +55,15 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String theme) throws Exception {
-                        if (theme.equalsIgnoreCase("red"))
+                        if (theme.equalsIgnoreCase(RED))
                             getIvyView().setRedTheme();
-                        else if (theme.equalsIgnoreCase("orange"))
+                        else if (theme.equalsIgnoreCase(ORANGE))
                             getIvyView().setOrangeTheme();
-                        else if (theme.equalsIgnoreCase("green"))
+                        else if (theme.equalsIgnoreCase(GREEN))
                             getIvyView().setGreenTheme();
-                        else if (theme.equalsIgnoreCase("pink"))
+                        else if (theme.equalsIgnoreCase(PINK))
                             getIvyView().setPinkTheme();
-                        else if (theme.equalsIgnoreCase("nblue"))
+                        else if (theme.equalsIgnoreCase(NBLUE))
                             getIvyView().setNavyBlueTheme();
                         else
                             getIvyView().setBlueTheme();

@@ -56,7 +56,8 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
                         ApplicationConfigs.LICENSE_SOAP_URL,
                         IvyConstants.SOAP_ACTION_SECURITYPOLICY1, IvyConstants.NAMESPACE);
 
-                myKsoapConnection.addParam("LicenseKey", activationKey);
+                if (activationKey != null)
+                    myKsoapConnection.addParam("LicenseKey", activationKey);
                 myKsoapConnection.addParam("VersionCode", applicationVersionNumber);
                 myKsoapConnection.addParam("DeviceIMEI", imEiNumber);
                 myKsoapConnection.addParam(IvyConstants.VERSION_NAME, applicationVersionName);
@@ -90,45 +91,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
     @Override
     public Observable<JSONObject> doIMEIActivationAtHttp(final String imEi, final String versionName, final String versionNumber) {
 
-        return Observable.create(new ObservableOnSubscribe<JSONObject>() {
-            @Override
-            public void subscribe(final ObservableEmitter<JSONObject> subscriber) throws Exception {
-                MyKsoapConnection myKsoapConnection = new MyKsoapConnection();
-
-                myKsoapConnection.create(IvyConstants.METHOD_NAME_SECURITYPOLICY1,
-                        ApplicationConfigs.LICENSE_SOAP_URL,
-                        IvyConstants.SOAP_ACTION_SECURITYPOLICY1, IvyConstants.NAMESPACE);
-
-                myKsoapConnection.addParam("DeviceIMEI", imEi);
-                myKsoapConnection.addParam("VersionCode", versionNumber);
-                myKsoapConnection.addParam(IvyConstants.VERSION_NAME, versionName);
-
-                myKsoapConnection.connectServer(new MyKsoapConnection.ResponseListener() {
-
-                    @Override
-                    public void onFailure(int status, String message) {
-                        ActivationError myError = new ActivationError(status, message);
-                        Throwable throwable = new Throwable(String.valueOf(status));
-                        Throwable throwableObj = new Throwable(message, throwable);
-
-                        if (myError instanceof Throwable) {
-                            subscriber.onError(myError);
-                        } else
-                            subscriber.onError(throwableObj);
-
-
-                    }
-
-                    @Override
-                    public void onSucess(JSONObject jsonObj) {
-                        subscriber.onNext(jsonObj);
-                    }
-
-                });
-                subscriber.onComplete();
-            }
-
-        });
+        return doActivationAtHttp(null, versionName, versionNumber, imEi);
     }
 
 
