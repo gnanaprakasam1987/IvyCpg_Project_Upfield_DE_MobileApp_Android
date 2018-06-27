@@ -954,24 +954,28 @@ public class SurveyHelperNew {
 
         invalidEmails = new StringBuilder();
         notInRange = new StringBuilder();
+        boolean isEmail = false;
+        boolean isNum = false;
         for (SurveyBO sBO : getSurvey()) {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
-                    if (qus.getSelectedAnswer() != null && (!qus.getSelectedAnswer().isEmpty() || !qus.getSelectedAnswer().
+                    if (qus.getSelectedAnswer() != null && (!qus.getSelectedAnswer().isEmpty() && !qus.getSelectedAnswer().
                             contains(context.getResources().
                                     getString(R.string.plain_select))) && qus.getSelectedAnswerIDs() != null
-                            && (!qus.getSelectedAnswerIDs().isEmpty() ||
+                            && (!qus.getSelectedAnswerIDs().isEmpty() &&
                             !qus.getSelectedAnswerIDs().contains(-1)) && !qus.getQuestionType().equals("EMAIL")) {
                         return true;
                     }
                     if (qus.getQuestionType().equals("EMAIL")) {
+                        isEmail = true;
                         if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
                             invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                             invalidEmails.append("\n");
                         }
                     }
                     if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
+                        isNum = true;
                         if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
                             if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
                                 if (!isInRange(SDUtil.convertToFloat(qus.getFromValue()), SDUtil.convertToFloat(qus.getToValue()),
@@ -985,10 +989,10 @@ public class SurveyHelperNew {
                 }
             }
         }
-        if (invalidEmails.toString().isEmpty()) {
+        if (invalidEmails.toString().isEmpty() && isEmail) {
             return true;
         }
-        if (notInRange.toString().isEmpty()) {
+        if (notInRange.toString().isEmpty() && isNum) {
             return true;
         }
         return false;
@@ -1001,9 +1005,9 @@ public class SurveyHelperNew {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
-                    if (qus.getIsPhotoReq() > 0 && ((!qus.getSelectedAnswer().isEmpty() || !qus.getSelectedAnswer().contains(context.getResources().
+                    if (qus.getIsPhotoReq() > 0 && ((!qus.getSelectedAnswer().isEmpty() && !qus.getSelectedAnswer().contains(context.getResources().
                             getString(R.string.plain_select)))
-                            || (!qus.getSelectedAnswerIDs().isEmpty() || !qus.getSelectedAnswerIDs().contains(-1)))
+                            || (!qus.getSelectedAnswerIDs().isEmpty() && !qus.getSelectedAnswerIDs().contains(-1)))
                             && qus.getMinPhoto() > qus.getImageNames().size()) {
                         highlightQuest = true;
                         return false;

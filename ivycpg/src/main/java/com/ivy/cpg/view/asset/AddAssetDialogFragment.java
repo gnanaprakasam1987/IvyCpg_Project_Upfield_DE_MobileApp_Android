@@ -162,6 +162,10 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
 
         btnAddInstallDate.setText(todayDate);
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
 
 
         btnAddInstallDate.setOnClickListener(new View.OnClickListener() {
@@ -169,11 +173,6 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
             public void onClick(View v) {
                 Button b = (Button) v;
                 if (b == btnAddInstallDate) {
-
-                    final Calendar c = Calendar.getInstance();
-                    mYear = c.get(Calendar.YEAR);
-                    mMonth = c.get(Calendar.MONTH);
-                    mDay = c.get(Calendar.DAY_OF_MONTH);
 
                     // Launch Date Picker Dialog
                     DatePickerDialog dpd = new DatePickerDialog(
@@ -184,6 +183,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                 public void onDateSet(DatePicker view,
                                                       int year, int monthOfYear,
                                                       int dayOfMonth) {
+                                    mYear = year;
+                                    mMonth = monthOfYear;
+                                    mDay = dayOfMonth;
                                     Calendar selectedDate = new GregorianCalendar(
                                             year, monthOfYear, dayOfMonth);
                                     btnAddInstallDate.setText(DateUtil
@@ -201,6 +203,10 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                                 .convertDateObjectToRequestedFormat(
                                                         mCurrentCalendar.getTime(),
                                                         ConfigurationMasterHelper.outDateFormat));
+
+                                        mYear = mCurrentCalendar.get(Calendar.YEAR);
+                                        mMonth = mCurrentCalendar.get(Calendar.MONTH);
+                                        mDay = mCurrentCalendar.get(Calendar.DAY_OF_MONTH);
 
                                     }
 
