@@ -40,7 +40,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.order.discount.DiscountDialog;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -551,7 +550,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (!bModel.configurationMasterHelper.IS_ORDER_SPLIT) {
 
-            for (ProductMasterBO productBO:productList) {
+            for (ProductMasterBO productBO : productList) {
 
                 if (productBO.getOrderedCaseQty() > 0
                         || productBO.getOrderedPcsQty() > 0
@@ -565,7 +564,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     mOrderedProductList.add(productBO);
 
                     // Set the calculated flat line values in productBO
-                    double lineValue= calculateLineValue(productBO);
+                    double lineValue = calculateLineValue(productBO);
                     productBO.setDiscount_order_value(lineValue);
                     productBO.setSchemeAppliedValue(lineValue);
                     totalOrderValue += lineValue;
@@ -735,7 +734,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Vector<ProductMasterBO> bill2Products = new Vector<>();
             double bill1Value = 0, bill2Value = 0;
 
-            for (ProductMasterBO productBO:productList) {
+            for (ProductMasterBO productBO : productList) {
                 //productBO = productList.elementAt(i);
                 if (productBO.getOrderedCaseQty() > 0
                         || productBO.getOrderedPcsQty() > 0
@@ -801,7 +800,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     }
 
-    private double calculateLineValue(ProductMasterBO productBO){
+    private double calculateLineValue(ProductMasterBO productBO) {
         if (bModel.configurationMasterHelper.IS_SIH_VALIDATION
                 && bModel.configurationMasterHelper.IS_INVOICE
                 && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
