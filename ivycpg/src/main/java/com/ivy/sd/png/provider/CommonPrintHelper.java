@@ -5,7 +5,7 @@ import android.os.Environment;
 import android.text.TextPaint;
 import android.util.SparseArray;
 
-import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;

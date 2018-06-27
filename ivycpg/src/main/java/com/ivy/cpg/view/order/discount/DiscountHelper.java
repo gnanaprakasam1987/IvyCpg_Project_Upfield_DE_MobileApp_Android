@@ -1,8 +1,9 @@
-package com.ivy.cpg.view.order;
+package com.ivy.cpg.view.order.discount;
 
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -733,7 +734,7 @@ public class DiscountHelper {
             sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append("where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
-            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(),mContext) + ") OR ");
+            sb.append(" Channelid in(" + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + ") OR ");
             sb.append(" locationid in(" + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + businessModel.getRetailerMasterBO().getAccountid() + " and Accountid!=0 ))");
             sb.append(" and dm.moduleid in(select ListId from StandardListMaster where ListCode='INVOICE') ");
@@ -768,7 +769,6 @@ public class DiscountHelper {
 
 
     }
-
 
 
     /**
@@ -946,7 +946,7 @@ public class DiscountHelper {
                                         + (productBO.getOrderedOuterQty() * productBO.getOsrp());
                             }
                         }
-                        //
+
 
                         ArrayList<String> productIdList = new ArrayList<>();
                         for (SchemeProductBO schemeProductBo : schemeProductList) {
@@ -1178,27 +1178,25 @@ public class DiscountHelper {
     /**
      * clear tax and discount values product wise
      *
-     * @param orderList Ordered product list
+     * @param productMasterBO ordered product object
      */
-    public void clearProductDiscountAndTaxValue(List<ProductMasterBO> orderList) {
-        for (ProductMasterBO productMasterBO : orderList) {
-            if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productMasterBO.getBatchwiseProductCount() > 0) {
-                ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
-                if (batchList != null) {
-                    for (ProductMasterBO batchProduct : batchList) {
-                        batchProduct.setProductDiscAmount(0);
-                        batchProduct.setSchemeDiscAmount(0);
-                        batchProduct.setTaxValue(0);
-                    }
+    public void clearProductDiscountAndTaxValue(ProductMasterBO productMasterBO) {
+        if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productMasterBO.getBatchwiseProductCount() > 0) {
+            ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
+            if (batchList != null) {
+                for (ProductMasterBO batchProduct : batchList) {
+                    batchProduct.setProductDiscAmount(0);
+                    batchProduct.setSchemeDiscAmount(0);
+                    batchProduct.setTaxValue(0);
                 }
-
-            } else {
-                productMasterBO.setProductDiscAmount(0);
-                productMasterBO.setSchemeDiscAmount(0);
-                productMasterBO.setTaxValue(0);
             }
-        }
 
+        } else {
+            productMasterBO.setProductDiscAmount(0);
+            productMasterBO.setSchemeDiscAmount(0);
+            productMasterBO.setTaxValue(0);
+        }
     }
+
 
 }

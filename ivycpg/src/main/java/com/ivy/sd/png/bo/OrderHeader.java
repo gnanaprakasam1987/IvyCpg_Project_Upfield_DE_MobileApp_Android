@@ -17,7 +17,6 @@ public class OrderHeader {
 	private int crownCount;
 	private int isSplitted;
 	private String SignatureName;
-
 	private String SignaturePath;
 	private boolean isSignCaptured;
 	private float totalWeight;

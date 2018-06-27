@@ -40,6 +40,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.discount.DiscountDialog;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -70,11 +72,9 @@ import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.IndicativeOrderReasonDialog;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
-import com.ivy.sd.png.view.OrderConfirmationDialog;
 import com.ivy.sd.png.view.OrderRemarkDialog;
 import com.ivy.sd.png.view.OrderSummaryDialogFragment;
 import com.ivy.sd.png.view.SerialNoEntryScreen;
-import com.ivy.sd.png.view.StoreWiseDiscountDialog;
 import com.ivy.sd.print.BtService;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.sd.print.DemoSleeper;
@@ -250,7 +250,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         updateLabels();
 
         if (!bModel.configurationMasterHelper.IS_INVOICE && bModel.configurationMasterHelper.SHOW_DELIVERY_DATE)
-        setDeliveryDate();
+            setDeliveryDate();
 
 
         sharedPreferences = getSharedPreferences(BusinessModel.PREFS_NAME, MODE_PRIVATE);
@@ -546,16 +546,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             return;
         }
 
-        int productsCount = productList.size();
         mOrderedProductList = new LinkedList<>();
         totalOrderValue = 0;
 
-        ProductMasterBO productBO;
-
         if (!bModel.configurationMasterHelper.IS_ORDER_SPLIT) {
 
-            for (int i = 0; i < productsCount; i++) {
-                productBO = productList.elementAt(i);
+            for (ProductMasterBO productBO:productList) {
 
                 if (productBO.getOrderedCaseQty() > 0
                         || productBO.getOrderedPcsQty() > 0
@@ -568,57 +564,36 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     mOrderedProductList.add(productBO);
 
-                    double lineValue;
-
-                    if (bModel.configurationMasterHelper.IS_SIH_VALIDATION
-                            && bModel.configurationMasterHelper.IS_INVOICE
-                            && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                        if (productBO.getBatchwiseProductCount() > 0) {
-                            // Apply batch wise price apply
-                            lineValue = orderHelper
-                                    .getTotalValueOfAllBatches(productBO);
-                        } else {
-                            lineValue = (productBO.getOrderedCaseQty() * productBO
-                                    .getCsrp())
-                                    + (productBO.getOrderedPcsQty() * productBO
-                                    .getSrp())
-                                    + (productBO.getOrderedOuterQty() * productBO
-                                    .getOsrp());
-                        }
-                    } else {
-                        lineValue = (productBO.getOrderedCaseQty() * productBO
-                                .getCsrp())
-                                + (productBO.getOrderedPcsQty() * productBO
-                                .getSrp())
-                                + (productBO.getOrderedOuterQty() * productBO
-                                .getOsrp());
-                    }
-
-                    // Set the calculated values in productBO **/
+                    // Set the calculated flat line values in productBO
+                    double lineValue= calculateLineValue(productBO);
                     productBO.setDiscount_order_value(lineValue);
                     productBO.setSchemeAppliedValue(lineValue);
+                    totalOrderValue += lineValue;
+
+                    // Purpose of setting this is not clear
                     productBO.setOrderPricePiece(productBO.getSrp());
 
+                    // clear discounts.
                     productBO.setCompanyTypeDiscount(0);
                     productBO.setDistributorTypeDiscount(0);
+                    discountHelper.clearProductDiscountAndTaxValue(productBO);
                     // clear scheme free products stored in product obj
                     productBO.setSchemeProducts(new ArrayList<SchemeProductBO>());
 
-                    totalOrderValue += lineValue;
-
-                    Commons.print("line value" + lineValue);
                 }
             }
 
+            // Developed for JnJ ID : Sequencing based on user entry.
             if (bModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
                 mSortedList = new Vector<>();
                 mOrderedProductList = orderHelper.organizeProductsByUserEntry();
                 mSortedList.addAll(mOrderedProductList);
             }
 
+            // Sequencing for print. Alphabetically or Brand wise Alphabetical.
             if (bModel.configurationMasterHelper.IS_PRINT_SEQUENCE_REQUIRED) {
                 if (bModel.configurationMasterHelper.IS_PRINT_SEQUENCE_LEVELWISE) {
-                    mOrderedProductList = bModel.orderAndInvoiceHelper.sortbyLevel(mOrderedProductList);
+                    mOrderedProductList = bModel.orderAndInvoiceHelper.sortByLevel(mOrderedProductList);
                 } else {
                     mOrderedProductList = bModel.orderAndInvoiceHelper.sort(mOrderedProductList);
                 }
@@ -634,9 +609,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 totalOrderValue = totalOrderValue
                         + bModel.getOrderHeaderBO().getRemainigValue();
             }
-
-            discountHelper.clearProductDiscountAndTaxValue(mOrderedProductList);
-
 
             // Scheme calculations
             if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_ON &&
@@ -730,7 +702,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
 
 
-
             //Applying bill wise tax
             if (bModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 bModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
@@ -764,8 +735,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Vector<ProductMasterBO> bill2Products = new Vector<>();
             double bill1Value = 0, bill2Value = 0;
 
-            for (int i = 0; i < productsCount; i++) {
-                productBO = productList.elementAt(i);
+            for (ProductMasterBO productBO:productList) {
+                //productBO = productList.elementAt(i);
                 if (productBO.getOrderedCaseQty() > 0
                         || productBO.getOrderedPcsQty() > 0
                         || productBO.getOrderedOuterQty() > 0) {
@@ -828,6 +799,25 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         }
 
+    }
+
+    private double calculateLineValue(ProductMasterBO productBO){
+        if (bModel.configurationMasterHelper.IS_SIH_VALIDATION
+                && bModel.configurationMasterHelper.IS_INVOICE
+                && bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                && productBO.getBatchwiseProductCount() > 0) {
+            // Calculate batch wise price.
+            return orderHelper
+                    .getTotalValueOfAllBatches(productBO);
+
+        } else {
+            return (productBO.getOrderedCaseQty() * productBO
+                    .getCsrp())
+                    + (productBO.getOrderedPcsQty() * productBO
+                    .getSrp())
+                    + (productBO.getOrderedOuterQty() * productBO
+                    .getOsrp());
+        }
     }
 
     @Override
@@ -1531,8 +1521,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 Calendar c = Calendar.getInstance();
                 Calendar maxCalendar = Calendar.getInstance();
-                if(bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0){
-                    c.add(Calendar.DAY_OF_YEAR,1);
+                if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0) {
+                    c.add(Calendar.DAY_OF_YEAR, 1);
                 } else {
                     if (bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
                         c.add(Calendar.DAY_OF_MONTH, bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
@@ -1553,7 +1543,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         mDeliverDatePickerListener, year, month, day);
                 dialog.setPermanentTitle(getResources().getString(R.string.choose_date));
                 dialog.getDatePicker().setMinDate(c.getTimeInMillis());
-                if(bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0) {
+                if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0) {
                     dialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
                 }
                 return dialog;
