@@ -12,7 +12,6 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ActivationBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.ActivationDialog;
 import com.ivy.ui.activation.ActivationContract;
@@ -20,8 +19,6 @@ import com.ivy.ui.activation.di.ActivationModule;
 import com.ivy.ui.activation.di.DaggerActivationComponent;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DeviceUtils;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -170,7 +167,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     @Override
     public void showActivationDialog() {
         activation = new ActivationDialog(
-                this, addUrl,mActivationPresenter.getAppUrls());
+                this, activationDialogDismissListener,mActivationPresenter.getAppUrls());
         activation.setCancelable(false);
         activation.show();
     }
@@ -191,12 +188,12 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
     @Override
-    public void showToastAppUrlConfiguredMessage() {
+    public void showConfigureUrlMessage() {
         showMessage(getResources().getString(R.string.please_check_app_url_configured));
     }
 
     @Override
-    public void showToastValidKeyContactAdmin() {
+    public void showContactAdminMessage() {
         showMessage(getResources().getString(R.string.valid_key_oops_contact_device_admin));
     }
 
@@ -210,7 +207,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
 
-    DialogInterface.OnDismissListener addUrl = new DialogInterface.OnDismissListener() {
+    DialogInterface.OnDismissListener activationDialogDismissListener = new DialogInterface.OnDismissListener() {
 
         @Override
         public void onDismiss(DialogInterface dialog) {

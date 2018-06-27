@@ -171,7 +171,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             //---->15 NOTIFY_URL_NOT_MAPPED_ERROR
             case IvyConstants.NOTIFY_URL_NOT_MAPPED_ERROR:
                 clearAppUrl();
-                getIvyView().showToastValidKeyContactAdmin();
+                getIvyView().showContactAdminMessage();
                 break;
             //----> 6 NOTIFY_ACTIVATION_FAILED
             case IvyConstants.NOTIFY_ACTIVATION_FAILED:
@@ -295,7 +295,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                         else {
                             //----> 11 NOTIFY_NOT_VALID_URL
                             clearAppUrl();
-                            getIvyView().showToastAppUrlConfiguredMessage();
+                            getIvyView().showConfigureUrlMessage();
                         }
                     }
                 }));

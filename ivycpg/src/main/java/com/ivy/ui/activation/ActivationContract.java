@@ -40,9 +40,9 @@ public interface ActivationContract {
         void showSuccessfullyActivatedAlert();
 
 
-        void showToastAppUrlConfiguredMessage();
+        void showConfigureUrlMessage();
 
-        void showToastValidKeyContactAdmin();
+        void showContactAdminMessage();
 
     }
 

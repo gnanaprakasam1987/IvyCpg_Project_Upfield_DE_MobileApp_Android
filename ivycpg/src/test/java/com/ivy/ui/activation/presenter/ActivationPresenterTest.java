@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -196,11 +195,27 @@ public class ActivationPresenterTest {
 
         //When
         mPresenter.triggerIMEIActivation("abcd", "abcd", "abcd");
-
         testScheduler.triggerActions();
+
         then(mActivationView).should().hideLoading();
         then(mActivationView).should().navigateToLoginScreen();
 
+
+    }
+
+    @Test
+    public void testImeiResponseNullError(){
+        JSONObject jsonObject =null;
+
+        given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
+                "abcd")).willReturn(Observable.just(jsonObject));
+
+        //When
+        mPresenter.triggerIMEIActivation("abcd", "abcd", "abcd");
+        testScheduler.triggerActions();
+
+        then(mActivationView).should().hideLoading();
+        then(mActivationView).should().showServerError();
 
     }
 
@@ -265,7 +280,7 @@ public class ActivationPresenterTest {
     public void testShowValidError() {
         mPresenter.showValidError(15);
         testScheduler.triggerActions();
-        then(mActivationView).should().showToastValidKeyContactAdmin();
+        then(mActivationView).should().showContactAdminMessage();
 
     }
 
@@ -313,7 +328,7 @@ public class ActivationPresenterTest {
                 .willReturn(Single.just(false));
         mPresenter.checkServerStatusBasedOnActivation("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx");
         testScheduler.triggerActions();
-        then(mActivationView).should().showToastAppUrlConfiguredMessage();
+        then(mActivationView).should().showConfigureUrlMessage();
     }
 
 
