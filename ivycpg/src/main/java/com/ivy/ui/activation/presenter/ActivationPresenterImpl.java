@@ -6,7 +6,6 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.bo.ActivationBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.activation.ActivationContract;
 import com.ivy.ui.activation.data.ActivationDataManager;
@@ -41,7 +40,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     public ActivationPresenterImpl(DataManager dataManager,
                                    SchedulerProvider schedulerProvider,
                                    CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper, ActivationDataManager activationDataManager) {
-        super(dataManager, schedulerProvider, compositeDisposable,configurationMasterHelper);
+        super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper);
         this.activationDataManager = activationDataManager;
         this.dataManager = dataManager;
     }
@@ -72,6 +71,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     @Override
     public void triggerIMEIActivation(String imEi, String versionName, String versionNumber) {
+        getIvyView().showLoading();
         getCompositeDisposable().add((Disposable) activationDataManager.doIMEIActivationAtHttp(imEi, versionName, versionNumber)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -117,7 +117,17 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                 setValueToPreference(jsonObject.getString("SyncServiceURL").replace(" ", ""),
                         jsonObject.getString("ApplicationName"));
                 setSERVER_URL(jsonObject.getString("SyncServiceURL").replace(" ", ""));
-                checkServerStatus(jsonObject.getString("SyncServiceURL"));
+                // checkServerStatus(jsonObject.getString("SyncServiceURL"));
+
+                boolean isValid = checkServerStatusBasedOnActivation(jsonObject.getString("SyncServiceURL"));
+                //----> 13 NOTIFY_SUCESSFULLY_ACTIVATED_EXTENDED
+                if (isValid)
+                    getIvyView().showSuccessfullyActivatedAlert();
+                else {
+                    clearAppUrl();
+                    //----> 11 NOTIFY_NOT_VALID_URL
+                    getIvyView().showToastAppUrlConfiguredMessage();
+                }
             }
         } catch (JSONException e) {
             // Commons.printException(e);
@@ -178,8 +188,8 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
      * */
 
     private void doActionBasedOnImEiActivationResult(JSONObject jsonObj) {
-      //  Commons.printInformation("Activation" + "onSucess Response"
-             //   + jsonObj.toString());
+        //  Commons.printInformation("Activation" + "onSucess Response"
+        //   + jsonObj.toString());
 
         try {
             JSONArray jsonArray = (JSONArray) jsonObj.get("Table");
@@ -250,10 +260,29 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     private void doActionThree3() {
         // ---> 8  NOTIFY_ACTIVATION_LIST_SINGLE
         String appUrl = dataManager.getBaseUrl();
+        //  if true  ----> 14 NOTIFY_ACTIVATION_LIST_SINGLE_EXTEND  go to login Screen
+        //  else   ---->11  NOTIFY_NOT_VALID_URL
         checkServerStatus(appUrl);
+
 
     }
 
+
+    public boolean checkServerStatusBasedOnActivation(String url) {
+        final boolean[] isValid = {false};
+        getCompositeDisposable().add(activationDataManager.isServerOnline(url)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean response) throws Exception {
+                        isValid[0] = response;
+                        if (!response)
+                            getIvyView().showInvalidUrlError();
+                    }
+                }));
+        return isValid[0];
+    }
 
     @Override
     public void checkServerStatus(String url) {
@@ -276,6 +305,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
         String appUrl = dataManager.getBaseUrl();
         if (appUrl.isEmpty()) {
             clearAppUrl();
+            //----->10 NOTIFY_URL_EMPTY
             getIvyView().showAppUrlIsEmptyError();
 
         } else {

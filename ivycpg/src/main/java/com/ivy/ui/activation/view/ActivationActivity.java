@@ -2,18 +2,18 @@ package com.ivy.ui.activation.view;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.ActivationDialog;
-import com.ivy.sd.png.view.ScreenActivationFragment;
 import com.ivy.ui.activation.ActivationContract;
 import com.ivy.ui.activation.data.ActivationError;
 import com.ivy.ui.activation.di.ActivationModule;
@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.annotations.Nullable;
 
 public class ActivationActivity extends BaseActivity implements ActivationContract.ActivationView {
 
@@ -45,7 +46,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_screen_activation;
+        return R.layout.activity_activation;
     }
 
     @Override
@@ -67,6 +68,8 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     }
 
+
+    @Nullable
     @OnClick(R.id.activate)
     void onActivateClick() {
         if (isNetworkConnected())
@@ -94,90 +97,65 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @Override
     protected void getMessageFromAliens() {
-
     }
 
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void setUpViews() {
-
         mVersionNameTxt.setText(getString(R.string.version) + AppUtils.getApplicationVersionName(this));
     }
 
     @Override
     public void showActivationEmptyError() {
+        showAlert("", getResources().getString(R.string.enter_activation_id));
 
     }
 
     @Override
     public void showInvalidActivationError() {
-
+        showAlert("", getResources().getString(R.string.activation_key_should_be_sixteen_character));
     }
 
     @Override
     public void navigateToLoginScreen() {
-
+        startActivity(new Intent(ActivationActivity.this, LoginScreen.class));
+        finish();
     }
 
     @Override
     public void showInvalidUrlError() {
-
-    }
-
-    //private ProgressDialog progressDialogue;
-    private AlertDialog.Builder builder;
-    private AlertDialog alertDialog;
-
-    @Override
-    public void showLoading() {
-        super.showLoading();
-
-        builder = new AlertDialog.Builder(this);
-        alertDialog = builder.create();
-        // alertDialog.show();
-    }
-
-    @Override
-    public void hideLoading() {
-        super.hideLoading();
-        if (alertDialog != null)
-            alertDialog.dismiss();
+        showMessage(getResources().getString(R.string.please_check_app_url_configured));
     }
 
     @Override
     public void showActivationError(ActivationError activationError) {
-        Toast.makeText(this, "" + activationError.getMessage() + activationError.getStatus(), Toast.LENGTH_SHORT).show();
+        showMessage(activationError.getMessage() + activationError.getStatus());
     }
 
     @Override
     public void showAppUrlIsEmptyError() {
-
+        showMessage(R.string.app_url_is_empty);
     }
 
     @Override
     public void showJsonExceptionError() {
-
+        showMessage(getResources().getString(R.string.contact_system_admin));
     }
 
     @Override
     public void showServerError() {
-
-    }
-
-    @Override
-    public void showActivatedSuccessMessage() {
-
+        showMessage(getResources().getString(R.string.contact_system_admin));
     }
 
     @Override
     public void showPreviousActivationError() {
-        showMessage(R.string.previous_activation_not_done_for_this_device);
+        showMessage(getResources().getString(R.string.previous_activation_not_done_for_this_device));
     }
 
     @Override
     public void showActivationDialog() {
-        ActivationDialog activation = new ActivationDialog(
+        activation = new ActivationDialog(
                 this, addUrl);
         activation.setCancelable(false);
         activation.show();
@@ -185,7 +163,22 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @Override
     public void showTryValidKeyError() {
+        showAlert("", getResources().getString(R.string.invalid_key_try_with_valid_key));
+    }
 
+    @Override
+    public void showActivationFailedError() {
+        showAlert("", getResources().getString(R.string.activation_failed));
+    }
+
+    @Override
+    public void showSuccessfullyActivatedAlert() {
+        showMessage(getResources().getString(R.string.successfully_activated));
+    }
+
+    @Override
+    public void showToastAppUrlConfiguredMessage() {
+        showMessage(getResources().getString(R.string.please_check_app_url_configured));
     }
 
     @Override
@@ -197,16 +190,13 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     }
 
-    @Override
-    public void showActivationFailedError() {
-        System.out.println("showActivationFailedError");
-    }
 
     DialogInterface.OnDismissListener addUrl = new DialogInterface.OnDismissListener() {
 
         @Override
         public void onDismiss(DialogInterface dialog) {
-            activation.dismiss();
+            if (activation != null)
+                activation.dismiss();
             mActivationPresenter.doActionForActivationDismiss();
 
         }

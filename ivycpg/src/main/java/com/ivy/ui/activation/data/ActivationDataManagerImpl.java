@@ -125,7 +125,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
                     }
 
                 });
-              //  subscriber.onComplete();
+                subscriber.onComplete();
             }
 
         });

@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
@@ -94,15 +95,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         this.setContentView(this.getLayoutId());
 
-        setUpDefaults();
-
         initializeDi();
+
+        setUpDefaults();
 
         getMessageFromAliens();
 
-        setUpViews();
-
         initVariables();
+
+        setUpViews();
 
 
     }
@@ -283,7 +284,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void hideLoading() {
-        alertDialog.dismiss();
+        if (alertDialog != null)
+            alertDialog.dismiss();
     }
 
     @Override
@@ -497,6 +499,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     private void createDialogBuilder() {
         if (builder == null)
             try {
+                builder = new AlertDialog.Builder(BaseActivity.this);
                 View view = View.inflate(this, R.layout.custom_alert_dialog, null);
 
                 TextView title = (TextView) view.findViewById(R.id.title);
@@ -551,6 +554,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public void setFontSize(String fontSize) {
         setFontStyle(fontSize);
     }
+
+    @Override
+    public void showAlert(String title, String msg) {
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok));
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
 }
 
 

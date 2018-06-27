@@ -41,4 +41,7 @@ public interface BaseIvyView {
     void setNavyBlueTheme();
 
     void setFontSize(String fontSize);
+
+    void showAlert(String title,String msg);
+
 }

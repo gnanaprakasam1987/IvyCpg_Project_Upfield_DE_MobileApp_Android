@@ -25,8 +25,6 @@ public interface ActivationContract {
 
         void showServerError();
 
-        void showActivatedSuccessMessage();
-
         void showPreviousActivationError();
 
         void showActivationDialog();
@@ -37,6 +35,10 @@ public interface ActivationContract {
 
         void showActivationFailedError();
 
+        void showSuccessfullyActivatedAlert();
+
+
+        void showToastAppUrlConfiguredMessage();
     }
 
     @PerActivity

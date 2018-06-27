@@ -58,6 +58,17 @@ public class CommonDialog extends Dialog {
 
     }
 
+
+    public CommonDialog(Context context, String title, String msg,
+                        String posBtnTxt) {
+        super(context);
+        this.context = context;
+        this.title = title;
+        this.msg = msg;
+        this.posBtnTxt = posBtnTxt;
+
+    }
+
     public CommonDialog(Context bContext, Context context, String title, String msg,
                         boolean imgDisplay, String posBtnTxt, String negBtnTxt,
                         positiveOnClickListener posClickListener, negativeOnClickListener negClickListener) {
@@ -186,7 +197,8 @@ public class CommonDialog extends Dialog {
             @Override
             public void onClick(View arg0) {
                 //callback method
-                posClickListener.onPositiveButtonClick();
+                if (posClickListener != null)
+                    posClickListener.onPositiveButtonClick();
                 dismiss();
             }
         });
@@ -202,7 +214,8 @@ public class CommonDialog extends Dialog {
             @Override
             public void onClick(View arg0) {
                 //callback method
-                negClickListener.onNegativeButtonClick();
+                if (negClickListener != null)
+                    negClickListener.onNegativeButtonClick();
                 dismiss();
 
             }
