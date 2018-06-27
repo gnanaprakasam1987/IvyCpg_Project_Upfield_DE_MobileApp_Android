@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
@@ -16,12 +17,10 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -56,6 +55,7 @@ import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -85,6 +85,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
     private RadioGroup rbPaymentType;
     private boolean isClicked, setRadioBtnChecked;
     private EditText collectionamount, chequenumber;
+    private TextView img_max_amount, img_min_amount;
     private TextView tvAmount;
     private String paymentmode = "";
     private CollectionBO collectionbo;
@@ -112,9 +113,11 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
     private double creditBalance = 0d;
     private String mTransactionPaymentMode = "";
     private PaymentBO pay;
-    Toolbar toolbar;
+
+    TextView tv_header_title;
     private RelativeLayout ll;
     private LinearLayout ll_keyboard;
+    private Button close_btn;
 
     ImageView capturecheque;
     private String mImageName;
@@ -131,19 +134,12 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         super(context);
         this.context = context;
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         bmodel = (BusinessModel) context.getApplicationContext();
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        Window window = getWindow();
-        lp.copyFrom(window.getAttributes());
-        // This makes the dialog take up the full width
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        window.setAttributes(lp);
         orderSummaryActivity = orderSummary;
         mTotalInvoiceAmount = invoiceAmount;
         invoiceamount = mTotalInvoiceAmount;
-        ll_keyboard = (LinearLayout) findViewById(R.id.footer);
         collectionbo = collection;
         osamount = minimumAmount;
         this.creditBalance = creditBalance;
@@ -152,18 +148,19 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         RelativeLayout ll = (RelativeLayout) LayoutInflater.from(context)
                 .inflate(R.layout.dialog_collectionbeforeinvoice, null);
         setContentView(ll);
-        this.getWindow().setLayout(LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         setCancelable(true);
         // Initialize Views in the Screen
         initializeView();
         inputManager = (InputMethodManager) orderSummaryActivity
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 
     }
 
@@ -235,6 +232,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                         public void onCheckedChanged(RadioGroup group,
                                                      int checkedId) {
                             if (checkedId == R.id.chequeRadioButton) {
+                                ll_keyboard.setVisibility(View.VISIBLE);
                                 collectionamount.setEnabled(true);
                                 if (collectionbo.getCashamt() != 0) {
                                     collectionbo.setCashamt(0);
@@ -258,6 +256,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                         .indexOfChild(findViewById(checkedId)));
 
                             } else if (checkedId == R.id.cashRadioButton) {
+                                ll_keyboard.setVisibility(View.VISIBLE);
                                 collectionamount.setEnabled(true);
                                 if (collectionbo.getChequeamt() != 0) {
                                     collectionbo.setChequeamt(0);
@@ -293,6 +292,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                 } else {
                                     mCreditNoteLV.setVisibility(View.VISIBLE);
                                     collectionamount.requestFocus();
+                                    ll_keyboard.setVisibility(View.VISIBLE);
                                 }
 
                                 if (!bmodel.configurationMasterHelper.IS_PARTIAL_CREDIT_NOTE_ALLOW) {
@@ -329,11 +329,16 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         try {
             chequenumber.setOnTouchListener(new OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
+                    ll_keyboard.setVisibility(View.GONE);
                     QUANTITY = chequenumber;
                     int inType = chequenumber.getInputType();
                     chequenumber.setInputType(InputType.TYPE_NULL);
                     chequenumber.onTouchEvent(event);
                     chequenumber.setInputType(inType);
+
+                    inputManager.showSoftInput(
+                            chequenumber, InputMethodManager.SHOW_FORCED);
+                    chequenumber.requestFocus();
                     return true;
                 }
             });
@@ -356,6 +361,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                     collectionamount.requestFocus();
                     inputManager.hideSoftInputFromWindow(
                             collectionamount.getWindowToken(), 0);
+                    ll_keyboard.setVisibility(View.VISIBLE);
                     return true;
                 }
             });
@@ -411,8 +417,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                 collectionbo.setCashamt(SDUtil
                                         .convertToDouble(qty));
 
-                            payTotal.setText("Total - "
-                                    + bmodel.formatValue((collectionbo
+                            payTotal.setText(bmodel.formatValue((collectionbo
                                     .getCashamt()
                                     + collectionbo.getChequeamt()
                                     + collectionbo.getCreditamt()
@@ -842,12 +847,14 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
     private void modegone() {
         layoutBankMode.setVisibility(View.GONE);
         layoutChequeDate.setVisibility(View.GONE);
+        capturecheque.setVisibility(View.GONE);
         layoutKeypad.setVisibility(View.VISIBLE);
     }
 
     private void modevisibility() {
         layoutBankMode.setVisibility(View.VISIBLE);
         layoutChequeDate.setVisibility(View.VISIBLE);
+        capturecheque.setVisibility(View.VISIBLE);
     }
 
     private void modeInvisible() {
@@ -859,7 +866,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         layoutBankMode.setVisibility(View.GONE);
         layoutChequeDate.setVisibility(View.GONE);
         payTotal.setVisibility(View.GONE);
-
+        capturecheque.setVisibility(View.GONE);
     }
 
     private void initializeView() {
@@ -873,6 +880,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             layoutKeypad = (LinearLayout) findViewById(R.id.keypad);
             chequenumber = (EditText) findViewById(R.id.collectionchequeNo);
             payTotal = (TextView) findViewById(R.id.payTotal);
+            img_max_amount = (TextView) findViewById(R.id.img_max_amount);
             chequedate = (Button) findViewById(R.id.collectionDate);
             Bank = (Spinner) findViewById(R.id.bankName);
             Branch = (Spinner) findViewById(R.id.bankArea);
@@ -880,33 +888,61 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             btnDot.setVisibility(View.VISIBLE);
             btnSubmit.setOnClickListener(this);
             tvMinimumAmount = (TextView) findViewById(R.id.tv_minimum_amount);
+            img_min_amount = (TextView) findViewById(R.id.img_min_amount);
             mCreditNoteLV = (ListView) findViewById(R.id.lv_creditnote);
+            ll_keyboard = (LinearLayout) findViewById(R.id.footer);
 
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
-            toolbar.setTitle(R.string.collection);
-            toolbar.setTitleTextColor(Color.WHITE);
-            toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 
+            tv_header_title = findViewById(R.id.titlebar);
+            close_btn = (Button) findViewById(R.id.closeButton);
+
+            tv_header_title.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView) findViewById(R.id.productName2)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.minimumamount)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.mode_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.tv_branch_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView) findViewById(R.id.tv_bank_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView) findViewById(R.id.totalLabel)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView) findViewById(R.id.payTotal)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+            ((RadioButton) findViewById(R.id.cashRadioButton)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            ((RadioButton) findViewById(R.id.chequeRadioButton)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            ((RadioButton) findViewById(R.id.creditNoteRadioButton)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+            tvMinimumAmount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+            tvAmount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+
+            btnSubmit.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            if (bmodel.configurationMasterHelper.COLL_CHEQUE_MODE) {
+                chequenumber.setInputType(InputType.TYPE_CLASS_TEXT);
+            }
+
+            close_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onMenuItemClick(MenuItem arg0) {
-                    // TODO Auto-generated method stub
-                    int i = arg0.getItemId();
-                    if (i == R.id.menu_close) {
+                public void onClick(View v) {
                         if (orderSummaryActivity != null)
                             CollectionBeforeInvoiceDialog.this.orderSummaryActivity
                                     .onResume();
                         dismiss();
-                    }
-
-                    return false;
                 }
             });
-            toolbar.inflateMenu(R.menu.menu_dialog);
-            toolbar.getMenu().findItem(R.id.menu_done).setVisible(false);
+
             /*
              * collectionamount.setText(BigDecimal.valueOf(collectionbo
 			 * .getCashamt()) + "");
 			 */
+
+            img_max_amount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    collectionamount.setText(mTotalInvoiceAmount + "");
+                }
+            });
+
+            img_min_amount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    collectionamount.setText(osamount + "");
+                }
+            });
 
             capturecheque = (ImageView) findViewById(R.id.capturecheque);
             capturecheque.setOnClickListener(new View.OnClickListener() {
