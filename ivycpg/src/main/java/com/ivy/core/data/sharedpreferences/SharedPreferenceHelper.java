@@ -1,21 +1,21 @@
 package com.ivy.core.data.sharedpreferences;
 
-interface SharedPreferenceHelper {
+public interface SharedPreferenceHelper {
 
-    String getBaseUrl();
+    public String getBaseUrl();
 
-    void setBaseUrl(String baseUrl);
+    public void setBaseUrl(String baseUrl);
 
-    String getApplicationName();
+    public String getApplicationName();
 
-    void setApplicationName(String applicationName);
+    public void setApplicationName(String applicationName);
 
-    String getActivationKey();
+    public String getActivationKey();
 
-    void setActivationKey(String activationKey);
+    public void setActivationKey(String activationKey);
 
-    String getPreferredLanguage();
+    public String getPreferredLanguage();
 
-    void setPreferredLanguage(String language);
+    public void setPreferredLanguage(String language);
 
 }
