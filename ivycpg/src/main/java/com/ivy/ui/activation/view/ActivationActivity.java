@@ -6,21 +6,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ActivationBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.ActivationDialog;
 import com.ivy.ui.activation.ActivationContract;
-import com.ivy.ui.activation.data.ActivationError;
 import com.ivy.ui.activation.di.ActivationModule;
 import com.ivy.ui.activation.di.DaggerActivationComponent;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DeviceUtils;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -142,8 +143,8 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
     @Override
-    public void showActivationError(ActivationError activationError) {
-        showMessage(activationError.getMessage() + activationError.getStatus());
+    public void showActivationError(String activationError) {
+        showMessage(activationError);
     }
 
     @Override
@@ -167,9 +168,9 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
     @Override
-    public void showActivationDialog() {
+    public void showActivationDialog(List<ActivationBO> appUrls) {
         activation = new ActivationDialog(
-                this, addUrl);
+                this, addUrl,appUrls);
         activation.setCancelable(false);
         activation.show();
     }

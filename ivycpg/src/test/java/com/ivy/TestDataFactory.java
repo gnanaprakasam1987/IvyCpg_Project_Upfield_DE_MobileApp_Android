@@ -72,6 +72,16 @@ public abstract class TestDataFactory {
             "  ]\n" +
             "}";
 
+
+    private static String EMPTY_ARRAY ="{\n" +
+            "  \"Table\": [\n" +
+            "    \n" +
+            "    \n" +
+            "  ]\n" +
+            "}";
+
+
+
     public static JSONObject getValidActivationObject() {
 
         try {
@@ -123,4 +133,12 @@ public abstract class TestDataFactory {
         return new JSONObject();
     }
 
+    public static JSONObject getValidActivationWithEmptyArray() {
+        try {
+            return new JSONObject(EMPTY_ARRAY);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new JSONObject();
+    }
 }

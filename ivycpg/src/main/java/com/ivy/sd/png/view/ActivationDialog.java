@@ -21,143 +21,145 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ActivationBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 import java.util.List;
 
 public class ActivationDialog extends Dialog implements OnClickListener {
-	private BusinessModel bmodel;
-	private Button add, close;
-	private OnDismissListener addBatch;
-	private Activity activity;
-	private ListView listView;
-	private ActivationListViewAdapter adapter;
+    private Button add, close;
+    private OnDismissListener addBatch;
+    private Activity activity;
+    private ListView listView;
+    private ActivationListViewAdapter adapter;
+    private List<ActivationBO> appUrls;
 
-	public ActivationDialog(Context context) {
-		super(context);
-	}
+    public ActivationDialog(Context context) {
+        super(context);
+    }
 
-	public ActivationDialog(Activity activity, OnDismissListener addBatch) {
-		super(activity);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		this.activity = activity;
-		this.addBatch = addBatch;
-		setContentView(R.layout.dialog_activation);
-		setCancelable(true);
-		bmodel = (BusinessModel) activity.getApplicationContext();
-		TextView title = (TextView) findViewById(R.id.title);
-		title.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
-		add = (Button) findViewById(R.id.add);
-		add.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-		add.setOnClickListener(this);
-		close = (Button) findViewById(R.id.close);
-		close.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-		close.setOnClickListener(this);
-		listView = (ListView) findViewById(R.id.list);
-		adapter = new ActivationListViewAdapter(
-				bmodel.activationHelper.getAppUrls());
-		listView.setAdapter(adapter);
-	}
+    public ActivationDialog(Activity activity, OnDismissListener addBatch, List<ActivationBO> appUrls) {
+        super(activity);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.activity = activity;
+        this.addBatch = addBatch;
+        this.appUrls = appUrls;
+        setContentView(R.layout.dialog_activation);
+        setCancelable(true);
 
-	@Override
-	public void onClick(View v) {
+        TextView title = (TextView) findViewById(R.id.title);
+        title.setTypeface(FontUtils.getFontBalooHai(activity, FontUtils.FontType.MEDIUM));
+        add = (Button) findViewById(R.id.add);
+        add.setTypeface(FontUtils.getFontBalooHai(activity, FontUtils.FontType.REGULAR));
+        add.setOnClickListener(this);
+        close = (Button) findViewById(R.id.close);
+        close.setTypeface(FontUtils.getFontBalooHai(activity, FontUtils.FontType.REGULAR));
+        close.setOnClickListener(this);
 
-		int id = v.getId();
-		if (id == R.id.add) {
-			if (isAtleastOneRadioSelected()) {
-				addBatch.onDismiss(ActivationDialog.this);
-			} else
-				Toast.makeText(activity, R.string.please_select_item,
-						Toast.LENGTH_SHORT).show();
-		} else if (id == R.id.close) {
-			ActivationDialog.this.dismiss();
-		}
-	}
+        listView = findViewById(R.id.list);
+        adapter = new ActivationListViewAdapter(appUrls);
+        listView.setAdapter(adapter);
+    }
 
-	ActivationBO activationObj;
+    @Override
+    public void onClick(View v) {
 
-	private class ActivationListViewAdapter extends ArrayAdapter<ActivationBO> {
+        int id = v.getId();
+        if (id == R.id.add) {
+            if (isAtleastOneRadioSelected()) {
+                addBatch.onDismiss(ActivationDialog.this);
+            } else
+                Toast.makeText(activity, R.string.please_select_item,
+                        Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.close) {
+            ActivationDialog.this.dismiss();
+        }
+    }
 
-		private List<ActivationBO> items;
+    ActivationBO activationObj;
 
-		public ActivationListViewAdapter(List<ActivationBO> items) {
-			super(activity, R.layout.row_activation_dialog, items);
-			this.items = items;
-		}
+    private class ActivationListViewAdapter extends ArrayAdapter<ActivationBO> {
 
-		public ActivationBO getItem(int position) {
-			return items.get(position);
-		}
+        private List<ActivationBO> items;
 
-		public long getItemId(int position) {
-			return position;
-		}
+        public ActivationListViewAdapter(List<ActivationBO> items) {
+            super(activity, R.layout.row_activation_dialog, items);
+            this.items = items;
+        }
 
-		public int getCount() {
-			return items.size();
-		}
+        public ActivationBO getItem(int position) {
+            return items.get(position);
+        }
 
-		public View getView(final int position, View convertView,
-				ViewGroup parent) {
-			final ViewHolder holder;
-			activationObj = (ActivationBO) items.get(position);
+        public long getItemId(int position) {
+            return position;
+        }
 
-			View row = convertView;
-			if (row == null) {
-				LayoutInflater inflater = activity.getLayoutInflater();
-				row = inflater.inflate(R.layout.row_activation_dialog, parent,
-						false);
-				holder = new ViewHolder();
-				holder.environmentRadioBtn = (RadioButton) row
-						.findViewById(R.id.environmentRadioBtn);
-				holder.environmentRadioBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-				holder.environmentRadioBtn
-						.setOnClickListener(new View.OnClickListener() {
+        public int getCount() {
+            return items.size();
+        }
 
-							@Override
-							public void onClick(View v) {
-								for (ActivationBO bo : items)
-									bo.setChecked(false);
-								if (((RadioButton) v).isChecked())
-									holder.activationBO.setChecked(true);
-								else
-									holder.activationBO.setChecked(false);
-								adapter.notifyDataSetChanged();
-							}
-						});
+        public View getView(final int position, View convertView,
+                            ViewGroup parent) {
+            final ViewHolder holder;
+            activationObj = (ActivationBO) items.get(position);
 
-				row.setTag(holder);
+            View row = convertView;
+            if (row == null) {
+                LayoutInflater inflater = activity.getLayoutInflater();
+                row = inflater.inflate(R.layout.row_activation_dialog, parent,
+                        false);
+                holder = new ViewHolder();
+                holder.environmentRadioBtn = (RadioButton) row
+                        .findViewById(R.id.environmentRadioBtn);
+                holder.environmentRadioBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,activity));
+                holder.environmentRadioBtn
+                        .setOnClickListener(new View.OnClickListener() {
 
-			} else {
-				holder = (ViewHolder) row.getTag();
-			}
-			holder.activationBO = activationObj;
-			holder.environmentRadioBtn.setText(""+holder.activationBO.getEnviroinment());
+                            @Override
+                            public void onClick(View v) {
+                                for (ActivationBO bo : items)
+                                    bo.setChecked(false);
+                                if (((RadioButton) v).isChecked())
+                                    holder.activationBO.setChecked(true);
+                                else
+                                    holder.activationBO.setChecked(false);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
 
-			holder.environmentRadioBtn.setChecked(holder.activationBO
-					.isChecked());
+                row.setTag(holder);
 
-			return (row);
-		}
+            } else {
+                holder = (ViewHolder) row.getTag();
+            }
+            holder.activationBO = activationObj;
+            holder.environmentRadioBtn.setText("" + holder.activationBO.getEnviroinment());
 
-	}
+            holder.environmentRadioBtn.setChecked(holder.activationBO
+                    .isChecked());
 
-	protected boolean isAtleastOneRadioSelected() {
-		for (ActivationBO bo : bmodel.activationHelper.getAppUrls()) {
-			if (bo.isChecked() == true) {
-				SharedPreferences.Editor editor = PreferenceManager
-						.getDefaultSharedPreferences(activity).edit();
-				editor.putString("appUrlNew",bo.getUrl());
-				editor.putString("application", bo.getEnviroinment());
-				editor.commit();
-				return true;
-			}
-		}
-		return false;
-	}
+            return (row);
+        }
 
-	class ViewHolder {
-		ActivationBO activationBO;
-		RadioButton environmentRadioBtn;
-	}
+    }
+
+    protected boolean isAtleastOneRadioSelected() {
+        for (ActivationBO bo :appUrls) {
+            if (bo.isChecked() == true) {
+                SharedPreferences.Editor editor = PreferenceManager
+                        .getDefaultSharedPreferences(activity).edit();
+                editor.putString("appUrlNew", bo.getUrl());
+                editor.putString("application", bo.getEnviroinment());
+                editor.commit();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    class ViewHolder {
+        ActivationBO activationBO;
+        RadioButton environmentRadioBtn;
+    }
 
 }

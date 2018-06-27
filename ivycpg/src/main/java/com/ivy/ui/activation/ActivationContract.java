@@ -3,7 +3,9 @@ package com.ivy.ui.activation;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.ui.activation.data.ActivationError;
+import com.ivy.sd.png.bo.ActivationBO;
+
+import java.util.List;
 
 public interface ActivationContract {
 
@@ -17,7 +19,7 @@ public interface ActivationContract {
 
         void showInvalidUrlError();
 
-        void showActivationError(ActivationError activationError);
+        void showActivationError(String activationError);
 
         void showAppUrlIsEmptyError();
 
@@ -27,7 +29,7 @@ public interface ActivationContract {
 
         void showPreviousActivationError();
 
-        void showActivationDialog();
+        void showActivationDialog(List<ActivationBO> appUrls);
 
         void showTryValidKeyError();
 

@@ -103,8 +103,11 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     private void doActionBasedOnActivationResult(JSONObject jsonObj) {
 
-        if (jsonObj == null)
+        if (jsonObj == null) {
+            //---->2
+            getIvyView().showServerError();
             return;
+        }
 
         try {
             JSONArray jsonArray = (JSONArray) jsonObj.get(TABLE);
@@ -123,9 +126,6 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             }
         } catch (JSONException e) {
             //--->16
-            getIvyView().showJsonExceptionError();
-        } catch (Exception e) {
-            //---->2
             getIvyView().showServerError();
         }
     }
@@ -161,7 +161,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             getIvyView().showActivationFailedError();
         } else
             //2--->
-            getIvyView().showActivationError(activationError);
+            getIvyView().showActivationError(activationError.getMessage());
 
     }
 
@@ -203,9 +203,11 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
      * */
 
     private void doActionBasedOnImEiActivationResult(JSONObject jsonObj) {
-        //  Commons.printInformation("Activation" + "onSucess Response"
-        //   + jsonObj.toString());
 
+        if (jsonObj == null) {
+            getIvyView().showServerError();
+            return;
+        }
         try {
             JSONArray jsonArray = (JSONArray) jsonObj.get(TABLE);
             if (jsonArray == null || jsonArray.length() == 0) {
@@ -226,10 +228,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                         doActionThree3();
                     }
                 } else {
-                    if (getAppUrls() == null)
-                        setAppUrls(new ArrayList<ActivationBO>());
-                    else
-                        getAppUrls().clear();
+                    List<ActivationBO> appUrls = new ArrayList<>();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                         ActivationBO bo = new ActivationBO();
@@ -237,14 +236,14 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                                 .getString(SYNC_SERVICE_URL).replace(" ", ""));
                         bo.setEnviroinment(jsonObject
                                 .getString(APPLICATION_NAME));
-                        getAppUrls().add(bo);
+                        appUrls.add(bo);
                     }
 
                     // ---->7  NOTIFY_ACTIVATION_LIST
-                    showActivationDialog(getAppUrls());
+                    showActivationDialog(appUrls);
                 }
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             getIvyView().showServerError();
         }
 
@@ -262,7 +261,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             clearAppUrl();
             getIvyView().showPreviousActivationError();
         } else {
-            getIvyView().showActivationDialog();
+            getIvyView().showActivationDialog(appUrls);
         }
     }
 
@@ -334,12 +333,4 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     }
 
-
-    private List<ActivationBO> getAppUrls() {
-        return appUrls;
-    }
-
-    private void setAppUrls(List<ActivationBO> appUrls) {
-        this.appUrls = appUrls;
-    }
 }
