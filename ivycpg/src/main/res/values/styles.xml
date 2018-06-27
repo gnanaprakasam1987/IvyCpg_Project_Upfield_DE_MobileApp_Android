@@ -1060,7 +1060,7 @@ negative button and neutral button -->
     </style>
 
     <style name="userNameTextView" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/highlight_small</item>
+        <item name="android:textSize">@dimen/font_large</item>
         <item name="android:textColor">@color/user_name</item>
     </style>
 

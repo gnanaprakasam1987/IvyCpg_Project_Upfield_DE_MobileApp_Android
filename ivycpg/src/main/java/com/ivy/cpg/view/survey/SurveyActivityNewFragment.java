@@ -568,8 +568,56 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (view == saveButton) {
             if (!checkClicked) {
                 checkClicked = true;
-                if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
-                    if (surveyHelperNew.isAllAnswered()) {
+                if (surveyHelperNew.hasDataToSave()) {
+                    if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
+                        if (surveyHelperNew.isAllAnswered()) {
+                            if (surveyHelperNew.hasPhotoToSave())
+                                new SaveSurveyTask().execute();
+                            else {
+                                bmodel.showAlert(
+                                        getResources().getString(R.string.take_photos_to_save), 0);
+                                questionsRv.setAdapter(rvAdapter);
+                                checkClicked = false;
+                            }
+                        } else {
+                            if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                                bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                            } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                                bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
+                            } else {
+                                bmodel.showAlert(
+                                        getResources().getString(
+                                                R.string.pleaseanswerallthequestions), 0);
+                            }
+                            checkClicked = false;
+                        }
+                    } else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY) {
+                        if (surveyHelperNew.isMandatoryQuestionAnswered()) {
+                            if (surveyHelperNew.hasPhotoToSave())
+                                new SaveSurveyTask().execute();
+                            else {
+                                bmodel.showAlert(
+                                        getResources().getString(R.string.take_photos_to_save), 0);
+                                questionsRv.setAdapter(rvAdapter);
+                                checkClicked = false;
+                            }
+                        } else {
+                            isSaveClicked = true;
+                            questionsRv.setAdapter(rvAdapter);
+                            if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                                bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                            } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                                bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
+                            } else {
+                                bmodel.showAlert(
+                                        getResources()
+                                                .getString(
+                                                        R.string.please_answer_all_mandatory_questions),
+                                        0);
+                            }
+                            checkClicked = false;
+                        }
+                    } else {
                         if (surveyHelperNew.hasPhotoToSave())
                             new SaveSurveyTask().execute();
                         else {
@@ -578,66 +626,18 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             questionsRv.setAdapter(rvAdapter);
                             checkClicked = false;
                         }
-                    } else {
-                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
-                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
-                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
-                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
-                        } else {
-                            bmodel.showAlert(
-                                    getResources().getString(
-                                            R.string.pleaseanswerallthequestions), 0);
-                        }
-                        checkClicked = false;
-                    }
-                } else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY) {
-                    if (surveyHelperNew.isMandatoryQuestionAnswered()) {
-                        if (surveyHelperNew.hasPhotoToSave())
-                            new SaveSurveyTask().execute();
-                        else {
-                            bmodel.showAlert(
-                                    getResources().getString(R.string.take_photos_to_save), 0);
-                            questionsRv.setAdapter(rvAdapter);
-                            checkClicked = false;
-                        }
-                    } else {
-                        isSaveClicked = true;
-                        questionsRv.setAdapter(rvAdapter);
-                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
-                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
-                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
-                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
-                        } else {
-                            bmodel.showAlert(
-                                    getResources()
-                                            .getString(
-                                                    R.string.please_answer_all_mandatory_questions),
-                                    0);
-                        }
-                        checkClicked = false;
                     }
                 } else {
-                    if (surveyHelperNew.hasDataToSave()) {
-                        if (surveyHelperNew.hasPhotoToSave())
-                            new SaveSurveyTask().execute();
-                        else {
-                            bmodel.showAlert(
-                                    getResources().getString(R.string.take_photos_to_save), 0);
-                            questionsRv.setAdapter(rvAdapter);
-                            checkClicked = false;
-                        }
+                    if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                        bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                    } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                        bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
                     } else {
-                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
-                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
-                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
-                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
-                        } else {
-                            bmodel.showAlert(
-                                    getResources().getString(R.string.no_data_tosave), 0);
-                        }
-                        questionsRv.setAdapter(rvAdapter);
-                        checkClicked = false;
+                        bmodel.showAlert(
+                                getResources().getString(R.string.no_data_tosave), 0);
                     }
+                    questionsRv.setAdapter(rvAdapter);
+                    checkClicked = false;
                 }
             }
         }
