@@ -345,7 +345,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
                                 Toast.LENGTH_LONG).show();
                     } else {
                         activation = new ActivationDialog(
-                                getActivity(), addUrl);
+                                getActivity(), addUrl,null);
                         activation.setCancelable(false);
                         activation.show();
                     }
