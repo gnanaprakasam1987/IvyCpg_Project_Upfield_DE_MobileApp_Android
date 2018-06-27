@@ -35,7 +35,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     private ActivationDataManager activationDataManager;
 
     private DataManager dataManager;
-    private List<ActivationBO> appUrls;
+    public List<ActivationBO> appUrls;
 
     @Inject
     public ActivationPresenterImpl(DataManager dataManager,
@@ -228,7 +228,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                         doActionThree3();
                     }
                 } else {
-                    List<ActivationBO> appUrls = new ArrayList<>();
+                    appUrls = new ArrayList<>();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                         ActivationBO bo = new ActivationBO();
@@ -261,7 +261,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             clearAppUrl();
             getIvyView().showPreviousActivationError();
         } else {
-            getIvyView().showActivationDialog(appUrls);
+            getIvyView().showActivationDialog();
         }
     }
 
@@ -333,4 +333,8 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     }
 
+    @Override
+    public List<ActivationBO> getAppUrls() {
+        return appUrls;
+    }
 }

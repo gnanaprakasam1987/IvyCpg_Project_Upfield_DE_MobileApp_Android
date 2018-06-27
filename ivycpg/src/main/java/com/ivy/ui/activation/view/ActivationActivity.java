@@ -168,9 +168,9 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
     @Override
-    public void showActivationDialog(List<ActivationBO> appUrls) {
+    public void showActivationDialog() {
         activation = new ActivationDialog(
-                this, addUrl,appUrls);
+                this, addUrl,mActivationPresenter.getAppUrls());
         activation.setCancelable(false);
         activation.show();
     }

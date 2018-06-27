@@ -16,8 +16,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -27,6 +29,7 @@ import io.reactivex.schedulers.TestScheduler;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActivationPresenterTest {
@@ -39,6 +42,9 @@ public class ActivationPresenterTest {
     private ActivationPresenterImpl<ActivationContract.ActivationView> mPresenter;
 
     private TestScheduler testScheduler = new TestScheduler();
+
+    @Mock
+    ArrayList<ActivationBO> mockActivationBo;
 
     @Mock
     private
@@ -145,6 +151,7 @@ public class ActivationPresenterTest {
 
         JSONObject jsonObject = TestDataFactory.getValidImeiResponse();
 
+
         given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
                 "abcd")).willReturn(Observable.just(jsonObject));
         //When
@@ -168,7 +175,7 @@ public class ActivationPresenterTest {
                 "abcd", "abcd");
         testScheduler.triggerActions();
         then(mActivationView).should().hideLoading();
-        then(mActivationView).should().showJsonExceptionError();
+        then(mActivationView).should().showServerError();
 
     }
 
@@ -310,10 +317,10 @@ public class ActivationPresenterTest {
     }
 
 
-   // showActivationDialog
+    // showActivationDialog
 
     @Test
-    public void  testShowActivationDialog(){
+    public void testShowActivationDialog() {
         List<ActivationBO> activationBOList = null;
         mPresenter.showActivationDialog(activationBOList);
         then(mActivationView).should().showPreviousActivationError();
@@ -332,7 +339,7 @@ public class ActivationPresenterTest {
     public void testHandleErrorInValidCode() {
         ActivationError activationError = new ActivationError(0, "");
         mPresenter.handleError(activationError);
-        then(mActivationView).should().showActivationError(activationError);
+        then(mActivationView).should().showActivationError(activationError.getMessage());
 
     }
 

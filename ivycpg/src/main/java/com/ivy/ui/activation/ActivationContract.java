@@ -29,7 +29,7 @@ public interface ActivationContract {
 
         void showPreviousActivationError();
 
-        void showActivationDialog(List<ActivationBO> appUrls);
+        void showActivationDialog();
 
         void showTryValidKeyError();
 
@@ -58,6 +58,8 @@ public interface ActivationContract {
         void doActionForActivationDismiss();
 
         void doActivation(String activationKey, String imei, String versionName,String versionNumber);
+
+        public List<ActivationBO> getAppUrls();
     }
 
 
