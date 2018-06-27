@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -41,6 +42,9 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @BindView(R.id.version)
     TextView mVersionNameTxt;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolBar;
 
     private ActivationDialog activation;
 
@@ -103,6 +107,15 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     @SuppressLint("SetTextI18n")
     @Override
     protected void setUpViews() {
+
+        setSupportActionBar(mToolBar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         mVersionNameTxt.setText(getString(R.string.version) + AppUtils.getApplicationVersionName(this));
     }
 

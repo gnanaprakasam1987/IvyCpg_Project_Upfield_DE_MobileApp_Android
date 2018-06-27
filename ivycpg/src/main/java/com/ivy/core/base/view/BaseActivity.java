@@ -44,6 +44,9 @@ import butterknife.Unbinder;
 public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView {
 
 
+    public static final int PHONE_STATE_AND_WRITE_PERMISSON = 1;
+    public static final int CAMERA_AND_WRITE_PERMISSION = 2;
+    public static final int LOCATION_PERMISSION = 3;
     private Unbinder mUnBinder;
 
     private NFCManager nfcManager;
@@ -95,6 +98,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         this.setContentView(this.getLayoutId());
 
+        checkAndRequestPermissionAtRunTime(PHONE_STATE_AND_WRITE_PERMISSON);
+
         initializeDi();
 
         setUpDefaults();
@@ -140,7 +145,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public boolean checkAndRequestPermissionAtRunTime(int mGroup) {
         List<String> listPermissionsNeeded = new ArrayList<>();
         int permissionStatus;
-        if (mGroup == 1) {
+        if (mGroup == PHONE_STATE_AND_WRITE_PERMISSON) {
             permissionStatus = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.READ_PHONE_STATE);
             if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
@@ -155,10 +160,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
 
             if (!listPermissionsNeeded.isEmpty()) {
-                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 1);
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), PHONE_STATE_AND_WRITE_PERMISSON);
                 return false;
             }
-        } else if (mGroup == 2) {
+        } else if (mGroup == CAMERA_AND_WRITE_PERMISSION) {
             permissionStatus = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.CAMERA);
             if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
@@ -172,10 +177,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
             }
 
             if (!listPermissionsNeeded.isEmpty()) {
-                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 2);
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), CAMERA_AND_WRITE_PERMISSION);
                 return false;
             }
-        } else if (mGroup == 3) {
+        } else if (mGroup == LOCATION_PERMISSION) {
             permissionStatus = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
@@ -185,7 +190,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
             }
 
             if (!listPermissionsNeeded.isEmpty()) {
-                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 3);
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), LOCATION_PERMISSION);
                 return false;
             }
         }
@@ -300,7 +305,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         Configuration config = new Configuration();
         Locale locale = config.locale;
         if (!Locale.getDefault().equals(language)) {
-            locale = new Locale(language.substring(0, 2));
+            locale = new Locale(language.substring(0, CAMERA_AND_WRITE_PERMISSION));
             Locale.setDefault(locale);
             config.locale = locale;
             getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());

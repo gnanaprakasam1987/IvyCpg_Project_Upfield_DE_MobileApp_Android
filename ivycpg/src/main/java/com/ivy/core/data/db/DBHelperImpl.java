@@ -26,7 +26,7 @@ public class DBHelperImpl implements DbHelper {
     public Single<String> getThemeColor() {
         return Single.fromCallable(new Callable<String>() {
             @Override
-            public String call() throws Exception {
+            public String call() {
                 String theme = "blue";
                 try {
                     mDbUtil.createDataBase();
@@ -56,7 +56,7 @@ public class DBHelperImpl implements DbHelper {
     public Single<String> getFontSize() {
         return Single.fromCallable(new Callable<String>() {
             @Override
-            public String call() throws Exception {
+            public String call() {
                 String fontSize = "Small";
                 try {
                     mDbUtil.createDataBase();
