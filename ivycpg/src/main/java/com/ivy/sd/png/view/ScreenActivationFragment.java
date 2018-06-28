@@ -36,8 +36,9 @@ import com.ivy.sd.png.util.DataMembers;
 import me.relex.circleindicator.CircleIndicator;
 
 /**
- * @Deprecated This has been Migrated to MVP pattern
  * @See {@link com.ivy.ui.activation.view.ActivationActivity}
+ * @deprecated This has been Migrated to MVP pattern.
+ * Will be removed from 133 Release
  */
 @Deprecated
 public class ScreenActivationFragment extends IvyBaseFragment implements

@@ -26,9 +26,10 @@ import java.util.List;
 
 
 /**
- * @Deprecated This has been Migrated to MVP pattern
  * @See {@link com.ivy.ui.activation.presenter.ActivationPresenterImpl}
  * and {@link com.ivy.ui.activation.data.ActivationDataManagerImpl}
+ * @deprecated This has been Migrated to MVP pattern
+ * Will be removed from @Version 133 Release
  */
 
 @Deprecated
