@@ -63,6 +63,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -268,6 +269,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
 
+    private ArrayAdapter<StandardListBO> uomListAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -459,6 +462,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mLocationAdapter.add(temp);
         if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
+        }
+
+
+        //load Uom list name
+        ArrayList<StandardListBO> uomList = bmodel.productHelper.getUomListName();
+        if (uomList != null) {
+            uomListAdapter = new ArrayAdapter<>(this,
+                    R.layout.spinner_bluetext_layout, uomList);
+            uomListAdapter
+                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         }
 
         totalValueText = (TextView) findViewById(R.id.totalValue);
@@ -1195,6 +1208,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.outerQty = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_outer_case_qty);
 
+                holder.sp_uom_names = (Spinner) row
+                        .findViewById(R.id.sp_uom_names);
+                holder.uom_qty = (EditText) row
+                        .findViewById(R.id.stock_and_order_listview_uom_qty);
+
                 holder.srp = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_srp);
                 holder.srpEdit = (EditText) row
@@ -1259,8 +1277,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.cleanedOrder_oc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.salesReturn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.text_stock.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
                 holder.text_allocation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.uom_qty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
                 if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
                     holder.layout_allocation.setVisibility(View.VISIBLE);
                     ((TextView) row.findViewById(R.id.allocationTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1723,6 +1742,53 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e);
                     }
                 }
+                ((TextView) row.findViewById(R.id.uomTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+                if (uomListAdapter != null)
+                    holder.sp_uom_names.setAdapter(uomListAdapter);
+
+
+                holder.sp_uom_names.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        StandardListBO bo = (StandardListBO)
+                                holder.sp_uom_names.getSelectedItem();
+                        int uomid = SDUtil.convertToInt(bo.getListID());
+                        int psQty = holder.productObj.getOrderedPcsQty();
+                        int csQty = holder.productObj.getOrderedCaseQty();
+                        int ouQty = holder.productObj.getOrderedOuterQty();
+                        if (uomid != 0)
+                            holder.productObj.setDefaultUomId(uomid);
+
+                        if (holder.productObj.getPcUomid() != 0 &&
+                                holder.productObj.getPcUomid() == uomid) {
+                            if (psQty > 0)
+                                holder.uom_qty.setText(psQty);
+                            else
+                                holder.uom_qty.setText("0");
+                        } else if (holder.productObj.getCaseUomId() != 0 &&
+                                holder.productObj.getCaseUomId() == uomid) {
+                            if (csQty > 0)
+                                holder.uom_qty.setText(csQty);
+                            else
+                                holder.uom_qty.setText("0");
+
+                        } else if (holder.productObj.getOuUomid() != 0 &&
+                                holder.productObj.getOuUomid() == uomid) {
+                            if (ouQty > 0)
+                                holder.uom_qty.setText(ouQty);
+                            else
+                                holder.uom_qty.setText("0");
+                        }
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
 
                 holder.imageView_stock.setOnClickListener(new OnClickListener() {
                     @Override
@@ -2486,6 +2552,71 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     });
                 }
+
+                holder.uom_qty.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                        StandardListBO uomBo = (StandardListBO) holder.sp_uom_names.getSelectedItem();
+                        int uomid = SDUtil.convertToInt(uomBo.getListID());
+                        int qty = SDUtil.convertToInt(s.toString());
+
+                        if (holder.productObj.getPcUomid() != 0 &&
+                                holder.productObj.getPcUomid() == uomid) {
+                            holder.pcsQty.setText(qty + "");
+                            holder.productObj.setOrderedCaseQty(0);
+                            holder.productObj.setOrderedOuterQty(0);
+
+                        } else if (holder.productObj.getCaseUomId() != 0 &&
+                                holder.productObj.getCaseUomId() == uomid) {
+                            holder.caseQty.setText(qty + "");
+                            holder.productObj.setOrderedPcsQty(0);
+                            holder.productObj.setOrderedOuterQty(0);
+                        } else if (holder.productObj.getOuUomid() != 0 &&
+                                holder.productObj.getOuUomid() == uomid) {
+                            holder.outerQty.setText(qty + "");
+                            holder.productObj.setOrderedPcsQty(0);
+                            holder.productObj.setOrderedCaseQty(0);
+                        }
+
+
+                    }
+                });
+
+                holder.uom_qty.setOnTouchListener(new OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
+                            strProductObj = "[SIH :"
+                                    + holder.productObj.getSIH() + "] "
+                                    + holder.pname;
+                            productName.setText(strProductObj);
+                        } else
+                            productName.setText(holder.pname);
+
+                        QUANTITY = holder.uom_qty;
+                        QUANTITY.setTag(holder.productObj);
+                        int inType = holder.uom_qty.getInputType();
+                        holder.uom_qty.setInputType(InputType.TYPE_NULL);
+                        holder.uom_qty.onTouchEvent(event);
+                        holder.uom_qty.setInputType(inType);
+                        holder.uom_qty.selectAll();
+                        holder.uom_qty.requestFocus();
+                        inputManager.hideSoftInputFromWindow(
+                                mEdt_searchproductName.getWindowToken(), 0);
+                        return true;
+                    }
+                });
 
 
                 holder.pcsQty.addTextChangedListener(new TextWatcher() {
@@ -3415,6 +3546,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.wsih.setText(wSIH);
             }
 
+            //set order Qty based on UOM wise
+
+            if (holder.productObj.getDefaultUomId() != 0 &&
+                    holder.productObj.getDefaultUomId() == holder.productObj.getPcUomid()) {
+                holder.sp_uom_names.setEnabled(true);
+                holder.uom_qty.setEnabled(true);
+                holder.sp_uom_names.setSelection(getUomIndex(holder.productObj.getDefaultUomId() + ""));
+            } else {
+                holder.sp_uom_names.setEnabled(false);
+                holder.uom_qty.setEnabled(false);
+            }
+
 
             if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
                 holder.srp.setText(bmodel.formatValue(holder.productObj
@@ -3503,6 +3646,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         private TextView text_allocation;
         private LinearLayout layout_allocation;
+
+        private Spinner sp_uom_names;
+        private EditText uom_qty;
     }
 
     private void calculateSO(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
@@ -3759,7 +3905,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
-                if(isReturnDoneForUnOrderedProduct()) {
+                if (isReturnDoneForUnOrderedProduct()) {
                     Toast.makeText(StockAndOrder.this, getResources().getString(R.string.sales_return_allowed_only_for_ordered_products), Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -3815,6 +3961,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     /**
      * To check any un ordered product has sales return
+     *
      * @return True, if any product has sales return without order
      */
     private boolean isReturnDoneForUnOrderedProduct() {
@@ -3842,8 +3989,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     return true;
 
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
         return false;
@@ -6922,6 +7068,26 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
         }
+    }
+
+    /**
+     * Load selected uom name in the spinner
+     *
+     * @param uomId id for which the index need to be found
+     * @return position of the uom id
+     */
+    public int getUomIndex(String uomId) {
+        if (uomListAdapter.getCount() == 0)
+            return 0;
+        int len = uomListAdapter.getCount();
+        if (len == 0)
+            return 0;
+        for (int i = 0; i < len; ++i) {
+            StandardListBO s = uomListAdapter.getItem(i);
+            if (s.getListID().equals(uomId))
+                return i;
+        }
+        return -1;
     }
 
 }

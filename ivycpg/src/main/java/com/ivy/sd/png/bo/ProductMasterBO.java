@@ -240,6 +240,9 @@ public class ProductMasterBO {
     private float osrp;
     private float baseprice;
 
+    //Default Uomid
+    private int defaultUomId;
+
     private int orderedOuterQty;
     private int crownOrderedOuterQty;
     private int crownOrderedCaseQty;
@@ -1885,5 +1888,13 @@ public class ProductMasterBO {
 
     public void setAllocationQty(String allocationQty) {
         this.allocationQty = allocationQty;
+    }
+
+    public void setDefaultUomId(int defaultUomId) {
+        this.defaultUomId = defaultUomId;
+    }
+
+    public int getDefaultUomId() {
+        return defaultUomId;
     }
 }

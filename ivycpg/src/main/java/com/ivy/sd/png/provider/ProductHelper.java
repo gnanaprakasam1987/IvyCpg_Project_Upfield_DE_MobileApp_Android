@@ -7605,6 +7605,38 @@ public class ProductHelper {
         }
         return false;
     }
+
+
+    public ArrayList<StandardListBO> getUomListName() {
+        DBUtil db = null;
+        ArrayList<StandardListBO> uomList = null;
+
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select listid,listname from standardlistmaster ");
+            sb.append("where listtype=" + bmodel.QT("PRODUCT_UOM"));
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                StandardListBO standardListBO;
+                uomList = new ArrayList<StandardListBO>();
+                while (c.moveToNext()) {
+                    standardListBO = new StandardListBO();
+                    standardListBO.setListID(c.getString(0));
+                    standardListBO.setListName(c.getString(1));
+                    uomList.add(standardListBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
+        }
+        return uomList;
+    }
 }
 
 

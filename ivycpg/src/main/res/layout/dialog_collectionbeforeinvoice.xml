@@ -20,9 +20,21 @@
                 style="?textTitleStyle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
                 android:layout_marginBottom="@dimen/dimens_12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/closeButton"
+                    android:layout_width="@dimen/info_icon"
+                    android:layout_height="@dimen/info_icon"
+                    android:layout_gravity="end|center"
+                    android:layout_margin="@dimen/list_margin"
+                    android:background="@drawable/ic_arrow_back_white_24dp"
+                    android:backgroundTint="@color/white"
+                    android:gravity="end"
+                    android:text="" />
 
                 <TextView
                     android:id="@+id/titlebar"
@@ -33,19 +45,10 @@
                     android:padding="8dp"
                     android:text="@string/Product_details"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/font_medium"
+                    android:textSize="@dimen/actionbar_title_text_size"
                     android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/closeButton"
-                    android:layout_width="@dimen/info_icon"
-                    android:layout_height="@dimen/info_icon"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="@dimen/list_margin"
-                    android:background="@drawable/icon_close"
-                    android:backgroundTint="@color/white"
-                    android:gravity="end"
-                    android:text="" />
+
 
             </LinearLayout>
 
@@ -85,22 +88,22 @@
                         android:singleLine="true"
                         android:text="@string/zero"
                         android:textColor="@color/highlighter"
-                        android:textSize="@dimen/font_small">
-
-                    </TextView>
-
-
-                    <TextView
-                        android:id="@+id/img_max_amount"
-                        android:layout_width="@dimen/ret_card_image"
-                        android:layout_height="@dimen/ret_card_image"
-                        android:background="@drawable/ic_content_copy_black_24dp"
-                        android:backgroundTint="?attr/colorPrimary"
-                        android:gravity="center"
-                        android:singleLine="true"
                         android:textSize="@dimen/font_large">
 
                     </TextView>
+
+
+                    <ImageButton
+                        android:id="@+id/img_max_amount"
+                        android:layout_width="@dimen/activity_list_icon_size"
+                        android:layout_height="@dimen/activity_list_icon_size"
+                        android:background="@drawable/ic_content_copy_black_24dp"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        >
+
+                    </ImageButton>
                 </LinearLayout>
 
                 <LinearLayout
@@ -132,21 +135,20 @@
                         android:singleLine="true"
                         android:text="@string/zero"
                         android:textColor="@color/highlighter"
-                        android:textSize="@dimen/font_small">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/img_min_amount"
-                        android:layout_width="@dimen/ret_card_image"
-                        android:layout_height="@dimen/ret_card_image"
-                        android:background="@drawable/ic_content_copy_black_24dp"
-                        android:backgroundTint="?attr/colorPrimary"
-                        android:gravity="center"
-                        android:singleLine="true"
                         android:textSize="@dimen/font_large">
 
                     </TextView>
+
+                    <ImageButton
+                        android:id="@+id/img_min_amount"
+                        android:layout_width="@dimen/activity_list_icon_size"
+                        android:layout_height="@dimen/activity_list_icon_size"
+                        android:background="@drawable/ic_content_copy_black_24dp"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:gravity="center"
+                        android:layout_gravity="center">
+
+                    </ImageButton>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -160,16 +162,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/plano_list_footer_line"
-                android:background="@color/black_bg1" />
-
-            <TextView
-                android:id="@+id/mode_title"
-                style="?attr/customListTitle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/mode"
-                android:textColor="@color/FullBlack"
-                android:textSize="@dimen/font_small" />
+                android:background="@color/GRAY" />
 
             <LinearLayout
                 android:id="@+id/widget61"
@@ -226,6 +219,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
                                 android:gravity="center"
+
                                 android:tag="@string/credit_note"
                                 android:text="@string/credit_note"
                                 android:textColor="?attr/primarycolor"
@@ -240,7 +234,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/plano_list_footer_line"
-                android:background="@color/black_bg1" />
+                android:background="@color/GRAY" />
         </LinearLayout>
 
         <LinearLayout
@@ -275,6 +269,7 @@
                 android:maxLines="1"
                 android:text="@string/date"
                 android:textColor="?attr/primarycolor"
+                android:paddingTop="@dimen/dimens_30dp"
                 android:textSize="@dimen/footer_lbl_text_size" />
 
         </LinearLayout>
