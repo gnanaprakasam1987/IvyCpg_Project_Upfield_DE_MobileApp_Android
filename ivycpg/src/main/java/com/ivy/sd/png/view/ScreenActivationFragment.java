@@ -35,6 +35,11 @@ import com.ivy.sd.png.util.DataMembers;
 
 import me.relex.circleindicator.CircleIndicator;
 
+/**
+ * @Deprecated This has been Migrated to MVP pattern
+ * @See {@link com.ivy.ui.activation.view.ActivationActivity}
+ */
+@Deprecated
 public class ScreenActivationFragment extends IvyBaseFragment implements
         View.OnClickListener {
     private BusinessModel bmodel;
@@ -345,7 +350,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
                                 Toast.LENGTH_LONG).show();
                     } else {
                         activation = new ActivationDialog(
-                                getActivity(), addUrl,null);
+                                getActivity(), addUrl, null);
                         activation.setCancelable(false);
                         activation.show();
                     }

@@ -7,6 +7,12 @@ import android.support.v7.widget.Toolbar;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 
+
+/**
+ * @Deprecated This has been Migrated to MVP pattern
+ * @See {@link com.ivy.ui.activation.view.ActivationActivity}
+ */
+@Deprecated
 public class ScreenActivationActivity extends IvyBaseActivityNoActionBar {
 
     @Override
