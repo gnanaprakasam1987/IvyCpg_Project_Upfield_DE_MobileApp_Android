@@ -2034,6 +2034,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     //Getting Attributes mapped for the retailer
                     bmodel.getAttributeHierarchyForRetailer();
 
+                    bmodel.reasonHelper.downloadReasons();
+
                 }
             } catch (Exception e) {
                 Commons.printException("" + e);
