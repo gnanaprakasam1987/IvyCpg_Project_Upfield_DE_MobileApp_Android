@@ -28,7 +28,6 @@ import io.reactivex.schedulers.TestScheduler;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActivationPresenterTest {
@@ -122,6 +121,8 @@ public class ActivationPresenterTest {
 
     }
 
+
+
     @Test
     public void testDoActivationFailure() {
         ActivationError activationError = new ActivationError(2001, "");
@@ -135,15 +136,6 @@ public class ActivationPresenterTest {
         then(mActivationView).should().hideLoading();
 
     }
-
-
-   /* @Test(expected = UnsupportedOperationException.class)
-    public void testTriggerImeiActivation() {
-        //When
-       // mPresenter.triggerIMEIActivation("abcd", "abcd", "acbd");
-
-       // then(mActivationView).shouldHaveZeroInteractions();
-    }*/
 
     @Test
     public void testTriggerImEiActivation() {
@@ -159,6 +151,37 @@ public class ActivationPresenterTest {
         testScheduler.triggerActions();
         then(mActivationView).should().hideLoading();
         then(mActivationView).should().showActivationDialog();
+
+    }
+
+
+    @Test
+    public void testTriggerImEiActivationWithEmptyUrl() {
+        JSONObject jsonObject = TestDataFactory.getValidActivationFailureObject();
+        given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
+                "abcd")).willReturn(Observable.just(jsonObject));
+        //When
+        mPresenter.triggerIMEIActivation("abcd", "abcd", "abcd");
+
+        testScheduler.triggerActions();
+        then(mActivationView).should().hideLoading();
+        then(mActivationView).should().showAppUrlIsEmptyError();
+
+    }
+
+    @Test
+    public void testTriggerImEiActivationWithEmptyArray() {
+
+        JSONObject jsonObject = TestDataFactory.getValidActivationWithEmptyArray();
+
+        given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
+                "abcd")).willReturn(Observable.just(jsonObject));
+        //When
+        mPresenter.triggerIMEIActivation("abcd", "abcd", "abcd");
+
+        testScheduler.triggerActions();
+        then(mActivationView).should().hideLoading();
+        then(mActivationView).should().showPreviousActivationError();
 
     }
 
@@ -204,6 +227,35 @@ public class ActivationPresenterTest {
     }
 
 
+    @Test
+    public void testTriggerImEiActivationSingleResponseException() {
+
+        JSONObject jsonObject = TestDataFactory.getInValidResponse();
+        given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
+                "abcd")).willReturn(Observable.just(jsonObject));
+        //When
+        mPresenter.triggerIMEIActivation("abcd", "abcd", "abcd");
+        testScheduler.triggerActions();
+        then(mActivationView).should().showServerError();
+
+
+    }
+
+  /*  @Test
+    public void testImeiResponseNullError(){
+        JSONObject jsonObject =null;
+
+        given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
+                "abcd")).willReturn(Observable.just(jsonObject));
+
+        //When
+        mPresenter.triggerIMEIActivation("abcd", "abcd", "abcd");
+        testScheduler.triggerActions();
+
+        then(mActivationView).should().hideLoading();
+        then(mActivationView).should().showServerError();
+
+    }*/
 
     @Test
     public void testTriggerImEiActivationError() {
@@ -214,7 +266,7 @@ public class ActivationPresenterTest {
                 ("", "", "")).willReturn(Observable.error(activationError));
         mPresenter.triggerIMEIActivation("", "", "");
         testScheduler.triggerActions();
-        then(mActivationView).should().showActivationError("");
+        then(mActivationView).should().showActivationError(activationError.getMessage());
 
     }
 
@@ -286,6 +338,15 @@ public class ActivationPresenterTest {
 
     }
 
+
+    @Test
+    public void testShowValidErrorActivationFailedDefault() {
+        mPresenter.showValidError(2);
+        testScheduler.triggerActions();
+        then(mActivationView).should().showServerError();
+
+    }
+
     @Test
     public void testActivationDismiss() {
         given(mDataManager.getBaseUrl()).willReturn("");
@@ -332,7 +393,8 @@ public class ActivationPresenterTest {
     public void testHandleErrorValidCode() {
         ActivationError activationError = new ActivationError(2001, "");
         mPresenter.handleError(activationError);
-        then(mActivationView).should().showActivationError("");
+        testScheduler.triggerActions();
+        then(mActivationView).should().showActivationError(activationError.getMessage());
 
     }
 
