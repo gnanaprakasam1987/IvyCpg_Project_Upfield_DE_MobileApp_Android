@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -44,7 +44,6 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
 
     private TextView textView_shipment_label, textView_payment_label, textView_channel_label, textView_delivery_label, textView_delivery;
     private TextView textView_supplier_label, textView_note, textView_note_label, textView_order_value, textView_order_value_label, label_drug_note, text_drug_note;
-    ;
     private Spinner spinner_shipment, spinner_payment, spinner_dist_channel;
     private LinearLayout layout_shipment, layout_payment, layout_channel, layout_delivery_date, layout_supplier, layout_note, layout_order_value, layout_drug_note;
     private AutoCompleteTextView autoCompleteTextView_suppliers;

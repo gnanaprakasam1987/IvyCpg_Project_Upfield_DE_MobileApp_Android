@@ -1272,6 +1272,8 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
+    <string name="title_activity_posm_image_gallery">PosmImageGallery</string>
+    <string name="title_activity_posm_gallery">PosmGallery</string>
 
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
     <string name="total_collected">Total Collected</string>

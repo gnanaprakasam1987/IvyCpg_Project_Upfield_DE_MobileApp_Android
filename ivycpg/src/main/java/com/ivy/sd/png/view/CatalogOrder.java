@@ -53,7 +53,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
-import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;

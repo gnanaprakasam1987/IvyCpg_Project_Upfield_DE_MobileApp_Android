@@ -1436,7 +1436,6 @@ public class AssetTrackingHelper {
             }
 
 
-            int moduleWeightAge = 0;
             double productWeightAge, sum = 0;
 
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
@@ -1485,10 +1484,9 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(assetBo.getAssetID());
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getAvailQty());
-                                if (assetBo.getImageName() != null
-                                        && !assetBo.getImageName().equals("") && assetBo.getAvailQty() > 0) {
+                                if (assetBo.getImageList().size() > 0 && assetBo.getAvailQty() > 0) {
                                     assetDetailValues.append(",");
-                                    assetDetailValues.append(QT(assetBo.getImageName()));
+                                    assetDetailValues.append(QT(assetBo.getImageList().get(0)));// added for backward compatibility
                                     assetDetailValues.append(",");
                                     assetDetailValues.append(assetBo.getReason1ID());
                                 } else {
@@ -1627,12 +1625,11 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getAvailQty());
                                 assetDetailValues.append(",");
-                                if (assetBo.getImageName() != null
-                                        && !assetBo.getImageName().equals("") && assetBo.getAvailQty() > 0) {
-                                    assetDetailValues.append(QT(assetBo.getImageName()));
-                                } else {
+                                if (assetBo.getImageList().size() > 0
+                                        && assetBo.getAvailQty() > 0)
+                                    assetDetailValues.append(QT(assetBo.getImageList().get(0)));
+                                else
                                     assetDetailValues.append(QT(""));
-                                }
 
 
                                 assetDetailValues.append(",");
@@ -1903,8 +1900,6 @@ public class AssetTrackingHelper {
 
             if (c != null) {
                 while (c.moveToNext()) {
-                    //String[] imjObj = c.getString(0).split("/");
-                    //imageList.add(imjObj[3]);
                     imageList.add(c.getString(0));
                 }
                 c.close();
@@ -1916,6 +1911,20 @@ public class AssetTrackingHelper {
             Commons.printException("" + e);
         }
         return imageList;
+    }
+
+    public void deleteImageProof(Context mContext,String ImageName) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            db.deleteSQL(DataMembers.tbl_AssetImgInfo, "ImageName="
+                    + QT(ImageName), false);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 
 }

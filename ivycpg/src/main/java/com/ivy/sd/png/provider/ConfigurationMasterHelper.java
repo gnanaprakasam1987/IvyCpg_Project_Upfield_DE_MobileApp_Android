@@ -2762,10 +2762,10 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * This method will downlaod the Menu configured for this particular channel
+     * This method will download the Menu configured for this particular channel
      * type. This will also download the Menu Name,Number and hasLink attributes
      *
-     * @return
+     * @return sd
      */
     public Vector<ConfigureBO> downloadNewActivityMenu(String menuName) {
         activitymenuconfig = new Vector<>();

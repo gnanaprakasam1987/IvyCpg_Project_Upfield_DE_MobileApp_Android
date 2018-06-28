@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_marginTop="@dimen/dimen_6dp"
+            android:maxLines="1"
             android:gravity="center_horizontal"
             android:text="@string/welcome" />
 
