@@ -17,13 +17,10 @@ public interface ActivationContract {
 
         void navigateToLoginScreen();
 
-        void showInvalidUrlError();
-
         void showActivationError(String activationError);
 
         void showAppUrlIsEmptyError();
 
-        void showJsonExceptionError();
 
         void showServerError();
 

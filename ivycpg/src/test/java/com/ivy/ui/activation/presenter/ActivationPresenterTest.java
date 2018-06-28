@@ -122,7 +122,6 @@ public class ActivationPresenterTest {
     }
 
 
-
     @Test
     public void testDoActivationFailure() {
         ActivationError activationError = new ActivationError(2001, "");
@@ -221,7 +220,7 @@ public class ActivationPresenterTest {
         testScheduler.triggerActions();
 
         then(mActivationView).should().hideLoading();
-        then(mActivationView).should().navigateToLoginScreen();
+        then(mActivationView).should().showSuccessfullyActivatedAlert();
 
 
     }
@@ -278,7 +277,7 @@ public class ActivationPresenterTest {
         mPresenter.checkServerStatus("www.google.com");
         testScheduler.triggerActions();
 
-        then(mActivationView).should().navigateToLoginScreen();
+        then(mActivationView).should().showSuccessfullyActivatedAlert();
     }
 
     @Test
@@ -289,7 +288,7 @@ public class ActivationPresenterTest {
         mPresenter.checkServerStatus("www.google.com");
         testScheduler.triggerActions();
 
-        then(mActivationView).should().showInvalidUrlError();
+        then(mActivationView).should().showConfigureUrlMessage();
 
     }
 
@@ -364,18 +363,7 @@ public class ActivationPresenterTest {
                 .willReturn(Single.just(true));
         mPresenter.doActionForActivationDismiss();
         testScheduler.triggerActions();
-        then(mActivationView).should().navigateToLoginScreen();
-    }
-
-
-    @Test
-    public void testCheckServerStatusBasedOnActivationInValidUrl() {
-
-        given(mActivationDataManager.isServerOnline("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx"))
-                .willReturn(Single.just(false));
-        mPresenter.checkServerStatusBasedOnActivation("https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx");
-        testScheduler.triggerActions();
-        then(mActivationView).should().showConfigureUrlMessage();
+        then(mActivationView).should().showSuccessfullyActivatedAlert();
     }
 
 

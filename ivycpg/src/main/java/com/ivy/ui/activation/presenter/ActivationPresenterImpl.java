@@ -35,7 +35,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     private ActivationDataManager activationDataManager;
 
     private DataManager dataManager;
-    public List<ActivationBO> appUrls;
+    private List<ActivationBO> appUrls;
 
     @Inject
     public ActivationPresenterImpl(DataManager dataManager,
@@ -49,13 +49,9 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     @Override
     public void validateActivationKey(String activationKey) {
-        if (activationKey.length() <= 0) {
-            getIvyView().showActivationEmptyError();
-        } else if (activationKey.length() != 16) {
-            getIvyView().showInvalidActivationError();
-        } else {
-            getIvyView().doValidationSuccess();
-        }
+        if (activationKey.length() <= 0) getIvyView().showActivationEmptyError();
+        else if (activationKey.length() != 16) getIvyView().showInvalidActivationError();
+        else getIvyView().doValidationSuccess();
     }
 
     @Override
@@ -86,7 +82,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
         return new DisposableObserver<JSONObject>() {
             @Override
             public void onNext(JSONObject jsonObject) {
-                doActionBasedOnActivationResult(jsonObject);
+                handleActivationResponse(jsonObject);
             }
 
             @Override
@@ -101,7 +97,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
         };
     }
 
-    private void doActionBasedOnActivationResult(JSONObject jsonObj) {
+    private void handleActivationResponse(JSONObject jsonObj) {
 
         if (jsonObj == null) {
             //---->2
@@ -121,7 +117,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                 setValueToPreference(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""),
                         jsonObject.getString(APPLICATION_NAME));
                 // setSERVER_URL(jsonObject.getString(SYNC_SERVICE_URL).replace(" ", ""));
-                checkServerStatusBasedOnActivation(jsonObject.getString(SYNC_SERVICE_URL));
+                checkServerStatus(jsonObject.getString(SYNC_SERVICE_URL));
 
             }
         } catch (JSONException e) {
@@ -136,7 +132,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
         return new DisposableObserver<JSONObject>() {
             @Override
             public void onNext(JSONObject jsonObject) {
-                doActionBasedOnImEiActivationResult(jsonObject);
+                handleIMEIActivationResponse(jsonObject);
             }
 
             @Override
@@ -162,7 +158,6 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             getIvyView().showActivationError(activationError.getMessage());
         } else
             getIvyView().showActivationFailedError();
-
 
 
     }
@@ -204,7 +199,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
      *
      * */
 
-    private void doActionBasedOnImEiActivationResult(JSONObject jsonObj) {
+    private void handleIMEIActivationResponse(JSONObject jsonObj) {
 
         if (jsonObj == null) {
             getIvyView().showServerError();
@@ -284,26 +279,6 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
 
-    public void checkServerStatusBasedOnActivation(String url) {
-        getCompositeDisposable().add(activationDataManager.isServerOnline(url)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean response) throws Exception {
-                        //----> 13 NOTIFY_SUCESSFULLY_ACTIVATED_EXTENDED
-                        if (response)
-                            getIvyView().showSuccessfullyActivatedAlert();
-                        else {
-                            //----> 11 NOTIFY_NOT_VALID_URL
-                            clearAppUrl();
-                            getIvyView().showConfigureUrlMessage();
-                        }
-                    }
-                }));
-
-    }
-
     @Override
     public void checkServerStatus(String url) {
         getCompositeDisposable().add(activationDataManager.isServerOnline(url)
@@ -312,10 +287,14 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean response) {
+                        //----> 13 NOTIFY_SUCESSFULLY_ACTIVATED_EXTENDED
                         if (response)
-                            getIvyView().navigateToLoginScreen();
-                        else
-                            getIvyView().showInvalidUrlError();
+                            getIvyView().showSuccessfullyActivatedAlert();
+                        else {
+                            //----> 11 NOTIFY_NOT_VALID_URL
+                            clearAppUrl();
+                            getIvyView().showConfigureUrlMessage();
+                        }
                     }
                 }));
     }

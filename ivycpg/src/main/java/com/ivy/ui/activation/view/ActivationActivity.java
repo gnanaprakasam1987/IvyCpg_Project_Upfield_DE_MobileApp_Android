@@ -135,10 +135,6 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
         finish();
     }
 
-    @Override
-    public void showInvalidUrlError() {
-        showMessage(getResources().getString(R.string.please_check_app_url_configured));
-    }
 
     @Override
     public void showActivationError(String activationError) {
@@ -150,10 +146,6 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
         showMessage(R.string.app_url_is_empty);
     }
 
-    @Override
-    public void showJsonExceptionError() {
-        showMessage(getResources().getString(R.string.contact_system_admin));
-    }
 
     @Override
     public void showServerError() {
@@ -168,7 +160,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     @Override
     public void showActivationDialog() {
         activation = new ActivationDialog(
-                this, activationDialogDismissListener,mActivationPresenter.getAppUrls());
+                this, activationDialogDismissListener, mActivationPresenter.getAppUrls());
         activation.setCancelable(false);
         activation.show();
     }
