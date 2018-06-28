@@ -26,6 +26,10 @@ public class IvyConstants {
 
 
     public static final String VERSION_NAME = "VersionName";
+    public static final String VERSION_CODE = "VersionCode";
+    public static final String DEVICE_IMEI = "DeviceIMEI";
+    public static final String LICENSE_KEY = "LicenseKey";
+
 
     public static final String NAMESPACE = "http://tempuri.org/";
 }
