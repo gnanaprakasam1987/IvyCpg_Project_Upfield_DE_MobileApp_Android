@@ -52,14 +52,26 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
             public void subscribe(final ObservableEmitter<JSONObject> subscriber) throws Exception {
                 MyKsoapConnection myKsoapConnection = new MyKsoapConnection();
 
-                myKsoapConnection.create(IvyConstants.METHOD_NAME_SECURITYPOLICY1,
-                        ApplicationConfigs.LICENSE_SOAP_URL,
-                        IvyConstants.SOAP_ACTION_SECURITYPOLICY1, IvyConstants.NAMESPACE);
 
-                if (activationKey != null)
-                    myKsoapConnection.addParam("LicenseKey", activationKey);
-                myKsoapConnection.addParam("VersionCode", applicationVersionNumber);
-                myKsoapConnection.addParam("DeviceIMEI", imEiNumber);
+                if (activationKey != null) {
+                    //Using ActivationKey
+                    myKsoapConnection.create(IvyConstants.METHOD_NAME_SECURITYPOLICY1,
+                            ApplicationConfigs.LICENSE_SOAP_URL,
+                            IvyConstants.SOAP_ACTION_SECURITYPOLICY1, IvyConstants.NAMESPACE);
+
+                    myKsoapConnection.addParam(IvyConstants.LICENSE_KEY, activationKey);
+
+                } else {
+                    //Using IMEI
+                    myKsoapConnection.create(IvyConstants.METHOD_NAME_SECURITYPOLICY2,
+                            ApplicationConfigs.LICENSE_SOAP_URL,
+                            IvyConstants.SOAP_ACTION_SECURITYPOLICY2, IvyConstants.NAMESPACE);
+
+                }
+
+
+                myKsoapConnection.addParam(IvyConstants.VERSION_CODE, applicationVersionNumber);
+                myKsoapConnection.addParam(IvyConstants.DEVICE_IMEI, imEiNumber);
                 myKsoapConnection.addParam(IvyConstants.VERSION_NAME, applicationVersionName);
 
                 myKsoapConnection.connectServer(new MyKsoapConnection.ResponseListener() {
