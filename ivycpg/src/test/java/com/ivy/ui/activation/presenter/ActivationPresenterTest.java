@@ -203,21 +203,7 @@ public class ActivationPresenterTest {
 
     }
 
-    @Test
-    public void testImeiResponseNullError(){
-        JSONObject jsonObject =null;
 
-        given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
-                "abcd")).willReturn(Observable.just(jsonObject));
-
-        //When
-        mPresenter.triggerIMEIActivation("abcd", "abcd", "abcd");
-        testScheduler.triggerActions();
-
-        then(mActivationView).should().hideLoading();
-        then(mActivationView).should().showServerError();
-
-    }
 
     @Test
     public void testTriggerImEiActivationError() {
@@ -228,7 +214,7 @@ public class ActivationPresenterTest {
                 ("", "", "")).willReturn(Observable.error(activationError));
         mPresenter.triggerIMEIActivation("", "", "");
         testScheduler.triggerActions();
-        then(mActivationView).should().showActivationFailedError();
+        then(mActivationView).should().showActivationError("");
 
     }
 
@@ -346,7 +332,7 @@ public class ActivationPresenterTest {
     public void testHandleErrorValidCode() {
         ActivationError activationError = new ActivationError(2001, "");
         mPresenter.handleError(activationError);
-        then(mActivationView).should().showActivationFailedError();
+        then(mActivationView).should().showActivationError("");
 
     }
 
@@ -354,7 +340,7 @@ public class ActivationPresenterTest {
     public void testHandleErrorInValidCode() {
         ActivationError activationError = new ActivationError(0, "");
         mPresenter.handleError(activationError);
-        then(mActivationView).should().showActivationError(activationError.getMessage());
+        then(mActivationView).should().showActivationFailedError();
 
     }
 

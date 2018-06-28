@@ -507,9 +507,9 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
                 builder = new AlertDialog.Builder(BaseActivity.this);
                 View view = View.inflate(this, R.layout.custom_alert_dialog, null);
 
-                TextView title = (TextView) view.findViewById(R.id.title);
+                TextView title = view.findViewById(R.id.title);
                 title.setText(DataMembers.SD);
-                progressMsgTxt = (TextView) view.findViewById(R.id.text);
+                progressMsgTxt = view.findViewById(R.id.text);
 
                 builder.setView(view);
                 builder.setCancelable(false);
