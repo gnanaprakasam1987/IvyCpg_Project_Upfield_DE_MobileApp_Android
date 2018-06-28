@@ -66,61 +66,81 @@
 
                     <RadioButton
                         android:id="@+id/rb_week1"
-                        android:layout_width="@dimen/week_button_width"
+                        android:layout_width="wrap_content"
                         android:layout_height="@dimen/week_button_height"
                         android:layout_weight="1"
                         android:background="@drawable/round_corner_selected"
                         android:button="@android:color/transparent"
                         android:gravity="center"
+                        android:paddingLeft="@dimen/dimen_5dp"
+                        android:paddingStart="@dimen/dimen_5dp"
+                        android:paddingRight="@dimen/dimen_5dp"
+                        android:paddingEnd="@dimen/dimen_5dp"
                         android:text="@string/week1"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="?attr/selectWeekBackground" />
 
                     <RadioButton
                         android:id="@+id/rb_week2"
-                        android:layout_width="@dimen/week_button_width"
+                        android:layout_width="wrap_content"
                         android:layout_height="@dimen/week_button_height"
                         android:layout_weight="1"
                         android:background="@drawable/round_corner_selected"
                         android:button="@android:color/transparent"
                         android:gravity="center"
                         android:text="@string/week2"
+                        android:paddingLeft="@dimen/dimen_5dp"
+                        android:paddingStart="@dimen/dimen_5dp"
+                        android:paddingRight="@dimen/dimen_5dp"
+                        android:paddingEnd="@dimen/dimen_5dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="?attr/selectWeekBackground" />
 
                     <RadioButton
                         android:id="@+id/rb_week3"
-                        android:layout_width="@dimen/week_button_width"
+                        android:layout_width="wrap_content"
                         android:layout_height="@dimen/week_button_height"
                         android:layout_weight="1"
                         android:background="@drawable/round_corner_selected"
                         android:button="@android:color/transparent"
                         android:gravity="center"
                         android:text="@string/week3"
+                        android:paddingLeft="@dimen/dimen_5dp"
+                        android:paddingStart="@dimen/dimen_5dp"
+                        android:paddingRight="@dimen/dimen_5dp"
+                        android:paddingEnd="@dimen/dimen_5dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="?attr/selectWeekBackground" />
 
                     <RadioButton
                         android:id="@+id/rb_week4"
-                        android:layout_width="@dimen/week_button_width"
+                        android:layout_width="wrap_content"
                         android:layout_height="@dimen/week_button_height"
                         android:layout_weight="1"
                         android:background="@drawable/round_corner_selected"
                         android:button="@android:color/transparent"
                         android:gravity="center"
+                        android:paddingLeft="@dimen/dimen_5dp"
+                        android:paddingStart="@dimen/dimen_5dp"
+                        android:paddingRight="@dimen/dimen_5dp"
+                        android:paddingEnd="@dimen/dimen_5dp"
                         android:text="@string/week4"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="?attr/selectWeekBackground" />
 
                     <RadioButton
                         android:id="@+id/rb_week5"
-                        android:layout_width="@dimen/week_button_width"
+                        android:layout_width="wrap_content"
                         android:layout_height="@dimen/week_button_height"
                         android:layout_weight="1"
                         android:background="@drawable/round_corner_selected"
                         android:button="@android:color/transparent"
                         android:gravity="center"
                         android:text="@string/week5"
+                        android:paddingLeft="@dimen/dimen_5dp"
+                        android:paddingStart="@dimen/dimen_5dp"
+                        android:paddingRight="@dimen/dimen_5dp"
+                        android:paddingEnd="@dimen/dimen_5dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="?attr/selectWeekBackground" />
                 </RadioGroup>

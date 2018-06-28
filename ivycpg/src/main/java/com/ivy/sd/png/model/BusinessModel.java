@@ -317,7 +317,7 @@ public class BusinessModel extends Application {
     //private String orderIDFormInvoice;
     //private PaymentBO paymentBO;
     private OrderHeader orderHeaderBO;
-    private Activity ctx, activity;
+    private Activity ctx;
 
     private ArrayList<InvoiceHeaderBO> invoiceHeader;
 
@@ -8441,7 +8441,7 @@ public class BusinessModel extends Application {
     }
 
     public void writeToFile(String data, String filename, String foldername) {
-        String path = HomeScreenFragment.photoPath;
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
 
         File folder = new File(path);
         if (!folder.exists()) {

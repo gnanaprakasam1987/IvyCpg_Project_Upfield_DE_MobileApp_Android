@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -169,6 +170,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         mPreviewTV = (TextView) findViewById(R.id.preView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mPreviewTV.setTypeface(Typeface.createFromAsset(getAssets(), "font/consola.ttf"));
 
 
         isFromOrder = getIntent().getExtras().getBoolean("IsFromOrder", false);
