@@ -24,6 +24,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * @Deprecated This has been Migrated to MVP pattern
+ * @See {@link com.ivy.ui.activation.presenter.ActivationPresenterImpl}
+ * and {@link com.ivy.ui.activation.data.ActivationDataManagerImpl}
+ */
+
+@Deprecated
 public class ActivationHelper {
 
     public final static int NOTIFY_ALREADY_NOT_ACTIVATED = 0;
@@ -85,12 +93,14 @@ public class ActivationHelper {
         else
             return deviceId;
     }
-    public String getDeviceId(){
+
+    public String getDeviceId() {
         String android_id = Settings.Secure.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
         return android_id;
     }
+
     int downloadReponse = 2;
 
     /**
@@ -309,16 +319,15 @@ public class ActivationHelper {
     }
 
 
-
     public String getSERVER_URL() {
         return SERVER_URL;
     }
 
 
-
     public void setSERVER_URL(String sERVER_URL) {
         SERVER_URL = sERVER_URL.trim();
     }
+
     public void clearAppUrl() {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(context)
