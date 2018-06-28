@@ -87,6 +87,7 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
+import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -5306,7 +5307,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 jsonFormatter.addParameter("MobileUTCDateTime",
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
                 jsonFormatter.addParameter("DeviceId",
-                        bmodel.activationHelper.getIMEINumber());
+                        DeviceUtils.getIMEINumber(getActivity()));
                 jsonFormatter.addParameter("VersionCode",
                         bmodel.getApplicationVersionNumber());
                 jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
