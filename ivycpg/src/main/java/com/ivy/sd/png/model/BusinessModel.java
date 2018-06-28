@@ -317,7 +317,7 @@ public class BusinessModel extends Application {
     //private String orderIDFormInvoice;
     //private PaymentBO paymentBO;
     private OrderHeader orderHeaderBO;
-    private Activity ctx, activity;
+    private Activity ctx;
 
     private ArrayList<InvoiceHeaderBO> invoiceHeader;
 
