@@ -13,9 +13,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -24,6 +26,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
@@ -63,6 +66,7 @@ import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.location.LocationUtil;
 import com.ivy.maplib.BaiduMapDialogue;
 import com.ivy.sd.camera.CameraActivity;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -106,6 +110,9 @@ import java.util.Vector;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
+import static android.provider.Settings.AUTHORITY;
+import static com.baidu.platform.comapi.map.f.f;
+import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
 
 /**
  * Created by hanifa.m on 3/28/2017.
@@ -113,114 +120,91 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPDialog.OTPListener {
 
-    private BusinessModel bmodel;
-
-    private int REQUEST_CODE = 100;
-
-    int width = 0;
-    private Vector<ChannelBO> channelMaster;
-
-    private ArrayList<LocationBO> mLocationMasterList1;
-    private ArrayList<LocationBO> mLocationMasterList2;
-    private ArrayList<LocationBO> mLocationMasterList3;
+    private BusinessModel bmodel=null;
+    private RetailerMasterBO retailerObj =null;
 
     private ScrollView profielEditScrollView;
-
-    private TextView textview[] = null;
-    private TextView textview2[] = null;
-
+    private TextView textview[] = new TextView[100];
+    private AppCompatEditText editText[] = new AppCompatEditText[100];
     private TextView latlongtextview, priorityproducttextview;
-
-    LinearLayout.LayoutParams commonsparams, params, params3, params4, params5, weight0wrap, params8, params6;
-    LinearLayout.LayoutParams weight1, weight2, weight3, weight0, weight4;
-    private Vector<ConfigureBO> profileConfig = new Vector<ConfigureBO>();
-    private ArrayList<NewOutletBO> finalProfileList;
-    private Vector<ConfigureBO> profileChannelConfig = new Vector<ConfigureBO>();
-//    Button saveReason, startorder;
-//    private double mnth_actual = 0.0, Balance = 0.0;
-//    private double day_acheive = 0;
-
-    RetailerMasterBO retailerObj;
-    int locid = 0, loc2id = 0;
-    private MaterialSpinner channel, subchannel, location1, location2, location3, saveSpinner,
-            contactTitleSpinner1, contactTitleSpinner2, contractSpinner, rField5Spinner, rField6Spinner, rField7Spinner, rField4Spinner;
-
-
-    private ArrayAdapter<LocationBO> locationAdapter1;
-    private ArrayAdapter<LocationBO> locationAdapter2;
-    private ArrayAdapter<LocationBO> locationAdapter3;
-
-    private ArrayAdapter<ChannelBO> channelAdapter;
-    private ArrayAdapter<SpinnerBO> subchannelAdapter;
-    private ArrayAdapter<ReasonMaster> saveSpinnerAdapter;
-    private ArrayAdapter<NewOutletBO> contactTitleAdapter;
-    private ArrayAdapter<NewOutletBO> contractStatusAdapter;
-    private ArrayAdapter<RetailerFlexBO> rField5Adapter;
-    private ArrayAdapter<RetailerFlexBO> rField6Adapter;
-    private ArrayAdapter<RetailerFlexBO> rField7Adapter;
-    private ArrayAdapter<RetailerFlexBO> rField4Adapter;
-    private ArrayList<NewOutletBO> mcontactTitleList;
-    private ArrayList<NewOutletBO> mcontractStatusList;
-    private ArrayList<StandardListBO> mPriorityProductList;
-    private ArrayList<StandardListBO> selectedPriorityProductList;
-    private String selectedProductID = "";
-    boolean visit;
-    int other1_editText_index, other2_editText_index, lName1_editText_index, lName2_editText_index;
-
-    private AppCompatEditText editText[] = null;
-    private TextInputLayout editTextInputLayout, editTextInputLayout1, editTextInputLayout2, editTextInputLayout3, editTextInputLayout4;
-    static String lat = "";
-    static String longitude = "";
-    Vector<RetailerMasterBO> mNearbyRetIds;
-    Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
-    private boolean is_contact_title1 = false, is_contact_title2 = false, isLatLong = false;
-    private String mcontact_title1_lovId = "",
-            mcontact_title2_lovId = "", mcontact_title1_text = "0", mcontact_title2_text = "0";
-    ToggleButton btn_Deactivate;
-    LinearLayout bottomLayout;
-    RelativeLayout relativeLayout;
-    double outStanding = 0.0, invoiceAmount = 0.0, mnth_acheive = 0;
-    String retailerCreditLimit = "0.0";
-    String physicalLocation = "", gstType = "", taxType = "";
-    boolean isGstType;
+    private LinearLayout.LayoutParams commonsparams, params, params3, params4, params5, weight0wrap, params8, params6;
+    private LinearLayout.LayoutParams weight1, weight2, weight3, weight0, weight4;
+    private LinearLayout.LayoutParams paramsAttrib, paramsAttribSpinner;
+    private TextInputLayout editTextInputLayout, editTextInputLayout1,
+            editTextInputLayout2, editTextInputLayout3, editTextInputLayout4;
     private View view;
     private Button saveTxtBtn;
-    TextView nearbyTextView;
-    private String sub_chanel_mname;
-
-    private ArrayList<NewOutletAttributeBO> attributeList;
-    private ArrayList<NewOutletAttributeBO> attributeHeaderList;
-    private ArrayList<Integer> attributeIndexList;
-    private HashMap<String, ArrayList<Integer>> attributeIndexMap;
-    private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap;
-    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList; // Hashmap to retreive selected level of Attribute
-    private HashMap<String, MaterialSpinner> spinnerHashMap = null;
-    private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
-    HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap;
-    boolean isSubChannel = false;
-    HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelId;
-
-    LinearLayout.LayoutParams paramsAttrib, paramsAttribSpinner;
-    int check = 0;
-    int spinnerCount = 0;
+    private TextView nearbyTextView;
     private ImageView imageView;
-    private static final int CAMERA_REQUEST_CODE = 1;
-    private static final int LATLONG_CAMERA_REQUEST_CODE = 2;
-    private String imageFileName;
-    private String cameraFilePath = "", latlongCameraFilePath = "";
     private AppCompatCheckBox inSEZcheckBox = null;
-
     private ImageView latlongCameraBtn;
-    boolean isLatLongCameravailable = false;
-
-    private ArrayList<InputFilter> inputFilters = new ArrayList<>();
     static TextView dlExpDateTextView = null;
     static TextView flExpDateTextView = null;
-    private AlertDialog alertDialog;
+
+    private ArrayList<LocationBO> mLocationMasterList1=null;
+    private ArrayList<LocationBO> mLocationMasterList2=null;
+    private ArrayList<LocationBO> mLocationMasterList3=null;
+    private Vector<ConfigureBO> profileConfig = null;
+    private ArrayAdapter<LocationBO> locationAdapter1=null;
+    private ArrayAdapter<LocationBO> locationAdapter2=null;
+    private ArrayAdapter<LocationBO> locationAdapter3=null;
+    private ArrayAdapter<ChannelBO> channelAdapter=null;
+    private ArrayAdapter<SpinnerBO> subchannelAdapter=null;
+    private ArrayAdapter<NewOutletBO> contactTitleAdapter=null;
+    private ArrayAdapter<NewOutletBO> contractStatusAdapter=null;
+    private ArrayAdapter<RetailerFlexBO> rField5Adapter=null;
+    private ArrayAdapter<RetailerFlexBO> rField6Adapter=null;
+    private ArrayAdapter<RetailerFlexBO> rField7Adapter=null;
+    private ArrayAdapter<RetailerFlexBO> rField4Adapter=null;
+    private ArrayList<NewOutletBO> mcontactTitleList=null;
+    private ArrayList<NewOutletBO> mcontractStatusList=null;
+    private ArrayList<StandardListBO> mPriorityProductList=null;
+    private ArrayList<StandardListBO> selectedPriorityProductList=null;
+    private Vector<RetailerMasterBO> mNearbyRetIds=null;
+    private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
+    private Vector<ChannelBO> channelMaster=null;
+    private ArrayList<NewOutletAttributeBO> attributeList=null;
+    private ArrayList<NewOutletAttributeBO> attributeHeaderList=null;
+    private ArrayList<Integer> attributeIndexList=null;
+    private HashMap<String, ArrayList<Integer>> attributeIndexMap=null;
+    private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap=null;
+    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList=null; // Hashmap to retreive selected level of Attribute
+    private HashMap<String, MaterialSpinner> spinnerHashMap = null;
+    private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
+    private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap=null;
+    private HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelId;
+    private ArrayList<InputFilter> inputFilters = new ArrayList<>();
+
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int LATLONG_CAMERA_REQUEST_CODE = 2;
+    private int other1_editText_index, other2_editText_index, lName1_editText_index,
+            lName2_editText_index;
+    private int locid = 0, loc2id = 0;
+    private int check = 0;
+    private int spinnerCount = 0;
+    double  outStanding = 0.0, invoiceAmount = 0.0;
+    static  String lat = "";
+    static  String longitude = "";
+    private String selectedProductID = "";
+    private String retailerCreditLimit = "0.0";
+    private String physicalLocation = "", gstType = "", taxType = "";
+    private String mcontact_title1_lovId = "",
+            mcontact_title2_lovId = "", mcontact_title1_text = "0", mcontact_title2_text = "0";
+    private boolean is_contact_title1 = false, is_contact_title2 = false, isLatLong = false;
+    private boolean isGstType;
+    private String sub_chanel_mname;
+    private String cameraFilePath = "", latlongCameraFilePath = "";
+    private String imageFileName;
+    boolean isLatLongCameravailable = false;
     private String str_mob_email = "", str_type = "";
     private boolean otpShown = false, isMobileNoVerfied = false, isEmailVerfied = false;
-
     private int subChannelSpinnerCount = 0;
+
+    private MaterialSpinner channel, subchannel, location1, location2, location3,
+            contactTitleSpinner1, contactTitleSpinner2, contractSpinner,
+            rField5Spinner, rField6Spinner, rField7Spinner, rField4Spinner;
+    private AlertDialog alertDialog;
+
 
     @Nullable
     @Override
@@ -254,9 +238,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
 
         new DownloadAsync().execute();
-        //  bmodel.configurationMasterHelper.downloadProfileModuleConfig();
-        // get previous changes from retailerEdit  Header and Detail table
-
 
         saveTxtBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -328,9 +309,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     @SuppressLint("RestrictedApi")
     private View createTabViewForProfileForEdit() {
-        profileConfig = new Vector<>();
-        profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
+        profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
         other1_editText_index = profileConfig.size() + 50;
         other2_editText_index = profileConfig.size() + 51;
         lName1_editText_index = profileConfig.size() + 25;
@@ -410,16 +390,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                         }
                                     }
 
-//                                if (attributeList.get(j).getParentId() == tempList.get(i).getParentId()
-//                                        && attributeList.get(j).getAttrId() == tempList.get(i).getAttrId()
-//                                        && tempList.get(i).getStatus().equalsIgnoreCase("D")) {
-//                                    attributeList.remove(j);
-//                                    size = size -1;
-//                                } else {
-//                                    if (j == size - 1) {
-//                                        attributeList.add(tempList.get(i));
-//                                    }
-//                                }
                                 }
                             }
                         } else {
@@ -452,29 +422,22 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
         }
 
-        if (profielEditScrollView != null)
-            profielEditScrollView.removeAllViews();
+        if (profielEditScrollView != null) profielEditScrollView.removeAllViews();
 
-        profielEditScrollView = (ScrollView) view.findViewById(R.id.profile_edit_scrollview);
-
-        editText = new AppCompatEditText[100];
-
+        //editText = new AppCompatEditText[100];
         textview = new TextView[100];
-        textview2 = new TextView[100];
 
-        commonsparams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        commonsparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commonsparams.setMargins(10, 15, 10, 0);
 
-        params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_VERTICAL;
 
-        params3 = new LinearLayout.LayoutParams(width / 6, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        params3 = new LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         params3.weight = 1;
         params3.setMargins(0, (int) getResources().getDimension(R.dimen.profile_spinner_top_margin), 0, 0);
 
-        params4 = new LinearLayout.LayoutParams(width / 6, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        params4 = new LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         params4.weight = 1;
 
         params5 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -561,8 +524,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT);
                     LLParams.setMargins(10, 5, 10, 5);
-                    totalView.addView(
-                            getImageView(), LLParams);
+                    totalView.addView(getImageView(), LLParams);
                     break;
                 }
             }
@@ -575,9 +537,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                 if (configCode.equals("PROFILE02") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
-                    if (retailerObj.getRetailerName() == null
-                            || retailerObj.getRetailerName().equals(
-                            "null")) {
+                    if (retailerObj.getRetailerName() == null || retailerObj.getRetailerName().equals("null")) {
                         retailerObj.setRetailerName("");
                     }
 
@@ -590,16 +550,12 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                         totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME), commonsparams);
                     else
-
-                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
-                                commonsparams);
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS), commonsparams);
 
 
                 } else if (configCode.equals("PROFILE03") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
-                    if (retailerObj.getAddress1() == null
-                            || retailerObj.getAddress1().equals(
-                            "null")) {
+                    if (retailerObj.getAddress1() == null || retailerObj.getAddress1().equals("null")) {
                         retailerObj.setAddress1("");
                     }
 
@@ -611,15 +567,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
 
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                                commonsparams);
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME), commonsparams);
                     else
-
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
-                                commonsparams);
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS), commonsparams);
 
 
                 } else if (configCode.equals("PROFILE04") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
@@ -809,19 +759,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     }
                 } else if (configCode.equals("PROFILE63") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
                     isLatLongCameravailable = true;
-                }
-////                else if (configCode.equals("PROFILE31") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
-////
-////                    String text = retailerObj.getLongitude() + "";
-////                    if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
-////                        if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(retailerObj.getLongitude() + ""))
-////                            text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-////
-////                    totalView.addView(
-////                            getLatlongTextView(mNumber, mName, text, configCode),
-////                            commonsparams);
-////                }
-                else if (configCode.equals("PROFILE09") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals("PROFILE09") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
 
                     if (retailerObj.getContactname() == null
                             || retailerObj.getContactname().equals(
@@ -1537,56 +1475,66 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         return null;
     }
 
+    /*comparing two values with equalsIgnoreCase*/
+    private boolean comparConfigerCode(String configCode, String configCodeFromDB) {
+        if (configCode.equalsIgnoreCase(configCodeFromDB)) return true;
+        else return false;
+    }
 
-    private LinearLayout getEditTextView(final int mNumber, String MName, String textValue,
-                                         int editStyle) {
+    /*Create EditTextView  Code changed by Murugan S
+    * Params
+    * Number
+    * Name
+    * textValue
+    * editStyle*/
+    private LinearLayout getEditTextView(final int mNumber, String MName, String textValue, int editStyle) {
 
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(LinearLayout.HORIZONTAL);
         linearlayout.setBackgroundColor(getActivity().getResources().getColor(R.color.white_box_start));
 
         LinearLayout secondlayout = new LinearLayout(getActivity());
-        //secondlayout.addView(editText[mNumber], params);
-        if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78") ||
-                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE81") ||
-                !profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE61")) {
+
+        String mConfigCode = profileConfig.get(mNumber).getConfigCode();
+
+        if (!comparConfigerCode(mConfigCode, "PROFILE78") ||
+                !comparConfigerCode(mConfigCode, "PROFILE81") ||
+                !comparConfigerCode(mConfigCode, "PROFILE61")) {
             //regex
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
         }
-
-        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE81")) {
+        if (comparConfigerCode(mConfigCode, "PROFILE81")) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkPANRegex(mNumber);
         }
-
-        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE61")) {
+        if (comparConfigerCode(mConfigCode, "PROFILE61")) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkGSTRegex(mNumber);
         }
-        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE02") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE03") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE04") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE05") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE39") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE20") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE26") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE27") ||
-                (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE28") && profileConfig.get(mNumber).getHasLink() == 0) ||
-                (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE53") && profileConfig.get(mNumber).getHasLink() == 0) ||
-                (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE54") && profileConfig.get(mNumber).getHasLink() == 0) ||
-                (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE55") && profileConfig.get(mNumber).getHasLink() == 0) ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE40") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE38") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE61") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE81") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE82") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE84") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE87") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE88")
-
+        if (comparConfigerCode(mConfigCode, "PROFILE02") ||
+                comparConfigerCode(mConfigCode, "PROFILE03") ||
+                comparConfigerCode(mConfigCode, "PROFILE04") ||
+                comparConfigerCode(mConfigCode, "PROFILE05") ||
+                comparConfigerCode(mConfigCode, "PROFILE39") ||
+                comparConfigerCode(mConfigCode, "PROFILE20") ||
+                comparConfigerCode(mConfigCode, "PROFILE26") ||
+                comparConfigerCode(mConfigCode, "PROFILE27") ||
+                (comparConfigerCode(mConfigCode, "PROFILE28") && profileConfig.get(mNumber).getHasLink() == 0) ||
+                (comparConfigerCode(mConfigCode, "PROFILE53") && profileConfig.get(mNumber).getHasLink() == 0) ||
+                (comparConfigerCode(mConfigCode, "PROFILE54") && profileConfig.get(mNumber).getHasLink() == 0) ||
+                (comparConfigerCode(mConfigCode, "PROFILE55") && profileConfig.get(mNumber).getHasLink() == 0) ||
+                comparConfigerCode(mConfigCode, "PROFILE40") ||
+                comparConfigerCode(mConfigCode, "PROFILE38") ||
+                comparConfigerCode(mConfigCode, "PROFILE61") ||
+                comparConfigerCode(mConfigCode, "PROFILE81") ||
+                comparConfigerCode(mConfigCode, "PROFILE82") ||
+                comparConfigerCode(mConfigCode, "PROFILE84") ||
+                comparConfigerCode(mConfigCode, "PROFILE78") ||
+                comparConfigerCode(mConfigCode, "PROFILE87") ||
+                comparConfigerCode(mConfigCode, "PROFILE88")
                 ) {
+
 
             LinearLayout firstlayout = new LinearLayout(getActivity());
             firstlayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -1600,40 +1548,38 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             editText[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
 
             if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
             else
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
-
             editText[mNumber].setHint(MName);
             //cmd for not apply inputfilter value for email id
-            if (!profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78"))
+
+            if (!comparConfigerCode(mConfigCode, "PROFILE78")) {
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                     stockArr = inputFilters.toArray(stockArr);
                     editText[mNumber].setFilters(stockArr);
                     if (inputFilters.size() == 2)
-
                         editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+            }
+
 
             editText[mNumber].addTextChangedListener(new TextWatcher() {
 
                 @Override
                 public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
                 }
 
                 @Override
-                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                              int arg3) {
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                 }
 
                 @Override
                 public void afterTextChanged(Editable et) {
                     String s = et.toString();
+
                     if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                         s = s.toUpperCase();
                         editText[mNumber].setText(s);
@@ -1641,12 +1587,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     }
                 }
             });
+
             editTextInputLayout.addView(editText[mNumber]);
 
-//            secondlayout.addView(editTextInputLayout, commonsparams);
-//            linearlayout.addView(firstlayout, weight2);
-            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE78")
-                    && profileConfig.get(mNumber).getMandatory() == 1) {
+            if (comparConfigerCode(mConfigCode, "PROFILE78") && profileConfig.get(mNumber).getMandatory() == 1) {
                 LinearLayout emailLayout = new LinearLayout(getActivity());
                 emailLayout.setOrientation(LinearLayout.HORIZONTAL);
                 emailLayout.setWeightSum(10);
@@ -1678,12 +1622,12 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 linearlayout.addView(editTextInputLayout, weight1);
 
         }
-        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE30") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE10") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE12") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE79") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE86")
-                ) {
+
+        if (comparConfigerCode(mConfigCode, "PROFILE30") ||
+                comparConfigerCode(mConfigCode, "PROFILE10") ||
+                comparConfigerCode(mConfigCode, "PROFILE12") ||
+                comparConfigerCode(mConfigCode, "PROFILE79") ||
+                comparConfigerCode(mConfigCode, "PROFILE86")) {
 
             LinearLayout firstlayout = new LinearLayout(getActivity());
             firstlayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -1707,19 +1651,12 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
             editTextInputLayout.addView(editText[mNumber]);
 
-
-//            if (profileConfig.get(mNumber).getMaxLengthNo() > 0) {
-//                int maxNo = profileConfig.get(mNumber).getMaxLengthNo();
-//                editText[mNumber].setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxNo)});
-//            } else {
-//                editText[mNumber].setFilters(new InputFilter[]{new InputFilter.LengthFilter(25)});
-//            }
-//            secondlayout.addView(editText[mNumber], commonsparams);
-//            linearlayout.addView(firstlayout, weight2);
-            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE79")
+            if (comparConfigerCode(mConfigCode, "PROFILE79")
                     && profileConfig.get(mNumber).getMandatory() == 1) {
+
                 LinearLayout mobileLayout = new LinearLayout(getActivity());
                 mobileLayout.setOrientation(LinearLayout.HORIZONTAL);
+
                 mobileLayout.setWeightSum(10);
                 LinearLayout.LayoutParams mobileParam = new LinearLayout.LayoutParams(0,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1749,12 +1686,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 linearlayout.addView(editTextInputLayout, weight1);
 
         }
-        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE25")) {
 
-            LinearLayout firstlayout = new LinearLayout(getActivity());
-            firstlayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        if (comparConfigerCode(mConfigCode, "PROFILE25")) {
+
+           /* LinearLayout firstlayout = new LinearLayout(getActivity());
+            firstlayout.setOrientation(LinearLayout.HORIZONTAL);*/
+
             editTextInputLayout = new TextInputLayout(getActivity());
-
             editText[mNumber] = new AppCompatEditText(getActivity());
             editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
             editText[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
@@ -1806,13 +1745,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
         }
 
-        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE09") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE11")) {
+        if (comparConfigerCode(mConfigCode, "PROFILE09") ||
+                comparConfigerCode(mConfigCode, "PROFILE11")) {
+
             LinearLayout firstlayout = new LinearLayout(getActivity());
             firstlayout.setOrientation(LinearLayout.HORIZONTAL);
             linearlayout.setOrientation(LinearLayout.VERTICAL);
+
             editTextInputLayout = new TextInputLayout(getActivity());
-            //    firstlayout.setPadding(0, 0, 0, 0);
+
             textview[mNumber] = new TextView(getActivity());
             textview[mNumber].setText(MName);
             textview[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1829,9 +1770,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             editText[mNumber].setText(textValue);
 
             if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
             else
                 editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
@@ -1845,15 +1784,12 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
 
             editText[mNumber].addTextChangedListener(new TextWatcher() {
-
                 @Override
                 public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
                 }
 
                 @Override
-                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                              int arg3) {
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                 }
 
                 @Override
@@ -1871,7 +1807,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
 
             //Contact 1 Last Name
-            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE09")) {
+
+            if (comparConfigerCode(mConfigCode, "PROFILE09")) {
                 editTextInputLayout1 = new TextInputLayout(getActivity());
                 editText[lName1_editText_index] = new AppCompatEditText(getActivity());
                 editText[lName1_editText_index].setHint(getResources().getString(R.string.contact_person_last_name));
@@ -1880,12 +1817,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 editText[lName1_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
                 if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
                     editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
                 else
                     editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-
 
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
@@ -1899,12 +1833,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                     @Override
                     public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
                     }
 
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                                  int arg3) {
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                     }
 
                     @Override
@@ -1938,7 +1870,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
 
             //Contact2 Last Name
-            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE11")) {
+
+            if (comparConfigerCode(mConfigCode, "PROFILE11")) {
                 editTextInputLayout2 = new TextInputLayout(getActivity());
                 editText[lName2_editText_index] = new AppCompatEditText(getActivity());
                 editText[lName2_editText_index].setHint(getResources().getString(R.string.contact_person_last_name));
@@ -1948,12 +1881,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
 
                 if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
                     editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
                 else
                     editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-
 
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
@@ -1967,12 +1897,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                     @Override
                     public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
                     }
 
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                                  int arg3) {
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                     }
 
                     @Override
@@ -1994,8 +1922,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 }
 
                 String text = "";
-                text = retailerObj
-                        .getContactLname2();
+                text = retailerObj.getContactLname2();
 
                 if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("LNAME2") != null)
                     if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get("LNAME2").equals(text))
@@ -2004,8 +1931,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 editText[lName2_editText_index].setText(text);
 
             }
-            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE09") &&
-                    is_contact_title1) {
+
+
+            if (comparConfigerCode(mConfigCode, "PROFILE09") && is_contact_title1) {
                 contactTitleSpinner1 = new MaterialSpinner(getActivity());
                 contactTitleSpinner1.setId(mNumber);
                 contactTitleSpinner1.setAdapter(contactTitleAdapter);
@@ -2019,12 +1947,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 editText[other1_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
 
                 if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
                     editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
                 else
                     editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-
 
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
@@ -2038,12 +1963,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                     @Override
                     public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
                     }
 
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                                  int arg3) {
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                     }
 
                     @Override
@@ -2131,8 +2054,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
 
 
-            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE11") &&
-                    is_contact_title2) {
+            if (comparConfigerCode(mConfigCode, "PROFILE11") && is_contact_title2) {
                 contactTitleSpinner2 = new MaterialSpinner(getActivity());
                 contactTitleSpinner2.setId(mNumber);
                 contactTitleSpinner2.setAdapter(contactTitleAdapter);
@@ -2165,12 +2087,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                     @Override
                     public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
                     }
 
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                                  int arg3) {
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                     }
 
                     @Override
@@ -2260,9 +2180,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
 
             secondlayout.addView(editTextInputLayout, params4);
-            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE09"))
+
+            if (comparConfigerCode(mConfigCode, "PROFILE09"))
                 secondlayout.addView(editTextInputLayout1, params4);
-            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE11"))
+            if (comparConfigerCode(mConfigCode, "PROFILE11"))
                 secondlayout.addView(editTextInputLayout2, params4);
             linearlayout.addView(firstlayout, weight2);
             linearlayout.addView(secondlayout, weight2);
@@ -2331,111 +2252,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     }
 
 
-    private void checkPANRegex(final int number) {
-        final String reg;
-
-        try {
-            String regex = profileConfig.get(number).getRegex();
-            if (regex != null && !regex.isEmpty()) {
-                if (regex.contains("<") && regex.contains(">")) {
-                    reg = regex.replaceAll("\\<.*?\\>", "");
-                } else {
-                    reg = regex;
-                }
-
-                InputFilter filter = new InputFilter() {
-                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                        for (int i = start; i < end; i++) {
-                            String enteredValue = dest + String.valueOf(source.charAt(i));
-                            String panNumber = "AAAAA1111A";
-
-                            String checkValid = enteredValue + "" + panNumber.substring(dest.length() + 1, panNumber.length());
-
-                            if (!Pattern.compile(reg).matcher(checkValid).matches()) {
-                                Toast.makeText(getActivity(),
-                                        getResources().getString(R.string.enter_valid) + " " + profileConfig.get(number).getMenuName(), Toast.LENGTH_SHORT)
-                                        .show();
-                                Log.d("", "invalid");
-                                return "";
-                            }
-
-                        }
-                        return null;
-                    }
-                };
-                inputFilters.add(filter);
-
-            }
-        } catch (Exception ex) {
-            Commons.printException("regex check", ex);
-        }
-    }
-
-    private void checkGSTRegex(final int number) {
-        final String reg;
-
-        try {
-            String regex = profileConfig.get(number).getRegex();
 
 
-            if (regex != null && !regex.isEmpty()) {
-                if (regex.contains("<") && regex.contains(">")) {
-                    reg = regex.replaceAll("\\<.*?\\>", "");
-                } else {
-                    reg = regex;
-                }
 
-                InputFilter filter = new InputFilter() {
-                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                        for (int i = start; i < end; i++) {
-                            String enteredValue = dest + String.valueOf(source.charAt(i));
-                            String gstNumber = "11AAAAA1111A1A1";
-
-                            String panNumber = "";
-
-                            for (int index = 0; index < profileConfig.size(); index++) {
-                                if (profileConfig.get(index).getConfigCode().equalsIgnoreCase("PAN_NUMBER")) {
-                                    panNumber = editText[index].getText().toString();
-                                }
-                            }
-
-                            boolean isValidPan = false;
-                            if (enteredValue.length() > 2 && panNumber != null && panNumber.length() == 10) {
-                                String panSubString = "";
-
-                                if (enteredValue.length() < 13) {
-                                    panSubString = enteredValue.substring(2, enteredValue.length());
-                                } else {
-                                    panSubString = enteredValue.substring(2, 12);
-                                }
-
-                                if (panNumber.substring(0, panSubString.length()).equals(panSubString)) {
-                                    isValidPan = true;
-                                }
-                            } else {
-                                isValidPan = true;
-                            }
-                            String checkValid = enteredValue + "" + gstNumber.substring(dest.length() + 1, gstNumber.length());
-                            if (!Pattern.compile(reg).matcher(checkValid).matches() || !isValidPan) {
-                                Log.d("", "invalid");
-
-                                Toast.makeText(getActivity(),
-                                        getResources().getString(R.string.enter_valid) + " " + profileConfig.get(number).getMenuName(), Toast.LENGTH_SHORT)
-                                        .show();
-                                return "";
-                            }
-
-                        }
-                        return null;
-                    }
-                };
-                inputFilters.add(filter);
-
-            }
-        } catch (Exception ex) {
-            Commons.printException("regex check", ex);
-        }
-    }
 
     private LinearLayout getSpinnerView(int mNumber, String MName,
                                         String menuCode, int id) {
@@ -2444,16 +2263,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         layout.setOrientation(LinearLayout.HORIZONTAL);
         layout.setBackgroundColor(getActivity().getResources().getColor(R.color.white_box_start));
 
-//        LinearLayout firstlayout = new LinearLayout(getActivity());
-//        firstlayout.setPadding(0, 0, 0, 12);
-//        textview[mNumber] = new TextView(getActivity());
-//        textview[mNumber].setText(MName);
-//        textview[mNumber].setTextColor(Color.BLACK);
-//        textview[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
-//        firstlayout.addView(textview[mNumber], weight1);
-//
-//
-//        layout.addView(firstlayout, weight2);
 
         LinearLayout.LayoutParams spinweight = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -2500,65 +2309,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         }
 
 
-//        if (menuCode.equals("PROFILE21")) {
-//            // Saved position variable
-//            int position = 0;
-//            int reasonId = bmodel.reasonHelper
-//                    .getSavedNonVisitReason(retailerObj);
-//
-//            saveSpinner = new MaterialSpinner(getActivity());
-//            saveSpinner.setId(mNumber);
-//            saveSpinner.setFloatingLabelText(MName);
-//            // layout.addView(saveSpinner, weight1);
-//            //saveSpinner.setGravity(Gravity.CENTER);
-//
-//            saveSpinnerAdapter = new ArrayAdapter<ReasonMaster>(
-//                    getActivity(), android.R.layout.simple_spinner_item);
-//            saveSpinnerAdapter.add(new ReasonMaster(0 + "", "Select " + MName));
-//            for (int i = 0; i < bmodel.reasonHelper.getNonVisitReasonMaster()
-//                    .size(); i++) {
-//                ReasonMaster temp = bmodel.reasonHelper.getNonVisitReasonMaster()
-//                        .get(i);
-//                if (temp.getReasonID().equals(reasonId + ""))
-//                    position = i + 1;
-//                saveSpinnerAdapter.add(temp);
-//            }
-//            saveSpinnerAdapter
-//                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//            saveSpinner
-//                    .setAdapter(saveSpinnerAdapter);
-//            saveSpinner
-//                    .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                        public void onItemSelected(AdapterView<?> parent,
-//                                                   View view, int position, long id) {
-//
-////                            TextView item = (TextView) view;
-////                            String ti = (String) item.getText();
-//                            // Hide/Enable Save reason button
-////                            if (!ti.equals("Select")) {
-////                                saveReason
-////                                        .setVisibility(View.VISIBLE);
-////
-////
-////                            } else {
-////                                saveReason.setVisibility(View.GONE);
-////
-////                            /*    if (variablehistory.saveReason != null)
-////                                    variablehistory.saveReason
-////                                            .setVisibility(View.GONE);
-////                            }*/
-////                            }
-//                        }
-//
-//                        public void onNothingSelected(AdapterView<?> parent) {
-//                        }
-//                    });
-//
-//            // Set position of spinner if already reason saved
-//            saveSpinner.setSelection(position);
-//            saveSpinner.setPadding(0, 0, 0, 12);
-//            layout.addView(saveSpinner, spinweight);
-//        }
         if (menuCode.equals("PROFILE43")) {
             int selected_pos = 0;
             try {
@@ -2970,24 +2720,12 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     private void updateLocationAdapter1(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<>();
-//        if(mLocationMasterList1==null || mLocationMasterList1.size()==0)
-//            locationList.add(new LocationBO(0, NewOutlet.this
-//                .getResources().getString(R.string.select)));
-//        else {
-//            if(!((LocationBO)mLocationMasterList1.get(0)).getLocName().toLowerCase()
-//                    .contains("select")) {
-//                locationList.add(new LocationBO(0, NewOutlet.this
-//                        .getResources().getString(R.string.select)));
-//            }
-//        }
         for (LocationBO locationBO : mLocationMasterList1) {
             if (parentId == locationBO.getParentId()) {
                 locationList.add(locationBO);
             }
         }
-
-        locationAdapter1 = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, locationList);
+        locationAdapter1 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, locationList);
         if (locationAdapter1.getCount() > 0) {
             if (!(locationAdapter1.getItem(0)).getLocName().toLowerCase().contains("select"))
                 locationAdapter1.insert(new LocationBO(0, getActivity()
@@ -2997,28 +2735,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     .getResources().getString(R.string.select_str)), 0);
 
         location1.setAdapter(locationAdapter1);
-
     }
-
 
     private void updateLocationAdapter2(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<LocationBO>();
-//        if(mLocationMasterList2==null || mLocationMasterList2.size()==0)
-//            locationList.add(new LocationBO(0, NewOutlet.this
-//                    .getResources().getString(R.string.select)));
-//        else {
-//            if(!((LocationBO)mLocationMasterList2.get(0)).getLocName().toLowerCase()
-//                    .contains("select")) {
-//                locationList.add(new LocationBO(0, NewOutlet.this
-//                        .getResources().getString(R.string.select)));
-//            }
-//        }
         for (LocationBO locationBO : mLocationMasterList2) {
             if (parentId == locationBO.getParentId()) {
                 locationList.add(locationBO);
             }
         }
-
         locationAdapter2 = new ArrayAdapter<LocationBO>(getActivity(),
                 android.R.layout.simple_spinner_item, locationList);
         if (locationAdapter2 != null && locationAdapter2.getCount() > 0) {
@@ -3091,9 +2816,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 takePhoto(retailerObj, true);
             }
         });
-        // if (Code.equals("PROFILE08")) {
-//        secondlayout.addView(latlngButton, weight0);
-        // }
+
         linearlayout.addView(firstlayout, params5);
         linearlayout.addView(secondlayout, weight2);
         return linearlayout;
@@ -3201,7 +2924,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 Vector<RetailerMasterBO> retailersList = bmodel.newOutletHelper.getLinkRetailerListByDistributorId().get(retailerObj.getDistributorId());
 
 
-                if (retailersList.size() > 0) {
+                if (retailersList != null
+                        && retailersList.size() > 0) {
                     NearByRetailerDialog dialog = new NearByRetailerDialog(getActivity(), bmodel, retailersList, mSelectedIds);
                     dialog.show();
                     dialog.setCancelable(false);
@@ -3478,12 +3202,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         final NewOutletAttributeBO parentBO;
                         parentBO = attributeHeaderList.get(i);
                         //Allowing only if parent attribute is available in common list or channel's(from Db) attribute
-                        if ((isCommon && (mCommonAttributeList.contains(parentBO.getAttrId()) || mChannelAttributeList.contains(parentBO.getAttrId())))
-                                ) {
+
+                        // assert mChannelAttributeList != null;
+                        if ((isCommon && (mCommonAttributeList.contains(parentBO.getAttrId()) || (mChannelAttributeList != null && mChannelAttributeList.contains(parentBO.getAttrId()))))) {
 
                             LinearLayout layout = new LinearLayout(getActivity());
                             // setting tag as channel, used to remove channel views particularly and update new one if channel changed
-                            if (mChannelAttributeList.contains(parentBO.getAttrId()))
+                            if (mChannelAttributeList != null && mChannelAttributeList.contains(parentBO.getAttrId()))
                                 layout.setTag("channel");
                             layout.setOrientation(LinearLayout.HORIZONTAL);
                             layout.setGravity(Gravity.CENTER_VERTICAL);
@@ -3559,6 +3284,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                             layout.addView(innerLL);
                             parentLayout.addView(layout);
                         }
+
                     }
                 } else {
                     // No attributes for current retailer..
@@ -3682,35 +3408,40 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
 
     private RelativeLayout getImageView() {
+
         int width = (int) getResources().getDimension(R.dimen.user_logo_width);
         int height = (int) getResources().getDimension(R.dimen.user_logo_height);
-        RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(width,
-                height);
+
+        RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(width, height);
         imageParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+
         RelativeLayout parentLayout = new RelativeLayout(getActivity());
 
         imageView = new ImageView(getActivity());
         imageView.setImageResource(R.drawable.face);
         parentLayout.addView(imageView, imageParams);
+
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                boolean isLatLongMenuAvail = false;
+
+                /*boolean isLatLongMenuAvail = false;
+
                 for (int conf = 0; conf < profileConfig.size(); conf++) {
-                    if (profileConfig.get(conf).getConfigCode().equalsIgnoreCase("PROFILE08") &&
-                            profileConfig.get(conf).getModule_Order() == 1) {
+                    if (profileConfig.get(conf).getConfigCode().equalsIgnoreCase("PROFILE08") && profileConfig.get(conf).getModule_Order() == 1) {
                         for (int conf1 = 0; conf1 < profileConfig.size(); conf1++) {
-                            if (profileConfig.get(conf1).getConfigCode().equalsIgnoreCase("PROFILE31") &&
-                                    profileConfig.get(conf1).getModule_Order() == 1) {
+                            if (profileConfig.get(conf1).getConfigCode().equalsIgnoreCase("PROFILE31") && profileConfig.get(conf1).getModule_Order() == 1) {
                                 isLatLongMenuAvail = true;
                                 break;
                             }
                         }
                     }
-                }
+                }*/
+
                 //Dont allow if Fun57 is enabled and mandatory,
                 //Generally check for location and show toast if no location found.
-                if (!isLatLongMenuAvail && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
+                if (!isLatLong && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE
+                        && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
                         || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
 
                     Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
@@ -3725,13 +3456,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
         });
 
+
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (cameraFilePath != null && !"".equals(cameraFilePath)) {
                     if (new File(cameraFilePath).exists()) {
                         try {
-                            openImage(new File(cameraFilePath).getAbsolutePath());
+                            openImage(new File(cameraFilePath));
                         } catch (Exception e) {
                             Commons.printException("" + e);
                         }
@@ -3766,7 +3498,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                     if (filePath != null && filePath.exists()) {
                         try {
-                            openImage(filePath.getAbsolutePath());
+                            openImage(filePath);
                         } catch (Exception e) {
                             Commons.printException("" + e);
                         }
@@ -3778,6 +3510,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 }
             }
         });
+
+
         if (bmodel.profilehelper.hasProfileImagePath(retailerObj) &&
                 retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
             String[] imgPaths = retailerObj.getProfileImagePath().split("/");
@@ -3926,6 +3660,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     public void onMapViewClicked() {
         Intent in;
+        int REQUEST_CODE = 100;
         if (bmodel.configurationMasterHelper.IS_BAIDU_MAP)
             in = new Intent(getActivity(), BaiduMapDialogue.class);
         else
@@ -5168,15 +4903,30 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     /*
      * Open the Image in Photo Gallery while onClick
      */
-    private void openImage(String fileName) {
-        if (fileName.trim().length() > 0) {
+    private void openImage(File fileName) {
+        if (fileName.getAbsolutePath().trim().length() > 0) {
+            Uri path;
             try {
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse("file://" + fileName),
-                        "image/*");
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", fileName);
+                    intent.setDataAndType(path, "image/*");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } else {
+                    path = Uri.fromFile(fileName);
+                    intent.setDataAndType(path, "image/*");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                }
                 startActivity(intent);
+
+
+               /* Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse("file://" + fileName), "image*//*");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(intent);*/
+
             } catch (ActivityNotFoundException e) {
                 Commons.printException("" + e);
                 Toast.makeText(
