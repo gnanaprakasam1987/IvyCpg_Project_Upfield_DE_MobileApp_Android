@@ -80,6 +80,8 @@ android {
     buildTypes {
         debug {
             resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
+            buildConfigField("boolean", "ACTIVATION", "true");
+
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
             testCoverageEnabled = true
@@ -88,6 +90,7 @@ android {
         release {
             def googleapikey = System.getenv('googleapikey')
             resValue "string", "google_maps_api_key", "${googleapikey}"
+            buildConfigField("boolean", "ACTIVATION", "true");
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -95,6 +98,7 @@ android {
         }
         devrelease {
             resValue "string", "google_maps_api_key", keystoreProperties['mapKey']
+            buildConfigField("boolean", "ACTIVATION", "true");
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
