@@ -4,6 +4,7 @@ import com.ivy.core.IvyConstants;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ActivationBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -59,7 +60,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     @Override
     public void doActivation(String key, String applicationVersionName, String applicationVersionNumber, String imEiNumber) {
 
-        getIvyView().showLoading();
+        getIvyView().showLoading(R.string.please_wait_some_time);
         getCompositeDisposable().add((Disposable) activationDataManager.doActivationAtHttp(key, applicationVersionName, applicationVersionNumber, imEiNumber)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -70,7 +71,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
 
     @Override
     public void triggerIMEIActivation(String imEi, String versionName, String versionNumber) {
-        getIvyView().showLoading();
+        getIvyView().showLoading(R.string.please_wait_some_time);
         getCompositeDisposable().add((Disposable) activationDataManager.doIMEIActivationAtHttp(imEi, versionName, versionNumber)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
