@@ -4,14 +4,15 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,29 +24,29 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class IncentiveDashboardFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     HashMap<String, ArrayList<IncentiveDashboardBO>> incentiveHashMap = new HashMap<>();
-    ArrayList<IncentiveDashboardBO> mIncentiveList = new ArrayList<>();
-    TextView tvFixedTotalPayoutEarned, tvFixedMaxpossiblePayout, tvTopUpTotalPayoutEarned, tvTopUpMaxpossiblePayout, tvTotalPayoutEarned, tvMaxpossiblePayout, tvRegularIncentive, tvTopupIncentive;
+    TextView tvFixedTotalPayoutEarned, tvFixedMaxpossiblePayout, tvTopUpTotalPayoutEarned, tvTopUpMaxpossiblePayout, tvTotalPayoutEarned, tvMaxpossiblePayout, tvRegularIncentive, tvTopupIncentive, tvRegularIncentiveDetails, tvTopupIncentiveDetail;
     CardView cvFirst, cvSecond;
+    ImageView regularIncentiveImageView, regularIncentiveDetailsImageView, topupIncentiveImageview, topupIncentiveDetailImageView;
     ArrayList<IncentiveDashboardBO> fixedIncentiveList = new ArrayList<>();
     ArrayList<IncentiveDashboardBO> topUpIncentiveList = new ArrayList<>();
+    ArrayList<IncentiveDashboardDefinitionBO> regularIncentiveDetails = new ArrayList<>();
+    ArrayList<IncentiveDashboardDefinitionBO> topupIncentiveDetails = new ArrayList<>();
 
-
-    String strFixed = "Fixed", strTopUP = "Top Up";
-
-    private DashBoardHelper dashBoardHelper;
+    String strFixed = "R", strTopUP = "T";
+    DashBoardHelper dashBoardHelper;
 
     @Override
+
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        dashBoardHelper = DashBoardHelper.getInstance(context);
+        dashBoardHelper = DashBoardHelper.getInstance(getActivity());
     }
 
     @Override
@@ -53,7 +54,6 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_incentive_dashboard, container, false);
-
 
         tvFixedTotalPayoutEarned = (TextView) view.findViewById(R.id.tv_fixed_totalPayoutEarned);
         tvFixedMaxpossiblePayout = (TextView) view.findViewById(R.id.tv_fixed_max_possible_payout);
@@ -63,6 +63,12 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
         tvMaxpossiblePayout = (TextView) view.findViewById(R.id.tv_maxPossiblepayout);
         tvRegularIncentive = (TextView) view.findViewById(R.id.tv_textRegularIncentive);
         tvTopupIncentive = (TextView) view.findViewById(R.id.tv_TopupIncentive);
+        tvRegularIncentiveDetails = (TextView) view.findViewById(R.id.regularIncentiveDetailsTextView);
+        tvTopupIncentiveDetail = (TextView) view.findViewById(R.id.topupIncentiveDetailTextView);
+        regularIncentiveImageView = (ImageView) view.findViewById(R.id.regularIncentiveImageView);
+        regularIncentiveDetailsImageView = (ImageView) view.findViewById(R.id.regularIncentiveDetailsImageView);
+        topupIncentiveImageview = (ImageView) view.findViewById(R.id.topupIncentiveImageview);
+        topupIncentiveDetailImageView = (ImageView) view.findViewById(R.id.topupIncentiveDetailImageView);
         cvFirst = (CardView) view.findViewById(R.id.cv_first);
         cvSecond = (CardView) view.findViewById(R.id.cv_second);
 
@@ -75,31 +81,107 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
         tvMaxpossiblePayout.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tvRegularIncentive.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         tvTopupIncentive.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvTopupIncentiveDetail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvRegularIncentiveDetails.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
 
-        dashBoardHelper.downloadIncentiveList();
-        mIncentiveList = dashBoardHelper.getIncentiveList();
+        fixedIncentiveList = dashBoardHelper.downloadIncentiveList("R");
+        topUpIncentiveList = dashBoardHelper.downloadIncentiveList("T");
+
+        regularIncentiveDetails = dashBoardHelper.downloadIncentiveDetails("R");
+        topupIncentiveDetails = dashBoardHelper.downloadIncentiveDetails("T");
 
         IncentiveType();
 
-        cvFirst.setOnClickListener(new View.OnClickListener() {
+        regularIncentiveImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
 
-                aletrt(fixedIncentiveList, strFixed);
-
+                regularIncentive();
             }
         });
-        cvSecond.setOnClickListener(new View.OnClickListener() {
+
+        tvRegularIncentive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                aletrt(topUpIncentiveList, strTopUP);
+                regularIncentive();
             }
         });
+
+        regularIncentiveDetailsImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                regularIncentiveDetail();
+            }
+        });
+
+        tvRegularIncentiveDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                regularIncentiveDetail();
+            }
+        });
+
+        tvTopupIncentive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                topUpIncentive();
+            }
+        });
+        topupIncentiveImageview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                topUpIncentive();
+            }
+        });
+
+        topupIncentiveDetailImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                topUpIncentiveDetails();
+            }
+        });
+        tvTopupIncentiveDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                topUpIncentiveDetails();
+            }
+        });
+
 
         setUpActionBar();
         setHasOptionsMenu(true);
         return view;
+    }
+
+    private void regularIncentive() {
+        if (fixedIncentiveList != null && fixedIncentiveList.size() > 0)
+            alert(fixedIncentiveList, strFixed);
+        else
+            bmodel.showAlert(getResources().getString(R.string.no_data_exists), 0);
+    }
+
+    private void regularIncentiveDetail() {
+        if (regularIncentiveDetails != null && regularIncentiveDetails.size() > 0)
+            alertDefination(regularIncentiveDetails, strFixed);
+        else
+            bmodel.showAlert(getResources().getString(R.string.no_data_exists), 0);
+    }
+
+    private void topUpIncentive() {
+        if (topUpIncentiveList != null && topUpIncentiveList.size() > 0)
+            alert(topUpIncentiveList, strTopUP);
+        else
+            bmodel.showAlert(getResources().getString(R.string.no_data_exists), 0);
+    }
+
+    private void topUpIncentiveDetails() {
+        if (topupIncentiveDetails != null && topupIncentiveDetails.size() > 0)
+            alertDefination(topupIncentiveDetails, strTopUP);
+        else
+            bmodel.showAlert(getResources().getString(R.string.no_data_exists), 0);
     }
 
 
@@ -117,8 +199,6 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
         else
             setScreenTitle(getArguments().getString("screentitle"));
 
-//        if (!BusinessModel.dashHomeStatic)
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
 
     }
@@ -126,98 +206,130 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
     private void IncentiveType() {
 
         incentiveHashMap.clear();
-        fixedIncentiveList.clear();
-        topUpIncentiveList.clear();
 
-
-        for (int i = 0; i < mIncentiveList.size(); i++) {
-
-            if (mIncentiveList.get(i).getInctype().equalsIgnoreCase("Fixed"))
-                fixedIncentiveList.add(mIncentiveList.get(i));
-            if (mIncentiveList.get(i).getInctype().equalsIgnoreCase("Top Up"))
-                topUpIncentiveList.add(mIncentiveList.get(i));
-        }
         for (String s : dashBoardHelper.getIncentiveType()) {
-            if (s.equalsIgnoreCase("Fixed"))
-                incentiveHashMap.put(s, fixedIncentiveList);
-            if (s.equalsIgnoreCase("Top Up"))
-                incentiveHashMap.put(s, topUpIncentiveList);
+            if (s.equalsIgnoreCase("R"))
+                incentiveHashMap.put("R", fixedIncentiveList);
+            if (s.equalsIgnoreCase("T"))
+                incentiveHashMap.put("T", topUpIncentiveList);
         }
-
 
         for (String inctype : dashBoardHelper.getIncentiveType()) {
-            if (inctype.equalsIgnoreCase("Fixed")) {
+            if (inctype.equalsIgnoreCase("R")) {
 
                 tvRegularIncentive.setText(R.string.regular_incentive);
-                tvFixedTotalPayoutEarned.setText(getResources().getString(R.string.Rs) + " " + getSum(incentiveHashMap.get("Fixed"), false));
-                tvFixedMaxpossiblePayout.setText(getResources().getString(R.string.Rs) + " " + getSum(incentiveHashMap.get("Fixed"), true));
+                tvFixedTotalPayoutEarned.setText(getResources().getString(R.string.Rs) + " " + getSum(incentiveHashMap.get("R"), false));
+                tvFixedMaxpossiblePayout.setText(getResources().getString(R.string.Rs) + " " + getSum(incentiveHashMap.get("R"), true));
 
             }
-            if (inctype.equalsIgnoreCase("Top Up")) {
+            if (inctype.equalsIgnoreCase("T")) {
 
                 tvTopupIncentive.setText(R.string.top_up_incentive);
-                tvTopUpTotalPayoutEarned.setText(getResources().getString(R.string.Rs) + " " + getSum(incentiveHashMap.get("Top Up"), false));
-                tvTopUpMaxpossiblePayout.setText(getResources().getString(R.string.Rs) + " " + getSum(incentiveHashMap.get("Top Up"), true));
+                tvTopUpTotalPayoutEarned.setText(getResources().getString(R.string.Rs) + " " + getSum(incentiveHashMap.get("T"), false));
+                tvTopUpMaxpossiblePayout.setText(getResources().getString(R.string.Rs) + " " + getSum(incentiveHashMap.get("T"), true));
 
             }
         }
 
-        int totalpayot = (int) (getSum(incentiveHashMap.get("Fixed"), false) + getSum(incentiveHashMap.get("Top Up"), false));
+        int totalpayot = (int) (getSum(incentiveHashMap.get("R"), false) + getSum(incentiveHashMap.get("T"), false));
         tvTotalPayoutEarned.setText(getResources().getString(R.string.Rs) + " " + Integer.toString(totalpayot));
 
-        int maxPayout = (int) (getSum(incentiveHashMap.get("Fixed"), true) + getSum(incentiveHashMap.get("Top Up"), true));
+        int maxPayout = (int) (getSum(incentiveHashMap.get("R"), true) + getSum(incentiveHashMap.get("T"), true));
         tvMaxpossiblePayout.setText(getResources().getString(R.string.Rs) + " " + Integer.toString(maxPayout));
-
 
     }
 
     private double getSum(ArrayList<IncentiveDashboardBO> incentivelist, boolean isMax) {
 
         double sum = 0;
-        HashMap<String, Double> sumMap = new HashMap<>();
+        HashMap<String, String> sumMap = new HashMap<>();
 
-        for (IncentiveDashboardBO incentiveDashboardBO : incentivelist) {
-            if (isMax)
-                sumMap.put(incentiveDashboardBO.getGroups(), SDUtil.convertToDouble(incentiveDashboardBO.getMaxpayout()));
-            else
-                sumMap.put(incentiveDashboardBO.getGroups(), SDUtil.convertToDouble(incentiveDashboardBO.getPayout()));
+        if (incentivelist != null) {
+            for (IncentiveDashboardBO incentiveDashboardBO : incentivelist) {
+                if (isMax) {
+                    if (SDUtil.convertToDouble(incentiveDashboardBO.getMaxpayout()) > 0)
+                        sum += SDUtil.convertToDouble(incentiveDashboardBO.getMaxpayout());
+                } else {
+                    if (SDUtil.convertToDouble(incentiveDashboardBO.getPayout()) > 0)
+                        sum += SDUtil.convertToDouble(incentiveDashboardBO.getPayout());
+                }
+            }
         }
-
-        for (Map.Entry<String, Double> entry : sumMap.entrySet())
-            sum += entry.getValue();
 
         return sum;
 
     }
 
-    public void aletrt(ArrayList<IncentiveDashboardBO> tempMIncentiveList, String strTitleType) {
+    public void alert(ArrayList<IncentiveDashboardBO> tempMIncentiveList, String strTitleType) {
 
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        // dialog.setContentView(R.layout.alert_list_radio);
-
-        TextView textView = new TextView(getActivity());
-        textView.setTextSize(getResources().getDimensionPixelSize(R.dimen.font_nano_small));
-        textView.setGravity(Gravity.CENTER);
-        textView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        dialog.setCustomTitle(textView);
-        if (strTitleType.equals("Fixed")) {
-            textView.setText(R.string.regular_incentive_small);
-
-        } else {
-            textView.setText(R.string.top_up_incentive_small);
-        }
-
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
 
         View customView = LayoutInflater.from(getActivity()).inflate(
                 R.layout.incentivedashboard_alertdialog_layout, null, false);
 
         ListView listItems = (ListView) customView.findViewById(R.id.lv_items);
+        TextView titleTextView = (TextView) customView.findViewById(R.id.title);
+        ImageView closeImageView = (ImageView) customView.findViewById(R.id.img_close);
+
+        titleTextView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        if (strTitleType.equals("R")) {
+            titleTextView.setText(R.string.regular_incentive_small);
+
+        } else {
+            titleTextView.setText(R.string.top_up_incentive_small);
+        }
 
         CustomIncentiveAdapterDialog mAdapter = new CustomIncentiveAdapterDialog(tempMIncentiveList, getActivity());
         listItems.setAdapter(mAdapter);
 
+
         dialog.setView(customView);
-        dialog.show();
+        final AlertDialog alertDialog = dialog.show();
+
+        closeImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+    }
+
+
+    public void alertDefination(ArrayList<IncentiveDashboardDefinitionBO> tempMIncentiveList, String strTitleType) {
+
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        // dialog.setContentView(R.layout.alert_list_radio);
+
+        View customView = LayoutInflater.from(getActivity()).inflate(
+                R.layout.dialog_incentive_dashboard_details, null, false);
+
+        ListView listItems = (ListView) customView.findViewById(R.id.lv_items);
+
+        TextView titleTextView = (TextView) customView.findViewById(R.id.title);
+        ImageView closeImageView = (ImageView) customView.findViewById(R.id.img_close);
+
+        titleTextView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        if (strTitleType.equals("R")) {
+            titleTextView.setText(R.string.regular_incentive_detail);
+
+        } else {
+            titleTextView.setText(R.string.top_up_incentive_detail);
+        }
+
+        MyAdapter adapter = new MyAdapter(tempMIncentiveList, getActivity());
+        listItems.setAdapter(adapter);
+
+        dialog.setView(customView);
+        final AlertDialog alertDialog = dialog.show();
+        closeImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
 
     }
 
@@ -251,7 +363,6 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             if (convertView == null) {
-                //convertView=layoutInflater.inflate()
                 convertView = layoutInflater.inflate(R.layout.row_incentivedashboard_alertdialog, parent, false);
                 holder = new ViewHolder();
 
@@ -270,25 +381,30 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
             holder.tvTarget.setText(listData.get(position).getTgt());
             holder.tvAchived.setText(listData.get(position).getAch());
             holder.tvAchper.setText(listData.get(position).getAchper());
-            holder.tvPayoutEarned.setText(getResources().getString(R.string.Rs) + " " + listData.get(position).getPayout());
-            holder.tvMaxPossible.setText(getResources().getString(R.string.Rs) + " " + listData.get(position).getMaxpayout());
+
+            try {
+                if (Double.parseDouble(listData.get(position).getAchper().replace("%", "")) >= 100) {
+                    holder.tvAchper.setTextColor(getResources().getColor(R.color.colorPrimaryDarkGreen));
+                } else {
+                    holder.tvAchper.setTextColor(getResources().getColor(R.color.RED));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            if (listData.get(position).getIsNewGroup() || listData.get(position).getInctype().equals("T")) {
+                holder.tvPayoutEarned.setText(getResources().getString(R.string.Rs) + " " + listData.get(position).getPayout());
+                holder.tvMaxPossible.setText(getResources().getString(R.string.Rs) + " " + listData.get(position).getMaxpayout());
+                holder.tvMaxPossible.setVisibility(View.VISIBLE);
+                holder.tvPayoutEarned.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvMaxPossible.setVisibility(View.GONE);
+                holder.tvPayoutEarned.setVisibility(View.GONE);
+            }
+
 
             return convertView;
         }
-
-      /*  @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-
-            convertView = layoutInflater.inflate(R.layout.row_incentivedashboard_alertdialog, null);
-
-            TextView txt = (TextView) convertView.findViewById(R.id.text);
-
-            txt.setText(data[position]);
-
-
-            return convertView;
-        }*/
 
         public class ViewHolder {
             TextView tvFactor, tvTarget, tvAchived, tvAchper, tvPayoutEarned, tvMaxPossible;
@@ -296,7 +412,84 @@ public class IncentiveDashboardFragment extends IvyBaseFragment {
         }
 
     }
+
+    public class MyAdapter extends BaseAdapter {
+
+        private ArrayList<IncentiveDashboardDefinitionBO> listData;
+        MyAdapter.ViewHolder holder;
+        private LayoutInflater layoutInflater;
+
+        public MyAdapter(ArrayList<IncentiveDashboardDefinitionBO> list, FragmentActivity mContext) {
+            this.listData = list;
+            layoutInflater = LayoutInflater.from(mContext);
+        }
+
+        public int getCount() {
+            return listData.size();
+        }
+
+        public Object getItem(int position) {
+            return listData.get(position);
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            if (convertView == null) {
+                convertView = layoutInflater.inflate(R.layout.row_incentive_dashboard_details, parent, false);
+                holder = new ViewHolder();
+
+                holder.tvFactor = (TextView) convertView.findViewById(R.id.tv_factor);
+                holder.tvSalesParameter = (TextView) convertView.findViewById(R.id.tv_sales_parameter);
+                holder.tvMaxOpportunities = (TextView) convertView.findViewById(R.id.tv_max_opportunity);
+                holder.tvAchper = (TextView) convertView.findViewById(R.id.tv_achper);
+
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.tvFactor.setText(listData.get(position).getFactor());
+            holder.tvSalesParameter.setText(listData.get(position).getSalesParam());
+            holder.tvAchper.setText(listData.get(position).getAchPercentage());
+            holder.tvMaxOpportunities.setText(listData.get(position).getMaxOpportunity());
+
+            if (listData.get(position).getIsNewGroup()) {
+                holder.tvSalesParameter.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvSalesParameter.setVisibility(View.INVISIBLE);
+            }
+
+            if (listData.get(position).getIsNewFactor()) {
+                holder.tvFactor.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvFactor.setVisibility(View.INVISIBLE);
+            }
+
+            if (listData.get(position).isNewPackage()) {
+                holder.tvAchper.setVisibility(View.VISIBLE);
+                holder.tvMaxOpportunities.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvAchper.setVisibility(View.INVISIBLE);
+                holder.tvMaxOpportunities.setVisibility(View.INVISIBLE);
+            }
+
+            return convertView;
+        }
+
+
+        public class ViewHolder {
+            TextView tvFactor, tvSalesParameter, tvAchper, tvMaxOpportunities;
+
+        }
+
+    }
 }
+
+
+
 
 
 

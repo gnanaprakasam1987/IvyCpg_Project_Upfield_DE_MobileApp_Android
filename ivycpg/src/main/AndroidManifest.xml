@@ -59,7 +59,6 @@
 
     <!-- Google Map - used for map in planning screen -->
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-
     <uses-permission android:name="com.ivy.sd.png.asean.view.permission.MAPS_RECEIVE" />
 
     <!-- GCM  - used for push notification -->
@@ -378,7 +377,7 @@
             android:name="com.ivy.cpg.view.dashboard.olddashboard.SKUWiseTargetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.reports.OrderReportDetail"
+            android:name="com.ivy.cpg.view.reports.orderreport.OrderReportDetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity"
@@ -483,7 +482,7 @@
             android:name="com.ivy.cpg.view.dashboard.sellerdashboard.SellerKPISKUActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.reports.InvoiceReportDetail"
+            android:name="com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.van.VanLoadStockView_activity"
@@ -564,7 +563,7 @@
             android:name="com.ivy.sd.png.view.RoadActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.reports.ReportActivity"
+            android:name="com.ivy.cpg.view.reports.ReportActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.promotion.PromotionTrackingActivity"
@@ -626,9 +625,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.TimeTrackingActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.planogram.CounterPlanogramActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.TLAttendanceActivity"
@@ -795,12 +791,16 @@
             android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
             android:screenOrientation="portrait" />
         <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity" />
-        <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity"></activity>
+        <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity" />
         <activity
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.asset.PosmGallery"
+            android:screenOrientation="portrait" />
             android:screenOrientation="portrait"/>
 
 

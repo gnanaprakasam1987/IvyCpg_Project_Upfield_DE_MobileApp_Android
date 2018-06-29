@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
-import com.ivy.cpg.view.reports.OrderReportBO;
+import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -55,8 +55,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
-
-import javax.inject.Inject;
 
 public class ReportHelper {
     private static ReportHelper instance = null;
@@ -998,7 +996,7 @@ public class ReportHelper {
             paymentList = new ArrayList<>();
             parentPaymentList = new ArrayList<>();
             childPaymentList = new ArrayList<>();
-
+            lstPaymentBObyGroupId = new HashMap<>();
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1016,7 +1014,7 @@ public class ReportHelper {
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
                 if (c.getCount() > 0) {
-                    lstPaymentBObyGroupId = new HashMap<>();
+
                     while (c.moveToNext()) {
                         PaymentBO paybo = new PaymentBO();
                         paybo.setRetailerName(c.getString(0));
@@ -1788,6 +1786,20 @@ public class ReportHelper {
             }
             c.close();
 
+            //Adding delivered stock - Delivery module
+            sb = new StringBuffer();
+            sb.append("select productid,sum(Qty),batchid as Qty from invoiceDetails OD inner join invoiceMaster OH on OH.invoiceno =OD.invoiceid");
+            sb.append(" inner join orderHeader AB ON AB.orderId=OH.orderid");
+            sb.append(" where  od.ordertype=0 and AB.upload='X' group by productid,batchid");
+            c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    setEODObject(c.getString(0), c.getString(2), c.getInt(1), QtyType.SOLD);
+                }
+            }
+            c.close();
+
+
             // get freeQty for crown FROM ORDER DETAIL
             sb = new StringBuffer();
             sb.append("select OD.Productid,sum(OD.Qty),batchid from orderDetail OD  inner join OrderHeader OH on ");
@@ -1882,7 +1894,7 @@ public class ReportHelper {
                                 stockReportBO.setFreeIssuedQty(qty
                                         + stockReportBO.getFreeIssuedQty());
                             } else if (type == QtyType.SOLD) {
-                                stockReportBO.setSoldQty(qty);
+                                stockReportBO.setSoldQty(qty+stockReportBO.getSoldQty());
                             } else if (type == QtyType.EMPTY) {
                                 stockReportBO.setEmptyBottleQty(qty);
                             } else if (type == QtyType.REPLACEMENT) {
@@ -2026,11 +2038,11 @@ public class ReportHelper {
                             "LEFT JOIN (SELECT BM.Pid as BrandId,BM.Pname as Brand,ifnull(count(distinct OD.retailerid),0) as ProductiveCall,ifnull(SUM(OD.totalamount),0) as ValuePerDay,ifnull(SUM(Qty),0) as Lines FROM ProductMaster BM " +
                             "INNER JOIN ProductMaster PM on PM.ParentID = Bm.PId " +
                             "INNER JOIN OrderDetail OD on OD.ProductID = PM.PId " +
-                            "INNER JOIN OrderHeader OH ON OH.OrderID = OD.OrderID AND OH.OrderDate = '" + today + "'" +
-                            "WHERE BM.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand')  GROUP BY  BM.Pid,BM.Pname ) AS B on A. Pid = B.BrandId " +
+                            "INNER JOIN OrderHeader OH ON OH.OrderID = OD.OrderID AND OH.OrderDate = '" + today + "' " +
+                            "WHERE BM.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand') and OH.upload !='X' GROUP BY  BM.Pid,BM.Pname ) AS B on A. Pid = B.BrandId " +
                             "LEFT JOIN (SELECT ST.Pid,ifnull(ST.Ach,0) as Achieve ,ifnull(ST.Tgt,0) as Target  FROM ProductMaster PM " +
                             "INNER JOIN SkuWiseTarget ST ON PM.PID = ST.Pid where PM.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand')) as C ON C.Pid = A.PID " +
-                            "WHERE OH.upload!='X' and A.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand') ORDER BY A.PName");
+                            "WHERE A.PLid = (SELECT LevelId FROM ProductLevel WHERE LevelName = 'Brand') ORDER BY A.PName");
 
             if (c != null) {
                 brandperformancelist = new ArrayList<>();
@@ -2174,9 +2186,9 @@ public class ReportHelper {
                             "Value FROM StandardListMaster SM " +
                             "INNER JOIN RetailerMaster RM ON RM.classid = SM.ListId " +
                             "LEFT JOIN (SELECT RM.ClassId,COUNT(DISTINCT OH.RetailerId) TotalCount,SUM(OH.OrderValue) TotalOrder FROM RetailerMaster RM " +
-                            "INNER JOIN OrderHeader OH ON OH.RetailerID = RM.RetailerID  AND OH.OrderDate = '" + today + "' GROUP BY RM.ClassId) OD ON OD.ClassId=RM.ClassId " +
+                            "INNER JOIN OrderHeader OH ON OH.RetailerID = RM.RetailerID  AND OH.OrderDate = '" + today + "' AND OH.upload !='X' GROUP BY RM.ClassId) OD ON OD.ClassId=RM.ClassId " +
                             "LEFT JOIN OutletTimestamp OT ON OT.RetailerID = RM.RetailerID AND OT.VisitDate = '" + today + "' " +
-                            "WHERE OH.upload!='X' and SM.ListType = 'CLASS_TYPE' GROUP BY SM.ListId");
+                            "WHERE SM.ListType = 'CLASS_TYPE' GROUP BY SM.ListId");
 
             if (c != null) {
                 mProductivityReportList = new ArrayList<>();

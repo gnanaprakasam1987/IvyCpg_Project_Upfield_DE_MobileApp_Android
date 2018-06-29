@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
@@ -36,14 +36,12 @@ public class StoreWiseDiscountDialog extends DialogFragment {
     private BusinessModel bmodel;
     private ArrayList<StoreWiseDiscountBO> mDiscountList;
 
-    private Button mDoneBTN;
     private OnMyDialogResult mDialogResult;
-    private TextView mMinRangeTV, mMaxRangeTV, mTitleTv;
     private EditText mDiscountET, QUANTITY;
     private StoreWiseDiscountBO mStorewiseDiscountBO;
     public InputMethodManager inputManager;
     private double mTotalOrderValue,mEnteredDiscAmtOrPercent;
-    DiscountHelper discountHelper;
+    private DiscountHelper discountHelper;
 
 
     @Override
@@ -52,11 +50,12 @@ public class StoreWiseDiscountDialog extends DialogFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
         mDialogResult = (OnMyDialogResult) getActivity();
+
         mTotalOrderValue = getArguments().getDouble("totalValue", 0);
         mEnteredDiscAmtOrPercent = getArguments().getDouble("enteredDiscAmtOrPercent", 0);
         discountHelper = DiscountHelper.getInstance(getActivity());
-
 
     }
 
@@ -101,10 +100,10 @@ public class StoreWiseDiscountDialog extends DialogFragment {
         }
 
         // getDialog().setTitle(mStorewiseDiscountBO.getDescription());
-        mMinRangeTV = (TextView) getView().findViewById(R.id.tv_min_range);
-        mMaxRangeTV = (TextView) getView().findViewById(R.id.tv_max_range);
-        mTitleTv = (TextView) getView().findViewById(R.id.tvTitle);
-        mDiscountET = (EditText) getView().findViewById(R.id.edit_discount_value);
+        TextView mMinRangeTV = getView().findViewById(R.id.tv_min_range);
+        TextView mMaxRangeTV = getView().findViewById(R.id.tv_max_range);
+        TextView mTitleTv = getView().findViewById(R.id.tvTitle);
+        mDiscountET = getView().findViewById(R.id.edit_discount_value);
 
         mTitleTv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         mDiscountET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -123,7 +122,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
             String strDiscCnt = mEnteredDiscAmtOrPercent + "";
             mDiscountET.setText(strDiscCnt);
         }
-        ((Button) getView().findViewById(R.id.calcdot)).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
         mDiscountET.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -170,7 +169,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
         });
 
 
-        mDoneBTN = (Button) getView().findViewById(R.id.btn_done);
+        Button mDoneBTN = getView().findViewById(R.id.btn_done);
         mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mDoneBTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +208,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
             int id = vw.getId();
             if (id == R.id.calcdel) {
 
-                String enterText = (String) QUANTITY.getText().toString();
+                String enterText = QUANTITY.getText().toString();
                 if (enterText.contains(".")) {
                     String[] splitValue = enterText.split("\\.");
                     try {
@@ -232,7 +231,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
 
                 } else {
 
-                    int s = SDUtil.convertToInt((String) QUANTITY.getText()
+                    int s = SDUtil.convertToInt(QUANTITY.getText()
                             .toString());
                     s = s / 10;
                     QUANTITY.setText(s + "");
@@ -248,7 +247,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
                 }
 
             } else {
-                Button ed = (Button) getDialog().findViewById(vw.getId());
+                Button ed = getDialog().findViewById(vw.getId());
                 String append = ed.getText().toString();
                 eff(append);
 
@@ -258,7 +257,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
     }
 
     public void eff(String append) {
-        String s = (String) QUANTITY.getText().toString();
+        String s = QUANTITY.getText().toString();
         if (!s.equals("0") && !s.equals("0.0")) {
             QUANTITY.setText(QUANTITY.getText() + append);
         } else
@@ -279,10 +278,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
 
     private boolean isValidate() {
         double enteredeValue = SDUtil.convertToDouble(mDiscountET.getText().toString());
-        if (enteredeValue < mStorewiseDiscountBO.getDiscount() || enteredeValue > mStorewiseDiscountBO.getToDiscount()) {
-            return false;
-        }
-        return true;
+        return !(enteredeValue < mStorewiseDiscountBO.getDiscount() || enteredeValue > mStorewiseDiscountBO.getToDiscount());
     }
 
 

@@ -152,6 +152,9 @@ public class CollectionFragmentNew extends IvyBaseFragment
         TextView dueBillTitle = (TextView) rootView.findViewById(R.id.tv_title_due_bill);
         dueBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+        //As of now we hiding this because functionality not yet completed
+        rootView.findViewById(R.id.ll_due_bills).setVisibility(View.GONE);
+
         if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             Button btnClose = (Button) rootView.findViewById(R.id.btn_close);
             btnClose.setVisibility(View.VISIBLE);

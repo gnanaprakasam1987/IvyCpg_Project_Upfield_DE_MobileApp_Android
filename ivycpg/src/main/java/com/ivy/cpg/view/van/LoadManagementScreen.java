@@ -816,7 +816,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                mBModel.synchronizationHelper.updateAuthenticateToken();
+                mBModel.synchronizationHelper.updateAuthenticateToken(false);
 
             } catch (Exception e) {
                 Commons.printException("" + e);

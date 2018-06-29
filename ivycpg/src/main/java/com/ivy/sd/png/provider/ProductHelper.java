@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -258,7 +259,7 @@ public class ProductHelper {
 
     public Vector<ProductMasterBO> getProductMaster() {
         if (productMaster == null)
-            return new Vector<ProductMasterBO>();
+            productMaster = new Vector<>();
         return productMaster;
     }
 
@@ -1480,6 +1481,9 @@ public class ProductHelper {
                         + ((filter21) ? "A.pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
                         + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A.tagDescription as tagDescription,"
+                        + "A.HSNId as HSNId,"
+                        + "HSN.HSNCode as HSNCode,"
+                        + "A.IsDrug as IsDrug,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
                         + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
@@ -1501,6 +1505,7 @@ public class ProductHelper {
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                         + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A.pid"
+                        + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
                         + " WHERE A.isSalable = 1 AND A.PLid IN(" + mContentLevelId + ")"
                         + " group by A.pid ORDER BY " + filter + " A.rowid";
 
@@ -3029,6 +3034,10 @@ public class ProductHelper {
                 product.setDeliveredCaseQty(0);
                 product.setDeliveredOuterQty(0);
                 product.setDeliveredPcsQty(0);
+
+                //clear suggested Qty
+                product.setSocInventory(0);
+                product.setSoInventory(0);
             }
         }
 
@@ -3276,32 +3285,6 @@ public class ProductHelper {
                         && product.getWSIH() == 0)
                     product.setTextColor(mContext.getResources().getColor(
                             R.color.RED));
-
-            }
-        } catch (Exception e) {
-
-            Commons.printException(e);
-        }
-
-    }
-
-
-    public void updateCounterSalesProductColor() {
-        try {
-            ProductMasterBO product;
-            int siz = productMaster.size();
-            for (int i = 0; i < siz; ++i) {
-                product = productMaster.get(i);
-
-                if (product.getIsMustSell() == 1
-                        && getFilterColor("Filt10") != 0)
-                    product.setTextColor(getFilterColor("Filt10"));
-                else if (product.getIsFocusBrand() == 1
-                        && getFilterColor("Filt11") != 0)
-                    product.setTextColor(getFilterColor("Filt11"));
-                else
-                    product.setTextColor(mContext.getResources().getColor(
-                            android.R.color.black));
 
             }
         } catch (Exception e) {
@@ -5918,6 +5901,8 @@ public class ProductHelper {
     }
 
     public ArrayList<AttributeBO> getmAttributeTypes() {
+        if (mAttributeTypes == null)
+            mAttributeTypes = new ArrayList<>();
         return mAttributeTypes;
     }
 
@@ -6138,10 +6123,11 @@ public class ProductHelper {
         double totSchemeAmountValue = 0;
         double totTaxValue = 0;
         double totPriceOffValue = 0;
+        double totalInvoiceAmount = 0;
         StringBuffer sb = new StringBuffer();
         // sum of product discount , scheme amount and tax amount
 
-        sb.append("select sum(SchemeAmount),sum(DiscountAmount),sum(TaxAmount),sum(priceoffvalue) from invoicedetails ");
+        sb.append("select sum(SchemeAmount),sum(DiscountAmount),sum(TaxAmount),sum(priceoffvalue),sum(qty*rate) from invoicedetails ");
         sb.append(" where invoiceid=" + bmodel.QT(invoiceid));
         Cursor c = db.selectSQL(sb.toString());
         if (c.getCount() > 0) {
@@ -6150,6 +6136,7 @@ public class ProductHelper {
                 totDiscVaue = totDiscVaue + c.getDouble(1);
                 totTaxValue = totTaxValue + c.getDouble(2);
                 totPriceOffValue = totPriceOffValue + c.getDouble(3);
+                totalInvoiceAmount = totalInvoiceAmount + c.getDouble(4);
             }
         }
 
@@ -6176,6 +6163,7 @@ public class ProductHelper {
         sb = new StringBuffer();
         sb.append("update invoiceMaster set schemeAmount=" + totSchemeAmountValue);
         sb.append(",discount=" + totDiscVaue + ",taxAmount=" + totTaxValue + ",priceoffAmount=" + totPriceOffValue);
+        sb.append(",invoiceAmount=" + bmodel.QT(bmodel.formatValue(totalInvoiceAmount)));
         sb.append(" where invoiceno=" + bmodel.QT(invoiceid));
         db.updateSQL(sb.toString());
 
@@ -6250,7 +6238,7 @@ public class ProductHelper {
         sb.append("discount=" + totDiscVaue);
         sb.append(" where orderid=" + orderId);
         db.updateSQL(sb.toString());
-
+        bmodel.getOrderHeaderBO().setDiscount(totDiscVaue);
         c.close();
 
 
@@ -7592,6 +7580,31 @@ public class ProductHelper {
         return total;
     }
 
+    public boolean isDrugOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
+        for (ProductMasterBO bo : mOrderedProductList) {
+            if (bo.getIsDrug() == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isDLDateExpired() {
+
+        String expiryDate = DateUtil.convertFromServerDateToRequestedFormat(
+                bmodel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd");
+        try {
+            if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(expiryDate))//this for checking today date since before method not woking for today date
+                if (DateUtil.convertStringToDateObject(
+                        bmodel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd").before(new Date())) {
+                    return true;
+                }
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        }
+        return false;
+    }
 }
 
 

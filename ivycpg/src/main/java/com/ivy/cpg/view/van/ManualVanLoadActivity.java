@@ -114,8 +114,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             isAddBatchDialogClicked = false;
             batchEntryDialog.dismiss();
             Toast.makeText(ManualVanLoadActivity.this, R.string.batch_created_successfully, Toast.LENGTH_LONG).show();
-            mSchedule = new MyAdapter(list);
-            lvwplist.setAdapter(mSchedule);
+            if(list != null && list.size() > 0) {
+                mSchedule = new MyAdapter(list);
+                lvwplist.setAdapter(mSchedule);
+            }
         }
     };
     android.content.DialogInterface.OnDismissListener cancelBatch = new android.content.DialogInterface.OnDismissListener() {
@@ -526,9 +528,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     + "(" + list.size() + ")");
         else
             tvSelectedFilter.setText(mFilterText + "(" + list.size() + ")");
-
-        mSchedule = new MyAdapter(list);
-        lvwplist.setAdapter(mSchedule);
+        if(list != null && list.size() > 0) {
+            mSchedule = new MyAdapter(list);
+            lvwplist.setAdapter(mSchedule);
+        }
     }
 
     @Override
@@ -780,9 +783,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         }
 
         protected void onPostExecute(Boolean result) {
-
-            mSchedule = new MyAdapter(list);
-            lvwplist.setAdapter(mSchedule);
+            if(list != null && list.size() > 0) {
+                mSchedule = new MyAdapter(list);
+                lvwplist.setAdapter(mSchedule);
+            }
 
         }
     }
@@ -976,8 +980,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
         }
-        mSchedule = new MyAdapter(filterlist);
-        lvwplist.setAdapter(mSchedule);
+        if(filterlist != null && filterlist.size() > 0) {
+            mSchedule = new MyAdapter(filterlist);
+            lvwplist.setAdapter(mSchedule);
+        }
 
         mDrawerLayout.closeDrawers();
         // TO DO Auto-generated method stub
@@ -1075,8 +1081,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
         }
-        mSchedule = new MyAdapter(filterlist);
-        lvwplist.setAdapter(mSchedule);
+        if(filterlist != null && filterlist.size() > 0) {
+            mSchedule = new MyAdapter(filterlist);
+            lvwplist.setAdapter(mSchedule);
+        }
 
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
@@ -1085,7 +1093,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
     class MyAdapter extends ArrayAdapter<LoadManagementBO> {
         ArrayList<LoadManagementBO> items;
-        LoadManagementBO product;
+        //LoadManagementBO product;
 
         MyAdapter(ArrayList<LoadManagementBO> items) {
             super(ManualVanLoadActivity.this, R.layout.van_load, items);
@@ -1115,7 +1123,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
             final ViewHolder holder;
 
-            product = items.get(position);
+            //product = items.get(position);
             View row = convertView;
             try {
                 if (row == null) {
@@ -1136,7 +1144,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     holder.totQty = (TextView) row.findViewById(R.id.totalQty);
                     holder.listLayout = (LinearLayout) row.findViewById(R.id.inv_view_layout);
                     holder.rowLayout = (LinearLayout) row.findViewById(R.id.list_header_lty);
-
+                    holder.productBO = items.get(position);
                     holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.totQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1359,7 +1367,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 } else {
                     holder = (ViewHolder) row.getTag();
                 }
-                holder.productBO = product;
+                holder.productBO = items.get(position);
                 holder.pname = holder.productBO.getProductname();
                 holder.psname.setText(holder.productBO.getProductshortname());
                 String tvt = holder.productBO.getSih() + "";

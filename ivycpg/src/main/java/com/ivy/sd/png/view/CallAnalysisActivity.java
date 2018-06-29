@@ -1012,6 +1012,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
         boolean isStoreCheckMenu = false;
+        boolean isStockOrder=false;
 
         menuDB = bmodel.configurationMasterHelper.getActivityMenu();
 
@@ -1026,7 +1027,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                         + getResources().getString(R.string.is_not_done) + "\n");
             }
 
+            if(config.getHasLink() == 1 && !config.isDone()
+                    && config.getConfigCode().equals("MENU_STK_ORD")){
+                isStockOrder=true;
+            }
+
         }
+
+
 
         if (isStoreCheckMenu) {
             mInStoreMenu = bmodel.configurationMasterHelper
@@ -1042,9 +1050,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             }
         }
         //focus pack not ordered
-        if (bmodel.configurationMasterHelper.IS_FOCUS_PACK_NOT_DONE) {
-            if (bmodel.getTotalFocusBrandLines() < 1) {
-                sb.append(getResources().getString(R.string.order_not_placed_focus_pack) + "\n");
+        if (bmodel.configurationMasterHelper.IS_FOCUS_PACK_NOT_DONE && !isStockOrder) {
+            bmodel.getOrderedFocusBrandList();
+            if (bmodel.getTotalFocusBrandLines() < bmodel.getTotalFocusBrands()) {
+                String msg="";
+                for (String focusBrand:bmodel.getTotalFocusBrandList()){
+                    if(!bmodel.getOrderedFocusBrands().contains(focusBrand))
+                        msg+=focusBrand+", ";
+                }
+
+                sb.append(getResources().getString(R.string.order_not_placed_focus_pack)+" " +msg.trim().substring(0,msg.trim().length()-1)+ ". \n");
             }
         }
 
@@ -1743,18 +1758,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
-                    break;
-                case DataMembers.NOTIFY_COUNTER_SIH_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-                case DataMembers.NOTIFY_COUNTER_STOCK_APPLY_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-                case DataMembers.NOTIFY_CS_REJECTED_VARIANCE_UPLOADED:
-                    alertDialog.dismiss();
-                    presenter.upload();
                     break;
                 case DataMembers.NOTIFY_LP_UPLOADED:
                     alertDialog.dismiss();

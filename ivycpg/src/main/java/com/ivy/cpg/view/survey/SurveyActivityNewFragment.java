@@ -298,20 +298,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         bmodel.setContext(getActivity());
         if (surveyHelperNew.ENABLE_MULTIPLE_PHOTO)
             isMultiPhotoCaptureEnabled = true;
-        //condition to check CNT01
-        if (!mMenuCode.equals("MENU_SURVEY_CS") && bmodel.configurationMasterHelper.IS_CNT01) {
-            //if CNT01 is enabled
-            if (objDialog != null) {
-                if (!objDialog.isShowing()) {
-//                    showUserDialog();
-                }
-            } else {
-                showUserDialog();
-            }
-        } else {
-            //if CNT01 is disabled
-            loadListData();
-        }
+        loadListData();
+
     }
 
     private void loadListData() {
@@ -580,8 +568,56 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (view == saveButton) {
             if (!checkClicked) {
                 checkClicked = true;
-                if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
-                    if (surveyHelperNew.isAllAnswered()) {
+                if (surveyHelperNew.hasDataToSave()) {
+                    if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
+                        if (surveyHelperNew.isAllAnswered()) {
+                            if (surveyHelperNew.hasPhotoToSave())
+                                new SaveSurveyTask().execute();
+                            else {
+                                bmodel.showAlert(
+                                        getResources().getString(R.string.take_photos_to_save), 0);
+                                questionsRv.setAdapter(rvAdapter);
+                                checkClicked = false;
+                            }
+                        } else {
+                            if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                                bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                            } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                                bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
+                            } else {
+                                bmodel.showAlert(
+                                        getResources().getString(
+                                                R.string.pleaseanswerallthequestions), 0);
+                            }
+                            checkClicked = false;
+                        }
+                    } else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY) {
+                        if (surveyHelperNew.isMandatoryQuestionAnswered()) {
+                            if (surveyHelperNew.hasPhotoToSave())
+                                new SaveSurveyTask().execute();
+                            else {
+                                bmodel.showAlert(
+                                        getResources().getString(R.string.take_photos_to_save), 0);
+                                questionsRv.setAdapter(rvAdapter);
+                                checkClicked = false;
+                            }
+                        } else {
+                            isSaveClicked = true;
+                            questionsRv.setAdapter(rvAdapter);
+                            if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                                bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                            } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                                bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
+                            } else {
+                                bmodel.showAlert(
+                                        getResources()
+                                                .getString(
+                                                        R.string.please_answer_all_mandatory_questions),
+                                        0);
+                            }
+                            checkClicked = false;
+                        }
+                    } else {
                         if (surveyHelperNew.hasPhotoToSave())
                             new SaveSurveyTask().execute();
                         else {
@@ -590,66 +626,18 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             questionsRv.setAdapter(rvAdapter);
                             checkClicked = false;
                         }
-                    } else {
-                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
-                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
-                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
-                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
-                        } else {
-                            bmodel.showAlert(
-                                    getResources().getString(
-                                            R.string.pleaseanswerallthequestions), 0);
-                        }
-                        checkClicked = false;
-                    }
-                } else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY) {
-                    if (surveyHelperNew.isMandatoryQuestionAnswered()) {
-                        if (surveyHelperNew.hasPhotoToSave())
-                            new SaveSurveyTask().execute();
-                        else {
-                            bmodel.showAlert(
-                                    getResources().getString(R.string.take_photos_to_save), 0);
-                            questionsRv.setAdapter(rvAdapter);
-                            checkClicked = false;
-                        }
-                    } else {
-                        isSaveClicked = true;
-                        questionsRv.setAdapter(rvAdapter);
-                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
-                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
-                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
-                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
-                        } else {
-                            bmodel.showAlert(
-                                    getResources()
-                                            .getString(
-                                                    R.string.please_answer_all_mandatory_questions),
-                                    0);
-                        }
-                        checkClicked = false;
                     }
                 } else {
-                    if (surveyHelperNew.hasDataToSave()) {
-                        if (surveyHelperNew.hasPhotoToSave())
-                            new SaveSurveyTask().execute();
-                        else {
-                            bmodel.showAlert(
-                                    getResources().getString(R.string.take_photos_to_save), 0);
-                            questionsRv.setAdapter(rvAdapter);
-                            checkClicked = false;
-                        }
+                    if (surveyHelperNew.getInvalidEmails().length() > 0) {
+                        bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
+                    } else if (surveyHelperNew.getNotInRange().length() > 0) {
+                        bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
                     } else {
-                        if (surveyHelperNew.getInvalidEmails().length() > 0) {
-                            bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
-                        } else if (surveyHelperNew.getNotInRange().length() > 0) {
-                            bmodel.showAlert("Given value is not in range for \n" + surveyHelperNew.getNotInRange(), 0);
-                        } else {
-                            bmodel.showAlert(
-                                    getResources().getString(R.string.no_data_tosave), 0);
-                        }
-                        questionsRv.setAdapter(rvAdapter);
-                        checkClicked = false;
+                        bmodel.showAlert(
+                                getResources().getString(R.string.no_data_tosave), 0);
                     }
+                    questionsRv.setAdapter(rvAdapter);
+                    checkClicked = false;
                 }
             }
         }
@@ -1068,13 +1056,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     @Override
     public void onResume() {
         super.onResume();
-        if (bmodel.configurationMasterHelper.IS_CNT01
-                && mMenuCode.equals("MENU_SURVEY_BA_CS")) {
-            setScreenTitle(bmodel.mSelectedActivityName + " (" +
-                    childUserName + ")");
-        } else {
-            setScreenTitle(bmodel.mSelectedActivityName);
-        }
+
+        setScreenTitle(bmodel.mSelectedActivityName);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
     }
@@ -1938,15 +1922,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             menu.findItem(R.id.menu_joint_call_survey).setVisible(false);
             menu.findItem(R.id.menu_save).setVisible(false);
         }
-        if (!mMenuCode.equals("MENU_SURVEY_CS") && bmodel.configurationMasterHelper.IS_CNT01) {
-//            menu.findItem(R.id.menu_select).setVisible(true);
-            if (hide_selectuser_icon) {
-                menu.findItem(R.id.menu_select).setVisible(false);
-            } else
-                menu.findItem(R.id.menu_select).setVisible(true);
-        } else {
-            menu.findItem(R.id.menu_select).setVisible(false);
-        }
+
+        menu.findItem(R.id.menu_select).setVisible(false);
+
         if (mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
                 || mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
                 || mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS"))

@@ -79,7 +79,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.attendance.inout.TimeTrackingFragment;
-import com.ivy.sd.png.view.reports.ReportMenufragment;
+import com.ivy.cpg.view.reports.ReportMenuFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -150,7 +150,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 //    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
 
     //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
-    private static final String MENU_GROOM_CS = "MENU_GROOM_CS";
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
     private static final String MENU_NON_FIELD = "MENU_NON_FIELD";
 
@@ -270,7 +269,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_SURVEY_SW, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_SURVEY01_SW, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
-        menuIcons.put(MENU_GROOM_CS, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_JOINT_ACK, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_OFLNE_PLAN, R.drawable.ic_expense_icon);
         menuIcons.put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
@@ -1503,7 +1501,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
         } else if (menuItem.getConfigCode().equals(MENU_WEB_VIEW_APPR)) {
-
             if (bmodel.isOnline()) {
                 Intent i = new Intent(getActivity(), WebViewActivity.class);
                 i.putExtra("screentitle", menuItem.getMenuName());
@@ -1514,18 +1511,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
         } else if (menuItem.getConfigCode().equals(MENU_NEWRET_EDT)) {
-//            Intent i = new Intent(getActivity(), NewOutletEdit.class);
-//            i.putExtra("screentitle", menuItem.getMenuName());
-//            i.putExtra("flag", 0);
-//            bmodel.mSelectedActivityName = menuItem.getMenuName();
-//            startActivity(i);
-//            getActivity().finish();
             switchFragment(MENU_NEWRET_EDT, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_PLANE_MAP)) {
             switchFragment(MENU_PLANE_MAP, "Trade Coverage");
-
-        } else if (menuItem.getConfigCode().equals(MENU_GROOM_CS)) {
-            switchFragment(MENU_GROOM_CS, "Grooming Picture");
         } else if (menuItem.getConfigCode().equals(MENU_JOINT_ACK)) {
             Intent i = new Intent(getActivity(), AcknowledgementActivity.class);
             i.putExtra("screentitle", menuItem.getMenuName());
@@ -1626,7 +1614,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_SKUWISESTGT);
         PlanningSubScreenFragment mPlanningSubScreenFragment = (PlanningSubScreenFragment) fm
                 .findFragmentByTag(MENU_PLANNING_SUB);
-        ReportMenufragment mReportMenuFragment = (ReportMenufragment) fm
+        ReportMenuFragment mReportMenuFragment = (ReportMenuFragment) fm
                 .findFragmentByTag(MENU_REPORT);
         StockProposalFragment stockProposalFragment = (StockProposalFragment) fm
                 .findFragmentByTag(MENU_LOAD_REQUEST);
@@ -1634,8 +1622,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_NEWRET_EDT);
         ExpenseFragment expenseFragment = (ExpenseFragment) fm
                 .findFragmentByTag(MENU_EXPENSE);
-        GroomingFragment groomingFragment = (GroomingFragment) fm
-                .findFragmentByTag(MENU_GROOM_CS);
         AcknowledgementFragment acknowledgementFragment = (AcknowledgementFragment) fm
                 .findFragmentByTag(MENU_JOINT_ACK);
         PlanDeviationFragment planDeviationFragment = (PlanDeviationFragment) fm
@@ -1740,10 +1726,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 (newOutletEditFragment != null && (fragmentName.equals(MENU_NEWRET_EDT))
                         && newOutletEditFragment.isVisible()) {
             return;
-        } else if (groomingFragment != null && (fragmentName.equals(MENU_GROOM_CS)
-                && groomingFragment.isVisible())) {
-            return;
-        } else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
+        }  else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
                 && acknowledgementFragment.isVisible()) {
             return;
         } else if (planDeviationFragment != null && fragmentName.equals(MENU_NON_FIELD)
@@ -1831,8 +1814,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(stockProposalFragment);
         if (newOutletEditFragment != null)
             ft.remove(newOutletEditFragment);
-        if (groomingFragment != null)
-            ft.remove(groomingFragment);
         if (acknowledgementFragment != null)
             ft.remove(acknowledgementFragment);
         if (planDeviationFragment != null)
@@ -2091,7 +2072,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bmodel.productHelper.downloadProductFilter("MENU_STK_ORD");
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                fragment = new ReportMenufragment();
+                fragment = new ReportMenuFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_REPORT);
@@ -2123,14 +2104,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             case MENU_COUNTER:
 
-                break;
-            case MENU_GROOM_CS:
-                bndl = new Bundle();
-                bndl.putString("screentitle", menuName);
-                fragment = new GroomingFragment();
-                fragment.setArguments(bndl);
-                ft.add(R.id.fragment_content, fragment,
-                        MENU_GROOM_CS);
                 break;
 
             case MENU_NON_FIELD:
@@ -2268,7 +2241,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_ATTENDANCE);
         TimeTrackingFragment mNonFieldTwoFragment = (TimeTrackingFragment) fm
                 .findFragmentByTag(MENU_IN_OUT);
-        ReportMenufragment mReportMenuFragment = (ReportMenufragment) fm
+        ReportMenuFragment mReportMenuFragment = (ReportMenuFragment) fm
                 .findFragmentByTag(MENU_REPORT);
         LoadManagementFragment mLoadMgmtfragment = (LoadManagementFragment) fm
                 .findFragmentByTag(MENU_LOAD_MANAGEMENT);

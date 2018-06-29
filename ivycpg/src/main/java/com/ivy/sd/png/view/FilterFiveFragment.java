@@ -86,7 +86,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
         btnOK.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                try {
                 int size = sequence.size();
                 for (int i = size - 1; i >= 0; i--) {
                     if (mSelectedIdByLevelId.get(sequence.get(i).getProductID()) != null && mSelectedIdByLevelId.get(sequence.get(i).getProductID()) > 0) {
@@ -147,6 +147,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
                 brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, filterText);
                 brandInterface.updateCancel();
+                }
+                catch (Exception ex){
+                    Commons.printException(ex);
+                }
 
             }
         });
@@ -154,8 +158,13 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                try{
                 mSelectedIdByLevelId.clear();
                 onStart();
+                }
+                catch (Exception ex){
+                    Commons.printException(ex);
+                }
             }
         });
 
@@ -263,10 +272,11 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     loadTagProductFilters(levelID);
                 Vector<LevelBO> filterValues = new Vector<>();
                 filterValues.addAll(loadedFilterValues.get(levelID));
-
-                gridadapter = new FilterGridAdapter(filterValues);
-                filtergridview.setAdapter(gridadapter);
-                gridadapter.notifyDataSetChanged();
+                if(filterValues != null && filterValues.size() > 0) {
+                    gridadapter = new FilterGridAdapter(filterValues);
+                    filtergridview.setAdapter(gridadapter);
+                    gridadapter.notifyDataSetChanged();
+                }
             }
 
         } catch (Exception ex){
@@ -401,8 +411,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     if (position < (sequence.size() - size)) {
                         //Product Level
                         Vector<LevelBO> filterList = updateFilterSelection(position);
-                        gridadapter = new FilterGridAdapter(filterList);
-                        filtergridview.setAdapter(gridadapter);
+                        if(filterList != null && filterList.size() > 0) {
+                            gridadapter = new FilterGridAdapter(filterList);
+                            filtergridview.setAdapter(gridadapter);
+                        }
                     } else {
                         //Attribute level
                         if (isFilterContentSelected(position)) {
@@ -438,14 +450,17 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                                 }
 
                             }
-
-                            gridadapter = new FilterGridAdapter(filterList);
-                            filtergridview.setAdapter(gridadapter);
+                            if(filterList != null && filterList.size() > 0) {
+                                gridadapter = new FilterGridAdapter(filterList);
+                                filtergridview.setAdapter(gridadapter);
+                            }
 
                         } else {
                             Vector<LevelBO> filterList = updateFilterSelection(position);
-                            gridadapter = new FilterGridAdapter(filterList);
-                            filtergridview.setAdapter(gridadapter);
+                            if(filterList != null && filterList.size() > 0) {
+                                gridadapter = new FilterGridAdapter(filterList);
+                                filtergridview.setAdapter(gridadapter);
+                            }
                         }
                     }
 

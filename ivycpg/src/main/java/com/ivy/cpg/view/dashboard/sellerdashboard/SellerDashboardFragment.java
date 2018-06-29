@@ -1130,8 +1130,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         dashBoardHelper.findMinMaxProductLevelSellerKPI(kpiId, kpiTypeLovId, selectedInterval);
                     else
                         dashBoardHelper.findMinMaxProductLevelRetailerKPI(kpiId, kpiTypeLovId, selectedInterval);
-                } else {
-                    dashBoardHelper.downloadLorealSkuDetails(kpiId, kpiTypeLovId, selectedInterval);
                 }
                 return Boolean.TRUE;
             } catch (Exception e) {

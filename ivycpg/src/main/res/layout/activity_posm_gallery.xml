@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:windowSoftInputMode="stateAlwaysHidden">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <GridView
+        android:id="@+id/grid"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/footer"
+        android:layout_below="@+id/toolbar"
+        android:gravity="center"
+        android:numColumns="2" />
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/screen_bg_color"
+        android:orientation="horizontal"
+        android:padding="@dimen/footer_padding">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:elevation="@dimen/floating_btn_elevation"
+            android:src="@drawable/ic_camera"
+            android:tint="@color/white"
+            app:backgroundTint="?attr/accentcolor"
+            app:borderWidth="0dp" />
+    </RelativeLayout>
+</RelativeLayout>

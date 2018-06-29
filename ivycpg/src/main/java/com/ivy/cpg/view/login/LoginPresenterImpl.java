@@ -513,7 +513,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (businessModel.isOnline()) {
-                    businessModel.synchronizationHelper.updateAuthenticateToken();
+                    businessModel.synchronizationHelper.updateAuthenticateToken(false);
                     return businessModel.synchronizationHelper.checkForAutoUpdate();
                 } else
                     return Boolean.FALSE;

@@ -432,4 +432,9 @@ public class UserSettingsActivity extends PreferenceActivity {
     public boolean isValidFragment(String fragmentName) {
         return false;
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }

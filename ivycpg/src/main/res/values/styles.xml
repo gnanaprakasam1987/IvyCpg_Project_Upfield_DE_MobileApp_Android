@@ -1060,7 +1060,7 @@ negative button and neutral button -->
     </style>
 
     <style name="userNameTextView" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/highlight_small</item>
+        <item name="android:textSize">@dimen/font_large</item>
         <item name="android:textColor">@color/user_name</item>
     </style>
 
@@ -1297,5 +1297,9 @@ negative button and neutral button -->
         <item name="android:textSize">@dimen/font_nano_small</item>
         <item name="android:gravity">center</item>
     </style>
+
+    <style name="MVPTheme.Blue.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="MVPTheme.Blue.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports;
+package com.ivy.cpg.view.reports.invoicereport;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

@@ -1273,4 +1273,6 @@
         <item>Sat</item>
     </string-array>
 
+    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
+    <string name="total_collected">Total Collected</string>
 </resources>

@@ -7,6 +7,8 @@ import android.widget.DatePicker;
 
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,12 +36,24 @@ public class DataPickerDialogFragment extends DialogFragment implements DatePick
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c = Calendar.getInstance();
-        if (getArguments() != null) {
-            if (getArguments().getString("MODULE") != null) {
+        try {
+            String mSelectedDate = null, mSelectedDateFormat = null;
+            if (getArguments() != null
+                    && getArguments().getString("MODULE") != null) {
                 moduleName = getArguments().getString("MODULE");
                 minDate = (getArguments().getInt("CHQMINDATE") != 0) ? getArguments().getInt("CHQMINDATE") : 0;
                 maxDate = (getArguments().getInt("CHQMAXDATE") != 0) ? getArguments().getInt("CHQMAXDATE") : 0;
+
+                mSelectedDate = (getArguments().getString("selectedDate") != null) ? getArguments().getString("selectedDate") : "";
+                mSelectedDateFormat = (getArguments().getString("selectedDateFormat") != null) ? getArguments().getString("selectedDateFormat") : "";
             }
+
+            if (mSelectedDate != null && mSelectedDateFormat != null && !mSelectedDate.equals("") && !mSelectedDateFormat.equals("")) {
+                Date selected = DateUtil.convertStringToDateObject(mSelectedDate, mSelectedDateFormat);
+                c.setTime(selected);
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
         }
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);

@@ -121,7 +121,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         implements NearByRetailerDialog.NearByRetailerInterface,
         MapWrapperLayout.OnDragListener,
         CommonReasonDialog.AddNonVisitListener,
-        View.OnClickListener,RetailerInfo {
+        View.OnClickListener, RetailerInfo {
 
     private static final String MENU_VISIT = "Trade Coverage";
     private static final String MENU_PLANNING = "Day Planning";
@@ -202,8 +202,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private String DISTRIBUTOR_PROFILE = "";
 
-    Handler handler=null;
-    Runnable runnable=null;
+    Handler handler = null;
+    Runnable runnable = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -375,7 +375,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             if (calledBy == null)
                 calledBy = MENU_VISIT;
-        }catch (Exception e){
+        } catch (Exception e) {
             calledBy = MENU_VISIT;
         }
     }
@@ -696,7 +696,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
 
         try {
-            if(bmodel.retailerMasterBO.getRetailerName()!=null ){
+            if (bmodel.retailerMasterBO.getRetailerName() != null) {
                 int length = bmodel.retailerMasterBO.getRetailerName().indexOf("/");
                 if (length == -1)
                     length = bmodel.retailerMasterBO.getRetailerName().length();
@@ -763,7 +763,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 }
             }
         });
-
 
 
     }
@@ -1083,9 +1082,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     }
 
     // load ActivityMenu
-    private  class loadActivityMenu extends AsyncTask<String, Void, String> {
+    private class loadActivityMenu extends AsyncTask<String, Void, String> {
 
         private Vector<ConfigureBO> menuDB;
+
         @Override
         protected String doInBackground(String... strings) {
             menuDB = bmodel.configurationMasterHelper.downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
@@ -1239,10 +1239,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     lineOptions.width(2);
                     lineOptions.color(Color.RED);
                 }
-            }
-            // Drawing polyline in the Google Map for the i-th route
-            if (lineOptions != null) {
-                mMap.addPolyline(lineOptions);
+                // Drawing polyline in the Google Map for the i-th route
+                if (lineOptions != null) {
+                    mMap.addPolyline(lineOptions);
+                }
             }
         }
     }
@@ -1256,10 +1256,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             firstLevZoom = false;
     }
 
-    /** TimerTask Memory leaks has been fixed
-    * Removed Part-->  class MyTimerTask extends TimerTask from getMapView Method
-    * Addred Code-->New Handler and Runnable has been added in the @onStart Method
-    * Runnable has to remove when the activity is going  to stop */
+    /**
+     * TimerTask Memory leaks has been fixed
+     * Removed Part-->  class MyTimerTask extends TimerTask from getMapView Method
+     * Addred Code-->New Handler and Runnable has been added in the @onStart Method
+     * Runnable has to remove when the activity is going  to stop
+     */
 
     private void getMapView() {
 
@@ -1374,10 +1376,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             mLocTimer.purge();
         }
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
+                && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON) {
             mLocTimer = new Timer();
             timerTask = new LocationFetchTimer();
-            mLocTimer.schedule( timerTask, 0, 1000);
+            mLocTimer.schedule(timerTask, 0, 1000);
 
         }
 
@@ -1412,10 +1414,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     @Override
     protected void onStop() {
         super.onStop();
-        if(handler!=null){
+        if (handler != null) {
             handler.removeCallbacks(runnable);
-            handler=null;
-            runnable=null;
+            handler = null;
+            runnable = null;
         }
     }
 
@@ -1432,7 +1434,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
     }
-
 
 
     @Override
@@ -1504,7 +1505,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void validationToProceed() {
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && (LocationUtil.gpsconfigcode == 2 || LocationUtil.gpsconfigcode == 3)) {
+                && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON) {
 
             if ((LocationUtil.latitude == 0 && LocationUtil.longitude == 0)) {
                 if (timerTask != null && timerTask.isRunning) {
@@ -2010,14 +2011,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     }
 
 
-
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
-                                || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
+                            || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
 
-                                SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(ProfileActivity.this,
-                                        bmodel.userMasterHelper.getUserMasterBO().getUserid(),bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
+                        SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(ProfileActivity.this,
+                                bmodel.userMasterHelper.getUserMasterBO().getUserid(), bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
 
-                        }
+                    }
 
 
                     if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
@@ -2031,6 +2031,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                     //Getting Attributes mapped for the retailer
                     bmodel.getAttributeHierarchyForRetailer();
+
+                    bmodel.reasonHelper.downloadReasons();
 
                 }
             } catch (Exception e) {
@@ -2092,7 +2094,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+                bmodel.synchronizationHelper.updateAuthenticateToken(false);
                 bmodel.synchronizationHelper.downloadUserRetailerTranUrl();
                 return Boolean.TRUE;
             } catch (Exception e) {

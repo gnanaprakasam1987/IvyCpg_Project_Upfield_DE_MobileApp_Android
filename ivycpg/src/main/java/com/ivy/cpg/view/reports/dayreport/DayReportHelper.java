@@ -3,7 +3,7 @@ package com.ivy.cpg.view.reports.dayreport;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.cpg.view.reports.OrderReportBO;
+import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.OrderDetail;

@@ -2151,6 +2151,7 @@ public class SchemeDetailsMasterHelper {
                 } else {
                     if (count >= minimumBuyQuantity)
                         count = 1;
+                    else count=0;
                 }
 
                 //list to maintain used(if current slab applied) quantity,scheme wise..

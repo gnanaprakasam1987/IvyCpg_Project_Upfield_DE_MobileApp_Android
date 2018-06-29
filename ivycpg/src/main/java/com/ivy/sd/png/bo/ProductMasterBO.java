@@ -207,6 +207,10 @@ public class ProductMasterBO {
     private int isSMP;
     private int isNMustSell;
 
+    /**
+     * Total scheme discount amount applied on line value.
+     * @return
+     */
     public double getSchemeDiscAmount() {
         return schemeDiscAmount;
     }
@@ -640,6 +644,10 @@ public class ProductMasterBO {
         this.osrp = osrp;
     }
 
+    /**
+     * This is a value of line item after subracting scheme and Discounts.
+     * @return
+     */
     public double getDiscount_order_value() {
         return discount_order_value;
     }

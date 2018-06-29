@@ -29,6 +29,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
+import java.util.Iterator;
+
 import static android.app.Activity.RESULT_OK;
 
 
@@ -445,6 +447,11 @@ public class ReplaceFragment extends IvyBaseFragment {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!isReasonAndOtherFieldsAvailable())
+                    return;
+
+                removeEmptyRow();
+
                     Intent intent = new Intent();
                     intent.putExtra("position", holderPosition);
                     intent.putExtra("top", holderTop);
@@ -608,6 +615,38 @@ public class ReplaceFragment extends IvyBaseFragment {
                     Commons.printException(e);
                 }
             }
+        }
+    }
+
+    public boolean isReasonAndOtherFieldsAvailable() {
+        for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
+            if (sb.getCaseQty() > 0 || sb.getPieceQty() > 0 || sb.getOuterQty() > 0) {
+                if (sb.getReasonID().equals("0")) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
+                    return false;
+                } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
+                        (salesReturnHelper.SHOW_LOTNUMBER && sb.getLotNumber().equals(""))) {//inv n lot num validation done based on their conifguration
+                    Toast.makeText(getActivity(), "Mandatory fields empty!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private void removeEmptyRow() {
+        try {
+            Iterator<SalesReturnReasonBO> it = productMasterBO.getSalesReturnReasonList().iterator();
+            while (it.hasNext()) {
+                SalesReturnReasonBO srObj = it.next();
+                if (srObj.getCaseQty() == 0 && srObj.getPieceQty() == 0 && srObj.getOuterQty() == 0) {
+                    it.remove();
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
         }
     }
 

@@ -110,15 +110,6 @@ public class DataMembers {
     public static final int NOTIFY_LP_UPLOAD_ERROR = -39;
     public static final int SYNCLYTYPTUPLOAD = -40;
 
-    public static final int COUNTER_SIH_UPLOAD = -41;
-    public static final int NOTIFY_COUNTER_SIH_UPLOADED = -42;
-
-    public static final int COUNTER_STOCK_APPLY_UPLOAD = -43;
-    public static final int NOTIFY_COUNTER_STOCK_APPLY_UPLOADED = -44;
-
-    public static final int CS_REJECTED_VARIANCE_UPLOAD = -45;
-    public static final int NOTIFY_CS_REJECTED_VARIANCE_UPLOADED = -46;
-
     public static final int SYNC_REALLOC_UPLOAD = -36;
     public static final int SYNC_EXPORT = 218;
     public static final int AMAZONIMAGE_UPLOAD = 501;
@@ -191,19 +182,6 @@ public class DataMembers {
     public static final String tbl_SbdMerchandisingHeader = "SbdMerchandisingHeader";
     public static final String tbl_LastVisitStock = "LastVisitStock";
     public static final String tbl_LastVisitStock_History = "LastVisitStock_History";
-
-    public static final String tbl_cs_closingstockheader = "CS_StockEntryHeader";
-    public static final String tbl_cs_closingstockdetail = "CS_StockEntryDetails";
-    private static final String tbl_cs_closingstockheader_cols = "Uid,Date,RetailerID,RetailerCode,latitude,longitude,counter_id";
-    private static final String tbl_cs_closingstockdetail_cols = "Uid,Pid,uomid,qty,LocId,stock_type";
-
-    public static final String tbl_cs_closingstockvarianceheader = "CS_StockEntryVarianceHeader";
-    public static final String tbl_cs_closingstockvariancedetail = "CS_StockEntryVarianceDetails";
-    public static final String tbl_cs_closingstockvariancereasondetail = "CS_StockEntryVarianceReasonDetails";
-    private static final String tbl_cs_closingstockvarianceheader_cols = "Uid,Date,RetailerID,counterid,totalValue";
-    private static final String tbl_cs_closingstockvariancedetail_cols = "Uid,Pid,uomid,qty,stock_type,lineValue";
-    private static final String tbl_cs_closingstockvariancereasondetail_cols = "Uid,Pid,uomid,qty,stock_type,reasonID";
-
 
     public static final String tbl_AnswerHeader = "AnswerHeader";
     private static final String tbl_AnswerDetail = "AnswerDetail";
@@ -456,12 +434,6 @@ public class DataMembers {
     public static final String tbl_SchemeFreeProductDetail = "SchemeFreeProductDetail";
     private static final String tbl_SchemeFreeProductDetail_cols = "OrderID,InvoiceID,SchemeID,FreeProductID,FreeQty,UomID,UomCount,BatchId,parentid,Price,TaxAmount,HsnCode";
 
-    public static final String tbl_CS_scheme_details = "CS_SchemeDetail";
-    private static final String tbl_CS_SchemeDetail_cols = "Uid,SchemeId,SlabId,ProductId,SchemeType,Value,Amount";
-
-    public static final String tbl_CS_SchemeFreeProductDetail = "CS_SchemeFreeProductDetail";
-    private static final String tbl_CS_SchemeFreeProductDetail_cols = "Uid,SchemeId,SlabId,ProductId,Qty,UomId,UomCount";
-
     public static final String tbl_TransactionSequence = "TransactionSequence";
     private static final String tbl_TransactionSequence_cols = "TypeID,SeqNo";
 
@@ -537,20 +509,6 @@ public class DataMembers {
     public static final String tbl_RetailerEditPriorityProducts = "RetailerEditPriorityProducts";
     private static final String tbl_RetailerEditPriorityProducts_cols = "tid,retailerId,productId,levelid,status";
 
-    public static final String tbl_CS_CustomerConcernDetails = "CS_CustomerConcernDetails";
-    private static final String tbl_CS_CustomerConcernDetails_cols = "uid,attributeid,resolution,feedback";
-    public static final String tbl_CS_CustomerTrialDetails = "CS_CustomerTrialDetails";
-    private static final String tbl_CS_CustomerTrialDetails_cols = "uid,pid,timetaken,result,feedback";
-
-    public static final String tbl_CS_CustomerSampleGivenDetails = "CS_CustomerSampleGivenDetails";
-    private static final String tbl_CS_CustomerSampleGivenDetails_cols = "uid,pid,uomid,qty";
-
-    public static final String tbl_CS_CustomerSaleDetails = "CS_CustomerSaleDetails";
-    private static final String tbl_CS_CustomerSaleDetails_cols = "uid,pid,uomid,qty,price,value";
-
-    public static final String tbl_CS_CustomerVisitHeader = "CS_CustomerVisitHeader";
-    private static final String tbl_CS_CustomerVisitHeader_cols = "uid,retailerid,counter_id,date,name,address,contactno,freqvisit,age_group,email,gender,billDiscPerc,discAmount,totalValue,SchemeAmount,Remarks";
-
     public static final String tbl_SalesReturnReplacementDetails = "SalesReturnReplacementDetails";
     private static final String tbl_SalesReturnReplacementDetails_cols = "uid,returnpid,batchid,uomid,uomCount,returnQty,pid,price,value,qty";
 
@@ -592,23 +550,6 @@ public class DataMembers {
     public static final String tbl_SOSDetail_Proj = "SOSDetail_Proj";
     public static final String tbl_SOSDetail_Proj_cols = "uid,groupId,pid,actual,isOwn,inTarget,target";
 
-    private static final String tbl_Grooming_Header = "CS_GroomingHeader";
-    private static final String tbl_Grooming_Header_cols = "uid,userid,counterid,retailerid,date,time";
-
-    private static final String tbl_Grooming_Detail = "CS_GroomingDetails";
-    private static final String tbl_Grooming_Detail_cols = "uid,imagepath";
-
-    public static final String tbl_CS_StockReceiptHeader = "CS_StockReceiptHeader";
-    public static final String tbl_CS_StockReceiptHeader_cols = "receipt_id,receipt_no,receipt_date,stock_type,status,date,retailerid,counterid";
-
-    public static final String tbl_CS_StockReceiptDetails = "CS_StockReceiptDetails";
-    public static final String tbl_CS_StockReceiptDetails_cols = "receipt_id,pid,qty,uomid,damagedQty";
-
-    public static final String tbl_CS_SIH = "CS_SIHDetails";
-    public static final String tbl_CS_SIH_cols = "pid,sih,stock_type,counterid";
-
-    public static final String tbl_CS_RejectedVarianceStatus = "CS_RejectedVarianceStatus";
-    public static final String tbl_CS_RejectedVarianceStatus_cols = "uid";
 
     public static final String tbl_UserEditDetail = "UserEditDetail";
     public static final String tbl_UserEditDetail_cols = "Tid,UserID,Code,Value";
@@ -773,19 +714,6 @@ public class DataMembers {
         uploadColumn.put(tbl_SalesReturn_tax_Details, tb_SalesReturnTaxDetails_cols);
         uploadColumn.put(tbl_SalesReturnReplacementDetails, tbl_SalesReturnReplacementDetails_cols);
 
-        uploadColumn.put(tbl_cs_closingstockdetail, tbl_cs_closingstockdetail_cols);
-        uploadColumn.put(tbl_cs_closingstockheader, tbl_cs_closingstockheader_cols);
-        uploadColumn.put(tbl_cs_closingstockvarianceheader, tbl_cs_closingstockvarianceheader_cols);
-        uploadColumn.put(tbl_cs_closingstockvariancedetail, tbl_cs_closingstockvariancedetail_cols);
-        uploadColumn.put(tbl_cs_closingstockvariancereasondetail, tbl_cs_closingstockvariancereasondetail_cols);
-
-        uploadColumn.put(tbl_CS_CustomerVisitHeader, tbl_CS_CustomerVisitHeader_cols);
-        uploadColumn.put(tbl_CS_CustomerConcernDetails, tbl_CS_CustomerConcernDetails_cols);
-        uploadColumn.put(tbl_CS_CustomerTrialDetails, tbl_CS_CustomerTrialDetails_cols);
-        uploadColumn.put(tbl_CS_CustomerSaleDetails, tbl_CS_CustomerSaleDetails_cols);
-        uploadColumn.put(tbl_CS_CustomerSampleGivenDetails, tbl_CS_CustomerSampleGivenDetails_cols);
-        uploadColumn.put(tbl_CS_scheme_details, tbl_CS_SchemeDetail_cols);
-        uploadColumn.put(tbl_CS_SchemeFreeProductDetail, tbl_CS_SchemeFreeProductDetail_cols);
         uploadColumn.put(tbl_AttendanceTimeDetails, tbl_AttendanceTimeDetails_cols);
         uploadColumn.put(tbl_PaymentDiscount_Detail, tbl_PaymentDiscountDetail_Cols);
         uploadColumn.put(tbl_leaveapprovaldetails, tbl_leaveapprovaldetails_cols);
@@ -813,8 +741,6 @@ public class DataMembers {
         uploadColumn.put(tbl_LoyaltyPoints, tbl_LoyaltyPoints_cols);
         uploadColumn.put(tbl_retailerAttribute, tbl_retailerAttributeupload_cols);
 
-        uploadColumn.put(tbl_Grooming_Header, tbl_Grooming_Header_cols);
-        uploadColumn.put(tbl_Grooming_Detail, tbl_Grooming_Detail_cols);
         uploadColumn.put(tbl_UserEditDetail, tbl_UserEditDetail_cols);
         uploadColumn.put(tbl_ModuleActivityDetails, tbl_ModuleActivityDetails_cols);
         uploadColumn.put(tbl_jointcallacknowledgement, tbl_jointcallacknowledgement_upload_cols);
@@ -1008,18 +934,9 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_retailerEditAttribute, tbl_retailerEditAttributeupload_cols);
         uploadColumnWithOutRetailer.put(tbl_RetailerEditPriorityProducts, tbl_RetailerEditPriorityProducts_cols);
 
-        uploadColumnWithOutRetailer.put(tbl_CS_CustomerVisitHeader, tbl_CS_CustomerVisitHeader_cols);
-        uploadColumnWithOutRetailer.put(tbl_CS_CustomerConcernDetails, tbl_CS_CustomerConcernDetails_cols);
-        uploadColumnWithOutRetailer.put(tbl_CS_CustomerTrialDetails, tbl_CS_CustomerTrialDetails_cols);
-        uploadColumnWithOutRetailer.put(tbl_CS_CustomerSaleDetails, tbl_CS_CustomerSaleDetails_cols);
-        uploadColumnWithOutRetailer.put(tbl_CS_CustomerSampleGivenDetails, tbl_CS_CustomerSampleGivenDetails_cols);
-        uploadColumnWithOutRetailer.put(tbl_CS_scheme_details, tbl_CS_SchemeDetail_cols);
-        uploadColumnWithOutRetailer.put(tbl_CS_SchemeFreeProductDetail, tbl_CS_SchemeFreeProductDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_AttendanceTimeDetails, tbl_AttendanceTimeDetails_cols);
         uploadColumnWithOutRetailer.put(tbl_location_tracking, tbl_location_tracking_cols);
 
-        uploadColumnWithOutRetailer.put(tbl_Grooming_Header, tbl_Grooming_Header_cols);
-        uploadColumnWithOutRetailer.put(tbl_Grooming_Detail, tbl_Grooming_Detail_cols);
         uploadColumnWithOutRetailer.put(tbl_UserEditDetail, tbl_UserEditDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_PaymentDiscount_Detail, tbl_PaymentDiscountDetail_Cols);
         uploadColumnWithOutRetailer.put(tbl_ModuleActivityDetails, tbl_ModuleActivityDetails_cols);
@@ -1066,33 +983,6 @@ public class DataMembers {
 
         uploadStockApplyTable.put(tbl_stock_apply,
                 tbl_stock_apply_cols);
-    }
-
-    public static final HashMap<String, String> uploadCounterSIHTable = new HashMap<>();
-
-    static {
-
-        uploadCounterSIHTable.put(tbl_CS_SIH,
-                tbl_CS_SIH_cols);
-    }
-
-    public static final HashMap<String, String> uploadCSStockApplyTable = new HashMap<>();
-
-    static {
-
-        uploadCSStockApplyTable.put(tbl_CS_StockReceiptHeader,
-                tbl_CS_StockReceiptHeader_cols);
-        uploadCSStockApplyTable.put(tbl_CS_StockReceiptDetails,
-                tbl_CS_StockReceiptDetails_cols);
-    }
-
-
-    public static final HashMap<String, String> uploadCSRejectedVarianceStatus = new HashMap<>();
-
-    static {
-
-        uploadCSRejectedVarianceStatus.put(tbl_CS_RejectedVarianceStatus,
-                tbl_CS_RejectedVarianceStatus_cols);
     }
 
     public static final HashMap<String, String> uploadReallocTable = new HashMap<>();

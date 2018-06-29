@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -44,7 +44,6 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
 
     private TextView textView_shipment_label, textView_payment_label, textView_channel_label, textView_delivery_label, textView_delivery;
     private TextView textView_supplier_label, textView_note, textView_note_label, textView_order_value, textView_order_value_label, label_drug_note, text_drug_note;
-    ;
     private Spinner spinner_shipment, spinner_payment, spinner_dist_channel;
     private LinearLayout layout_shipment, layout_payment, layout_channel, layout_delivery_date, layout_supplier, layout_note, layout_order_value, layout_drug_note;
     private AutoCompleteTextView autoCompleteTextView_suppliers;
@@ -265,8 +264,8 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_order_value_label.setText(configureBO.getMenuName());
 
 
-                } else if (configureBO.getConfigCode().equals(ORDER_DRUG) && isDLDateExpired()) {
-                    if (isDrugOrder(mOrderedProductList)) {
+                } else if (configureBO.getConfigCode().equals(ORDER_DRUG) && businessModel.productHelper.isDLDateExpired()) {
+                    if (businessModel.productHelper.isDrugOrder(mOrderedProductList)) {
                         layout_drug_note.setVisibility(View.VISIBLE);
                         try {
                             if (businessModel.labelsMasterHelper.applyLabels(text_drug_note.getTag()) != null)
@@ -292,32 +291,6 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
             Commons.printException(ex);
         }
 
-    }
-
-    private boolean isDrugOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
-        for (ProductMasterBO bo : mOrderedProductList) {
-            if (bo.getIsDrug() == 1) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isDLDateExpired() {
-
-        String expiryDate = DateUtil.convertFromServerDateToRequestedFormat(
-                businessModel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd");
-        try {
-            if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(expiryDate))//this for checking today date since before method not woking for today date
-                if (DateUtil.convertStringToDateObject(
-                        businessModel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd").before(new Date())) {
-                    return true;
-                }
-        } catch (Exception e) {
-            Commons.printException(e);
-            return false;
-        }
-        return false;
     }
 
     private void initializeViews() {
