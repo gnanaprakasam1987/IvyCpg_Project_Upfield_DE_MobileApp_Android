@@ -91,7 +91,7 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
     }
 
     /**
-     * @return true if RTRS10 Config is turned on
+     * @return <code>true</code> if RTRS10 Config is turned on
      */
     @Override
     public boolean isNFCConfigurationEnabled() {
@@ -100,7 +100,7 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
 
 
     /**
-     * @return true if FUN14 Config is turned on
+     * @return <code>true</code> if FUN14 Config is turned on
      */
     @Override
     public boolean isLocationConfigurationEnabled() {

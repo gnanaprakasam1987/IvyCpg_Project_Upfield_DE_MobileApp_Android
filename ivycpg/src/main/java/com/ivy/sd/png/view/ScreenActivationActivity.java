@@ -10,8 +10,9 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 
 /**
  * @See {@link com.ivy.ui.activation.view.ActivationActivity}
+ * @since CPG131 replaced by {@link com.ivy.ui.activation.view.ActivationActivity}
+ * Will be removed from @version CPG133 Release
  * @deprecated This has been Migrated to MVP pattern
- * Will be removed from @Version 133 Release
  */
 @Deprecated
 public class ScreenActivationActivity extends IvyBaseActivityNoActionBar {

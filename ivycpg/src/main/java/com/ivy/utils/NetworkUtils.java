@@ -19,7 +19,7 @@ public class NetworkUtils {
 
     /**
      * @param context Application Context
-     * @return true if Connected, false if not connected
+     * @return <code>true</code> if Connected, <code>false</code> if not connected
      */
 
     public static boolean isNetworkConnected(Context context) {
