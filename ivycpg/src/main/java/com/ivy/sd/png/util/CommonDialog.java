@@ -75,6 +75,7 @@ public class CommonDialog extends Dialog {
         this.title = title;
         this.msg = msg;
         this.posBtnTxt = posBtnTxt;
+        this.posClickListener = posClickListener;
 
     }
 

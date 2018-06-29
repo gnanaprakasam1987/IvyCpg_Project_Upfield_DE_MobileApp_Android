@@ -32,6 +32,7 @@ import com.ivy.sd.png.provider.ActivationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DeviceUtils;
 
 import me.relex.circleindicator.CircleIndicator;
 
@@ -105,7 +106,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                    String imei = bmodel.activationHelper.getIMEINumber();
+                    String imei = DeviceUtils.getIMEINumber(getActivity());
                     if (!imei.matches("[0]+")) {
                         new DoActivation().execute(5);
                     } else {
@@ -163,7 +164,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
     public void onClick(View v) {
         ImageButton bt = (ImageButton) v;
         if (bt == activate) {
-            String imei = bmodel.activationHelper.getIMEINumber();
+            String imei =DeviceUtils.getIMEINumber(getActivity());;
             if (!imei.matches("[0]+")) {
                 activateOnClick();
             } else {

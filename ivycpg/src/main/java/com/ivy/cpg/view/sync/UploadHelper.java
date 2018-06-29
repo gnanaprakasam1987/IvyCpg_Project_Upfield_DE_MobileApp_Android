@@ -19,6 +19,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,8 +53,11 @@ public class UploadHelper {
     private Handler handler;
     private StringBuilder mVisitedRetailerIds;
 
+    private Context mContext;
+
 
     private UploadHelper(Context context) {
+        this.mContext = context;
         this.businessModel = (BusinessModel) context.getApplicationContext();
     }
 
@@ -314,7 +318,7 @@ public class UploadHelper {
                 jsonFormatter.addParameter("LoginId", businessModel.userMasterHelper
                         .getUserMasterBO().getLoginName());
                 jsonFormatter.addParameter("DeviceId",
-                        businessModel.activationHelper.getIMEINumber());
+                        DeviceUtils.getIMEINumber(context));
                 jsonFormatter.addParameter("VersionCode",
                         businessModel.getApplicationVersionNumber());
                 jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
@@ -803,7 +807,7 @@ public class UploadHelper {
                 jsonFormatter.addParameter("LoginId", businessModel.userMasterHelper
                         .getUserMasterBO().getLoginName());
                 jsonFormatter.addParameter("DeviceId",
-                        businessModel.activationHelper.getIMEINumber());
+                        DeviceUtils.getIMEINumber(context));
                 jsonFormatter.addParameter("VersionCode",
                         businessModel.getApplicationVersionNumber());
                 jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
@@ -924,7 +928,7 @@ public class UploadHelper {
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
 
             jsonFormatter.addParameter("DeviceId",
-                    businessModel.activationHelper.getIMEINumber());
+                    DeviceUtils.getIMEINumber(context));
             jsonFormatter.addParameter("LoginId", businessModel.userMasterHelper
                     .getUserMasterBO().getLoginName());
             jsonFormatter.addParameter("VersionCode",
@@ -1030,7 +1034,7 @@ public class UploadHelper {
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
 
             jsonFormatter.addParameter("DeviceId",
-                    businessModel.activationHelper.getIMEINumber());
+                    DeviceUtils.getIMEINumber(mContext));
             jsonFormatter.addParameter("LoginId", businessModel.userMasterHelper
                     .getUserMasterBO().getLoginName());
             jsonFormatter.addParameter("VersionCode",

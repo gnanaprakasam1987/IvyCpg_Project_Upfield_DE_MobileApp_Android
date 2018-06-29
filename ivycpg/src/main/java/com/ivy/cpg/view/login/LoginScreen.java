@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
@@ -38,6 +40,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.ivy.core.IvyConstants;
+import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
@@ -82,6 +86,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
     private MyReceiver receiver;
 
     public LoginPresenterImpl loginPresenter;
+
+    private DataManager dataManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -447,7 +453,8 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                     dismissCurrentProgressDialog();
 
                     LoginHelper.getInstance(LoginScreen.this).deleteAllValues(getApplicationContext());
-                    businessModel.activationHelper.clearAppUrl();
+                   // businessModel.activationHelper.clearAppUrl();
+                    clearAppUrl();
                     businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
                     try {
                         Uri path;
@@ -897,6 +904,16 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
+    }
+
+    public void clearAppUrl() {
+        SharedPreferences.Editor editor = PreferenceManager
+                .getDefaultSharedPreferences(LoginScreen.this)
+                .edit();
+        editor.putString("appUrlNew", "");
+        editor.putString("application", "");
+        editor.putString("activationKey", "");
+        editor.commit();
     }
 }
 

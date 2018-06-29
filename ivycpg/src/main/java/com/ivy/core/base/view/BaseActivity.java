@@ -52,9 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     private NFCManager nfcManager;
 
-    private AlertDialog.Builder builder;
-
-    private AlertDialog alertDialog;
+    private Dialog dialog;
 
     private TextView progressMsgTxt;
 
@@ -241,56 +239,26 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void showLoading() {
-//        createProgressDialog();
-
-       // progressMsgTxt.setText(R.string.loading);
-
         showDialog(getString(R.string.loading));
-
-       // showProgress();
     }
 
     @Override
     public void showLoading(String message) {
-  /*      createProgressDialog();
-
-        progressMsgTxt.setText(message);
-*/
         showDialog(message);
 
-      //  showProgress();
-    }
-
-    private void showProgress() {
-        if (!alertDialog.isShowing())
-            alertDialog.show();
     }
 
 
     @Override
     public void showLoading(int strinRes) {
-    /*    createProgressDialog();
-
-        progressMsgTxt.setText(getString(strinRes));
-
-        showProgress();*/
-
         showDialog(getString(strinRes));
     }
 
-    private void createProgressDialog() {
-        if (builder == null)
-            createDialogBuilder();
-
-        if (alertDialog == null) {
-            alertDialog = builder.create();
-        }
-    }
 
     @Override
     public void hideLoading() {
-        if (alertDialog != null)
-            alertDialog.dismiss();
+        if (dialog != null)
+            dialog.dismiss();
     }
 
     @Override
@@ -496,27 +464,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
 
     }
-
-
-    private void createDialogBuilder() {
-        try {
-            builder = new AlertDialog.Builder(BaseActivity.this);
-            View view = View.inflate(this, R.layout.custom_alert_dialog, null);
-
-            TextView title = view.findViewById(R.id.title);
-            title.setText(DataMembers.SD);
-            progressMsgTxt = view.findViewById(R.id.text);
-
-            builder.setView(view);
-            builder.setCancelable(false);
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-
-    private Dialog dialog;
 
     public void showDialog(String msg) {
 

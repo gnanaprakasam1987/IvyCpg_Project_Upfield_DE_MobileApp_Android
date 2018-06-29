@@ -82,6 +82,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.LabelsKey;
+import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -656,7 +657,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         else
             menu.findItem(R.id.menu_switch_user).setVisible(false);
 
-        if(!bmodel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT)
+        if (!bmodel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT)
             menu.findItem(R.id.menu_sync_report).setVisible(false);
 
     }
@@ -688,14 +689,14 @@ public class SynchronizationFragment extends IvyBaseFragment
             dialog.setCancelable(false);
             dialog.show(ft, "MENU_SYNC");
 
-        }else if(i==R.id.menu_sync_report){
+        } else if (i == R.id.menu_sync_report) {
             bmodel.reportHelper.downloadSyncStatusReport();
-            if(bmodel.reportHelper.getmSyncStatusBOList().size()>0){
+            if (bmodel.reportHelper.getmSyncStatusBOList().size() > 0) {
                 startActivity(new Intent(getActivity(), SyncStatusActivity.class));
                 getActivity().finish();
                 getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            }else{
-                bmodel.showAlert(getResources().getString(R.string.no_data_exists),0);
+            } else {
+                bmodel.showAlert(getResources().getString(R.string.no_data_exists), 0);
             }
         }
         return true;
@@ -1256,7 +1257,8 @@ public class SynchronizationFragment extends IvyBaseFragment
 
 
                     LoginHelper.getInstance(getActivity()).deleteAllValues(getContext().getApplicationContext());
-                    bmodel.activationHelper.clearAppUrl();
+                   // bmodel.activationHelper.clearAppUrl();
+                    clearAppUrl();
                     bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
                     try {
                         Uri path;
@@ -2159,9 +2161,9 @@ public class SynchronizationFragment extends IvyBaseFragment
                 jsonObj.put("OSVersion", android.os.Build.VERSION.RELEASE);
                 jsonObj.put("FirmWare", "");
                 jsonObj.put("DeviceId",
-                        bmodel.activationHelper.getIMEINumber());
+                        DeviceUtils.getIMEINumber(getActivity()));
                 jsonObj.put("RegistrationId", bmodel.regid);
-                jsonObj.put("DeviceUniqueId", bmodel.activationHelper.getDeviceId());
+                jsonObj.put("DeviceUniqueId", DeviceUtils.getDeviceId(getActivity()));
                 if (DataMembers.ACTIVATION_KEY != null && !DataMembers.ACTIVATION_KEY.isEmpty())
                     jsonObj.put("ActivationKey", DataMembers.ACTIVATION_KEY);
                 jsonObj.put(SynchronizationHelper.MOBILE_DATE_TIME,
@@ -2349,7 +2351,7 @@ public class SynchronizationFragment extends IvyBaseFragment
             withPhotosCheckBox.setChecked(false);
     }
 
-    private void updateUploadedTime(){
+    private void updateUploadedTime() {
         try {
             SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
             edt.putString("uploadDate",
@@ -2358,26 +2360,25 @@ public class SynchronizationFragment extends IvyBaseFragment
             edt.apply();
 
             updateLastTransactionTimeInView();
-        }
-        catch (Exception ex){
-            Commons.printException(ex);
-        }
-    }
-    private void updateDownloadTime(){
-        try{
-        SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
-        edt.putString("downloadDate",
-                SDUtil.now(SDUtil.DATE_GLOBAL));
-        edt.putString("downloadTime", SDUtil.now(SDUtil.TIME));
-        edt.apply();
-        updateLastTransactionTimeInView();
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
 
-    private void updateLastTransactionTimeInView(){
+    private void updateDownloadTime() {
+        try {
+            SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
+            edt.putString("downloadDate",
+                    SDUtil.now(SDUtil.DATE_GLOBAL));
+            edt.putString("downloadTime", SDUtil.now(SDUtil.TIME));
+            edt.apply();
+            updateLastTransactionTimeInView();
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+    }
+
+    private void updateLastTransactionTimeInView() {
         try {
             TextView textView = view.findViewById(R.id.text_last_sync);
             textView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2394,9 +2395,18 @@ public class SynchronizationFragment extends IvyBaseFragment
             } else {
                 textView.setVisibility(View.GONE);
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
+    }
+
+    public void clearAppUrl() {
+        SharedPreferences.Editor editor = PreferenceManager
+                .getDefaultSharedPreferences(getActivity())
+                .edit();
+        editor.putString("appUrlNew", "");
+        editor.putString("application", "");
+        editor.putString("activationKey", "");
+        editor.commit();
     }
 }

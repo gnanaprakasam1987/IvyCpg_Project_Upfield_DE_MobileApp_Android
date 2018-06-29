@@ -80,7 +80,6 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
     private DisposableObserver<JSONObject> getObserver() {
-        getIvyView().hideLoading();
         return new DisposableObserver<JSONObject>() {
             @Override
             public void onNext(JSONObject jsonObject) {
@@ -126,11 +125,11 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
             //--->16
             getIvyView().showServerError();
         }
+        getIvyView().hideLoading();
     }
 
 
     private DisposableObserver<JSONObject> getImEiObserver() {
-        getIvyView().hideLoading();
         return new DisposableObserver<JSONObject>() {
             @Override
             public void onNext(JSONObject jsonObject) {
@@ -151,6 +150,7 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
     public void handleError(ActivationError activationError) {
+        getIvyView().hideLoading();
         if (activationError.getStatus() == DataMembers.IVY_SERVER_ERROR) {
             int downloadResponse = SDUtil.convertToInt(activationError.getMessage());
             showValidError(downloadResponse);
@@ -243,9 +243,10 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
                 }
             }
         } catch (JSONException e) {
+            getIvyView().hideLoading();
             getIvyView().showServerError();
         }
-
+        getIvyView().hideLoading();
     }
 
     private void setValueToPreference(String url, String appName) {
