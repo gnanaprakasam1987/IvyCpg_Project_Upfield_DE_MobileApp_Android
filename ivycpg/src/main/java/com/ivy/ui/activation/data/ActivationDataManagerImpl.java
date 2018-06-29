@@ -2,24 +2,18 @@ package com.ivy.ui.activation.data;
 
 import com.ivy.core.IvyConstants;
 import com.ivy.lib.rest.MyKsoapConnection;
-import com.ivy.sd.png.bo.ActivationBO;
 import com.ivy.sd.png.model.ApplicationConfigs;
-import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.ScreenActivationFragment;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 
 public class ActivationDataManagerImpl implements ActivationDataManager {
