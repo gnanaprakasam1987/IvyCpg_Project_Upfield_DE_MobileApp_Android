@@ -6,6 +6,8 @@ public interface BaseIvyPresenter<V extends BaseIvyView> {
 
     void onAttach(V mvpView);
 
+    void clearDisposable();
+
     void onDetach();
 
     void getAppTheme();

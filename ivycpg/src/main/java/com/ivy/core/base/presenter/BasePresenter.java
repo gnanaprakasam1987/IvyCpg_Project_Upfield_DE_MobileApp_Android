@@ -1,5 +1,10 @@
 package com.ivy.core.base.presenter;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
+
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -10,7 +15,7 @@ import javax.inject.Inject;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
-public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V> {
+public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>, LifecycleObserver {
 
     public static final String RED = "red";
     public static final String ORANGE = "orange";
@@ -38,13 +43,24 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
     @Override
     public void onAttach(V ivyView) {
         this.ivyView = ivyView;
+        // Initialize this presenter as a lifecycle-aware when a view is a lifecycle owner.
+        if (ivyView instanceof LifecycleOwner) {
+            ((LifecycleOwner) ivyView).getLifecycle().addObserver(this);
+        }
         getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
     }
 
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onDetach() {
         mCompositeDisposable.dispose();
         ivyView = null;
+    }
+
+    @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void clearDisposable() {
+        mCompositeDisposable.clear();
     }
 
     @Override
