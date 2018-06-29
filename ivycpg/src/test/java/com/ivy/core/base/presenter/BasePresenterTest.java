@@ -46,8 +46,7 @@ public class BasePresenterTest {
     @Before
     public void setup() {
         TestSchedulerProvider testSchedulerProvider = new TestSchedulerProvider(testScheduler);
-        mPresenter = new BasePresenter<>(mDataManager, testSchedulerProvider, mockDisposable, mockConfigurationHelper,ivyView);
-        mPresenter.onAttach(ivyView);
+        mPresenter = new BasePresenter<>(mDataManager, testSchedulerProvider, mockDisposable, mockConfigurationHelper, ivyView);
     }
 
     @Test
@@ -151,6 +150,57 @@ public class BasePresenterTest {
         mockConfigurationHelper.SHOW_NFC_VALIDATION_FOR_RETAILER = true;
 
         assertEquals(mPresenter.isNFCConfigurationEnabled(), true);
+    }
+
+    @Test
+    public void testOnResume() {
+        mockConfigurationHelper.SHOW_NFC_VALIDATION_FOR_RETAILER = true;
+
+        mPresenter.onResume();
+
+        then(ivyView).should().resumeNFCManager();
+    }
+
+    @Test
+    public void testOnResumeNFCFalse() {
+        mockConfigurationHelper.SHOW_NFC_VALIDATION_FOR_RETAILER = false;
+
+        mPresenter.onResume();
+
+        then(ivyView).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    public void testOnCreate() {
+        given(mDataManager.getThemeColor()).willReturn(Single.just("green"));
+        given(mDataManager.getFontSize()).willReturn(Single.just("Small"));
+        given(mDataManager.getPreferredLanguage()).willReturn("ar");
+
+        mPresenter.onCreate();
+        testScheduler.triggerActions();
+
+        then(ivyView).should().setGreenTheme();
+        then(ivyView).should().setFontSize("Small");
+        then(ivyView).should().handleLayoutDirection("ar");
+
+    }
+
+    @Test
+    public void testOnPause() {
+        mockConfigurationHelper.SHOW_NFC_VALIDATION_FOR_RETAILER = true;
+
+        mPresenter.onPause();
+
+        then(ivyView).should().pauseNFCManager();
+    }
+
+    @Test
+    public void testOnPauseNFCFalse() {
+        mockConfigurationHelper.SHOW_NFC_VALIDATION_FOR_RETAILER = false;
+
+        mPresenter.onPause();
+
+        then(ivyView).shouldHaveNoMoreInteractions();
     }
 
     @After

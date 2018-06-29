@@ -4,11 +4,11 @@ import com.ivy.core.base.view.BaseIvyView;
 
 public interface BaseIvyPresenter<V extends BaseIvyView> {
 
-    void onAttach(V mvpView);
+    public void onCreate();
 
-    void clearDisposable();
+    void onPause();
 
-    void handleLayoutDirections();
+    void onResume();
 
     void onDetach();
 

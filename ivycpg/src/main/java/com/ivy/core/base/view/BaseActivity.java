@@ -79,11 +79,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     public void setBasePresenter(BasePresenter presenter) {
         mBasePresenter = presenter;
-        if (mBasePresenter != null) {
-            mBasePresenter.getAppTheme();
-            mBasePresenter.getAppFontSize();
-        }
-
     }
 
 
@@ -115,28 +110,26 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     private void setUpDefaults() {
         AppUtils.useNetworkProvidedValues(this);
+    }
 
-        if (mBasePresenter.isNFCConfigurationEnabled()) {
+    @Override
+    public void createNFCManager() {
+
+    }
+
+    @Override
+    public void resumeNFCManager() {
+        if (nfcManager == null) {
             nfcManager = new NFCManager(this);
             nfcManager.onActivityCreate();
         }
-    }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (mBasePresenter.isNFCConfigurationEnabled() && nfcManager != null) {
-            nfcManager.onActivityResume();
-        }
+        nfcManager.onActivityResume();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (mBasePresenter.isNFCConfigurationEnabled() && nfcManager != null) {
+    public void pauseNFCManager() {
+        if (nfcManager != null) {
             nfcManager.onActivityPause();
         }
     }
@@ -404,9 +397,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         if (mUnBinder != null) {
             mUnBinder.unbind();
         }
-
-        if (mBasePresenter != null)
-            mBasePresenter.onDetach();
 
         super.onDestroy();
     }

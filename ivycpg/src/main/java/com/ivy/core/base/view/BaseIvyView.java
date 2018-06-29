@@ -48,4 +48,10 @@ public interface BaseIvyView {
 
     void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener);
 
+    void createNFCManager();
+
+    void resumeNFCManager();
+
+    void pauseNFCManager();
+
 }

@@ -45,17 +45,19 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
 
 
     @Override
-    public void onAttach(V ivyView) {
-        this.ivyView = ivyView;
-        // Initialize this presenter as a lifecycle-aware when a view is a lifecycle owner.
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    public void onCreate() {
+        getAppTheme();
+        getAppFontSize();
         getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
     }
 
-
     @Override
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void handleLayoutDirections() {
-        getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
+    public void onResume() {
+        if (isNFCConfigurationEnabled()) {
+            getIvyView().resumeNFCManager();
+        }
     }
 
     @Override
@@ -67,8 +69,12 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
 
     @Override
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void clearDisposable() {
+    public void onPause() {
+        if (isNFCConfigurationEnabled()) {
+            getIvyView().pauseNFCManager();
+        }
         mCompositeDisposable.clear();
+
     }
 
     @Override
