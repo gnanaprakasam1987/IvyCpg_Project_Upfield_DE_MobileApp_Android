@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.ui.activation.view;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -19,8 +19,6 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ActivationBO;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.utils.FontUtils;
 
 import java.util.List;

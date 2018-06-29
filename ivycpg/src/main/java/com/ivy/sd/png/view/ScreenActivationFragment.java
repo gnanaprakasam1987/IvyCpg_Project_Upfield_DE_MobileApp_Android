@@ -32,6 +32,7 @@ import com.ivy.sd.png.provider.ActivationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.activation.view.ActivationDialog;
 import com.ivy.utils.DeviceUtils;
 
 import me.relex.circleindicator.CircleIndicator;

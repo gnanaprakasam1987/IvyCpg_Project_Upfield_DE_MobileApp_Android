@@ -14,7 +14,6 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
-import com.ivy.sd.png.view.ActivationDialog;
 import com.ivy.ui.activation.ActivationContract;
 import com.ivy.ui.activation.di.ActivationModule;
 import com.ivy.ui.activation.di.DaggerActivationComponent;
