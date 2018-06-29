@@ -27,8 +27,8 @@ public class DummyLaunchActivity extends Activity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(!BuildConfig.DEBUG)
-        Fabric.with(this, new Crashlytics());
+        if (!BuildConfig.DEBUG)
+            Fabric.with(this, new Crashlytics());
         DBUtil.isEncrypted = ApplicationConfigs.isEncrypted;
         if (ApplicationConfigs.withActivation) {
             appPreferences = PreferenceManager.getDefaultSharedPreferences(this);

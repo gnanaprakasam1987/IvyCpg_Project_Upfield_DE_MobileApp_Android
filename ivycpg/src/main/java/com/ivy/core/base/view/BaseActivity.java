@@ -3,6 +3,7 @@ package com.ivy.core.base.view;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -240,20 +241,24 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void showLoading() {
-        createProgressDialog();
+//        createProgressDialog();
 
-        progressMsgTxt.setText(R.string.loading);
+       // progressMsgTxt.setText(R.string.loading);
 
-        showProgress();
+        showDialog(getString(R.string.loading));
+
+       // showProgress();
     }
 
     @Override
     public void showLoading(String message) {
-        createProgressDialog();
+  /*      createProgressDialog();
 
         progressMsgTxt.setText(message);
+*/
+        showDialog(message);
 
-        showProgress();
+      //  showProgress();
     }
 
     private void showProgress() {
@@ -264,11 +269,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void showLoading(int strinRes) {
-        createProgressDialog();
+    /*    createProgressDialog();
 
         progressMsgTxt.setText(getString(strinRes));
 
-        showProgress();
+        showProgress();*/
+
+        showDialog(getString(strinRes));
     }
 
     private void createProgressDialog() {
@@ -492,21 +499,41 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
 
     private void createDialogBuilder() {
-        if (builder == null)
-            try {
-                builder = new AlertDialog.Builder(BaseActivity.this);
-                View view = View.inflate(this, R.layout.custom_alert_dialog, null);
+        try {
+            builder = new AlertDialog.Builder(BaseActivity.this);
+            View view = View.inflate(this, R.layout.custom_alert_dialog, null);
 
-                TextView title = view.findViewById(R.id.title);
-                title.setText(DataMembers.SD);
-                progressMsgTxt = view.findViewById(R.id.text);
+            TextView title = view.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            progressMsgTxt = view.findViewById(R.id.text);
 
-                builder.setView(view);
-                builder.setCancelable(false);
+            builder.setView(view);
+            builder.setCancelable(false);
 
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+
+    private Dialog dialog;
+
+    public void showDialog(String msg) {
+
+        if (dialog == null) {
+            dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.custom_alert_dialog);
+
+            TextView title = dialog.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            progressMsgTxt = dialog.findViewById(R.id.text);
+        }
+        progressMsgTxt.setText(msg);
+
+        dialog.show();
+
     }
 
     private String screenTitle;
@@ -561,6 +588,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         dialog.setCancelable(false);
         dialog.show();
     }
+
+
 }
 
 
