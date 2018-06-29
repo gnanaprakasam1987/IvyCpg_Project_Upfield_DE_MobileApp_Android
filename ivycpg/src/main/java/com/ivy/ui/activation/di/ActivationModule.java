@@ -1,6 +1,7 @@
 package com.ivy.ui.activation.di;
 
 
+import com.ivy.core.di.module.ActivityModule;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.activation.ActivationContract;
 import com.ivy.ui.activation.data.ActivationDataManager;
@@ -15,6 +16,18 @@ import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public class ActivationModule {
+
+    private ActivationContract.ActivationView mView;
+
+    public ActivationModule(ActivationContract.ActivationView mView) {
+        this.mView = mView;
+    }
+
+
+    @Provides
+    public ActivationContract.ActivationView provideView() {
+        return mView;
+    }
 
     @Provides
     ActivationDataManager providesActivationDataManager() {

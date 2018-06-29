@@ -46,7 +46,7 @@ public class BasePresenterTest {
     @Before
     public void setup() {
         TestSchedulerProvider testSchedulerProvider = new TestSchedulerProvider(testScheduler);
-        mPresenter = new BasePresenter<>(mDataManager, testSchedulerProvider, mockDisposable, mockConfigurationHelper);
+        mPresenter = new BasePresenter<>(mDataManager, testSchedulerProvider, mockDisposable, mockConfigurationHelper,ivyView);
         mPresenter.onAttach(ivyView);
     }
 

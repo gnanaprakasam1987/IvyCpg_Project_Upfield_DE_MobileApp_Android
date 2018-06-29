@@ -8,6 +8,8 @@ public interface BaseIvyPresenter<V extends BaseIvyView> {
 
     void clearDisposable();
 
+    void handleLayoutDirections();
+
     void onDetach();
 
     void getAppTheme();

@@ -40,10 +40,12 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     @Inject
     public ActivationPresenterImpl(DataManager dataManager,
                                    SchedulerProvider schedulerProvider,
-                                   CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper, ActivationDataManager activationDataManager) {
-        super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper);
+                                   CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper,
+                                   ActivationDataManager activationDataManager, ActivationContract.ActivationView view) {
+        super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, (V) view);
         this.activationDataManager = activationDataManager;
         this.dataManager = dataManager;
+
     }
 
 

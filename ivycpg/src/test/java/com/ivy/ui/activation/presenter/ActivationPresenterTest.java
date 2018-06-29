@@ -60,8 +60,8 @@ public class ActivationPresenterTest {
     public void setup() {
 
         TestSchedulerProvider testSchedulerProvider = new TestSchedulerProvider(testScheduler);
-        mPresenter = new ActivationPresenterImpl<>(mDataManager, testSchedulerProvider, mockDisposable, mockConfigurationHelper, mActivationDataManager);
-        mPresenter.onAttach(mActivationView);
+        mPresenter = new ActivationPresenterImpl<>(mDataManager, testSchedulerProvider, mockDisposable,
+                mockConfigurationHelper, mActivationDataManager,mActivationView);
     }
 
     @Test

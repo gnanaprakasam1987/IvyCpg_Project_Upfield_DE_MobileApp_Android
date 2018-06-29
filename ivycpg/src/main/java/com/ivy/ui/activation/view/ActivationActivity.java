@@ -60,12 +60,11 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     @Override
     public void initializeDi() {
         DaggerActivationComponent.builder()
-                .activationModule(new ActivationModule())
+                .activationModule(new ActivationModule(this))
                 .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
                 .build()
                 .inject(this);
 
-        mActivationPresenter.onAttach(this);
 
         setBasePresenter((BasePresenter) mActivationPresenter);
 

@@ -32,11 +32,15 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
 
     @Inject
     public BasePresenter(DataManager dataManager, SchedulerProvider schedulerProvider,
-                         CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper) {
+                         CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper, V view) {
         this.mDataManager = dataManager;
         this.mSchedulerProvider = schedulerProvider;
         this.mCompositeDisposable = compositeDisposable;
         this.mConfigurationMasterHelper = configurationMasterHelper;
+        this.ivyView = (V) view;
+        if (ivyView instanceof LifecycleOwner) {
+            ((LifecycleOwner) ivyView).getLifecycle().addObserver(this);
+        }
     }
 
 
@@ -44,9 +48,13 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
     public void onAttach(V ivyView) {
         this.ivyView = ivyView;
         // Initialize this presenter as a lifecycle-aware when a view is a lifecycle owner.
-        if (ivyView instanceof LifecycleOwner) {
-            ((LifecycleOwner) ivyView).getLifecycle().addObserver(this);
-        }
+        getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
+    }
+
+
+    @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void handleLayoutDirections() {
         getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
     }
 
