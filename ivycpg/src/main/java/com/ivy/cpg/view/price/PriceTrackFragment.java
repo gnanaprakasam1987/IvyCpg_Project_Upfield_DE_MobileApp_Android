@@ -47,7 +47,6 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ivy.cpg.view.stockcheck.StockCheckFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
@@ -753,7 +752,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                         "", getResources().getString(R.string.saved_successfully),
                         false, getActivity().getResources().getString(R.string.ok),
-                        null, new CommonDialog.positiveOnClickListener() {
+                        null, new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

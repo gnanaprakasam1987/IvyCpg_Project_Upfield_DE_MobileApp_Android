@@ -601,7 +601,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             case 0:
 //                CommonDialog dialog=
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(), "", getResources().getString(
-                        R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         salesReturnHelper
@@ -939,7 +939,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     private void showCustomDialog() {
 
         new CommonDialog(getActivity().getApplicationContext(), getActivity(), "", getResources().getString(
-                R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 salesReturnHelper.clearSalesReturnTable(false);
