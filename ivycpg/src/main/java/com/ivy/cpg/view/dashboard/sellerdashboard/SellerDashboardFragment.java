@@ -145,6 +145,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         bmodel.setContext(getActivity());
         fm = getActivity().getSupportFragmentManager();
 
+        bundle = getArguments();
+        if (bundle == null)
         bundle = getActivity().getIntent().getExtras();
         boolean isFromTab = false;
 
@@ -792,17 +794,17 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         if (!isFromHomeScreenTwo) {
             if (bmodel.getMenuName("MENU_DASH").endsWith(""))
                 bmodel.configurationMasterHelper.downloadMainMenu();
-            if (getArguments().getString("screentitle") == null)
+            if (!bundle.containsKey("screentitle"))
                 setScreenTitle(bmodel.getMenuName("MENU_DASH"));
             else
-                setScreenTitle(getArguments().getString("screentitle"));
+                setScreenTitle(bundle.getString("screentitle"));
         } else {
-            if (getActivity().getIntent().getStringExtra("screentitle").toString().isEmpty()) {
+            if (!bundle.containsKey("screentitle")) {
                 bmodel.configurationMasterHelper
                         .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
                 setScreenTitle(bmodel.getMenuName("MENU_RTR_KPI"));
             } else
-                setScreenTitle(getActivity().getIntent().getStringExtra("screentitle"));
+                setScreenTitle(bundle.getString("screentitle"));
         }
         //if (!BusinessModel.dashHomeStatic) {
         getActionBar().setDisplayHomeAsUpEnabled(true);
