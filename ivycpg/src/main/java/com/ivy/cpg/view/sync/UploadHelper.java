@@ -292,15 +292,15 @@ public class UploadHelper {
                             businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                             "yyyy/MM/dd");
                     if (varianceDwnDate == 0) {
-                        jsonFormatter.addParameter("MobileDate",
+                        jsonFormatter.addParameter("MobileDateTime",
                                 Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                     }
                     if (varianceDwnDate > 0) {
-                        jsonFormatter.addParameter("MobileDate",
+                        jsonFormatter.addParameter("MobileDateTime",
                                 businessModel.synchronizationHelper.getLastTransactedDate());
                     }
                 } else
-                    jsonFormatter.addParameter("MobileDate",
+                    jsonFormatter.addParameter("MobileDateTime",
                             Utils.getDate("yyyy/MM/dd HH:mm:ss"));
 
                 jsonFormatter.addParameter("MobileUTCDateTime",
@@ -749,7 +749,7 @@ public class UploadHelper {
                 jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
                 jsonFormatter.addParameter("OrganisationId", businessModel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
-                jsonFormatter.addParameter("MobileDate",
+                jsonFormatter.addParameter("MobileDateTime",
                         Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                 jsonFormatter.addParameter("MobileUTCDateTime",
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
@@ -874,7 +874,7 @@ public class UploadHelper {
                     .getUserMasterBO().getDistributorid());
             jsonFormatter.addParameter("OrganisationId", businessModel.userMasterHelper
                     .getUserMasterBO().getOrganizationId());
-            jsonFormatter.addParameter("MobileDate",
+            jsonFormatter.addParameter("MobileDateTime",
                     Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonFormatter.addParameter("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
@@ -971,7 +971,7 @@ public class UploadHelper {
                     .getUserMasterBO().getDistributorid());
             jsonFormatter.addParameter("OrganisationId", businessModel.userMasterHelper
                     .getUserMasterBO().getOrganizationId());
-            jsonFormatter.addParameter("MobileDate",
+            jsonFormatter.addParameter("MobileDateTime",
                     Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonFormatter.addParameter("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));

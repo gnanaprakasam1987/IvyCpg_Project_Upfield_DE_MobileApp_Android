@@ -5906,7 +5906,7 @@ public class BusinessModel extends Application {
             jsonObj.put("UserId", userMasterHelper.getUserMasterBO()
                     .getUserid());
             jsonObj.put("RetailerId", mRetailerId);
-            jsonObj.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonObj.put("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("OTPValue", mOTP);

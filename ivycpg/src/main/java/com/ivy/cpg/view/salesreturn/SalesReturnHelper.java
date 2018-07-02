@@ -984,7 +984,7 @@ public class SalesReturnHelper {
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(ordervalue)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
-                    + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + " and upload !='X'");
+                    + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getDouble(0);
