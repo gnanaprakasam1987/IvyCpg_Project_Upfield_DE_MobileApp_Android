@@ -86,7 +86,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     IconicAdapter mSchedule;
 
     private FloatingActionButton fab;
-    ArrayList<Integer> selectedPosition = new ArrayList<>();
+    ArrayList<String> selectedPosition = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,8 +122,13 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
                 ArrayList<RetailerMasterBO> retailerMasterBOS = new ArrayList<>();
 
-                for (Integer integer : selectedPosition) {
-                    retailerMasterBOS.add(retailer.get(integer));
+                for (String retId : selectedPosition) {
+                    for (RetailerMasterBO retailerMasterBO : retailer) {
+                        if (retailerMasterBO.getRetailerID().equals(retId)) {
+                            retailerMasterBOS.add(retailerMasterBO);
+                            break;
+                        }
+                    }
                 }
 
                 bmodel.mRetailerHelper.deviateRetailerList = retailerMasterBOS;
@@ -1156,7 +1161,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             }
 
 
-            if (selectedPosition.contains(new Integer(position))) {
+            if (selectedPosition.contains(retailerObj.getRetailerID())) {
                 holder.llFirst.setBackgroundColor(getResources().getColor(R.color.colorPrimaryAlpha));
             } else {
                 holder.llFirst.setBackgroundColor(getResources().getColor(android.R.color.white));
@@ -1199,10 +1204,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
                             } else {
 
-                                if (selectedPosition.contains(new Integer(position))) {
-                                    selectedPosition.remove(new Integer(position));
+                                if (selectedPosition.contains(retailerObj.getRetailerID())) {
+                                    selectedPosition.remove(retailerObj.getRetailerID());
                                 } else {
-                                    selectedPosition.add(position);
+                                    selectedPosition.add(retailerObj.getRetailerID());
                                 }
 
                                 if (selectedPosition.size() > 0) {
