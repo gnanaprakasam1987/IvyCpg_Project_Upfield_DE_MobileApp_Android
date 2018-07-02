@@ -48,7 +48,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -1168,7 +1167,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                         "", getResources().getString(R.string.saved_successfully),
                         false, getActivity().getResources().getString(R.string.ok),
-                        null, new CommonDialog.positiveOnClickListener() {
+                        null, new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

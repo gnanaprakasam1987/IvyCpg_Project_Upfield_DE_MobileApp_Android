@@ -2232,7 +2232,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                     "", getResources().getString(R.string.saved_successfully),
                     false, getActivity().getResources().getString(R.string.ok),
-                    null, isNext, new CommonDialog.positiveOnClickListener() {
+                    null, isNext, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     questionsRv.invalidate();

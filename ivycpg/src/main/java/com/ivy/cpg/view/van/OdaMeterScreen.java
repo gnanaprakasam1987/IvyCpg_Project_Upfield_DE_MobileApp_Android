@@ -524,7 +524,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                 getResources().getString(R.string.no), //Negative Button
                 false, //MoveToNextActivity
                 this.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageNameStarts, //LoadImage
-                new CommonDialog.positiveOnClickListener() {
+                new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
 

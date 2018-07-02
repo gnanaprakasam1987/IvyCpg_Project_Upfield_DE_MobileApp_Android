@@ -21,14 +21,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 /**
  * Created by mayuri.v on 4/27/2017.
  */
 public class CommonDialog extends Dialog {
 
-    public positiveOnClickListener posClickListener;
+    public PositiveClickListener posClickListener;
     public negativeOnClickListener negClickListener;
     private String title;
     private String msg;
@@ -43,7 +43,7 @@ public class CommonDialog extends Dialog {
 
 
     public CommonDialog(Context bContext, Context context, String title, String msg,
-                        boolean imgDisplay, String posBtnTxt, positiveOnClickListener posClickListener) {
+                        boolean imgDisplay, String posBtnTxt, PositiveClickListener posClickListener) {
         super(context);
         this.context = context;
         this.bContext = bContext;
@@ -57,9 +57,31 @@ public class CommonDialog extends Dialog {
 
     }
 
+
+    public CommonDialog(Context context, String title, String msg,
+                        String posBtnTxt) {
+        super(context);
+        this.context = context;
+        this.title = title;
+        this.msg = msg;
+        this.posBtnTxt = posBtnTxt;
+
+    }
+
+    public CommonDialog(Context context, String title, String msg,
+                        String posBtnTxt,PositiveClickListener posClickListener) {
+        super(context);
+        this.context = context;
+        this.title = title;
+        this.msg = msg;
+        this.posBtnTxt = posBtnTxt;
+        this.posClickListener = posClickListener;
+
+    }
+
     public CommonDialog(Context bContext, Context context, String title, String msg,
                         boolean imgDisplay, String posBtnTxt, String negBtnTxt,
-                        positiveOnClickListener posClickListener, negativeOnClickListener negClickListener) {
+                        PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
         this.bContext = bContext;
@@ -75,7 +97,7 @@ public class CommonDialog extends Dialog {
 
     public CommonDialog(Context bContext, Context context, String title, String msg,
                         boolean imgDisplay, String posBtnTxt, String negBtnTxt, boolean isMoveNext,
-                        positiveOnClickListener posClickListener, negativeOnClickListener negClickListener) {
+                        PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
         this.bContext = bContext;
@@ -93,7 +115,7 @@ public class CommonDialog extends Dialog {
     //Dialog with Dynamic Image
     public CommonDialog(Context bContext, Context context, String title, String msg,
                         boolean imgDisplay, String posBtnTxt, String negBtnTxt, boolean isMoveNext, String ImageSrc,
-                        positiveOnClickListener posClickListener, negativeOnClickListener negClickListener) {
+                        PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
         this.bContext = bContext;
@@ -113,7 +135,7 @@ public class CommonDialog extends Dialog {
 
 
     // This is my interface //
-    public interface positiveOnClickListener {
+    public interface PositiveClickListener {
         void onPositiveButtonClick();
     }
 
@@ -139,7 +161,7 @@ public class CommonDialog extends Dialog {
             if (!title.isEmpty() && !title.equals("")) {
                 txtTitle.setVisibility(View.VISIBLE);
                 txtTitle.setText(title);
-                txtTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                txtTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
             }
         }
 
@@ -147,7 +169,7 @@ public class CommonDialog extends Dialog {
 
         TextView msg_text = (TextView) view.findViewById(R.id.msg_text);
         msg_text.setText(msg);
-        msg_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        msg_text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
 
         if (imgDisplay) {
             dialog_img.setVisibility(View.VISIBLE);
@@ -174,7 +196,7 @@ public class CommonDialog extends Dialog {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(dialog_img);
             if (txtTitle.getVisibility() == View.GONE)
-                msg_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                msg_text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
         }
 
 
@@ -185,7 +207,8 @@ public class CommonDialog extends Dialog {
             @Override
             public void onClick(View arg0) {
                 //callback method
-                posClickListener.onPositiveButtonClick();
+                if (posClickListener != null)
+                    posClickListener.onPositiveButtonClick();
                 dismiss();
             }
         });
@@ -201,14 +224,15 @@ public class CommonDialog extends Dialog {
             @Override
             public void onClick(View arg0) {
                 //callback method
-                negClickListener.onNegativeButtonClick();
+                if (negClickListener != null)
+                    negClickListener.onNegativeButtonClick();
                 dismiss();
 
             }
         });
 
-        mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        mCancelBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mDoneBTN.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
+        mCancelBTN.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
 
         if (isMoveNext) {
             TextView text_move_next = (TextView) findViewById(R.id.text_move_next);
