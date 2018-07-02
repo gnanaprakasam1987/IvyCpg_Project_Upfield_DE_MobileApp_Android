@@ -1,8 +1,9 @@
-package com.ivy.cpg.view.order;
+package com.ivy.cpg.view.order.discount;
 
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -912,7 +913,8 @@ public class DiscountHelper {
 
 
     /**
-     * Calculating scheme discounts for applied(Scheme selected in scheme apply screen) scheme and updating those values in product object.
+     * Calculating scheme discounts for applied(Scheme selected in scheme apply screen) scheme
+     * and updating those values in product object.
      * If Free products available then it will be added in any one of the buy product to show in print.
      */
     public double calculateSchemeDiscounts(LinkedList<ProductMasterBO> mOrderedList, Context mContext) {
@@ -947,7 +949,7 @@ public class DiscountHelper {
                                         + (productBO.getOrderedOuterQty() * productBO.getOsrp());
                             }
                         }
-                        //
+
 
                         ArrayList<String> productIdList = new ArrayList<>();
                         for (SchemeProductBO schemeProductBo : schemeProductList) {
@@ -1179,27 +1181,25 @@ public class DiscountHelper {
     /**
      * clear tax and discount values product wise
      *
-     * @param orderList Ordered product list
+     * @param productMasterBO ordered product object
      */
-    public void clearProductDiscountAndTaxValue(List<ProductMasterBO> orderList) {
-        for (ProductMasterBO productMasterBO : orderList) {
-            if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productMasterBO.getBatchwiseProductCount() > 0) {
-                ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
-                if (batchList != null) {
-                    for (ProductMasterBO batchProduct : batchList) {
-                        batchProduct.setProductDiscAmount(0);
-                        batchProduct.setSchemeDiscAmount(0);
-                        batchProduct.setTaxValue(0);
-                    }
+    public void clearProductDiscountAndTaxValue(ProductMasterBO productMasterBO) {
+        if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && productMasterBO.getBatchwiseProductCount() > 0) {
+            ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
+            if (batchList != null) {
+                for (ProductMasterBO batchProduct : batchList) {
+                    batchProduct.setProductDiscAmount(0);
+                    batchProduct.setSchemeDiscAmount(0);
+                    batchProduct.setTaxValue(0);
                 }
-
-            } else {
-                productMasterBO.setProductDiscAmount(0);
-                productMasterBO.setSchemeDiscAmount(0);
-                productMasterBO.setTaxValue(0);
             }
-        }
 
+        } else {
+            productMasterBO.setProductDiscAmount(0);
+            productMasterBO.setSchemeDiscAmount(0);
+            productMasterBO.setTaxValue(0);
+        }
     }
+
 
 }

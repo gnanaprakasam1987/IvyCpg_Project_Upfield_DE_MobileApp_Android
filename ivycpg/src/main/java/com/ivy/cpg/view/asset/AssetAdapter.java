@@ -618,7 +618,7 @@ public class AssetAdapter extends BaseAdapter {
                 mContext.getResources().getString(R.string.no),
                 false,
                 mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
-                new CommonDialog.positiveOnClickListener() {
+                new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
 
