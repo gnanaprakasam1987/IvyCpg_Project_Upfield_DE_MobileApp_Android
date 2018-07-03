@@ -87,6 +87,7 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         xLabels.setTextColor(Color.WHITE);
         xLabels.setTextSize(10f);
         xLabels.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        xLabels.setGranularity(1f);
 
         YAxis yAxisRight = mbarChart.getAxisRight();
         yAxisRight.setEnabled(false);

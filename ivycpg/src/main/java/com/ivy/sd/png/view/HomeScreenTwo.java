@@ -3472,6 +3472,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         menuCodeList.clear();
                     Intent intent = new Intent(this, CloseCallActivity.class);
                     startActivity(intent);
+                    finish();
 
                 } else {
                     dataNotMapped();
