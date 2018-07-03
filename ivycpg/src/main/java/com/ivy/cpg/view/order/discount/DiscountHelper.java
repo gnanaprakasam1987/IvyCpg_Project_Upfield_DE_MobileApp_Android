@@ -361,7 +361,7 @@ public class DiscountHelper {
 
 
             StringBuffer sb = new StringBuffer();
-            sb.append("select Value,IsPercentage,Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
+            sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
             sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
@@ -661,7 +661,7 @@ public class DiscountHelper {
             Cursor c;
 
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct Value,IsPercentage,Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
+            sb.append("select distinct Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
             sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
@@ -732,7 +732,7 @@ public class DiscountHelper {
 
 
             StringBuffer sb = new StringBuffer();
-            sb.append("select Value,IsPercentage,Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
+            sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
             sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");

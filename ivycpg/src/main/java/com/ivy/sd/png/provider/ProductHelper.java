@@ -5129,7 +5129,7 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
             sb = new StringBuilder();
-            sb.append(" select Value,IsPercentage,Typeid,SM.Listname,ApplyLevelid,Moduleid,dm.DiscountId,PM.PID,dm.isCompanyGiven from DiscountProductMapping dpm ");
+            sb.append(" select Value,IsPercentage,dm.Typeid,SM.Listname,ApplyLevelid,Moduleid,dm.DiscountId,PM.PID,dm.isCompanyGiven from DiscountProductMapping dpm ");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId ");
             sb.append(" Left Join StandardListmaster SM on SM.Listid=dm.Typeid ");
             sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1 ");
