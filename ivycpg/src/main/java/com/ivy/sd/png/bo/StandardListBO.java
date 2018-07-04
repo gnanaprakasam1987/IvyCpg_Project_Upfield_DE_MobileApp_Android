@@ -3,6 +3,8 @@ package com.ivy.sd.png.bo;
 import com.ivy.cpg.view.promotion.PromotionBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 
+import org.jetbrains.annotations.NonNls;
+
 import java.util.ArrayList;
 
 public class StandardListBO {
@@ -83,7 +85,7 @@ public class StandardListBO {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(@NonNls String status) {
         this.status = status;
     }
 

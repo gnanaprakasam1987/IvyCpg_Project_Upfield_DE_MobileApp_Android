@@ -3,8 +3,8 @@ package com.ivy.sd.png.model;
 public interface
 ApplicationConfigs {
 
-   // String DB_NAME = "ivycpg_v19";
-    String DB_NAME = "ivycpg_v19111";
+   String DB_NAME = "ivycpg_v19";
+    //String DB_NAME = "ivycpg_v19111";
 
     boolean withActivation = false;
 

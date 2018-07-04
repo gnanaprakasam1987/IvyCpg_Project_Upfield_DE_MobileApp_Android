@@ -183,6 +183,7 @@ import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 
+import org.jetbrains.annotations.NonNls;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -252,6 +253,7 @@ public class BusinessModel extends Application {
     public BeatMasterHelper beatMasterHealper;
     public ChannelMasterHelper channelMasterHelper;
     public SubChannelMasterHelper subChannelMasterHelper;
+    @NonNls
     public ConfigurationMasterHelper configurationMasterHelper;
     public ProductHelper productHelper;
     public UserMasterHelper userMasterHelper;
@@ -385,6 +387,7 @@ public class BusinessModel extends Application {
     public double mSelectedRetailerLongitude;
     public ProductMasterBO selectedPdt;
     private ArrayList<NewOutletAttributeBO> attributeList;
+    @NonNls
     public String latlongImageFileName;
     ArrayList<String> orderIdList = new ArrayList<>();
 

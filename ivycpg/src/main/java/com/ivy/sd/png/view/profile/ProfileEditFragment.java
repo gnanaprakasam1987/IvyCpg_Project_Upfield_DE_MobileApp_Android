@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Path;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -38,7 +37,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -59,10 +57,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.ivy.lib.Utils;
-import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.location.LocationUtil;
 import com.ivy.maplib.BaiduMapDialogue;
 import com.ivy.sd.camera.CameraActivity;
@@ -73,7 +68,6 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
-import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SpinnerBO;
@@ -92,8 +86,7 @@ import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -102,76 +95,134 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
-import static android.provider.Settings.AUTHORITY;
-import static com.baidu.platform.comapi.map.f.f;
-import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
 
-/**
- * Created by hanifa.m on 3/28/2017.
- */
+public class ProfileEditFragment extends IvyBaseFragment
+        implements RetailerOTPDialog.OTPListener, IProfileEditCallback {
 
-public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPDialog.OTPListener {
+    public static final String TAG = ProfileEditFragment.class.getSimpleName();
+    /*Configuration Profile id's List */
+    @NonNls
+    private static final String PROFILE_02 = "PROFILE02";
+    private static final String PROFILE_03 = "PROFILE03";
+    private static final String PROFILE_04 = "PROFILE04";
+    private static final String PROFILE_05 = "PROFILE05";
+    private static final String PROFILE_06 = "PROFILE06";
+    private static final String PROFILE_07 = "PROFILE07";
+    private static final String PROFILE_08 = "PROFILE08";
+    private static final String PROFILE_09 = "PROFILE09";
+    private static final String PROFILE_10 = "PROFILE10";
+    private static final String PROFILE_11 = "PROFILE11";
+    private static final String PROFILE_12 = "PROFILE12";
+    private static final String PROFILE_13 = "PROFILE13";
+    private static final String PROFILE_14 = "PROFILE14";
+    private static final String PROFILE_15 = "PROFILE15";
+    private static final String PROFILE_20 = "PROFILE20";
+    private static final String PROFILE_25 = "PROFILE25";
+    private static final String PROFILE_26 = "PROFILE26";
+    private static final String PROFILE_27 = "PROFILE22";
+    private static final String PROFILE_28 = "PROFILE28";
+    private static final String PROFILE_30 = "PROFILE30";
+    private static final String PROFILE_36 = "PROFILE31";
+    private static final String PROFILE_31 = "PROFILE36";
+    private static final String PROFILE_38 = "PROFILE38";
+    private static final String PROFILE_39 = "PROFILE39";
+    private static final String PROFILE_40 = "PROFILE40";
+    private static final String PROFILE_41 = "PROFILE41";
+    private static final String PROFILE_42 = "PROFILE42";
+    private static final String PROFILE_43 = "PROFILE43";
+    private static final String PROFILE_47 = "PROFILE47";
+    private static final String PROFILE_48 = "PROFILE48";
+    private static final String PROFILE_49 = "PROFILE49";
+    private static final String PROFILE_50 = "PROFILE50";
+    private static final String PROFILE_51 = "PROFILE51";
+    private static final String PROFILE_53 = "PROFILE53";
+    private static final String PROFILE_54 = "PROFILE54";
+    private static final String PROFILE_55 = "PROFILE55";
+    private static final String PROFILE_57 = "PROFILE57";
+    private static final String PROFILE_58 = "PROFILE58";
+    private static final String PROFILE_60 = "PROFILE60";
+    private static final String PROFILE_61 = "PROFILE61";
+    private static final String PROFILE_62 = "PROFILE62";
+    private static final String PROFILE_63 = "PROFILE63";
+    private static final String PROFILE_78 = "PROFILE78";
+    private static final String PROFILE_79 = "PROFILE79";
+    private static final String PROFILE_81 = "PROFILE81";
+    private static final String PROFILE_82 = "PROFILE82";
+    private static final String PROFILE_83 = "PROFILE83";
+    private static final String PROFILE_84 = "PROFILE84";
+    private static final String PROFILE_85 = "PROFILE85";
+    private static final String PROFILE_86 = "PROFILE86";
+    private static final String PROFILE_87 = "PROFILE87";
+    private static final String PROFILE_88 = "PROFILE88";
 
-    private BusinessModel bmodel=null;
-    private RetailerMasterBO retailerObj =null;
+    /*Configuration RField id's List */
+    private static final String RFIELD_4 = "RFIELD4";
+    private static final String RFIELD_5 = "RFIELD5";
+    private static final String RFIELD_6 = "RFIELD6";
+    private static final String RFIELD_7 = "RFIELD7";
+
+    /*Configuration Static Constant */
+    private static final String D = "D";
+    private static final String LNAME = "LNAME";
+    private static final String LNAME_2 = "LNAME2";
+    private static final String CT_2_TITLE = "CT2TITLE";
+    private static final String CT_1_TITLE = "CT1TITLE";
+
+
+    private BusinessModel bmodel = null;
+    @NonNls
+    private RetailerMasterBO retailerObj = null;
 
     private ScrollView profielEditScrollView;
     private TextView textview[] = new TextView[100];
     private AppCompatEditText editText[] = new AppCompatEditText[100];
     private TextView latlongtextview, priorityproducttextview;
-    private LinearLayout.LayoutParams commonsparams, params, params3, params4, params5, weight0wrap, params8, params6;
-    private LinearLayout.LayoutParams weight1, weight2, weight3, weight0, weight4;
+    private LinearLayout.LayoutParams params3, params4, params5;
+    private LinearLayout.LayoutParams weight1, weight2, weight3;
     private LinearLayout.LayoutParams paramsAttrib, paramsAttribSpinner;
-    private TextInputLayout editTextInputLayout, editTextInputLayout1,
-            editTextInputLayout2, editTextInputLayout3, editTextInputLayout4;
-    private View view;
+    private TextInputLayout editTextInputLayout1;
+    private TextInputLayout editTextInputLayout2;
+    private TextInputLayout editTextInputLayout3;
+    private TextInputLayout editTextInputLayout4;
     private Button saveTxtBtn;
     private TextView nearbyTextView;
     private ImageView imageView;
     private AppCompatCheckBox inSEZcheckBox = null;
     private ImageView latlongCameraBtn;
+    @SuppressLint("StaticFieldLeak")
     static TextView dlExpDateTextView = null;
+    @SuppressLint("StaticFieldLeak")
     static TextView flExpDateTextView = null;
 
-    private ArrayList<LocationBO> mLocationMasterList1=null;
-    private ArrayList<LocationBO> mLocationMasterList2=null;
-    private ArrayList<LocationBO> mLocationMasterList3=null;
+    private ArrayList<LocationBO> mLocationMasterList1 = null;
+    private ArrayList<LocationBO> mLocationMasterList2 = null;
+    private ArrayList<LocationBO> mLocationMasterList3 = null;
+    private Vector<ChannelBO> channelMaster = null;
+
     private Vector<ConfigureBO> profileConfig = null;
-    private ArrayAdapter<LocationBO> locationAdapter1=null;
-    private ArrayAdapter<LocationBO> locationAdapter2=null;
-    private ArrayAdapter<LocationBO> locationAdapter3=null;
-    private ArrayAdapter<ChannelBO> channelAdapter=null;
-    private ArrayAdapter<SpinnerBO> subchannelAdapter=null;
-    private ArrayAdapter<NewOutletBO> contactTitleAdapter=null;
-    private ArrayAdapter<NewOutletBO> contractStatusAdapter=null;
-    private ArrayAdapter<RetailerFlexBO> rField5Adapter=null;
-    private ArrayAdapter<RetailerFlexBO> rField6Adapter=null;
-    private ArrayAdapter<RetailerFlexBO> rField7Adapter=null;
-    private ArrayAdapter<RetailerFlexBO> rField4Adapter=null;
-    private ArrayList<NewOutletBO> mcontactTitleList=null;
-    private ArrayList<NewOutletBO> mcontractStatusList=null;
-    private ArrayList<StandardListBO> mPriorityProductList=null;
-    private ArrayList<StandardListBO> selectedPriorityProductList=null;
-    private Vector<RetailerMasterBO> mNearbyRetIds=null;
+    private ArrayAdapter<LocationBO> locationAdapter1 = null;
+    private ArrayAdapter<LocationBO> locationAdapter2 = null;
+    private ArrayAdapter<NewOutletBO> contactTitleAdapter = null;
+    private ArrayList<NewOutletBO> mcontactTitleList = null;
+    private ArrayList<NewOutletBO> mcontractStatusList = null;
+    private ArrayList<StandardListBO> mPriorityProductList = null;
+    private ArrayList<StandardListBO> selectedPriorityProductList = null;
+    private Vector<RetailerMasterBO> mNearbyRetIds = null;
     private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
-    private Vector<ChannelBO> channelMaster=null;
-    private ArrayList<NewOutletAttributeBO> attributeList=null;
-    private ArrayList<NewOutletAttributeBO> attributeHeaderList=null;
-    private ArrayList<Integer> attributeIndexList=null;
-    private HashMap<String, ArrayList<Integer>> attributeIndexMap=null;
-    private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap=null;
-    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList=null; // Hashmap to retreive selected level of Attribute
+    private ArrayList<NewOutletAttributeBO> attributeList = null;
+    private ArrayList<NewOutletAttributeBO> attributeHeaderList = null;
+    private ArrayList<Integer> attributeIndexList = null;
+    private HashMap<String, ArrayList<Integer>> attributeIndexMap = null;
+    private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap = null;
+    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList = null; // Hashmap to retreive selected level of Attribute
     private HashMap<String, MaterialSpinner> spinnerHashMap = null;
     private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
-    private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap=null;
+    private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap = null;
     private HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelId;
     private ArrayList<InputFilter> inputFilters = new ArrayList<>();
 
@@ -182,22 +233,18 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     private int locid = 0, loc2id = 0;
     private int check = 0;
     private int spinnerCount = 0;
-    double  outStanding = 0.0, invoiceAmount = 0.0;
-    static  String lat = "";
-    static  String longitude = "";
+    double outStanding = 0.0, invoiceAmount = 0.0;
+    static String lat = "";
+    static String longitude = "";
     private String selectedProductID = "";
-    private String retailerCreditLimit = "0.0";
-    private String physicalLocation = "", gstType = "", taxType = "";
     private String mcontact_title1_lovId = "",
             mcontact_title2_lovId = "", mcontact_title1_text = "0", mcontact_title2_text = "0";
     private boolean is_contact_title1 = false, is_contact_title2 = false, isLatLong = false;
-    private boolean isGstType;
-    private String sub_chanel_mname;
-    private String cameraFilePath = "", latlongCameraFilePath = "";
+    private String cameraFilePath = "";
+    @NonNls
     private String imageFileName;
     boolean isLatLongCameravailable = false;
-    private String str_mob_email = "", str_type = "";
-    private boolean otpShown = false, isMobileNoVerfied = false, isEmailVerfied = false;
+    private boolean isMobileNoVerfied = false, isEmailVerfied = false;
     private int subChannelSpinnerCount = 0;
 
     private MaterialSpinner channel, subchannel, location1, location2, location3,
@@ -210,59 +257,18 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        getActivity().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        view = inflater.inflate(R.layout.fragment_profile_edit, container, false);
-        profielEditScrollView = (ScrollView) view.findViewById(R.id.profile_edit_scrollview);
-        saveTxtBtn = (Button) view.findViewById(R.id.profile_edit_save);
+        View view = inflater.inflate(R.layout.fragment_profile_edit, container, false);
+        profielEditScrollView = view.findViewById(R.id.profile_edit_scrollview);
+        saveTxtBtn = view.findViewById(R.id.profile_edit_save);
         saveTxtBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         setHasOptionsMenu(true);
 
+        onDownloadAsyncTask();//AsyncTask To download from local database
+        onButtonClick();  //Save updated  details in DB..
 
-        //  if (bmodel.configurationMasterHelper.IS_NEARBY_RETAILER) {
-        ArrayList<String> ids = bmodel.newOutletHelper.getNearbyRetailerIds(bmodel.getRetailerMasterBO().getRetailerID());
-        if (ids != null) {
-            mNearbyRetIds = new Vector<>();
-            for (int i = 0; i < ids.size(); i++) {
-                for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
-                    if (bo.getRetailerID().equals(ids.get(i))) {
-                        mNearbyRetIds.add(bo);
-                    }
-                }
-
-            }
-        }
-        // }
-
-
-        new DownloadAsync().execute();
-
-        saveTxtBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (validateEditProfile()) {
-
-                        if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                            if ((lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("")
-                                    || SDUtil.convertToDouble(longitude) == 0)
-                                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0
-                                    && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
-                                Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
-                                return;
-                            }
-                        }
-
-                        new SaveEditAsyncTask().execute();
-                    }
-
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-            }
-        });
         return view;
     }
 
@@ -299,12 +305,56 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("Tag", "onDestroyView() has been called.");
+        //Log.d(TAG, "onDestroyView() has been called.");
 
         if (dlExpDateTextView != null)
             dlExpDateTextView = null;
         if (flExpDateTextView != null)
             flExpDateTextView = null;
+    }
+
+
+    private void onButtonClick() {
+        saveTxtBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (validateEditProfile()) {
+
+                        if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
+                            if ((lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("")
+                                    || SDUtil.convertToDouble(longitude) == 0)
+                                    || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0
+                                    && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
+                                Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.location_not_captured), Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                        }
+
+                        new SaveEditAsyncTask().execute();
+                    }
+
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+        });
+    }
+
+    private Vector<RetailerMasterBO> getNearbyRetailerIds() {
+        //  if (bmodel.configurationMasterHelper.IS_NEARBY_RETAILER) {
+        ArrayList<String> ids = bmodel.newOutletHelper.getNearbyRetailerIds(bmodel.getRetailerMasterBO().getRetailerID());
+        if (ids != null) {
+            mNearbyRetIds = new Vector<>();
+            for (int i = 0; i < ids.size(); i++) {
+                for (RetailerMasterBO bo : bmodel.getRetailerMaster()) {
+                    if (bo.getRetailerID().equals(ids.get(i))) {
+                        mNearbyRetIds.add(bo);
+                    }
+                }
+            }
+        }
+        return mNearbyRetIds;
     }
 
     @SuppressLint("RestrictedApi")
@@ -319,35 +369,41 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         retailerObj = bmodel.getRetailerMasterBO();
 
         for (ConfigureBO configureBO : profileConfig) {
-            if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE41") && configureBO.isFlag() == 1 && configureBO.getModule_Order() == 1)
+            if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_41) && configureBO.isFlag() == 1 && configureBO.getModule_Order() == 1)
                 is_contact_title1 = true;
 
-            if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE42") && configureBO.isFlag() == 1 && configureBO.getModule_Order() == 1)
+            if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_42) && configureBO.isFlag() == 1 && configureBO.getModule_Order() == 1)
                 is_contact_title2 = true;
 
-            if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE47") && configureBO.isFlag() == 1)
+            if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_47) && configureBO.isFlag() == 1)
                 outStanding = bmodel.getInvoiceAmount() - bmodel.getOutStandingInvoiceAmount();
 
-            if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE48") && configureBO.isFlag() == 1)
-                retailerCreditLimit = bmodel.getRetailerMasterBO().getProfile_creditLimit();
 
-            if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE49") && configureBO.isFlag() == 1)
-                invoiceAmount = bmodel.getInvoiceAmount();
+            //String retailerCreditLimit = "0.0";
+            if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_48) && configureBO.isFlag() == 1)
+                //retailerCreditLimit = bmodel.getRetailerMasterBO().getProfile_creditLimit();
 
-            if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE50") && configureBO.isFlag() == 1)
-                physicalLocation = bmodel.mRetailerHelper.getPhysicalLcoation(retailerObj.getLocationId());
-            if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE51") && configureBO.isFlag() == 1) {
-                gstType = bmodel.mRetailerHelper.getGSTType(retailerObj.getTaxTypeId());
-                if (gstType.length() > 0) {
-                    isGstType = true;
-                    taxType = "CST";
-                } else {
-                    isGstType = false;
-                    taxType = "VAT";
-                }
-            }
+                if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_49) && configureBO.isFlag() == 1)
+                    invoiceAmount = bmodel.getInvoiceAmount();
 
-            if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE58") && configureBO.isFlag() == 1) {
+            /*// String physicalLocation = "";
+            if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_50) && configureBO.isFlag() == 1)
+                // physicalLocation = bmodel.mRetailerHelper.getPhysicalLcoation(retailerObj.getLocationId());
+
+                if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_51) && configureBO.isFlag() == 1) {
+                    String gstType = bmodel.mRetailerHelper.getGSTType(retailerObj.getTaxTypeId());
+                    @NonNls String taxType = "";
+                    boolean isGstType;
+                    if (gstType.length() > 0) {
+                        isGstType = true;
+                        taxType = "CST";
+                    } else {
+                        isGstType = false;
+                        taxType = "VAT";
+                    }
+                }*/
+
+            if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_58) && configureBO.isFlag() == 1) {
 
 
                 ArrayList<NewOutletAttributeBO> tempList = bmodel.newOutletHelper.updateRetailerMasterAttribute(
@@ -376,12 +432,12 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                                     if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
                                             && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
-                                            && tempList.get(i).getStatus().equalsIgnoreCase("D")) {
+                                            && tempList.get(i).getStatus().equalsIgnoreCase(D)) {
 
                                         for (int k = 0; k < attributeList.size(); k++)
                                             if (attributeList.get(k).getParentId() == tempList.get(i).getParentId()
                                                     && attributeList.get(k).getAttrId() == tempList.get(i).getAttrId()
-                                                    && tempList.get(i).getStatus().equalsIgnoreCase("D"))
+                                                    && tempList.get(i).getStatus().equalsIgnoreCase(D))
                                                 attributeList.remove(j);
 
                                     } else {
@@ -399,12 +455,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-
-
             }
 
-            if ((configureBO.getConfigCode().equalsIgnoreCase("PROFILE08") && configureBO.isFlag() == 1)
-                    || (configureBO.getConfigCode().equalsIgnoreCase("PROFILE31") && configureBO.isFlag() == 1)) {
+            if ((configureBO.getConfigCode().equalsIgnoreCase(PROFILE_08) && configureBO.isFlag() == 1)
+                    || (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_31) && configureBO.isFlag() == 1)) {
                 isLatLong = true;
                 lat = retailerObj.getLatitude() + "";
                 longitude = retailerObj.getLongitude() + "";
@@ -412,26 +466,19 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         }
 
         if (is_contact_title2 || is_contact_title1) {
-
             mcontactTitleList = new ArrayList<>();
             mcontactTitleList.add(0, new NewOutletBO(-1, getResources().getString(R.string.select_str) + " Title Name"));
             mcontactTitleList.addAll(bmodel.newOutletHelper.getContactTitleList());
             mcontactTitleList.add(bmodel.newOutletHelper.getContactTitleList().size() + 1, new NewOutletBO(0, "Others"));
             contactTitleAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontactTitleList);
             contactTitleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         }
 
         if (profielEditScrollView != null) profielEditScrollView.removeAllViews();
 
-        //editText = new AppCompatEditText[100];
-        textview = new TextView[100];
-
-        commonsparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams commonsparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commonsparams.setMargins(10, 15, 10, 0);
 
-        params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER_VERTICAL;
 
         params3 = new LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         params3.weight = 1;
@@ -440,54 +487,44 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         params4 = new LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         params4.weight = 1;
 
-        params5 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        params5 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params5.setMargins(0, 0, 20, 0);
         params5.gravity = Gravity.CENTER;
 
-        weight0 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        weight1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        weight1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         weight1.weight = 1;
         weight1.gravity = Gravity.CENTER;
 
-        weight2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        weight2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         weight2.weight = 2;
         weight2.gravity = Gravity.CENTER;
 
-        weight3 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        weight3 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         weight3.weight = 3;
         weight3.gravity = Gravity.CENTER;
 
-        paramsAttrib = new LinearLayout.LayoutParams(
-                0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        paramsAttrib = new LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         paramsAttrib.weight = .7f;
         paramsAttrib.setMargins(0, 0, 10, 0);
 
-        paramsAttribSpinner = new LinearLayout.LayoutParams(
-                0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        paramsAttribSpinner = new LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
         paramsAttribSpinner.weight = 2.3f;
 
-        weight0wrap = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams weight0wrap = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         weight0wrap.setMargins(10, 0, 0, 5);
 
-        weight4 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        weight4.setMargins(30, 0, 0, 0);
+        LinearLayout.LayoutParams weight4 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         weight4.gravity = Gravity.CENTER;
+        weight4.setMargins(30, 0, 0, 0);
 
-        params8 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        LinearLayout.LayoutParams params8 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params8.gravity = Gravity.CENTER;
         params8.setMargins(0, 0, 0, 0);
 
-        params6 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params6 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params6.setMargins(0, 0, 0, 0);
         params6.gravity = Gravity.CENTER;
 
@@ -495,69 +532,39 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         totalView.setOrientation(LinearLayout.VERTICAL);
         totalView.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.background_noise));
 
-
-        double mnth_acheive = (retailerObj
-                .getMonthly_acheived());
-        double day_acheive = 0;
-
-        if (bmodel.configurationMasterHelper.IS_INVOICE) {
-            day_acheive = bmodel.getInvoiceAmount();
-        } else {
-            day_acheive = bmodel.getOrderValue();
-        }
-
-        double mnth_actual = day_acheive + mnth_acheive;
-
-
-        double Balance = (retailerObj.getMonthly_target())
-                - (mnth_actual);
-
-
         int size = profileConfig.size();
-
         try {
-            //for profile image
-            for (int i = 0; i < size; i++) {
-                String configCode = profileConfig.get(i).getConfigCode();
-                int flag = profileConfig.get(i).isFlag();
-                if (configCode.equals("PROFILE60") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
-                    LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-                    LLParams.setMargins(10, 5, 10, 5);
-                    totalView.addView(getImageView(), LLParams);
-                    break;
+            if(size!=0){  /* Set profile Edit Image start  */
+                if (profileConfig.get(0).getConfigCode().equals(PROFILE_60) &&
+                        (profileConfig.get(0).isFlag() == 1) &&
+                        (profileConfig.get(0).getModule_Order()== 1)) {
+                    totalView.addView(getImageView());
                 }
-            }
-            for (int i = 0; i < size; i++) {
+            } /* Set profile Edit Image End  */
 
+            for (int i = 0; i < size; i++) {
                 int mNumber = i;
                 int flag = profileConfig.get(i).isFlag();
+                int Order = profileConfig.get(i).getModule_Order();
                 String mName = profileConfig.get(i).getMenuName();
                 String configCode = profileConfig.get(i).getConfigCode();
 
-                if (configCode.equals("PROFILE02") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
-
-                    if (retailerObj.getRetailerName() == null || retailerObj.getRetailerName().equals("null")) {
+                if (configCode.equals(PROFILE_02) && flag == 1 && Order == 1) {
+                    if (retailerObj.getRetailerName() == null || retailerObj.getRetailerName().equals("null"))
                         retailerObj.setRetailerName("");
-                    }
-
                     String text = retailerObj.getRetailerName() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
                         totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME), commonsparams);
                     else
                         totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS), commonsparams);
 
+                } else if (configCode.equals(PROFILE_03) && flag == 1 && Order == 1) {
 
-                } else if (configCode.equals("PROFILE03") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
-
-                    if (retailerObj.getAddress1() == null || retailerObj.getAddress1().equals("null")) {
+                    if (retailerObj.getAddress1() == null || retailerObj.getAddress1().equals("null"))
                         retailerObj.setAddress1("");
-                    }
 
                     String text = retailerObj.getAddress1() + "";
 
@@ -572,10 +579,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS), commonsparams);
 
 
-                } else if (configCode.equals("PROFILE04") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_04) && flag == 1 && Order == 1) {
                     if (retailerObj.getAddress2() == null
-                            || retailerObj.getAddress2().equals(
-                            "null")) {
+                            || retailerObj.getAddress2().equals("null")) {
                         retailerObj.setAddress2("");
                     }
 
@@ -590,14 +596,12 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
                                 commonsparams);
                     else
-
-
                         totalView.addView(
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
 
-                } else if (configCode.equals("PROFILE05") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_05) && flag == 1 && Order== 1) {
                     if (retailerObj.getAddress3() == null
                             || retailerObj.getAddress3().equals(
                             "null")) {
@@ -616,16 +620,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
                                 commonsparams);
                     else
-
                         totalView.addView(
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
 
-                } else if (configCode.equals("PROFILE39") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_39) && flag == 1 && Order == 1) {
                     if (retailerObj.getCity() == null
-                            || retailerObj.getCity().equals(
-                            "null")) {
+                            || retailerObj.getCity().equals("null")) {
                         retailerObj.setCity("");
                     }
 
@@ -633,22 +635,20 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-                    Commons.print("PROFILE39," + "" + profileConfig.get(i).getModule_Order());
+                    Commons.print(PROFILE_39 + "" + profileConfig.get(i).getModule_Order());
 
 
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
                         totalView.addView(
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
                                 commonsparams);
                     else
-
                         totalView.addView(
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
 
-                } else if (configCode.equals("PROFILE40") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_40) && flag == 1 && Order == 1) {
                     if (retailerObj.getState() == null
                             || retailerObj.getState().equals(
                             "null")) {
@@ -660,7 +660,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    Commons.print("PROFILE40," + "" + profileConfig.get(i).getModule_Order());
+                    Commons.print(PROFILE_40 + "" + profileConfig.get(i).getModule_Order());
 
 
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
@@ -675,10 +675,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 commonsparams);
 
 
-                } else if (configCode.equals("PROFILE38") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_38) && flag == 1 && Order == 1) {
                     if (retailerObj.getPincode() == null
-                            || retailerObj.getPincode().equals(
-                            "null")) {
+                            || retailerObj.getPincode().equals("null")) {
                         retailerObj.setPincode("");
                     }
 
@@ -687,14 +686,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    Commons.print("PROFILE38," + "" + profileConfig.get(i).getModule_Order());
+                    Commons.print(PROFILE_38 + "," + "" + profileConfig.get(i).getModule_Order());
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_NUMBER),
                             commonsparams);
-                } else if (configCode.equals("PROFILE30") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_30) && flag == 1 && Order == 1) {
                     if (retailerObj.getContactnumber() == null
-                            || retailerObj.getContactnumber().equals(
-                            "null")) {
+                            || retailerObj.getContactnumber().equals("null")) {
                         retailerObj.setContactnumber("");
                     }
 
@@ -706,7 +704,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals("PROFILE06") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_06) && flag == 1 && Order == 1) {
                     int id = retailerObj.getChannelID();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
@@ -715,7 +713,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getSpinnerView(mNumber, mName, configCode, id
                             ), commonsparams);
-                } else if (configCode.equals("PROFILE07") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_07) && flag == 1 && Order == 1) {
                     int id = retailerObj.getSubchannelid();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
@@ -724,7 +722,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getSpinnerView(mNumber, mName, configCode, id
                             ), commonsparams);
-                } else if (configCode.equals("PROFILE43") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_43) && flag == 1 && Order == 1) {
                     int id = retailerObj.getContractLovid();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
@@ -733,15 +731,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getSpinnerView(mNumber, mName, configCode, id
                             ), commonsparams);
-                } else if (configCode.equals("PROFILE08") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_08) && flag == 1 && Order == 1) {
                     String textLat = retailerObj.getLatitude() + "";
-                    String MenuName = "LatLong";
+                    @NonNls String MenuName = "LatLong";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(textLat))
                             textLat = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
                     for (int j = 0; j < size; j++) {
-                        if (profileConfig.get(j).getConfigCode().equals("PROFILE31")
+                        if (profileConfig.get(j).getConfigCode().equals(PROFILE_31)
                                 && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
                             String textLong = retailerObj.getLongitude() + "";
                             if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(profileConfig.get(j).getConfigCode()) != null)
@@ -753,13 +751,12 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                             totalView.addView(
                                     getLatlongTextView(mNumber, MenuName, text),
                                     commonsparams);
-
                         }
 
                     }
-                } else if (configCode.equals("PROFILE63") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_63) && flag == 1 && Order == 1) {
                     isLatLongCameravailable = true;
-                } else if (configCode.equals("PROFILE09") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_09) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getContactname() == null
                             || retailerObj.getContactname().equals(
@@ -788,10 +785,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 commonsparams);
 
 
-                } else if (configCode.equals("PROFILE10") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_10) && flag == 1 && Order == 1) {
                     if (retailerObj.getContactnumber1() == null
-                            || retailerObj.getContactnumber1().equals(
-                            "null")) {
+                            || retailerObj.getContactnumber1().equals("null")) {
                         retailerObj.setContactnumber1("");
                     }
 
@@ -806,10 +802,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals("PROFILE11") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_11) && flag == 1 && Order == 1) {
                     if (retailerObj.getContactname2() == null
-                            || retailerObj.getContactname2().equals(
-                            "null")) {
+                            || retailerObj.getContactname2().equals("null")) {
                         retailerObj.setContactname2("");
                     }
 
@@ -828,17 +823,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 commonsparams);
 
                     else
-
                         totalView.addView(
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
 
-                } else if (configCode.equals("PROFILE12") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_12) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getContactnumber2() == null
-                            || retailerObj.getContactnumber2().equals(
-                            "null")) {
+                            || retailerObj.getContactnumber2().equals("null")) {
                         retailerObj.setContactnumber2("");
                     }
 
@@ -854,7 +847,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals("PROFILE13") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_13) && flag == 1 && Order == 1) {
                     try {
                         String title = "";
 
@@ -876,7 +869,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (configCode.equals("PROFILE14") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_14) && flag == 1 && Order == 1) {
 
                     try {
                         String title = "";
@@ -900,7 +893,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (configCode.equals("PROFILE15") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_15) && flag == 1 && Order == 1) {
                     try {
                         String title = "";
                         String[] loc3 = bmodel.mRetailerHelper
@@ -921,14 +914,14 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (configCode.equals("PROFILE36")) {
+                } else if (configCode.equals(PROFILE_36)) {
                     if (!retailerObj.getIsNew().equals("Y"))
                         totalView.addView(
                                 getNearByRetailerView(mNumber, mName, true
                                 ), commonsparams);
 
 
-                } else if (configCode.equals("PROFILE25") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_25) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getCreditDays() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -938,7 +931,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_NUMBER),
                             commonsparams);
-                } else if (configCode.equals("PROFILE20") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_20) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getRField1() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -958,7 +951,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 commonsparams);
 
 
-                } else if (configCode.equals("PROFILE26") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_26) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getRfield2() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -977,7 +970,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 commonsparams);
 
 
-                } else if (configCode.equals("PROFILE27") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_27) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getCredit_invoice_count() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -997,7 +990,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 commonsparams);
 
 
-                } else if (configCode.equals("PROFILE28") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_28) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getRField4() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -1023,27 +1016,21 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
-                } else if (configCode.equals("PROFILE53") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_53) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getRField5() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-
                     if (profileConfig.get(i).getHasLink() == 0)
-
-
                         if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
                             totalView.addView(
                                     getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
                                     commonsparams);
-
                         else
                             totalView.addView(
                                     getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                     commonsparams);
-
                     else {
                         if (text.equals(""))
                             text = "0";
@@ -1051,7 +1038,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
-                } else if (configCode.equals("PROFILE54") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_54) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getRField6() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -1059,16 +1046,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
                     if (profileConfig.get(i).getHasLink() == 0)
                         if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
                             totalView.addView(
                                     getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
                                     commonsparams);
-
                         else
                             totalView.addView(
                                     getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                     commonsparams);
-
                     else {
                         if (text.equals(""))
                             text = "0";
@@ -1076,7 +1060,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
-                } else if (configCode.equals("PROFILE55") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_55) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getRField7() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -1093,15 +1077,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
-                }
-                /* else if (configCode.equals("PROFILE37")) {
-//                    final String taxName = bmodel.newOutletHelper.getListName(retailerObj.getApplyLevelId(), "TAX_TYPE");
-//
-//                    totalView.addView(
-//                            getTextView(mNumber, mName, taxName),
-//                            commonsparams);
-//                }*/
-                else if (configCode.equals("PROFILE57") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_57) && flag == 1 && Order == 1) {
                     mPriorityProductList = bmodel.newOutletHelper.downloadPriorityProducts();
                     String productID = "";
                     ArrayList<String> products;
@@ -1127,13 +1103,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getPriorityProductView(mNumber, mName, sb.toString(), productID),
                             commonsparams);
-                } else if (configCode.equals("PROFILE58") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_58) && flag == 1 && Order == 1) {
                     LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT);
                     LLParams.setMargins(10, 5, 10, 5);
                     totalView.addView(
                             addAttributeView(0), LLParams);
-                } else if (configCode.equals("PROFILE61") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_61) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getGSTNumber() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -1143,7 +1119,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_TEXT),
                             commonsparams);
-                } else if (configCode.equals("PROFILE62") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_62) && flag == 1 && Order == 1) {
 
                     LinearLayout baselayout = new LinearLayout(getActivity());
                     baselayout.setOrientation(LinearLayout.VERTICAL);
@@ -1169,6 +1145,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     textLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                     if (profileConfig.get(i).getMandatory() == 1) {
+                        LinearLayout.LayoutParams weight0 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
                         TextView mn_textview = new TextView(getActivity());
                         mn_textview.setText("*");
                         mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
@@ -1176,10 +1154,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         textLayout.addView(mn_textview, weight0);
                     }
 
-                    LinearLayout.LayoutParams params8 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params8.gravity = Gravity.CENTER;
-                    params8.setMargins(7, 0, 0, 0);
 
                     TextView days = new TextView(getActivity());
                     days.setText(mName);
@@ -1192,7 +1166,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     baselayout.addView(textLayout);
                     baselayout.addView(linearlayout);
                     totalView.addView(baselayout, commonsparams);
-                } else if (configCode.equals("PROFILE81") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_81) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getPanNumber() == null
                             || retailerObj.getPanNumber().equals(
@@ -1215,7 +1189,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
-                } else if (configCode.equals("PROFILE82") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_82) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getFoodLicenceNo() == null
                             || retailerObj.getFoodLicenceNo().equals(
@@ -1239,7 +1213,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
-                } else if (configCode.equals("PROFILE84") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_84) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getDLNo() == null
                             || retailerObj.getDLNo().equals(
@@ -1263,7 +1237,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
-                } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE85")) {
+                } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase(PROFILE_85)) {
                     LinearLayout secondlayout = new LinearLayout(getActivity());
                     LinearLayout firstlayout = new LinearLayout(getActivity());
                     LinearLayout linearlayout = new LinearLayout(getActivity());
@@ -1302,24 +1276,27 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(linearlayout, commonsparams);
 
                     dlExpDateTextView.setOnClickListener(new View.OnClickListener() {
-
                         @Override
                         public void onClick(View v) {
                             final Calendar c = Calendar.getInstance();
                             int year = c.get(Calendar.YEAR);
                             int month = c.get(Calendar.MONTH);
                             int day = c.get(Calendar.DAY_OF_MONTH);
-                            String date = dlExpDateTextView.getText().toString();
+                            @NonNls String date = dlExpDateTextView.getText().toString();
                             if (!date.equalsIgnoreCase("Select Date") && date.contains("/") && date.split("/").length == 3) {
                                 year = Integer.valueOf(date.split("/")[0]);
                                 month = Integer.valueOf(date.split("/")[1]) - 1;
                                 day = Integer.valueOf(date.split("/")[2]);
                             }
-                            DialogFragment newFragment = new DatePickerFragment("DLEXPDATE", year, month, day);
+                            @NonNls DialogFragment newFragment = new DatePickerFragment("DLEXPDATE", year, month, day);
                             newFragment.show(getActivity().getSupportFragmentManager(), "dlDatePicker");
+
+
                         }
                     });
-                } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PROFILE83")) {
+
+
+                } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase(PROFILE_83)) {
                     LinearLayout secondlayout = new LinearLayout(getActivity());
                     LinearLayout firstlayout = new LinearLayout(getActivity());
                     LinearLayout linearlayout = new LinearLayout(getActivity());
@@ -1365,17 +1342,18 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                             int year = c.get(Calendar.YEAR);
                             int month = c.get(Calendar.MONTH);
                             int day = c.get(Calendar.DAY_OF_MONTH);
-                            String date = flExpDateTextView.getText().toString();
+                            @NonNls String date = flExpDateTextView.getText().toString();
                             if (!date.equalsIgnoreCase("Select Date") && date.contains("/") && date.split("/").length == 3) {
                                 year = Integer.valueOf(date.split("/")[0]);
                                 month = Integer.valueOf(date.split("/")[1]) - 1;
                                 day = Integer.valueOf(date.split("/")[2]);
                             }
-                            DialogFragment newFragment = new DatePickerFragment("FLEXPDATE", year, month, day);
+                            @NonNls DialogFragment newFragment = new DatePickerFragment("FLEXPDATE", year, month, day);
                             newFragment.show(getActivity().getSupportFragmentManager(), "flDatePicker");
+
                         }
                     });
-                } else if (configCode.equals("PROFILE78") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_78) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getEmail() == null
                             || retailerObj.getEmail().equals(
@@ -1391,7 +1369,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS),
                             commonsparams);
-                } else if (configCode.equals("PROFILE79") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals("PROFILE79") && flag == 1 && Order == 1) {
                     if (retailerObj.getMobile() == null
                             || retailerObj.getMobile().equals(
                             "null")) {
@@ -1404,7 +1382,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals("PROFILE86") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_86) && flag == 1 && Order == 1) {
                     if (retailerObj.getFax() == null
                             || retailerObj.getFax().equals(
                             "null")) {
@@ -1417,7 +1395,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals("PROFILE87") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_87) && flag == 1 && Order == 1) {
                     if (retailerObj.getRegion() == null
                             || retailerObj.getRegion().equals(
                             "null")) {
@@ -1438,7 +1416,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
-                } else if (configCode.equals("PROFILE88") && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_88) && flag == 1 && Order == 1) {
                     if (retailerObj.getCountry() == null
                             || retailerObj.getCountry().equals(
                             "null")) {
@@ -1475,12 +1453,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         return null;
     }
 
-    /*comparing two values with equalsIgnoreCase*/
-    private boolean comparConfigerCode(String configCode, String configCodeFromDB) {
-        if (configCode.equalsIgnoreCase(configCodeFromDB)) return true;
-        else return false;
-    }
-
     /*Create EditTextView  Code changed by Murugan S
     * Params
     * Number
@@ -1497,49 +1469,48 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
         String mConfigCode = profileConfig.get(mNumber).getConfigCode();
 
-        if (!comparConfigerCode(mConfigCode, "PROFILE78") ||
-                !comparConfigerCode(mConfigCode, "PROFILE81") ||
-                !comparConfigerCode(mConfigCode, "PROFILE61")) {
+        if (!comparConfigerCode(mConfigCode, PROFILE_78) ||
+                !comparConfigerCode(mConfigCode, PROFILE_81) ||
+                !comparConfigerCode(mConfigCode, PROFILE_61)) {
             //regex
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
         }
-        if (comparConfigerCode(mConfigCode, "PROFILE81")) {
+        if (comparConfigerCode(mConfigCode, PROFILE_81)) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkPANRegex(mNumber);
         }
-        if (comparConfigerCode(mConfigCode, "PROFILE61")) {
+        if (comparConfigerCode(mConfigCode, PROFILE_61)) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkGSTRegex(mNumber);
         }
-        if (comparConfigerCode(mConfigCode, "PROFILE02") ||
-                comparConfigerCode(mConfigCode, "PROFILE03") ||
-                comparConfigerCode(mConfigCode, "PROFILE04") ||
-                comparConfigerCode(mConfigCode, "PROFILE05") ||
-                comparConfigerCode(mConfigCode, "PROFILE39") ||
-                comparConfigerCode(mConfigCode, "PROFILE20") ||
-                comparConfigerCode(mConfigCode, "PROFILE26") ||
-                comparConfigerCode(mConfigCode, "PROFILE27") ||
-                (comparConfigerCode(mConfigCode, "PROFILE28") && profileConfig.get(mNumber).getHasLink() == 0) ||
-                (comparConfigerCode(mConfigCode, "PROFILE53") && profileConfig.get(mNumber).getHasLink() == 0) ||
-                (comparConfigerCode(mConfigCode, "PROFILE54") && profileConfig.get(mNumber).getHasLink() == 0) ||
-                (comparConfigerCode(mConfigCode, "PROFILE55") && profileConfig.get(mNumber).getHasLink() == 0) ||
-                comparConfigerCode(mConfigCode, "PROFILE40") ||
-                comparConfigerCode(mConfigCode, "PROFILE38") ||
-                comparConfigerCode(mConfigCode, "PROFILE61") ||
-                comparConfigerCode(mConfigCode, "PROFILE81") ||
-                comparConfigerCode(mConfigCode, "PROFILE82") ||
-                comparConfigerCode(mConfigCode, "PROFILE84") ||
-                comparConfigerCode(mConfigCode, "PROFILE78") ||
-                comparConfigerCode(mConfigCode, "PROFILE87") ||
-                comparConfigerCode(mConfigCode, "PROFILE88")
+        TextInputLayout editTextInputLayout;
+        if (comparConfigerCode(mConfigCode, PROFILE_02) ||
+                comparConfigerCode(mConfigCode, PROFILE_03) ||
+                comparConfigerCode(mConfigCode, PROFILE_04) ||
+                comparConfigerCode(mConfigCode, PROFILE_05) ||
+                comparConfigerCode(mConfigCode, PROFILE_39) ||
+                comparConfigerCode(mConfigCode, PROFILE_20) ||
+                comparConfigerCode(mConfigCode, PROFILE_26) ||
+                comparConfigerCode(mConfigCode, PROFILE_27) ||
+                (comparConfigerCode(mConfigCode, PROFILE_28) && profileConfig.get(mNumber).getHasLink() == 0) ||
+                (comparConfigerCode(mConfigCode, PROFILE_53) && profileConfig.get(mNumber).getHasLink() == 0) ||
+                (comparConfigerCode(mConfigCode, PROFILE_54) && profileConfig.get(mNumber).getHasLink() == 0) ||
+                (comparConfigerCode(mConfigCode, PROFILE_55) && profileConfig.get(mNumber).getHasLink() == 0) ||
+                comparConfigerCode(mConfigCode, PROFILE_40) ||
+                comparConfigerCode(mConfigCode, PROFILE_38) ||
+                comparConfigerCode(mConfigCode, PROFILE_61) ||
+                comparConfigerCode(mConfigCode, PROFILE_81) ||
+                comparConfigerCode(mConfigCode, PROFILE_82) ||
+                comparConfigerCode(mConfigCode, PROFILE_84) ||
+                comparConfigerCode(mConfigCode, PROFILE_78) ||
+                comparConfigerCode(mConfigCode, PROFILE_87) ||
+                comparConfigerCode(mConfigCode, PROFILE_88)
                 ) {
-
 
             LinearLayout firstlayout = new LinearLayout(getActivity());
             firstlayout.setOrientation(LinearLayout.HORIZONTAL);
             editTextInputLayout = new TextInputLayout(getActivity());
-
 
             editText[mNumber] = new AppCompatEditText(getActivity());
             editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
@@ -1555,7 +1526,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             editText[mNumber].setHint(MName);
             //cmd for not apply inputfilter value for email id
 
-            if (!comparConfigerCode(mConfigCode, "PROFILE78")) {
+            if (!comparConfigerCode(mConfigCode, PROFILE_78)) {
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                     stockArr = inputFilters.toArray(stockArr);
@@ -1590,7 +1561,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             editTextInputLayout.addView(editText[mNumber]);
 
-            if (comparConfigerCode(mConfigCode, "PROFILE78") && profileConfig.get(mNumber).getMandatory() == 1) {
+            if (comparConfigerCode(mConfigCode, PROFILE_78) && profileConfig.get(mNumber).getMandatory() == 1) {
                 LinearLayout emailLayout = new LinearLayout(getActivity());
                 emailLayout.setOrientation(LinearLayout.HORIZONTAL);
                 emailLayout.setWeightSum(10);
@@ -1607,7 +1578,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 Button verifyBtn = new Button(getActivity());
                 verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
                 verifyBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                verifyBtn.setText("Verify");
+                verifyBtn.setText(getResources().getString(R.string.verify));
                 verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
                 verifyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1623,11 +1594,11 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
         }
 
-        if (comparConfigerCode(mConfigCode, "PROFILE30") ||
-                comparConfigerCode(mConfigCode, "PROFILE10") ||
-                comparConfigerCode(mConfigCode, "PROFILE12") ||
-                comparConfigerCode(mConfigCode, "PROFILE79") ||
-                comparConfigerCode(mConfigCode, "PROFILE86")) {
+        if (comparConfigerCode(mConfigCode, PROFILE_30) ||
+                comparConfigerCode(mConfigCode, PROFILE_10) ||
+                comparConfigerCode(mConfigCode, PROFILE_12) ||
+                comparConfigerCode(mConfigCode, PROFILE_79) ||
+                comparConfigerCode(mConfigCode, PROFILE_86)) {
 
             LinearLayout firstlayout = new LinearLayout(getActivity());
             firstlayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -1651,7 +1622,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
             editTextInputLayout.addView(editText[mNumber]);
 
-            if (comparConfigerCode(mConfigCode, "PROFILE79")
+            if (comparConfigerCode(mConfigCode, PROFILE_79)
                     && profileConfig.get(mNumber).getMandatory() == 1) {
 
                 LinearLayout mobileLayout = new LinearLayout(getActivity());
@@ -1671,7 +1642,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 Button verifyBtn = new Button(getActivity());
                 verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
                 verifyBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                verifyBtn.setText("Verify");
+                verifyBtn.setText(getResources().getString(R.string.verify));
                 verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
                 verifyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1688,7 +1659,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         }
 
 
-        if (comparConfigerCode(mConfigCode, "PROFILE25")) {
+        if (comparConfigerCode(mConfigCode, PROFILE_25)) {
 
            /* LinearLayout firstlayout = new LinearLayout(getActivity());
             firstlayout.setOrientation(LinearLayout.HORIZONTAL);*/
@@ -1745,8 +1716,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
         }
 
-        if (comparConfigerCode(mConfigCode, "PROFILE09") ||
-                comparConfigerCode(mConfigCode, "PROFILE11")) {
+        if (comparConfigerCode(mConfigCode, PROFILE_09) ||
+                comparConfigerCode(mConfigCode, PROFILE_11)) {
 
             LinearLayout firstlayout = new LinearLayout(getActivity());
             firstlayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -1808,7 +1779,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             //Contact 1 Last Name
 
-            if (comparConfigerCode(mConfigCode, "PROFILE09")) {
+            if (comparConfigerCode(mConfigCode, PROFILE_09)) {
                 editTextInputLayout1 = new TextInputLayout(getActivity());
                 editText[lName1_editText_index] = new AppCompatEditText(getActivity());
                 editText[lName1_editText_index].setHint(getResources().getString(R.string.contact_person_last_name));
@@ -1861,9 +1832,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 text = retailerObj
                         .getContactLname();
 
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("LNAME") != null)
-                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get("LNAME").equals(text))
-                        text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get("LNAME");
+                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME) != null)
+                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME).equals(text))
+                        text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME);
 
                 editText[lName1_editText_index].setText(text);
 
@@ -1871,7 +1842,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             //Contact2 Last Name
 
-            if (comparConfigerCode(mConfigCode, "PROFILE11")) {
+            if (comparConfigerCode(mConfigCode, PROFILE_11)) {
                 editTextInputLayout2 = new TextInputLayout(getActivity());
                 editText[lName2_editText_index] = new AppCompatEditText(getActivity());
                 editText[lName2_editText_index].setHint(getResources().getString(R.string.contact_person_last_name));
@@ -1924,16 +1895,16 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 String text = "";
                 text = retailerObj.getContactLname2();
 
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("LNAME2") != null)
-                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get("LNAME2").equals(text))
-                        text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get("LNAME2");
+                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2) != null)
+                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2).equals(text))
+                        text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2);
 
                 editText[lName2_editText_index].setText(text);
 
             }
 
 
-            if (comparConfigerCode(mConfigCode, "PROFILE09") && is_contact_title1) {
+            if (comparConfigerCode(mConfigCode, PROFILE_09) && is_contact_title1) {
                 contactTitleSpinner1 = new MaterialSpinner(getActivity());
                 contactTitleSpinner1.setId(mNumber);
                 contactTitleSpinner1.setAdapter(contactTitleAdapter);
@@ -1996,13 +1967,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 }
                 mcontact_title1_text = retailerObj.getContact1_title();
 
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE41") != null)
-                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE41").equals(mcontact_title1_lovId))
-                        mcontact_title1_lovId = bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE41");
+                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_41) != null)
+                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_41).equals(mcontact_title1_lovId))
+                        mcontact_title1_lovId = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_41);
 
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("CT1TITLE") != null)
-                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get("CT1TITLE").equals(mcontact_title1_text))
-                        mcontact_title1_text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get("CT1TITLE");
+                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(CT_1_TITLE) != null)
+                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(CT_1_TITLE).equals(mcontact_title1_text))
+                        mcontact_title1_text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(CT_1_TITLE);
 
                 if (mcontact_title1_lovId != null)
                     if (mcontact_title1_lovId.equals("0") && !mcontact_title1_text.equals("0") && mcontact_title1_text.length() > 0) {
@@ -2025,17 +1996,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                         NewOutletBO tempBo = (NewOutletBO) parent.getSelectedItem();
                         if (tempBo.getListId() == 0) {
-                            //editTextInputLayout.setVisibility(View.VISIBLE);
                             editTextInputLayout3.setVisibility(View.VISIBLE);
                             editText[other1_editText_index].requestFocus();
                             mcontact_title1_lovId = "0";
                         } else if (tempBo.getListId() == -1) {
-                            // editTextInputLayout.setVisibility(View.GONE);
+
                             editTextInputLayout3.setVisibility(View.GONE);
                             mcontact_title1_lovId = "0";
                             mcontact_title1_text = "0";
                         } else {
-                            // editTextInputLayout.setVisibility(View.GONE);
                             editTextInputLayout3.setVisibility(View.GONE);
                             mcontact_title1_lovId = "" + tempBo.getListId();
                             mcontact_title1_text = "0";
@@ -2054,7 +2023,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
 
 
-            if (comparConfigerCode(mConfigCode, "PROFILE11") && is_contact_title2) {
+            if (comparConfigerCode(mConfigCode, PROFILE_11) && is_contact_title2) {
                 contactTitleSpinner2 = new MaterialSpinner(getActivity());
                 contactTitleSpinner2.setId(mNumber);
                 contactTitleSpinner2.setAdapter(contactTitleAdapter);
@@ -2074,7 +2043,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 editText[other2_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
                 editText[other2_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
                 editText[other2_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                editText[other2_editText_index].setHint("Title");
+                editText[other2_editText_index].setHint(getResources().getString(R.string.title));
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                     stockArr = inputFilters.toArray(stockArr);
@@ -2121,18 +2090,17 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 }
                 mcontact_title2_text = retailerObj.getContact2_title();
 
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE42") != null)
-                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE42").equals(mcontact_title2_lovId))
-                        mcontact_title2_lovId = bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE42");
+                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_42) != null)
+                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_42).equals(mcontact_title2_lovId))
+                        mcontact_title2_lovId = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_42);
 
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("CT2TITLE") != null)
-                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get("CT2TITLE").equals(mcontact_title2_text))
-                        mcontact_title2_text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get("CT2TITLE");
+                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(CT_2_TITLE) != null)
+                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(CT_2_TITLE).equals(mcontact_title2_text))
+                        mcontact_title2_text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(CT_2_TITLE);
 
                 if (mcontact_title2_lovId != null)
                     if (mcontact_title2_lovId.equals("0") && !mcontact_title2_text.equals("0") && mcontact_title2_text.length() > 0) {
                         contactTitleSpinner2.setSelection(mcontactTitleList.size() - 1);
-                        //editTextInputLayout.setVisibility(View.VISIBLE);
                         editTextInputLayout4.setVisibility(View.VISIBLE);
                         editText[other2_editText_index].setText(mcontact_title2_text);
                     } else if (mcontact_title2_lovId.equals("0"))
@@ -2150,40 +2118,33 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                         NewOutletBO tempBo = (NewOutletBO) parent.getSelectedItem();
                         if (tempBo.getListId() == 0) {
-                            //editTextInputLayout.setVisibility(View.VISIBLE);
                             editTextInputLayout4.setVisibility(View.VISIBLE);
                             editText[other2_editText_index].requestFocus();
                             mcontact_title2_lovId = "0";
                         } else if (tempBo.getListId() == -1) {
-                            //editTextInputLayout.setVisibility(View.GONE);
                             editTextInputLayout4.setVisibility(View.GONE);
                             mcontact_title2_lovId = "0";
                             mcontact_title2_text = "0";
                         } else {
-                            //editTextInputLayout.setVisibility(View.GONE);
                             editTextInputLayout4.setVisibility(View.GONE);
                             mcontact_title2_lovId = "" + tempBo.getListId();
                             mcontact_title2_text = "0";
                         }
-
                     }
 
                     public void onNothingSelected(AdapterView<?> arg0) {
                     }
 
                 });
-
                 secondlayout.addView(contactTitleSpinner2, params3);
                 //editTextInputLayout2.addView(editText[other2_editText_index]);
                 secondlayout.addView(editTextInputLayout4, params4);
             }
-
-
             secondlayout.addView(editTextInputLayout, params4);
 
-            if (comparConfigerCode(mConfigCode, "PROFILE09"))
+            if (comparConfigerCode(mConfigCode, PROFILE_09))
                 secondlayout.addView(editTextInputLayout1, params4);
-            if (comparConfigerCode(mConfigCode, "PROFILE11"))
+            if (comparConfigerCode(mConfigCode, PROFILE_11))
                 secondlayout.addView(editTextInputLayout2, params4);
             linearlayout.addView(firstlayout, weight2);
             linearlayout.addView(secondlayout, weight2);
@@ -2251,13 +2212,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         }
     }
 
-
-
-
-
-
-    private LinearLayout getSpinnerView(int mNumber, String MName,
-                                        String menuCode, int id) {
+    private LinearLayout getSpinnerView(int mNumber, String MName, @NonNls String menuCode, int id) {
 
         LinearLayout layout = new LinearLayout(getActivity());
         layout.setOrientation(LinearLayout.HORIZONTAL);
@@ -2269,7 +2224,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         spinweight.weight = 1;
         spinweight.gravity = Gravity.CENTER;
 
-        if (menuCode.equals("PROFILE06")) {
+        if (menuCode.equals(PROFILE_06)) {
             channel = new MaterialSpinner(getActivity());
             channel.setId(mNumber);
             channel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2278,7 +2233,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             layout.addView(channel, spinweight);
 
-            channelAdapter = new ArrayAdapter<ChannelBO>(getActivity(), android.R.layout.simple_spinner_item);
+            ArrayAdapter<ChannelBO> channelAdapter = new ArrayAdapter<ChannelBO>(getActivity(), android.R.layout.simple_spinner_item);
             channelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             channelAdapter.add(new ChannelBO(0, getActivity().getResources()
                     .getString(R.string.select_str) + " " + MName));
@@ -2319,7 +2274,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 mcontractStatusList = new ArrayList<>();
                 mcontractStatusList.add(0, new NewOutletBO(0, getResources().getString(R.string.select_str) + " " + MName));
                 mcontractStatusList.addAll(bmodel.newOutletHelper.getContractStatusList());
-                contractStatusAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontractStatusList);
+                ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontractStatusList);
                 contractStatusAdapter
                         .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 contractSpinner.setAdapter(contractStatusAdapter);
@@ -2348,16 +2303,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
         }
 
-        if (menuCode.equals("PROFILE07")) {
+
+        if (menuCode.equals(PROFILE_07)) {
             subchannel = new MaterialSpinner(getActivity());
             subchannel.setId(mNumber);
-            sub_chanel_mname = MName;
             subchannel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             subchannel.setFloatingLabelText(MName);
-            //subchannel.setGravity(Gravity.CENTER);
-
             layout.addView(subchannel, spinweight);
-        } else if (menuCode.equals("PROFILE13")) {
+
+        } else if (menuCode.equals(PROFILE_13)) {
             try {
                 location1 = new MaterialSpinner(getActivity());
                 location1.setId(mNumber);
@@ -2369,11 +2323,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 }
                 mLocationMasterList1.add(0, new LocationBO(0, getActivity()
                         .getResources().getString(R.string.select_str) + " " + MName));
-
-//			if(locationMaster!=null)
-//				for (LocationBO temp : bmodel.getLocationMaster()) {
-//					mLocationMasterList1.add(temp);
-//				}
 
                 locationAdapter1 = new ArrayAdapter<LocationBO>(getActivity(),
                         android.R.layout.simple_spinner_item, mLocationMasterList1);
@@ -2410,7 +2359,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             } catch (Exception e) {
                 Commons.printException(e);
             }
-        } else if (menuCode.equals("PROFILE14")) {
+        } else if (menuCode.equals(PROFILE_14)) {
             try {
                 location2 = new MaterialSpinner(getActivity());
                 location2.setId(mNumber);
@@ -2457,7 +2406,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             } catch (Exception e) {
                 Commons.printException(e);
             }
-        } else if (menuCode.equals("PROFILE15")) {
+        } else if (menuCode.equals(PROFILE_15)) {
             try {
                 location3 = new MaterialSpinner(getActivity());
                 location3.setId(mNumber);
@@ -2470,7 +2419,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 mLocationMasterList3.add(0, new LocationBO(0, getActivity()
                         .getResources().getString(R.string.select_str) + " " + MName));
 
-                locationAdapter3 = new ArrayAdapter<LocationBO>(getActivity(),
+                ArrayAdapter<LocationBO> locationAdapter3 = new ArrayAdapter<LocationBO>(getActivity(),
                         android.R.layout.simple_spinner_item, mLocationMasterList3);
 
 
@@ -2508,13 +2457,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             } catch (Exception e) {
                 Commons.printException(e);
             }
-        } else if (menuCode.equalsIgnoreCase("PROFILE53")) {
+        } else if (menuCode.equalsIgnoreCase(PROFILE_53)) {
             rField5Spinner = new MaterialSpinner(getActivity());
             rField5Spinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             rField5Spinner.setId(mNumber);
             rField5Spinner.setFloatingLabelText(MName);
 
-            rField5Adapter = new ArrayAdapter<>(getActivity(),
+            ArrayAdapter<RetailerFlexBO> rField5Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField5Adapter
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -2522,8 +2471,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     .getString(R.string.select_str) + " " + MName));
 
             int selPos = 0;
-            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD5").size(); i++) {
-                RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD5").get(i);
+            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues(RFIELD_5).size(); i++) {
+                RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues(RFIELD_5).get(i);
                 rField5Adapter.add(retBO);
                 if (id == Integer.valueOf(retBO.getId()))
                     selPos = i + 1;
@@ -2546,13 +2495,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             layout.addView(rField5Spinner, spinweight);
 
-        } else if (menuCode.equalsIgnoreCase("PROFILE54")) {
+        } else if (menuCode.equalsIgnoreCase(PROFILE_54)) {
             rField6Spinner = new MaterialSpinner(getActivity());
             rField6Spinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             rField6Spinner.setId(mNumber);
             rField6Spinner.setFloatingLabelText(MName);
 
-            rField6Adapter = new ArrayAdapter<>(getActivity(),
+            ArrayAdapter<RetailerFlexBO> rField6Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField6Adapter
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -2560,8 +2509,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     .getString(R.string.select_str) + " " + MName));
 
             int selPos = 0;
-            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD6").size(); i++) {
-                RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD6").get(i);
+            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues(RFIELD_6).size(); i++) {
+                RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues(RFIELD_6).get(i);
                 rField6Adapter.add(retBO);
                 if (id == Integer.valueOf(retBO.getId()))
                     selPos = i + 1;
@@ -2584,13 +2533,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             layout.addView(rField6Spinner, spinweight);
 
-        } else if (menuCode.equalsIgnoreCase("PROFILE55")) {
+        } else if (menuCode.equalsIgnoreCase(PROFILE_55)) {
             rField7Spinner = new MaterialSpinner(getActivity());
             rField7Spinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             rField7Spinner.setId(mNumber);
             rField7Spinner.setFloatingLabelText(MName);
 
-            rField7Adapter = new ArrayAdapter<>(getActivity(),
+            ArrayAdapter<RetailerFlexBO> rField7Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField7Adapter
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -2598,8 +2547,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     .getString(R.string.select_str) + " " + MName));
 
             int selPos = 0;
-            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD7").size(); i++) {
-                RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD7").get(i);
+            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues(RFIELD_7).size(); i++) {
+                RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues(RFIELD_7).get(i);
                 rField7Adapter.add(retBO);
                 if (id == Integer.valueOf(retBO.getId()))
                     selPos = i + 1;
@@ -2622,13 +2571,13 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             layout.addView(rField7Spinner, spinweight);
 
-        } else if (menuCode.equalsIgnoreCase("PROFILE28")) {
+        } else if (menuCode.equalsIgnoreCase(PROFILE_28)) {
             rField4Spinner = new MaterialSpinner(getActivity());
             rField4Spinner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             rField4Spinner.setId(mNumber);
             rField4Spinner.setFloatingLabelText(MName);
 
-            rField4Adapter = new ArrayAdapter<>(getActivity(),
+            ArrayAdapter<RetailerFlexBO> rField4Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField4Adapter
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -2636,8 +2585,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     .getString(R.string.select_str) + " " + MName));
 
             int selPos = 0;
-            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD4").size(); i++) {
-                RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues("RFIELD4").get(i);
+            for (int i = 0; i < bmodel.newOutletHelper.downloadRetailerFlexValues(RFIELD_4).size(); i++) {
+                RetailerFlexBO retBO = bmodel.newOutletHelper.downloadRetailerFlexValues(RFIELD_4).get(i);
                 rField4Adapter.add(retBO);
                 if (id == Integer.valueOf(retBO.getId()))
                     selPos = i + 1;
@@ -2675,7 +2624,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             if (siz == 0) {
                 return;
             }
-            subchannelAdapter = new ArrayAdapter<>(getActivity(),
+            ArrayAdapter<SpinnerBO> subchannelAdapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             subchannelAdapter
                     .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -2684,9 +2633,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             int position = 0, setPos = 0;
             int subChannelID = bmodel.getRetailerMasterBO().getSubchannelid();
-            if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null)
-                if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07").equals(subChannelID + ""))
-                    subChannelID = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"));
+            if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_07) != null)
+                if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_07).equals(subChannelID + ""))
+                    subChannelID = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_07));
             for (int i = 0; i < siz; ++i) {
                 SubchannelBO ret = (SubchannelBO) items.elementAt(i);
                 if (channelid != 0) {
@@ -2716,7 +2665,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             });
         }
     }
-
 
     private void updateLocationAdapter1(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<>();
@@ -2757,9 +2705,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     }
 
-
-    private LinearLayout getLatlongTextView(final int mNumber, String MName,
-                                            final String textvalue) {
+    private LinearLayout getLatlongTextView(final int mNumber, String MName, final String textvalue) {
 
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -2823,8 +2769,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     }
 
-    private LinearLayout getPriorityProductView(final int mNumber, final String MName,
-                                                final String textvalue, final String productID) {
+    private LinearLayout getPriorityProductView(final int mNumber, final String MName, final String textvalue, final String productID) {
 
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -2857,35 +2802,26 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
             @Override
             public void onClick(View v) {
-
                 if (mPriorityProductList != null) {
-
                     FragmentManager fm = getActivity().getSupportFragmentManager();
-                    CustomFragment dialogFragment = new CustomFragment();
-                    Bundle bundle = new Bundle();
+                    @NonNls CustomFragment dialogFragment = new CustomFragment();
+                    @NonNls Bundle bundle = new Bundle();
                     bundle.putString("title", MName);
                     bundle.putString("screentitle", MName);
                     bundle.putInt("hasLink", 0);
                     bundle.putString("productID", productID);
                     dialogFragment.setArguments(bundle);
                     dialogFragment.show(fm, "Sample Fragment");
-
                     dialogFragment.setCancelable(false);
-
-
                 } else {
-                    Toast.makeText(getActivity(), "Priority Products Not Available", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.priority_products_not_available), Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
 
         priorityproducttextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
         secondlayout.addView(priorityproducttextview);
-        // if (Code.equals("PROFILE08")) {
-//        secondlayout.addView(latlngButton, weight0);
-        // }
 
         linearlayout.addView(firstlayout, params5);
         linearlayout.addView(secondlayout, weight1);
@@ -2894,7 +2830,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         return linearlayout;
 
     }
-
 
     private LinearLayout getNearByRetailerView(int mNumber, String MName, boolean isEditMode) {
         if (bmodel.getNearByRetailers() != null)
@@ -2954,30 +2889,30 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
         if (!isEditMode) {
             retailerButton.setVisibility(View.GONE);
-            mSelectedIds = mNearbyRetIds;
+            // mSelectedIds = mNearbyRetIds;
+            mSelectedIds = getNearbyRetailerIds();
         } else {
-            bmodel.newOutletHelper.getNearbyRetailersEditRequest(SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID()));
-            if (bmodel.newOutletHelper.getLstEditRequests().size() > 0) {
 
+            bmodel.newOutletHelper.getNearbyRetailersEditRequest(SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID()));
+
+            if (bmodel.newOutletHelper.getLstEditRequests().size() > 0) {
                 ArrayList<String> tempIds = new ArrayList<>();
                 for (String retId : bmodel.newOutletHelper.getLstEditRequests().keySet()) {
                     if (bmodel.newOutletHelper.getLstEditRequests().get(retId).equals("N")) {
                         tempIds.add(retId);
                     }
-
                 }
-
                 mSelectedIds.clear();
                 for (String retId : tempIds) {
                     for (RetailerMasterBO bo : bmodel.newOutletHelper.getLinkRetailerList()) {
                         if (bo.getRetailerID().equals(retId + "")) {
                             mSelectedIds.add(bo);
                         }
-
                     }
                 }
             } else
-                mSelectedIds = mNearbyRetIds;
+                mSelectedIds = getNearbyRetailerIds();
+            //mSelectedIds = mNearbyRetIds;
         }
         // showing nearby retailers
         for (RetailerMasterBO bo : mSelectedIds) {
@@ -2990,7 +2925,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     //To create layout for Retailer Attribute
     private LinearLayout addAttributeView(int flag) {
-        LinearLayout parentLayout = null;
+        @NonNls LinearLayout parentLayout = null;
         try {
             //flag=0 - add common atrributes and attributes for current(from DB) channel
             // flag==1 - add new(if user changing the channel, then corresponding attributes loaded) channel attributes
@@ -3044,8 +2979,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 if (isChannelAvailable()) {
                     mChannelAttributeList = new ArrayList<>();
                     int subChannelID;
-                    if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null)
-                        subChannelID = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07"));
+                    if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_07) != null)
+                        subChannelID = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_07));
                     else subChannelID = bmodel.getRetailerMasterBO().getSubchannelid();
                     mChannelAttributeList.addAll(mAttributeListByChannelId.get(subChannelID));
                 }
@@ -3090,7 +3025,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
                     if (mNewChannelAttributeList.contains(parentBO.getAttrId())) {
 
-                        LinearLayout layout = new LinearLayout(getActivity());
+                        @NonNls LinearLayout layout = new LinearLayout(getActivity());
 
                         // setting tag as channel, used to remove channel views particularly and update new one if channel changed
                         layout.setTag("channel");
@@ -3206,7 +3141,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         // assert mChannelAttributeList != null;
                         if ((isCommon && (mCommonAttributeList.contains(parentBO.getAttrId()) || (mChannelAttributeList != null && mChannelAttributeList.contains(parentBO.getAttrId()))))) {
 
-                            LinearLayout layout = new LinearLayout(getActivity());
+                            @NonNls LinearLayout layout = new LinearLayout(getActivity());
                             // setting tag as channel, used to remove channel views particularly and update new one if channel changed
                             if (mChannelAttributeList != null && mChannelAttributeList.contains(parentBO.getAttrId()))
                                 layout.setTag("channel");
@@ -3407,37 +3342,15 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     }
 
 
-    private RelativeLayout getImageView() {
-
-        int width = (int) getResources().getDimension(R.dimen.user_logo_width);
-        int height = (int) getResources().getDimension(R.dimen.user_logo_height);
-
-        RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(width, height);
-        imageParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        RelativeLayout parentLayout = new RelativeLayout(getActivity());
-
-        imageView = new ImageView(getActivity());
-        imageView.setImageResource(R.drawable.face);
-        parentLayout.addView(imageView, imageParams);
-
+    private View getImageView() {
+        View v; // Creating an instance for View Object
+        LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        assert inflater != null;
+        v = inflater.inflate(R.layout.profile_edit_image_view, null);
+        imageView = (ImageView) v.findViewById(R.id.profile_edit_image);
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
-                /*boolean isLatLongMenuAvail = false;
-
-                for (int conf = 0; conf < profileConfig.size(); conf++) {
-                    if (profileConfig.get(conf).getConfigCode().equalsIgnoreCase("PROFILE08") && profileConfig.get(conf).getModule_Order() == 1) {
-                        for (int conf1 = 0; conf1 < profileConfig.size(); conf1++) {
-                            if (profileConfig.get(conf1).getConfigCode().equalsIgnoreCase("PROFILE31") && profileConfig.get(conf1).getModule_Order() == 1) {
-                                isLatLongMenuAvail = true;
-                                break;
-                            }
-                        }
-                    }
-                }*/
-
                 //Dont allow if Fun57 is enabled and mandatory,
                 //Generally check for location and show toast if no location found.
                 if (!isLatLong && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE
@@ -3455,8 +3368,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 }
             }
         });
-
-
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -3541,7 +3452,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                 imageView.setImageResource(R.drawable.face);
             }
         }
-        return parentLayout;
+        return v;
+      //  return parentLayout;
     }
 
     private int getLevel(int attrId) {
@@ -3581,6 +3493,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         }
     }
 
+    @SuppressLint("UseSparseArrays")
     private void updateRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
         attributeHeaderList = new ArrayList<>();
         ArrayList<ArrayList<NewOutletAttributeBO>> attributeGroupedList;
@@ -3659,7 +3572,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
 
     public void onMapViewClicked() {
-        Intent in;
+        @NonNls Intent in;
         int REQUEST_CODE = 100;
         if (bmodel.configurationMasterHelper.IS_BAIDU_MAP)
             in = new Intent(getActivity(), BaiduMapDialogue.class);
@@ -3677,7 +3590,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @NonNls Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
@@ -3689,8 +3602,8 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     } else {
                         if (!isLatLong) {
-                            profileConfig.add(new ConfigureBO("PROFILE08", "Latitude", lat, 0, 0, 0));
-                            profileConfig.add(new ConfigureBO("PROFILE31", "Latitude", longitude, 0, 0, 0));
+                            profileConfig.add(new ConfigureBO(PROFILE_08, "Latitude", lat, 0, 0, 0));
+                            profileConfig.add(new ConfigureBO(PROFILE_31, "Latitude", longitude, 0, 0, 0));
                         } else {
                             if (latlongtextview != null)
                                 latlongtextview.setText(lat + "," + longitude);
@@ -3710,7 +3623,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         }
         if (requestCode == LATLONG_CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                latlongCameraFilePath = HomeScreenFragment.photoPath + "/" + bmodel.latlongImageFileName;
+                //String latlongCameraFilePath = HomeScreenFragment.photoPath + "/" + bmodel.latlongImageFileName;
                 Toast.makeText(getActivity(), "Photo Captured Successfully", Toast.LENGTH_LONG).show();
             }
         }
@@ -3732,12 +3645,11 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
 
     @Override
     public void generateOTP() {
-        otpShown = true;
-        new VerifyTask(str_mob_email, str_type).execute();
+        verifyOtpAsyncTask("", "");
     }
 
     @Override
-    public void dismissListener(String type, boolean isVerfied) {
+    public void dismissListener(@NonNls String type, boolean isVerfied) {
         if (isVerfied) {
             if (type.equals("MOBILE"))
                 isMobileNoVerfied = true;
@@ -3914,13 +3826,743 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
     }
 
 
+    //handled only for single selection products
+    private ArrayList<StandardListBO> computeSelectedPriorityList() {
+        ArrayList<StandardListBO> tempList = new ArrayList<>();
+        ArrayList<String> products = bmodel.newOutletHelper.downloadPriorityProductsForRetailer(retailerObj.getRetailerID());
+
+        if (products == null)
+            products = new ArrayList<String>();
+
+        if (selectedPriorityProductList != null) {
+            for (@NonNls StandardListBO bo : selectedPriorityProductList) {
+                if (!products.contains(bo.getListID())) {
+                    bo.setStatus("N");
+                    tempList.add(bo);
+                }
+            }
+        }
+
+        if (mPriorityProductList != null) {
+            if (tempList.size() > 0) {
+                for (StandardListBO bo : mPriorityProductList) {
+                    if (products.contains(bo.getListID())) {
+                        bo.setStatus(D);
+                        tempList.add(bo);
+                    }
+                }
+            }
+        }
+
+        return tempList;
+    }
+
+    private void setValues() {
+
+        try {
+            int size = profileConfig.size();
+            for (int i = 0; i < size; i++) {
+                @NonNls String configCode = profileConfig.get(i).getConfigCode();
+                if (configCode.equals(PROFILE_02) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_03) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_04) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_05) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_30) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_06) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    ChannelBO cBo = (ChannelBO) channel.getSelectedItem();
+                    if (channelMaster != null)
+                        profileConfig.get(i).setMenuNumber(cBo.getChannelId() + "");
+                } else if (configCode.equals(PROFILE_07) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (channelMaster != null)
+                        profileConfig.get(i).setMenuNumber(((SpinnerBO) subchannel
+                                .getSelectedItem()).getId() + "");
+                } else if (configCode.equals(PROFILE_43) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (mcontractStatusList != null)
+                        profileConfig.get(i).setMenuNumber(((NewOutletBO) contractSpinner
+                                .getSelectedItem()).getListId() + "");
+                } else if (configCode.equals(PROFILE_08) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(lat)) {
+                        profileConfig.get(i).setMenuNumber("0.0");
+                    } else {
+                        //converting big decimal value while Exponential value occur
+                        String lattiTude = (lat).contains("E")
+                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(lat), -1) + "").substring(0, 20)
+                                : (lat.length() > 20 ? lat.substring(0, 20) : lat);
+
+                        profileConfig.get(i).setMenuNumber(lattiTude);
+                    }
+                } else if (configCode.equals(PROFILE_31) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(longitude)) {
+                        profileConfig.get(i).setMenuNumber("0.0");
+                    } else {
+                        //converting big decimal value while Exponential value occur
+                        String longiTude = (longitude).contains("E")
+                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(longitude), -1) + "").substring(0, 20)
+                                : (longitude.length() > 20 ? longitude.substring(0, 20) : longitude);
+
+                        profileConfig.get(i).setMenuNumber(longiTude);
+                    }
+                } else if (configCode.equals(PROFILE_63) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (bmodel.latlongImageFileName == null || "".equals(bmodel.latlongImageFileName)) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(bmodel.latlongImageFileName);
+                    }
+                } else if (configCode.equals(PROFILE_09) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString())));
+                    }
+                } else if (configCode.equals(PROFILE_41) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (mcontactTitleList != null)
+                        profileConfig.get(i).setMenuNumber(((NewOutletBO) contactTitleSpinner1
+                                .getSelectedItem()).getListId() + "");
+                } else if (configCode.equals(CT_1_TITLE) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (contactTitleSpinner1.getSelectedItem().toString().toLowerCase()
+                            .contains("select"))
+                        profileConfig.get(i).setMenuNumber("0");
+                    else if (contactTitleSpinner1.getSelectedItem().toString().equalsIgnoreCase("Others")) {
+                        if (TextUtils.isEmpty(editText[other1_editText_index].getText().toString()))
+                            profileConfig.get(i).setMenuNumber("0");
+                        else
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[other1_editText_index].getText().toString()));
+                    } else
+                        profileConfig.get(i).setMenuNumber("0");
+
+                } else if (configCode.equals(LNAME) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(editText[lName1_editText_index].getText().toString())) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                editText[lName1_editText_index].getText().toString()));
+                    }
+                } else if (configCode.equals(PROFILE_10) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_11) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_12) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_42) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (mcontactTitleList != null)
+                        profileConfig.get(i).setMenuNumber(((NewOutletBO) contactTitleSpinner2
+                                .getSelectedItem()).getListId() + "");
+                } else if (configCode.equals(CT_2_TITLE) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (contactTitleSpinner2.getSelectedItem().toString().toLowerCase()
+                            .contains("select"))
+                        profileConfig.get(i).setMenuNumber("0");
+                    else if (contactTitleSpinner2.getSelectedItem().toString().equalsIgnoreCase("Others")) {
+                        if (TextUtils.isEmpty(editText[other2_editText_index].getText().toString()))
+                            profileConfig.get(i).setMenuNumber("0");
+                        else
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[other2_editText_index].getText().toString()));
+                    } else
+                        profileConfig.get(i).setMenuNumber("0");
+                } else if (configCode.equals(LNAME_2) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(editText[lName2_editText_index].getText().toString())) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                editText[lName2_editText_index].getText().toString()));
+                    }
+                } else if (configCode.equals(PROFILE_13) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (mLocationMasterList1 != null) {
+                        if (mLocationMasterList1.size() > 0) {
+                            try {
+                                profileConfig.get(i).setMenuNumber(((LocationBO) location1
+                                        .getSelectedItem()).getLocId() + "");
+                            } catch (Exception e) {
+                                profileConfig.get(i).setMenuNumber("0");
+                            }
+                        }
+                    }
+                } else if (configCode.equals(PROFILE_14) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (mLocationMasterList2 != null) {
+                        if (mLocationMasterList2.size() > 0) {
+                            try {
+                                profileConfig.get(i).setMenuNumber(((LocationBO) location2
+                                        .getSelectedItem()).getLocId() + "");
+                            } catch (Exception e) {
+                                profileConfig.get(i).setMenuNumber("0");
+                            }
+                        }
+                    }
+                } else if (configCode.equals(PROFILE_15) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (mLocationMasterList3 != null) {
+                        if (mLocationMasterList3.size() > 0) {
+                            try {
+                                profileConfig.get(i).setMenuNumber(((LocationBO) location3
+                                        .getSelectedItem()).getLocId() + "");
+                            } catch (Exception e) {
+                                profileConfig.get(i).setMenuNumber("0");
+                            }
+                        }
+                    }
+                } else if (configCode.equals(PROFILE_39) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                editText[i].getText().toString()));
+                    }
+                } else if (configCode.equals(PROFILE_40) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                editText[i].getText().toString()));
+                    }
+                } else if (configCode.equals(PROFILE_25) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                        profileConfig.get(i).setMenuNumber("0");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(
+                                editText[i].getText().toString());
+                    }
+                } else if (configCode.equals(PROFILE_20) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                editText[i].getText().toString()));
+                    }
+                } else if (configCode.equals(PROFILE_26) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                editText[i].getText().toString()));
+                    }
+                } else if (configCode.equals(PROFILE_27) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                editText[i].getText().toString()));
+                    }
+                } else if (configCode.equals(PROFILE_28) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[i].getText().toString()));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField4Spinner.getSelectedItem();
+                        if (retailerFlexBO != null)
+                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
+                        else
+                            profileConfig.get(i).setMenuNumber("0");
+                    }
+                } else if (configCode.equals(PROFILE_53) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[i].getText().toString()));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField5Spinner.getSelectedItem();
+                        if (retailerFlexBO != null)
+                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
+                        else
+                            profileConfig.get(i).setMenuNumber("0");
+                    }
+                } else if (configCode.equals(PROFILE_54) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[i].getText().toString()));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField6Spinner.getSelectedItem();
+                        if (retailerFlexBO != null)
+                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
+                        else
+                            profileConfig.get(i).setMenuNumber("0");
+                    }
+                } else if (configCode.equals(PROFILE_55) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                    editText[i].getText().toString()));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField7Spinner.getSelectedItem();
+                        if (retailerFlexBO != null)
+                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
+                        else
+                            profileConfig.get(i).setMenuNumber("0");
+                    }
+                } else if (configCode.equals(PROFILE_60) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (imageFileName == null || "".equals(imageFileName)) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(imageFileName);
+                    }
+                } else if (configCode.equals(PROFILE_61) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                editText[i].getText().toString()));
+                    }
+                } else if (configCode.equals(PROFILE_62) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (!inSEZcheckBox.isChecked()) {
+                        profileConfig.get(i).setMenuNumber("0");
+                    } else {
+                        profileConfig.get(i).setMenuNumber("1");
+                    }
+                } else if (configCode.equals(PROFILE_81) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_82) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_84) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_83) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(flExpDateTextView.getText().toString())) ||
+                            flExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(flExpDateTextView.getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_85) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(dlExpDateTextView.getText().toString())) ||
+                            dlExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(dlExpDateTextView.getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_78) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_79) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_86) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_87) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(PROFILE_88) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                }
+            }
+
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    class SaveEditAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        private ProgressDialog progressDialogue;
+
+        @Override
+        protected Boolean doInBackground(String... arg0) {
+            try {
+                bmodel.setNearByRetailers(mSelectedIds);
+                bmodel.newOutletHelper.setSelectedPrioProducts(computeSelectedPriorityList());
+                setValues();
+                bmodel.newOutletHelper.updateRetailer();
+
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                Commons.printException(e);
+                return Boolean.FALSE;
+            }
+
+        }
+
+        protected void onPreExecute() {
+            progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.saving),
+                    true, false);
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+        }
+
+        protected void onPostExecute(Boolean result) {
+            // result is the value returned from doInBackground
+            progressDialogue.dismiss();
+            bmodel.latlongImageFileName = "";
+            lat = "";
+            longitude = "";
+            showAlert(getActivity().getResources().getString(R.string.profile_updated_scccess), 0);
+        }
+
+    }
+
+    private void showAlert(String msg, int id) {
+        final int idd = id;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(msg);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                if (idd == 0) {
+                    getActivity().finish();
+
+                }
+            }
+        });
+        bmodel.applyAlertDialogTheme(builder);
+    }
+
+
+    @SuppressLint("ValidFragment")
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+        int year;
+        int month;
+        int day;
+        @NonNls
+        String code;
+
+        DatePickerFragment(String code, int year, int month, int day) {
+            this.code = code;
+            this.year = year;
+            this.month = month;
+            this.day = day;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+
+            Calendar selectedDate = new GregorianCalendar(year, month, day);
+            if (selectedDate.after(Calendar.getInstance())) {
+                @NonNls SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+                if (code.equalsIgnoreCase("DLEXPDATE"))
+                    dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+
+                else if (code.equalsIgnoreCase("FLEXPDATE"))
+                    flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                this.year = year;
+                this.day = day;
+                this.month = month;
+            } else {
+                Toast.makeText(getActivity(), "Select future date", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            bmodel.latlongImageFileName = "";
+            getActivity().finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onVerifyOTPCompleted(Integer result, String type) {
+
+        if (alertDialog != null && alertDialog.isShowing()) alertDialog.dismiss();
+        if (result == 1) {
+            if (getActivity() != null) {
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                RetailerOTPDialog dialog1 = new RetailerOTPDialog(ProfileEditFragment.this, type);
+                dialog1.setCancelable(false);
+                dialog1.show(ft, "mobiledialog");
+            }
+        }
+        if (result == -4) {
+            if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getActivity().getResources().
+                            getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void OnDownloadTaskCompleted(Vector<ChannelBO> channelMaster,
+                                        ArrayList<LocationBO> mLocationMasterList1,
+                                        ArrayList<LocationBO> mLocationMasterList2,
+                                        ArrayList<LocationBO> mLocationMasterList3) {
+        this.channelMaster = channelMaster;
+        this.mLocationMasterList1 = mLocationMasterList1;
+        this.mLocationMasterList2 = mLocationMasterList2;
+        this.mLocationMasterList3 = mLocationMasterList3;
+        if (alertDialog != null && alertDialog.isShowing()) alertDialog.dismiss();
+        createTabViewForProfileForEdit();
+
+    }
+
+    private void onDownloadAsyncTask() {
+        setUpDialog();
+        new ProfileEditDownloadTask(bmodel, this).execute();
+    }
+
+    private void verifyOtpAsyncTask(String value, String type) {
+        setUpDialog();
+        new ProfileEditVerifyTask(bmodel, value, type, this).execute();
+    }
+
+    private void setUpDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        customProgressDialog(builder, getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    private void verifyOTP(@NonNls String type, String value) {
+        String otpGenerateUrl = bmodel.synchronizationHelper.generateOtpUrl();
+        if (otpGenerateUrl.length() > 0) {
+            switch (type) {
+                case "MOBILE":
+                    if (value != null && !value.isEmpty() && value.length() == 10)
+                        verifyOtpAsyncTask(value, type);
+                    else
+                        Toast.makeText(getActivity(), getResources().getString(R.string.invalid_mobile_number), Toast.LENGTH_LONG).show();
+                    break;
+                case "EMAIL":
+                    if (isValidEmail(value))
+                        verifyOtpAsyncTask(value, type);
+                    else
+                        Toast.makeText(getActivity(), getResources().getString(R.string.invalid_email_address), Toast.LENGTH_LONG).show();
+                    break;
+            }
+        } else
+            Toast.makeText(getActivity(), getResources().getString(R.string.otp_download_url_empty), Toast.LENGTH_LONG).show();
+    }
+
+    private void takePhoto(RetailerMasterBO retailerMasterBO, boolean isForLatLong) {
+        if (bmodel.isExternalStorageAvailable()) {
+            if (!isForLatLong) {
+                imageFileName = "PRO_" + retailerMasterBO.getRetailerID() + "_"
+                        + Commons.now(Commons.DATE_TIME) + "_img.jpg";
+            } else {
+                bmodel.latlongImageFileName = "LATLONG_" + retailerMasterBO.getRetailerID() + "_"
+                        + Commons.now(Commons.DATE_TIME) + "_img.jpg";
+            }
+            try {
+                Intent intent = new Intent(getActivity(), CameraActivity.class);
+                intent.putExtra(getResources().getString(R.string.quality), 40);
+                intent.putExtra(getResources().getString(R.string.path), HomeScreenFragment.photoPath + "/" + ((!isForLatLong) ? imageFileName : bmodel.latlongImageFileName));
+                startActivityForResult(intent, (!isForLatLong) ? CAMERA_REQUEST_CODE : LATLONG_CAMERA_REQUEST_CODE);
+
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+        } else {
+            Toast.makeText(
+                    getActivity(),
+                    getResources().getString(
+                            R.string.unable_to_access_the_sdcard),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setProfileImage() {
+        String[] imgPaths = retailerObj.getProfileImagePath().split("/");
+        String path = imgPaths[imgPaths.length - 1];
+        File imgFile = new File(getActivity().getExternalFilesDir(
+                Environment.DIRECTORY_DOWNLOADS)
+                + "/"
+                + bmodel.userMasterHelper.getUserMasterBO()
+                .getUserid()
+                + DataMembers.DIGITAL_CONTENT
+                + "/"
+                + DataMembers.PROFILE + "/"
+                + path);
+        Bitmap myBitmap = bmodel.decodeFile(imgFile);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView.setAdjustViewBounds(true);
+        imageView.setImageBitmap(myBitmap);
+    }
+
+    private void setImageFromCamera(RetailerMasterBO retailerObj) {
+        try {
+            String[] imgPaths = retailerObj.getProfileImagePath().split("/");
+            String path = imgPaths[imgPaths.length - 1];
+            Uri uri = bmodel.profilehelper.getUriFromFile(HomeScreenFragment.photoPath + "/" + path);
+            imageView.invalidate();
+            imageView.setImageURI(uri);
+        } catch (Exception e) {
+            imageView.setImageResource(R.drawable.face);
+            Commons.printException("" + e);
+        }
+    }
+
+    private void openImage(File fileName) {
+        if (fileName.getAbsolutePath().trim().length() > 0) {
+            Uri path;
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", fileName);
+                    intent.setDataAndType(path, "image/*");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } else {
+                    path = Uri.fromFile(fileName);
+                    intent.setDataAndType(path, "image/*");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                }
+                startActivity(intent);
+
+            } catch (ActivityNotFoundException e) {
+                Commons.printException("" + e);
+                Toast.makeText(
+                        getActivity(),
+                        getResources()
+                                .getString(
+                                        R.string.no_application_available_to_view_video),
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.unloadimage),
+                    Toast.LENGTH_SHORT).show();
+        }
+    } //Open the Image in Photo Gallery while onClick
+
     private boolean validateEditProfile() {
         boolean validate = true;
         try {
             int size = profileConfig.size();
             for (int i = 0; i < size; i++) {
 
-                String configCode = profileConfig.get(i).getConfigCode();
+                @NonNls String configCode = profileConfig.get(i).getConfigCode();
                 if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("PROFILE06")
                         && profileConfig.get(i).getModule_Order() == 1) {
@@ -4016,7 +4658,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                         Commons.printException(e);
                     }
 
-                } else if (configCode.equals("PROFILE58") && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(PROFILE_58) && profileConfig.get(i).getModule_Order() == 1) {
                     ArrayList<NewOutletAttributeBO> selectedAttributeLevel = new ArrayList<>();
                     boolean isAdded = true;
 
@@ -4223,7 +4865,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         return validate;
     }
 
-
     public boolean isValidRegx(CharSequence target, String regx) {
 
         if (regx.equals("")) {
@@ -4232,7 +4873,6 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         String value = regx.replaceAll("\\<.*?\\>", "");
         return !TextUtils.isEmpty(target) && Pattern.compile(value).matcher(target).matches();
     }
-
 
     public boolean isValidGSTINWithPAN(CharSequence target) {
 
@@ -4254,887 +4894,9 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
         return true;
     }
 
-    //handled only for single selection products
-    private ArrayList<StandardListBO> computeSelectedPriorityList() {
-        ArrayList<StandardListBO> tempList = new ArrayList<>();
-        ArrayList<String> products = bmodel.newOutletHelper.downloadPriorityProductsForRetailer(retailerObj.getRetailerID());
-
-        if (products == null)
-            products = new ArrayList<String>();
-
-        if (selectedPriorityProductList != null) {
-            for (StandardListBO bo : selectedPriorityProductList) {
-                if (!products.contains(bo.getListID())) {
-                    bo.setStatus("N");
-                    tempList.add(bo);
-                }
-            }
-        }
-
-        if (mPriorityProductList != null) {
-            if (tempList.size() > 0) {
-                for (StandardListBO bo : mPriorityProductList) {
-                    if (products.contains(bo.getListID())) {
-                        bo.setStatus("D");
-                        tempList.add(bo);
-                    }
-                }
-            }
-        }
-
-        return tempList;
+    /*comparing two values with equalsIgnoreCase*/
+    private boolean comparConfigerCode(String configCode, @NonNls String configCodeFromDB) {
+        return configCode.equalsIgnoreCase(configCodeFromDB);
     }
-
-    private void setValues() {
-
-        try {
-
-            int size = profileConfig.size();
-
-
-            for (int i = 0; i < size; i++) {
-
-                String configCode = profileConfig.get(i).getConfigCode();
-
-                if (configCode.equals("PROFILE02") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE03") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE04") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE05") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE30") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE06") && profileConfig.get(i).getModule_Order() == 1) {
-                    profileConfig.get(i).setMenuNumber("0");
-                    ChannelBO cBo = (ChannelBO) channel.getSelectedItem();
-                    if (channelMaster != null)
-                        profileConfig.get(i).setMenuNumber(cBo.getChannelId() + "");
-                } else if (configCode.equals("PROFILE07") && profileConfig.get(i).getModule_Order() == 1) {
-                    profileConfig.get(i).setMenuNumber("0");
-                    if (channelMaster != null)
-                        profileConfig.get(i).setMenuNumber(((SpinnerBO) subchannel
-                                .getSelectedItem()).getId() + "");
-                } else if (configCode.equals("PROFILE43") && profileConfig.get(i).getModule_Order() == 1) {
-                    profileConfig.get(i).setMenuNumber("0");
-                    if (mcontractStatusList != null)
-                        profileConfig.get(i).setMenuNumber(((NewOutletBO) contractSpinner
-                                .getSelectedItem()).getListId() + "");
-                } else if (configCode.equals("PROFILE08") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(lat)) {
-                        profileConfig.get(i).setMenuNumber("0.0");
-                    } else {
-                        //converting big decimal value while Exponential value occur
-                        String lattiTude = (lat).contains("E")
-                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(lat), -1) + "").substring(0, 20)
-                                : (lat.length() > 20 ? lat.substring(0, 20) : lat);
-
-                        profileConfig.get(i).setMenuNumber(lattiTude);
-                    }
-                } else if (configCode.equals("PROFILE31") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(longitude)) {
-                        profileConfig.get(i).setMenuNumber("0.0");
-                    } else {
-                        //converting big decimal value while Exponential value occur
-                        String longiTude = (longitude).contains("E")
-                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(longitude), -1) + "").substring(0, 20)
-                                : (longitude.length() > 20 ? longitude.substring(0, 20) : longitude);
-
-                        profileConfig.get(i).setMenuNumber(longiTude);
-                    }
-                } else if (configCode.equals("PROFILE63") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (bmodel.latlongImageFileName == null || "".equals(bmodel.latlongImageFileName)) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(bmodel.latlongImageFileName);
-                    }
-                } else if (configCode.equals("PROFILE09") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString())));
-                    }
-                } else if (configCode.equals("PROFILE41") && profileConfig.get(i).getModule_Order() == 1) {
-                    profileConfig.get(i).setMenuNumber("0");
-                    if (mcontactTitleList != null)
-                        profileConfig.get(i).setMenuNumber(((NewOutletBO) contactTitleSpinner1
-                                .getSelectedItem()).getListId() + "");
-                } else if (configCode.equals("CT1TITLE") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (contactTitleSpinner1.getSelectedItem().toString().toLowerCase()
-                            .contains("select"))
-                        profileConfig.get(i).setMenuNumber("0");
-                    else if (contactTitleSpinner1.getSelectedItem().toString().equalsIgnoreCase("Others")) {
-                        if (TextUtils.isEmpty(editText[other1_editText_index].getText().toString()))
-                            profileConfig.get(i).setMenuNumber("0");
-                        else
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                    editText[other1_editText_index].getText().toString()));
-                    } else
-                        profileConfig.get(i).setMenuNumber("0");
-
-                } else if (configCode.equals("LNAME") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(editText[lName1_editText_index].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[lName1_editText_index].getText().toString()));
-                    }
-                } else if (configCode.equals("PROFILE10") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE11") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE12") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE42") && profileConfig.get(i).getModule_Order() == 1) {
-                    profileConfig.get(i).setMenuNumber("0");
-                    if (mcontactTitleList != null)
-                        profileConfig.get(i).setMenuNumber(((NewOutletBO) contactTitleSpinner2
-                                .getSelectedItem()).getListId() + "");
-                } else if (configCode.equals("CT2TITLE") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (contactTitleSpinner2.getSelectedItem().toString().toLowerCase()
-                            .contains("select"))
-                        profileConfig.get(i).setMenuNumber("0");
-                    else if (contactTitleSpinner2.getSelectedItem().toString().equalsIgnoreCase("Others")) {
-                        if (TextUtils.isEmpty(editText[other2_editText_index].getText().toString()))
-                            profileConfig.get(i).setMenuNumber("0");
-                        else
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                    editText[other2_editText_index].getText().toString()));
-                    } else
-                        profileConfig.get(i).setMenuNumber("0");
-                } else if (configCode.equals("LNAME2") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(editText[lName2_editText_index].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[lName2_editText_index].getText().toString()));
-                    }
-                } else if (configCode.equals("PROFILE13") && profileConfig.get(i).getModule_Order() == 1) {
-                    profileConfig.get(i).setMenuNumber("0");
-                    if (mLocationMasterList1 != null) {
-                        if (mLocationMasterList1.size() > 0) {
-                            try {
-                                profileConfig.get(i).setMenuNumber(((LocationBO) location1
-                                        .getSelectedItem()).getLocId() + "");
-                            } catch (Exception e) {
-                                profileConfig.get(i).setMenuNumber("0");
-                            }
-                        }
-                    }
-                } else if (configCode.equals("PROFILE14") && profileConfig.get(i).getModule_Order() == 1) {
-                    profileConfig.get(i).setMenuNumber("0");
-                    if (mLocationMasterList2 != null) {
-                        if (mLocationMasterList2.size() > 0) {
-                            try {
-                                profileConfig.get(i).setMenuNumber(((LocationBO) location2
-                                        .getSelectedItem()).getLocId() + "");
-                            } catch (Exception e) {
-                                profileConfig.get(i).setMenuNumber("0");
-                            }
-                        }
-                    }
-                } else if (configCode.equals("PROFILE15") && profileConfig.get(i).getModule_Order() == 1) {
-                    profileConfig.get(i).setMenuNumber("0");
-                    if (mLocationMasterList3 != null) {
-                        if (mLocationMasterList3.size() > 0) {
-                            try {
-                                profileConfig.get(i).setMenuNumber(((LocationBO) location3
-                                        .getSelectedItem()).getLocId() + "");
-                            } catch (Exception e) {
-                                profileConfig.get(i).setMenuNumber("0");
-                            }
-                        }
-                    }
-                } else if (configCode.equals("PROFILE39") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
-                    }
-                } else if (configCode.equals("PROFILE40") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
-                    }
-                } else if (configCode.equals("PROFILE25") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("0");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(
-                                editText[i].getText().toString());
-                    }
-                } else if (configCode.equals("PROFILE20") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
-                    }
-                } else if (configCode.equals("PROFILE26") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
-                    }
-                } else if (configCode.equals("PROFILE27") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
-                    }
-                } else if (configCode.equals("PROFILE28") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (profileConfig.get(i).getHasLink() == 0) {
-                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                            profileConfig.get(i).setMenuNumber("");
-                        } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                    editText[i].getText().toString()));
-                        }
-                    } else {
-                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField4Spinner.getSelectedItem();
-                        if (retailerFlexBO != null)
-                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
-                        else
-                            profileConfig.get(i).setMenuNumber("0");
-                    }
-                } else if (configCode.equals("PROFILE53") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (profileConfig.get(i).getHasLink() == 0) {
-                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                            profileConfig.get(i).setMenuNumber("");
-                        } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                    editText[i].getText().toString()));
-                        }
-                    } else {
-                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField5Spinner.getSelectedItem();
-                        if (retailerFlexBO != null)
-                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
-                        else
-                            profileConfig.get(i).setMenuNumber("0");
-                    }
-                } else if (configCode.equals("PROFILE54") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (profileConfig.get(i).getHasLink() == 0) {
-                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                            profileConfig.get(i).setMenuNumber("");
-                        } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                    editText[i].getText().toString()));
-                        }
-                    } else {
-                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField6Spinner.getSelectedItem();
-                        if (retailerFlexBO != null)
-                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
-                        else
-                            profileConfig.get(i).setMenuNumber("0");
-                    }
-                } else if (configCode.equals("PROFILE55") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (profileConfig.get(i).getHasLink() == 0) {
-                        if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                            profileConfig.get(i).setMenuNumber("");
-                        } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                    editText[i].getText().toString()));
-                        }
-                    } else {
-                        RetailerFlexBO retailerFlexBO = (RetailerFlexBO) rField7Spinner.getSelectedItem();
-                        if (retailerFlexBO != null)
-                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
-                        else
-                            profileConfig.get(i).setMenuNumber("0");
-                    }
-                } else if (configCode.equals("PROFILE60") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (imageFileName == null || "".equals(imageFileName)) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(imageFileName);
-                    }
-                } else if (configCode.equals("PROFILE61") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(editText[i].getText().toString())) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                editText[i].getText().toString()));
-                    }
-                } else if (configCode.equals("PROFILE62") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (!inSEZcheckBox.isChecked()) {
-                        profileConfig.get(i).setMenuNumber("0");
-                    } else {
-                        profileConfig.get(i).setMenuNumber("1");
-                    }
-                } else if (configCode.equals("PROFILE81") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE82") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE84") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE83") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(flExpDateTextView.getText().toString())) ||
-                            flExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(flExpDateTextView.getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE85") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(dlExpDateTextView.getText().toString())) ||
-                            dlExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(dlExpDateTextView.getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE78") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE79") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE86") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE87") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                } else if (configCode.equals("PROFILE88") && profileConfig.get(i).getModule_Order() == 1) {
-                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
-                        profileConfig.get(i).setMenuNumber("");
-                    } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
-                    }
-                }
-            }
-
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-
-    class SaveEditAsyncTask extends AsyncTask<String, Integer, Boolean> {
-        private ProgressDialog progressDialogue;
-
-        @Override
-        protected Boolean doInBackground(String... arg0) {
-            try {
-                bmodel.setNearByRetailers(mSelectedIds);
-                bmodel.newOutletHelper.setSelectedPrioProducts(computeSelectedPriorityList());
-                setValues();
-                bmodel.newOutletHelper.updateRetailer();
-
-                return Boolean.TRUE;
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-
-        }
-
-        protected void onPreExecute() {
-            progressDialogue = ProgressDialog.show(getActivity(),
-                    DataMembers.SD, getResources().getString(R.string.saving),
-                    true, false);
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-
-            progressDialogue.dismiss();
-            bmodel.latlongImageFileName = "";
-            lat = "";
-            longitude = "";
-            showAlert(
-                    getActivity().getResources().getString(
-                            R.string.profile_updated_scccess), 0);
-
-
-        }
-
-    }
-
-    private void showAlert(String msg, int id) {
-        final int idd = id;
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(msg);
-
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                if (idd == 0) {
-                    getActivity().finish();
-
-                }
-            }
-        });
-        bmodel.applyAlertDialogTheme(builder);
-    }
-
-
-    private void updateLocationMasterList() {
-        bmodel.newOutletHelper.downloadLocationMaster();
-
-        LinkedHashMap<Integer, ArrayList<LocationBO>> locationListByLevId = bmodel.newOutletHelper.getLocationListByLevId();
-        if (locationListByLevId != null) {
-            int count = 0;
-            for (Map.Entry<Integer, ArrayList<LocationBO>> entry : locationListByLevId.entrySet()) {
-                count++;
-                Commons.print("level id," + entry.getKey() + "");
-                if (entry.getValue() != null) {
-                    if (count == 1) {
-                        mLocationMasterList1 = entry.getValue();
-                    } else if (count == 2) {
-                        mLocationMasterList2 = entry.getValue();
-                    } else if (count == 3) {
-                        mLocationMasterList3 = entry.getValue();
-                    }
-                }
-            }
-        }
-    }
-
-
-    private class DownloadAsync extends AsyncTask<Integer, Integer, Boolean> {
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            bmodel.newOutletHelper.loadContactTitle();
-            bmodel.newOutletHelper.loadContactStatus();
-            bmodel.newOutletHelper.downloadLinkRetailer();
-            updateLocationMasterList();
-            bmodel.mRetailerHelper.loadContractData();
-            channelMaster = bmodel.channelMasterHelper.getChannelMaster();
-            bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
-
-            return true;
-        }
-
-        protected void onPostExecute(Boolean result) {
-            alertDialog.dismiss();
-            createTabViewForProfileForEdit();
-        }
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            bmodel.latlongImageFileName = "";
-            getActivity().finish();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void takePhoto(RetailerMasterBO retailerMasterBO, boolean isForLatLong) {
-        if (bmodel.isExternalStorageAvailable()) {
-            if (!isForLatLong) {
-                imageFileName = "PRO_" + retailerMasterBO.getRetailerID() + "_"
-                        + Commons.now(Commons.DATE_TIME) + "_img.jpg";
-            } else {
-                bmodel.latlongImageFileName = "LATLONG_" + retailerMasterBO.getRetailerID() + "_"
-                        + Commons.now(Commons.DATE_TIME) + "_img.jpg";
-            }
-            try {
-                Intent intent = new Intent(getActivity(), CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), HomeScreenFragment.photoPath + "/" + ((!isForLatLong) ? imageFileName : bmodel.latlongImageFileName));
-                startActivityForResult(intent, (!isForLatLong) ? CAMERA_REQUEST_CODE : LATLONG_CAMERA_REQUEST_CODE);
-
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-        } else {
-            Toast.makeText(
-                    getActivity(),
-                    getResources().getString(
-                            R.string.unable_to_access_the_sdcard),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void setProfileImage() {
-        String[] imgPaths = retailerObj.getProfileImagePath().split("/");
-        String path = imgPaths[imgPaths.length - 1];
-        File imgFile = new File(getActivity().getExternalFilesDir(
-                Environment.DIRECTORY_DOWNLOADS)
-                + "/"
-                + bmodel.userMasterHelper.getUserMasterBO()
-                .getUserid()
-                + DataMembers.DIGITAL_CONTENT
-                + "/"
-                + DataMembers.PROFILE + "/"
-                + path);
-        Bitmap myBitmap = bmodel.decodeFile(imgFile);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageView.setAdjustViewBounds(true);
-        imageView.setImageBitmap(myBitmap);
-    }
-
-    private void setImageFromCamera(RetailerMasterBO retailerObj) {
-        try {
-            String[] imgPaths = retailerObj.getProfileImagePath().split("/");
-            String path = imgPaths[imgPaths.length - 1];
-            Uri uri = bmodel.profilehelper.getUriFromFile(HomeScreenFragment.photoPath + "/" + path);
-            imageView.invalidate();
-            imageView.setImageURI(uri);
-        } catch (Exception e) {
-            imageView.setImageResource(R.drawable.face);
-            Commons.printException("" + e);
-        }
-    }
-
-    /*
-     * Open the Image in Photo Gallery while onClick
-     */
-    private void openImage(File fileName) {
-        if (fileName.getAbsolutePath().trim().length() > 0) {
-            Uri path;
-            try {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                if (Build.VERSION.SDK_INT >= 24) {
-                    path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", fileName);
-                    intent.setDataAndType(path, "image/*");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                } else {
-                    path = Uri.fromFile(fileName);
-                    intent.setDataAndType(path, "image/*");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                }
-                startActivity(intent);
-
-
-               /* Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse("file://" + fileName), "image*//*");
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(intent);*/
-
-            } catch (ActivityNotFoundException e) {
-                Commons.printException("" + e);
-                Toast.makeText(
-                        getActivity(),
-                        getResources()
-                                .getString(
-                                        R.string.no_application_available_to_view_video),
-                        Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.unloadimage),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @SuppressLint("ValidFragment")
-    public static class DatePickerFragment extends DialogFragment implements
-            DatePickerDialog.OnDateSetListener {
-        int year;
-        int month;
-        int day;
-        String code;
-
-        DatePickerFragment(String code, int year, int month, int day) {
-            this.code = code;
-            this.year = year;
-            this.month = month;
-            this.day = day;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
-        }
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-
-            Calendar selectedDate = new GregorianCalendar(year, month, day);
-            if (selectedDate.after(Calendar.getInstance())) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-                if (code.equalsIgnoreCase("DLEXPDATE"))
-                    dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-
-                else if (code.equalsIgnoreCase("FLEXPDATE"))
-                    flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                this.year = year;
-                this.day = day;
-                this.month = month;
-            } else {
-                Toast.makeText(getActivity(), "Select future date", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-
-    public boolean isValidEmail(CharSequence target) {
-        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-    }
-
-    private void verifyOTP(String type, String value) {
-        otpShown = false;
-        String otpGenerateUrl = bmodel.synchronizationHelper.generateOtpUrl();
-        if (otpGenerateUrl.length() > 0) {
-            switch (type) {
-                case "MOBILE":
-                    if (value != null && !value.isEmpty() && value.length() == 10)
-                        new VerifyTask(value, type).execute();
-                    else
-                        Toast.makeText(getActivity(), "Invalid Mobile Number", Toast.LENGTH_LONG).show();
-                    break;
-                case "EMAIL":
-                    if (isValidEmail(value))
-                        new VerifyTask(value, type).execute();
-                    else
-                        Toast.makeText(getActivity(), getResources().
-                                getString(R.string.invalid_email_address), Toast.LENGTH_LONG).show();
-                    break;
-            }
-        } else
-            Toast.makeText(getActivity(), getResources().
-                    getString(R.string.otp_download_url_empty), Toast.LENGTH_LONG).show();
-    }
-
-    class VerifyTask extends AsyncTask<Integer, Integer, Integer> {
-
-        private AlertDialog.Builder builder;
-        private String value;
-        private String type;
-        private int downloadStatus = 0;
-
-        VerifyTask(String value, String type) {
-            this.value = value;
-            this.type = type;
-        }
-
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            try {
-
-                int listid = bmodel.configurationMasterHelper.getActivtyType("RE");
-
-                JSONObject jsonData = new JSONObject();
-                jsonData.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid());
-                jsonData.put("RetailerId", bmodel.getRetailerMasterBO().getRetailerID());
-                jsonData.put("ActivityType", listid);
-                JSONObject notObj = new JSONObject();
-                notObj.put("Type", type);
-                notObj.put("Receiver", value);
-                JSONArray notificationArray = new JSONArray();
-                notificationArray.put(notObj);
-                jsonData.put("Notification", notificationArray);
-
-
-                JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
-
-                jsonFormatter.addParameter("UserId", bmodel.userMasterHelper
-                        .getUserMasterBO().getUserid());
-                jsonFormatter.addParameter("VersionCode",
-                        bmodel.getApplicationVersionNumber());
-                jsonFormatter.addParameter("LoginId", bmodel.userNameTemp.trim());
-                jsonFormatter.addParameter("MobileDateTime",
-                        Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-                jsonFormatter.addParameter("MobileUTCDateTime",
-                        Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-                jsonFormatter.addParameter("DeviceId",
-                        bmodel.activationHelper.getIMEINumber());
-                jsonFormatter.addParameter("VersionCode",
-                        bmodel.getApplicationVersionNumber());
-                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
-                jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
-                        .getUserMasterBO().getOrganizationId());
-
-                String appendUrl = bmodel.synchronizationHelper.generateOtpUrl();
-
-                Vector<String> responseVector = bmodel.synchronizationHelper.getOtpGenerateResponse(jsonFormatter.getDataInJson(),
-                        jsonData.toString(), appendUrl);
-
-                if (responseVector.size() > 0) {
-                    for (String s : responseVector) {
-                        JSONObject jsonObjectResponse = new JSONObject(s);
-
-                        Iterator itr = jsonObjectResponse.keys();
-                        while (itr.hasNext()) {
-                            String key = (String) itr.next();
-                            if (key.equals("Response")) {
-                                downloadStatus = jsonObjectResponse.getInt("Response");
-                            } else if (key.equals("ErrorCode")) {
-                                String tokenResponse = jsonObjectResponse.getString("ErrorCode");
-                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
-                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
-                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
-
-                                    return -4;
-
-                                }
-                            }
-                        }
-                    }
-                }
-
-            } catch (Exception e) {
-                Commons.printException(e);
-                return downloadStatus;
-            }
-            return downloadStatus;
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            super.onPostExecute(result);
-
-            alertDialog.dismiss();
-
-            if (result == 1) {
-                alertDialog.dismiss();
-                if (getActivity() != null) {
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    RetailerOTPDialog dialog1 = new RetailerOTPDialog(ProfileEditFragment.this, type);
-                    dialog1.setCancelable(false);
-                    dialog1.show(ft, "mobiledialog");
-                }
-
-            }
-            if (result == -4) {
-                if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
-                    if (errorMsg != null) {
-                        Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getActivity(), getActivity().getResources().
-                                getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        }
-    }
-
 
 }

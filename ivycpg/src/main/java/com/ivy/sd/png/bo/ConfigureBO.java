@@ -1,5 +1,7 @@
 package com.ivy.sd.png.bo;
 
+import org.jetbrains.annotations.NonNls;
+
 import java.io.Serializable;
 
 public class ConfigureBO implements Serializable {
@@ -27,7 +29,7 @@ public class ConfigureBO implements Serializable {
 
     }
 
-    public ConfigureBO(String configcode, String menuName, String menuNum,
+    public ConfigureBO(@NonNls String configcode, @NonNls String menuName, String menuNum,
                        int mOrder, int flag, int haslink) {
         this.configCode = configcode;
         this.menuName = menuName;

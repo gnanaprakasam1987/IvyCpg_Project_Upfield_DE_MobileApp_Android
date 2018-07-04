@@ -639,7 +639,7 @@
     <string name="trade_offer_code_received">Trade offer code received</string>
     <string name="timespent">Time spent - </string>
     <string name="typeOfVisit">Type of visit :  </string>
-    <string name="verify">Verify </string>
+    <string name="verify">Verify</string>
     <string name="do_u_want_delete_and_redownload_or_cancel">Do you want to delete and redownload data or cancel?</string>
     <string name="delete_and_redownload">Delete&amp;Redownload</string>
     <string name="do_u_want_directly_go_or_redownload">Do you want to directly go or redownlod?</string>
@@ -1275,5 +1275,7 @@
 
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
     <string name="total_collected">Total Collected</string>
+
+
 
 </resources>

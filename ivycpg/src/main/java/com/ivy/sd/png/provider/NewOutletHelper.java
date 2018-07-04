@@ -25,6 +25,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import org.jetbrains.annotations.NonNls;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -2496,7 +2498,7 @@ public class NewOutletHelper {
         return lst;
     }
 
-    public ArrayList<RetailerFlexBO> downloadRetailerFlexValues(String type) {
+    public ArrayList<RetailerFlexBO> downloadRetailerFlexValues(@NonNls String type) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         ArrayList<RetailerFlexBO> flexValues = new ArrayList<>();

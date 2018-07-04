@@ -160,4 +160,10 @@
     <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
 
 
+    <string name="title">Title</string>
+    <string name="priority_products_not_available">Priority Products Not Available</string>
+    <string name="invalid_mobile_number">Invalid Mobile Number</string>
+
+
+
 </resources>

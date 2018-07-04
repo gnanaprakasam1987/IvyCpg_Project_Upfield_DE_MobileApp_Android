@@ -20,6 +20,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CatalogOrder;
 
+import org.jetbrains.annotations.NonNls;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1515,7 +1517,13 @@ public class ConfigurationMasterHelper {
                     }
                     con.setRegex(c.getString(7));
                     con.setMandatory(c.getInt(8));
-                    profileConfig.add(con);
+
+                     String configCode = con.getConfigCode();
+                     int flag = con.isFlag();
+                     int Order=con.getModule_Order();
+                    if (configCode.equals("PROFILE60") && (flag == 1) && (Order == 1))
+                        profileConfig.add(0,con);
+                    else profileConfig.add(con);
 
                 }
                 c.close();
