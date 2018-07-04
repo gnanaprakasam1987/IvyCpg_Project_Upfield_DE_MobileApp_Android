@@ -106,59 +106,58 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     public static final String TAG = ProfileEditFragment.class.getSimpleName();
     /*Configuration Profile id's List */
-    @NonNls
-    private static final String PROFILE_02 = "PROFILE02";
-    private static final String PROFILE_03 = "PROFILE03";
-    private static final String PROFILE_04 = "PROFILE04";
-    private static final String PROFILE_05 = "PROFILE05";
-    private static final String PROFILE_06 = "PROFILE06";
-    private static final String PROFILE_07 = "PROFILE07";
-    private static final String PROFILE_08 = "PROFILE08";
-    private static final String PROFILE_09 = "PROFILE09";
-    private static final String PROFILE_10 = "PROFILE10";
-    private static final String PROFILE_11 = "PROFILE11";
-    private static final String PROFILE_12 = "PROFILE12";
-    private static final String PROFILE_13 = "PROFILE13";
-    private static final String PROFILE_14 = "PROFILE14";
-    private static final String PROFILE_15 = "PROFILE15";
-    private static final String PROFILE_20 = "PROFILE20";
-    private static final String PROFILE_25 = "PROFILE25";
-    private static final String PROFILE_26 = "PROFILE26";
-    private static final String PROFILE_27 = "PROFILE22";
-    private static final String PROFILE_28 = "PROFILE28";
-    private static final String PROFILE_30 = "PROFILE30";
-    private static final String PROFILE_36 = "PROFILE31";
-    private static final String PROFILE_31 = "PROFILE36";
-    private static final String PROFILE_38 = "PROFILE38";
-    private static final String PROFILE_39 = "PROFILE39";
-    private static final String PROFILE_40 = "PROFILE40";
-    private static final String PROFILE_41 = "PROFILE41";
-    private static final String PROFILE_42 = "PROFILE42";
-    private static final String PROFILE_43 = "PROFILE43";
-    private static final String PROFILE_47 = "PROFILE47";
-    private static final String PROFILE_48 = "PROFILE48";
-    private static final String PROFILE_49 = "PROFILE49";
-    private static final String PROFILE_50 = "PROFILE50";
-    private static final String PROFILE_51 = "PROFILE51";
-    private static final String PROFILE_53 = "PROFILE53";
-    private static final String PROFILE_54 = "PROFILE54";
-    private static final String PROFILE_55 = "PROFILE55";
-    private static final String PROFILE_57 = "PROFILE57";
-    private static final String PROFILE_58 = "PROFILE58";
-    private static final String PROFILE_60 = "PROFILE60";
-    private static final String PROFILE_61 = "PROFILE61";
-    private static final String PROFILE_62 = "PROFILE62";
-    private static final String PROFILE_63 = "PROFILE63";
-    private static final String PROFILE_78 = "PROFILE78";
-    private static final String PROFILE_79 = "PROFILE79";
-    private static final String PROFILE_81 = "PROFILE81";
-    private static final String PROFILE_82 = "PROFILE82";
-    private static final String PROFILE_83 = "PROFILE83";
-    private static final String PROFILE_84 = "PROFILE84";
-    private static final String PROFILE_85 = "PROFILE85";
-    private static final String PROFILE_86 = "PROFILE86";
-    private static final String PROFILE_87 = "PROFILE87";
-    private static final String PROFILE_88 = "PROFILE88";
+    private static final String PROFILE_02 = "PROFILE02";//STORENAME,length validation=Y,Has Edit=0,RetailerMaster
+    private static final String PROFILE_03 = "PROFILE03";//ADDRESS1,length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_04 = "PROFILE04";//ADDRESS2,length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_05 = "PROFILE05";//ADDRESS3,length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_06 = "PROFILE06";//CHANNEL,length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_07 = "PROFILE07";//SUBCHANNEL,length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_08 = "PROFILE08";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerAddress
+    private static final String PROFILE_09 = "PROFILE09";//CONTACTPERSON1,length validation=Y,Has Edit=0,RetailerContact
+    private static final String PROFILE_10 = "PROFILE10";//PHNO1,length validation=Y,input validation=NUMBER,Has Edit=0,RetailerContact
+    private static final String PROFILE_11 = "PROFILE11";//CONTACTPERSON2,length validation=Y,Has Edit=0,RetailerContact
+    private static final String PROFILE_12 = "PROFILE12";//PHNO2,length validation=Y,input validation=NUMBER,Has Edit=0,RetailerContact
+    private static final String PROFILE_13 = "PROFILE13";//LOCATION01 One level up,length validation=Y,Has Edit=0,RetailerMaster
+    private static final String PROFILE_14 = "PROFILE14";//LOCATION02 two level up,length validation=Y,Has Edit=0,RetailerMaster
+    private static final String PROFILE_15 = "PROFILE15";//LOCATION Least level,length validation=Y,Has Edit=0,RetailerMaster
+    private static final String PROFILE_20 = "PROFILE20";//RFiled1, IF (FUN42) -> CreditLimit - Outstanding,Has Edit=0
+    private static final String PROFILE_27 = "PROFILE22";//Contract Type,Has Edit=0 Note:-Only Profile Config
+    private static final String PROFILE_25 = "PROFILE25";//CREDITPERIOD,level,length validation=Y,Has Edit=0,RetailerMaster
+    private static final String PROFILE_26 = "PROFILE26";//RField2,Has Edit=1 Note:-Only Profile Config
+    private static final String PROFILE_28 = "PROFILE28";//RField4,length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_30 = "PROFILE30";//ContactNumber Note:-Only Profile Config
+    private static final String PROFILE_36 = "PROFILE31";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_31 = "PROFILE36";//NEARBYRET(retailers)length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_38 = "PROFILE38";//PINCODE,length validation=Y,Has Edit=0, RetailerAddress
+    private static final String PROFILE_39 = "PROFILE39";//RetailerAddressCity :Note:-Only Profile Config,Has Edit=1
+    private static final String PROFILE_40 = "PROFILE40";//STATE ,length validation=Y,Has Edit=0, RetailerAddress
+    private static final String PROFILE_41 = "PROFILE41";//CONTACTTITLE 1 ,length validation=Y,Has Edit=1,,RetailerContact
+    private static final String PROFILE_42 = "PROFILE42";//CONTACTTITLE 2,length validation=Y,Has Edit=1,RetailerContact
+    private static final String PROFILE_43 = "PROFILE43";//CONTRACT->contract status id,length validation=Y,Has Edit=0, ,RetailerMaster
+    private static final String PROFILE_47 = "PROFILE47";//outstanding :Note:-Only Profile Config,Has Edit=0
+    private static final String PROFILE_48 = "PROFILE48";//Return Credit Limit :Note:-Only Profile Config,Has Edit=0
+    private static final String PROFILE_49 = "PROFILE49";//Invoice Amount Calculation :Note:-Only Profile Config,Has Edit=0
+    private static final String PROFILE_50 = "PROFILE50";//location Name.Retailer Master : locationid :Note:-Only Profile Config,Has Edit=0
+    private static final String PROFILE_51 = "PROFILE51";//TAXTYPE,length validation=Y,Has Edit=0, ,RetailerMaster
+    private static final String PROFILE_53 = "PROFILE53";//RFIELD5-->RetailerMaster
+    private static final String PROFILE_54 = "PROFILE54";//RFIELD6-->RetailerMaster
+    private static final String PROFILE_55 = "PROFILE55";//RFIELD7-->RetailerMaster
+    private static final String PROFILE_57 = "PROFILE57";//PRIORITYPRODUCT -->From  PriorityProducts Table
+    private static final String PROFILE_58 = "PROFILE58";//ATTRIBUTE -->From RetailerAttribute Table
+    private static final String PROFILE_60 = "PROFILE60";//Retailer Image :Note:-Only Profile Config,Has Edit=0
+    private static final String PROFILE_61 = "PROFILE61";//GSTN Number,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_62 = "PROFILE62";//INSEZ,length validation=Y,Has Edit=0, ,RetailerMaster
+    private static final String PROFILE_63 = "PROFILE63";//Photo Capture , lat and Long, Note:-Only Profile Config,Has Edit=0
+    private static final String PROFILE_78 = "PROFILE78";//Email,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_79 = "PROFILE79";//MOBILE ,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_81 = "PROFILE81";//pan_number,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_82 = "PROFILE82";//FOOD_LICENCE_NUM,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_83 = "PROFILE83";//FOOD_LICENCE_EXP_DATE,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_84 = "PROFILE84";//DRUG_LICENSE_NUM,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_85 = "PROFILE85";//DRUG_LICENSE_EXP_DATE,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_86 = "PROFILE86";//FAX,length validation=Y,Has Edit=1,RetailerAddress;
+    private static final String PROFILE_87 = "PROFILE87";//REGION,length validation=Y,Has Edit=1,RetailerAddress;
+    private static final String PROFILE_88 = "PROFILE88";//COUNTRY,length validation=Y,Has Edit=1,RetailerAddress;
 
     /*Configuration RField id's List */
     private static final String RFIELD_4 = "RFIELD4";
@@ -224,7 +223,7 @@ public class ProfileEditFragment extends IvyBaseFragment
     private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
     private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap = null;
     private HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelId;
-    private ArrayList<InputFilter> inputFilters = new ArrayList<>();
+    private ArrayList<InputFilter> inputFilters =null;
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int LATLONG_CAMERA_REQUEST_CODE = 2;
@@ -1469,6 +1468,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         String mConfigCode = profileConfig.get(mNumber).getConfigCode();
 
+        /*Email, PenNumber,GST*/
         if (!comparConfigerCode(mConfigCode, PROFILE_78) ||
                 !comparConfigerCode(mConfigCode, PROFILE_81) ||
                 !comparConfigerCode(mConfigCode, PROFILE_61)) {
@@ -1476,14 +1476,21 @@ public class ProfileEditFragment extends IvyBaseFragment
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
         }
+
+        /*PanNumber*/
         if (comparConfigerCode(mConfigCode, PROFILE_81)) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkPANRegex(mNumber);
         }
+        /*GST*/
         if (comparConfigerCode(mConfigCode, PROFILE_61)) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkGSTRegex(mNumber);
         }
+
+        /*STORENAME,ADDRESS1,ADDRESS2,ADDRESS3,RetailerAddressCity,RFiled1,RField2
+        * Contract Type,RField4,RFIELD5,RFIELD6,RFIELD7,STATE,PINCODE,GSTN Number
+        * pan_number,FOOD_LICENCE_NUM,DRUG_LICENSE_NUM,Email,REGION,COUNTRY*/
         TextInputLayout editTextInputLayout;
         if (comparConfigerCode(mConfigCode, PROFILE_02) ||
                 comparConfigerCode(mConfigCode, PROFILE_03) ||
@@ -1507,7 +1514,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                 comparConfigerCode(mConfigCode, PROFILE_87) ||
                 comparConfigerCode(mConfigCode, PROFILE_88)
                 ) {
-
             LinearLayout firstlayout = new LinearLayout(getActivity());
             firstlayout.setOrientation(LinearLayout.HORIZONTAL);
             editTextInputLayout = new TextInputLayout(getActivity());
@@ -1526,6 +1532,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             editText[mNumber].setHint(MName);
             //cmd for not apply inputfilter value for email id
 
+            //if not Email
             if (!comparConfigerCode(mConfigCode, PROFILE_78)) {
                 if (inputFilters != null && inputFilters.size() > 0) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
@@ -1535,22 +1542,14 @@ public class ProfileEditFragment extends IvyBaseFragment
                         editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
             }
-
-
             editText[mNumber].addTextChangedListener(new TextWatcher() {
-
                 @Override
-                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                }
-
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
                 @Override
-                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                }
-
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
                 @Override
                 public void afterTextChanged(Editable et) {
                     String s = et.toString();
-
                     if (bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                         s = s.toUpperCase();
                         editText[mNumber].setText(s);
@@ -1558,18 +1557,16 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 }
             });
-
             editTextInputLayout.addView(editText[mNumber]);
 
+            //if  Email
             if (comparConfigerCode(mConfigCode, PROFILE_78) && profileConfig.get(mNumber).getMandatory() == 1) {
                 LinearLayout emailLayout = new LinearLayout(getActivity());
                 emailLayout.setOrientation(LinearLayout.HORIZONTAL);
                 emailLayout.setWeightSum(10);
-                LinearLayout.LayoutParams emailParam = new LinearLayout.LayoutParams(0,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams emailParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
                 emailParam.weight = 7;
-                LinearLayout.LayoutParams emailParam1 = new LinearLayout.LayoutParams(0,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams emailParam1 = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
                 emailParam1.setMargins(0, 0, 0, 2);
                 emailParam1.weight = 3;
                 emailParam1.gravity = Gravity.BOTTOM;
@@ -1594,6 +1591,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         }
 
+        /*ContactNumber,PHNO1,PHNO2,MOBILE,FAX*/
         if (comparConfigerCode(mConfigCode, PROFILE_30) ||
                 comparConfigerCode(mConfigCode, PROFILE_10) ||
                 comparConfigerCode(mConfigCode, PROFILE_12) ||
@@ -1602,10 +1600,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
             LinearLayout firstlayout = new LinearLayout(getActivity());
             firstlayout.setOrientation(LinearLayout.HORIZONTAL);
-            //    firstlayout.setPadding(0, 0, 0, 0);
             editTextInputLayout = new TextInputLayout(getActivity());
-
-
             editText[mNumber] = new AppCompatEditText(getActivity());
             editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
             editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1623,7 +1618,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             editTextInputLayout.addView(editText[mNumber]);
 
             if (comparConfigerCode(mConfigCode, PROFILE_79)
-                    && profileConfig.get(mNumber).getMandatory() == 1) {
+                    && profileConfig.get(mNumber).getMandatory() == 1)  /*MOBILE*/ {
 
                 LinearLayout mobileLayout = new LinearLayout(getActivity());
                 mobileLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -2157,12 +2152,11 @@ public class ProfileEditFragment extends IvyBaseFragment
     private void addLengthFilter(String regex) {
         inputFilters = new ArrayList<>();
         InputFilter fil = new InputFilter.LengthFilter(25);
-        String str = regex;
-        if (str != null && !str.isEmpty()) {
-            if (str.contains("<") && str.contains(">")) {
+        if (regex != null && !regex.isEmpty()) {
+            if (regex.contains("<") && regex.contains(">")) {
 
-                String len = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
-                if (len != null && !len.isEmpty()) {
+                String len = regex.substring(regex.indexOf("<") + 1, regex.indexOf(">"));
+                if (!len.isEmpty()) {
                     if (len.contains(",")) {
                         try {
                             fil = new InputFilter.LengthFilter(SDUtil.convertToInt(len.split(",")[1]));
@@ -2181,7 +2175,6 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     private void checkRegex(String regex) {
         final String reg;
-
         try {
             if (regex != null && !regex.isEmpty()) {
                 if (regex.contains("<") && regex.contains(">")) {
@@ -2195,7 +2188,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                         for (int i = start; i < end; i++) {
                             String checkMe = String.valueOf(source.charAt(i));
-
                             if (!Pattern.compile(reg).matcher(checkMe).matches()) {
                                 Log.d("", "invalid");
                                 return "";
