@@ -677,8 +677,7 @@
                 android:layout_toLeftOf="@+id/lltotwight"
                 android:layout_toStartOf="@+id/lltotwight"
                 android:background="@color/white"
-                android:orientation="horizontal"
-                android:weightSum="8">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/llAvail"
@@ -780,6 +779,29 @@
                 </LinearLayout>
 
 
+                <LinearLayout
+                    android:id="@+id/llUom_dropdwon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dimens_4dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/tv_uo_name"
+                        style="?attr/boxCustomButtonSmallGrey"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:text="@string/item_piece"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black_bg1" />
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llUom_Qty"
@@ -793,37 +815,16 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:tag="item_piece"
+                        android:tag="uom_qty"
                         android:text="@string/qty" />
 
-                    <LinearLayout
-                        android:id="@+id/UomSpinner"
-                        android:layout_width="wrap_content"
+                    <EditText
+                        android:id="@+id/stock_and_order_listview_uom_qty"
+                        style="@style/EditText_ListItem"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
-                        <Spinner
-                            android:id="@+id/sp_uom_names"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:gravity="start|center"
-                            android:overlapAnchor="false" />
-
-                        <EditText
-                            android:id="@+id/stock_and_order_listview_uom_qty"
-                            style="@style/EditText_ListItem"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="start"
-                            android:maxLength="5"
-                            android:text="@string/zero" />
-                    </LinearLayout>
-
+                        android:gravity="start"
+                        android:text="@string/zero" />
 
                 </LinearLayout>
 
@@ -903,7 +904,6 @@
                         android:text="@string/zero" />
 
                 </LinearLayout>
-
 
 
                 <LinearLayout
@@ -998,12 +998,14 @@
                 android:layout_alignTop="@+id/lleditLaouyt"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:gravity="top">
+                android:gravity="top"
+                android:minWidth="@dimen/dimens_80dp">
 
                 <LinearLayout
                     android:id="@+id/llTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="end|top"
                     android:orientation="vertical">
 
@@ -1031,6 +1033,7 @@
                     android:id="@+id/llWeight"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="end"
                     android:orientation="vertical">
 

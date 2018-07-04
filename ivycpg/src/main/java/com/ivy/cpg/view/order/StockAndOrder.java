@@ -63,7 +63,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -270,8 +269,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
 
-    private ArrayAdapter<StandardListBO> uomListAdapter;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -465,15 +462,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
         }
 
-
-        //load Uom list name
-        ArrayList<StandardListBO> uomList = bmodel.productHelper.getUomListName();
-        if (uomList != null) {
-            uomListAdapter = new ArrayAdapter<>(this,
-                    R.layout.spinner_bluetext_layout, uomList);
-            uomListAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        }
 
         totalValueText = (TextView) findViewById(R.id.totalValue);
         lpcText = (TextView) findViewById(R.id.lcp);
@@ -1137,7 +1125,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         public View getView(final int position, View convertView,
                             ViewGroup parent) {
             final ViewHolder holder;
-            ProductMasterBO product = items.get(position);
+            final ProductMasterBO product = items.get(position);
 
             View row = convertView;
             if (row == null) {
@@ -1209,8 +1197,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.outerQty = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_outer_case_qty);
 
-                holder.sp_uom_names = (Spinner) row
-                        .findViewById(R.id.sp_uom_names);
+                holder.tv_uo_names = (Button) row
+                        .findViewById(R.id.tv_uo_name);
                 holder.uom_qty = (EditText) row
                         .findViewById(R.id.stock_and_order_listview_uom_qty);
 
@@ -1280,6 +1268,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.text_stock.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.text_allocation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.uom_qty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_uo_names.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
                     holder.layout_allocation.setVisibility(View.VISIBLE);
@@ -1680,7 +1669,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS)
                     ((LinearLayout) row.findViewById(R.id.llRepCase)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_caseTitle).getTag()) != null)
@@ -1696,7 +1685,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU)
                     ((LinearLayout) row.findViewById(R.id.llRepOu)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_outerTitle).getTag()) != null)
@@ -1713,7 +1702,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
                     ((LinearLayout) row.findViewById(R.id.llRepPc)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_pcsTitle).getTag()) != null)
@@ -1730,7 +1719,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER)
                     (row.findViewById(R.id.layout_stock)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.text_stock_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.text_stock_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.text_stock_title).getTag()) != null)
@@ -1743,49 +1732,46 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e);
                     }
                 }
-                ((TextView) row.findViewById(R.id.uomTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                if (uomListAdapter != null)
-                    holder.sp_uom_names.setAdapter(uomListAdapter);
-
-
-                holder.sp_uom_names.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        StandardListBO bo = (StandardListBO)
-                                holder.sp_uom_names.getSelectedItem();
-                        int uomid = SDUtil.convertToInt(bo.getListID());
-                        int psQty = holder.productObj.getOrderedPcsQty();
-                        int csQty = holder.productObj.getOrderedCaseQty();
-                        int ouQty = holder.productObj.getOrderedOuterQty();
-                        if (uomid != 0)
-                            holder.productObj.setDefaultUomId(uomid);
-
-                        if (holder.productObj.getPcUomid() != 0 &&
-                                holder.productObj.getPcUomid() == uomid) {
-                            if (psQty > 0)
-                                holder.uom_qty.setText(psQty);
-                            else
-                                holder.uom_qty.setText("0");
-                        } else if (holder.productObj.getCaseUomId() != 0 &&
-                                holder.productObj.getCaseUomId() == uomid) {
-                            if (csQty > 0)
-                                holder.uom_qty.setText(csQty);
-                            else
-                                holder.uom_qty.setText("0");
-
-                        } else if (holder.productObj.getOuUomid() != 0 &&
-                                holder.productObj.getOuUomid() == uomid) {
-                            if (ouQty > 0)
-                                holder.uom_qty.setText(ouQty);
-                            else
-                                holder.uom_qty.setText("0");
-                        }
-
+                if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
+                    ((LinearLayout) row.findViewById(R.id.llUom_Qty)).setVisibility(View.GONE);
+                    ((LinearLayout) row.findViewById(R.id.llUom_dropdwon)).setVisibility(View.GONE);
+                } else {
+                    ((LinearLayout) row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
+                    ((LinearLayout) row.findViewById(R.id.llCase)).setVisibility(View.GONE);
+                    ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    ((TextView) row.findViewById(R.id.uomTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    try {
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.uomTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.uomTitle))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.uomTitle)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e);
                     }
+                }
 
+                holder.tv_uo_names.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
+                    public void onClick(View v) {
+                        if (holder.productObj.getProductWiseUomList().size() > 1) {
+                            int qty = SDUtil.convertToInt(holder.uom_qty.getText().toString());
+                            String uomName = updateUOM(holder.productObj, true);
+                            holder.tv_uo_names.setText(uomName);
+
+                            if (qty > 0)
+                                holder.uom_qty.setText(qty + "");
+                            else
+                                holder.uom_qty.setText("0");
+                        } else
+                            Toast.makeText(
+                                    StockAndOrder.this,
+                                    getResources().getString(
+                                            R.string.uom_not_available),
+                                    Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -2341,7 +2327,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     qty = qty.length() > 1 ? qty.substring(0,
                                             qty.length() - 1) : "0";
 
-                                    holder.caseQty.setText(qty);
+                                    if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM)
+                                        holder.caseQty.setText(qty);
+                                    else
+                                        holder.uom_qty.setText(qty);
 
                                     holder.productObj.setOrderedCaseQty(SDUtil
                                             .convertToInt(qty));
@@ -2377,7 +2366,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     qty = qty.length() > 1 ? qty.substring(0,
                                             qty.length() - 1) : "0";
 
-                                    holder.caseQty.setText(qty);
+                                    if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM)
+                                        holder.caseQty.setText(qty);
+                                    else
+                                        holder.uom_qty.setText(qty);
 
                                     holder.productObj.setOrderedCaseQty(SDUtil
                                             .convertToInt(qty));
@@ -2568,26 +2560,24 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     @Override
                     public void afterTextChanged(Editable s) {
 
-                        StandardListBO uomBo = (StandardListBO) holder.sp_uom_names.getSelectedItem();
-                        int uomid = SDUtil.convertToInt(uomBo.getListID());
                         int qty = SDUtil.convertToInt(s.toString());
 
-                        if (holder.productObj.getPcUomid() != 0 &&
-                                holder.productObj.getPcUomid() == uomid) {
+                        if ((holder.productObj.getPcUomid() != 0 && holder.productObj.getSelectedUomId() != 0) &&
+                                holder.productObj.getPcUomid() == holder.productObj.getSelectedUomId()) {
+                            holder.productObj.setOrderedCaseQty(0);
+                            holder.productObj.setOrderedOuterQty(0);
                             holder.pcsQty.setText(qty + "");
-                            holder.productObj.setOrderedCaseQty(0);
+                        } else if ((holder.productObj.getCaseUomId() != 0 && holder.productObj.getSelectedUomId() != 0) &&
+                                holder.productObj.getCaseUomId() == holder.productObj.getSelectedUomId()) {
+                            holder.productObj.setOrderedPcsQty(0);
                             holder.productObj.setOrderedOuterQty(0);
-
-                        } else if (holder.productObj.getCaseUomId() != 0 &&
-                                holder.productObj.getCaseUomId() == uomid) {
                             holder.caseQty.setText(qty + "");
-                            holder.productObj.setOrderedPcsQty(0);
-                            holder.productObj.setOrderedOuterQty(0);
-                        } else if (holder.productObj.getOuUomid() != 0 &&
-                                holder.productObj.getOuUomid() == uomid) {
-                            holder.outerQty.setText(qty + "");
+                        } else if ((holder.productObj.getOuUomid() != 0 && holder.productObj.getSelectedUomId() != 0) &&
+                                holder.productObj.getOuUomid() == holder.productObj.getSelectedUomId()) {
                             holder.productObj.setOrderedPcsQty(0);
                             holder.productObj.setOrderedCaseQty(0);
+                            holder.outerQty.setText(qty + "");
+
                         }
 
 
@@ -2670,7 +2660,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                             qty.length() - 1) : "0";
                                     holder.productObj.setOrderedPcsQty(SDUtil
                                             .convertToInt(qty));
-                                    holder.pcsQty.setText(qty);
+                                    if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM)
+                                        holder.pcsQty.setText(qty);
+                                    else
+                                        holder.uom_qty.setText(qty);
                                 }
                             }
                         } else if (holder.productObj.isCbsihAvailable()) {
@@ -2703,7 +2696,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     qty = qty.length() > 1 ? qty.substring(0,
                                             qty.length() - 1) : "0";
 
-                                    holder.pcsQty.setText(qty);
+                                    if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM)
+                                        holder.pcsQty.setText(qty);
+                                    else
+                                        holder.uom_qty.setText(qty);
 
                                     holder.productObj.setOrderedPcsQty(SDUtil
                                             .convertToInt(qty));
@@ -2849,8 +2845,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                                     holder.productObj.setOrderedOuterQty(SDUtil
                                             .convertToInt(qty));
+                                    if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM)
+                                        holder.outerQty.setText(qty);
+                                    else
+                                        holder.uom_qty.setText(qty);
 
-                                    holder.outerQty.setText(qty);
                                 }
                             }
                         } else if (holder.productObj.isCbsihAvailable()) {
@@ -2883,7 +2882,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     qty = qty.length() > 1 ? qty.substring(0,
                                             qty.length() - 1) : "0";
 
-                                    holder.outerQty.setText(qty);
+                                    if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM)
+                                        holder.outerQty.setText(qty);
+                                    else
+                                        holder.uom_qty.setText(qty);
 
                                     holder.productObj.setOrderedOuterQty(SDUtil
                                             .convertToInt(qty));
@@ -3525,21 +3527,24 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
             // Set order qty
-            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                String strCaseQty = holder.productObj.getOrderedCaseQty() + "";
-                holder.caseQty.setText(strCaseQty);
+            if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                    String strCaseQty = holder.productObj.getOrderedCaseQty() + "";
+                    holder.caseQty.setText(strCaseQty);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                    String strPcsQty = holder.productObj.getOrderedPcsQty() + "";
+                    holder.pcsQty.setText(strPcsQty);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                    String strOuterQty = holder.productObj.getOrderedOuterQty() + "";
+                    holder.outerQty.setText(strOuterQty);
+                }
             }
-            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                String strPcsQty = holder.productObj.getOrderedPcsQty() + "";
-                holder.pcsQty.setText(strPcsQty);
-            }
+
             if (bmodel.configurationMasterHelper.SHOW_FOC) {
                 String strFoc = holder.productObj.getFoc() + "";
                 holder.foc.setText(strFoc);
-            }
-            if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                String strOuterQty = holder.productObj.getOrderedOuterQty() + "";
-                holder.outerQty.setText(strOuterQty);
             }
 
             if (bmodel.configurationMasterHelper.IS_WSIH) {
@@ -3549,14 +3554,42 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             //set order Qty based on UOM wise
 
-            if (holder.productObj.getDefaultUomId() != 0 &&
-                    holder.productObj.getDefaultUomId() == holder.productObj.getPcUomid()) {
-                holder.sp_uom_names.setEnabled(true);
-                holder.uom_qty.setEnabled(true);
-                holder.sp_uom_names.setSelection(getUomIndex(holder.productObj.getDefaultUomId() + ""));
-            } else {
-                holder.sp_uom_names.setEnabled(false);
-                holder.uom_qty.setEnabled(false);
+            if (bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM
+                    && holder.productObj.getProductWiseUomList().size() > 0) {
+
+                if (holder.productObj.getOrderedPcsQty() > 0 ||
+                        holder.productObj.getOrderedCaseQty() > 0 ||
+                        holder.productObj.getOrderedOuterQty() > 0) {
+                    if (holder.productObj.getOrderedPcsQty() > 0) {
+                        holder.tv_uo_names.setText(updateUOM(holder.productObj, false));
+                        holder.uom_qty.setText(holder.productObj.getOrderedPcsQty() + "");
+                    } else if (holder.productObj.getOrderedCaseQty() > 0) {
+                        holder.tv_uo_names.setText(updateUOM(holder.productObj, false));
+                        holder.uom_qty.setText(holder.productObj.getOrderedCaseQty() + "");
+                    } else if (holder.productObj.getOrderedOuterQty() > 0) {
+                        holder.tv_uo_names.setText(updateUOM(holder.productObj, false));
+                        holder.uom_qty.setText(holder.productObj.getOrderedOuterQty() + "");
+                    }
+                } else {
+                    if ((holder.productObj.getDefaultUomId() != 0 && holder.productObj.getPcUomid() != 0) &&
+                            holder.productObj.getDefaultUomId() == holder.productObj.getPcUomid()) {
+                        holder.productObj.setSelectedUomId(holder.productObj.getDefaultUomId());
+                        holder.tv_uo_names.setText(updateUOM(holder.productObj, false));
+                        holder.uom_qty.setText("0");
+                    } else if ((holder.productObj.getDefaultUomId() != 0 && holder.productObj.getCaseUomId() != 0) &&
+                            holder.productObj.getDefaultUomId() == holder.productObj.getCaseUomId()) {
+                        holder.productObj.setSelectedUomId(holder.productObj.getDefaultUomId());
+                        holder.tv_uo_names.setText(updateUOM(holder.productObj, false));
+                        holder.uom_qty.setText("0");
+                    } else if ((holder.productObj.getDefaultUomId() != 0 && holder.productObj.getOuUomid() != 0) &&
+                            holder.productObj.getDefaultUomId() == holder.productObj.getOuUomid()) {
+                        holder.productObj.setSelectedUomId(holder.productObj.getDefaultUomId());
+                        holder.tv_uo_names.setText(updateUOM(holder.productObj, false));
+                        holder.uom_qty.setText("0");
+                    }
+                }
+
+
             }
 
 
@@ -3588,6 +3621,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.pcsQty.setEnabled(true);
                 holder.shelfPcsQty.setEnabled(true);
             }
+
+            if (bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
+                if (holder.productObj.getProductWiseUomList().size() == 0) {
+                    holder.tv_uo_names.setClickable(false);
+                    holder.tv_uo_names.setEnabled(false);
+                    holder.uom_qty.setEnabled(false);
+                } else {
+                    holder.tv_uo_names.setClickable(true);
+                    holder.tv_uo_names.setEnabled(true);
+                    holder.uom_qty.setEnabled(true);
+                }
+            }
+
 
             String strRepCaseQty = holder.productObj.getRepCaseQty() + "";
             holder.rep_cs.setText(strRepCaseQty);
@@ -3648,8 +3694,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView text_allocation;
         private LinearLayout layout_allocation;
 
-        private Spinner sp_uom_names;
         private EditText uom_qty;
+        private Button tv_uo_names;
+
+
     }
 
     private void calculateSO(ProductMasterBO productObj, int SOLogic, ViewHolder holder) {
@@ -7059,6 +7107,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     bmodel.synchronizationHelper.downloadWareHouseStock(warehouseWebApi);
                 } else {
                     Toast.makeText(StockAndOrder.this, getResources().getString(R.string.url_not_mapped), Toast.LENGTH_SHORT).show();
+                    if (alertDialog.isShowing())
+                        alertDialog.dismiss();
                 }
             } else {
                 String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
@@ -7067,28 +7117,65 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 } else {
                     Toast.makeText(StockAndOrder.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                 }
+                if (alertDialog.isShowing())
+                    alertDialog.dismiss();
             }
         }
     }
 
     /**
-     * Load selected uom name in the spinner
-     *
-     * @param uomId id for which the index need to be found
-     * @return position of the uom id
+     * @param productBO
+     * @param isClick
+     * @return isClick - true than return available uom Name
+     * change Uom name based on SelectedUomPosition position
+     * isClick - false than return Default Uom Name
      */
-    public int getUomIndex(String uomId) {
-        if (uomListAdapter.getCount() == 0)
-            return 0;
-        int len = uomListAdapter.getCount();
-        if (len == 0)
-            return 0;
-        for (int i = 0; i < len; ++i) {
-            StandardListBO s = uomListAdapter.getItem(i);
-            if (s.getListID().equals(uomId))
-                return i;
+
+    private String updateUOM(ProductMasterBO productBO, boolean isClick) {
+        String uomName = "";
+
+        if (isClick) {
+            if (productBO.getSelectedUomPosition() == productBO.getProductWiseUomList().size()) {
+                productBO.setSelectedUomId(SDUtil.convertToInt(
+                        productBO.getProductWiseUomList().get(0).getListID()));
+                productBO.setSelectedUomPosition(1);
+                uomName = productBO.getProductWiseUomList().get(0).getListName();
+            } else if (productBO.getSelectedUomPosition() == 1) {
+                productBO.setSelectedUomId(SDUtil.convertToInt(
+                        productBO.getProductWiseUomList().get(1).getListID()));
+                productBO.setSelectedUomPosition(2);
+                uomName = productBO.getProductWiseUomList().get(1).getListName();
+            } else if (productBO.getSelectedUomPosition() == 2) {
+                productBO.setSelectedUomId(SDUtil.convertToInt(
+                        productBO.getProductWiseUomList().get(2).getListID()));
+                productBO.setSelectedUomPosition(3);
+                uomName = productBO.getProductWiseUomList().get(2).getListName();
+            }
+        } else if (!isClick) {
+            for (int i = 0; i < productBO.getProductWiseUomList().size(); i++) {
+                StandardListBO proUomBo = productBO.getProductWiseUomList().get(i);
+                if (proUomBo.getListID().equals(productBO.getSelectedUomId() + "")
+                        && productBO.getSelectedUomId() == productBO.getPcUomid()) {
+                    productBO.setSelectedUomPosition(i + 1);
+                    uomName = proUomBo.getListName();
+                    break;
+                } else if (proUomBo.getListID().equals(productBO.getSelectedUomId() + "")
+                        && productBO.getSelectedUomId() == productBO.getCaseUomId()) {
+                    productBO.setSelectedUomId(productBO.getCaseUomId());
+                    productBO.setSelectedUomPosition(i + 1);
+                    uomName = proUomBo.getListName();
+                    break;
+                } else if (proUomBo.getListID().equals(productBO.getSelectedUomId() + "")
+                        && productBO.getSelectedUomId() == productBO.getOuUomid()) {
+                    productBO.setSelectedUomId(productBO.getOuUomid());
+                    productBO.setSelectedUomPosition(i + 1);
+                    uomName = proUomBo.getListName();
+                    break;
+                }
+            }
         }
-        return -1;
+
+        return uomName;
     }
 
 }

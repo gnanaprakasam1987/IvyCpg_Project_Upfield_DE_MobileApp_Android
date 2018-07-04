@@ -986,6 +986,11 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_SYNC_INTERNAL_REPORT;
 
 
+    //TO Show both salable and non salable products
+    public static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "ISSALABLE";
+    public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
+
+
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
@@ -1434,6 +1439,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORDER_STATUS_REPORT = "ORD_STAT_RPT";
     public boolean IS_ENABLE_ORDER_STATUS_REPORT;
     public boolean IS_ORDER_STATUS_REPORT;
+
+    private static final String CODE_SHOW_DEFAULT_UOM = "ORD_UOM";
+    public boolean IS_SHOW_DEFAULT_UOM;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -3726,6 +3734,8 @@ public class ConfigurationMasterHelper {
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
             IS_PRINT_SEQUENCE_LEVELWISE = false;
+            IS_SHOW_DEFAULT_UOM = false;
+            SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4343,6 +4353,30 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
 
+            // default uom config
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_DEFAULT_UOM) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    IS_SHOW_DEFAULT_UOM = true;
+                }
+                c.close();
+            }
+
+            //this config used in stock check and sales return screen
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SALABLE_AND_NON_SALABLE_SKU) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    SHOW_SALABLE_AND_NON_SALABLE_SKU = true;
+                }
+                c.close();
+            }
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -4506,7 +4540,7 @@ public class ConfigurationMasterHelper {
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and lower(MenuType)="
                     + bmodel.QT("FILTER").toLowerCase()
-                    + " and lang="+bmodel.QT(language)+" order by RField";
+                    + " and lang=" + bmodel.QT(language) + " order by RField";
 
             Cursor c = db.selectSQL(sql);
 

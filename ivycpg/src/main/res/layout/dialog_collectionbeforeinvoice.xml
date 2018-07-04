@@ -95,8 +95,8 @@
 
                     <ImageButton
                         android:id="@+id/img_max_amount"
-                        android:layout_width="@dimen/activity_list_icon_size"
-                        android:layout_height="@dimen/activity_list_icon_size"
+                        android:layout_width="@dimen/sub_activity_list_icon_circle"
+                        android:layout_height="@dimen/sub_activity_list_icon_circle"
                         android:background="@drawable/ic_content_copy_black_24dp"
                         android:backgroundTint="?attr/colorPrimary"
                         android:gravity="center"
@@ -141,8 +141,8 @@
 
                     <ImageButton
                         android:id="@+id/img_min_amount"
-                        android:layout_width="@dimen/activity_list_icon_size"
-                        android:layout_height="@dimen/activity_list_icon_size"
+                        android:layout_width="@dimen/sub_activity_list_icon_circle"
+                        android:layout_height="@dimen/sub_activity_list_icon_circle"
                         android:background="@drawable/ic_content_copy_black_24dp"
                         android:backgroundTint="?attr/colorPrimary"
                         android:gravity="center"
@@ -195,6 +195,7 @@
                                 android:gravity="center"
                                 android:tag="@string/ca"
                                 android:text="@string/cash"
+                                android:textSize="@dimen/font_medium"
                                 android:textColor="?attr/primarycolor"
                                 android:visibility="visible">
 
@@ -208,6 +209,7 @@
                                 android:gravity="center"
                                 android:tag="@string/cq"
                                 android:text="@string/cheque"
+                                android:textSize="@dimen/font_medium"
                                 android:textColor="?attr/primarycolor"
                                 android:visibility="visible">
 
@@ -219,7 +221,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
                                 android:gravity="center"
-
+                                android:textSize="@dimen/font_medium"
                                 android:tag="@string/credit_note"
                                 android:text="@string/credit_note"
                                 android:textColor="?attr/primarycolor"
