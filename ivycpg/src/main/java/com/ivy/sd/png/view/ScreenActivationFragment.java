@@ -32,9 +32,18 @@ import com.ivy.sd.png.provider.ActivationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.activation.view.ActivationDialog;
+import com.ivy.utils.DeviceUtils;
 
 import me.relex.circleindicator.CircleIndicator;
 
+/**
+ * @See {@link com.ivy.ui.activation.view.ActivationActivity}
+ * @since CPG131 replaced by {@link com.ivy.ui.activation.view.ActivationActivity}
+ * Will be removed from @version CPG133 Release
+ * @deprecated This has been Migrated to MVP pattern
+ */
+@Deprecated
 public class ScreenActivationFragment extends IvyBaseFragment implements
         View.OnClickListener {
     private BusinessModel bmodel;
@@ -98,7 +107,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                    String imei = bmodel.activationHelper.getIMEINumber();
+                    String imei = DeviceUtils.getIMEINumber(getActivity());
                     if (!imei.matches("[0]+")) {
                         new DoActivation().execute(5);
                     } else {
@@ -156,7 +165,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
     public void onClick(View v) {
         ImageButton bt = (ImageButton) v;
         if (bt == activate) {
-            String imei = bmodel.activationHelper.getIMEINumber();
+            String imei =DeviceUtils.getIMEINumber(getActivity());;
             if (!imei.matches("[0]+")) {
                 activateOnClick();
             } else {
@@ -345,7 +354,7 @@ public class ScreenActivationFragment extends IvyBaseFragment implements
                                 Toast.LENGTH_LONG).show();
                     } else {
                         activation = new ActivationDialog(
-                                getActivity(), addUrl);
+                                getActivity(), addUrl, null);
                         activation.setCancelable(false);
                         activation.show();
                     }

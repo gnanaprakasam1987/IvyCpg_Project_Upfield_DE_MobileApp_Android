@@ -61,6 +61,31 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     }
 
     @Override
+    public int getRemainingStock(String productId) {
+
+        int remainingSIH=bmodel.productHelper.getProductMasterBOById(productId).getDSIH();
+        Vector<ProductMasterBO> productList = orderDeliveryHelper.getOrderedProductMasterBOS();
+        for(ProductMasterBO productMasterBO:productList){
+            if(productId.equals(productMasterBO.getProductID())){
+
+                int totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                        + (productMasterBO.getOrderedPcsQty())
+                        + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize())
+                        + productMasterBO.getRepPieceQty()
+                        + (productMasterBO.getRepCaseQty()*productMasterBO.getCaseSize())
+                        + (productMasterBO.getRepOuterQty()*productMasterBO.getOutersize());
+
+                remainingSIH=productMasterBO.getDSIH()-totalQty;
+
+            }
+        }
+
+        if(remainingSIH>0)
+        return remainingSIH;
+        else return 0;
+    }
+
+    @Override
     public void getSchemeData() {
         orderDeliveryView.updateSchemeViewValues(orderDeliveryHelper.getSchemeProductBOS());
     }
@@ -82,7 +107,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     }
 
     @Override
-    public void saveOrderDeliveryDetail(final boolean isEdit, final String orderId) {
+    public void saveOrderDeliveryDetail(final boolean isEdit, final String orderId,final String menuCode) {
         if (orderDeliveryHelper.getTotalProductQty() == 0)
             Toast.makeText(
                     context,
@@ -91,10 +116,10 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
         else if (orderDeliveryHelper.isSIHAvailable(isEdit)) {
 
             final CommonDialog dialog = new CommonDialog(context.getApplicationContext(), context, "", context.getResources().getString(R.string.order_delivery_approve), false,
-                    context.getResources().getString(R.string.ok), context.getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                    context.getResources().getString(R.string.ok), context.getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
-                    new UpdateOrderDeliveryTable(orderId, context, isEdit).execute();
+                    new UpdateOrderDeliveryTable(orderId, context, isEdit,menuCode).execute();
                 }
 
             }, new CommonDialog.negativeOnClickListener() {
@@ -126,19 +151,20 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
     public class UpdateOrderDeliveryTable extends AsyncTask<Void, Void, Boolean> {
 
-        private String orderId;
+        private String orderId,menuCode;
         private Context context;
         private boolean isEdit;
 
-        private UpdateOrderDeliveryTable(String orderId, Context context, boolean isEdit) {
+        private UpdateOrderDeliveryTable(String orderId, Context context, boolean isEdit,String menuCode) {
             this.orderId = orderId;
             this.context = context;
             this.isEdit = isEdit;
+            this.menuCode=menuCode;
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            return orderDeliveryHelper.updateTableValues(context, orderId, isEdit);
+            return orderDeliveryHelper.updateTableValues(context, orderId, isEdit,menuCode);
         }
 
         @Override

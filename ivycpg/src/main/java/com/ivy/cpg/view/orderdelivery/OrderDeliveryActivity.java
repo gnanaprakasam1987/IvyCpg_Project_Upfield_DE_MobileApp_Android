@@ -153,7 +153,17 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),Str_VIEW,orderHeaders.get(position).getInvoiceStatus()).execute();
+
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
+                    if(orderHeaders.get(position).getInvoiceStatus()!=1) {
+                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
+                    }
+                    else {
+                        Toast.makeText(
+                                OrderDeliveryActivity.this,
+                                "Already invoice has been generated",
+                                Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             });
@@ -246,11 +256,11 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 else if (orderDeliveryHelper.isSIHAvailable(false)) {
 
                     CommonDialog dialog = new CommonDialog(getApplicationContext(), OrderDeliveryActivity.this, "", getResources().getString(R.string.order_delivery_approve), false,
-                            getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                            getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
 
-                            boolean status = orderDeliveryHelper.updateTableValues(OrderDeliveryActivity.this, orderId,false);
+                            boolean status = orderDeliveryHelper.updateTableValues(OrderDeliveryActivity.this, orderId,false,getIntent().getExtras().getString("menuCode"));
                             if(status){
                                 bmodel.saveModuleCompletion(getIntent().getExtras().getString("menuCode"));
                                 Toast.makeText(
@@ -302,6 +312,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 intent.putExtra("From", from);
                 intent.putExtra("OrderId",orderId);
                 intent.putExtra("InvoiceStatus",invoiceStatus);
+                intent.putExtra("menuCode", getIntent().getExtras().getString("menuCode"));
                 startActivity(intent);
             }
         }

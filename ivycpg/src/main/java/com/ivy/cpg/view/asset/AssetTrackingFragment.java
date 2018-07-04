@@ -567,7 +567,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                 "", getResources().getString(R.string.saved_successfully),
                 false, getActivity().getResources().getString(R.string.ok),
-                null, new CommonDialog.positiveOnClickListener() {
+                null, new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

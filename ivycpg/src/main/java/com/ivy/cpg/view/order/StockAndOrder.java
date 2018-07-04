@@ -1523,14 +1523,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     try {
                         ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
-                                R.id.caseTitle).getTag()) != null)
+                                R.id.caseTitle).getTag()) != null) {
                             ((TextView) row.findViewById(R.id.caseTitle))
                                     .setText(bmodel.labelsMasterHelper
                                             .applyLabels(row.findViewById(
                                                     R.id.caseTitle).getTag()));
-                        holder.caseTitleText = bmodel.labelsMasterHelper
-                                .applyLabels(row.findViewById(
-                                        R.id.caseTitle).getTag());
+                            holder.caseTitleText = bmodel.labelsMasterHelper
+                                    .applyLabels(row.findViewById(
+                                            R.id.caseTitle).getTag());
+                        } else
+                            holder.caseTitleText = getResources().getString(R.string.item_case);
                     } catch (Exception e) {
                         Commons.printException(e + "");
                         holder.caseTitleText = getResources().getString(R.string.item_case);
@@ -3207,7 +3209,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISPLAY_FOR_PIRAMAL) {
                 //for piramal
                 try {
-                    holder.psname.setTextColor(Color.parseColor(product.getColorCode()));
+                    if (product.getColorCode() != null)
+                        holder.psname.setTextColor(Color.parseColor(product.getColorCode()));
+                    else
+                        holder.psname.setTextColor(product.getTextColor());
                 } catch (Exception e) {
                     Commons.printException(e);
                     holder.psname.setTextColor(ContextCompat.getColor(getApplicationContext(),
@@ -4417,7 +4422,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         switch (id) {
             case 0:
                 new CommonDialog(getApplicationContext(), this, "", getResources().getString(
-                        R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         if (bmodel.isEdit()) {

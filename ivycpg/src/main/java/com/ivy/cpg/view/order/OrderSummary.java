@@ -182,6 +182,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     public static final String CREDIT_TYPE = "CREDIT";
 
     private boolean isEditMode = false;
+    private Calendar mCalendar = null;
 
 
     @Override
@@ -198,6 +199,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         discountHelper = DiscountHelper.getInstance(this);
         orderHelper = OrderHelper.getInstance(this);
+        mCalendar = Calendar.getInstance();
 
         // Close the screen if user id becomes 0 **/
         if (bModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
@@ -490,17 +492,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         try {
             if (bModel.isEdit()) {
 
-                button_deliveryDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
-                        bModel.getDeliveryDate(bModel.getRetailerMasterBO()
+                String delDate = DateUtil.convertFromServerDateToRequestedFormat(bModel.getDeliveryDate(bModel.getRetailerMasterBO()
                                 .getRetailerID()),
-                        ConfigurationMasterHelper.outDateFormat));
+                        ConfigurationMasterHelper.outDateFormat);
+                button_deliveryDate.setText(delDate);
+                Date selected = DateUtil.convertStringToDateObject(delDate, ConfigurationMasterHelper.outDateFormat);
+                mCalendar.setTime(selected);
             } else {
                 bModel.mAttendanceHelper.downWeekOffs(OrderSummary.this);
-                Calendar origDay = Calendar.getInstance();
-                origDay.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
+                mCalendar.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
-                Calendar selectedDate = dateValidation(origDay);
-                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
+                mCalendar = dateValidation(mCalendar);
+                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(mCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
 
             }
         } catch (Exception e) {
@@ -1518,30 +1521,26 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             case DIALOG_DELIVERY_DATE_PICKER: {
 
-                Calendar c = Calendar.getInstance();
                 Calendar maxCalendar = Calendar.getInstance();
-                if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0) {
-                    c.add(Calendar.DAY_OF_YEAR, 1);
-                } else {
+                if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0) {
                     if (bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
-                        c.add(Calendar.DAY_OF_MONTH, bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
+                        mCalendar.add(Calendar.DAY_OF_MONTH, bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
                     } else {
-                        c.setTimeInMillis(System.currentTimeMillis() - 1000);
+                        mCalendar.setTimeInMillis(System.currentTimeMillis() - 1000);
                     }
                     if (bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
                         maxCalendar.add(Calendar.DAY_OF_YEAR, bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
                     }
                 }
-                //c.add(Calendar.DAY_OF_YEAR, (BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : BModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
+                int year = mCalendar.get(Calendar.YEAR);
+                int month = mCalendar.get(Calendar.MONTH);
+                int day = mCalendar.get(Calendar.DAY_OF_MONTH);
 
                 MyDatePickerDialog dialog = new MyDatePickerDialog(this, R.style.DatePickerDialogStyle,
                         mDeliverDatePickerListener, year, month, day);
                 dialog.setPermanentTitle(getResources().getString(R.string.choose_date));
-                dialog.getDatePicker().setMinDate(c.getTimeInMillis());
+                dialog.getDatePicker().setMinDate(mCalendar.getTimeInMillis());
                 if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0) {
                     dialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
                 }
