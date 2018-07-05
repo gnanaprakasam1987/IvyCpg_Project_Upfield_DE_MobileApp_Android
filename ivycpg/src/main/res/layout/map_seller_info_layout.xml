@@ -14,7 +14,6 @@
         android:id="@+id/cardview_ttl_seller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_5sdp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/_1sdp"
         app:cardElevation="@dimen/_4sdp"
@@ -158,7 +157,6 @@
                     <ImageView
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_email_dark" />
 
                     <TextView
@@ -167,9 +165,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
+                        android:paddingLeft="@dimen/_5sdp"
                         android:maxLines="1"
                         android:text="Message"
-                        android:textColor="#8a354667"
+                        android:textColor="#9AA3B4"
                         android:textSize="@dimen/_14sdp"
                         android:visibility="visible" />
 
@@ -196,7 +195,6 @@
                     <ImageView
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:src="@drawable/ic_location_icon"/>
 
                     <TextView
@@ -207,7 +205,8 @@
                         android:gravity="center_vertical|center_horizontal"
                         android:maxLines="1"
                         android:text="Route"
-                        android:textColor="#8a354667"
+                        android:paddingLeft="@dimen/_1sdp"
+                        android:textColor="#9AA3B4"
                         android:textSize="@dimen/_14sdp"
                         android:visibility="visible" />
 

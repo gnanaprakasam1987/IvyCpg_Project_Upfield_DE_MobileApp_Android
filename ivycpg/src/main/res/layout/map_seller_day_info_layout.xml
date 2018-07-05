@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:visibility="visible"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="@dimen/_130sdp"
+    app:behavior_peekHeight="@dimen/_210sdp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
 

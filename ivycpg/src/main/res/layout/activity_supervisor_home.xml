@@ -10,7 +10,6 @@
         android:id="@+id/map_wrap_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/topimage_view"
         android:orientation="vertical">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -28,8 +27,8 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/dimens_10dp"
         android:clipToPadding="false"
-        android:paddingLeft="@dimen/_40sdp"
-        android:paddingRight="@dimen/_40sdp"
+        android:paddingLeft="@dimen/_27sdp"
+        android:paddingRight="@dimen/_27sdp"
         app:rvp_singlePageFling="true"
         app:rvp_triggerOffset="0.1"/>
 

@@ -6,7 +6,7 @@
     android:layout_marginLeft="@dimen/_10sdp"
     android:layout_marginRight="@dimen/_10sdp"
     android:layout_marginTop="@dimen/_10sdp"
-    app:cardBackgroundColor="#f6f9fc"
+    app:cardBackgroundColor="@color/WHITE"
     app:cardElevation="@dimen/_4sdp"
     android:layout_below="@+id/chart_layout">
 
@@ -118,7 +118,7 @@
             app:tabMode="fixed"
             app:tabSelectedTextColor="@color/colorPrimary"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-            app:tabTextColor="#8b000000">
+            app:tabTextColor="#94B5D8">
 
             <android.support.design.widget.TabItem
                 android:layout_width="match_parent"
@@ -208,7 +208,7 @@
             android:paddingBottom="@dimen/_6sdp"
             android:paddingLeft="@dimen/_4sdp"
             android:paddingRight="@dimen/_4sdp"
-            android:paddingTop="@dimen/_6sdp"
+            android:paddingTop="@dimen/_12sdp"
             android:weightSum="1">
 
             <TextView
@@ -331,7 +331,7 @@
             android:layout_below="@+id/coverage_layout"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_12sdp"
             android:paddingLeft="@dimen/_4sdp"
             android:paddingRight="@dimen/_4sdp"
             android:paddingTop="@dimen/_6sdp"
@@ -411,8 +411,8 @@
             android:orientation="horizontal"
             android:paddingLeft="@dimen/_12sdp"
             android:paddingRight="@dimen/_12sdp"
-            android:paddingTop="@dimen/_6sdp"
-            android:paddingBottom="@dimen/_6sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:paddingBottom="@dimen/_12sdp"
             android:weightSum="1">
 
             <LinearLayout
@@ -551,23 +551,21 @@
             android:id="@+id/bottom_outlet_btn_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
             android:background="@drawable/total_seller_bg">
 
             <TextView
                 android:id="@+id/seller_performance_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
                 android:gravity="center"
-                android:paddingBottom="@dimen/_8sdp"
-                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_6sdp"
+                android:paddingTop="@dimen/_6sdp"
                 android:text="View Seller Performance Outlet wise"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_14sdp"
                 android:drawableLeft="@drawable/ic_store_icon"
                 android:paddingLeft="@dimen/_5sdp"
-                android:drawablePadding="@dimen/_10sdp"
+                android:drawablePadding="@dimen/_8sdp"
                 android:layout_centerInParent="true"/>
 
         </RelativeLayout>

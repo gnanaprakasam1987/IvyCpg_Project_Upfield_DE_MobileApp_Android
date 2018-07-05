@@ -164,8 +164,9 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
         ((TextView) view.findViewById(R.id.tv_txt_covered_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         ((TextView) view.findViewById(R.id.tv_txt_unbilled_outlet)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
         ((TextView) view.findViewById(R.id.tv_txt_order_value)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.tv_inmarket_seller)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         totalSeller.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -312,6 +313,10 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
+                        if(mRecyclerView.getVisibility() == View.VISIBLE) {
+                            bottomSheetBehavior.setHideable(true);
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        }
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
                         break;

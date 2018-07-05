@@ -23,7 +23,7 @@
         app:tabMode="fixed"
         app:tabMaxWidth="0dp"
         app:tabSelectedTextColor="@color/WHITE"
-        app:tabTextColor="#CAD4FF">
+        app:tabTextColor="#94B5D8">
 
         <android.support.design.widget.TabItem
             android:layout_width="match_parent"

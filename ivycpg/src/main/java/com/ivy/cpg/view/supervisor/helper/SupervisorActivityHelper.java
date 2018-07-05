@@ -121,6 +121,7 @@ public class SupervisorActivityHelper {
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference(LocationConstants.FIREBASE_BASE_PATH + path);
 
+
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {

@@ -264,13 +264,13 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
             BitmapDescriptor icon;
             if(orderValue.equalsIgnoreCase("1"))
-                icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                icon= BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
             else if(orderValue.equalsIgnoreCase("2"))
-                icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+                icon= BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
             else if(orderValue.equalsIgnoreCase("10"))
-                icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                icon= BitmapDescriptorFactory.fromResource(R.drawable.marker_red);
             else
-                icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+                icon= BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
 
             DetailsBo detailsBo = new DetailsBo();
             detailsBo.setUserName(userName);
@@ -403,8 +403,13 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            finish();
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            else{
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
+
 //        }else if(i == R.id.menu_route){
 //            drawRoute();
 //        }else if(i == R.id.menu_navigate){

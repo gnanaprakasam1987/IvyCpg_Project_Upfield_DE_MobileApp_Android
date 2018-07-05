@@ -12,7 +12,7 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
-        android:background="@drawable/total_outlet_bg_gradient"
+        style="?attr/tablayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
@@ -23,7 +23,7 @@
         app:tabMode="fixed"
         app:tabMaxWidth="0dp"
         app:tabSelectedTextColor="@color/WHITE"
-        app:tabTextColor="#ddd">
+        app:tabTextColor="#94B5D8">
 
         <android.support.design.widget.TabItem
             android:layout_width="match_parent"
@@ -215,8 +215,8 @@
             android:layout_gravity="bottom"
             android:layout_marginBottom="@dimen/_10sdp"
             android:clipToPadding="false"
-            android:paddingLeft="@dimen/_40sdp"
-            android:paddingRight="@dimen/_40sdp"
+            android:paddingLeft="@dimen/_27sdp"
+            android:paddingRight="@dimen/_27sdp"
             app:rvp_singlePageFling="true"
             app:rvp_triggerOffset="0.1"
             android:layout_below="@+id/cardview"/>

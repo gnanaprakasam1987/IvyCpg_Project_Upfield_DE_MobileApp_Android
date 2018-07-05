@@ -5,7 +5,7 @@
 
     <LinearLayout
         android:layout_width="@dimen/_130sdp"
-        android:layout_height="@dimen/_30sdp"
+        android:layout_height="@dimen/_22sdp"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -14,10 +14,9 @@
 
 
         <ImageView
-            android:layout_width="@dimen/_35sdp"
-            android:layout_height="@dimen/_30sdp"
-            android:scaleType="fitXY"
-            android:src="@drawable/marker_info_seller" />
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="match_parent"
+            android:background="@drawable/marker_info_seller" />
 
         <TextView
             android:id="@+id/tv_usr_name"
@@ -31,7 +30,7 @@
             android:singleLine="true"
             android:text="Big info window to test the size of the info window XML values"
             android:textColor="#de000000"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="@dimen/_10sdp" />
 
     </LinearLayout>
 

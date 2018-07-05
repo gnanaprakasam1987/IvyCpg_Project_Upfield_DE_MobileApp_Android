@@ -33,8 +33,8 @@
                 android:layout_marginTop="@dimen/_5sdp">
 
                 <com.ivy.cpg.view.supervisor.helper.CircleImageView
-                    android:layout_width="@dimen/_50sdp"
-                    android:layout_height="@dimen/_50sdp"
+                    android:layout_width="@dimen/_47sdp"
+                    android:layout_height="@dimen/_47sdp"
                     android:layout_margin="@dimen/_5sdp"
                     android:src="@drawable/face" />
 
@@ -197,7 +197,7 @@
                         android:gravity="center_vertical|center_horizontal"
                         android:maxLines="1"
                         android:text="Message"
-                        android:textColor="#8a354667"
+                        android:textColor="#6F7F9F"
                         android:textSize="@dimen/_14sdp"
                         android:visibility="visible" />
 
@@ -224,7 +224,7 @@
                     <ImageView
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_1sdp"
                         android:src="@drawable/ic_location_icon" />
 
                     <TextView
@@ -235,7 +235,7 @@
                         android:gravity="center_vertical|center_horizontal"
                         android:maxLines="1"
                         android:text="Route"
-                        android:textColor="#8a354667"
+                        android:textColor="#6F7F9F"
                         android:textSize="@dimen/_14sdp"
                         android:visibility="visible" />
 

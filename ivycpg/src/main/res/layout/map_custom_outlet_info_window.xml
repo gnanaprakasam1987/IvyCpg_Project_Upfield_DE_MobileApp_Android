@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="@dimen/_180sdp"
+        android:layout_width="@dimen/_175sdp"
         android:layout_height="@dimen/_35sdp"
         android:clickable="false"
         android:focusable="false"
@@ -15,10 +15,9 @@
 
 
         <ImageView
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:scaleType="fitXY"
-            android:src="@drawable/outlet_info_window_bg" />
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="match_parent"
+            android:background="@drawable/outlet_info_window_bg" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -30,7 +29,7 @@
                 android:id="@+id/tv_usr_name"
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_23sdp"
+                android:layout_height="@dimen/_20sdp"
                 android:background="@color/white"
                 android:drawablePadding="@dimen/_5sdp"
                 android:drawableRight="@drawable/info"
@@ -48,7 +47,7 @@
                 android:id="@+id/tv_vivit_time"
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_20sdp"
+                android:layout_height="@dimen/_15sdp"
                 android:layout_below="@+id/tv_usr_name"
                 android:background="@color/white"
                 android:ellipsize="middle"
@@ -57,7 +56,7 @@
                 android:minWidth="@dimen/_50sdp"
                 android:paddingLeft="@dimen/_4sdp"
                 android:singleLine="true"
-                android:text="Visit Time : 10:12 AM"
+                android:text="Visiting Time : 10:12 AM"
                 android:textColor="#4a90e2"
                 android:textSize="@dimen/_10sdp" />
 

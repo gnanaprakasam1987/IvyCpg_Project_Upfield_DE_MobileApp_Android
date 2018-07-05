@@ -780,4 +780,7 @@
     <dimen name="score_card_height">150dp</dimen>
     <dimen name="qn_text_margin_left">10dp</dimen>
     <dimen name="web_view_width">270dp</dimen>
+
+
+
 </resources>

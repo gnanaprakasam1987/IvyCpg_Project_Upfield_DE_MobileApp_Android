@@ -127,27 +127,27 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             mMap.clear();
 
             LatLng destLatLng1 = new LatLng(12.922915, 80.127456);
-            BitmapDescriptor icon1 = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+            BitmapDescriptor icon1 = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
             mMap.addMarker(new MarkerOptions().flat(true).
                     title("Tamil arasu").position(destLatLng1).snippet("1695").icon(icon1));
 
             LatLng destLatLng2 = new LatLng(12.953195, 80.141601);
-            BitmapDescriptor icon2 = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+            BitmapDescriptor icon2 = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
             mMap.addMarker(new MarkerOptions().flat(true).
                     title("English ").position(destLatLng2).snippet("1698").icon(icon2));
 
             LatLng destLatLng3 = new LatLng(13.022480, 80.203187);
-            BitmapDescriptor icon3 = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+            BitmapDescriptor icon3 = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
             mMap.addMarker(new MarkerOptions().flat(true).
                     title("Karan").position(destLatLng3).snippet("1696").icon(icon3));
 
             LatLng destLatLng4 = new LatLng(12.975971, 80.221209);
-            BitmapDescriptor icon4 = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+            BitmapDescriptor icon4 = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
             mMap.addMarker(new MarkerOptions().flat(true).
                     title("Deepak").position(destLatLng4).snippet("1697").icon(icon4));
 
             LatLng destLatLng5 = new LatLng(12.965365, 80.246106);
-            BitmapDescriptor icon5 = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+            BitmapDescriptor icon5 = BitmapDescriptorFactory.fromResource(R.drawable.marker_red);
             mMap.addMarker(new MarkerOptions().flat(true).
                     title("Sandy").position(destLatLng5).snippet("1692").icon(icon5));
 
@@ -172,12 +172,12 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             mMap.clear();
 
             LatLng destLatLng3 = new LatLng(13.022480, 80.203187);
-            BitmapDescriptor icon3 = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+            BitmapDescriptor icon3 = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
             mMap.addMarker(new MarkerOptions().flat(true).
                     title("Karan").position(destLatLng3).snippet("1696").icon(icon3));
 
             LatLng destLatLng4 = new LatLng(12.975971, 80.221209);
-            BitmapDescriptor icon4 = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+            BitmapDescriptor icon4 = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
             mMap.addMarker(new MarkerOptions().flat(true).
                     title("Deepak").position(destLatLng4).snippet("1697").icon(icon4));
 
@@ -199,7 +199,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             mMap.clear();
 
             LatLng destLatLng5 = new LatLng(12.965365, 80.246106);
-            BitmapDescriptor icon5 = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+            BitmapDescriptor icon5 = BitmapDescriptorFactory.fromResource(R.drawable.marker_red);
             mMap.addMarker(new MarkerOptions().flat(true).
                     title("Sandy").position(destLatLng5).snippet("1692").icon(icon5));
 

@@ -794,20 +794,20 @@
             android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.supervisor.activity.SellerMapViewActivity"
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.supervisor.activity.SellerListActivity"
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.supervisor.activity.OutletMapListActivity"
+            android:name="com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.activity.SellerPerformanceListActivity"
+        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.activity.SellerPerformanceDetailActivity"
+        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"
