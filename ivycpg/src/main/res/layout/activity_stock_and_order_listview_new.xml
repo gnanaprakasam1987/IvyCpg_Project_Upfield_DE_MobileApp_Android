@@ -797,7 +797,6 @@
                         android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:text="@string/item_piece"
-                        android:textAllCaps="false"
                         android:textColor="@color/black_bg1" />
 
 

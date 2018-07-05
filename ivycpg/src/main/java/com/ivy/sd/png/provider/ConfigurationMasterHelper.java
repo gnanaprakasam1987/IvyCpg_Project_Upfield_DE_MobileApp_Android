@@ -982,12 +982,12 @@ public class ConfigurationMasterHelper {
     public boolean HIDE_SALES_VALUE_FIELD;
 
     // TO show sync status report in Sync screen.
-    public static final String CODE_SYNC_INTERNAL_REPORT = "SYNC11";
+    private static final String CODE_SYNC_INTERNAL_REPORT = "SYNC11";
     public boolean SHOW_SYNC_INTERNAL_REPORT;
 
 
     //TO Show both salable and non salable products
-    public static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "ISSALABLE";
+    private static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "CSSTK07";
     public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
 
 
@@ -1440,7 +1440,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_ENABLE_ORDER_STATUS_REPORT;
     public boolean IS_ORDER_STATUS_REPORT;
 
-    private static final String CODE_SHOW_DEFAULT_UOM = "ORD_UOM";
+    private static final String CODE_SHOW_DEFAULT_UOM = "ORDB24";
     public boolean IS_SHOW_DEFAULT_UOM;
 
     private ConfigurationMasterHelper(Context context) {

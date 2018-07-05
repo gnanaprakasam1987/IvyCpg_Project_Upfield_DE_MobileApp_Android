@@ -60,6 +60,8 @@ public class SalesReturnHelper {
     public boolean IS_APPLY_TAX_IN_SR;
     private String CODE_SR_DIFF_CNT = "SR12";
     public boolean IS_PRD_CNT_DIFF_SR;
+    private static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "SR17";
+    public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
 
 
     public static final String CREDIT_TYPE = "CREDIT";
@@ -236,6 +238,7 @@ public class SalesReturnHelper {
             SHOW_SALES_RET_CASE = false;
             SHOW_SALES_RET_PCS = false;
             SHOW_SALES_RET_OUTER_CASE = false;
+            SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -341,6 +344,18 @@ public class SalesReturnHelper {
                 }
                 c.close();
             }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SALABLE_AND_NON_SALABLE_SKU) + " and Flag=1 and ForSwitchSeller = 0";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_SALABLE_AND_NON_SALABLE_SKU = true;
+                }
+                c.close();
+            }
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1411,7 +1426,7 @@ public class SalesReturnHelper {
 
     }
 
-    public void deleteSalesReturnByOrderId(DBUtil db,String orderId){
+    public void deleteSalesReturnByOrderId(DBUtil db, String orderId) {
 
         try {
             String sb = "select uid from SalesReturnHeader where RetailerID=" +
@@ -1434,8 +1449,7 @@ public class SalesReturnHelper {
                                 + DatabaseUtils.sqlEscapeString(uid), false);
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
 

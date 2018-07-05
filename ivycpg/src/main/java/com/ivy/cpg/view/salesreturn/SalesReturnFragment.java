@@ -192,9 +192,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         ((TextView) view.findViewById(R.id.tvProductNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) view.findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-
-        loadBothSalable = bmodel.configurationMasterHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU;
-
+        loadBothSalable = salesReturnHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU;
 
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(), mDrawerLayout,
