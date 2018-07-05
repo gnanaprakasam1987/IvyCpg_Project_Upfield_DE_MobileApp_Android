@@ -143,7 +143,7 @@ public class DayReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.totalDiscountedAmt from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
+                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.NetAmount from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
                             + " WHERE OD.ProductID IN (" + productIds + ")"
                             + " AND OH.upload!='X' and OH.OrderDate="
                             + mBusinessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
