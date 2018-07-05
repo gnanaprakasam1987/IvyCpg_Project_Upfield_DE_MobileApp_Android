@@ -1505,7 +1505,7 @@ public class ProductHelper {
                         + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid="
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A.pid"
+                        + " LEFT JOIN DiscountProductMapping DPM ON A.ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
                         + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
                         + " WHERE A.isSalable = 1 AND A.PLid IN(" + mContentLevelId + ")"
                         + " group by A.pid ORDER BY " + filter + " A.rowid";
@@ -1632,7 +1632,7 @@ public class ProductHelper {
                         + ".pid=sbd.productid and sbd.channelid="
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid"
+                        + " LEFT JOIN DiscountProductMapping DPM ON A" + loopEnd + ".ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
                         + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A" + loopEnd + ".HSNId";
                 if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                     sql = sql + " WHERE A1.PLid = " + bmodel.productHelper.getmSelectedGLobalLevelID()
@@ -1715,9 +1715,9 @@ public class ProductHelper {
                     }
                     /*
                      * product.setSalesReturnReasonList(cloneIsolateList(
-					 * bmodel.reasonHelper.getReasonSalesReturnMaster(),
-					 * product.getCaseSize(), product.getOutersize()));
-					 */
+                     * bmodel.reasonHelper.getReasonSalesReturnMaster(),
+                     * product.getCaseSize(), product.getOutersize()));
+                     */
                     product.setIsNMustSell(c.getInt(c.getColumnIndex("IsNMustSell")));
                     product.setWeight(c.getFloat(c.getColumnIndex("weight")));
                     product.setIsDiscountable(c.getInt(c.getColumnIndex("IsDiscount")));
@@ -2187,7 +2187,7 @@ public class ProductHelper {
                         + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid="
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A.pid"
+                        + " LEFT JOIN DiscountProductMapping DPM ON A.ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
                         + " WHERE "
                         //  A.isSalable = 1 AND
                         + "A.PLid IN"
@@ -2315,7 +2315,7 @@ public class ProductHelper {
                         + ".pid=sbd.productid and sbd.channelid="
                         + bmodel.getRetailerMasterBO().getChannelID()
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid"
+                        + " LEFT JOIN DiscountProductMapping DPM ON A" + loopEnd + ".ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
 
                         + " WHERE A1.PLid IN (SELECT " + parentFilter
                         + " FROM ConfigActivityFilter"
@@ -2389,9 +2389,9 @@ public class ProductHelper {
                     }
                     /*
                      * product.setSalesReturnReasonList(cloneIsolateList(
-					 * bmodel.reasonHelper.getReasonSalesReturnMaster(),
-					 * product.getCaseSize(), product.getOutersize()));
-					 */
+                     * bmodel.reasonHelper.getReasonSalesReturnMaster(),
+                     * product.getCaseSize(), product.getOutersize()));
+                     */
                     product.setIsNMustSell(c.getInt(c.getColumnIndex("IsNMustSell")));
                     product.setWeight(c.getFloat(c.getColumnIndex("weight")));
 
@@ -3404,15 +3404,15 @@ public class ProductHelper {
 
             StringBuffer sb = new StringBuffer();
 
-			/*
+            /*
              * if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
-			 * sb.append(
-			 * "SELECT Distinct PM.Pid,PM.Bid,PM.Pname,PM.Barcode,PM.Psname,PM.TypeID,PM.basePrice,PM.Pcode FROM  BomMaster Bm Inner join ProductMaster PM on PM.pid = BM.BPid  and PM.Typeid=0"
-			 * ); sb.append(" WHERE PM.isReturnable = 1 Order by PM.pid"); }
-			 * else { sb.append(
-			 * "SELECT Distinct PM.Pid,PM.Bid,PM.Pname,PM.Barcode,PM.Psname,0,PM.basePrice,PM.Pcode FROM  BomMaster Bm Inner join ProductMaster PM on PM.pid = BM.BPid "
-			 * ); sb.append("WHERE PM.isReturnable = 1 Order by PM.pid"); }
-			 */
+             * sb.append(
+             * "SELECT Distinct PM.Pid,PM.Bid,PM.Pname,PM.Barcode,PM.Psname,PM.TypeID,PM.basePrice,PM.Pcode FROM  BomMaster Bm Inner join ProductMaster PM on PM.pid = BM.BPid  and PM.Typeid=0"
+             * ); sb.append(" WHERE PM.isReturnable = 1 Order by PM.pid"); }
+             * else { sb.append(
+             * "SELECT Distinct PM.Pid,PM.Bid,PM.Pname,PM.Barcode,PM.Psname,0,PM.basePrice,PM.Pcode FROM  BomMaster Bm Inner join ProductMaster PM on PM.pid = BM.BPid "
+             * ); sb.append("WHERE PM.isReturnable = 1 Order by PM.pid"); }
+             */
             sb.append("SELECT Distinct PM.Pid,PM.parentid,PM.Pname,PM.Barcode,PM.Psname,PM.TypeID,PM.basePrice,PM.Pcode FROM  BomMaster Bm Inner join ProductMaster PM on PM.pid = BM.BPid");
             sb.append(" Where PM.TypeId NOT IN (SELECT ListID FROM StandardListMaster WHERE  ListCode ='GENERIC') AND PM.isReturnable = 1 Order by PM.pid");
 
@@ -3956,15 +3956,15 @@ public class ProductHelper {
                     if (groupWiseProducts.getPid().equals(
                             bomReturnProducts.getTypeId())) {
 
-						/*
+                        /*
                          * if (total == 0) {
-						 * groupWiseProducts.setpSrp(bomReturnProducts
-						 * .getpSrp());
-						 * groupWiseProducts.setPieceUomId(bomReturnProducts
-						 * .getPieceUomId());
-						 * groupWiseProducts.setTypeId(bomReturnProducts
-						 * .getTypeId()); }
-						 */
+                         * groupWiseProducts.setpSrp(bomReturnProducts
+                         * .getpSrp());
+                         * groupWiseProducts.setPieceUomId(bomReturnProducts
+                         * .getPieceUomId());
+                         * groupWiseProducts.setTypeId(bomReturnProducts
+                         * .getTypeId()); }
+                         */
 
                         total = total + bomReturnProducts.getLiableQty();
                     }
@@ -5137,8 +5137,6 @@ public class ProductHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
-
-
     }
 
 
@@ -5158,11 +5156,12 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
             sb = new StringBuilder();
-            sb.append("select Value,IsPercentage,Typeid,SM.Listname,ApplyLevelid,Moduleid,dm.DiscountId,ProductId,dm.isCompanyGiven from DiscountProductMapping dpm ");
-            sb.append("inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId ");
-            sb.append("Left Join StandardListmaster SM on SM.Listid=dm.Typeid ");
-            sb.append("where dm.DiscountId in (select DiscountId from DiscountMapping ");
-            sb.append("where (Retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + " OR ");
+            sb.append(" select Value,IsPercentage,dm.Typeid,SM.Listname,ApplyLevelid,Moduleid,dm.DiscountId,PM.PID,dm.isCompanyGiven from DiscountProductMapping dpm ");
+            sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId ");
+            sb.append(" Left Join StandardListmaster SM on SM.Listid=dm.Typeid ");
+            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1 ");
+            sb.append(" where dm.DiscountId in (select DiscountId from DiscountMapping ");
+            sb.append(" where (Retailerid=" + bmodel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR ");
             sb.append(" Channelid=" + bmodel.getRetailerMasterBO().getSubchannelid() + " OR ");
             sb.append(" Channelid in(" + bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + ") OR ");
@@ -5170,9 +5169,9 @@ public class ProductHelper {
             sb.append(" Accountid =" + bmodel.getRetailerMasterBO().getAccountid() + " AND Accountid != 0" + ") OR ");
             sb.append(" (Retailerid=0 AND distributorid=0 AND Channelid=0 AND locationid =0 AND Accountid =0))");
             sb.append(" and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE') ");
-            sb.append("and dm.ApplyLevelid=(select ListId from StandardListMaster ");
-            sb.append("where ListCode='ITEM' and ListType='DISCOUNT_APPLY_TYPE') ");
-            sb.append("and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE')");
+            sb.append(" and dm.ApplyLevelid=(select ListId from StandardListMaster ");
+            sb.append(" where ListCode='ITEM' and ListType='DISCOUNT_APPLY_TYPE') ");
+            sb.append(" and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE')");
             sb.append(" order by dm.DiscountId,dm.isCompanyGiven desc");
             ArrayList<StoreWiseDiscountBO> productdiscountList = new ArrayList<StoreWiseDiscountBO>();
             StoreWiseDiscountBO storeWiseDiscountBO;
@@ -6049,7 +6048,8 @@ public class ProductHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db.selectSQL("Select ProductId, MinValue, MaxValue from DiscountProductMapping");
+            Cursor c = db.selectSQL("Select PM.PID, MinValue, MaxValue from DiscountProductMapping dpm "
+                    + " inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             if (c != null) {
                 while (c.moveToNext()) {
                     ProductMasterBO productMasterBO = getProductMasterBOById(c.getString(0));
@@ -6987,7 +6987,7 @@ public class ProductHelper {
                         + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
                         + " left join SbdDistributionMaster sbd on A.pid=sbd.productid "
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A.pid"
+                        + " LEFT JOIN DiscountProductMapping DPM ON A.ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
                         + " WHERE A.isSalable = 1 AND A.PLid IN"
                         + " (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
                         + bmodel.QT(moduleCode)
@@ -7095,7 +7095,7 @@ public class ProductHelper {
                         + " left join SbdDistributionMaster sbd on A" + loopEnd
                         + ".pid=sbd.productid "
                         + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON DPM.productid=A" + loopEnd + ".pid"
+                        + " LEFT JOIN DiscountProductMapping DPM ON A" + loopEnd + ".ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
                         + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A" + loopEnd + ".HSNId";
 
                 sql = sql + " WHERE A1.PLid IN (SELECT ProductFilter"
@@ -7171,9 +7171,9 @@ public class ProductHelper {
                     }
                     /*
                      * product.setSalesReturnReasonList(cloneIsolateList(
-					 * bmodel.reasonHelper.getReasonSalesReturnMaster(),
-					 * product.getCaseSize(), product.getOutersize()));
-					 */
+                     * bmodel.reasonHelper.getReasonSalesReturnMaster(),
+                     * product.getCaseSize(), product.getOutersize()));
+                     */
                     product.setIsNMustSell(c.getInt(c.getColumnIndex("IsNMustSell")));
                     product.setWeight(c.getFloat(c.getColumnIndex("weight")));
                     product.setIsDiscountable(c.getInt(c.getColumnIndex("IsDiscount")));

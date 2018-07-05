@@ -1,13 +1,11 @@
 package com.ivy.sd.png.model;
 
-import com.ivy.sd.png.asean.view.BuildConfig;
-
 public interface
 ApplicationConfigs {
 
     String DB_NAME = "ivycpg_v19";
 
-    boolean withActivation = BuildConfig.ACTIVATION;
+    boolean withActivation = true;
 
     boolean checkUTCTime = true;
     String LANGUAGE = "en";
