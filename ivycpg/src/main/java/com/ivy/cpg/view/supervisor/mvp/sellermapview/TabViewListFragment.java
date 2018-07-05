@@ -57,7 +57,7 @@ public class TabViewListFragment extends IvyBaseFragment{
 
     private void prepareScreenData(){
 
-        MyAdapter myAdapter = new MyAdapter(getContext().getApplicationContext(),showStatus,detailsBos);
+        SellerListAdapter myAdapter = new SellerListAdapter(getContext().getApplicationContext(),showStatus,detailsBos);
         recyclerView.setAdapter(myAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);

@@ -124,7 +124,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
                 false);
         mRecyclerView.setLayoutManager(layout);
 
-        MyAdapter myAdapter = new MyAdapter(getContext().getApplicationContext());
+        SellerInfoHorizontalAdapter myAdapter = new SellerInfoHorizontalAdapter(getContext().getApplicationContext());
         mRecyclerView.setAdapter(myAdapter);
 
         mRecyclerView.setHasFixedSize(true);

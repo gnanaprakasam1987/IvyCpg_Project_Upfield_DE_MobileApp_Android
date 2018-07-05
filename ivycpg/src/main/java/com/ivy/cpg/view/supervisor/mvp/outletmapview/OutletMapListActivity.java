@@ -355,7 +355,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
                 false);
         mRecyclerView.setLayoutManager(layout);
 
-        MyAdapter myAdapter = new MyAdapter(this);
+        OutletInfoHorizontalAdapter myAdapter = new OutletInfoHorizontalAdapter(this);
         mRecyclerView.setAdapter(myAdapter);
 
         mRecyclerView.setHasFixedSize(true);

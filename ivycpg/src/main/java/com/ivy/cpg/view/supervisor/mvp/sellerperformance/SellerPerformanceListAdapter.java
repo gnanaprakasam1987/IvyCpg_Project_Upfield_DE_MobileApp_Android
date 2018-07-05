@@ -11,11 +11,11 @@ import android.widget.TextView;
 import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.sd.png.asean.view.R;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPerformanceListAdapter.MyViewHolder> {
 
     private Context context;
 
-    MyAdapter(Context context){
+    SellerPerformanceListAdapter(Context context){
         this.context = context;
     }
 

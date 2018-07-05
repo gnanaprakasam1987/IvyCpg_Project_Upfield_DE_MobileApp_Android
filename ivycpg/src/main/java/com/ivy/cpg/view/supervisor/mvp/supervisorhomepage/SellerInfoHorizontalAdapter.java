@@ -12,11 +12,11 @@ import android.widget.TextView;
 import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity;
 import com.ivy.sd.png.asean.view.R;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfoHorizontalAdapter.MyViewHolder> {
 
     private Context context;
 
-    MyAdapter(Context context){
+    SellerInfoHorizontalAdapter(Context context){
         this.context = context;
     }
 

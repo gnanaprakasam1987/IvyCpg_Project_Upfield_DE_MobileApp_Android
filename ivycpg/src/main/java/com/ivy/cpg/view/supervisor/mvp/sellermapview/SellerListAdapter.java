@@ -19,13 +19,13 @@ import com.ivy.sd.png.asean.view.R;
 
 import java.util.ArrayList;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.MyViewHolder> {
 
     private Context context;
     private boolean showStatus;
     private ArrayList<DetailsBo> detailsBos = new ArrayList<>();
 
-    MyAdapter(Context context,boolean showStatus,ArrayList<DetailsBo> detailsBos){
+    SellerListAdapter(Context context,boolean showStatus,ArrayList<DetailsBo> detailsBos){
         this.context = context;
         this.showStatus = showStatus;
         this.detailsBos = detailsBos;

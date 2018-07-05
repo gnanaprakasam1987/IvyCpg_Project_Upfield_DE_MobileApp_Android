@@ -83,7 +83,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
 
     private void prepareScreenData(){
 
-        MyAdapter myAdapter = new MyAdapter(getApplicationContext());
+        SellerPerformanceListAdapter myAdapter = new SellerPerformanceListAdapter(getApplicationContext());
         recyclerView.setAdapter(myAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);

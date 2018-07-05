@@ -14,11 +14,11 @@ import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class OutletInfoHorizontalAdapter extends RecyclerView.Adapter<OutletInfoHorizontalAdapter.MyViewHolder> {
 
     private Context context;
 
-    MyAdapter(Context context){
+    OutletInfoHorizontalAdapter(Context context){
         this.context = context;
     }
 
