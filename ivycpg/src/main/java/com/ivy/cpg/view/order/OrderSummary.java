@@ -2609,8 +2609,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_FOC) {
                     (row.findViewById(R.id.llfoc)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.foc.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.foc.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.focTitle).getTag()) != null)

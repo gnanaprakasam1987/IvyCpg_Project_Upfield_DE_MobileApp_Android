@@ -162,4 +162,5 @@
 
 
     <string name="drug_license_expired">Drug License Expired</string>
+    <string name="uom_not_available">Uom Not Available</string>
 </resources>
