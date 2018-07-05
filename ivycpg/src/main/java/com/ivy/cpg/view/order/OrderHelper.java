@@ -298,7 +298,7 @@ public class OrderHelper {
 
             // Save order details
             Vector<ProductMasterBO> finalProductList;
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,totalDiscountedAmt";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,totalDiscountedAmt,MRP";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
             else
@@ -313,6 +313,7 @@ public class OrderHelper {
                 if (product.getOrderedPcsQty() > 0
                         || product.getOrderedCaseQty() > 0
                         || product.getOrderedOuterQty() > 0) {
+
 
                     mOrderedProductList.add(product);
                     entryLevelDistSum = entryLevelDistSum + product.getApplyValue();
@@ -1255,6 +1256,7 @@ public class OrderHelper {
         sb.append("," + reasonId);
         sb.append("," + businessModel.QT(productBo.getHsnCode()));
         sb.append("," + totalValue);
+        sb.append("," + productBo.getMRP());
 
         return sb;
 
