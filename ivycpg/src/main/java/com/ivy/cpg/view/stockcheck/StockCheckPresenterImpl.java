@@ -46,6 +46,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     public String strBarCodeSearch = "ALL";
     private ArrayAdapter<StandardListBO> mLocationAdapter;
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
+    private boolean loadBothSalable;
 
     StockCheckPresenterImpl(Context context) {
         this.context = context;
@@ -60,6 +61,10 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
 
     public void loadInitialData() {
         prepareAdapters();
+    }
+
+    public void isLoadBothSalable(boolean flag) {
+        loadBothSalable = flag;
     }
 
     public HashMap<String, String> getSelectedFilterMap() {
@@ -217,7 +222,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 for (LevelBO levelBO : parentidList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                                 if (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID()))) {
                                     stockList.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
@@ -229,7 +236,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 for (LevelBO levelBO : parentidList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -239,7 +248,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -247,7 +258,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 }
             } else {
                 for (ProductMasterBO sku : items) {
-                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                    if ((loadBothSalable
+                            ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                            : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                         stockList.add(sku);
                     fiveFilter_productIDs.add(sku.getProductID());
                 }
@@ -257,7 +270,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 for (LevelBO levelBO : parentidList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                                 if (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID()))) {
                                     stockList.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
@@ -269,7 +284,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 for (LevelBO levelBO : parentidList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -279,7 +296,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -287,7 +306,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 }
             } else {
                 for (ProductMasterBO sku : items) {
-                    if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                    if ((loadBothSalable
+                            ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                            : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                         stockList.add(sku);
                     fiveFilter_productIDs.add(sku.getProductID());
                 }
@@ -297,7 +318,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 for (LevelBO levelBO : parentidList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1)
+                            if (loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1)
                                 if (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID()))) {
                                     stockList.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
@@ -309,7 +332,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 for (LevelBO levelBO : parentidList) {// product filter alone selected
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1)
+                            if (loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -319,7 +344,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 for (int pid : mAttributeProducts) {// Attribute filter alone selected
                     for (ProductMasterBO sku : items) {
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
-                            if (sku.getIsSaleable() == 1)
+                            if (loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -327,7 +354,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 }
             } else {
                 for (ProductMasterBO sku : items) {
-                    if (sku.getIsSaleable() == 1)
+                    if (loadBothSalable
+                            ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                            : sku.getIsSaleable() == 1)
                         stockList.add(sku);
                     fiveFilter_productIDs.add(sku.getProductID());
 
@@ -502,7 +531,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             || sku.getCasebarcode().equals(strBarCodeSearch)
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
                             || "ALL".equals(strBarCodeSearch)) {
-                        if (sku.getIsSaleable() == 1 && sku.getOwn() == 1) {
+                        if ((loadBothSalable
+                                ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                : sku.getIsSaleable() == 1) && sku.getOwn() == 1) {
                             if (isSpecialFilter_enabled) {
                                 if (isSpecialFilterAppliedProduct(generalTxt, sku))
                                     stockList.add(sku);
@@ -518,7 +549,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             || sku.getCasebarcode().equals(strBarCodeSearch)
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
                             || "ALL".equals(strBarCodeSearch)) {
-                        if (sku.getIsSaleable() == 1 && sku.getOwn() == 0) {
+                        if ((loadBothSalable
+                                ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                : sku.getIsSaleable() == 1) && sku.getOwn() == 0) {
                             if (isSpecialFilter_enabled) {
                                 if (isSpecialFilterAppliedProduct(generalTxt, sku))
                                     stockList.add(sku);
@@ -534,7 +567,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             || sku.getCasebarcode().equals(strBarCodeSearch)
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
                             || "ALL".equals(strBarCodeSearch)) {
-                        if (sku.getIsSaleable() == 1) {
+                        if (loadBothSalable
+                                ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                : sku.getIsSaleable() == 1) {
                             if (isSpecialFilter_enabled) {
                                 if (isSpecialFilterAppliedProduct(generalTxt, sku))
                                     stockList.add(sku);
@@ -560,12 +595,16 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             Vector<ProductMasterBO> items = new Vector<>();
             if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
                 for (ProductMasterBO productBo : getTaggedProducts()) {
-                    if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 1)
+                    if ((loadBothSalable
+                            ? (productBo.getIsSaleable() == 1 || productBo.getIsSaleable() == 0)
+                            : productBo.getIsSaleable() == 1) && productBo.getOwn() == 1)
                         items.add(productBo);
                 }
             } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
                 for (ProductMasterBO productBo : getTaggedProducts()) {
-                    if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 0)
+                    if ((loadBothSalable
+                            ? (productBo.getIsSaleable() == 1 || productBo.getIsSaleable() == 0)
+                            : productBo.getIsSaleable() == 1) && productBo.getOwn() == 0)
                         items.add(productBo);
                 }
             } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
@@ -593,7 +632,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             || ret.getCasebarcode().toLowerCase().
                             contains(s.toLowerCase())
                             || ret.getOuterbarcode().toLowerCase().
-                            contains(s.toLowerCase())) && ret.getIsSaleable() == 1) {
+                            contains(s.toLowerCase())) && (loadBothSalable
+                            ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                            : ret.getIsSaleable() == 1)) {
 
                         if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
                             stockList.add(ret);
@@ -605,7 +646,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     if (ret.getRField1() != null && ret.getRField1()
                             .toLowerCase()
                             .contains(
-                                    s.toLowerCase()) && ret.getIsSaleable() == 1) {
+                                    s.toLowerCase()) && (loadBothSalable
+                            ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                            : ret.getIsSaleable() == 1)) {
                         if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
                             stockList.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
@@ -616,7 +659,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     if (ret.getProductShortName() != null && ret.getProductShortName()
                             .toLowerCase()
                             .contains(
-                                    s.toLowerCase()) && ret.getIsSaleable() == 1)
+                                    s.toLowerCase()) && (loadBothSalable
+                            ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                            : ret.getIsSaleable() == 1))
                         if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
                             stockList.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
@@ -666,7 +711,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             ArrayList<ProductMasterBO> stockList = new ArrayList<>();
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
-                if (ret.getIsSaleable() == 1) {
+                if (loadBothSalable
+                        ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                        : ret.getIsSaleable() == 1) {
                     if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
                         stockList.add(ret);
                     else if (applyProductAndSpecialFilter(ret))

@@ -135,6 +135,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private int x, y;
     private HorizontalScrollView hscrl_spl_filter;
     SearchAsync searchAsync;
+    private boolean loadBothSalable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -148,6 +149,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         bmodel.setContext(getActivity());
         priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
 
+        loadBothSalable = bmodel.configurationMasterHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU;
         try {
             isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
             if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
@@ -407,12 +409,16 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
         if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
             for (ProductMasterBO productBo : getTaggedProducts()) {
-                if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 1)
+                if ((loadBothSalable
+                        ? (productBo.getIsSaleable() == 1 || productBo.getIsSaleable() == 0)
+                        : productBo.getIsSaleable() == 1) && productBo.getOwn() == 1)
                     items.add(productBo);
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
             for (ProductMasterBO productBo : getTaggedProducts()) {
-                if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 0)
+                if ((loadBothSalable
+                        ? (productBo.getIsSaleable() == 1 || productBo.getIsSaleable() == 0)
+                        : productBo.getIsSaleable() == 1) && productBo.getOwn() == 0)
                     items.add(productBo);
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
@@ -445,7 +451,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                         || ret.getCasebarcode().toLowerCase().
                         contains(mEdt_searchproductName.getText().toString().toLowerCase())
                         || ret.getOuterbarcode().toLowerCase().
-                        contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+                        contains(mEdt_searchproductName.getText().toString().toLowerCase())) &&
+                        (loadBothSalable
+                                ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                                : ret.getIsSaleable() == 1)) {
 
                     if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                         mylist.add(ret);
@@ -458,7 +467,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                         .toLowerCase()
                         .contains(
                                 mEdt_searchproductName.getText().toString()
-                                        .toLowerCase()) && ret.getIsSaleable() == 1) {
+                                        .toLowerCase()) &&
+                        (loadBothSalable
+                                ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                                : ret.getIsSaleable() == 1)) {
                     if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                         mylist.add(ret);
                     else if (applyProductAndSpecialFilter(ret))
@@ -470,7 +482,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                         .toLowerCase()
                         .contains(
                                 mEdt_searchproductName.getText().toString()
-                                        .toLowerCase()) && ret.getIsSaleable() == 1)
+                                        .toLowerCase()) &&
+                        (loadBothSalable
+                                ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                                : ret.getIsSaleable() == 1))
                     if (generalbutton.equalsIgnoreCase(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                         mylist.add(ret);
                     else if (applyProductAndSpecialFilter(ret))
@@ -541,7 +556,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
                             || "ALL".equals(strBarCodeSearch)) {
                         if (bid == sku.getParentid() || (bid == -1 && "Brand".equals(mFilterText))) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 1) {
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 1) {
                                 if (isSpecialFilter_enabled) {
                                     if (isSpecialFilterAppliedProduct(generaltxt, sku))
                                         mylist.add(sku);
@@ -559,7 +576,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
                             || "ALL".equals(strBarCodeSearch)) {
                         if (bid == sku.getParentid() || (bid == -1 && "Brand".equals(mFilterText))) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 0) {
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 0) {
                                 if (isSpecialFilter_enabled) {
                                     if (isSpecialFilterAppliedProduct(generaltxt, sku))
                                         mylist.add(sku);
@@ -577,7 +596,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
                             || "ALL".equals(strBarCodeSearch)) {
                         if (bid == sku.getParentid() || (bid == -1 && "Brand".equals(mFilterText))) {
-                            if (sku.getIsSaleable() == 1) {
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1)) {
                                 if (isSpecialFilter_enabled) {
                                     if (isSpecialFilterAppliedProduct(generaltxt, sku))
                                         mylist.add(sku);
@@ -1625,7 +1646,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO sku : items) {
                     if (levelBO.getProductID() == sku.getParentid()) {
-                        if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                        if ((loadBothSalable
+                                ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                             mylist.add(sku);
                     }
                 }
@@ -1634,7 +1657,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO sku : items) {
                     if (levelBO.getProductID() == sku.getParentid()) {
-                        if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                        if ((loadBothSalable
+                                ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                             mylist.add(sku);
 
                     }
@@ -1644,7 +1669,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO sku : items) {
                     if (levelBO.getProductID() == sku.getParentid()) {
-                        if (sku.getIsSaleable() == 1)
+                        if (loadBothSalable
+                                ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                : sku.getIsSaleable() == 1)
                             mylist.add(sku);
                     }
                 }
@@ -1676,7 +1703,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                                 if (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID()))) {
                                     mylist.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
@@ -1688,7 +1717,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                                 mylist.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -1698,7 +1729,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                                 mylist.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -1707,7 +1740,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else {
                 if (mFilterText.equals("")) {
                     for (ProductMasterBO sku : items) {
-                        if (sku.getIsSaleable() == 1 && sku.getOwn() == 1)
+                        if ((loadBothSalable
+                                ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                             mylist.add(sku);
                         fiveFilter_productIDs.add(sku.getProductID());
                     }
@@ -1718,7 +1753,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                                 if (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID()))) {
                                     mylist.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
@@ -1730,7 +1767,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                                 mylist.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -1740,7 +1779,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
-                            if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                            if ((loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                                 mylist.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -1749,7 +1790,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else {
                 if (mFilterText.equals("")) {
                     for (ProductMasterBO sku : items) {
-                        if (sku.getIsSaleable() == 1 && sku.getOwn() == 0)
+                        if ((loadBothSalable
+                                ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                             mylist.add(sku);
                         fiveFilter_productIDs.add(sku.getProductID());
                     }
@@ -1760,7 +1803,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1)
+                            if (loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1)
                                 if (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID()))) {
                                     mylist.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
@@ -1772,7 +1817,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 for (LevelBO levelBO : mParentIdList) {// product filter alone selected
                     for (ProductMasterBO sku : items) {
                         if (levelBO.getProductID() == sku.getParentid()) {
-                            if (sku.getIsSaleable() == 1)
+                            if (loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1)
                                 mylist.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -1782,7 +1829,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 for (int pid : mAttributeProducts) {// Attribute filter alone selected
                     for (ProductMasterBO sku : items) {
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
-                            if (sku.getIsSaleable() == 1)
+                            if (loadBothSalable
+                                    ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                    : sku.getIsSaleable() == 1)
                                 mylist.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
@@ -1791,7 +1840,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else {
                 if (mFilterText.equals("")) {
                     for (ProductMasterBO sku : items) {
-                        if (sku.getIsSaleable() == 1)
+                        if (loadBothSalable
+                                ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
+                                : sku.getIsSaleable() == 1)
                             mylist.add(sku);
                         fiveFilter_productIDs.add(sku.getProductID());
                     }

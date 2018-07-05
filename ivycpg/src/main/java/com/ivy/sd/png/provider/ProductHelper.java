@@ -1338,6 +1338,7 @@ public class ProductHelper {
             // load location and date
             getLocations();
             generateDate();
+            getUomListName();
 
             ProductMasterBO product;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1486,7 +1487,7 @@ public class ProductHelper {
                         + "A.IsDrug as IsDrug,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
-                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse"
+                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom"
                         + " from ProductMaster A";
 
                 if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -1605,7 +1606,7 @@ public class ProductHelper {
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
-                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse"
+                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse,A" + loopEnd + ".DefaultUom as DefaultUom"
                         + " from ProductMaster A1 ";
 
                 for (int i = 2; i <= loopEnd; i++)
@@ -1737,6 +1738,18 @@ public class ProductHelper {
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
                     product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
                     product.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                    if (bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
+                        if (c.getInt(c.getColumnIndex("DefaultUom")) == 0) {
+                            if (product.getPcUomid() > 0)
+                                product.setDefaultUomId(product.getPcUomid());
+                            else if (product.getCaseUomId() > 0)
+                                product.setDefaultUomId(product.getCaseUomId());
+                            else if (product.getOuUomid() > 0)
+                                product.setDefaultUomId(product.getOuUomid());
+                        } else
+                            product.setDefaultUomId(c.getInt(c.getColumnIndex("DefaultUom")));
+                        product.setProductWiseUomList(cloneUOMList(uomList, product));
+                    }
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
 
@@ -2009,6 +2022,7 @@ public class ProductHelper {
             // load location and date
             getLocations();
             generateDate();
+            getUomListName();
 
             ProductMasterBO product;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -2155,7 +2169,7 @@ public class ProductHelper {
                         + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
                         + "A.tagDescription as tagDescription,"
                         + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
-                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.ParentHierarchy"
+                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.ParentHierarchy,A.DefaultUom"
                         + " from ProductMaster A";
 
                 if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -2270,7 +2284,7 @@ public class ProductHelper {
                         + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP, ")
                         + "A" + loopEnd + ".tagDescription as tagDescription,"
                         + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
-                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse,A.ParentHierarchy"
+                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse,A.ParentHierarchy,A" + loopEnd + ".DefaultUom as DefaultUom"
                         //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
                         + " from ProductMaster A1 ";
 
@@ -2392,6 +2406,18 @@ public class ProductHelper {
                     product.setIsNearExpiryTaggedProduct(c.getInt(c.getColumnIndex("isNearExpiry")));
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
                     product.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                    if (bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
+                        if (c.getInt(c.getColumnIndex("DefaultUom")) == 0) {
+                            if (product.getPcUomid() > 0)
+                                product.setDefaultUomId(product.getPcUomid());
+                            else if (product.getCaseUomId() > 0)
+                                product.setDefaultUomId(product.getCaseUomId());
+                            else if (product.getOuUomid() > 0)
+                                product.setDefaultUomId(product.getOuUomid());
+                        } else
+                            product.setDefaultUomId(c.getInt(c.getColumnIndex("DefaultUom")));
+                        product.setProductWiseUomList(cloneUOMList(uomList, product));
+                    }
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
                 }
@@ -2997,6 +3023,7 @@ public class ProductHelper {
                 product.setLocalOrderCaseqty(0);
                 product.setLocalOrderOuterQty(0);
                 product.setFoc(0);
+                product.setSelectedUomId(0);
                 //clear product wise reason
                 product.setSoreasonId(0);
                 // clear discount fields
@@ -7604,6 +7631,55 @@ public class ProductHelper {
             return false;
         }
         return false;
+    }
+
+    ArrayList<StandardListBO> uomList = null;
+
+    public ArrayList<StandardListBO> getUomListName() {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select listid,listname from standardlistmaster ");
+            sb.append("where listtype=" + bmodel.QT("PRODUCT_UOM"));
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                StandardListBO standardListBO;
+                uomList = new ArrayList<StandardListBO>();
+                while (c.moveToNext()) {
+                    standardListBO = new StandardListBO();
+                    standardListBO.setListID(c.getString(0));
+                    standardListBO.setListName(c.getString(1));
+                    uomList.add(standardListBO);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
+        }
+        return uomList;
+    }
+
+    /**
+     * load product wise uom List
+     *
+     * @param list list
+     * @return clone list
+     */
+    private ArrayList<StandardListBO> cloneUOMList(
+            ArrayList<StandardListBO> list, ProductMasterBO productObj) {
+        ArrayList<StandardListBO> clone = new ArrayList<StandardListBO>(list.size());
+        for (StandardListBO item : list) {
+            if (item.getListID().equals(productObj.getPcUomid() + "") ||
+                    item.getListID().equals(productObj.getCaseUomId() + "") ||
+                    item.getListID().equals(productObj.getOuUomid() + ""))
+                clone.add(new StandardListBO(item));
+        }
+        return clone;
     }
 }
 
