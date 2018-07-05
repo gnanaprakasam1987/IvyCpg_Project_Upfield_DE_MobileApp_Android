@@ -960,7 +960,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 } else if (bmodel.configurationMasterHelper.SHOW_NO_ORDER_CAPTURE_PHOTO && !isPhotoTaken) {
                     Toast.makeText(this, getResources().getString(R.string.photo_mandatory), Toast.LENGTH_SHORT).show();
                 } else {
-
+                    bmodel.outletTimeStampHelper.deleteTimeStampModuleWise("MENU_STK_ORD");
                     showCollectionReasonOrDialog();
                 }
             } else if (bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH") &&
@@ -969,7 +969,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             } else if (!hasActivityDone() && bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL) {
                 showFeedbackReasonOrDialog();
             } else {
+
                 showCollectionReasonOrDialog();
+
             }
         } catch (Exception e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
