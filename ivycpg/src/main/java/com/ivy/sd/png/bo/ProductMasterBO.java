@@ -207,6 +207,11 @@ public class ProductMasterBO {
     private int isSMP;
     private int isNMustSell;
 
+    /**
+     * Total scheme discount amount applied on line value.
+     *
+     * @return
+     */
     public double getSchemeDiscAmount() {
         return schemeDiscAmount;
     }
@@ -239,6 +244,10 @@ public class ProductMasterBO {
     private float csrp;
     private float osrp;
     private float baseprice;
+
+    //Default Uomid
+    private int defaultUomId;
+    private int selectedUomId;
 
     private int orderedOuterQty;
     private int crownOrderedOuterQty;
@@ -523,6 +532,8 @@ public class ProductMasterBO {
         this.isSchemeDiscount = productBO.isSchemeDiscount();
         this.hsnId = productBO.getHsnId();
         this.hsnCode = productBO.getHsnCode();
+        this.defaultUomId = productBO.getDefaultUomId();
+        this.selectedUomId = productBO.getSelectedUomId();
     }
 
     // ******* Location ********
@@ -640,6 +651,11 @@ public class ProductMasterBO {
         this.osrp = osrp;
     }
 
+    /**
+     * This is a value of line item after subracting scheme and Discounts.
+     *
+     * @return
+     */
     public double getDiscount_order_value() {
         return discount_order_value;
     }
@@ -1885,5 +1901,41 @@ public class ProductMasterBO {
 
     public void setAllocationQty(String allocationQty) {
         this.allocationQty = allocationQty;
+    }
+
+    public void setDefaultUomId(int defaultUomId) {
+        this.defaultUomId = defaultUomId;
+    }
+
+    public int getDefaultUomId() {
+        return defaultUomId;
+    }
+
+    public void setSelectedUomId(int selectedUomId) {
+        this.selectedUomId = selectedUomId;
+    }
+
+    public int getSelectedUomId() {
+        return selectedUomId;
+    }
+
+    private ArrayList<StandardListBO> productWiseUomList;
+
+    public void setProductWiseUomList(ArrayList<StandardListBO> productWiseUomList) {
+        this.productWiseUomList = productWiseUomList;
+    }
+
+    public ArrayList<StandardListBO> getProductWiseUomList() {
+        return productWiseUomList;
+    }
+
+    private int selectedUomPosition;
+
+    public int getSelectedUomPosition() {
+        return selectedUomPosition;
+    }
+
+    public void setSelectedUomPosition(int selectedUomPosition) {
+        this.selectedUomPosition = selectedUomPosition;
     }
 }

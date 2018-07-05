@@ -39,6 +39,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
@@ -84,7 +85,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     private String mModuleName = "MENU_CALL_ANLYS";
     boolean isPhotoTaken = false;
     private String mFeedbackReasonId = "";
-    private String mFeedBackId = "";
+    private String mFeedBackId = "0";
 
     private Toolbar toolbar;
     TextView tv_store_status, tv_duration, tv_edt_time_taken, tv_sale;
@@ -782,7 +783,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA31")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
                     final double salesReturnValue = SalesReturnHelper.getInstance(this).getSalesReturnValue(getApplicationContext());
-                    final double orderValue = SalesReturnHelper.getInstance(this).getOrderValue(getApplicationContext());
+                    final double orderValue = day_act;
                     if (salesReturnValue > orderValue)
                         con.setMenuNumber("0");
                     else
@@ -1332,9 +1333,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             Toast.makeText(CallAnalysisActivity.this,
                     getResources().getString(R.string.reason_saved),
                     Toast.LENGTH_SHORT).show();
-        } else if (!mFeedBackId.equals("0")) {
+        } else if (!mFeedBackId.equals("0")||hasActivityDone()) {
             bmodel.updateIsVisitedFlag();
         }
+
 
         // Rollback the review plan if review
         // done not order or stock
@@ -1376,6 +1378,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
                     .now(SDUtil.TIME), mFeedbackReasonId);
         }
+
+        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            resetSellerConfiguration();
+        }
+
         bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
         bmodel.productHelper.clearProductHelper();
 
@@ -1390,6 +1397,15 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     }
 
+    private void resetSellerConfiguration(){
+        bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
+        bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
+        bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
+        SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_ON = SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_ON_MASTER;
+        SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_SHOW_SCREEN = SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_SHOW_SCREEN_MASTER;
+        bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
+        bmodel.configurationMasterHelper.IS_INVOICE=bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
+    }
     private void resetRemarksBO() {
         bmodel.setOrderHeaderNote("");
         bmodel.setRField1("");

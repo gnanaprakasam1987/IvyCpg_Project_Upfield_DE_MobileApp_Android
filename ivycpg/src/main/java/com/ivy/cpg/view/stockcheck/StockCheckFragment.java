@@ -152,6 +152,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
         stockCheckPresenter = new StockCheckPresenterImpl(getContext());
         stockCheckPresenter.setView(this);
 
+        // update config to load both salable and non salable products
+        stockCheckPresenter.isLoadBothSalable(businessModel.configurationMasterHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU);
+
         try {
             isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
 
@@ -612,6 +615,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
                                 holder.imageButton_availability.setChecked(true);
 
+                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    holder.shelfPcsQty.setText("1");
+                                else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    holder.shelfCaseQty.setText("1");
+                                else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    holder.shelfouter.setText("1");
+
                                 if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
                                     holder.mReason.setEnabled(false);
                                     holder.mReason.setSelected(false);
@@ -627,6 +637,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.RED)));
                                 holder.imageButton_availability.setChecked(true);
 
+                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    holder.shelfPcsQty.setText("0");
+                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    holder.shelfCaseQty.setText("0");
+                                if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    holder.shelfouter.setText("0");
+
                                 if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
                                     holder.mReason.setEnabled(true);
                                     holder.mReason.setSelected(true);
@@ -639,6 +656,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.checkbox_default_color)));
                                 holder.imageButton_availability.setChecked(false);
+
+
+                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    holder.shelfPcsQty.setText("");
+                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    holder.shelfCaseQty.setText("");
+                                if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    holder.shelfouter.setText("");
 
                                 if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
                                     holder.mReason.setEnabled(false);
@@ -2155,7 +2180,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                 "", getResources().getString(R.string.saved_successfully),
                 false, getActivity().getResources().getString(R.string.ok),
-                null, new CommonDialog.positiveOnClickListener() {
+                null, new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

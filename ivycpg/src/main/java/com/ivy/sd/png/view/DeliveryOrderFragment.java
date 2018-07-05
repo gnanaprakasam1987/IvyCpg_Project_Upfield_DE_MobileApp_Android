@@ -1109,7 +1109,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                                         getResources().getString(R.string.stock_not_availble_for_free_product),
                                         getResources().getString(R.string.do_want_to_continue_with_partial_invoice),
                                         false, getActivity().getResources().getString(R.string.ok),
-                                        getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                                        getActivity().getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                                     @Override
                                     public void onPositiveButtonClick() {
 

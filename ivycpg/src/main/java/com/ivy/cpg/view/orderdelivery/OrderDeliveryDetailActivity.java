@@ -143,7 +143,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             @Override
             public void onClick(View view) {
                 orderDeliveryPresenter.saveOrderDeliveryDetail(
-                        isEdit,orderId
+                        isEdit,orderId,getIntent().getExtras().getString("menuCode")
 
                 );
             }
@@ -417,11 +417,16 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             ((TextView)view.findViewById(R.id.prod_name)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(fontType));
             ((TextView) view.findViewById(R.id.prod_name)).setText(getResources().getString(R.string.free_products));
             ((TextView) view.findViewById(R.id.prod_name)).setTextColor(Color.parseColor("#FFFFFF"));
+            ((TextView) view.findViewById(R.id.text_sih)).setText("");
+
         }
         else {
             ((TextView)view.findViewById(R.id.prod_name)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(fontType));
             ((TextView) view.findViewById(R.id.prod_name)).setText(schemeProductBO.getProductName());
+
+            if(orderDeliveryPresenter.getRemainingStock(schemeProductBO.getProductId())>=schemeProductBO.getQuantitySelected())
             ((TextView) view.findViewById(R.id.prod_name)).setTextColor(Color.parseColor("#000000"));
+            else ((TextView) view.findViewById(R.id.prod_name)).setTextColor(Color.parseColor("#FF0000"));
         }
 
 
@@ -486,6 +491,8 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                 ((TextView) view.findViewById(R.id.case_qty)).setText(String.valueOf(schemeProductBO.getQuantitySelected()));
             else if (schemeProductBO.getUomID() == bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()).getOuUomid())
                 ((TextView) view.findViewById(R.id.outer_qty)).setText(String.valueOf(schemeProductBO.getQuantitySelected()));
+
+            ((TextView) view.findViewById(R.id.text_sih)).setText(String.valueOf(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()).getSIH()));
         }
 
     }
@@ -834,7 +841,20 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                         holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
-                            if (totalQty > productList.get(position).getDSIH()) {
+
+                            if(currentOrderedQty > storedPieceQty){
+                                Toast.makeText(
+                                        OrderDeliveryDetailActivity.this,
+                                        getResources().getString(
+                                                R.string.exceed_ordered_value),
+                                        Toast.LENGTH_SHORT).show();
+
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0,
+                                        qty.length() - 1) : "0";
+                                holder.pieceQty.setText(qty);
+                            }
+                            else if (totalQty > productList.get(position).getDSIH()) {
                                 holder.productName.setTextColor(Color.parseColor("#FF0000"));
 //                                Toast.makeText(
 //                                        OrderDeliveryDetailActivity.this,
@@ -843,21 +863,13 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 //                                                        R.string.exceed),
 //                                                productList.get(position).getDSIH()),
 //                                        Toast.LENGTH_SHORT).show();
-                            }else if(currentOrderedQty > storedPieceQty){
-                                Toast.makeText(
-                                        OrderDeliveryDetailActivity.this,
-                                                getResources().getString(
-                                                        R.string.exceed_ordered_value),
-                                        Toast.LENGTH_SHORT).show();
                             }
 
-                            //Delete the last entered number and reset the qty
-                            qty = qty.length() > 1 ? qty.substring(0,
-                                    qty.length() - 1) : "0";
+
                             productList.get(position).setOrderedPcsQty(SDUtil
                                     .convertToInt(qty));
                             orderDeliveryPresenter.getAmountDetails(isEdit);
-                            holder.pieceQty.setText(qty);
+
                         }
                     }
 
@@ -933,7 +945,21 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                         holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
-                            if (totalQty > productList.get(position).getDSIH()) {
+
+                            if(currentOrderedQty > storedcaseQty){
+                                Toast.makeText(
+                                        OrderDeliveryDetailActivity.this,
+                                        getResources().getString(
+                                                R.string.exceed_ordered_value),
+                                        Toast.LENGTH_SHORT).show();
+
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0,
+                                        qty.length() - 1) : "0";
+                                holder.caseQty.setText(qty);
+
+                            }
+                            else if (totalQty > productList.get(position).getDSIH()) {
                                 holder.productName.setTextColor(Color.parseColor("#FF0000"));
 //                                Toast.makeText(
 //                                        OrderDeliveryDetailActivity.this,
@@ -942,19 +968,9 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 //                                                        R.string.exceed),
 //                                                productList.get(position).getDSIH()),
 //                                        Toast.LENGTH_SHORT).show();
-                            }else if(currentOrderedQty > storedcaseQty){
-                                Toast.makeText(
-                                        OrderDeliveryDetailActivity.this,
-                                                getResources().getString(
-                                                        R.string.exceed_ordered_value),
-                                        Toast.LENGTH_SHORT).show();
                             }
 
-                            //Delete the last entered number and reset the qty
-                            qty = qty.length() > 1 ? qty.substring(0,
-                                    qty.length() - 1) : "0";
 
-                            holder.caseQty.setText(qty);
                             productList.get(position).setOrderedCaseQty(SDUtil
                                     .convertToInt(qty));
                             orderDeliveryPresenter.getAmountDetails(isEdit);
@@ -1032,6 +1048,18 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                         holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
+
+                            if(currentOrderedQty > storedouterQty){
+                                Toast.makeText(
+                                        OrderDeliveryDetailActivity.this,
+                                        getResources().getString(
+                                                R.string.exceed_ordered_value),
+                                        Toast.LENGTH_SHORT).show();
+
+                                qty = qty.length() > 1 ? qty.substring(0,
+                                        qty.length() - 1) : "0";
+                                holder.outerQty.setText(qty);
+                            }
                             if (totalQty > productList.get(position).getDSIH()) {
                                 holder.productName.setTextColor(Color.parseColor("#FF0000"));
 //                                Toast.makeText(
@@ -1041,22 +1069,15 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 //                                                        R.string.exceed),
 //                                                productList.get(position).getDSIH()),
 //                                        Toast.LENGTH_SHORT).show();
-                            }else if(currentOrderedQty > storedouterQty){
-                                Toast.makeText(
-                                        OrderDeliveryDetailActivity.this,
-                                                getResources().getString(
-                                                        R.string.exceed_ordered_value),
-                                        Toast.LENGTH_SHORT).show();
                             }
 
-                            qty = qty.length() > 1 ? qty.substring(0,
-                                    qty.length() - 1) : "0";
+
 
                             productList.get(position).setOrderedOuterQty(SDUtil
                                     .convertToInt(qty));
                             orderDeliveryPresenter.getAmountDetails(isEdit);
 
-                            holder.outerQty.setText(qty);
+
                         }
                     }
 

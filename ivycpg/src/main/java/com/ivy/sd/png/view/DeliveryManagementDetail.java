@@ -637,7 +637,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                         getResources().getString(R.string.yes),
                         getResources().getString(R.string.no),
                         false,
-                        new CommonDialog.positiveOnClickListener() {
+                        new CommonDialog.PositiveClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
                                 bmodel.deleteFiles(HomeScreenFragment.photoPath,

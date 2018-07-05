@@ -51,7 +51,7 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
-import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
@@ -3472,6 +3472,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         menuCodeList.clear();
                     Intent intent = new Intent(this, CloseCallActivity.class);
                     startActivity(intent);
+                    finish();
 
                 } else {
                     dataNotMapped();

@@ -1195,7 +1195,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     "", msg,
                     false, getResources().getString(R.string.ok),
                     getResources().getString(R.string.cancel),
-                    new CommonDialog.positiveOnClickListener() {
+                    new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             mPrintCountInput = 1;
@@ -1213,7 +1213,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             commonDialog = new CommonDialog(getApplicationContext(), this,
                     "", msg,
                     false, getResources().getString(R.string.ok),
-                    null, new CommonDialog.positiveOnClickListener() {
+                    null, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     moveBack();

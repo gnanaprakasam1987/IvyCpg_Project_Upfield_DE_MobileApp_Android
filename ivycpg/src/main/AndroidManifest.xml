@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1300"
+    android:versionCode="1310"
     android:versionName="2.130.0.1676">
 
     <supports-screens
@@ -800,6 +800,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.asset.PosmGallery"
+            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
+
+
+        <activity
+            android:name="com.ivy.ui.activation.view.ActivationActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
     </application>
 

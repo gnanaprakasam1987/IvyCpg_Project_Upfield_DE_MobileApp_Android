@@ -1,26 +1,42 @@
 package com.ivy.sd.png.view;
 
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsFragment;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -40,6 +56,10 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
     private String productId="0";
     private boolean isFromUpSelling;
+    private ImageView pdt_image;
+    private File appImageFolderPath;
+    AppBarLayout appbar;
+    NestedScrollView nestedScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +180,51 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
         if(isFromUpSelling)
             tabLayout.setVisibility(View.GONE);
+
+        try {
+            pdt_image = findViewById(R.id.pdt_image);
+            appbar = findViewById(R.id.appbar);
+            nestedScrollView = findViewById(R.id.scrollView);
+            appImageFolderPath = bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name));
+            if (pdt_image != null) {
+                Uri path;
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(ProductSchemeDetailsActivity.this, BuildConfig.APPLICATION_ID + ".provider", new File(
+                            appImageFolderPath
+                                    + "/"
+                                    + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg"));
+                } else {
+                    path = Uri.fromFile(new File(
+                            appImageFolderPath
+                                    + "/"
+                                    + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg"));
+                }
+
+                //Set Image in Imageview using Glide, on exception disable scrolling of ImageView
+                Glide.with(getApplicationContext())
+                        .load(path)
+                        .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .listener(new RequestListener<Uri, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                appbar.setExpanded(false);
+                                ViewCompat.setNestedScrollingEnabled(nestedScrollView, false);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                return false;
+                            }
+                        })
+                        .into(pdt_image);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

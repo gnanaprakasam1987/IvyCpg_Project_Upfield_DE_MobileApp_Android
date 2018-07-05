@@ -51,6 +51,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1434,7 +1435,7 @@ SynchronizationHelper {
         JsonObjectRequest jsonObjectRequest;
         try {
 
-            headerInfo.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            headerInfo.put(MOBILE_DATE_TIME, Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             headerInfo.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             if (!DataMembers.backDate.isEmpty())
@@ -1787,7 +1788,7 @@ SynchronizationHelper {
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
             json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
-            json.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            json.put(MOBILE_DATE_TIME, Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             json.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
 
@@ -2320,9 +2321,9 @@ SynchronizationHelper {
                     bmodel.getApplicationVersionNumber());
             jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
-                    bmodel.activationHelper.getIMEINumber());
+                    DeviceUtils.getIMEINumber(context));
             jsonObj.put("RegistrationId", bmodel.regid);
-            jsonObj.put("MobileDate",
+            jsonObj.put(MOBILE_DATE_TIME,
                     Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
@@ -2391,9 +2392,9 @@ SynchronizationHelper {
                     bmodel.getApplicationVersionNumber());
             jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
-                    bmodel.activationHelper.getIMEINumber());
+                   DeviceUtils.getIMEINumber(context));
             jsonObj.put("RegistrationId", bmodel.regid);
-            jsonObj.put("DeviceUniqueId", bmodel.activationHelper.getDeviceId());
+            jsonObj.put("DeviceUniqueId",DeviceUtils.getDeviceId(context));
             Commons.print("Update Authentication Token " + jsonObj.toString());
             // adding additional two parameters
             addDeviceValidationParameters(false, jsonObj);
@@ -3249,7 +3250,7 @@ SynchronizationHelper {
                 jsonFormatter.addParameter("LoginId", bmodel.userMasterHelper
                         .getUserMasterBO().getLoginName());
                 jsonFormatter.addParameter("DeviceId",
-                        bmodel.activationHelper.getIMEINumber());
+                        DeviceUtils.getIMEINumber(context));
                 jsonFormatter.addParameter("VersionCode",
                         bmodel.getApplicationVersionNumber());
                 jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
@@ -3260,15 +3261,15 @@ SynchronizationHelper {
                             bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                             "yyyy/MM/dd");
                     if (varianceDwnDate == 0) {
-                        jsonFormatter.addParameter("MobileDate",
+                        jsonFormatter.addParameter(MOBILE_DATE_TIME,
                                 Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                     }
                     if (varianceDwnDate > 0) {
-                        jsonFormatter.addParameter("MobileDate",
+                        jsonFormatter.addParameter(MOBILE_DATE_TIME,
                                 getLastTransactedDate());
                     }
                 } else
-                    jsonFormatter.addParameter("MobileDate",
+                    jsonFormatter.addParameter(MOBILE_DATE_TIME,
                             Utils.getDate("yyyy/MM/dd HH:mm:ss"));
 
                 jsonFormatter.addParameter("MobileUTCDateTime",

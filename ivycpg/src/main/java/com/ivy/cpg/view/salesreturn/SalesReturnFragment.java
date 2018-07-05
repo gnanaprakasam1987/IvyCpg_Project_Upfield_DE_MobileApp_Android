@@ -1,10 +1,12 @@
 package com.ivy.cpg.view.salesreturn;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,11 +40,14 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -97,6 +102,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
     Button mBtnFilterPopup;
     private String screenTitle = "";
+    private boolean loadBothSalable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -186,6 +192,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         ((TextView) view.findViewById(R.id.tvProductNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) view.findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+        loadBothSalable = salesReturnHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU;
 
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(), mDrawerLayout,
@@ -233,9 +240,10 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
         mSearchTypeArray = new ArrayList<>();
-        mSearchTypeArray.add("Product Name");
-        mSearchTypeArray.add("GCAS Code");
-        mSearchTypeArray.add("BarCode");
+        mSearchTypeArray.add(getResources().getString(R.string.product_name));
+        mSearchTypeArray.add(getResources().getString(R.string.prod_code));
+        mSearchTypeArray.add(getResources().getString(
+                R.string.order_dialog_barcode));
 
         try {
             mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
@@ -260,7 +268,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         } catch (Exception e) {
             Commons.printException(e);
         }
-
 
 
         mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
@@ -289,8 +296,10 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         if (vw == mBtn_Search) {
             viewFlipper.showNext();
         } else if (vw == mBtn_clear) {
-            if (mEdt_searchproductName.getText().length() > 0)
+            if (mEdt_searchproductName.getText().length() > 0) {
                 mEdt_searchproductName.setText("");
+                strBarCodeSearch = "ALL";
+            }
             loadProductList();
 
             try {
@@ -408,6 +417,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                     }
                 }
             }
+            if (mylist.size() == 0)
+                Toast.makeText(getActivity(), getResources().getString(R.string.no_match_found), Toast.LENGTH_LONG).show();
             refreshList();
         } else {
             Toast.makeText(getActivity(), "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
@@ -423,7 +434,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             mylist = new ArrayList<>();
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
-                if (ret.getIsSaleable() == 1) {
+                if (loadBothSalable ?
+                        (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0) : ret.getIsSaleable() == 1) {
                     if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                         mylist.add(ret);
 
@@ -601,7 +613,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             case 0:
 //                CommonDialog dialog=
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(), "", getResources().getString(
-                        R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         salesReturnHelper
@@ -641,13 +653,13 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 }
             }
 
-            double totalOrderValue = bmodel.getOrderValue() ;
-            if(bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+            double totalOrderValue = bmodel.getOrderValue();
+            if (bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
                     !bmodel.configurationMasterHelper.IS_INVOICE &&
-                    totalvalue >= totalOrderValue){
+                    totalvalue >= totalOrderValue) {
                 Toast.makeText(getActivity(),
                         getResources().getString(
-                                R.string.sales_return_value_should_not_exceed_order_value ,
+                                R.string.sales_return_value_should_not_exceed_order_value,
                                 String.valueOf(totalOrderValue)),
                         Toast.LENGTH_LONG).show();
                 return;
@@ -731,6 +743,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         } else {
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
         }
+        menu.findItem(R.id.menu_barcode).setVisible(!drawerOpen);
+
         menu.findItem(R.id.menu_remarks).setVisible(false);
         menu.findItem(R.id.menu_scheme).setVisible(false);
         menu.findItem(R.id.menu_apply_so).setVisible(false);
@@ -742,6 +756,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         menu.findItem(R.id.menu_next).setVisible(false);
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
 
+        menu.findItem(R.id.menu_barcode).setVisible(bmodel.configurationMasterHelper.IS_BAR_CODE);
 
         if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
@@ -773,6 +788,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 salesReturnHelper.setIsSignCaptured(false);
                 salesReturnHelper.setSignatureName("");
                 salesReturnHelper.setSignaturePath("");
+                salesReturnHelper.setInvoiceId("");
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                     mDrawerLayout.closeDrawers();
                 else
@@ -781,6 +797,26 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
             case R.id.menu_fivefilter:
                 FiveFilterFragment();
+                return true;
+
+            case R.id.menu_barcode:
+                ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(2);
+                int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.CAMERA);
+                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                    IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                        @Override
+                        protected void startActivityForResult(Intent intent, int code) {
+                            SalesReturnFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                        }
+                    };
+                    integrator.setBeepEnabled(false).initiateScan();
+                } else {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.permission_enable_msg)
+                                    + " " + getResources().getString(R.string.permission_camera)
+                            , Toast.LENGTH_LONG).show();
+                }
                 return true;
 
             default:
@@ -894,11 +930,17 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                         || ret.getOuterbarcode().equals(strBarCodeSearch)
                         || ("ALL").equals(strBarCodeSearch)) {
 
-                    if (bid == -1 && ret.getIsSaleable() == 1) {
+                    if (bid == -1 &&
+                            (loadBothSalable
+                                    ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                                    : ret.getIsSaleable() == 1)) {
                         if (mFilterText.equals(BRAND_STRING)) {
                             mylist.add(ret);
                         }
-                    } else if (bid == ret.getParentid() && ret.getIsSaleable() == 1) {
+                    } else if (bid == ret.getParentid() &&
+                            (loadBothSalable
+                                    ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                                    : ret.getIsSaleable() == 1)) {
                         mylist.add(ret);
                     }
 
@@ -939,7 +981,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     private void showCustomDialog() {
 
         new CommonDialog(getActivity().getApplicationContext(), getActivity(), "", getResources().getString(
-                R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                R.string.doyouwantgoback), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 salesReturnHelper.clearSalesReturnTable(false);
@@ -1013,7 +1055,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         intent.putExtra("pid", productId);
         intent.putExtra("position", holderPostion);
         intent.putExtra("top", holderTop);
-        intent.putExtra("from","SALESRETURN");
+        intent.putExtra("from", "SALESRETURN");
 
         ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.zoom_enter, R.anim.hold);
         ActivityCompat.startActivityForResult(getActivity(), intent, SALES_ENTRY, opts.toBundle());
@@ -1021,6 +1063,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         // Check which request we're responding to
         if (requestCode == SALES_RET_SUMMARY) {
             // Make sure the request was successful
@@ -1043,9 +1086,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 startActivity(intent);
                 getActivity().finish();
             }
-        }
-
-        if (requestCode == SALES_ENTRY) {
+        } else if (requestCode == SALES_ENTRY) {
             if (resultCode == RESULT_OK) {
                 getActivity().overridePendingTransition(0, R.anim.zoom_exit);
                 updateValue();
@@ -1055,6 +1096,23 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 int holderTop = extras.getInt("top", 0);
                 if (mylist.size() > 0)
                     lvwplist.setSelectionFromTop(holderPosition, holderTop);
+            }
+        } else {
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+                } else {
+                    strBarCodeSearch = result.getContents();
+                    if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
+                        bmodel.setProductFilter(getResources().getString(R.string.order_dialog_barcode));
+                        mEdt_searchproductName.setText(strBarCodeSearch);
+                        if (viewFlipper.getDisplayedChild() == 0) {
+                            viewFlipper.showNext();
+                        }
+                    }
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
             }
         }
     }

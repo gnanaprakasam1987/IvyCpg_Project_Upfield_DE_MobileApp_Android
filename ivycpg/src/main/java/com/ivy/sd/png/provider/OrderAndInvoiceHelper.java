@@ -3,7 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -78,8 +78,13 @@ public class OrderAndInvoiceHelper {
 
     }
 
-    public LinkedList<ProductMasterBO> sort(LinkedList<ProductMasterBO> productList) {
-        Collections.sort(productList, new Comparator<ProductMasterBO>() {
+    /**
+     * Sort Alphabetically.
+     * @param orderedProductList Ordered product list.
+     * @return sorted orderedProductList
+     */
+    public LinkedList<ProductMasterBO> sort(LinkedList<ProductMasterBO> orderedProductList) {
+        Collections.sort(orderedProductList, new Comparator<ProductMasterBO>() {
             @Override
             public int compare(ProductMasterBO o1, ProductMasterBO o2) {
                 if (o1.getProductShortName().toLowerCase() != null && o2.getProductShortName().toLowerCase() != null)
@@ -88,10 +93,15 @@ public class OrderAndInvoiceHelper {
                     return o1.getProductName().toLowerCase().trim().compareTo(o2.getProductName().toLowerCase().trim());
             }
         });
-        return productList;
+        return orderedProductList;
     }
 
-    public LinkedList<ProductMasterBO> sortbyLevel(LinkedList<ProductMasterBO> orderedProductList) {
+    /**
+     * Sort level wise Alphabetically
+     * @param orderedProductList ordered product list.
+     * @return sorted orderedProductList
+     */
+    public LinkedList<ProductMasterBO> sortByLevel(LinkedList<ProductMasterBO> orderedProductList) {
         LinkedList<ProductMasterBO> list = new LinkedList<>();
 
         String productIDs = ObjectToCommaSeperated(orderedProductList);
