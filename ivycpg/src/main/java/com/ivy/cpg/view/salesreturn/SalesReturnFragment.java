@@ -773,6 +773,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 salesReturnHelper.setIsSignCaptured(false);
                 salesReturnHelper.setSignatureName("");
                 salesReturnHelper.setSignaturePath("");
+                salesReturnHelper.setInvoiceId("");
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                     mDrawerLayout.closeDrawers();
                 else

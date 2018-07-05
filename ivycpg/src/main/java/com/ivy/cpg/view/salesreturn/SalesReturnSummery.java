@@ -26,6 +26,7 @@ import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -53,6 +54,8 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
     private Toolbar toolbar;
     private Button mBtnSave;
     private String PHOTO_PATH = "";
+    private ArrayAdapter<String> mInvoiceListAdapter;
+    private int mSelectedIndex;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,12 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                 onNextButtonClick();
             }
         });
+
+        mInvoiceListAdapter = new ArrayAdapter<>(this,
+                android.R.layout.select_dialog_singlechoice);
+
+        for (String temp : salesReturnHelper.getInvoiceNo(this))
+            mInvoiceListAdapter.add(temp);
     }
 
     @Override
@@ -496,7 +505,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         } else if (i == R.id.menu_clear_tran) {
             showCustomDialog();
             return true;
-        }else if (i == R.id.menu_signature) {
+        } else if (i == R.id.menu_signature) {
             if (salesReturnHelper.isSignCaptured()) {
                 showDialog(8);
                 return true;
@@ -512,6 +521,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     protected Dialog onCreateDialog(int id) {
         String msg = "";
@@ -592,11 +602,33 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
     private void onNextButtonClick() {
         if (salesReturnHelper.hasSalesReturn()) {
-            new SaveAsyncTask().execute();
+            if (bmodel.configurationMasterHelper.IS_INVOICE_SR) // SR18 Config Code
+                showInvoiceNoDialog();
+            else
+                new SaveAsyncTask().execute();
         } else {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
         }
+    }
+
+    private void showInvoiceNoDialog() {
+        AlertDialog.Builder builder;
+
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle(null);
+        builder.setSingleChoiceItems(mInvoiceListAdapter, mSelectedIndex,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        mSelectedIndex = item;
+                        dialog.dismiss();
+                        salesReturnHelper.setInvoiceId(mInvoiceListAdapter.getItem(item));
+                        new SaveAsyncTask().execute();
+                    }
+                });
+
+        bmodel.applyAlertDialogTheme(builder);
     }
 
     private void onNoteButtonClick() {
@@ -631,7 +663,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             }
 
             if (!salesReturnHelper.IS_APPLY_TAX_IN_SR) {
-                    bmodel.productHelper.taxHelper.getBillTaxList().clear();
+                bmodel.productHelper.taxHelper.getBillTaxList().clear();
             }
 
             bmodel.saveModuleCompletion("MENU_SALES_RET");
@@ -642,7 +674,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             try {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                salesReturnHelper.saveSalesReturn(getApplicationContext(),"","",false);
+                salesReturnHelper.saveSalesReturn(getApplicationContext(), "", "", false);
                 salesReturnHelper.clearSalesReturnTable(false);
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -669,6 +701,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                 salesReturnHelper.setIsSignCaptured(false);
                 salesReturnHelper.setSignatureName("");
                 salesReturnHelper.setSignaturePath("");
+                salesReturnHelper.setInvoiceId("");
                 if (bmodel.configurationMasterHelper.SHOW_PRINT_CREDIT_NOTE && salesReturnHelper.getTotalValue() > 0) {
                     HashMap<String, String> keyValues = new HashMap<>();
                     keyValues.put("key1", "Tax CreditNote No : " + salesReturnHelper.getCreditNoteId().replaceAll("'", ""));
@@ -680,7 +713,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     if ("1".equalsIgnoreCase(bmodel.getRetailerMasterBO().getRField4())) {
                         bmodel.productHelper.updateDistributorDetails();
                     }
-                    bmodel.mCommonPrintHelper.xmlRead("credit_note", false, mPrintList, keyValues,null);
+                    bmodel.mCommonPrintHelper.xmlRead("credit_note", false, mPrintList, keyValues, null);
                     Intent i = new Intent(SalesReturnSummery.this, CommonPrintPreviewActivity.class);
                     i.putExtra("IsFromOrder", true);
                     i.putExtra("isHomeBtnEnable", true);

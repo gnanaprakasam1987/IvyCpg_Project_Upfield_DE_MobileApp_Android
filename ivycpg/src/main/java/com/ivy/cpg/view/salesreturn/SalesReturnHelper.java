@@ -70,6 +70,8 @@ public class SalesReturnHelper {
     private boolean isSignCaptured;
     private String SignatureName;
 
+    private String invoiceId;
+
     private SalesReturnHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
     }
@@ -167,6 +169,14 @@ public class SalesReturnHelper {
 
     public void setTotalValue(double totalValue) {
         this.totalValue = totalValue;
+    }
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     /**
@@ -570,6 +580,10 @@ public class SalesReturnHelper {
             if (isData) {
                 // Preapre and save salesreturn header.
                 columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule";
+
+                if (bmodel.configurationMasterHelper.IS_INVOICE_SR)
+                    columns = columns + ",invoiceid";
+
                 values = getSalesReturnID() + ","
                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                         + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
@@ -591,6 +605,9 @@ public class SalesReturnHelper {
                     values = values + "," + orderId + "," + QT(module);
                 else
                     values = values + "," + QT("") + "," + QT("");
+
+                if (bmodel.configurationMasterHelper.IS_INVOICE_SR)
+                    values = values + "," + QT(getInvoiceId());
 
                 db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
             }
@@ -1411,7 +1428,7 @@ public class SalesReturnHelper {
 
     }
 
-    public void deleteSalesReturnByOrderId(DBUtil db,String orderId){
+    public void deleteSalesReturnByOrderId(DBUtil db, String orderId) {
 
         try {
             String sb = "select uid from SalesReturnHeader where RetailerID=" +
@@ -1434,10 +1451,34 @@ public class SalesReturnHelper {
                                 + DatabaseUtils.sqlEscapeString(uid), false);
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    public ArrayList<String> getInvoiceNo(Context mContext) {
+        ArrayList<String> invoiceNoList = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sb = "select invoiceid from P4InvoiceHistoryMaster where retailerid=" +
+                    bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID());
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    invoiceNoList.add(c.getString(0));
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+            invoiceNoList = new ArrayList<>();
+        }
+
+        return invoiceNoList;
     }
 }
