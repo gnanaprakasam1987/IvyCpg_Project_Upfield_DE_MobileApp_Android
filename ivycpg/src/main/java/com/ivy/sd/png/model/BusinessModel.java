@@ -5588,6 +5588,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "User" + path;
             } else if (imageName.startsWith("SR_SGN_")) {
                 mBucketName = mBucketDetails + "/" + "SalesReturn" + path;
+            } else if (imageName.startsWith("ORD_")) {
+                mBucketName = mBucketDetails + "/" + "Order" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;

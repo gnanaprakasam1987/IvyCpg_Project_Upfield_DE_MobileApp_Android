@@ -1443,6 +1443,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_DEFAULT_UOM = "ORDB24";
     public boolean IS_SHOW_DEFAULT_UOM;
 
+    private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
+    public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -3736,6 +3739,7 @@ public class ConfigurationMasterHelper {
             IS_PRINT_SEQUENCE_LEVELWISE = false;
             IS_SHOW_DEFAULT_UOM = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
+            IS_SHOW_ORDER_PHOTO_CAPTURE = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4373,6 +4377,18 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     SHOW_SALABLE_AND_NON_SALABLE_SKU = true;
+                }
+                c.close();
+            }
+
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_ORDER_PHOTO_CAPTURE) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    IS_SHOW_ORDER_PHOTO_CAPTURE = true;
                 }
                 c.close();
             }
