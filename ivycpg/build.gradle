@@ -80,7 +80,7 @@ android {
     buildTypes {
         debug {
             resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
-            buildConfigField("boolean", "ACTIVATION", "true");
+            buildConfigField("boolean", "ACTIVATION", "false");
 
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
