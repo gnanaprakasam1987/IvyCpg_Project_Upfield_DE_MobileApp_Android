@@ -125,6 +125,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private static final String MENU_VISIT = "Trade Coverage";
     private static final String MENU_PLANNING = "Day Planning";
+    private static final String MENU_PLANNING_SUB = "Day Planning Sub";
     private static final String MENU_STK_ORD = "MENU_STK_ORD";
 
     private static final int CAMERA_REQUEST_CODE = 100;
@@ -159,7 +160,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean isVisible = false;
     private boolean isLatLong;
     private static boolean firstLevZoom;
-    private boolean fromHomeClick = false, visitClick = false, isFromPlanning = false;
+    private boolean fromHomeClick = false, visitClick = false, isFromPlanning = false,isFromPlanningSub = false;
 
     private List<LatLng> markerList = new ArrayList<>();
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID;
@@ -367,6 +368,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         visitClick = getIntent().getBooleanExtra("locvisit", false);
         fromHomeClick = getIntent().getBooleanExtra("hometwo", false);
         isFromPlanning = getIntent().getBooleanExtra("isPlanning", false);
+        isFromPlanningSub=getIntent().getBooleanExtra("isPlanningSub",false);
 
         try {
             Intent arg = getIntent();
@@ -1171,11 +1173,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 deviateBtn.setVisibility(View.VISIBLE);
                 cancelVisitBtn.setVisibility(View.GONE);
                 startVisitBtn.setVisibility(View.GONE);
-            } else if (isFromPlanning) {
-                addPlaneBtn.setVisibility(View.VISIBLE);
+            } else if (isFromPlanning || isFromPlanningSub) {
+                addPlaneBtn.setVisibility(View.GONE);
                 deviateBtn.setVisibility(View.GONE);
                 cancelVisitBtn.setVisibility(View.GONE);
                 startVisitBtn.setVisibility(View.GONE);
+                bottomView.setVisibility(View.GONE);
             }
 
             isClicked = false;
@@ -2153,9 +2156,18 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             if (fromHomeClick || non_visit) {
                 finish();
             } else {
-                if (!visitClick) {
+                if (!visitClick && !isFromPlanning && !isFromPlanningSub) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_VISIT"));
+                    finish();
+                } else if(isFromPlanning) {
+                    startActivity(new Intent(ProfileActivity.this,
+                            HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING"));
+                    finish();
+
+                }else if(isFromPlanningSub){
+                    startActivity(new Intent(ProfileActivity.this,
+                            HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING_SUB"));
                     finish();
                 } else {
                     finish();
@@ -2189,6 +2201,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     finish();
                 } else if (calledBy.equalsIgnoreCase(MENU_PLANNING)) {
                     Intent i = new Intent(ProfileActivity.this, PlanningVisitActivity.class);
+                    i.putExtra("isPlanning", true);
+                    startActivity(i);
+                    finish();
+                }else if(calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)){
+                    Intent i = new Intent(ProfileActivity.this, PlanningVisitActivity.class);
+                    i.putExtra("isPlanningSub", true);
                     startActivity(i);
                     finish();
                 }

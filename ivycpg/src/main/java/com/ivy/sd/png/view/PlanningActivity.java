@@ -448,7 +448,12 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
         /** If current tab is android */
         if (("all").equalsIgnoreCase(tab.getTag() + "")) {
             if (mNonVisitFragment == null) {
-                ft.add(R.id.realtabcontent, new NonVisitFragment(), "all");
+
+                Bundle bndl = new Bundle();
+                bndl.putString("From", fromWhere);
+                NonVisitFragment fragment = new NonVisitFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.realtabcontent, fragment, "all");
             } else {
                 ft.attach(mNonVisitFragment);
             }

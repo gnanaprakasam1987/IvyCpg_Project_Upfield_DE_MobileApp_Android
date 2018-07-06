@@ -62,6 +62,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
     private final String MENU_PLANNING = "Day Planning";
     private final String MENU_VISIT = "Trade Coverage";
+    private final String MENU_PLANNING_SUB = "Day Planning Sub";
     public boolean profileclick;
     private AbsListView listView;
     private BusinessModel bmodel;
@@ -276,7 +277,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        calledBy = getActivity().getIntent().getStringExtra("From");
+        //calledBy = getActivity().getIntent().getStringExtra("From");
+        calledBy=getArguments().getString("From");
         if (calledBy == null)
             calledBy = MENU_VISIT;
     }
@@ -991,6 +993,12 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                     getActivity().finish();
                 } else if (calledBy.equalsIgnoreCase(MENU_PLANNING)) {
                     Intent i = new Intent(getActivity(), PlanningVisitActivity.class);
+                    i.putExtra("isPlanning",true);
+                    startActivity(i);
+                    getActivity().finish();
+                }else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)) {
+                    Intent i = new Intent(getActivity(), PlanningVisitActivity.class);
+                    i.putExtra("isPlanningSub",true);
                     startActivity(i);
                     getActivity().finish();
                 }
@@ -1116,7 +1124,11 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             Commons.print("-" + calledBy);
                                             bmodel.newOutletHelper.downloadLinkRetailer();
                                             Intent i = new Intent(getActivity(), ProfileActivity.class);
-                                            i.putExtra("From", MENU_VISIT);
+                                            i.putExtra("From", calledBy);
+                                            if(calledBy.equalsIgnoreCase(MENU_PLANNING))
+                                                i.putExtra("isPlanning",true);
+                                            else if(calledBy.equalsIgnoreCase(MENU_PLANNING_SUB))
+                                                i.putExtra("isPlanningSub",true);
                                             i.putExtra("non_visit", true);
                                             startActivityForResult(i, 1);
                                         }
