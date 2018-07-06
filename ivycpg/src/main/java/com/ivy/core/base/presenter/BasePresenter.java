@@ -76,7 +76,6 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
         if (isNFCConfigurationEnabled()) {
             getIvyView().pauseNFCManager();
         }
-        mCompositeDisposable.clear();
 
     }
 

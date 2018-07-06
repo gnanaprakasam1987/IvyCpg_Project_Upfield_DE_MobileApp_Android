@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -120,5 +121,12 @@ public class AppUtils {
         return dialog;
     }
 
+    public static String convertToSting(Object object) {
+        return new Gson().toJson(object);
+    }
+
+    public static Object convertToObject(String jsonString, Object object) {
+        return new Gson().fromJson(jsonString, object.getClass());
+    }
 
 }

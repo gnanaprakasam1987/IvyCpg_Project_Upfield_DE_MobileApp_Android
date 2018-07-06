@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 public class FontUtils {
 
 
-    public static enum FontType {
+    public enum FontType {
         LIGHT, MEDIUM, THIN, REGULAR
     }
 
