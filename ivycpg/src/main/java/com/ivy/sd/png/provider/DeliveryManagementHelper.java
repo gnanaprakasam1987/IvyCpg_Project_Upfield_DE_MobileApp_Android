@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
 
+import com.baidu.mapapi.BMapManager;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
@@ -391,7 +392,9 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
 
             }
 
-            saveSalesReturn(invoiceno);
+            if(bmodel.configurationMasterHelper.IS_GENERATE_SR_IN_DELIVERY) {
+                saveSalesReturn(invoiceno);
+            }
 
             // update SIH
             if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION_ON_DELIVERY) {
@@ -555,9 +558,9 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
                         + ","
                         + 0
                         + ","
-                        + ""
+                        + bmodel.QT("")
                         + ","
-                        + ""
+                        + bmodel.QT("")
                         + ","
                         + outerQty
                         + ","

@@ -1391,6 +1391,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SR_INVOICE = "SR18";
     public boolean IS_INVOICE_SR;
 
+    private static final String CODE_GENERATE_SR_IN_DELIVERY = "SR19";
+    public boolean IS_GENERATE_SR_IN_DELIVERY;
+
 
     private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
     public boolean IS_REALTIME_LOCATION_CAPTURE;
@@ -2498,7 +2501,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_INDICATIVE_SR = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
         this.IS_INVOICE_SR = hashMapHHTModuleConfig.get(CODE_SR_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INVOICE) : false;
-
+        this.IS_GENERATE_SR_IN_DELIVERY=hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) : false;
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
 
         this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
