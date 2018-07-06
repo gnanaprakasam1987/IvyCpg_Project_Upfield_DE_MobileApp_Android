@@ -53,7 +53,6 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -121,13 +120,14 @@ public class ProfileEditFragment extends IvyBaseFragment
     private static final String PROFILE_14 = "PROFILE14";//LOCATION02 two level up,length validation=Y,Has Edit=0,RetailerMaster
     private static final String PROFILE_15 = "PROFILE15";//LOCATION Least level,length validation=Y,Has Edit=0,RetailerMaster
     private static final String PROFILE_20 = "PROFILE20";//RFiled1, IF (FUN42) -> CreditLimit - Outstanding,Has Edit=0
-    private static final String PROFILE_27 = "PROFILE22";//Contract Type,Has Edit=0 Note:-Only Profile Config
+    private static final String PROFILE_22 = "PROFILE22";//Contract Type,Has Edit=0 Note:-Only Profile Config
     private static final String PROFILE_25 = "PROFILE25";//CREDITPERIOD,level,length validation=Y,Has Edit=0,RetailerMaster
     private static final String PROFILE_26 = "PROFILE26";//RField2,Has Edit=1 Note:-Only Profile Config
+    private static final String PROFILE_27 = "PROFILE27";
     private static final String PROFILE_28 = "PROFILE28";//RField4,length validation=Y,Has Edit=1,RetailerMaster
     private static final String PROFILE_30 = "PROFILE30";//ContactNumber Note:-Only Profile Config
-    private static final String PROFILE_36 = "PROFILE31";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerMaster
-    private static final String PROFILE_31 = "PROFILE36";//NEARBYRET(retailers)length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_31 = "PROFILE31";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerMaster
+    private static final String PROFILE_36 = "PROFILE36";//NEARBYRET(retailers)length validation=Y,Has Edit=1,RetailerMaster
     private static final String PROFILE_38 = "PROFILE38";//PINCODE,length validation=Y,Has Edit=0, RetailerAddress
     private static final String PROFILE_39 = "PROFILE39";//RetailerAddressCity :Note:-Only Profile Config,Has Edit=1
     private static final String PROFILE_40 = "PROFILE40";//STATE ,length validation=Y,Has Edit=0, RetailerAddress
@@ -319,7 +319,6 @@ public class ProfileEditFragment extends IvyBaseFragment
             public void onClick(View v) {
                 try {
                     if (validateEditProfile()) {
-
                         if (bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
                             if ((lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("")
                                     || SDUtil.convertToDouble(longitude) == 0)
@@ -709,9 +708,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
                             id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
-                    totalView.addView(
-                            getSpinnerView(mNumber, mName, configCode, id
-                            ), commonsparams);
+                    totalView.addView(getSpinnerView(mNumber, mName, configCode, id), commonsparams);
                 } else if (configCode.equals(PROFILE_07) && flag == 1 && Order == 1) {
                     int id = retailerObj.getSubchannelid();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -1452,96 +1449,132 @@ public class ProfileEditFragment extends IvyBaseFragment
         return null;
     }
 
-    /*Create EditTextView  Code changed by Murugan S
-    * Params
-    * Number
-    * Name
-    * textValue
-    * editStyle*/
+    /*This method is used to create a new LinearLayout with attributes */
+    private LinearLayout createLinearLayout(int oriendation, int resourcesId ){
+        LinearLayout linearlayout = new LinearLayout(getActivity());
+        linearlayout.setOrientation(oriendation);
+        if(resourcesId!=0) linearlayout.setBackgroundColor(resourcesId);
+        return linearlayout;
+    }
+
+    /*This method is used to create a new LinearLayout with attributes */
+    private LinearLayout createLinearLayout(int oriendation, int resourcesId, float weightSum ){
+        LinearLayout linearlayout = new LinearLayout(getActivity());
+        linearlayout.setOrientation(oriendation);
+        linearlayout.setWeightSum(weightSum);
+        if(resourcesId!=0) linearlayout.setBackgroundColor(resourcesId);
+        return linearlayout;
+    }
+
+    /*This method is used to create a new LinearLayout with attributes */
+    private LinearLayout createLinearLayout(){
+        return new LinearLayout(getActivity());
+    }
+
+    /*This method is used to create a new LinearLayout with attributes */
+    private TextView getSingleTextView(int positionNumber,String menuName){
+        textview[positionNumber] = new TextView(getActivity());
+        textview[positionNumber].setText(menuName);
+        textview[positionNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        textview[positionNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
+        textview[positionNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
+        return textview[positionNumber];
+    }
+
+    /*Get the EditTextView*/
+    private  AppCompatEditText getSingleEditTextView(int positionNumber,String configCode,String menuName,String values ){
+
+        editText[positionNumber] = new AppCompatEditText(getActivity());
+        editText[positionNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
+        editText[positionNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        editText[positionNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
+        editText[positionNumber].setText(values);
+        editText[positionNumber].setHint(menuName);
+
+        if (!comparConfigerCode(configCode, PROFILE_78)) {    //if not Email   //cmd for not apply inputfilter value for email id
+            getInputFilter(positionNumber);
+        }
+
+        if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+            editText[positionNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        else
+            editText[positionNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+        if (comparConfigerCode(configCode, PROFILE_30) || comparConfigerCode(configCode, PROFILE_10) ||
+                comparConfigerCode(configCode, PROFILE_12) || comparConfigerCode(configCode, PROFILE_79) ||
+                comparConfigerCode(configCode, PROFILE_86)) {
+            editText[positionNumber].setInputType(InputType.TYPE_CLASS_PHONE);
+        }
+
+        if (comparConfigerCode(configCode, PROFILE_25)){
+            editText[positionNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
+            if (values.equals("0") || values.equals("-1"))
+                editText[positionNumber].setText("");
+            else
+                editText[positionNumber].setText(values);
+        }
+
+
+        return editText[positionNumber];
+    }
+
+    //InputFilder
+    private void getInputFilter(int positionNumber ){
+        if (inputFilters != null && inputFilters.size() > 0) {
+            InputFilter[] stockArr = new InputFilter[inputFilters.size()];
+            stockArr = inputFilters.toArray(stockArr);
+            editText[positionNumber].setFilters(stockArr);
+            if (inputFilters.size() == 2)
+                editText[positionNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        }
+    }
+
+
     private LinearLayout getEditTextView(final int mNumber, String MName, String textValue, int editStyle) {
 
-        LinearLayout linearlayout = new LinearLayout(getActivity());
-        linearlayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearlayout.setBackgroundColor(getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
 
-        LinearLayout secondlayout = new LinearLayout(getActivity());
+        LinearLayout secondlayout = createLinearLayout();
 
         String mConfigCode = profileConfig.get(mNumber).getConfigCode();
 
-        /*Email, PenNumber,GST*/
         if (!comparConfigerCode(mConfigCode, PROFILE_78) ||
                 !comparConfigerCode(mConfigCode, PROFILE_81) ||
-                !comparConfigerCode(mConfigCode, PROFILE_61)) {
+                !comparConfigerCode(mConfigCode, PROFILE_61)) {   /*Email, PenNumber,GST*/
             //regex
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
         }
-
-        /*PanNumber*/
-        if (comparConfigerCode(mConfigCode, PROFILE_81)) {
+        if (comparConfigerCode(mConfigCode, PROFILE_81)) {  /*PanNumber*/
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkPANRegex(mNumber);
         }
-        /*GST*/
-        if (comparConfigerCode(mConfigCode, PROFILE_61)) {
+
+        if (comparConfigerCode(mConfigCode, PROFILE_61)) {   /*GST*/
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkGSTRegex(mNumber);
         }
 
-        /*STORENAME,ADDRESS1,ADDRESS2,ADDRESS3,RetailerAddressCity,RFiled1,RField2
-        * Contract Type,RField4,RFIELD5,RFIELD6,RFIELD7,STATE,PINCODE,GSTN Number
-        * pan_number,FOOD_LICENCE_NUM,DRUG_LICENSE_NUM,Email,REGION,COUNTRY*/
+      /*  STORENAME,ADDRESS1,ADDRESS2,ADDRESS3,RetailerAddressCity,RFiled1,RField2
+         Contract Type,RField4,RFIELD5,RFIELD6,RFIELD7,STATE,PINCODE,GSTN Number
+         pan_number,FOOD_LICENCE_NUM,DRUG_LICENSE_NUM,Email,REGION,COUNTRY*/
         TextInputLayout editTextInputLayout;
-        if (comparConfigerCode(mConfigCode, PROFILE_02) ||
-                comparConfigerCode(mConfigCode, PROFILE_03) ||
-                comparConfigerCode(mConfigCode, PROFILE_04) ||
-                comparConfigerCode(mConfigCode, PROFILE_05) ||
-                comparConfigerCode(mConfigCode, PROFILE_39) ||
-                comparConfigerCode(mConfigCode, PROFILE_20) ||
-                comparConfigerCode(mConfigCode, PROFILE_26) ||
-                comparConfigerCode(mConfigCode, PROFILE_27) ||
+        if (comparConfigerCode(mConfigCode, PROFILE_02) || comparConfigerCode(mConfigCode, PROFILE_03) ||
+                comparConfigerCode(mConfigCode, PROFILE_04) || comparConfigerCode(mConfigCode, PROFILE_05) ||
+                comparConfigerCode(mConfigCode, PROFILE_39) || comparConfigerCode(mConfigCode, PROFILE_20) ||
+                comparConfigerCode(mConfigCode, PROFILE_26) || comparConfigerCode(mConfigCode, PROFILE_27) ||
                 (comparConfigerCode(mConfigCode, PROFILE_28) && profileConfig.get(mNumber).getHasLink() == 0) ||
                 (comparConfigerCode(mConfigCode, PROFILE_53) && profileConfig.get(mNumber).getHasLink() == 0) ||
                 (comparConfigerCode(mConfigCode, PROFILE_54) && profileConfig.get(mNumber).getHasLink() == 0) ||
                 (comparConfigerCode(mConfigCode, PROFILE_55) && profileConfig.get(mNumber).getHasLink() == 0) ||
-                comparConfigerCode(mConfigCode, PROFILE_40) ||
-                comparConfigerCode(mConfigCode, PROFILE_38) ||
-                comparConfigerCode(mConfigCode, PROFILE_61) ||
-                comparConfigerCode(mConfigCode, PROFILE_81) ||
-                comparConfigerCode(mConfigCode, PROFILE_82) ||
-                comparConfigerCode(mConfigCode, PROFILE_84) ||
-                comparConfigerCode(mConfigCode, PROFILE_78) ||
-                comparConfigerCode(mConfigCode, PROFILE_87) ||
-                comparConfigerCode(mConfigCode, PROFILE_88)
-                ) {
-            LinearLayout firstlayout = new LinearLayout(getActivity());
-            firstlayout.setOrientation(LinearLayout.HORIZONTAL);
+                comparConfigerCode(mConfigCode, PROFILE_40) || comparConfigerCode(mConfigCode, PROFILE_38) ||
+                comparConfigerCode(mConfigCode, PROFILE_61) || comparConfigerCode(mConfigCode, PROFILE_81) ||
+                comparConfigerCode(mConfigCode, PROFILE_82) || comparConfigerCode(mConfigCode, PROFILE_84) ||
+                comparConfigerCode(mConfigCode, PROFILE_78) || comparConfigerCode(mConfigCode, PROFILE_87) ||
+                comparConfigerCode(mConfigCode, PROFILE_88) )  {
+
             editTextInputLayout = new TextInputLayout(getActivity());
-
-            editText[mNumber] = new AppCompatEditText(getActivity());
-            editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-            editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            editText[mNumber].setText(textValue);
-            editText[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-
-            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-            else
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-
-            editText[mNumber].setHint(MName);
-            //cmd for not apply inputfilter value for email id
-
-            //if not Email
-            if (!comparConfigerCode(mConfigCode, PROFILE_78)) {
-                if (inputFilters != null && inputFilters.size() > 0) {
-                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                    stockArr = inputFilters.toArray(stockArr);
-                    editText[mNumber].setFilters(stockArr);
-                    if (inputFilters.size() == 2)
-                        editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                }
-            }
+            editTextInputLayout.addView(getSingleEditTextView(mNumber,mConfigCode,MName,textValue));
             editText[mNumber].addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
@@ -1557,19 +1590,21 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 }
             });
-            editTextInputLayout.addView(editText[mNumber]);
+
 
             //if  Email
             if (comparConfigerCode(mConfigCode, PROFILE_78) && profileConfig.get(mNumber).getMandatory() == 1) {
-                LinearLayout emailLayout = new LinearLayout(getActivity());
-                emailLayout.setOrientation(LinearLayout.HORIZONTAL);
-                emailLayout.setWeightSum(10);
+
+                LinearLayout emailLayout= createLinearLayout(LinearLayout.HORIZONTAL,0,10) ;
+
                 LinearLayout.LayoutParams emailParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
                 emailParam.weight = 7;
-                LinearLayout.LayoutParams emailParam1 = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-                emailParam1.setMargins(0, 0, 0, 2);
-                emailParam1.weight = 3;
-                emailParam1.gravity = Gravity.BOTTOM;
+
+                LinearLayout.LayoutParams verifyButtonParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+                verifyButtonParams.weight = 3;
+                verifyButtonParams.setMargins(0, 0, 0, 2);
+                verifyButtonParams.gravity = Gravity.BOTTOM;
+
                 emailLayout.addView(editTextInputLayout, emailParam);
 
                 Button verifyBtn = new Button(getActivity());
@@ -1583,13 +1618,14 @@ public class ProfileEditFragment extends IvyBaseFragment
                         verifyOTP("EMAIL", editText[mNumber].getText().toString());
                     }
                 });
-                emailLayout.addView(verifyBtn, emailParam1);
 
+                emailLayout.addView(verifyBtn, verifyButtonParams);
                 linearlayout.addView(emailLayout, weight1);
             } else
                 linearlayout.addView(editTextInputLayout, weight1);
 
         }
+
 
         /*ContactNumber,PHNO1,PHNO2,MOBILE,FAX*/
         if (comparConfigerCode(mConfigCode, PROFILE_30) ||
@@ -1598,40 +1634,22 @@ public class ProfileEditFragment extends IvyBaseFragment
                 comparConfigerCode(mConfigCode, PROFILE_79) ||
                 comparConfigerCode(mConfigCode, PROFILE_86)) {
 
-            LinearLayout firstlayout = new LinearLayout(getActivity());
-            firstlayout.setOrientation(LinearLayout.HORIZONTAL);
             editTextInputLayout = new TextInputLayout(getActivity());
-            editText[mNumber] = new AppCompatEditText(getActivity());
-            editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-            editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            editText[mNumber].setText(textValue);
-            editText[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-            editText[mNumber].setInputType(InputType.TYPE_CLASS_PHONE);
-            editText[mNumber].setHint(MName);
-            if (inputFilters != null && inputFilters.size() > 0) {
-                InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                stockArr = inputFilters.toArray(stockArr);
-                editText[mNumber].setFilters(stockArr);
-                if (inputFilters.size() == 2)
-                    editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            }
-            editTextInputLayout.addView(editText[mNumber]);
+            editTextInputLayout.addView(getSingleEditTextView(mNumber,mConfigCode,MName,textValue));
 
-            if (comparConfigerCode(mConfigCode, PROFILE_79)
-                    && profileConfig.get(mNumber).getMandatory() == 1)  /*MOBILE*/ {
 
-                LinearLayout mobileLayout = new LinearLayout(getActivity());
-                mobileLayout.setOrientation(LinearLayout.HORIZONTAL);
+            if (comparConfigerCode(mConfigCode, PROFILE_79) && profileConfig.get(mNumber).getMandatory() == 1)  /*MOBILE*/ {
 
-                mobileLayout.setWeightSum(10);
-                LinearLayout.LayoutParams mobileParam = new LinearLayout.LayoutParams(0,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                LinearLayout mobileLayout= createLinearLayout(LinearLayout.HORIZONTAL,0,10);
+
+                LinearLayout.LayoutParams mobileParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
                 mobileParam.weight = 7;
-                LinearLayout.LayoutParams mobileParam1 = new LinearLayout.LayoutParams(0,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                LinearLayout.LayoutParams mobileParam1 = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
                 mobileParam1.setMargins(0, 0, 0, 2);
                 mobileParam1.weight = 3;
                 mobileParam1.gravity = Gravity.BOTTOM;
+
                 mobileLayout.addView(editTextInputLayout, mobileParam);
 
                 Button verifyBtn = new Button(getActivity());
@@ -1645,6 +1663,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         verifyOTP("MOBILE", editText[mNumber].getText().toString());
                     }
                 });
+
                 mobileLayout.addView(verifyBtn, mobileParam1);
 
                 linearlayout.addView(mobileLayout, weight1);
@@ -1653,45 +1672,15 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         }
 
-
+        //CREDITPERIOD
         if (comparConfigerCode(mConfigCode, PROFILE_25)) {
-
-           /* LinearLayout firstlayout = new LinearLayout(getActivity());
-            firstlayout.setOrientation(LinearLayout.HORIZONTAL);*/
-
             editTextInputLayout = new TextInputLayout(getActivity());
-            editText[mNumber] = new AppCompatEditText(getActivity());
-            editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-            editText[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-            editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            if (textValue.equals("0") || textValue.equals("-1"))
-                editText[mNumber].setText("");
-            else
-                editText[mNumber].setText(textValue);
-
-            editText[mNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
-            editText[mNumber].setHint(MName);
-            if (inputFilters != null && inputFilters.size() > 0) {
-                InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                stockArr = inputFilters.toArray(stockArr);
-                editText[mNumber].setFilters(stockArr);
-                if (inputFilters.size() == 2)
-                    editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            }
-
-            editTextInputLayout.addView(editText[mNumber]);
-
+            editTextInputLayout.addView(getSingleEditTextView(mNumber,mConfigCode,MName,textValue));
             editText[mNumber].addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
                 @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
@@ -1706,58 +1695,22 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 }
             });
-
             linearlayout.addView(editTextInputLayout, weight1);
-
         }
 
-        if (comparConfigerCode(mConfigCode, PROFILE_09) ||
-                comparConfigerCode(mConfigCode, PROFILE_11)) {
+        if (comparConfigerCode(mConfigCode, PROFILE_09) || comparConfigerCode(mConfigCode, PROFILE_11)) {
 
-            LinearLayout firstlayout = new LinearLayout(getActivity());
-            firstlayout.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout firstlayout = createLinearLayout();
             linearlayout.setOrientation(LinearLayout.VERTICAL);
-
-            editTextInputLayout = new TextInputLayout(getActivity());
-
-            textview[mNumber] = new TextView(getActivity());
-            textview[mNumber].setText(MName);
-            textview[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            textview[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-            textview[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
-            firstlayout.addView(textview[mNumber], weight1);
-
-
-            editText[mNumber] = new AppCompatEditText(getActivity());
-            editText[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-            editText[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-            editText[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            editText[mNumber].setHint(getResources().getString(R.string.contact_person_first_name));
-            editText[mNumber].setText(textValue);
-
-            if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-            else
-                editText[mNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-
-
-            if (inputFilters != null && inputFilters.size() > 0) {
-                InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                stockArr = inputFilters.toArray(stockArr);
-                editText[mNumber].setFilters(stockArr);
-                if (inputFilters.size() == 2)
-                    editText[mNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            }
-
+            firstlayout.addView(getSingleTextView(mNumber,MName), weight1); //TextView Title
+            editTextInputLayout = new TextInputLayout(getActivity());  //Contact 1 First Name
+            editTextInputLayout.addView(getSingleEditTextView(mNumber,mConfigCode,getResources().getString(R.string.contact_person_first_name),textValue));
             editText[mNumber].addTextChangedListener(new TextWatcher() {
                 @Override
-                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                }
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
 
                 @Override
-                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                }
-
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
                 @Override
                 public void afterTextChanged(Editable et) {
                     String s = et.toString();
@@ -1769,42 +1722,24 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }
             });
 
-            editTextInputLayout.addView(editText[mNumber]);
-
-
             //Contact 1 Last Name
-
             if (comparConfigerCode(mConfigCode, PROFILE_09)) {
+
+                if (retailerObj.getContactLname() == null || retailerObj.getContactLname().equals("null"))
+                    retailerObj.setContactLname("");
+
+                String text = retailerObj.getContactLname();
+                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME) != null)
+                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME).equals(text))
+                        text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME);
+
                 editTextInputLayout1 = new TextInputLayout(getActivity());
-                editText[lName1_editText_index] = new AppCompatEditText(getActivity());
-                editText[lName1_editText_index].setHint(getResources().getString(R.string.contact_person_last_name));
-                editText[lName1_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-                editText[lName1_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-                editText[lName1_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                else
-                    editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-
-                if (inputFilters != null && inputFilters.size() > 0) {
-                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                    stockArr = inputFilters.toArray(stockArr);
-                    editText[lName1_editText_index].setFilters(stockArr);
-                    if (inputFilters.size() == 2)
-                        editText[lName1_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                }
-
+                editTextInputLayout1.addView(getSingleEditTextView(lName1_editText_index,mConfigCode,getResources().getString(R.string.contact_person_last_name),text));
                 editText[lName1_editText_index].addTextChangedListener(new TextWatcher() {
-
                     @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                    }
-
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                    }
-
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
                     @Override
                     public void afterTextChanged(Editable et) {
                         String s = et.toString();
@@ -1815,59 +1750,27 @@ public class ProfileEditFragment extends IvyBaseFragment
                         }
                     }
                 });
-
-                editTextInputLayout1.addView(editText[lName1_editText_index]);
-                if (retailerObj.getContactLname() == null
-                        || retailerObj.getContactLname().equals(
-                        "null")) {
-                    retailerObj.setContactLname("");
-                }
-
-                String text = "";
-                text = retailerObj
-                        .getContactLname();
-
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME) != null)
-                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME).equals(text))
-                        text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME);
-
-                editText[lName1_editText_index].setText(text);
-
             }
 
             //Contact2 Last Name
-
             if (comparConfigerCode(mConfigCode, PROFILE_11)) {
+
+                if (retailerObj.getContactLname2() == null || retailerObj.getContactLname2().equals("null"))
+                    retailerObj.setContactLname2("");
+
+                String text = retailerObj.getContactLname2();
+                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2) != null)
+                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2).equals(text))
+                        text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2);
+
                 editTextInputLayout2 = new TextInputLayout(getActivity());
-                editText[lName2_editText_index] = new AppCompatEditText(getActivity());
-                editText[lName2_editText_index].setHint(getResources().getString(R.string.contact_person_last_name));
-                editText[lName2_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-                editText[lName2_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-                editText[lName2_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-
-                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                else
-                    editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-
-                if (inputFilters != null && inputFilters.size() > 0) {
-                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                    stockArr = inputFilters.toArray(stockArr);
-                    editText[lName2_editText_index].setFilters(stockArr);
-                    if (inputFilters.size() == 2)
-                        editText[lName2_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                }
-
+                editTextInputLayout2.addView(getSingleEditTextView(lName2_editText_index,mConfigCode,getResources().getString(R.string.contact_person_last_name),text));
                 editText[lName2_editText_index].addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
 
                     @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                    }
-
-                    @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                    }
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
 
                     @Override
                     public void afterTextChanged(Editable et) {
@@ -1879,61 +1782,24 @@ public class ProfileEditFragment extends IvyBaseFragment
                         }
                     }
                 });
-
-                editTextInputLayout2.addView(editText[lName2_editText_index]);
-                if (retailerObj.getContactLname2() == null
-                        || retailerObj.getContactLname2().equals(
-                        "null")) {
-                    retailerObj.setContactLname2("");
-                }
-
-                String text = "";
-                text = retailerObj.getContactLname2();
-
-                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2) != null)
-                    if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2).equals(text))
-                        text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2);
-
-                editText[lName2_editText_index].setText(text);
-
             }
 
 
             if (comparConfigerCode(mConfigCode, PROFILE_09) && is_contact_title1) {
+
                 contactTitleSpinner1 = new MaterialSpinner(getActivity());
                 contactTitleSpinner1.setId(mNumber);
                 contactTitleSpinner1.setAdapter(contactTitleAdapter);
 
-                //contact title other edit text
                 editTextInputLayout3 = new TextInputLayout(getActivity());
-                editText[other1_editText_index] = new AppCompatEditText(getActivity());
-                editText[other1_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-                editText[other1_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                editText[other1_editText_index].setHint("Title");
-                editText[other1_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-
-                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                else
-                    editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-
-                if (inputFilters != null && inputFilters.size() > 0) {
-                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                    stockArr = inputFilters.toArray(stockArr);
-                    editText[other1_editText_index].setFilters(stockArr);
-                    if (inputFilters.size() == 2)
-                        editText[other1_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                }
-
+                editTextInputLayout3.addView(getSingleEditTextView(other1_editText_index,mConfigCode,"Title",""));
                 editText[other1_editText_index].addTextChangedListener(new TextWatcher() {
 
                     @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                    }
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
 
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                    }
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
 
                     @Override
                     public void afterTextChanged(Editable et) {
@@ -1946,21 +1812,14 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 });
 
-                editTextInputLayout3.addView(editText[other1_editText_index]);
-                if (retailerObj.getContact1_titlelovid() == null
-                        || retailerObj.getContact1_titlelovid().equals(
-                        "null")) {
-                    retailerObj.setContact1_titlelovid("");
-                }
-
                 mcontact_title1_lovId = retailerObj.getContact1_titlelovid();
-
-                if (retailerObj.getContact1_title() == null
-                        || retailerObj.getContact1_title().equals(
-                        "null")) {
-                    retailerObj.setContact1_title("");
-                }
                 mcontact_title1_text = retailerObj.getContact1_title();
+
+                if (retailerObj.getContact1_titlelovid() == null || retailerObj.getContact1_titlelovid().equals("null"))
+                    retailerObj.setContact1_titlelovid("");
+
+                if (retailerObj.getContact1_title() == null || retailerObj.getContact1_title().equals("null"))
+                    retailerObj.setContact1_title("");
 
                 if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_41) != null)
                     if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_41).equals(mcontact_title1_lovId))
@@ -1973,10 +1832,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                 if (mcontact_title1_lovId != null)
                     if (mcontact_title1_lovId.equals("0") && !mcontact_title1_text.equals("0") && mcontact_title1_text.length() > 0) {
                         contactTitleSpinner1.setSelection(mcontactTitleList.size() - 1);
-
                         editTextInputLayout3.setVisibility(View.VISIBLE);
                         editText[other1_editText_index].setText(mcontact_title1_text);
-                    } else if (mcontact_title1_lovId.equals("0"))
+                    }else if (mcontact_title1_lovId.equals("0"))
                         contactTitleSpinner1.setSelection(0);
                     else {
                         int selected_pos = 0;
@@ -1995,7 +1853,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                             editText[other1_editText_index].requestFocus();
                             mcontact_title1_lovId = "0";
                         } else if (tempBo.getListId() == -1) {
-
                             editTextInputLayout3.setVisibility(View.GONE);
                             mcontact_title1_lovId = "0";
                             mcontact_title1_text = "0";
@@ -2004,11 +1861,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                             mcontact_title1_lovId = "" + tempBo.getListId();
                             mcontact_title1_text = "0";
                         }
-
                     }
-
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                    }
+                    public void onNothingSelected(AdapterView<?> arg0) {}
 
                 });
 
@@ -2019,44 +1873,19 @@ public class ProfileEditFragment extends IvyBaseFragment
 
 
             if (comparConfigerCode(mConfigCode, PROFILE_11) && is_contact_title2) {
+
                 contactTitleSpinner2 = new MaterialSpinner(getActivity());
                 contactTitleSpinner2.setId(mNumber);
                 contactTitleSpinner2.setAdapter(contactTitleAdapter);
 
                 //contact title other edit text
                 editTextInputLayout4 = new TextInputLayout(getActivity());
-                editText[other2_editText_index] = new AppCompatEditText(getActivity());
-
-                if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
-                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
-                else
-                    editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-
-
-                editText[other2_editText_index].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-                editText[other2_editText_index].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-                editText[other2_editText_index].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                editText[other2_editText_index].setHint(getResources().getString(R.string.title));
-                if (inputFilters != null && inputFilters.size() > 0) {
-                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-                    stockArr = inputFilters.toArray(stockArr);
-                    editText[other2_editText_index].setFilters(stockArr);
-                    if (inputFilters.size() == 2)
-                        editText[other2_editText_index].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                }
-
+                editTextInputLayout4.addView(getSingleEditTextView(other2_editText_index,mConfigCode,getResources().getString(R.string.title),""));
                 editText[other2_editText_index].addTextChangedListener(new TextWatcher() {
-
                     @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                    }
-
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                    }
-
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
                     @Override
                     public void afterTextChanged(Editable et) {
                         String s = et.toString();
@@ -2068,22 +1897,16 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 });
 
-                editTextInputLayout4.addView(editText[other2_editText_index]);
+                mcontact_title2_lovId = retailerObj.getContact2_titlelovid();
+                mcontact_title2_text = retailerObj.getContact2_title();
 
-                if (retailerObj.getContact2_titlelovid() == null
-                        || retailerObj.getContact2_titlelovid().equals(
-                        "null")) {
+                if (retailerObj.getContact2_titlelovid() == null || retailerObj.getContact2_titlelovid().equals("null")) {
                     retailerObj.setContact2_titlelovid("");
                 }
 
-                mcontact_title2_lovId = retailerObj.getContact2_titlelovid();
-
-                if (retailerObj.getContact2_title() == null
-                        || retailerObj.getContact2_title().equals(
-                        "null")) {
+                if (retailerObj.getContact2_title() == null || retailerObj.getContact2_title().equals("null")) {
                     retailerObj.setContact2_title("");
                 }
-                mcontact_title2_text = retailerObj.getContact2_title();
 
                 if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_42) != null)
                     if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_42).equals(mcontact_title2_lovId))
@@ -2127,14 +1950,14 @@ public class ProfileEditFragment extends IvyBaseFragment
                         }
                     }
 
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                    }
+                    public void onNothingSelected(AdapterView<?> arg0) {}
 
                 });
                 secondlayout.addView(contactTitleSpinner2, params3);
-                //editTextInputLayout2.addView(editText[other2_editText_index]);
                 secondlayout.addView(editTextInputLayout4, params4);
             }
+
+
             secondlayout.addView(editTextInputLayout, params4);
 
             if (comparConfigerCode(mConfigCode, PROFILE_09))
@@ -2154,7 +1977,6 @@ public class ProfileEditFragment extends IvyBaseFragment
         InputFilter fil = new InputFilter.LengthFilter(25);
         if (regex != null && !regex.isEmpty()) {
             if (regex.contains("<") && regex.contains(">")) {
-
                 String len = regex.substring(regex.indexOf("<") + 1, regex.indexOf(">"));
                 if (!len.isEmpty()) {
                     if (len.contains(",")) {
@@ -2206,13 +2028,8 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     private LinearLayout getSpinnerView(int mNumber, String MName, @NonNls String menuCode, int id) {
 
-        LinearLayout layout = new LinearLayout(getActivity());
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setBackgroundColor(getActivity().getResources().getColor(R.color.white_box_start));
-
-
-        LinearLayout.LayoutParams spinweight = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout layout= createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout.LayoutParams spinweight = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         spinweight.weight = 1;
         spinweight.gravity = Gravity.CENTER;
 
@@ -2255,7 +2072,6 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         }
 
-
         if (menuCode.equals("PROFILE43")) {
             int selected_pos = 0;
             try {
@@ -2291,10 +2107,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             } catch (Exception e) {
                 Commons.printException(e);
             }
-
-
         }
-
 
         if (menuCode.equals(PROFILE_07)) {
             subchannel = new MaterialSpinner(getActivity());
@@ -2589,20 +2402,14 @@ public class ProfileEditFragment extends IvyBaseFragment
             rField4Spinner.setSelection(selPos);
             rField4Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
+                                           int pos, long id) {}
 
-                }
-
-                public void onNothingSelected(AdapterView<?> arg0) {
-
-                }
+                public void onNothingSelected(AdapterView<?> arg0) {}
 
             });
-
             layout.addView(rField4Spinner, spinweight);
 
         }
-
 
         return layout;
 
@@ -2699,27 +2506,16 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     private LinearLayout getLatlongTextView(final int mNumber, String MName, final String textvalue) {
 
-        LinearLayout linearlayout = new LinearLayout(getActivity());
-        linearlayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearlayout.setBackgroundColor(getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout linearlayout= createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
 
-        LinearLayout firstlayout = new LinearLayout(getActivity());
+        LinearLayout firstlayout = createLinearLayout(); //TextView Title
         firstlayout.setPadding(0, 0, 0, 0);
-        textview[mNumber] = new TextView(getActivity());
-        textview[mNumber].setText(MName);
-        textview[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-        textview[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        textview[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        firstlayout.addView(textview[mNumber]);
+        firstlayout.addView(getSingleTextView(mNumber,MName));
 
 
-        LinearLayout secondlayout = new LinearLayout(getActivity());
-        secondlayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL,0,2f);
         secondlayout.setPadding(0, 0, 0, 0);
-        secondlayout.setWeightSum(2f);
         secondlayout.setGravity(Gravity.CENTER_VERTICAL);
-//        Button latlngButton = new Button(getActivity());
-//        latlngButton.setBackgroundResource(R.drawable.redmarker);
 
 
         latlongtextview = new TextView(getActivity());
@@ -2763,26 +2559,14 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     private LinearLayout getPriorityProductView(final int mNumber, final String MName, final String textvalue, final String productID) {
 
-        LinearLayout linearlayout = new LinearLayout(getActivity());
-        linearlayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearlayout.setBackgroundColor(getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout linearlayout= createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
 
-        LinearLayout firstlayout = new LinearLayout(getActivity());
+        LinearLayout firstlayout = createLinearLayout();
         firstlayout.setPadding(0, 0, 0, 12);
-        textview[mNumber] = new TextView(getActivity());
-        textview[mNumber].setText(MName);
-        textview[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        textview[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
-        textview[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        firstlayout.addView(textview[mNumber]);
+        firstlayout.addView(getSingleTextView(mNumber,MName)); //TextView
 
-
-        LinearLayout secondlayout = new LinearLayout(getActivity());
-        secondlayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL,0);
         secondlayout.setPadding(0, 0, 0, 12);
-//        Button latlngButton = new Button(getActivity());
-//        latlngButton.setBackgroundResource(R.drawable.redmarker);
-
 
         priorityproducttextview = new TextView(getActivity());
         priorityproducttextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
@@ -2826,22 +2610,13 @@ public class ProfileEditFragment extends IvyBaseFragment
     private LinearLayout getNearByRetailerView(int mNumber, String MName, boolean isEditMode) {
         if (bmodel.getNearByRetailers() != null)
             bmodel.getNearByRetailers().clear();
-        LinearLayout layout = new LinearLayout(getActivity());
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setBackgroundColor(getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout  layout= createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
 
-        LinearLayout firstlayout = new LinearLayout(getActivity());
-
-        textview[mNumber] = new TextView(getActivity());
-        textview[mNumber].setText(MName);
+        LinearLayout firstlayout = createLinearLayout();
+        firstlayout.addView(getSingleTextView(mNumber,MName),weight1);
         textview[mNumber].setTextColor(Color.BLACK);
-        textview[mNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-        textview[mNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        textview[mNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        firstlayout.addView(textview[mNumber], weight1);
 
-        LinearLayout secondlayout = new LinearLayout(getActivity());
-        secondlayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL,0);
 
         Button retailerButton = new Button(getActivity());
         retailerButton.setText(R.string.edit);
@@ -2849,16 +2624,12 @@ public class ProfileEditFragment extends IvyBaseFragment
             @Override
             public void onClick(View v) {
                 Vector<RetailerMasterBO> retailersList = bmodel.newOutletHelper.getLinkRetailerListByDistributorId().get(retailerObj.getDistributorId());
-
-
                 if (retailersList != null
                         && retailersList.size() > 0) {
                     NearByRetailerDialog dialog = new NearByRetailerDialog(getActivity(), bmodel, retailersList, mSelectedIds);
                     dialog.show();
                     dialog.setCancelable(false);
                 }
-
-
             }
         });
 
@@ -2868,8 +2639,9 @@ public class ProfileEditFragment extends IvyBaseFragment
         nearbyTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
         nearbyTextView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         nearbyTextView.setGravity(Gravity.CENTER);
+
         ScrollView scrl = new ScrollView(getActivity());
-        LinearLayout lyt = new LinearLayout(getActivity());
+        LinearLayout lyt = createLinearLayout();
         lyt.addView(nearbyTextView, weight1);
         scrl.addView(lyt, weight1);
 
@@ -2950,6 +2722,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 parentLayout = new LinearLayout(getActivity());
                 parentLayout.setTag("attributeLayout");
                 parentLayout.setOrientation(LinearLayout.VERTICAL);
+
                 LinearLayout titleLayout = new LinearLayout(getActivity());
                 titleLayout.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -4553,27 +4326,21 @@ public class ProfileEditFragment extends IvyBaseFragment
         try {
             int size = profileConfig.size();
             for (int i = 0; i < size; i++) {
-
-                @NonNls String configCode = profileConfig.get(i).getConfigCode();
-                if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PROFILE06")
-                        && profileConfig.get(i).getModule_Order() == 1) {
+               String configCode = profileConfig.get(i).getConfigCode();
+                if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(PROFILE_06) && profileConfig.get(i).getModule_Order() == 1) {
 
                     try {
-                        if (channel.getSelectedItem().toString().toLowerCase()
-                                .contains("select")) {
+                        if (channel.getSelectedItem().toString().toLowerCase().contains("select")) {
                             channel.requestFocus();
                             validate = false;
-                            Toast.makeText(getActivity(),
-                                    "Choose " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT)
-                                    .show();
+                            Toast.makeText(getActivity(), "Choose " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT).show();
                             break;
                         }
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PROFILE07")
+                        .equalsIgnoreCase(PROFILE_07)
                         && profileConfig.get(i).getModule_Order() == 1) {
                     try {
                         if (subchannel.getSelectedItem().toString().toLowerCase()
@@ -4589,7 +4356,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         Commons.printException(e);
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PROFILE30")
+                        .equalsIgnoreCase(PROFILE_30)
                         && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
 
                     try {
@@ -4609,7 +4376,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         Commons.printException(e);
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PROFILE12")
+                        .equalsIgnoreCase(PROFILE_12)
                         && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
 
                     try {
@@ -4630,7 +4397,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
 
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PROFILE10")
+                        .equalsIgnoreCase(PROFILE_10)
                         && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
 
                     try {
@@ -4708,8 +4475,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PROFILE78")
+                } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(PROFILE_78)
                         && profileConfig.get(i).getModule_Order() == 1
                         && editText[i].getText().toString().trim().length() != 0) {
                     try {
@@ -4734,7 +4500,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         Commons.printException(e);
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PROFILE79")
+                        .equalsIgnoreCase(PROFILE_79)
                         && profileConfig.get(i).getModule_Order() == 1
                         && editText[i].getText().toString().trim().length() != 0) {
 
@@ -4751,7 +4517,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         Commons.printException(e);
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PROFILE81")
+                        .equalsIgnoreCase(PROFILE_81)
                         && profileConfig.get(i).getModule_Order() == 1) {
 
                     try {
@@ -4780,7 +4546,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         Commons.printException(e);
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("PROFILE61")
+                        .equalsIgnoreCase(PROFILE_61)
                         && profileConfig.get(i).getModule_Order() == 1) {
 
                     try {
