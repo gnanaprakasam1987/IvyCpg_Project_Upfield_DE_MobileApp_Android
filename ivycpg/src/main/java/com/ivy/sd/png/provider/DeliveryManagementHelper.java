@@ -16,6 +16,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -390,6 +391,8 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
 
             }
 
+            saveSalesReturn(invoiceno);
+
             // update SIH
             if (bmodel.configurationMasterHelper.IS_SIH_VALIDATION_ON_DELIVERY) {
                 if (!selectedItem.equals(mContext.getResources().getString(R.string.rejected))) {
@@ -509,6 +512,113 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
         }
     }
 
+    private void saveSalesReturn(String invoiceno){
+
+       DBUtil db ;
+
+        db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+
+        String id=bmodel.QT("SR" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+        boolean isData=false;
+        double totalReturnValue=0;
+        int lpc=0;
+        String columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode";
+        for (ProductMasterBO productMasterBO : mInvoiceDetailsList) {
+
+            int pieceQty=0,caseQty=0,outerQty=0;
+            if(productMasterBO.getOrderedPcsQty()>productMasterBO.getInit_pieceqty())
+              pieceQty=productMasterBO.getOrderedPcsQty()-productMasterBO.getInit_pieceqty();
+            if(productMasterBO.getOrderedCaseQty()>productMasterBO.getInit_caseqty())
+                caseQty=productMasterBO.getOrderedCaseQty()-productMasterBO.getInit_caseqty();
+            if(productMasterBO.getOrderedOuterQty()>productMasterBO.getInit_OuterQty())
+                outerQty=productMasterBO.getOrderedOuterQty()-productMasterBO.getInit_OuterQty();
+
+            int totalQty=pieceQty+(caseQty*productMasterBO.getCaseSize())+(outerQty*productMasterBO.getOutersize());
+            double totalValue=(pieceQty*productMasterBO.getSrp())+(caseQty*productMasterBO.getCsrp())+(outerQty*productMasterBO.getOsrp());
+
+            totalReturnValue+=totalValue;
+
+            if(totalQty>0) {
+
+                String values = id
+                        + ","
+                        + DatabaseUtils.sqlEscapeString(productMasterBO.getProductID())
+                        + ","
+                        + pieceQty
+                        + ","
+                        + caseQty
+                        + ","
+                        + 0
+                        + ","
+                        + productMasterBO.getCaseSize()
+                        + ","
+                        + 0
+                        + ","
+                        + ""
+                        + ","
+                        + ""
+                        + ","
+                        + outerQty
+                        + ","
+                        + productMasterBO.getOutersize()
+                        + ","
+                        + productMasterBO.getOuUomid()
+                        + ","
+                        + productMasterBO.getCaseUomId()
+                        + ","
+                        + bmodel.productHelper
+                        .getOldBatchIDByMfd(productMasterBO
+                                .getProductID())
+                        + ","
+                        + bmodel.QT((invoiceno == null || "null".equals(invoiceno)) ? "" : invoiceno)
+                        + ","
+                        + 0
+                        + ","
+                        + totalQty
+                        + ","
+                        + totalValue
+                        + ","
+                        + bmodel.QT(bmodel.retailerMasterBO
+                        .getRetailerID()) + ","
+                        + 1 + "," + bmodel.QT("") + "," + productMasterBO.getPcUomid()
+                        + "," + bmodel.QT("") + "," + bmodel.QT(productMasterBO.getHsnCode());
+
+                db.insertSQL(
+                        DataMembers.tbl_SalesReturnDetails,
+                        columns, values);
+
+                lpc+=1;
+                isData=true;
+            }
+
+        }
+
+        if(isData){
+            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule";
+            String values = id + ","
+                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                    + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
+                    + bmodel.retailerMasterBO.getBeatID() + ","
+                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "," + bmodel.QT(SDUtil.format(totalReturnValue,
+                    bmodel.configurationMasterHelper.PERCENT_PRECISION_COUNT, 0)) + "," + lpc + ","
+                    + bmodel.QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
+                    + bmodel.QT(bmodel.getSaleReturnNote()) + ","
+                    + bmodel.QT(bmodel.mSelectedRetailerLatitude + "") + ","
+                    + bmodel.QT(bmodel.mSelectedRetailerLongitude + "") + ","
+                    + bmodel.retailerMasterBO.getDistributorId() + ","
+                    + bmodel.retailerMasterBO.getDistParentId() + ","
+                    + bmodel.QT("") + ","
+                    + bmodel.QT("") + ","
+                    + 0;
+
+                values = values + "," + bmodel.QT("") + "," +bmodel. QT("");
+
+            db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
+
+        }
+    }
     public boolean isProductAvailableinSIHmaster(String productId) {
         DBUtil db = null;
         try {
