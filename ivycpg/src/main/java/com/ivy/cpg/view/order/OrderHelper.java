@@ -298,7 +298,7 @@ public class OrderHelper {
 
             // Save order details
             Vector<ProductMasterBO> finalProductList;
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
             else
@@ -313,6 +313,7 @@ public class OrderHelper {
                 if (product.getOrderedPcsQty() > 0
                         || product.getOrderedCaseQty() > 0
                         || product.getOrderedOuterQty() > 0) {
+
 
                     mOrderedProductList.add(product);
                     entryLevelDistSum = entryLevelDistSum + product.getApplyValue();
@@ -580,10 +581,10 @@ public class OrderHelper {
             this.invoiceDiscount = businessModel.getOrderHeaderBO().getDiscount() + "";
 
             try {
-               // if (!businessModel.configurationMasterHelper.IS_INVOICE)
-                    businessModel.getRetailerMasterBO().setVisit_Actual(
-                            (float) getRetailerOrderValue(mContext, businessModel.retailerMasterBO
-                                    .getRetailerID()));
+                // if (!businessModel.configurationMasterHelper.IS_INVOICE)
+                businessModel.getRetailerMasterBO().setVisit_Actual(
+                        (float) getRetailerOrderValue(mContext, businessModel.retailerMasterBO
+                                .getRetailerID()));
             } catch (Exception e) {
                 Commons.printException(e);
             }
@@ -1255,6 +1256,7 @@ public class OrderHelper {
         sb.append("," + reasonId);
         sb.append("," + businessModel.QT(productBo.getHsnCode()));
         sb.append("," + totalValue);
+        sb.append("," + productBo.getMRP());
 
         return sb;
 
@@ -1396,7 +1398,7 @@ public class OrderHelper {
                     + businessModel.QT(orderId) + " and upload='N'", false);
             db.deleteSQL(DataMembers.tbl_OrderDiscountDetail, "OrderID="
                     + businessModel.QT(orderId) + " and upload='N'", false);
-            SalesReturnHelper.getInstance(context).deleteSalesReturnByOrderId(db,orderId);
+            SalesReturnHelper.getInstance(context).deleteSalesReturnByOrderId(db, orderId);
 
             // update SBD Distribution Percentage based on its history and ordered detail's
             SBDHelper.getInstance(context).calculateSBDDistribution(context.getApplicationContext());
@@ -1779,6 +1781,20 @@ public class OrderHelper {
                     product.setWeight(weight);
 
                 }
+                //update default UomId in edit mode
+                if (businessModel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
+                    if (pieceQty > 0) {
+                        product.setDefaultUomId(product.getPcUomid());
+                        product.setSelectedUomId(product.getPcUomid());
+                    } else if (caseQty > 0) {
+                        product.setDefaultUomId(product.getCaseUomId());
+                        product.setSelectedUomId(product.getCaseUomId());
+                    } else if (outerQty > 0) {
+                        product.setDefaultUomId(product.getOuUomid());
+                        product.setSelectedUomId(product.getCaseUomId());
+                    }
+                }
+
                 businessModel.productHelper.getProductMaster().setElementAt(product, i);
 
                 return;
@@ -2295,7 +2311,7 @@ public class OrderHelper {
                         + retailerId);
 
             else*/
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' and retailerid=" + retailerId);
+            c = db.selectSQL("select sum (OrderValue) from OrderHeader where upload!='X' and retailerid=" + retailerId);
 
 
             if (c != null) {
@@ -3314,16 +3330,16 @@ public class OrderHelper {
         for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
             if (reasonList != null) {
-                int totalReturnQty=0;
+                int totalReturnQty = 0;
                 for (SalesReturnReasonBO reasonBO : reasonList) {
                     if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
                         //Calculate sales return total qty and price.
                         int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
 
-                        totalReturnQty+=totalQty;
+                        totalReturnQty += totalQty;
                     }
                 }
-                totalReturnAmount+=(totalReturnQty*product.getSrp());
+                totalReturnAmount += (totalReturnQty * product.getSrp());
             }
             // Calculate replacement qty price.
             int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
