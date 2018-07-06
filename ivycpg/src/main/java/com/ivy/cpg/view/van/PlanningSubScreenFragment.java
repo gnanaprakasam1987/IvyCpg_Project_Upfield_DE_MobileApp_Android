@@ -221,6 +221,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                             .setTradecoveragetitle(menuItem.getMenuName());
                     Intent i = new Intent(getActivity(),
                             PlanningVisitActivity.class);
+                    i.putExtra("isPlanningSub",true);
                     startActivity(i);
                 }
             }

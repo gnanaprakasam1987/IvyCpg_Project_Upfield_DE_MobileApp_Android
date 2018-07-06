@@ -211,6 +211,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String TEMP_REMARK = "tempRemark";
     private final String TEMP_RFIELD1 = "tempRField1";
     private final String TEMP_RFIELD2 = "tempRField2";
+    private final String TEMP_ORDDERIMG = "tempOrdImg";
     private double totalvalue = 0;
     private final String FROM_HOME_SCREEN = "IsFromHomeScreen";
 
@@ -225,6 +226,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String tempRemark;
     private String tempRField1;
     private String tempRField2;
+    private String tempOrdImg;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private LevelBO mSelectedLevelBO = new LevelBO();
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
@@ -302,6 +304,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         : extras.getString(TEMP_RFIELD1);
                 tempRField2 = extras.getString(TEMP_RFIELD2) == null ? ""
                         : extras.getString(TEMP_RFIELD2);
+                tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? ""
+                        : extras.getString(TEMP_ORDDERIMG);
                 isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
             }
         } else {
@@ -322,6 +326,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tempRField2 = (String) (savedInstanceState
                     .getSerializable(TEMP_RFIELD2) == null ? ""
                     : savedInstanceState.getSerializable(TEMP_RFIELD2));
+            tempOrdImg = (String) (savedInstanceState
+                    .getSerializable(TEMP_ORDDERIMG) == null ? ""
+                    : savedInstanceState.getSerializable(TEMP_ORDDERIMG));
             isFromHomeScreen = savedInstanceState.getBoolean(FROM_HOME_SCREEN, false);
         }
 
@@ -938,12 +945,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .getString(TEMP_RFIELD1);
             tempRField2 = extras.getString(TEMP_RFIELD2) == null ? "" : extras
                     .getString(TEMP_RFIELD2);
+            tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? "" : extras
+                    .getString(TEMP_ORDDERIMG);
             isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
             savedInstanceState.putSerializable(ORDER_FLAG, OrderedFlag);
             savedInstanceState.putSerializable(TEMP_PO, tempPo);
             savedInstanceState.putSerializable(TEMP_REMARK, tempRemark);
             savedInstanceState.putSerializable(TEMP_RFIELD1, tempRField1);
             savedInstanceState.putSerializable(TEMP_RFIELD2, tempRField2);
+            savedInstanceState.putString(TEMP_ORDDERIMG, tempOrdImg);
             savedInstanceState.putSerializable(SCREEN_CODE, screenCode);
             savedInstanceState.putSerializable(FROM_HOME_SCREEN, isFromHomeScreen);
         }
@@ -4240,6 +4250,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         tempRField1 == null ? "" : tempRField1);
                 bmodel.getOrderHeaderBO().setRField2(
                         tempRField2 == null ? "" : tempRField2);
+                bmodel.getOrderHeaderBO().setOrderImageName(
+                        tempOrdImg == null ? "" : tempOrdImg);
 
                 if (bmodel.configurationMasterHelper.IS_MUST_SELL
                         && !bmodel.productHelper.isMustSellFilled()) {

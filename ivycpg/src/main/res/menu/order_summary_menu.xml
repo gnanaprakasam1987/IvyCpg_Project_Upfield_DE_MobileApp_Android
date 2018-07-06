@@ -61,6 +61,14 @@
         ivydist:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/menu_capture"
+        android:icon="@drawable/ic_photo_camera_grey_24dp"
+        android:orderInCategory="104"
+        android:title="@string/review"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+
+    <item
         android:id="@+id/menu_serialno"
         android:icon="@drawable/ic_remark"
         android:orderInCategory="104"

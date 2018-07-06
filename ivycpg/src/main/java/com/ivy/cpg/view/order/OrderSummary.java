@@ -14,6 +14,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,6 +23,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -44,6 +47,7 @@ import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CollectionBO;
@@ -56,6 +60,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.model.ScreenReceiver;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -68,6 +73,7 @@ import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.CatalogOrder;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
+import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.IndicativeOrderReasonDialog;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
@@ -125,6 +131,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int DIALOG_NUMBER_OF_PRINTS_INVOICE = 11;
     private static final int DIALOG_INVOICE_SAVED = 9;
     private static final int DIALOG_SIGNATURE_AVAILABLE = 8;
+    private static final int CAMERA_REQUEST_CODE = 7;
 
     private Button button_order;
     private Button button_invoice;
@@ -183,6 +190,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean isEditMode = false;
     private Calendar mCalendar = null;
+    private String mImageName;
+    private Toolbar toolbar;
 
 
     @Override
@@ -224,7 +233,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if ("MENU_CLOSING".equals(screenTitle))
             screenTitle = getResources().getString(R.string.summary);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
@@ -527,8 +536,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     Toast.LENGTH_SHORT).show();
             finish();
         }
+        if (bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE)
+            invalidateOptionsMenu();
 
         prepareScreenData();
+
     }
 
     private void prepareScreenData() {
@@ -832,6 +844,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
+
+        if (bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
+            if (bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_photo_camera_grey_24dp);
+                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
+                menu.findItem(R.id.menu_capture).setIcon(drawable);
+            } else {
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_photo_camera_grey_24dp);
+                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
+                menu.findItem(R.id.menu_capture).setIcon(drawable);
+            }
+
+        }
+
         menu.findItem(R.id.menu_review).setVisible(bModel.configurationMasterHelper.SHOW_REVIEW_AND_PO);
         menu.findItem(R.id.menu_discount).setVisible(bModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT);
 
@@ -890,6 +916,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 || bModel.configurationMasterHelper.IS_SHOW_ORDER_REASON)) {
             menu.findItem(R.id.menu_indicative_order_reason).setVisible(true);
         }
+        // enable photo capture option
+        menu.findItem(R.id.menu_capture).
+                setVisible(bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE);
+
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -993,6 +1023,42 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         } else if (i1 == R.id.menu_indicative_order_reason) {
             IndicativeOrderReasonDialog indicativeReasonDialog = new IndicativeOrderReasonDialog(this, bModel);
             indicativeReasonDialog.show();
+        } else if (i1 == R.id.menu_capture) {
+            if (bModel.isExternalStorageAvailable()) {
+                mImageName = "ORD_"
+                        + Commons.now(Commons.DATE_TIME) + "_"
+                        + bModel.getRetailerMasterBO()
+                        .getRetailerID() + "_"
+                        + bModel.userMasterHelper.getUserMasterBO().getUserid()
+                        + "_img.jpg";
+
+
+                String mFirstName = bModel.getOrderHeaderBO().getOrderImageName();
+
+                boolean nFilesThere = bModel
+                        .checkForNFilesInFolder(
+                                HomeScreenFragment.photoPath,
+                                1, mFirstName);
+                if (nFilesThere) {
+
+                    showFileDeleteAlertWithImage(mFirstName, bModel.getOrderHeaderBO().getOrderImageName()
+                    );
+                } else {
+                    Intent intent = new Intent(OrderSummary.this,
+                            CameraActivity.class);
+                    String path = HomeScreenFragment.photoPath + "/"
+                            + mImageName;
+                    intent.putExtra("path", path);
+                    startActivityForResult(intent,
+                            CAMERA_REQUEST_CODE);
+                }
+
+            } else {
+                Toast.makeText(
+                        OrderSummary.this,
+                        R.string.sdcard_is_not_ready_to_capture_img,
+                        Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1107,6 +1173,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             i.putExtra("tempRField2",
                     (bModel.getOrderHeaderBO().getRField2() == null ? ""
                             : bModel.getOrderHeaderBO().getRField2()));
+            i.putExtra("tempOrdImg",
+                    (bModel.getOrderHeaderBO().getOrderImageName() == null ? ""
+                            : bModel.getOrderHeaderBO().getOrderImageName()));
         }
 
         bModel.setOrderHeaderBO(null);
@@ -3258,6 +3327,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Toast.makeText(this, "Blue tooth not enable",
                         Toast.LENGTH_SHORT).show();
                 finish();
+            case CAMERA_REQUEST_CODE:
+                if (resultCode == 1) {
+                    if (bModel.getOrderHeaderBO() != null)
+                        bModel.getOrderHeaderBO().setOrderImageName(mImageName);
+                }
+                break;
             default:
                 break;
         }
@@ -3340,6 +3415,50 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
         }
+    }
+
+
+    /**
+     * Showing alert dialog to denote image availability..
+     *
+     * @param imageNameStarts Image Name
+     * @param imageSrc        Image Path
+     */
+    private void showFileDeleteAlertWithImage(final String imageNameStarts,
+                                              final String imageSrc) {
+        final CommonDialog commonDialog = new CommonDialog(getApplicationContext(), //Context
+                this, //Context
+                "", //Title
+                getResources().getString(R.string.word_already) + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
+                true, //ToDisplayImage
+                getResources().getString(R.string.yes), //Positive Button
+                getResources().getString(R.string.no), //Negative Button
+                false, //MoveToNextActivity
+                getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
+                new CommonDialog.PositiveClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+
+                        bModel.deleteFiles(HomeScreenFragment.photoPath,
+                                imageNameStarts);
+                        bModel.getOrderHeaderBO().setOrderImageName("");
+
+                        Intent intent = new Intent(OrderSummary.this,
+                                CameraActivity.class);
+                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        intent.putExtra("path", path);
+                        startActivityForResult(intent,
+                                CAMERA_REQUEST_CODE);
+
+                    }
+                }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+                dismiss();
+            }
+        });
+        commonDialog.show();
+        commonDialog.setCancelable(false);
     }
 
 }

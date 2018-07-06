@@ -207,13 +207,20 @@ public class OrderHelper {
 
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3";
+                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath";
 
             String printFilePath = "";
             if (businessModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + businessModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
                         + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" +
                         StandardListMasterConstants.PRINT_FILE_ORDER + businessModel.invoiceNumber + ".txt";
+            }
+            String orderImagePath = "";
+            if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
+                if (businessModel.getOrderHeaderBO().getOrderImageName().length() > 0)
+                    orderImagePath = businessModel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                            .replace("/", "") + "/"
+                            + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + businessModel.getOrderHeaderBO().getOrderImageName();
             }
 
 
@@ -281,7 +288,9 @@ public class OrderHelper {
                     + "," + businessModel.QT(printFilePath)
                     + "," + businessModel.QT(businessModel.getRField1())
                     + "," + businessModel.QT(businessModel.getRField2()) + "," + businessModel.QT(SDUtil.now(SDUtil.TIME))
-                    + "," + businessModel.QT(businessModel.getRemarkType()) + "," + businessModel.QT(businessModel.getRField3());
+                    + "," + businessModel.QT(businessModel.getRemarkType()) + "," + businessModel.QT(businessModel.getRField3())
+                    + "," + businessModel.QT(businessModel.getOrderHeaderBO().getOrderImageName())
+                    + "," + businessModel.QT(orderImagePath);
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -700,6 +709,15 @@ public class OrderHelper {
                             StandardListMasterConstants.PRINT_FILE_ORDER + businessModel.invoiceNumber + ".txt";
                 }
 
+                String orderImagePath = "";
+                if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
+                    if (businessModel.getOrderHeaderBO().getOrderImageName().length() > 0)
+                        orderImagePath = businessModel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                                .replace("/", "") + "/"
+                                + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + businessModel.getOrderHeaderBO().getOrderImageName();
+                }
+
+
                 String columns, values;
 
                 // Save order details
@@ -899,7 +917,7 @@ public class OrderHelper {
                 }
 
                 columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3";
+                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath";
                 values = uid
                         + ","
                         + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
@@ -964,7 +982,9 @@ public class OrderHelper {
                         + "," + businessModel.QT(printFilePath)
                         + "," + businessModel.QT(businessModel.getRField1())
                         + "," + businessModel.QT(businessModel.getRField2()) + "," + businessModel.QT(SDUtil.now(SDUtil.TIME))
-                        + "," + businessModel.QT(businessModel.getRemarkType()) + "," + businessModel.QT(businessModel.getRField3());
+                        + "," + businessModel.QT(businessModel.getRemarkType()) + "," + businessModel.QT(businessModel.getRField3())
+                        + "," + businessModel.QT(businessModel.getOrderHeaderBO().getOrderImageName())
+                        + "," + businessModel.QT(orderImagePath);
 
 
                 db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -1453,7 +1473,7 @@ public class OrderHelper {
                 } else {
                     sb.append("0,");
                 }
-                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3 from "
+                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3,orderImage from "
                         + DataMembers.tbl_orderHeader + " OD");
 
                 sb.append(" left join InvoiceDiscountDetail ID on ID.OrderId=OD.orderid and ID.typeid=0 and ID.pid=0 ");
@@ -1471,7 +1491,7 @@ public class OrderHelper {
                 } else {
                     sb.append("0,");
                 }
-                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3 from "
+                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3,orderImage from "
                         + DataMembers.tbl_orderHeader + " OD ");
 
                 sb.append(" left join InvoiceDiscountDetail ID on OD.OrderId=OD.orderid and ID.typeid=0 and ID.pid=0 ");
@@ -1540,6 +1560,7 @@ public class OrderHelper {
                     businessModel.setRField1(orderHeaderCursor.getString(14));
                     businessModel.setRField2(orderHeaderCursor.getString(15));
                     businessModel.setRField3(orderHeaderCursor.getString(16));
+                    businessModel.getOrderHeaderBO().setOrderImageName(orderHeaderCursor.getString(17));
 
                 }
                 orderHeaderCursor.close();

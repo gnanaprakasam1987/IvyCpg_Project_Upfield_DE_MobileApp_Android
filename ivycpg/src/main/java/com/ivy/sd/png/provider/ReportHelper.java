@@ -83,7 +83,6 @@ public class ReportHelper {
     private ArrayList<SyncStatusBO> mSyncStatusBOList;
 
 
-
     public ReportHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
@@ -123,7 +122,7 @@ public class ReportHelper {
                             + "OrderHeader.upload,OrderHeader.totalweight,OrderHeader.FocusPackLines,OrderHeader.MSPLines,OrderHeader.is_vansales,"
                             + "IFNULL((select sum(taxValue) from OrderTaxDetails where OrderId = OrderHeader.OrderID ),0) as taxValue,"
                             + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue, "
-                            + "IFNULL(SUM(OD.pieceqty),0),IFNULL(SUM(OD.caseQty),0),IFNULL(SUM(OD.outerQty),0) "
+                            + "IFNULL(SUM(OD.pieceqty),0),IFNULL(SUM(OD.caseQty),0),IFNULL(SUM(OD.outerQty),0),OrderHeader.orderImage "
                             + "FROM OrderHeader INNER JOIN RetailerMaster "
                             + "ON OrderHeader.RetailerId = RetailerMaster.RetailerID INNER JOIN OrderDetail OD ON  OD.OrderID = OrderHeader.OrderID where OrderHeader.upload!='X' "
                             + "GROUP BY OrderHeader.OrderID ,OrderHeader.RetailerID,RetailerMaster.RetailerName,"
@@ -150,6 +149,7 @@ public class ReportHelper {
                     orderreport.setVolumePcsQty(c.getInt(14));
                     orderreport.setVolumeCaseQty(c.getInt(15));
                     orderreport.setVolumeOuterQty(c.getInt(16));
+                    orderreport.setOrderedImage(c.getString(17));
                     reportordbooking.add(orderreport);
                 }
                 c.close();
@@ -1894,7 +1894,7 @@ public class ReportHelper {
                                 stockReportBO.setFreeIssuedQty(qty
                                         + stockReportBO.getFreeIssuedQty());
                             } else if (type == QtyType.SOLD) {
-                                stockReportBO.setSoldQty(qty+stockReportBO.getSoldQty());
+                                stockReportBO.setSoldQty(qty + stockReportBO.getSoldQty());
                             } else if (type == QtyType.EMPTY) {
                                 stockReportBO.setEmptyBottleQty(qty);
                             } else if (type == QtyType.REPLACEMENT) {
@@ -3748,12 +3748,12 @@ public class ReportHelper {
         this.mSyncStatusBOList = mSyncStatusBOList;
     }
 
-    public void downloadSyncStatusReport(){
+    public void downloadSyncStatusReport() {
         try {
 
-            mSyncStatusBOList=new ArrayList<>();
+            mSyncStatusBOList = new ArrayList<>();
             SyncStatusBO syncStatusBO;
-            String id="0";
+            String id = "0";
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -3764,24 +3764,24 @@ public class ReportHelper {
             if (c != null) {
                 while (c.moveToNext()) {
 
-                    syncStatusBO=new SyncStatusBO();
+                    syncStatusBO = new SyncStatusBO();
                     syncStatusBO.setId(c.getString(0));
                     syncStatusBO.setName(c.getString(1));
                     syncStatusBO.setCount(c.getInt(2));
 
-                    if(!id.equalsIgnoreCase(syncStatusBO.getId())){
+                    if (!id.equalsIgnoreCase(syncStatusBO.getId())) {
 
-                        if(!id.equals("0")){
+                        if (!id.equals("0")) {
                             syncStatusBO.setShowDateTime(1);
                             mSyncStatusBOList.add(syncStatusBO);
-                            id=syncStatusBO.getId();
-                        }else{
+                            id = syncStatusBO.getId();
+                        } else {
                             syncStatusBO.setShowDateTime(1);
                             mSyncStatusBOList.add(syncStatusBO);
-                            id=syncStatusBO.getId();
+                            id = syncStatusBO.getId();
                         }
 
-                    }else{
+                    } else {
                         syncStatusBO.setShowDateTime(0);
                         mSyncStatusBOList.add(syncStatusBO);
                     }
