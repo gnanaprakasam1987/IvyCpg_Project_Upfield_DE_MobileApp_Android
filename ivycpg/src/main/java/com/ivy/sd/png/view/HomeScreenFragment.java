@@ -1876,6 +1876,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_PLANNING:
                 bndl = new Bundle();
                 bndl.putString("From", MENU_PLANNING_CONSTANT);
+                bndl.putBoolean("isPlanning",true);
                 isVisit = false;
                 bndl.putString("Newplanningsub", "");
                 fragment = new VisitFragment();

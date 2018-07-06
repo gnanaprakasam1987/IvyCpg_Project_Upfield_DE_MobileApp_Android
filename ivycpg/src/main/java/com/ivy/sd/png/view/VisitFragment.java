@@ -91,6 +91,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private static final int PROFILE_REQUEST_CODE = 101;
 
     private static final String MENU_PLANNING = "Day Planning";
+    private static final String MENU_PLANNING_SUB = "Day Planning Sub";
     private static final String MENU_VISIT = "Trade Coverage";
     private static final String MENU_STK_ORD = "MENU_STK_ORD";
     private static final String RETAILER_FILTER_MENU_TYPE = "MENU_VISIT";
@@ -111,6 +112,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private AutoCompleteTextView mBrandAutoCompleteTV;
     private MapViewListener mapViewListener;
     private boolean isFromPlanning = false;
+    private boolean isFromPlanningSub=false;
 
     private ArrayList<StandardListBO> mRetailerSelectionList;
 
@@ -202,7 +204,12 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), PlanningActivity.class), PROFILE_REQUEST_CODE);
+                Intent intent=new Intent(getActivity(),PlanningActivity.class);
+                if(isFromPlanning)
+                    intent.putExtra("From",MENU_PLANNING);
+                else if(isFromPlanningSub)
+                    intent.putExtra("From",MENU_PLANNING_SUB);
+                startActivityForResult(intent, PROFILE_REQUEST_CODE);
             }
         });
 
@@ -216,8 +223,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         crossLine.setRotation(-5);
 
-        if (getArguments() != null)
-            isFromPlanning = getArguments().getBoolean("isPlanning");
+        if (getArguments() != null) {
+            isFromPlanning = getArguments().getBoolean("isPlanning",false);
+            isFromPlanningSub=getArguments().getBoolean("isPlanningSub",false);
+        }
 
 
         if (isFromPlanning || !bmodel.configurationMasterHelper.IS_MAP)
@@ -1325,6 +1334,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                     if (isFromPlanning) {
                                         i.putExtra("From", MENU_PLANNING);
                                         i.putExtra("isPlanning", true);
+                                    }else if(isFromPlanningSub){
+                                        i.putExtra("From", MENU_PLANNING_SUB);
+                                        i.putExtra("isPlanningSub", true);
                                     } else {
                                         i.putExtra("From", MENU_VISIT);
                                         i.putExtra("visit", startVisit);
@@ -1361,6 +1373,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 if (isFromPlanning) {
                                     i.putExtra("From", MENU_PLANNING);
                                     i.putExtra("isPlanning", true);
+                                }else if(isFromPlanningSub){
+                                    i.putExtra("From", MENU_PLANNING_SUB);
+                                    i.putExtra("isPlanningSub", true);
                                 } else {
                                     i.putExtra("From", MENU_VISIT);
                                     i.putExtra("visit", startVisit);
@@ -2007,6 +2022,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                             if (isFromPlanning) {
                                 i.putExtra("From", MENU_PLANNING);
                                 i.putExtra("isPlanning", true);
+                            }else if(isFromPlanningSub){
+                                i.putExtra("From", MENU_PLANNING_SUB);
+                                i.putExtra("isPlanningSub", true);
                             } else {
                                 i.putExtra("From", MENU_VISIT);
                                 i.putExtra("visit", startVisit);
