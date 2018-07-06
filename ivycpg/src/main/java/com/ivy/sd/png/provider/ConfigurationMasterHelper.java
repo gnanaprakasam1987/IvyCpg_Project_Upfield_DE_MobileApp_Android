@@ -1168,7 +1168,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
 
-    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED;
+    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED,SHOW_STOCK_RETURN;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
@@ -1390,6 +1390,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SR_INVOICE = "SR18";
     public boolean IS_INVOICE_SR;
+
+    private static final String CODE_GENERATE_SR_IN_DELIVERY = "SR19";
+    public boolean IS_GENERATE_SR_IN_DELIVERY;
 
 
     private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
@@ -1733,6 +1736,8 @@ public class ConfigurationMasterHelper {
                         this.IS_WSIH = true;
                     if (configureBO.getConfigCode().equals(CODE_INVOICE))
                         this.IS_INVOICE = true;
+                    if (configureBO.getConfigCode().equals(CODE_SR_INDICATIVE))
+                        this.IS_INDICATIVE_SR = true;
                 }
 
             }
@@ -2499,7 +2504,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_INDICATIVE_SR = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
         this.IS_INVOICE_SR = hashMapHHTModuleConfig.get(CODE_SR_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INVOICE) : false;
-
+        this.IS_GENERATE_SR_IN_DELIVERY=hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) : false;
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
 
         this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
@@ -4409,7 +4414,9 @@ public class ConfigurationMasterHelper {
         String CODE_STOCK_REPLACE_OUTER = "RPOO";
         String CODE_STOCK_EMPTY = "EMP";
         String CODE_STOCK_FREE_ISSUED = "FI";
+        String CODE_STOCK_RETURN = "RET";
         SHOW_STOCK_REPLACE = false;
+        SHOW_STOCK_RETURN = false;
         SHOW_STOCK_EMPTY = false;
         SHOW_STOCK_FREE_ISSUED = false;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4441,6 +4448,8 @@ public class ConfigurationMasterHelper {
                             SHOW_STOCK_EMPTY = true;
                         else if (temp.equals(CODE_STOCK_FREE_ISSUED))
                             SHOW_STOCK_FREE_ISSUED = true;
+                        else if (temp.equals(CODE_STOCK_RETURN))
+                            SHOW_STOCK_RETURN = true;
                     }
                 }
 

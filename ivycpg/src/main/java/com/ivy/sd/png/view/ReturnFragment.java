@@ -464,8 +464,16 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 if (!salesReturnHelper.SHOW_SAL_RET_OLD_MRP)
                     ((LinearLayout) row.findViewById(R.id.ll_oldmrp)).setVisibility(View.GONE);
-                if (!salesReturnHelper.SHOW_SRP_EDIT)
-                    ((LinearLayout) row.findViewById(R.id.ll_srpedit)).setVisibility(View.GONE);
+                if (!salesReturnHelper.SHOW_SRP_EDIT&&!salesReturnHelper.SHOW_SAL_RET_SRP)
+                    (row.findViewById(R.id.ll_srpedit)).setVisibility(View.GONE);
+                else if(salesReturnHelper.SHOW_SRP_EDIT&&!salesReturnHelper.SHOW_SAL_RET_SRP){
+                     row.findViewById(R.id.text_srp).setVisibility(View.GONE);
+                    row.findViewById(R.id.srpedit).setVisibility(View.VISIBLE);
+                }
+                else {
+                    row.findViewById(R.id.text_srp).setVisibility(View.VISIBLE);
+                    row.findViewById(R.id.srpedit).setVisibility(View.GONE);
+                }
 
                 if (!salesReturnHelper.SHOW_SAL_RET_MFG_DATE)
                     (row.findViewById(R.id.ll_mfd)).setVisibility(View.GONE);

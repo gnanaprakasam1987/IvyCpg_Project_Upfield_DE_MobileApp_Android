@@ -339,7 +339,7 @@ public class ReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.totalDiscountedAmt from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
+                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.NetAmount from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
                             + " WHERE OD.ProductID IN (" + productIds + ")"
                             + " AND OH.upload!='X' and OH.OrderDate="
                             + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
@@ -383,7 +383,7 @@ public class ReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,(OD.totalDiscountedAmt) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
+                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,(OD.NetAmount) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
                             + " from OrderDetail OD INNER JOIN  ProductMaster PM ON OD.ProductID = PM.PID LEFT JOIN BatchMaster BM ON OD.batchid =  BM.batchid  and BM.pid=OD.productid where OD.OrderID="
                             + bmodel.QT(orderID) + "and OD.OrderType = 0");
             if (c != null) {
@@ -3067,7 +3067,7 @@ public class ReportHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
-        sb.append("select psname,productid,pcsQty,caseqty,outerqty,totalDiscountedAmt,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
+        sb.append("select psname,productid,pcsQty,caseqty,outerqty,NetAmount,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
         sb.append("inner join productmaster PM on ID.productid=PM.pid ");
         sb.append("left join BatchMaster BM on  BM.pid=ID.productid and BM.batchid=ID.batchid ");
         sb.append(" where invoiceid=" + bmodel.QT(invoiceno));
@@ -3339,7 +3339,7 @@ public class ReportHelper {
                     + ".psname,A"
                     + loopEnd
                     + ".isSalable," +
-                    "A1.pname as brandname,A1.parentid,sum(OD.totalDiscountedAmt) from ProductMaster A1";
+                    "A1.pname as brandname,A1.parentid,sum(OD.NetAmount) from ProductMaster A1";
 
             for (int i = 2; i <= loopEnd; i++)
                 sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
