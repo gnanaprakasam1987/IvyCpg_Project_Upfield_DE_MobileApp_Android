@@ -59,6 +59,7 @@
         <item name="roundedCustomButtonNormalTransparent">
             @style/ButtonNormalRoundCornerTransparent
         </item>
+        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
         <item name="customListTitle">@style/TextViewListTitleBlue</item>
@@ -212,6 +213,7 @@ negative button and neutral button -->
         <item name="roundedCustomButtonNormalTransparent">
             @style/ButtonNormalRoundCornerTransparent
         </item>
+        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
         <item name="customListTitle">@style/TextViewListTitleBlue</item>
@@ -354,6 +356,7 @@ negative button and neutral button -->
         <item name="roundedCustomButtonNormalTransparent">
             @style/ButtonNormalRoundCornerTransparent
         </item>
+        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
         <item name="customListTitle">@style/TextViewListTitleBlue</item>
@@ -496,6 +499,7 @@ negative button and neutral button -->
         <item name="roundedCustomButtonNormalTransparent">
             @style/ButtonNormalRoundCornerTransparent
         </item>
+        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
         <item name="customListTitle">@style/TextViewListTitleBlue</item>
@@ -636,6 +640,7 @@ negative button and neutral button -->
         <item name="roundedCustomButtonNormalTransparent">
             @style/ButtonNormalRoundCornerTransparent
         </item>
+        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
         <item name="customListTitle">@style/TextViewListTitleBlue</item>
@@ -776,6 +781,7 @@ negative button and neutral button -->
         <item name="roundedCustomButtonNormalTransparent">
             @style/ButtonNormalRoundCornerTransparent
         </item>
+        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
         <item name="customListTitle">@style/TextViewListTitleBlue</item>
@@ -1201,6 +1207,7 @@ negative button and neutral button -->
         <item name="roundedCustomButtonNormalTransparent">
             @style/ButtonNormalRoundCornerTransparent
         </item>
+        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
     </style>
 
@@ -1283,6 +1290,9 @@ negative button and neutral button -->
     <style name="ButtonNormalRoundCornerTransparent" parent="@style/ButtonNormal">
         <item name="android:background">@drawable/button_round_corner_transparent</item>
         <item name="android:textColor">@color/Black</item>
+    </style>
+    <style name="ButtonSmallBoxCornerGrey" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/button_box_corner_grey</item>
     </style>
     <!--Button Rounded styles-->
 

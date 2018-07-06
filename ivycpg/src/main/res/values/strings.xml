@@ -1256,7 +1256,7 @@
     <string name="user_already_assigned">User Already Assigned</string>
     <string name="seller_already_assigned">Seller is assigned to some other backup seller</string>
     <string name="backup_seller_already_assigned">Backup seller is assigned to some other user</string>
-    <string name="foc">FfoOC</string>
+    <string name="foc">FOC</string>
     <string name="volume">Volume</string>
     <string-array name="task_tab_header">
         <item>All</item>
@@ -1272,8 +1272,7 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
-    <string name="title_activity_posm_image_gallery">PosmImageGallery</string>
-    <string name="title_activity_posm_gallery">PosmGallery</string>
+
 
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
     <string name="total_collected">Total Collected</string>

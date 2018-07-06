@@ -1,17 +1,13 @@
 package com.ivy.cpg.view.order;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -33,6 +29,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -58,6 +55,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
@@ -85,7 +83,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
     private RadioGroup rbPaymentType;
     private boolean isClicked, setRadioBtnChecked;
     private EditText collectionamount, chequenumber;
-    private TextView img_max_amount, img_min_amount;
+    private ImageButton img_max_amount, img_min_amount;
     private TextView tvAmount;
     private String paymentmode = "";
     private CollectionBO collectionbo;
@@ -128,6 +126,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
     private ListView mCreditNoteLV;
     private ArrayList<CreditNoteListBO> mCreditNoteList;
 
+
     public CollectionBeforeInvoiceDialog(Context context,
                                          OrderSummary orderSummary, CollectionBO collection,
                                          double invoiceAmount, double minimumAmount, double creditBalance) {
@@ -148,7 +147,6 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         RelativeLayout ll = (RelativeLayout) LayoutInflater.from(context)
                 .inflate(R.layout.dialog_collectionbeforeinvoice, null);
         setContentView(ll);
-
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         getWindow().setSoftInputMode(
@@ -437,9 +435,18 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                     if (!isClicked) {
                         Button btn = (Button) v;
                         if (btn == chequedate) {
-                            DialogFragment newFragment = new DatePickerFragment();
+                            Calendar c = Calendar.getInstance();
+                            int year = c.get(Calendar.YEAR);
+                            int month = c.get(Calendar.MONTH);
+                            int day = c.get(Calendar.DAY_OF_MONTH);
+
+                            MyDatePickerDialog d = new MyDatePickerDialog(context, R.style.DatePickerDialogStyle,
+                                    mDateSetListener, year, month, day);
+                            d.setPermanentTitle(context.getString(R.string.choose_date));
+                            d.show();
+                           /* DialogFragment newFragment = new DatePickerFragment();
                             newFragment.show(orderSummaryActivity
-                                    .getSupportFragmentManager(), "datePicker");
+                                    .getSupportFragmentManager(), "datePicker");*/
                         }
                     }
                 }
@@ -448,6 +455,31 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             Commons.printException(e);
         }
     }
+
+    private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            Calendar selectedDate = new GregorianCalendar(year, month, day);
+            chequedate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    selectedDate.getTime(), bmodel.configurationMasterHelper.outDateFormat));
+            chequeDate = chequedate.getText().toString();
+            Calendar currentcal = Calendar.getInstance();
+            if (!bmodel.configurationMasterHelper.IS_POST_DATE_ALLOW) {
+                if (selectedDate.after(currentcal)) {
+                    Toast.makeText(
+                            context.getApplicationContext(),
+                            context.getResources().getString(
+                                    R.string.post_dated_cheque_notallow),
+                            Toast.LENGTH_SHORT).show();
+                    chequedate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                            currentcal.getTime(), bmodel.configurationMasterHelper.outDateFormat));
+                    chequeDate = DateUtil.convertDateObjectToRequestedFormat(
+                            currentcal.getTime(), outPutDateFormat).toString();
+
+                }
+            }
+        }
+    };
 
     /**
      * load data/view Bank, Branch, Invoice List View
@@ -594,8 +626,8 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         return -1;
     }
 
-    @SuppressLint("ValidFragment")
-    public class DatePickerFragment extends DialogFragment implements
+
+    /*public class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
         @Override
@@ -627,7 +659,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                 }
             }
         }
-    }
+    }*/
 
     /**
      * Update branch for corresponding bank id
@@ -880,7 +912,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             layoutKeypad = (LinearLayout) findViewById(R.id.keypad);
             chequenumber = (EditText) findViewById(R.id.collectionchequeNo);
             payTotal = (TextView) findViewById(R.id.payTotal);
-            img_max_amount = (TextView) findViewById(R.id.img_max_amount);
+            img_max_amount = (ImageButton) findViewById(R.id.img_max_amount);
             chequedate = (Button) findViewById(R.id.collectionDate);
             Bank = (Spinner) findViewById(R.id.bankName);
             Branch = (Spinner) findViewById(R.id.bankArea);
@@ -888,7 +920,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             btnDot.setVisibility(View.VISIBLE);
             btnSubmit.setOnClickListener(this);
             tvMinimumAmount = (TextView) findViewById(R.id.tv_minimum_amount);
-            img_min_amount = (TextView) findViewById(R.id.img_min_amount);
+            img_min_amount = (ImageButton) findViewById(R.id.img_min_amount);
             mCreditNoteLV = (ListView) findViewById(R.id.lv_creditnote);
             ll_keyboard = (LinearLayout) findViewById(R.id.footer);
 
@@ -899,7 +931,6 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             tv_header_title.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
             ((TextView) findViewById(R.id.productName2)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             ((TextView) findViewById(R.id.minimumamount)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            ((TextView) findViewById(R.id.mode_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             ((TextView) findViewById(R.id.tv_branch_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
             ((TextView) findViewById(R.id.tv_bank_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
             ((TextView) findViewById(R.id.totalLabel)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -918,10 +949,10 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             close_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                        if (orderSummaryActivity != null)
-                            CollectionBeforeInvoiceDialog.this.orderSummaryActivity
-                                    .onResume();
-                        dismiss();
+                    if (orderSummaryActivity != null)
+                        CollectionBeforeInvoiceDialog.this.orderSummaryActivity
+                                .onResume();
+                    dismiss();
                 }
             });
 
