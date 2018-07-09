@@ -31,12 +31,6 @@ public class NetworkUtils {
     }
 
 
-    public static String convertToSting(Object object) {
-        return new Gson().toJson(object);
-    }
 
-    public static Object convertToObject(String jsonString, Object object) {
-        return new Gson().fromJson(jsonString, object.getClass());
-    }
 
 }

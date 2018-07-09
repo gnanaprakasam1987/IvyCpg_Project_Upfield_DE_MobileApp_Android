@@ -76,18 +76,16 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
         if (isNFCConfigurationEnabled()) {
             getIvyView().pauseNFCManager();
         }
-        mCompositeDisposable.clear();
 
     }
 
-    @Override
     public void getAppTheme() {
         getCompositeDisposable().add(getDataManager().getThemeColor()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<String>() {
                     @Override
-                    public void accept(String theme) throws Exception {
+                    public void accept(String theme) {
                         if (theme.equalsIgnoreCase(RED))
                             getIvyView().setRedTheme();
                         else if (theme.equalsIgnoreCase(ORANGE))
@@ -106,14 +104,13 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
                 }));
     }
 
-    @Override
     public void getAppFontSize() {
         getCompositeDisposable().add(getDataManager().getFontSize()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<String>() {
                     @Override
-                    public void accept(String fontSize) throws Exception {
+                    public void accept(String fontSize) {
                         getIvyView().setFontSize(fontSize);
                     }
                 }));
