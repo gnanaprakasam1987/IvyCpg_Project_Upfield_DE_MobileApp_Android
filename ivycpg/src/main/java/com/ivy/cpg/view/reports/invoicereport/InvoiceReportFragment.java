@@ -118,6 +118,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         if (!businessModel.configurationMasterHelper.SHOW_LPC_ORDER) {
             view.findViewById(R.id.lbl_avg_lines).setVisibility(View.GONE);
             text_averageLines.setVisibility(View.GONE);
+            view.findViewById(R.id.view1).setVisibility(View.GONE);
         } else {
             try {
                 if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
