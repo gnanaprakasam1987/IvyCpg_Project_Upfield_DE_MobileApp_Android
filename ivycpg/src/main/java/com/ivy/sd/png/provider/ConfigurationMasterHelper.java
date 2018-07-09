@@ -1430,6 +1430,12 @@ public class ConfigurationMasterHelper {
     public boolean IS_ENABLE_ORDER_STATUS_REPORT;
     public boolean IS_ORDER_STATUS_REPORT;
 
+    private static final String CODE_SUP_USER_LOAD_LEVEL = "SUP_USER_LOAD_LEVEL";
+    public int SUP_USER_LOAD_LEVEL;
+
+    private static final String CODE_SUP_UPDATE_USER_LOC = "SUP_UPDATE_USER_LOC";
+    public int SUP_UPDATE_USER_LOC;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2524,6 +2530,9 @@ public class ConfigurationMasterHelper {
         if (IS_ENABLE_USER_FILTER_DASHBOARD) {
             loadDashboardUserFilter();
         }
+
+        this.SUP_USER_LOAD_LEVEL = hashMapHHTModuleOrder.get(CODE_SUP_USER_LOAD_LEVEL) != null ? hashMapHHTModuleOrder.get(CODE_SUP_USER_LOAD_LEVEL) : 0;
+        this.SUP_UPDATE_USER_LOC = hashMapHHTModuleOrder.get(CODE_SUP_UPDATE_USER_LOC) != null ? hashMapHHTModuleOrder.get(CODE_SUP_UPDATE_USER_LOC) : 0;
     }
 
     private boolean isInOutModule() {

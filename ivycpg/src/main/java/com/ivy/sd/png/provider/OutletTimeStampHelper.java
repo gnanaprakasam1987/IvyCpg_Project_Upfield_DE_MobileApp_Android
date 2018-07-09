@@ -159,7 +159,9 @@ public class OutletTimeStampHelper {
 			db.createDataBase();
 			db.openDataBase();
 			
-			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue";
+			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode" +
+					",latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery," +
+					"LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,isOrdered,lines";
 
 			if(isJointCall(joinCallList)){  // check join call or not
 				joinCallFlag=1;
@@ -235,6 +237,8 @@ public class OutletTimeStampHelper {
 					+", Battery = "+getBatteryPercentage(context)
 					+", IsLocationEnabled = "+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
 					+", IsDeviated = "+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+					+", isOrdered = "+ bmodel.retailerMasterBO.isOrdered()
+					+", lines = "+ bmodel.retailerMasterBO.getTotalLines()
 					+"  WHERE RetailerID = '"
 					+bmodel.retailerMasterBO.getRetailerID()
 					+ "' AND TimeIn = '" + getTimeIn() + "'";

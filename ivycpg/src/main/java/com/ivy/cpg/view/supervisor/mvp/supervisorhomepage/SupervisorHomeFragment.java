@@ -23,18 +23,27 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
+
+import java.util.HashMap;
 
 public class SupervisorHomeFragment extends IvyBaseFragment implements
         OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener,
@@ -48,6 +57,8 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName;
     private RecyclerViewPager mRecyclerView;
+    @SuppressLint("UseSparseArrays")
+    private HashMap<Integer, SupervisorModelBo> sellerInfoHasMap = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -301,12 +312,62 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateSellerMarkerInfo(DetailsBo detailsBo) {
+    public void updateSellerMarkerInfo(SupervisorModelBo supervisorModelBo) {
 
     }
 
     @Override
-    public void updateSellerFirebaseInfo(DetailsBo detailsBo) {
+    public void updateSellerFirebaseInfo(SupervisorModelBo supervisorModelBo) {
+
+        System.out.println("supervisorModelBo User Name = " + supervisorModelBo.getUserName());
+
+        LatLng destLatLng = new LatLng(supervisorModelBo.getLatitude(), supervisorModelBo.getLongitude());
+
+        if(!sellerInfoHasMap.containsKey(supervisorModelBo.getUserId())) {
+
+            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .flat(true)
+                    .title(supervisorModelBo.getUserName())
+                    .position(destLatLng)
+                    .snippet(String.valueOf(supervisorModelBo.getUserId())));
+            marker.setIcon(icon);
+            supervisorModelBo.setMarker(marker);
+
+            sellerInfoHasMap.put(supervisorModelBo.getUserId(), supervisorModelBo);
+
+        }else{
+
+            isFirst = false;
+
+            SupervisorModelBo supervisorModelObj = sellerInfoHasMap.get(supervisorModelBo.getUserId());
+
+            supervisorModelObj.setBilled(supervisorModelBo.getBilled());
+            supervisorModelObj.setCovered(supervisorModelBo.getCovered());
+            supervisorModelObj.setLatitude(supervisorModelBo.getLatitude());
+            supervisorModelObj.setLongitude(supervisorModelBo.getLongitude());
+            supervisorModelObj.setOrderValue(supervisorModelBo.getOrderValue());
+            supervisorModelObj.setOrdered(supervisorModelBo.isOrdered());
+            supervisorModelObj.setTimeIn(supervisorModelBo.getTimeIn());
+            supervisorModelObj.setTimeOut(supervisorModelBo.getTimeOut());
+            supervisorModelObj.setRetailerId(supervisorModelBo.getRetailerId());
+            supervisorModelObj.setRetailerName(supervisorModelBo.getRetailerName());
+
+            SupervisorActivityHelper.getInstance().animateMarkerNew(destLatLng,supervisorModelObj.getMarker(),mMap);
+
+
+        }
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        //Will animate only for the first time when app opens
+        if(isFirst) {
+            for (SupervisorModelBo detailsBo : sellerInfoHasMap.values()) {
+                builder.include(detailsBo.getMarker().getPosition());
+            }
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
+        }
 
     }
 
