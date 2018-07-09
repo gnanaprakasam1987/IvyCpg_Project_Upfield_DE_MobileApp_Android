@@ -28,6 +28,7 @@ import com.ivy.sd.png.util.Commons;
 import java.util.ArrayList;
 import java.util.Vector;
 
+@Deprecated
 public class CurrentStockView extends Fragment {
     /**
      * Called when the activity is first created.

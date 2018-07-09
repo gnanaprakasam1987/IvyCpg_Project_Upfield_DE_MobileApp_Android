@@ -10,19 +10,21 @@ import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.Vector;
 
 
 public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
     private Vector<StockReportMasterBO> items;
-    private BusinessModel bModel;
+    private ConfigurationMasterHelper configurationMasterHelper;
 
-    public BeginningStockAdapter(Vector<StockReportMasterBO> items, Context context, BusinessModel businessModel) {
+    public BeginningStockAdapter(Vector<StockReportMasterBO> items, Context context, ConfigurationMasterHelper masterHelper) {
         super(context, R.layout.row_begining_stock_listview, items);
         this.items = items;
-        this.bModel = businessModel;
+        this.configurationMasterHelper = masterHelper;
     }
 
     public StockReportMasterBO getItem(int position) {
@@ -55,16 +57,15 @@ public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
             holder.outerQty = row.findViewById(R.id.outerqty);
             row.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    //productname.setText(holder.pName);
                     beginningStockAdapterCallback.productName(holder.pName);
                 }
             });
 
-            if (!bModel.configurationMasterHelper.SHOW_ORDER_CASE)
+            if (configurationMasterHelper.SHOW_ORDER_CASE)
                 holder.caseQty.setVisibility(View.GONE);
-            if (!bModel.configurationMasterHelper.SHOW_ORDER_PCS)
+            if (configurationMasterHelper.SHOW_ORDER_PCS)
                 holder.pcsQty.setVisibility(View.GONE);
-            if (!bModel.configurationMasterHelper.SHOW_OUTER_CASE)
+            if (configurationMasterHelper.SHOW_OUTER_CASE)
                 holder.outerQty.setVisibility(View.GONE);
 
             row.setTag(holder);
@@ -79,7 +80,7 @@ public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
         holder.pName = product.getProductname();
         double unitprice = (product.getCaseqty() * product.getCasesize() + product
                 .getPieceqty()) * product.getBasePrice();
-        holder.unitPrice.setText(bModel.formatValue(unitprice));
+        holder.unitPrice.setText(formatValue(unitprice));
         return row;
     }
 
@@ -88,11 +89,15 @@ public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
         String pName;
     }
 
-    private BeginningStockAdapterCallback beginningStockAdapterCallback;
+    public String formatValue(double value) {
 
-    public BeginningStockAdapterCallback getBeginningStockAdapterCallback() {
-        return beginningStockAdapterCallback;
+        return SDUtil.format(value,
+                configurationMasterHelper.VALUE_PRECISION_COUNT,
+                configurationMasterHelper.VALUE_COMMA_COUNT, configurationMasterHelper.IS_DOT_FOR_GROUP);
     }
+
+
+    private BeginningStockAdapterCallback beginningStockAdapterCallback;
 
     public void setBeginningStockAdapterCallback(BeginningStockAdapterCallback beginningStockAdapterCallback) {
         this.beginningStockAdapterCallback = beginningStockAdapterCallback;
@@ -101,8 +106,6 @@ public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
     public interface BeginningStockAdapterCallback {
         void productName(String pName);
     }
-
-
 
 
 }

@@ -18,7 +18,6 @@ public class EodStockReportModule {
         this.application = application;
     }
 
-    @Singleton
     @Provides
     EodReportHelper provideEodReportHelper() {
         return new EodReportHelper(application);
