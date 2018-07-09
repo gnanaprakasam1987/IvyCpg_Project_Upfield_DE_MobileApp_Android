@@ -305,7 +305,7 @@ public class CollectionHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,ReceiptNo,datetime,refid,refno";
+            String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno";
             String groupID = bmodel.QT(SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + bmodel.userMasterHelper.getUserMasterBO().getUserid());
             String groupDate = SDUtil.now(SDUtil.DATE_TIME);
             double calculateCredit = 0;

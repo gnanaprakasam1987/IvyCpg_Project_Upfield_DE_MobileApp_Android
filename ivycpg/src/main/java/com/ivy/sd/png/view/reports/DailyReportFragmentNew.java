@@ -25,7 +25,7 @@ import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.MerchandisingposmBO;
 import com.ivy.sd.png.bo.OrderDetail;
-import com.ivy.cpg.view.reports.OrderReportBO;
+import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;

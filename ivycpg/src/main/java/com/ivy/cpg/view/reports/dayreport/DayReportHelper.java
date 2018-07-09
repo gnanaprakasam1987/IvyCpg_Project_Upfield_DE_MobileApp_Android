@@ -3,7 +3,7 @@ package com.ivy.cpg.view.reports.dayreport;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.cpg.view.reports.OrderReportBO;
+import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
@@ -20,7 +20,7 @@ public class DayReportHelper {
 
 
     private Context mContext;
-    private BusinessModel mBusinessModel ;
+    private BusinessModel mBusinessModel;
 
     public DayReportHelper(Context context) {
         this.mContext = context;
@@ -45,7 +45,7 @@ public class DayReportHelper {
                             + "OrderHeader.OrderValue,OrderHeader.LinesPerCall ,RetailerMaster.sbd_dist_stock,RetailerMaster.sbd_dist_achieve,"
                             + "OrderHeader.upload,OrderHeader.totalweight,OrderHeader.FocusPackLines,OrderHeader.MSPLines,OrderHeader.is_vansales,"
                             + "IFNULL((select sum(taxValue) from OrderTaxDetails where OrderId = OrderHeader.OrderID ),0) as taxValue,"
-                            + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue "
+                            + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue,OrderHeader.orderImage as orderImage "
                             + "FROM OrderHeader INNER JOIN RetailerMaster "
                             + "ON OrderHeader.RetailerId = RetailerMaster.RetailerID INNER JOIN OrderDetail OD ON  OD.OrderID = OrderHeader.OrderID where OrderHeader.upload!='X' "
                             + "GROUP BY OrderHeader.OrderID ,OrderHeader.RetailerID,RetailerMaster.RetailerName,"
@@ -69,6 +69,7 @@ public class DayReportHelper {
                     orderReport.setIsVanSeller(c.getInt(11));
                     orderReport.setTaxValue(c.getDouble(c.getColumnIndex("taxValue")));
                     orderReport.setDiscountValue(c.getDouble(c.getColumnIndex("discountValue")));
+                    orderReport.setOrderedImage(c.getString(c.getColumnIndex("orderImage")));
                     reportOrDBooking.add(orderReport);
                 }
                 c.close();
@@ -143,7 +144,7 @@ public class DayReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.totalDiscountedAmt from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
+                    .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.NetAmount from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
                             + " WHERE OD.ProductID IN (" + productIds + ")"
                             + " AND OH.upload!='X' and OH.OrderDate="
                             + mBusinessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));

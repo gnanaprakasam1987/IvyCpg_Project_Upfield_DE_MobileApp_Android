@@ -628,7 +628,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             if (convertView == null) {
 
                 LayoutInflater inflater = getActivity().getLayoutInflater();
-                convertView = inflater.inflate(R.layout.custom_loadmgt_list_item, parent, false);
+                convertView = inflater.inflate(R.layout.custom_newui_list_item, parent, false);
                 holder = new ViewHolder();
                 holder.menuIcon = (ImageView) convertView
                         .findViewById(R.id.list_item_icon_ib);
@@ -800,7 +800,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+                bmodel.synchronizationHelper.updateAuthenticateToken(false);
 
             } catch (Exception e) {
                 Commons.printException("" + e);

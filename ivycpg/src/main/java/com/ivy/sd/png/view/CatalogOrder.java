@@ -28,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +38,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,7 +53,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
-import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
@@ -81,6 +84,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -89,7 +93,7 @@ import java.util.Vector;
 /**
  * Created by dharmapriya.k on 10/14/2016,11:34 AM.
  */
-public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, MOQHighlightDialog.savePcsValue {
+public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, MOQHighlightDialog.savePcsValue, TextView.OnEditorActionListener {
     private static final String BRAND = "Brand";
     public static final String GENERAL = "General";
     private final String mCommon = "Filt01";
@@ -114,6 +118,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private final String mDiscount = "Filt18";
     private final String mNearExpiryTag = "Filt19";
     private final String mCompertior = "Filt23";
+    private final String mDrugProducts = "Filt28";
     //public int mSelectedLocationIndex;
     private RecyclerViewAdapter adapter;
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
@@ -126,6 +131,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private int sbdDistAchieved = 0;
     private boolean isSbd, isSbdGaps, isOrdered, isPurchased, isInitiative, isOnAllocation, isInStock, isPromo, isMustSell, isFocusBrand,
             isFocusBrand2, isSIH, isOOS, isNMustSell, isStock, isDiscount, isNearExpiryTag, isFocusBrand3, isFocusBrand4, isSMP;
+    private boolean isDrugProducts;
     //private TypedArray typearr;
     private BusinessModel bmodel;
 
@@ -173,7 +179,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     public Timer orderTimer;
     private MOQHighlightDialog mMOQHighlightDialog;
     SearchAsync searchAsync;
-    private int sbdHistory = 0;
 
     private AlertDialog alertDialog;
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
@@ -194,6 +199,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         bottom_layout = (LinearLayout) findViewById(R.id.bottom_layout);
 
         search_txt = (EditText) search_toolbar.findViewById(R.id.search_txt);
+        search_txt.setOnEditorActionListener(this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -239,7 +245,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         screenCode = HomeScreenTwo.MENU_CATALOG_ORDER;
         OrderedFlag = HomeScreenTwo.MENU_CATALOG_ORDER;
         SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext()); //sbd calculation
-        sbdHistory = SBDHelper.getInstance(this).getHistorySBD(); // sbd history
 
         Bundle extras = getIntent().getExtras();
         if (savedInstanceState == null) {
@@ -519,6 +524,16 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
             registerReceiver();
         }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            return true;
+        }
+        return false;
     }
 
     private class SearchAsync extends
@@ -815,7 +830,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (generaltxt.equalsIgnoreCase(mFocusBrand3) && ret.getIsFocusBrand3() == 1)
                 || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
                 || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
-                || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)) {
+                || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
+                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)) {
             return true;
         }
         return false;
@@ -828,7 +844,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (isPurchased && ret.getIsPurchased() == 1) || (isInitiative && ret.getIsInitiativeProduct() == 1) || (isOnAllocation && ret.isAllocation() == 1
                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) || (isInStock && ret.getWSIH() > 0) || (isPromo && ret.isPromo()) || (isMustSell && ret.getIsMustSell() == 1)
                 || (isFocusBrand && ret.getIsFocusBrand() == 1) || (isFocusBrand2 && ret.getIsFocusBrand2() == 1) || (isSIH && ret.getSIH() > 0) || (isOOS && ret.getOos() == 0)
-                || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && ret.getLocations().get(0).getShelfPiece() > 0) || (isDiscount && ret.getIsDiscountable() == 1)) {
+                || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && ret.getLocations().get(0).getShelfPiece() > 0) || (isDiscount && ret.getIsDiscountable() == 1)
+                || (isDrugProducts && ret.getIsDrug() == 1)) {
 
             return true;
         }
@@ -879,6 +896,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     isFocusBrand4 = true;
                 else if (bo.getConfigCode().equals(mSMP))
                     isSMP = true;
+                else if (bo.getConfigCode().equals(mDrugProducts))
+                    isDrugProducts = true;
             }
         }
     }
@@ -1630,6 +1649,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         Vector<ProductMasterBO> items;
         double temp;
         int sbdAchievement = 0;
+        Vector<ProductMasterBO> orderedList;
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -1639,6 +1659,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             int siz = items.size();
             if (siz == 0)
                 return null;
+
+            orderedList = new Vector<>();
 
             for (int i = 0; i < siz; i++) {
                 ProductMasterBO ret = items.elementAt(i);
@@ -1651,10 +1673,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     totalvalue = totalvalue + temp;
 
                     totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
-                    sbdAchievement += SBDHelper.getInstance(CatalogOrder.this).getAchievedSBD(ret);
+                    orderedList.add(ret);
                 }
             }
 
+            sbdAchievement = SBDHelper.getInstance(CatalogOrder.this).getAchievedSBD(orderedList);
             return null;
         }
 
@@ -1673,7 +1696,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             String strFormatValue = bmodel.formatValue(totalvalue) + "";
             totalValueText.setText(strFormatValue);
             totalQtyTV.setText("" + totalAllQty);
-            distValue.setText((sbdAchievement + sbdHistory) + "/" + bmodel.getRetailerMasterBO()
+            distValue.setText(sbdAchievement + "/" + bmodel.getRetailerMasterBO()
                     .getSbdDistributionTarget());
         }
     }
@@ -1784,7 +1807,28 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             btn_clear.setVisibility(View.GONE);
             loadProductList();
         } else if (v.getId() == R.id.btn_next) {
-
+            if (bmodel.configurationMasterHelper.IS_ENABLE_LICENSE_VALIDATION) {
+                boolean isDrugLicenseExpired = false;
+                LinkedList<ProductMasterBO> mOrderedProductList = new LinkedList<>();
+                for (int j = 0; j < bmodel.productHelper.getProductMaster().size(); ++j) {
+                    ProductMasterBO product = bmodel.productHelper.getProductMaster().get(j);
+                    if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 ||
+                            product.getOrderedOuterQty() > 0) {
+                        mOrderedProductList.add(product);
+                    }
+                }
+                if (bmodel.productHelper.isDrugOrder(mOrderedProductList) && bmodel.productHelper.isDLDateExpired()) {
+                    isDrugLicenseExpired = true;
+                }
+                if (isDrugLicenseExpired) {
+                    if (!bmodel.configurationMasterHelper.IS_SOFT_LICENSE_VALIDATION) {
+                        bmodel.showAlert(getResources().getString(R.string.drug_license_expired), 0);
+                        return;
+                    } else {
+                        Toast.makeText(CatalogOrder.this, getResources().getString(R.string.drug_license_expired), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
             if (bmodel.getOrderHeaderBO() == null)
                 bmodel.setOrderHeaderBO(new OrderHeader());
 
@@ -2347,7 +2391,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken();
+                bmodel.synchronizationHelper.updateAuthenticateToken(false);
 
             } catch (Exception e) {
                 Commons.printException("" + e);

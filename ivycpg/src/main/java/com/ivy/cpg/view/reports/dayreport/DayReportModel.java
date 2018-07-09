@@ -2,7 +2,7 @@ package com.ivy.cpg.view.reports.dayreport;
 
 import android.content.Context;
 
-import com.ivy.cpg.view.reports.OrderReportBO;
+import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
@@ -59,6 +59,20 @@ public class DayReportModel implements IDayReportModelPresenter {
         }
 
         mBusinessModel.downloadDailyReport();
+        //kellogs project specific
+        for (ConfigureBO con : mDayList) {
+            if (con.getConfigCode().equalsIgnoreCase("DAYRT29") ||
+                    con.getConfigCode().equalsIgnoreCase("DAYRT30") ||
+                    con.getConfigCode().equalsIgnoreCase("DAYRT31") ||
+                    con.getConfigCode().equalsIgnoreCase("DAYRT32") ||
+                    con.getConfigCode().equalsIgnoreCase("DAYRT33") ||
+                    con.getConfigCode().equalsIgnoreCase("DAYRT34")) {
+                mBusinessModel.downloadDailyReportKellogs();
+                break;
+            }
+        }
+
+
         DailyReportBO outlet = mBusinessModel.getDailyRep();
 
         int totalcalls = mBusinessModel.getTotalCallsForTheDay();
@@ -70,14 +84,24 @@ public class DayReportModel implements IDayReportModelPresenter {
                 con.setMenuNumber(mBusinessModel.formatValue(SDUtil
                         .convertToDouble(outlet.getTotValues())));
 
+            }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT29")) {
+                con.setMenuNumber(mBusinessModel.formatValue(SDUtil
+                        .convertToDouble(outlet.getKlgsTotValue())));
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT02")) {
                 String eff = outlet.getEffCoverage();
                 con.setMenuNumber(eff);
-            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT03")) {
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT30")) {
+                String eff = outlet.getKlgsEffCoverage();
+                con.setMenuNumber(eff);
+            }else if (con.getConfigCode().equalsIgnoreCase("DAYRT03")|| con.getConfigCode().equalsIgnoreCase("DAYRT31")) {
                 con.setMenuNumber(visitedcalls + "/" + totalcalls);
 
-            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT04")) {
-                int productivecalls = mBusinessModel.getProductiveCallsForTheDay();
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT04")|| con.getConfigCode().equalsIgnoreCase("DAYRT32")) {
+                int productivecalls = 0;
+                if (con.getConfigCode().equalsIgnoreCase("DAYRT04"))
+                    productivecalls = mBusinessModel.getProductiveCallsForTheDay();
+                else if (con.getConfigCode().equalsIgnoreCase("DAYRT31"))
+                    productivecalls = mBusinessModel.getProductiveCallsForTheDayKlgs();
                 if (mBusinessModel.configurationMasterHelper.IS_PRODUCTIVE_CALLS_OBJ_PH) {
                     float productiveCallsObj_PH = (float) totalcalls
                             * mBusinessModel.configurationMasterHelper
@@ -101,6 +125,9 @@ public class DayReportModel implements IDayReportModelPresenter {
             }*/ else if (con.getConfigCode().equalsIgnoreCase("DAYRT06")) {
                 con.setMenuNumber(outlet.getTotLines());
 
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT33")) {
+                con.setMenuNumber(outlet.getKlgsTotLines());
+
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT07")) {
                 float avg1 = 0;
                 try {
@@ -116,7 +143,22 @@ public class DayReportModel implements IDayReportModelPresenter {
                 }
                 con.setMenuNumber(SDUtil.roundIt(avg1, 2));
 
-            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT08")) {
+            }else if (con.getConfigCode().equalsIgnoreCase("DAYRT34")) {
+                float avg1 = 0;
+                try {
+                    float f1 = SDUtil.convertToFloat(outlet.getKlgsTotLines());
+                    float f2 = SDUtil.convertToFloat(outlet.getKlgsEffCoverage());
+                    if (f2 == 0.0) {
+                        avg1 = 0;
+                    } else {
+                        avg1 = f1 / f2;
+                    }
+                } catch (Exception e) {
+
+                }
+                con.setMenuNumber(SDUtil.roundIt(avg1, 2));
+
+            }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT08")) {
                 int val[] = mBusinessModel.getSDBDistTargteAndAcheived();
                 con.setMenuNumber(val[0] + "/" + val[1]);
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT09")) {

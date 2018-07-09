@@ -148,6 +148,10 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         menu.findItem(R.id.menu_filter).setVisible(!drawerOpen);
+
+        if(mylist==null||mylist.size()==0){
+            menu.findItem(R.id.menu_filter).setVisible(false);
+        }
     }
 
     @Override

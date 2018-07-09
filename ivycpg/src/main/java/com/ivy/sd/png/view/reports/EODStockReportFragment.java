@@ -437,6 +437,12 @@ public class EODStockReportFragment extends Fragment {
                     holder.replacementRL.setVisibility(View.VISIBLE);
                 else
                     holder.replacementRL.setVisibility(View.GONE);
+
+                if (bmodel.configurationMasterHelper.SHOW_STOCK_RETURN)
+                    convertView.findViewById(R.id.rl_return).setVisibility(View.VISIBLE);
+                else
+                    convertView.findViewById(R.id.rl_return).setVisibility(View.GONE);
+
                 if (bmodel.configurationMasterHelper.SHOW_STOCK_EMPTY)
                     holder.emptyRL.setVisibility(View.VISIBLE);
                 else

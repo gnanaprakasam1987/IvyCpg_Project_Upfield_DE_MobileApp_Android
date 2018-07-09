@@ -2,6 +2,7 @@ package com.ivy.cpg.view.reports.orderreport;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,8 +21,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.OrderReportBO;
-import com.ivy.cpg.view.reports.OrderReportDetail;
 import com.ivy.cpg.view.reports.dayreport.DaggerReportComponent;
 import com.ivy.cpg.view.reports.dayreport.ReportComponent;
 import com.ivy.cpg.view.reports.dayreport.ReportModule;
@@ -383,11 +382,10 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
 
         // Load ListView
         //  com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter mSchedule = new com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter(list);
-        OrderReportAdapter mSchedule = new OrderReportAdapter(list, getActivity(), businessModel);
+        OrderReportAdapter mSchedule = new OrderReportAdapter(list, getActivity(), businessModel, iOrderReportImageView);
         listView.setAdapter(mSchedule);
 
     }
-
 
     class XlsExport extends AsyncTask<Void, Void, Boolean> {
 
@@ -628,4 +626,45 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
         super.onDestroy();
         unbinder.unbind();
     }
+
+    /**
+     * used to open selected image into image viewer
+     */
+    IOrderReportImageView iOrderReportImageView = new IOrderReportImageView() {
+        @Override
+        public void openImageView(String fileName) {
+            if (fileName.trim().length() > 0) {
+                try {
+                    Uri path;
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+
+                    if (Build.VERSION.SDK_INT >= 24) {
+                        path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", new File(fileName));
+                        intent.setDataAndType(path, "image/*");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } else {
+                        path = Uri.fromFile(new File(fileName));
+                        intent.setDataAndType(path, "image/*");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    }
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Commons.printException("" + e);
+                    Toast.makeText(
+                            getActivity(),
+                            getResources()
+                                    .getString(
+                                            R.string.no_application_available_to_view_video),
+                            Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.unloadimage),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
 }

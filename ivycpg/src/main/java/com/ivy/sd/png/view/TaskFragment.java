@@ -7,11 +7,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -99,14 +95,18 @@ public class TaskFragment extends IvyBaseFragment {
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
-        Bundle extras = getActivity().getIntent().getExtras();
+        Bundle extras;
+        if (getActivity().getIntent().getExtras() != null)
+            extras = getActivity().getIntent().getExtras();
+        else
+            extras = getArguments();
         //Set Screen Title
         try {
-            if (getArguments() == null || !getArguments().containsKey("screentitle")
-                    || getArguments().getString("screentitle") == null)
+            if (extras == null || !extras.containsKey("screentitle")
+                    || extras.getString("screentitle") == null)
                 setScreenTitle(bmodel.getMenuName("MENU_TASK_NEW"));
             else
-                setScreenTitle(getArguments().getString("screentitle"));
+                setScreenTitle(extras.getString("screentitle"));
         } catch (Exception e) {
 
             setScreenTitle(getResources().
@@ -216,7 +216,7 @@ public class TaskFragment extends IvyBaseFragment {
                     new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                             "", getResources().getString(R.string.move_next_activity),
                             false, getResources().getString(R.string.ok),
-                            getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                            getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

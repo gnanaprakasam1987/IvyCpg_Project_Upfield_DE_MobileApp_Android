@@ -62,6 +62,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
     private final String MENU_PLANNING = "Day Planning";
     private final String MENU_VISIT = "Trade Coverage";
+    private final String MENU_PLANNING_SUB = "Day Planning Sub";
     public boolean profileclick;
     private AbsListView listView;
     private BusinessModel bmodel;
@@ -86,7 +87,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     IconicAdapter mSchedule;
 
     private FloatingActionButton fab;
-    ArrayList<Integer> selectedPosition = new ArrayList<>();
+    ArrayList<String> selectedPosition = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,8 +123,13 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
                 ArrayList<RetailerMasterBO> retailerMasterBOS = new ArrayList<>();
 
-                for (Integer integer : selectedPosition) {
-                    retailerMasterBOS.add(retailer.get(integer));
+                for (String retId : selectedPosition) {
+                    for (RetailerMasterBO retailerMasterBO : retailer) {
+                        if (retailerMasterBO.getRetailerID().equals(retId)) {
+                            retailerMasterBOS.add(retailerMasterBO);
+                            break;
+                        }
+                    }
                 }
 
                 bmodel.mRetailerHelper.deviateRetailerList = retailerMasterBOS;
@@ -232,6 +238,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         mWeekList.add(getResources().getString(R.string.week2));
         mWeekList.add(getResources().getString(R.string.week3));
         mWeekList.add(getResources().getString(R.string.week4));
+        mSelectedWeek=getResources().getString(R.string.all);
 
         // for mapping with db
         mWeekMap.put(getResources().getString(R.string.all), getResources()
@@ -270,7 +277,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        calledBy = getActivity().getIntent().getStringExtra("From");
+        //calledBy = getActivity().getIntent().getStringExtra("From");
+        calledBy=getArguments().getString("From");
         if (calledBy == null)
             calledBy = MENU_VISIT;
     }
@@ -290,15 +298,15 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         Commons.print("filter"
                                 + bmodel.getRetailerMaster().get(i).getWeekNo()
                                 + " "
-                                + spinnerbrand.getSelectedItem().toString()
+                                + mSelectedDay
                                 .substring(0, 3));
-                        if (!spinnerbrand.getSelectedItem().toString().equalsIgnoreCase("all")) {
+                        if (!mSelectedDay.equalsIgnoreCase("all")) {
                             if (bmodel
                                     .getRetailerMaster()
                                     .get(i)
                                     .getWeekNo()
                                     .contains(
-                                            spinnerbrand.getSelectedItem().toString()
+                                            mSelectedDay
                                                     .substring(0, 2).toUpperCase()))
                                 if (filter != null) {
                                     if (bmodel.getRetailerMaster().get(i)
@@ -331,16 +339,15 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         }
                     } else {
                         weekno = bmodel.getRetailerMaster().get(i).getWeekNo();
-                        if (!spinnerbrand.getSelectedItem().toString().equalsIgnoreCase("all")) {
+                        if (!mSelectedDay.equalsIgnoreCase("all")) {
                             if (bmodel
                                     .getRetailerMaster()
                                     .get(i)
                                     .getWeekNo()
                                     .contains(
-                                            spinnerbrand.getSelectedItem().toString()
+                                            mSelectedDay
                                                     .substring(0, 2).toUpperCase())) {
-                                start = weekno.indexOf(spinnerbrand.getSelectedItem()
-                                        .toString().substring(0, 2).toUpperCase());
+                                start = weekno.indexOf(mSelectedDay.substring(0, 2).toUpperCase());
                                 end = weekno.indexOf(";", start);
                                 if (weekno.substring(start, end).contains(
                                         mWeekMap.get(mSelectedWeek))) {
@@ -406,7 +413,8 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
     private void loadDataByBeatFilter(BeatMasterBO beatBo, String searchStr) {
         retailer = new ArrayList<>();
-        if (!("All").equals(beatBo.getBeatDescription())) {
+        if (!(getResources()
+                .getString(R.string.all)).equals(beatBo.getBeatDescription())) {
             for (RetailerMasterBO retailerMasterBO : bmodel.getRetailerMaster()) {
                 if (retailerMasterBO.getBeatID() == beatBo.getBeatId()) {
                     if (searchStr != null) {
@@ -689,8 +697,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
                 StandardListBO sdbo = (StandardListBO) parent
                         .getItemAtPosition(position);
-                mSelectedDay = sdbo.getListCode();
-                Commons.print("day" + mSelectedDay);
+                mSelectedDay = spinnerbrand.getSelectedItem().toString();
                 loadData(null);
             }
 
@@ -986,6 +993,12 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                     getActivity().finish();
                 } else if (calledBy.equalsIgnoreCase(MENU_PLANNING)) {
                     Intent i = new Intent(getActivity(), PlanningVisitActivity.class);
+                    i.putExtra("isPlanning",true);
+                    startActivity(i);
+                    getActivity().finish();
+                }else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)) {
+                    Intent i = new Intent(getActivity(), PlanningVisitActivity.class);
+                    i.putExtra("isPlanningSub",true);
                     startActivity(i);
                     getActivity().finish();
                 }
@@ -1111,7 +1124,11 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             Commons.print("-" + calledBy);
                                             bmodel.newOutletHelper.downloadLinkRetailer();
                                             Intent i = new Intent(getActivity(), ProfileActivity.class);
-                                            i.putExtra("From", MENU_VISIT);
+                                            i.putExtra("From", calledBy);
+                                            if(calledBy.equalsIgnoreCase(MENU_PLANNING))
+                                                i.putExtra("isPlanning",true);
+                                            else if(calledBy.equalsIgnoreCase(MENU_PLANNING_SUB))
+                                                i.putExtra("isPlanningSub",true);
                                             i.putExtra("non_visit", true);
                                             startActivityForResult(i, 1);
                                         }
@@ -1156,7 +1173,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             }
 
 
-            if (selectedPosition.contains(new Integer(position))) {
+            if (selectedPosition.contains(retailerObj.getRetailerID())) {
                 holder.llFirst.setBackgroundColor(getResources().getColor(R.color.colorPrimaryAlpha));
             } else {
                 holder.llFirst.setBackgroundColor(getResources().getColor(android.R.color.white));
@@ -1199,10 +1216,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
                             } else {
 
-                                if (selectedPosition.contains(new Integer(position))) {
-                                    selectedPosition.remove(new Integer(position));
+                                if (selectedPosition.contains(retailerObj.getRetailerID())) {
+                                    selectedPosition.remove(retailerObj.getRetailerID());
                                 } else {
-                                    selectedPosition.add(position);
+                                    selectedPosition.add(retailerObj.getRetailerID());
                                 }
 
                                 if (selectedPosition.size() > 0) {

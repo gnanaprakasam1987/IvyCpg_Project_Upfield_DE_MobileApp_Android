@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -169,6 +170,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         mPreviewTV = (TextView) findViewById(R.id.preView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mPreviewTV.setTypeface(Typeface.createFromAsset(getAssets(), "font/consola.ttf"));
 
 
         isFromOrder = getIntent().getExtras().getBoolean("IsFromOrder", false);
@@ -689,7 +691,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             }
 
 
-            mPreviewTV.setText(bmodel.mCommonPrintHelper.getInvoiceData().toString().replace("#B#", "").replace("print_type", "").replace("print_no", "").replace("print_title", ""));
+            mPreviewTV.setText(bmodel.mCommonPrintHelper.getInvoiceData().toString().replace("#B#", "").replace("print_type", "").replace("print_no", "").replace("print_title", "").replace("duplicate_print_count",""));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -839,6 +841,9 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             if (zebraPrinterConnection.isConnected())
                 updateStatus("Printing...");
 
+            if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT)
+                mPrintCountInput=2;
+
             for (int i = 0; i < mPrintCountInput; i++) {
                 if (zebraPrinterConnection.isConnected()) {
                     if (bmodel.mCommonPrintHelper.isLogoEnabled) {
@@ -867,8 +872,16 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     }
 
                     mDataPrintCount++;
-                    mPrintCount++;
-                    mTotalNumbersPrinted++;
+                    if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT) {
+                        if (i == mPrintCountInput - 1) {
+                            mPrintCount++;
+                            mTotalNumbersPrinted++;
+                        }
+                    }
+                    else{
+                        mPrintCount++;
+                        mTotalNumbersPrinted++;
+                    }
 
                 }
             }
@@ -896,34 +909,37 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                 if (s.contains("print_type")) {
                     if (mPrintCount == 0) {
-                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
-                            String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_type_primary") != null ? bmodel.labelsMasterHelper.applyLabels("print_type_primary") : "Original");
-                            s = s.replace("print_type", primaryLabel);
-                        } else
-                            s = s.replace("print_type", "Original");
+                        String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_type_primary"));
+                        s = s.replace("print_type", (primaryLabel!=null ? primaryLabel: "Original"));
                     } else {
-                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
-                            String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_type_secondary");
-                            s = s.replace("print_type", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
-                        } else
-                            s = s.replace("print_type", "Duplicate");
+                        String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_type_secondary");
+                        s = s.replace("print_type", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
                     }
 
                 }
 
+                if(s.contains("duplicate_print_count")){
+                    if (mPrintCount == 0)
+                        s = s.replace("duplicate_print_count","");
+                    else
+                        s = s.replace("duplicate_print_count"," "+mPrintCount);
+
+                }
+
                 if (s.contains("print_title")) {
-                    if (mPrintCount == 0) {
-                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
-                            String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_title_primary") != null ? bmodel.labelsMasterHelper.applyLabels("print_title_primary") : "Original");
-                            s = s.replace("print_title", primaryLabel);
-                        } else
-                            s = s.replace("print_title", "");
+
+                    int count;
+                    if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT)
+                        count=mDataPrintCount;
+                    else
+                        count=mPrintCount;
+
+                    if (count == 0) {
+                        String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_title_primary"));
+                        s = s.replace("print_title", (primaryLabel != null ? primaryLabel : ""));
                     } else {
-                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
-                            String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_title_secondary");
-                            s = s.replace("print_title", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
-                        } else
-                            s = s.replace("print_title", "");
+                        String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_title_secondary");
+                        s = s.replace("print_title", (secondaryLabel != null ? secondaryLabel : ""));
                     }
                 }
 
@@ -966,7 +982,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             StringBuilder tempsb = new StringBuilder();
 
             if (bmodel.configurationMasterHelper.IS_SHOW_PRINT_LANGUAGE_THAI) {
-                tempsb.append("! U1 SETLP ANG12PT.CPF 0 34 \n");
+                tempsb.append("! U1 SETLP ANG12PT.CPF 0 26 \n");
             }
 
             String[] lines = bmodel.mCommonPrintHelper.getInvoiceData().toString().split("\\r?\\n");
@@ -974,34 +990,37 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                 if (s.contains("print_type")) {
                     if (mPrintCount == 0) {
-                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
-                            String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_type_primary") != null ? bmodel.labelsMasterHelper.applyLabels("print_type_primary") : "Original");
-                            s = s.replace("print_type", primaryLabel);
-                        } else
-                            s = s.replace("print_type", "Original");
+                        String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_type_primary"));
+                        s = s.replace("print_type", (primaryLabel!=null ? primaryLabel: "Original"));
                     } else {
-                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
-                            String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_type_secondary");
-                            s = s.replace("print_type", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
-                        } else
-                            s = s.replace("print_type", "Duplicate");
+                        String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_type_secondary");
+                        s = s.replace("print_type", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
                     }
 
                 }
 
+                if(s.contains("duplicate_print_count")){
+                    if (mPrintCount == 0)
+                        s = s.replace("duplicate_print_count","");
+                    else
+                        s = s.replace("duplicate_print_count"," "+mPrintCount);
+
+                }
+
                 if (s.contains("print_title")) {
-                    if (mPrintCount == 0) {
-                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
-                            String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_title_primary") != null ? bmodel.labelsMasterHelper.applyLabels("print_title_primary") : "Original");
-                            s = s.replace("print_title", primaryLabel);
-                        } else
-                            s = s.replace("print_title", "");
+
+                    int count;
+                    if(bmodel.configurationMasterHelper.IS_ALLOW_CONTINUOUS_PRINT)
+                        count=mDataPrintCount;
+                    else
+                        count=mPrintCount;
+
+                    if (count == 0) {
+                        String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_title_primary"));
+                        s = s.replace("print_title", (primaryLabel != null ? primaryLabel : ""));
                     } else {
-                        if (bmodel.mCommonPrintHelper.isFromLabelMaster()) {
-                            String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_title_secondary");
-                            s = s.replace("print_title", (secondaryLabel != null ? secondaryLabel : "Duplicate"));
-                        } else
-                            s = s.replace("print_title", "");
+                        String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_title_secondary");
+                        s = s.replace("print_title", (secondaryLabel != null ? secondaryLabel : ""));
                     }
                 }
 
@@ -1021,11 +1040,10 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     }
 
                     if (bmodel.configurationMasterHelper.IS_SHOW_PRINT_LANGUAGE_THAI) {
-                        tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
-                        tempsb.append("SETBOLD 1 \n");
-                        tempsb.append("TEXT ANG12PT.CPF 0 " + (spaceCount * 12) + " 1 " + str.substring(spaceCount, str.length()) + "\n");
-                        tempsb.append("SETBOLD 0 \n");
-                        tempsb.append("PRINT\r\n");
+                        tempsb.append("! U1 SETBOLD 1");
+                        tempsb.append(str.replaceAll(" ", "  ").replaceAll("-", "--").replaceAll(",",", ").replaceAll("\\.",". "));
+                        tempsb.append("! U1 SETBOLD 0");
+                        tempsb.append("\n\r");
                     } else {
                         tempsb.append("! 0 200 200 " + 25 + " 1\r\n" + "LEFT\r\n");
                         tempsb.append("T 5 0 " + (spaceCount * 12) + " 1 " + str.substring(spaceCount, str.length()) + "\r\n");
@@ -1034,7 +1052,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                 } else {
                     if (bmodel.configurationMasterHelper.IS_SHOW_PRINT_LANGUAGE_THAI) {
-                        tempsb.append(s.replaceAll(" ", "  ").replaceAll("-", "--"));
+                        tempsb.append(s.replaceAll(" ", "  ").replaceAll("-", "--").replaceAll(",",", ").replaceAll("\\.",". "));
                         tempsb.append("\n\r");
                     } else {
                         tempsb.append(s);
@@ -1177,7 +1195,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     "", msg,
                     false, getResources().getString(R.string.ok),
                     getResources().getString(R.string.cancel),
-                    new CommonDialog.positiveOnClickListener() {
+                    new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             mPrintCountInput = 1;
@@ -1195,7 +1213,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             commonDialog = new CommonDialog(getApplicationContext(), this,
                     "", msg,
                     false, getResources().getString(R.string.ok),
-                    null, new CommonDialog.positiveOnClickListener() {
+                    null, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     moveBack();

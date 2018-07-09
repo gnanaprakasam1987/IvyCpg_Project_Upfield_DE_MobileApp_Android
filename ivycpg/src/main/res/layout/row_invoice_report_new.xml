@@ -62,7 +62,7 @@
 
                 <TextView
                     android:id="@+id/PRDMRP"
-                    android:layout_width="@dimen/list_item_width_large"
+                    android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"

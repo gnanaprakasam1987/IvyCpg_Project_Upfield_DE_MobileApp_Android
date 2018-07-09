@@ -48,6 +48,7 @@
         <attr name="roundedCustomButtonNormal" format="reference" />
         <attr name="roundedCustomButtonNormalTransparent" format="reference" />
         <attr name="roundedCustomDashboardButton" format="reference" />
+        <attr name="boxCustomButtonSmallGrey" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="MyCustomSpinner">

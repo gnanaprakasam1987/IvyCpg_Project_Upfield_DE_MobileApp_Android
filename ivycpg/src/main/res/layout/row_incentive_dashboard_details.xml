@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:minHeight="@dimen/height_list_row"
+    android:gravity="center_vertical"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding"
+        android:weightSum="4">
+
+        <TextView
+            android:id="@+id/tv_sales_parameter"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal"
+
+            />
+
+        <TextView
+            android:id="@+id/tv_factor"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_achper"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal" />
+
+
+        <TextView
+            android:id="@+id/tv_max_opportunity"
+            style="?attr/customListItemPrimary"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/Black"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>
+

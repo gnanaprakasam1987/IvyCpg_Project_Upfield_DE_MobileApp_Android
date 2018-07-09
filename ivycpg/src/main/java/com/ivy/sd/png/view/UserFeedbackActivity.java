@@ -18,6 +18,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.UserFeedBackHelper;
 
 import java.util.ArrayList;
 
@@ -26,59 +27,48 @@ import java.util.ArrayList;
  */
 public class UserFeedbackActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener {
 
-    private BusinessModel bmodel;
-    private ArrayList<ReasonMaster> reason;
-    private ArrayAdapter<ReasonMaster> spinnerAdapter;
     private Spinner mFeedBackSpinner;
     private EditText mFeedBackText;
-    private Button mSubmit;
     private String mSelectedTypeId = "-1";
     private int mRank = 0;
-    private ImageView mImgV1, mImgV2, mImgV3, mImgV4, mImgV5;
     private LinearLayout mRankingLayout;
     private ArrayList<ImageView> mRanks;
     private int mRankSize;
-    private Toolbar toolbar;
+    UserFeedBackHelper userFeedBackHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_user_feedback);
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null) {
-
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.feedback));
-//            // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//           // Used to remove the app logo actionbar icon and set title as home
-//          // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        userFeedBackHelper = UserFeedBackHelper.getInstance(this);
+        userFeedBackHelper.downloadFeedBackType();
 
-        bmodel.mUserFeedBackHelper.downloadFeedBackType();
+        ArrayList<ReasonMaster> reason = userFeedBackHelper.getFeedBackType();
 
-        reason = bmodel.mUserFeedBackHelper.getFeedBackType();
-
-        spinnerAdapter = new ArrayAdapter<ReasonMaster>(this,
+        ArrayAdapter<ReasonMaster> spinnerAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, reason);
         spinnerAdapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        mRankingLayout = (LinearLayout) findViewById(R.id.ranking_layout);
-
-        mFeedBackSpinner = (Spinner) findViewById(R.id.feedback_type);
+        mRankingLayout = findViewById(R.id.ranking_layout);
+        mFeedBackSpinner = findViewById(R.id.feedback_type);
         mFeedBackSpinner.setAdapter(spinnerAdapter);
 
         mFeedBackSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 ReasonMaster reason = (ReasonMaster) parent.getItemAtPosition(pos);
-                if (mSelectedTypeId != reason.getReasonID()) {
+                if (!mSelectedTypeId.equals(reason.getReasonID())) {
 
                     mSelectedTypeId = reason.getReasonID();
 
@@ -100,29 +90,23 @@ public class UserFeedbackActivity extends IvyBaseActivityNoActionBar implements 
         });
 
 
-        mFeedBackText = (EditText) findViewById(R.id.feedback_txt);
-        mSubmit = (Button) findViewById(R.id.btn_submit);
+        mFeedBackText = findViewById(R.id.feedback_txt);
+        Button mSubmit = findViewById(R.id.btn_submit);
         mSubmit.setOnClickListener(UserFeedbackActivity.this);
 
-        mImgV1 = (ImageView) findViewById(R.id.iv1);
-        mImgV2 = (ImageView) findViewById(R.id.iv2);
-        mImgV3 = (ImageView) findViewById(R.id.iv3);
-        mImgV4 = (ImageView) findViewById(R.id.iv4);
-        mImgV5 = (ImageView) findViewById(R.id.iv5);
+        ImageView mImgV1 = findViewById(R.id.iv1);
+        ImageView mImgV2 = findViewById(R.id.iv2);
+        ImageView mImgV3 = findViewById(R.id.iv3);
+        ImageView mImgV4 = findViewById(R.id.iv4);
+        ImageView mImgV5 = findViewById(R.id.iv5);
 
-        mRanks = new ArrayList<ImageView>();
+        mRanks = new ArrayList<>();
         mRanks.add(mImgV1);
         mRanks.add(mImgV2);
         mRanks.add(mImgV3);
         mRanks.add(mImgV4);
         mRanks.add(mImgV5);
         mRankSize = mRanks.size();
-
-       /* mImgV1.setOnClickListener(UserFeedbackActivity.this);
-        mImgV2.setOnClickListener(UserFeedbackActivity.this);
-        mImgV3.setOnClickListener(UserFeedbackActivity.this);
-        mImgV4.setOnClickListener(UserFeedbackActivity.this);
-        mImgV5.setOnClickListener(UserFeedbackActivity.this);*/
 
         for (ImageView iv : mRanks) {
             iv.setOnClickListener(UserFeedbackActivity.this);
@@ -151,7 +135,7 @@ public class UserFeedbackActivity extends IvyBaseActivityNoActionBar implements 
                 if (txtFeedBack.equalsIgnoreCase(""))
                     mFeedBackText.setError("This field can not be blank");
             } else {
-                bmodel.mUserFeedBackHelper.saveFeedBack(mSelectedTypeId, txtFeedBack, mRank);
+                userFeedBackHelper.saveFeedBack(mSelectedTypeId, txtFeedBack, mRank);
                 resetAllValues(true);
 
             }
@@ -185,5 +169,9 @@ public class UserFeedbackActivity extends IvyBaseActivityNoActionBar implements 
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        userFeedBackHelper = null;
+    }
 }

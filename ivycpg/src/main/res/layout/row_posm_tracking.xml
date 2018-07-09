@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:weightSum="10">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/ll_audit"
@@ -35,7 +34,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3.5"
+            android:layout_weight="2.5"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -107,7 +106,7 @@
 
         <Spinner
             android:id="@+id/spin_location"
-            android:layout_width="@dimen/beat_spinner_min"
+            android:layout_width="0dp"
             android:layout_height="@dimen/reason_spinner_height"
             android:layout_weight="1.5"
             android:background="@android:color/transparent"
@@ -117,7 +116,7 @@
         <RelativeLayout
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:gravity="center">
 
             <ImageView
@@ -149,7 +148,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_item_inter_margin"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -186,8 +184,8 @@
             android:layout_width="@dimen/list_item_date_picker_width"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/ll_install_date"
-            android:orientation="vertical"
-            android:layout_toRightOf="@+id/ll_install_date">
+            android:layout_toRightOf="@+id/ll_install_date"
+            android:orientation="vertical">
 
             <TextView
                 style="?attr/customListItemSecondary"
@@ -202,10 +200,10 @@
                 android:layout_width="@dimen/list_item_date_picker_width"
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="@string/servicedate"
-                android:layout_marginRight="@dimen/dimen_2dp" />
+                android:text="@string/servicedate" />
         </LinearLayout>
 
         <Spinner
@@ -213,24 +211,24 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/spinner_height"
             android:layout_marginEnd="@dimen/dimen_2dp"
+            android:layout_marginRight="@dimen/dimen_2dp"
             android:layout_toEndOf="@+id/ll_service_date"
+            android:layout_toRightOf="@+id/ll_service_date"
             android:background="@android:color/transparent"
             android:overlapAnchor="false"
-            android:textAlignment="center"
-            android:layout_marginRight="@dimen/dimen_2dp"
-            android:layout_toRightOf="@+id/ll_service_date" />
+            android:textAlignment="center" />
 
         <Spinner
             android:id="@+id/spin_condition"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/spinner_height"
             android:layout_marginEnd="@dimen/dimen_2dp"
+            android:layout_marginRight="@dimen/dimen_2dp"
             android:layout_toEndOf="@+id/spin_reason1"
+            android:layout_toRightOf="@+id/spin_reason1"
             android:background="@android:color/transparent"
             android:overlapAnchor="false"
-            android:textAlignment="center"
-            android:layout_marginRight="@dimen/dimen_2dp"
-            android:layout_toRightOf="@+id/spin_reason1" />
+            android:textAlignment="center" />
 
 
     </RelativeLayout>

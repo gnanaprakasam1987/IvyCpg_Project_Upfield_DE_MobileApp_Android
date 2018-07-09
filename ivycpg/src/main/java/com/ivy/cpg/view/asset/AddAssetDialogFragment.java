@@ -97,7 +97,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         Window window = getDialog().getWindow();
         if (window != null) {
-            lp.copyFrom(window.getAttributes());
+            //lp.copyFrom(window.getAttributes()); cmd for device alignment issue
             window.setAttributes(lp);
         }
 
@@ -143,7 +143,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                 if (position != 0
                         && assetTrackingHelper.getAssetBrandNames().size() > 0) {
                     loadBrandData();
-                }else {
+                } else {
                     if (position == 0 || assetTrackingHelper.getAssetBrandNames().size() == 0)
                         ((TextView) getView().findViewById(R.id.brand_spinner_txt)).setVisibility(View.GONE);
                     mBrand.setVisibility(View.GONE);
@@ -162,6 +162,10 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
 
         btnAddInstallDate.setText(todayDate);
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
 
 
         btnAddInstallDate.setOnClickListener(new View.OnClickListener() {
@@ -169,11 +173,6 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
             public void onClick(View v) {
                 Button b = (Button) v;
                 if (b == btnAddInstallDate) {
-
-                    final Calendar c = Calendar.getInstance();
-                    mYear = c.get(Calendar.YEAR);
-                    mMonth = c.get(Calendar.MONTH);
-                    mDay = c.get(Calendar.DAY_OF_MONTH);
 
                     // Launch Date Picker Dialog
                     DatePickerDialog dpd = new DatePickerDialog(
@@ -184,6 +183,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                 public void onDateSet(DatePicker view,
                                                       int year, int monthOfYear,
                                                       int dayOfMonth) {
+                                    mYear = year;
+                                    mMonth = monthOfYear;
+                                    mDay = dayOfMonth;
                                     Calendar selectedDate = new GregorianCalendar(
                                             year, monthOfYear, dayOfMonth);
                                     btnAddInstallDate.setText(DateUtil
@@ -201,6 +203,10 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                                 .convertDateObjectToRequestedFormat(
                                                         mCurrentCalendar.getTime(),
                                                         ConfigurationMasterHelper.outDateFormat));
+
+                                        mYear = mCurrentCalendar.get(Calendar.YEAR);
+                                        mMonth = mCurrentCalendar.get(Calendar.MONTH);
+                                        mDay = mCurrentCalendar.get(Calendar.DAY_OF_MONTH);
 
                                     }
 

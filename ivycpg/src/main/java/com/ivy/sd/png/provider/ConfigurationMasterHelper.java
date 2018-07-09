@@ -514,6 +514,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
     public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
 
+    private static final String CODE_LICENSE_VALIDATION = "DRUG_LICENSE_VLD";
+    public boolean IS_ENABLE_LICENSE_VALIDATION;
+    public boolean IS_SOFT_LICENSE_VALIDATION;
     /**
      * RoadActivity config *
      */
@@ -532,6 +535,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SUGGESTED_ORDER_LOGIC;//used order screen to calculate so column
     public boolean IS_STOCK_IN_HAND; // used order screen to hide SIH colom
     public boolean IS_INVOICE; // decide seller is van seller or preseller
+    public boolean IS_INVOICE_MASTER;
     public boolean IS_JUMP; // used to avoid jumping in activity menu
     public boolean IS_RETAILER_DEVIATION; // used to stop retailer deviation
     public boolean IS_MAP; // Not used yet
@@ -547,7 +551,6 @@ public class ConfigurationMasterHelper {
     public boolean IS_VISITSCREEN_DEV_ALLOW;
     public boolean IS_DATE_VALIDATION_REQUIRED;
     public boolean IS_INITIATIVE;
-    public boolean IS_CNT01;
     public boolean IS_HST01;//history fragment
     public boolean IS_HST02;//history fragment
     public boolean IS_HST03;//history fragment
@@ -869,9 +872,11 @@ public class ConfigurationMasterHelper {
     public int LOAD_STOCK_COMPETITOR = 0;
 
     public int DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+    public int MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     public int MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     private static final String CODE_LOCATION_TIMER_PERIOD = "LOCTIMER";
     public int LOCATION_TIMER_PERIOD = 20;
+    public boolean IS_LOC_TIMER_ON;
 
     public String LOAD_REMARKS_FIELD_STRING = "";
     public String LOAD_ORDER_SUMMARY_REMARKS_FIELD_STRING = "";
@@ -977,8 +982,13 @@ public class ConfigurationMasterHelper {
     public boolean HIDE_SALES_VALUE_FIELD;
 
     // TO show sync status report in Sync screen.
-    public static final String CODE_SYNC_INTERNAL_REPORT="SYNC11";
+    private static final String CODE_SYNC_INTERNAL_REPORT = "SYNC11";
     public boolean SHOW_SYNC_INTERNAL_REPORT;
+
+
+    //TO Show both salable and non salable products
+    private static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "CSSTK07";
+    public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
 
 
     int ROUND_DECIMAL_COUNT = 0;
@@ -1158,7 +1168,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
 
-    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED;
+    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED,SHOW_STOCK_RETURN;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
@@ -1378,6 +1388,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SR_INDICATIVE = "SR16";
     public boolean IS_INDICATIVE_SR;
 
+    private static final String CODE_SR_INVOICE = "SR18";
+    public boolean IS_INVOICE_SR;
+
+    private static final String CODE_GENERATE_SR_IN_DELIVERY = "SR19";
+    public boolean IS_GENERATE_SR_IN_DELIVERY;
+
 
     private static final String CODE_REALTIME_LOCATION_CAPTURE = "REALTIME01";
     public boolean IS_REALTIME_LOCATION_CAPTURE;
@@ -1429,6 +1445,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORDER_STATUS_REPORT = "ORD_STAT_RPT";
     public boolean IS_ENABLE_ORDER_STATUS_REPORT;
     public boolean IS_ORDER_STATUS_REPORT;
+
+    private static final String CODE_SHOW_DEFAULT_UOM = "ORDB24";
+    public boolean IS_SHOW_DEFAULT_UOM;
+
+    private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
+    public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
 
     private static final String CODE_SUP_USER_LOAD_LEVEL = "SUP_USER_LOAD_LEVEL";
     public int SUP_USER_LOAD_LEVEL;
@@ -1671,6 +1693,7 @@ public class ConfigurationMasterHelper {
             this.SHOW_STORE_WISE_DISCOUNT_DLG = false;
             this.SHOW_TOTAL_DISCOUNT_EDITTEXT = false;
             this.IS_WSIH = false;
+            this.IS_INVOICE = false;
 
             ConfigureBO con;
 
@@ -1717,6 +1740,10 @@ public class ConfigurationMasterHelper {
                         this.SHOW_TOTAL_DISCOUNT_EDITTEXT = true;
                     if (configureBO.getConfigCode().equals(CODE_IS_WSIH))
                         this.IS_WSIH = true;
+                    if (configureBO.getConfigCode().equals(CODE_INVOICE))
+                        this.IS_INVOICE = true;
+                    if (configureBO.getConfigCode().equals(CODE_SR_INDICATIVE))
+                        this.IS_INDICATIVE_SR = true;
                 }
 
             }
@@ -1911,6 +1938,7 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_GPS_ENABLE_DIALOG = hashMapHHTModuleConfig.get(CODE_GPS_ENABLE) != null ? hashMapHHTModuleConfig.get(CODE_GPS_ENABLE) : false;
         this.IS_INVOICE = hashMapHHTModuleConfig.get(CODE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE) : false;
+        this.IS_INVOICE_MASTER = hashMapHHTModuleConfig.get(CODE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE) : false;
         this.IS_MAP = hashMapHHTModuleConfig.get(CODE_MAP) != null ? hashMapHHTModuleConfig.get(CODE_MAP) : false;
         this.IS_BAIDU_MAP = hashMapHHTModuleConfig.get(CODE_BAIDU_MAP) != null ? hashMapHHTModuleConfig.get(CODE_BAIDU_MAP) : false;
         this.IS_NEW_TASK = hashMapHHTModuleConfig.get(CODE_NEW_TASK) != null ? hashMapHHTModuleConfig.get(CODE_NEW_TASK) : false;
@@ -1926,7 +1954,6 @@ public class ConfigurationMasterHelper {
         this.IS_VISITSCREEN_DEV_ALLOW = hashMapHHTModuleConfig.get(CODE_VISITSCREEN_DEV_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_VISITSCREEN_DEV_ALLOW) : false;
         this.IS_DATE_VALIDATION_REQUIRED = hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) != null ? hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) : false;
         this.IS_INITIATIVE = hashMapHHTModuleConfig.get(CODE_INITIATIVE) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE) : false;
-        this.IS_CNT01 = hashMapHHTModuleConfig.get(CODE_CNT01) != null ? hashMapHHTModuleConfig.get(CODE_CNT01) : false;
         /*this.IS_HST01 = hashMapHHTModuleConfig.get(CODE_HST01) != null ? hashMapHHTModuleConfig.get(CODE_HST01) : false;//history fragment
         this.IS_HST02 = hashMapHHTModuleConfig.get(CODE_HST02) != null ? hashMapHHTModuleConfig.get(CODE_HST02) : false;//history fragment
         this.IS_HST03 = hashMapHHTModuleConfig.get(CODE_HST03) != null ? hashMapHHTModuleConfig.get(CODE_HST03) : false;//history fragment
@@ -2431,7 +2458,7 @@ public class ConfigurationMasterHelper {
         this.IS_SHARE_INVOICE = hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SHARE_INVOICE) : false;
         this.IS_SHOW_ONLY_SERVER_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ONLY_SERVER_TASK) : false;
         this.IS_FOCUS_PACK_NOT_DONE = hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) != null ? hashMapHHTModuleConfig.get(CODE_FOCUS_PACK_NOT_DONE) : false;
-        this.IS_DOWNLOAD_WAREHOUSE_STOCK= hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) : false;
+        this.IS_DOWNLOAD_WAREHOUSE_STOCK = hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) != null ? hashMapHHTModuleConfig.get(CODE_DOWNLAOD_WAREHOUSE_STOCK) : false;
         this.IS_LOAD_ONLY_SUBD = hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_SUBD_ONLY) : false;
         this.IS_LOAD_NON_FIELD = hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_NON_FIELD) : false;
         this.IS_PLAN_RETIALER_NON_FIELD = hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) != null ? hashMapHHTModuleConfig.get(CODE_PLAN_RETAILER_ON_NONFILED) : false;
@@ -2446,6 +2473,7 @@ public class ConfigurationMasterHelper {
 
         if (hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD) != null
                 && hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD)) {
+            this.IS_LOC_TIMER_ON = hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD) != null ? hashMapHHTModuleConfig.get(CODE_LOCATION_TIMER_PERIOD) : false;
             if (hashMapHHTModuleOrder.get(CODE_LOCATION_TIMER_PERIOD) > 0) {
                 LOCATION_TIMER_PERIOD = hashMapHHTModuleOrder.get(CODE_LOCATION_TIMER_PERIOD);
             }
@@ -2459,16 +2487,16 @@ public class ConfigurationMasterHelper {
             loadCompetitorConfig();
         }
         this.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL = hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) : false;
-        if(hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL)!=null&&hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL)==1) {
-            IS_ATTACH_PDF=true;
+        if (hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) != null && hashMapHHTModuleOrder.get(CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL) == 1) {
+            IS_ATTACH_PDF = true;
         }
         this.IS_MOQ_ENABLED = hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) != null ? hashMapHHTModuleConfig.get(CODE_MOQ_ENABLED) : false;
 
         this.IS_ALLOW_CONTINUOUS_PRINT = hashMapHHTModuleOrder.get(CODE_ALLOW_CONTINUOUS_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_CONTINUOUS_PRINT) : false;
 
         this.SHOW_VOLUME_QTY = hashMapHHTModuleConfig.get(CODE_ORDER_RPT_VOLUME) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_RPT_VOLUME) : false;
-        this.HIDE_SALES_VALUE_FIELD=hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) != null ? hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) :false;
-        this.SHOW_SYNC_INTERNAL_REPORT=hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT)!=null?hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT):false;
+        this.HIDE_SALES_VALUE_FIELD = hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) != null ? hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) : false;
+        this.SHOW_SYNC_INTERNAL_REPORT = hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT) : false;
 
         this.retailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
         this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
@@ -2478,10 +2506,11 @@ public class ConfigurationMasterHelper {
         this.SHOW_PRINT_HEADERS = hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINT_HEADERS) : false;
 
         this.IS_ORD_SR_VALUE_VALIDATE = hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) != null ? hashMapHHTModuleConfig.get(CODE_ORD_SR_VALUE_VALIDATE) : false;
-        this.IS_SHOW_JOINT_CALL_REMARKS=hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) : false;
+        this.IS_SHOW_JOINT_CALL_REMARKS = hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_JOINT_CALL_REMARKS) : false;
 
         this.IS_INDICATIVE_SR = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
-
+        this.IS_INVOICE_SR = hashMapHHTModuleConfig.get(CODE_SR_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INVOICE) : false;
+        this.IS_GENERATE_SR_IN_DELIVERY=hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) : false;
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
 
         this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
@@ -2529,6 +2558,10 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_USER_FILTER_DASHBOARD = hashMapHHTModuleConfig.get(CODE_ENABLE_USER_FILTER_DASHBOARD) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_USER_FILTER_DASHBOARD) : false;
         if (IS_ENABLE_USER_FILTER_DASHBOARD) {
             loadDashboardUserFilter();
+        }
+        this.IS_ENABLE_LICENSE_VALIDATION = hashMapHHTModuleConfig.get(CODE_LICENSE_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_LICENSE_VALIDATION) : false;
+        if (IS_ENABLE_LICENSE_VALIDATION) {
+            loadLicenseValidationConfig();
         }
 
         this.SUP_USER_LOAD_LEVEL = hashMapHHTModuleOrder.get(CODE_SUP_USER_LOAD_LEVEL) != null ? hashMapHHTModuleOrder.get(CODE_SUP_USER_LOAD_LEVEL) : 0;
@@ -2639,6 +2672,27 @@ public class ConfigurationMasterHelper {
         }
     }
 
+    public void loadLicenseValidationConfig() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_LICENSE_VALIDATION) + " and Flag=1 and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    IS_SOFT_LICENSE_VALIDATION = c.getString(0).equals("0");
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
     /**
      * @param hhtCode for genral tax model
      */
@@ -2737,10 +2791,10 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * This method will downlaod the Menu configured for this particular channel
+     * This method will download the Menu configured for this particular channel
      * type. This will also download the Menu Name,Number and hasLink attributes
      *
-     * @return
+     * @return sd
      */
     public Vector<ConfigureBO> downloadNewActivityMenu(String menuName) {
         activitymenuconfig = new Vector<>();
@@ -3674,6 +3728,7 @@ public class ConfigurationMasterHelper {
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
             DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
+            MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
             MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
             LOAD_REMARKS_FIELD_STRING = "";
             SHOW_INCLUDE_BILL_TAX = false;
@@ -3700,6 +3755,9 @@ public class ConfigurationMasterHelper {
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
             IS_PRINT_SEQUENCE_LEVELWISE = false;
+            IS_SHOW_DEFAULT_UOM = false;
+            SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
+            IS_SHOW_ORDER_PHOTO_CAPTURE = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4065,7 +4123,15 @@ public class ConfigurationMasterHelper {
                 if (codeSplit[0] != null && !codeSplit[0].equals(""))
                     DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
                 if (codeSplit[1] != null && !codeSplit[1].equals(""))
-                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
+                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
+                if (codeSplit[2] != null && !codeSplit[2].equals(""))
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[2]);
+                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER < MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                }
+                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER > MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                }
             }
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -4242,15 +4308,14 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     int value = c.getInt(0);
-                    if(value==0||value==2){
+                    if (value == 0 || value == 2) {
                         IS_SUPPLIER_CREDIT_LIMIT = false;
-                        if(value==2)
-                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT=true;
-                    }
-                    else if (value == 1||value==3) {
+                        if (value == 2)
+                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT = true;
+                    } else if (value == 1 || value == 3) {
                         IS_SUPPLIER_CREDIT_LIMIT = true;
-                        if(value==3)
-                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT=true;
+                        if (value == 3)
+                            IS_CREDIT_LIMIT_WITH_SOFT_ALERT = true;
                     }
                 }
                 c.close();
@@ -4310,6 +4375,42 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
 
+            // default uom config
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_DEFAULT_UOM) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    IS_SHOW_DEFAULT_UOM = true;
+                }
+                c.close();
+            }
+
+            //this config used in stock check and sales return screen
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SALABLE_AND_NON_SALABLE_SKU) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    SHOW_SALABLE_AND_NON_SALABLE_SKU = true;
+                }
+                c.close();
+            }
+
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_ORDER_PHOTO_CAPTURE) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    IS_SHOW_ORDER_PHOTO_CAPTURE = true;
+                }
+                c.close();
+            }
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -4322,7 +4423,9 @@ public class ConfigurationMasterHelper {
         String CODE_STOCK_REPLACE_OUTER = "RPOO";
         String CODE_STOCK_EMPTY = "EMP";
         String CODE_STOCK_FREE_ISSUED = "FI";
+        String CODE_STOCK_RETURN = "RET";
         SHOW_STOCK_REPLACE = false;
+        SHOW_STOCK_RETURN = false;
         SHOW_STOCK_EMPTY = false;
         SHOW_STOCK_FREE_ISSUED = false;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4354,6 +4457,8 @@ public class ConfigurationMasterHelper {
                             SHOW_STOCK_EMPTY = true;
                         else if (temp.equals(CODE_STOCK_FREE_ISSUED))
                             SHOW_STOCK_FREE_ISSUED = true;
+                        else if (temp.equals(CODE_STOCK_RETURN))
+                            SHOW_STOCK_RETURN = true;
                     }
                 }
 
@@ -4461,7 +4566,8 @@ public class ConfigurationMasterHelper {
         setGenFilter(new Vector<ConfigureBO>());
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPrefs.getString("languagePref", ApplicationConfigs.LANGUAGE);
+        String language = sharedPrefs.getString("languagePref",
+                ApplicationConfigs.LANGUAGE);
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4472,7 +4578,7 @@ public class ConfigurationMasterHelper {
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and lower(MenuType)="
                     + bmodel.QT("FILTER").toLowerCase()
-                    + " and lang='en' order by RField";
+                    + " and lang=" + bmodel.QT(language) + " order by RField";
 
             Cursor c = db.selectSQL(sql);
 
@@ -5061,12 +5167,14 @@ public class ConfigurationMasterHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+            String language = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
 
             String sql = "select hhtCode,MName,MNumber,hasLink from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and lower(MenuType)="
                     + bmodel.QT("PRODUCT_DETAILS").toLowerCase()
-                    + " and lang='en' order by RField";
+                    + " and lang=" + bmodel.QT(language) + " order by RField";
 
             Cursor c = db.selectSQL(sql);
 
@@ -5719,8 +5827,8 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
 
                 while (c.moveToNext()) {
-                    if(c.getInt(0)==1)
-                      IS_SHOW_ORDER_REASON = true;
+                    if (c.getInt(0) == 1)
+                        IS_SHOW_ORDER_REASON = true;
                 }
                 c.close();
             }

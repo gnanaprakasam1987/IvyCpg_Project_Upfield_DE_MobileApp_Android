@@ -144,7 +144,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
         // Set title to action bar
         if (extras != null) {
-            mScreenTitle = extras.getString("mScreenTitle");
+            mScreenTitle = extras.getString("screentitle");
         }
         //If this screen is called from Menu item or Order flow..
         if (screenCode.equals("MENU_STK_ORD")
@@ -191,7 +191,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                     new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                             "", getActivity().getResources().getString(R.string.move_next_activity),
                             false, getActivity().getResources().getString(R.string.ok),
-                            getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                            getActivity().getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

@@ -152,6 +152,9 @@ public class CollectionFragmentNew extends IvyBaseFragment
         TextView dueBillTitle = (TextView) rootView.findViewById(R.id.tv_title_due_bill);
         dueBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+        //As of now we hiding this because functionality not yet completed
+        rootView.findViewById(R.id.ll_due_bills).setVisibility(View.GONE);
+
         if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             Button btnClose = (Button) rootView.findViewById(R.id.btn_close);
             btnClose.setVisibility(View.VISIBLE);
@@ -161,7 +164,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                     new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                             "", getActivity().getResources().getString(R.string.move_next_activity),
                             false, getActivity().getResources().getString(R.string.ok),
-                            getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                            getActivity().getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

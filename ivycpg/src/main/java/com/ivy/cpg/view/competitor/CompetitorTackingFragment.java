@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -117,6 +118,10 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
             txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             txtVw.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             txtVw.setText(companyBO.getCompetitorName());
+            txtVw.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            txtVw.setMarqueeRepeatLimit(-1);
+            txtVw.setSingleLine(true);
+            txtVw.setSelected(true);
 
             tab.setTag(companyBO.getCompetitorid());
             tab.setCustomView(txtVw);
@@ -139,7 +144,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
                     new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                             "", getActivity().getResources().getString(R.string.move_next_activity),
                             false, getActivity().getResources().getString(R.string.ok),
-                            getActivity().getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                            getActivity().getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);

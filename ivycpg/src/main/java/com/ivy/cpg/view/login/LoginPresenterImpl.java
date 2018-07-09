@@ -29,6 +29,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -426,9 +427,9 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 jsonObj.put("OSVersion", android.os.Build.VERSION.RELEASE);
                 jsonObj.put("FirmWare", "");
                 jsonObj.put("DeviceId",
-                        businessModel.activationHelper.getIMEINumber());
+                        DeviceUtils.getIMEINumber(context));
                 jsonObj.put("RegistrationId", businessModel.regid);
-                jsonObj.put("DeviceUniqueId", businessModel.activationHelper.getDeviceId());
+                jsonObj.put("DeviceUniqueId", DeviceUtils.getDeviceId(context));
                 if (DataMembers.ACTIVATION_KEY != null && !DataMembers.ACTIVATION_KEY.isEmpty())
                     jsonObj.put("ActivationKey", DataMembers.ACTIVATION_KEY);
                 jsonObj.put(SynchronizationHelper.MOBILE_DATE_TIME,
@@ -512,7 +513,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (businessModel.isOnline()) {
-                    businessModel.synchronizationHelper.updateAuthenticateToken();
+                    businessModel.synchronizationHelper.updateAuthenticateToken(false);
                     return businessModel.synchronizationHelper.checkForAutoUpdate();
                 } else
                     return Boolean.FALSE;

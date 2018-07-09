@@ -36,7 +36,7 @@ import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.sd.png.view.reports.ReportActivity;
+import com.ivy.cpg.view.reports.ReportActivity;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -221,6 +221,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                             .setTradecoveragetitle(menuItem.getMenuName());
                     Intent i = new Intent(getActivity(),
                             PlanningVisitActivity.class);
+                    i.putExtra("isPlanningSub",true);
                     startActivity(i);
                 }
             }
@@ -590,7 +591,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
             if (convertView == null) {
 
                 LayoutInflater inflater = getActivity().getLayoutInflater();
-                convertView = inflater.inflate(R.layout.custom_loadmgt_list_item, parent,
+                convertView = inflater.inflate(R.layout.custom_newui_list_item, parent,
                         false);
                 holder = new ViewHolder();
                 holder.menuIcon = (ImageView) convertView

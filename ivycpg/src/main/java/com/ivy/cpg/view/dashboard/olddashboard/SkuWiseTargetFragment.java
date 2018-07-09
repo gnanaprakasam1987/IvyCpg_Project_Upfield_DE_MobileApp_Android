@@ -111,29 +111,34 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
+        Bundle extras;
+        if (getActivity().getIntent().getExtras() != null)
+            extras = getActivity().getIntent().getExtras();
+        else
+            extras = getArguments();
+
         //Set Screen Title
         try {
-            if (getArguments().getString("screentitle") == null)
+            if (extras.getString("screentitle") == null)
                 setScreenTitle(bmodel.getMenuName("MENU_SKUWISESTGT"));
             else
-                setScreenTitle(getArguments().getString("screentitle"));
+                setScreenTitle(extras.getString("screentitle"));
+
+            from = extras.getString("from");
+            rid = extras.getString("rid");
+            rid = rid != null ? rid : "0";
+            type = extras.getString("type");
+            type = type != null ? type : "MONTH";
+            code = extras.getString("code");
+            code = code != null ? code : "0";
+            monthName = extras.getString("month_name");
+            monthName = monthName != null ? monthName : "";
+            pid = extras.getInt("pid", 0);
+            flex1 = extras.getInt("flex1", 0);
+            isFromDash = extras.getBoolean("isFromDash");
         } catch (Exception e) {
             Commons.printException(e);
         }
-
-        from = getArguments().getString("from");
-        rid = getArguments().getString("rid");
-        rid = rid != null ? rid : "0";
-        type = getArguments().getString("type");
-        type = type != null ? type : "MONTH";
-        code = getArguments().getString("code");
-        code = code != null ? code : "0";
-        monthName = getArguments().getString("month_name");
-        monthName = monthName != null ? monthName : "";
-        pid = getArguments().getInt("pid", 0);
-        flex1 = getArguments().getInt("flex1", 0);
-        if (!getArguments().isEmpty())
-            isFromDash = getArguments().getBoolean("isFromDash");
 
         setHasOptionsMenu(true);
 

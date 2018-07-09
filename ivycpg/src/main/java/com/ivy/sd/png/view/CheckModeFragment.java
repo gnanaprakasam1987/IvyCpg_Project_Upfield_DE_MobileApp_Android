@@ -725,7 +725,7 @@ public class CheckModeFragment extends IvyBaseFragment
         if (vw == applyBtn) {
 
             if (!isValidate(mPaymentBO)) {
-                Toast.makeText(getActivity(), "Please " + mErrorMsg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), mErrorMsg, Toast.LENGTH_SHORT).show();
             } else {
                 double value = 0;
                 String qty = mCollectAmountET.getText().toString();
@@ -795,7 +795,7 @@ public class CheckModeFragment extends IvyBaseFragment
             if (paymentBO != null) {
 
                 if ("".equals(paymentBO.getChequeNumber())) {
-                    mErrorMsg = getResources().getString(R.string.pls_select_chequeno) + " in Demand Draft";
+                    mErrorMsg = getResources().getString(R.string.pls_enter_ddno) + " in Demand Draft";
                     return false;
                 }
                 if ("-1".equals(paymentBO.getBankID())) {
@@ -826,7 +826,7 @@ public class CheckModeFragment extends IvyBaseFragment
             if (paymentBO != null) {
 
                 if ("".equals(paymentBO.getChequeNumber())) {
-                    mErrorMsg = getResources().getString(R.string.pls_select_chequeno) + " in RTGS";
+                    mErrorMsg = getResources().getString(R.string.pls_enter_rtgsno) + " in RTGS";
                     return false;
                 }
                 if ("-1".equals(paymentBO.getBankID())) {

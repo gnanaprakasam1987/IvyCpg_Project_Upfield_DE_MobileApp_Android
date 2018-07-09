@@ -22,7 +22,6 @@ public class PlanoGramHelper {
     private final BusinessModel mBModel;
     private static PlanoGramHelper instance = null;
     private Vector<PlanoGramBO> mPlanoGramMaster;
-    private Vector<CounterPlanoGramBO> csPlanogramMaster;
     private Vector<ParentLevelBo> mParentLevelBo;
     private Vector<ChildLevelBo> mChildLevelBo;
     private Vector<StandardListBO> mLocationList;
@@ -311,7 +310,7 @@ public class PlanoGramHelper {
                         + " BETWEEN P.startdate AND P.enddate";
             }
 
-            query = query + " GROUP BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId,PM.Pid ORDER BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId";
+            query = query + " GROUP BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId,PM.Pid,PlanogramID ORDER BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId";
 
             Cursor c = db.selectSQL(query);
 
@@ -339,58 +338,6 @@ public class PlanoGramHelper {
         }
     }
 
-    /**
-     * Download counter planoGram
-     *
-     * @param counterId Counter Id
-     */
-    public void downloadCounterPlanoGram(Context mContext, int counterId) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        try {
-            CounterPlanoGramBO planogram;
-            db.openDataBase();
-            String query;
-
-            query = "SELECT MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,PI.ImgId FROM PlanogramMaster P"
-                    + " INNER JOIN PlanogramMapping MP ON P.HId = MP.HId "
-                    + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
-                    + " INNER JOIN StandardListMaster st on st.listid=P.typeid"
-                    + " WHERE"
-                    + " MP.RetailerId ='0'"
-                    + " AND "
-                    + " st.listtype ='PLANOGRAM_TYPE'"
-                    + " AND "
-                    + " st.listcode ='COUNTER'"
-                    + " AND "
-                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + " BETWEEN P.startdate AND P.enddate";
-
-
-            Cursor c = db.selectSQL(query);
-
-            if (c != null) {
-                setCsPlanogramMaster(new Vector<CounterPlanoGramBO>());
-                while (c.moveToNext()) {
-                    planogram = new CounterPlanoGramBO();
-                    planogram.setRetailerId(mBModel.retailerMasterBO
-                            .getRetailerID());
-                    planogram.setMappingID(c.getInt(0));
-                    planogram.setPlanogramDesc(c.getString(1));
-                    planogram.setImageName(c.getString(2));
-                    planogram.setImageId(c.getInt(3));
-                    planogram.setCounterId(counterId);
-
-                    getCsPlanogramMaster().add(planogram);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-        }
-    }
 
     /**
      * Load PlanoGram in edit mode
@@ -524,48 +471,6 @@ public class PlanoGramHelper {
     }
 
     /**
-     * Set Image path for counter
-     *
-     * @param mImagePath Image Path
-     * @param imageId    Image Id
-     */
-    void setCSImagePath(String mImagePath, int imageId) {
-        CounterPlanoGramBO planogrambo;
-        int siz = getCsPlanogramMaster().size();
-        if (siz == 0)
-            return;
-        for (int i = 0; i < siz; ++i) {
-            planogrambo = getCsPlanogramMaster().get(i);
-            if (planogrambo.getImageId() == imageId) {
-                planogrambo.setPlanogramCameraImgName(mImagePath);
-                getCsPlanogramMaster().setElementAt(planogrambo, i);
-                return;
-            }
-        }
-    }
-
-    /**
-     * Set adherence to object by image Id
-     *
-     * @param adherence Adherence
-     * @param imageId   Image Id
-     */
-    void setCSImageAdherence(String adherence, int imageId) {
-        CounterPlanoGramBO planogrambo;
-        int siz = getCsPlanogramMaster().size();
-        if (siz == 0)
-            return;
-        for (int i = 0; i < siz; ++i) {
-            planogrambo = getCsPlanogramMaster().get(i);
-            if (imageId == planogrambo.getImageId()) {
-                planogrambo.setAdherence(adherence);
-                getCsPlanogramMaster().setElementAt(planogrambo, i);
-                return;
-            }
-        }
-    }
-
-    /**
      * Save PlanoGram in transaction table
      *
      * @return Is Saved
@@ -680,124 +585,6 @@ public class PlanoGramHelper {
         }
     }
 
-    /**
-     * Save counter PlanoGram in transaction
-     *
-     * @param counterId Counter Id
-     * @return Is saved
-     */
-    boolean saveCounterPlanoGram(Context mContext, int counterId) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        try {
-            db.openDataBase();
-            String tid;
-            Cursor headerCursor;
-
-            String headerColumns = "TiD, RetailerId, Date, timezone, uid, RefId,Type, CounterId,DistributorID";
-            String detailColumns = "TiD, MappingId, Pid, ImageName,ImagePath, Adherence, RetailerId, ReasonID, LocID,Audit, CounterId, ImageId";
-
-            String values;
-            boolean isData;
-            String refId = "0";
-            String imagePath = "Planogram" + "/" + mBModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
-                    + "/"
-                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "/";
-
-            tid = mBModel.userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + mBModel.getRetailerMasterBO().getRetailerID() + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
-
-            // delete transaction if exist
-            String query = "SELECT Tid, RefId FROM PlanogramHeader"
-                    + " WHERE RetailerId = "
-                    + mBModel.getRetailerMasterBO().getRetailerID()
-                    + " AND DistributorID = "
-                    + mBModel.getRetailerMasterBO().getDistributorId()
-                    + " AND CounterId = "
-                    + mBModel.QT(String.valueOf(counterId))
-                    + " AND Date = "
-                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-            query += " and (upload='N' OR refid!=0)";
-
-            headerCursor = db
-                    .selectSQL(query);
-            if (headerCursor.getCount() > 0) {
-                headerCursor.moveToNext();
-                db.deleteSQL("PlanogramHeader",
-                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
-                db.deleteSQL("PlanogramDetails",
-                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
-                refId = headerCursor.getString(1);
-                headerCursor.close();
-            }
-
-            // Insert Details
-            isData = false;
-            for (CounterPlanoGramBO planogram : getCsPlanogramMaster()) {
-
-                if (planogram.getAdherence() != null) {
-                    values = QT(tid) + "," + planogram.getMappingID() + ","
-                            + 0 + ","
-                            + QT(planogram.getPlanogramCameraImgName()) + ","
-                            + QT(imagePath) + ","
-                            + QT(planogram.getAdherence()) + ","
-                            + QT(mBModel.getRetailerMasterBO().getRetailerID())
-                            + "," + planogram.getReasonID() + ","
-                            + 0 + ","
-                            + planogram.getAudit() + ","
-                            + planogram.getCounterId() + ","
-                            + planogram.getImageId();
-                    db.insertSQL("PlanogramDetails", detailColumns, values);
-                    isData = true;
-                }
-
-            }
-
-            // Save Header if There is Data in Details
-            if (isData) {
-                values = QT(tid) + ","
-                        + mBModel.getRetailerMasterBO().getRetailerID() + ","
-                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                        + QT(mBModel.getTimeZone()) + ","
-                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
-                        + "," + QT(refId) + ","
-                        + QT(getCsPlanogramMaster().get(0).getType()) + ","
-                        + counterId + ","
-                        + mBModel.getRetailerMasterBO().getDistributorId();
-
-                db.insertSQL("PlanogramHeader", headerColumns, values);
-            }
-            db.closeDB();
-            return true;
-        } catch (Exception e) {
-            db.closeDB();
-            Commons.printException("" + e);
-            return false;
-        }
-    }
-
-    /**
-     * updating adherence reason
-     *
-     * @param mReasonId Reason Id
-     * @param imageId   Image iD
-     */
-    void setCSImageAdherenceReason(String mReasonId, int imageId) {
-        CounterPlanoGramBO planogrambo;
-        int siz = getCsPlanogramMaster().size();
-        if (siz == 0)
-            return;
-        for (int i = 0; i < siz; ++i) {
-            planogrambo = getCsPlanogramMaster().get(i);
-            if (imageId == planogrambo.getImageId()) {
-                planogrambo.setReasonID(mReasonId);
-                getCsPlanogramMaster().setElementAt(planogrambo, i);
-                return;
-            }
-        }
-    }
-
 
     private String QT(String data) {
         return "'" + data + "'";
@@ -827,14 +614,6 @@ public class PlanoGramHelper {
         this.mPlanoGramMaster = planogramMaster;
     }
 
-
-    Vector<CounterPlanoGramBO> getCsPlanogramMaster() {
-        return csPlanogramMaster;
-    }
-
-    private void setCsPlanogramMaster(Vector<CounterPlanoGramBO> csPlanogramMaster) {
-        this.csPlanogramMaster = csPlanogramMaster;
-    }
 
     /**
      * Delete image from transaction table

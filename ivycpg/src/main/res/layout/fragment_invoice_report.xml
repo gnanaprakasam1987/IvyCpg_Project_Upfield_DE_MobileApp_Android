@@ -131,7 +131,7 @@
                 android:layout_marginTop="@dimen/store_margin_top"
                 android:layout_toEndOf="@+id/label_totalValue"
                 android:background="@android:color/darker_gray"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_marginLeft="@dimen/margin_height"
                 android:layout_toRightOf="@+id/label_totalValue" />
 
@@ -158,8 +158,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/lbl_avg_lines"
-                android:layout_marginStart="@dimen/target_top_margin"
-                android:layout_marginEnd="@dimen/target_top_margin"
+                android:layout_marginStart="@dimen/store_margin_top"
+                android:layout_marginEnd="@dimen/store_margin_top"
                 android:layout_toEndOf="@+id/view1"
                 android:text="@string/zero"
                 android:textColor="@color/white"

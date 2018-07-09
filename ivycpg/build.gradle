@@ -1,15 +1,21 @@
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        jcenter()
     }
 
     dependencies {
         classpath 'io.fabric.tools:gradle:1.25.4'
+        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
+
     }
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
+//apply plugin: 'jacoco-android'
+
+apply from: '../jacoco.gradle'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -74,12 +80,17 @@ android {
     buildTypes {
         debug {
             resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
+            buildConfigField("boolean", "ACTIVATION", "true");
+
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
+            testCoverageEnabled = true
+
         }
         release {
             def googleapikey = System.getenv('googleapikey')
             resValue "string", "google_maps_api_key", "${googleapikey}"
+            buildConfigField("boolean", "ACTIVATION", "true");
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -87,6 +98,7 @@ android {
         }
         devrelease {
             resValue "string", "google_maps_api_key", keystoreProperties['mapKey']
+            buildConfigField("boolean", "ACTIVATION", "true");
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -112,6 +124,15 @@ android {
         exclude 'META-INF/license.txt'
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
     }
 
 }
@@ -165,13 +186,29 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    implementation 'com.google.dagger:dagger:2.4'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.4"
+
+    implementation 'com.google.dagger:dagger:2.13'
+    annotationProcessor "com.google.dagger:dagger-compiler:2.13"
 
     implementation 'com.android.support:support-annotations:27.1.1'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+
+
+    // reactive
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjava2Version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
+
+
+    // dependencies for local unit tests
+    testImplementation "junit:junit:$rootProject.ext.junitVersion"
+    testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
+    testImplementation "org.hamcrest:hamcrest-all:$rootProject.hamcrestVersion"
+
+    testAnnotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
+
+    testImplementation 'org.json:json:20140107'
 
 }
 apply plugin: 'com.google.gms.google-services'

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.ivy.lib.Logs;
 import com.ivy.lib.base64.Base64;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.math.BigDecimal;
@@ -29,7 +28,6 @@ public class SDUtil {
     public static final int GMT_DATE_TIME = 7;
     public static final int DATE_GLOBAL_PLAIN = 8;
     public static final int DATE_GLOBAL_EIPHEN = 9;
-    private BusinessModel bmodel;
 
 
     /**
@@ -241,9 +239,9 @@ public class SDUtil {
         //DataMembers.backDate="05/16/2017";
         if (!DataMembers.backDate.isEmpty()) {
             int year, day, month;
-            month = SDUtil.convertToInt(DataMembers.backDate.substring(0, 2));
-            day = SDUtil.convertToInt(DataMembers.backDate.substring(3, 5));
-            year = SDUtil.convertToInt(DataMembers.backDate.substring(6, 10));
+            month = convertToInt(DataMembers.backDate.substring(0, 2));
+            day = convertToInt(DataMembers.backDate.substring(3, 5));
+            year = convertToInt(DataMembers.backDate.substring(6, 10));
             cal.set(year, month - 1, day);
         }
 

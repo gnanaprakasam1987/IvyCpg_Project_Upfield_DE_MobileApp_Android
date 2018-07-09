@@ -60,6 +60,11 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.appmodule.AppComponent;
 import com.ivy.appmodule.AppModule;
 import com.ivy.appmodule.DaggerAppComponent;
+import com.ivy.core.base.view.BaseActivity;
+import com.ivy.core.di.component.DaggerIvyAppComponent;
+import com.ivy.core.di.component.IvyAppComponent;
+import com.ivy.core.di.module.ActivityModule;
+import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
@@ -72,7 +77,7 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
-import com.ivy.cpg.view.reports.InvoiceReportDetail;
+import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.van.LoadManagementHelper;
@@ -122,7 +127,6 @@ import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.ExpenseSheetHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
-import com.ivy.sd.png.provider.GroomingHelper;
 import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
@@ -183,7 +187,7 @@ import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
-import com.squareup.leakcanary.LeakCanary;
+import com.ivy.ui.activation.view.ActivationActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -278,7 +282,6 @@ public class BusinessModel extends Application {
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
     public AttendanceHelper mAttendanceHelper;
-    public GroomingHelper groomingHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
     public EmptyReconciliationHelper mEmptyReconciliationhelper;
     public EmptyReturnHelper mEmptyReturnHelper;
@@ -294,7 +297,7 @@ public class BusinessModel extends Application {
     public LeaveApprovalHelper leaveApprovalHelper;
     public ExpenseSheetHelper expenseSheetHelper;
     //public LoginHelper mLoginHelper;
-    public UserFeedBackHelper mUserFeedBackHelper;
+    //public UserFeedBackHelper mUserFeedBackHelper;
     public JExcelHelper mJExcelHelper;
     public DeliveryManagementHelper deliveryManagementHelper;
     public CommonPrintHelper mCommonPrintHelper;
@@ -320,7 +323,7 @@ public class BusinessModel extends Application {
     //private String orderIDFormInvoice;
     //private PaymentBO paymentBO;
     private OrderHeader orderHeaderBO;
-    private Activity ctx, activity;
+    private Activity ctx;
 
     private ArrayList<InvoiceHeaderBO> invoiceHeader;
 
@@ -402,6 +405,17 @@ public class BusinessModel extends Application {
     private int printSequenceLevelID;
     private String dashboardUserFilterString;
 
+
+    private IvyAppComponent mApplicationComponent;
+
+    private final String mFocusBrand = "Filt11";
+    private final String mFocusBrand2 = "Filt12";
+    private final String mFocusBrand3 = "Filt20";
+    private final String mFocusBrand4 = "Filt21";
+
+    private ArrayList<String> orderedBrands=new ArrayList<>();
+    private ArrayList<String> totalFocusBrandList=new ArrayList<>();
+
     public BusinessModel() {
 
         /** Create objects for Helpers **/
@@ -433,31 +447,18 @@ public class BusinessModel extends Application {
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
         closecallhelper = CloseCallHelper.getInstance(this);
         printHelper = PrintHelper.getInstance(this);
-        /*// if norml tax
-        taxHelper = TaxHelper.getInstance(this);
-        // else
-        taxHelper=TaxGstHelper.getInstance(this);*/
 
-        /** OLD **/
         retailerMasterBO = new RetailerMasterBO();
-        //paymentBO = new PaymentBO();
 
         invoiceHeader = new ArrayList<>();
-        //payment = new Vector<Object>();
         setRetailerMaster(new Vector<RetailerMasterBO>());
 
-
         newOutletHelper = NewOutletHelper.getInstance(this);
-        //promotionHelper = PromotionHelper.getInstance(this);
-
-        //mPriceTrackingHelper = PriceTrackingHelper.getInstance(this);
         mAttendanceHelper = AttendanceHelper.getInstance(this);
-        groomingHelper = GroomingHelper.getInstance(this);
         competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
         mEmptyReconciliationhelper = EmptyReconciliationHelper
                 .getInstance(this);
         mEmptyReturnHelper = EmptyReturnHelper.getInstance(this);
-        //mSurveyHelperNew = SurveyHelperNew.getInstance(this);
 
         // Shelf Share Helper
         mRetailerHelper = RetailerHelper.getInstance(this);
@@ -469,8 +470,6 @@ public class BusinessModel extends Application {
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
         distTimeStampHeaderHelper = DistTimeStampHeaderHelper.getInstance(this);
         profilehelper = ProfileHelper.getInstance(this);
-        //mLoginHelper = LoginHelper.getInstance(this);
-        mUserFeedBackHelper = UserFeedBackHelper.getInstance(this);
         mJExcelHelper = JExcelHelper.getInstance(this);
         deliveryManagementHelper = DeliveryManagementHelper.getInstance(this);
         mCommonPrintHelper = CommonPrintHelper.getInstance(this);
@@ -537,7 +536,7 @@ public class BusinessModel extends Application {
             myIntent = new Intent(ctxx, Synchronization.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actactivationscreen)) {
-            myIntent = new Intent(ctxx, ScreenActivationActivity.class);
+            myIntent = new Intent(ctxx, ActivationActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actclosingstock)) {
             myIntent = new Intent(ctxx, StockCheckActivity.class);
@@ -740,11 +739,6 @@ public class BusinessModel extends Application {
     public void onCreate() {
         super.onCreate();
         try {
-            if (LeakCanary.isInAnalyzerProcess(this)) {
-// This process is dedicated to LeakCanary for heap analysis.
-// You should not init your app in this process.
-            }
-            LeakCanary.install(this);
 
             mInstance = this;
             //Glide - Circle Image Transform
@@ -752,10 +746,22 @@ public class BusinessModel extends Application {
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
             appComponent.inject(this);
 
+            mApplicationComponent = DaggerIvyAppComponent.builder()
+                    .ivyAppModule(new IvyAppModule(this))
+                    .activityModule(new ActivityModule((BaseActivity) getContext()))
+                    .build();
+
+            mApplicationComponent.inject(this);
+
+
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    public IvyAppComponent getComponent() {
+        return mApplicationComponent;
     }
 
     public AppComponent getAppComponent() {
@@ -1466,7 +1472,7 @@ public class BusinessModel extends Application {
                             + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
-                            + " and IsSystemComputed = 'YES') = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent"
+                            + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent"
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
@@ -1826,6 +1832,118 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
+
+    public int getTotalFocusBrands(){
+        try{
+
+            int focusBrandCount=0;
+
+            int focusBrandProducts1 = 0;
+            int focusBrandProducts2 = 0;
+            int focusBrandProducts3 = 0;
+            int focusBrandProducts4 = 0;
+
+            Vector<ProductMasterBO> products=productHelper.getProductMaster();
+            if(products!=null){
+                for(int index=0;index<products.size();index++){
+                    if(products.get(index).getIsFocusBrand()==1)
+                        focusBrandProducts1=1;
+                    else if (products.get(index).getIsFocusBrand2()==1)
+                        focusBrandProducts2=1;
+                    else if(products.get(index).getIsFocusBrand3()==1)
+                        focusBrandProducts3=1;
+                    else if(products.get(index).getIsFocusBrand4()==1)
+                        focusBrandProducts4=1;
+
+                }
+            }
+
+            getTotalFocusBrandList().clear();
+            if(focusBrandProducts1==1){
+                getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand));
+            }
+            if(focusBrandProducts2==1){
+                getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand2));
+            }
+            if(focusBrandProducts3==1){
+                getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand3));
+            }
+            if(focusBrandProducts4==1){
+                getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand4));
+            }
+
+            focusBrandCount=focusBrandProducts1+focusBrandProducts2+focusBrandProducts3+focusBrandProducts4;
+
+            return focusBrandCount;
+
+        }catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+        return 0;
+    }
+
+    public void getOrderedFocusBrandList(){
+
+        try {
+
+            ArrayList<String> mOrderedProductList=new ArrayList<>();
+
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select distinct ProductID from "
+                    + DataMembers.tbl_orderDetails + " where retailerid="
+                    + QT(retailerMasterBO.getRetailerID()) + " and upload='N'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    mOrderedProductList.add(c.getString(0));
+                }
+                c.close();
+            }
+            db.closeDB();
+
+            int focusBrandProducts1 = 0;
+            int focusBrandProducts2 = 0;
+            int focusBrandProducts3 = 0;
+            int focusBrandProducts4 = 0;
+
+            for (String productID : mOrderedProductList) {
+
+                ProductMasterBO bo=productHelper.getProductMasterBOById(productID);
+                if (bo.getIsFocusBrand() == 1) {
+                    focusBrandProducts1 = 1;
+                }
+                if (bo.getIsFocusBrand2() == 1) {
+                    focusBrandProducts2 = 1;
+                }
+                if (bo.getIsFocusBrand3() == 1) {
+                    focusBrandProducts3 = 1;
+                }
+                if (bo.getIsFocusBrand4() == 1) {
+                    focusBrandProducts4 = 1;
+                }
+            }
+
+            getOrderedFocusBrands().clear();
+            if (focusBrandProducts1 == 1) {
+                getOrderedFocusBrands().add(getFocusFilterName(mFocusBrand));
+            }
+            if (focusBrandProducts2 == 1) {
+                getOrderedFocusBrands().add(getFocusFilterName(mFocusBrand2));
+            }
+            if (focusBrandProducts3 == 1) {
+                getOrderedFocusBrands().add(getFocusFilterName(mFocusBrand3));
+            }
+            if (focusBrandProducts4 == 1) {
+                getOrderedFocusBrands().add(getFocusFilterName(mFocusBrand4));
+            }
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+    }
+
 
     private void getMSLValues() {
         DBUtil db = null;
@@ -2283,6 +2401,22 @@ public class BusinessModel extends Application {
                     || product.getOrderedPcsQty() > 0
                     || product.getOrderedOuterQty() > 0)
                 return true;
+
+
+            if (configurationMasterHelper.SHOW_STOCK_SP
+                    || configurationMasterHelper.SHOW_STOCK_SC
+                    || configurationMasterHelper.SHOW_SHELF_OUTER) {
+                int cSize2 = product.getLocations().size();
+                for (int f = 0; f < cSize2; f++) {
+                    if (product.getLocations().get(f).getAvailability() != -1
+                            || product.getLocations().get(f).getReasonId() != 0
+                            || product.getLocations().get(f).getShelfPiece() != -1
+                            || product.getLocations().get(f).getShelfCase() != -1
+                            || product.getLocations().get(f).getShelfOuter() != -1) {
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }
@@ -2495,6 +2629,33 @@ public class BusinessModel extends Application {
 
         db.closeDB();
     }
+
+    /**
+     * kellogs specific
+     */
+    public void downloadDailyReportKellogs() {
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuffer sb = new StringBuffer();
+        Cursor c = null;
+
+        sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
+        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setKlgsEffCoverage(c.getString(0));
+                dailyRep.setKlgsTotLines(c.getInt(1) + "");
+                dailyRep.setKlgsTotValue(c.getDouble(2) + "");
+            }
+            c.close();
+        }
+
+        db.closeDB();
+    }
+
 
     /**
      * @param orderType 0 - piece; 1 - outer; 2 - case
@@ -3382,7 +3543,7 @@ public class BusinessModel extends Application {
 
         final int idd = id;
 
-        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, "Ok", new CommonDialog.positiveOnClickListener() {
+        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, "Ok", new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick()
 
@@ -3503,6 +3664,7 @@ public class BusinessModel extends Application {
                             DataMembers.actHomeScreenTwo);
                 } else if (idd == DataMembers.NOTIFY_CLOSE_HOME) {
                     HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) ctx).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                    if(currentFragment!=null)
                     currentFragment.refreshList(false);
                 } else if (idd == DataMembers.NOTIFY_SALES_RETURN_SAVED) {
                     SalesReturnSummery frm = (SalesReturnSummery) ctx;
@@ -4081,24 +4243,6 @@ public class BusinessModel extends Application {
 
     }
 
-    public void setIsPlanned() {
-        RetailerMasterBO retailer;
-        int siz = retailerMaster.size();
-        if (siz == 0)
-            return;
-
-        for (int i = 0; i < siz; ++i) {
-            retailer = retailerMaster.get(i);
-            if (retailer.getRetailerID().equals(
-                    getRetailerMasterBO().getRetailerID())) {
-                retailer.setIsPlanned("Y");
-                retailerMaster.setElementAt(retailer, i);
-                return;
-            }
-        }
-
-    }
-
     void setIsInvoiceDone() {
         RetailerMasterBO retailer;
         int siz = retailerMaster.size();
@@ -4155,21 +4299,6 @@ public class BusinessModel extends Application {
             db.openDataBase();
             db.executeQ("update " + DataMembers.tbl_retailerMaster
                     + " set isOrderMerch=" + QT(flag) + " where retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID()));
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public void setIsPlannedInDB() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            db.executeQ("update " + DataMembers.tbl_retailerMaster
-                    + " set isPlanned=" + QT("Y") + " where retailerid="
                     + QT(getRetailerMasterBO().getRetailerID()));
             db.closeDB();
         } catch (Exception e) {
@@ -4560,6 +4689,52 @@ public class BusinessModel extends Application {
         return productive_calls;
     }
 
+    public int getProductiveCallsForTheDayKlgs() {
+        int productive_calls = 0;
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = null;
+
+            // c =
+            // db.selectSQL("select distinct(RetailerId) from OrderHeader");
+            loadProductiveCallsConfig();
+            if (PRD_FOR_ORDER) {
+                if (beatMasterHealper.getTodayBeatMasterBO() == null
+                        || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                    c = db.selectSQL("select  distinct(Retailerid) from OrderHeader where upload!='X'");
+                } else {
+                    c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
+                            + "o.retailerid=r.retailerid where o.upload!='X' ");// where
+                    // r.isdeviated='N'
+                }
+            } else if (PRD_FOR_SKT) {
+                if (beatMasterHealper.getTodayBeatMasterBO() == null
+                        || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                    c = db.selectSQL("select  distinct(RetailerID) from ClosingStockHeader");
+                } else {
+                    c = db.selectSQL("select  distinct(CSH.RetailerID) from ClosingStockHeader CSH INNER JOIN RetailerMaster RM on "
+                            + "CSH.RetailerID=RM.RetailerID ");
+                }
+            }
+
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    productive_calls = c.getCount();
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return productive_calls;
+    }
+
     /* This method will download the config for the productivecall. Based on the RField
      * value the productive config will turn ON and accordingly the productiveCalls values will be computed*/
 
@@ -4618,12 +4793,12 @@ public class BusinessModel extends Application {
                 ret.setVisit_Actual(0);
             }
 
-            if (configurationMasterHelper.IS_INVOICE) {
+           /* if (configurationMasterHelper.IS_INVOICE) {
                 c = db.selectSQL("select Retailerid, sum(invNetamount) from InvoiceMaster where invoicedate = "
                         + QT(userMasterHelper.getUserMasterBO().getDownloadDate()) + " group by retailerid");
-            } else {
-                c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
-            }
+            } else {*/
+            c = db.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
+            //}
             if (c != null) {
                 while (c.moveToNext()) {
                     for (int i = 0; i < siz; i++) {
@@ -5413,6 +5588,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "User" + path;
             } else if (imageName.startsWith("SR_SGN_")) {
                 mBucketName = mBucketDetails + "/" + "SalesReturn" + path;
+            } else if (imageName.startsWith("ORD_")) {
+                mBucketName = mBucketDetails + "/" + "Order" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -5731,7 +5908,7 @@ public class BusinessModel extends Application {
             jsonObj.put("UserId", userMasterHelper.getUserMasterBO()
                     .getUserid());
             jsonObj.put("RetailerId", mRetailerId);
-            jsonObj.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonObj.put("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("OTPValue", mOTP);
@@ -6029,13 +6206,20 @@ public class BusinessModel extends Application {
 
     public int[] getGoldenPoints() {
         int i[] = new int[2];
-        for (RetailerMasterBO tempObj : retailerMaster) {
-            if (tempObj.getIsToday() == 1
-                    || tempObj.getIsDeviated().equals("Y")) {
-                i[0] += tempObj.getSbdDistributionAchieve();
-                i[1] += tempObj.getSbdDistributionTarget();
+        try {
+            if (retailerMaster != null) {
+                for (RetailerMasterBO tempObj : retailerMaster) {
+                    if (tempObj.getIsToday() == 1
+                            || (tempObj.getIsDeviated() != null && (tempObj.getIsDeviated().equals("Y")))) {
+                        i[0] += tempObj.getSbdDistributionAchieve();
+                        i[1] += tempObj.getSbdDistributionTarget();
+                    }
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return i;
     }
 
@@ -6132,6 +6316,52 @@ public class BusinessModel extends Application {
             Commons.printException("" + e);
         }
         return 0;
+    }
+
+    public int getRetailerTarget() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT RKD.Target FROM RetailerKPI RK inner join RetailerKPIDetail RKD on RKD.KPIID= RK.KPIID  inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId where ListCode='TLS' and retailerid ="
+                            + QT(getRetailerMasterBO().getRetailerID()));
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int count = c.getInt(0);
+                    return count;
+                }
+            }
+            c.close();
+            db.closeDB();
+            return 0;
+        } catch (Exception e) {
+            Commons.printException(e);
+            return 0;
+        }
+    }
+
+    public int getRetailerVisitTarget() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT RKD.Target FROM RetailerKPI RK inner join RetailerKPIDetail RKD on RKD.KPIID= RK.KPIID  inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId where ListCode='VIP' and retailerid ="
+                            + QT(getRetailerMasterBO().getRetailerID()));
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int count = c.getInt(0);
+                    return count;
+                }
+            }
+            c.close();
+            db.closeDB();
+            return 0;
+        } catch (Exception e) {
+            Commons.printException(e);
+            return 0;
+        }
     }
 
     public ArrayList<ConfigureBO> getFITscore() {
@@ -6991,7 +7221,8 @@ public class BusinessModel extends Application {
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
         slbo = new StandardListBO();
-        slbo.setListName("All");
+        slbo.setListName(getResources()
+                .getString(R.string.all));
         slist.add(slbo);
         Cursor c = db
                 .selectSQL("select ListId,ListCode,ListName from StandardListMaster where ListType='WEEKDAY_TYPE'");
@@ -7043,9 +7274,14 @@ public class BusinessModel extends Application {
         negativeBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         negativeBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
 
-        Button postiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        postiveBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        postiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+        Button positiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        positiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        Button neutralBtn = dialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+        neutralBtn.setTypeface(configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        neutralBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
         // Set title divider color
         int titleDividerId = getResources().getIdentifier("titleDivider", "id", "android");
         View titleDivider = dialog.findViewById(titleDividerId);
@@ -7272,27 +7508,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    public void getCounterIdForUser() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        try {
-
-            db.openDataBase();
-            Cursor c = db.selectSQL("select CM.counter_id,counter_name from CS_CounterUserMapping CUM " +
-                    "INNER JOIN CS_CounterMaster CM ON CM.counter_id=CUM.counter_id " +
-                    "where userid=" + userMasterHelper.getUserMasterBO().getUserid());
-            if (c != null) {
-                if (c.moveToNext()) {
-                    userMasterHelper.getUserMasterBO().setCounterId(c.getInt(0));
-                    userMasterHelper.getUserMasterBO().setCounterName(c.getString(1));
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-    }
 
     private int counterId = 0;
 
@@ -7547,7 +7762,8 @@ public class BusinessModel extends Application {
 
                     // Download Date
                     else if (mRules.get(i).contains("YYYY")) {
-                        mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), mRules.get(i)));
+                        mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(),
+                                mRules.get(i).replace("{", "").replace("}","")));
                     }
 
                     // Get Sequence ID
@@ -8234,7 +8450,7 @@ public class BusinessModel extends Application {
     }
 
     public void writeToFile(String data, String filename, String foldername) {
-        String path = HomeScreenFragment.photoPath;
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
 
         File folder = new File(path);
         if (!folder.exists()) {
@@ -8816,7 +9032,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select count(distinct InvoiceNo),sum(invNetamount) from Invoicemaster");
+                    .selectSQL("select count(distinct InvoiceNo),sum(invNetamount) from Invoicemaster where invoicedate = "
+                            + QT(userMasterHelper.getUserMasterBO().getDownloadDate()));
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
@@ -8841,7 +9058,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select count(distinct orderid),sum(ordervalue) from OrderHeader");
+                    .selectSQL("select count(distinct orderid),sum(ordervalue) from OrderHeader where invoicestatus =0 ");
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
@@ -9103,6 +9320,32 @@ public class BusinessModel extends Application {
         }
         return collectedList;
 
+    }
+
+    public ArrayList<String> getOrderedFocusBrands() {
+        return orderedBrands;
+    }
+
+    public void setOrderedFocusBrands(ArrayList<String> orderedBrands) {
+        this.orderedBrands = orderedBrands;
+    }
+
+    public ArrayList<String> getTotalFocusBrandList() {
+        return totalFocusBrandList;
+    }
+
+    public void setTotalFocusBrandList(ArrayList<String> totalFocusBrandList) {
+        this.totalFocusBrandList = totalFocusBrandList;
+    }
+
+    private String getFocusFilterName(String filtername) {
+        Vector<ConfigureBO> genfilter = configurationMasterHelper
+                .getGenFilter();
+        for (int i = 0; i < genfilter.size(); i++) {
+            if (genfilter.get(i).getConfigCode().equals(filtername))
+                filtername = genfilter.get(i).getMenuName();
+        }
+        return filtername;
     }
 }
 

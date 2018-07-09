@@ -441,7 +441,7 @@ public class ProfileHelper {
                     boolean isProductExist = false;
                     if (invoiceHistoryList != null) {
                         for (OrderHistoryBO bo : invoiceHistoryList) {
-                            if (bo.getOrderid().equals(orderId) && bo.getProductId() == c.getInt(10)) {
+                            if (bo.getInvoiceId().equals(orderId) && bo.getProductId() == c.getInt(10)) {
 
                                 if (c.getInt(12) == pcsUomId) {
                                     bo.setPcsQty((bo.getPcsQty() + c.getInt(13)));
@@ -532,8 +532,8 @@ public class ProfileHelper {
                     }
                     HistBOTemp = historyBO;
                 } else {
-                    if (childItemList.get(0).getOrderid()
-                            .equals(historyBO.getOrderid())) {
+                    if (childItemList.get(0).getInvoiceId()
+                            .equals(historyBO.getInvoiceId())) {
 
 
                         childItemList.add(historyBO);

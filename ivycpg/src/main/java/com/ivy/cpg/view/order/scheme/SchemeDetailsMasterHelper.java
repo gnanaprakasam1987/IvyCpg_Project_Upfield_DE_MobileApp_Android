@@ -391,8 +391,8 @@ public class SchemeDetailsMasterHelper {
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
 
         sb.append(" where SCM.distributorid in(0," + distributorId + ")");
-        sb.append(" and SCM.RetailerId in(0," + retailerId + ")");
-        sb.append(" and SCM.channelid in(0," + channelId + ")");
+        sb.append(" and SCM.RetailerId in(0," + retailerId + ") and " + retailerId + " not in (Select CriteriaId from SchemeMappingExclusion SME where SME.CriteriaType = 'RTR' and SME.SchemeId = SCM.schemeid and SME.GroupId = SCM.groupId )");
+        sb.append(" and SCM.channelid in(0," + channelId + ") and " + channelId + " not in (Select CriteriaId from SchemeMappingExclusion SME where SME.CriteriaType = 'CHANNEL' and SME.SchemeId = SCM.schemeid and SME.GroupId = SCM.groupId )");
         sb.append(" and SCM.locationid in(0," + locationId + ")");
         sb.append(" and SCM.accountid in(0," + accountId + ")");
         sb.append(" and SCM.PriorityProductId in(0," + priorityProductId + ")");
@@ -493,8 +493,8 @@ public class SchemeDetailsMasterHelper {
         sb.append(" LEFT JOIN SchemeAttributeMapping  OP on OP.GroupId= SCM.GroupID and OP.SchemeID=SCM.schemeid");
 
         sb.append(" where SCM.distributorid in(0," + distributorId + ")");
-        sb.append(" and SCM.RetailerId in(0," + retailerId + ")");
-        sb.append(" and SCM.channelid in(0," + channelId + ")");
+        sb.append(" and SCM.RetailerId in(0," + retailerId + ") and " + retailerId + " not in (Select CriteriaId from SchemeMappingExclusion SME where SME.CriteriaType = 'RTR' and SME.SchemeId = SCM.schemeid and SME.GroupId = SCM.groupId )");
+        sb.append(" and SCM.channelid in(0," + channelId + ") and " + channelId + " not in (Select CriteriaId from SchemeMappingExclusion SME where SME.CriteriaType = 'CHANNEL' and SME.SchemeId = SCM.schemeid and SME.GroupId = SCM.groupId )");
         sb.append(" and SCM.locationid in(0," + locationId + ")");
         sb.append(" and SCM.accountid in(0," + accountId + ")");
         sb.append(" and SCM.PriorityProductId in(0," + priorityProductId + ")");
@@ -683,7 +683,6 @@ public class SchemeDetailsMasterHelper {
                     schemeBO.setFreeType(c.getString(17));
                     schemeBO.setEveryUomId(c.getInt(19));
                     schemeBO.setEveryQty(c.getInt(20));
-
 
 
                     //updating stock for free products
@@ -2151,6 +2150,7 @@ public class SchemeDetailsMasterHelper {
                 } else {
                     if (count >= minimumBuyQuantity)
                         count = 1;
+                    else count = 0;
                 }
 
                 //list to maintain used(if current slab applied) quantity,scheme wise..
@@ -3834,36 +3834,36 @@ public class SchemeDetailsMasterHelper {
      */
     public boolean isValuesAppliedBetweenTheRange(ArrayList<SchemeBO> mSchemeDoneList) {
         if (mSchemeDoneList != null && !mSchemeDoneList.isEmpty())
-        for (SchemeBO schemeBO : mSchemeDoneList) {
-            if (schemeBO != null) {
+            for (SchemeBO schemeBO : mSchemeDoneList) {
+                if (schemeBO != null) {
 
-                if (schemeBO.isPriceTypeSeleted()) {
+                    if (schemeBO.isPriceTypeSeleted()) {
 
-                    if (!(SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) >= SDUtil.convertToDouble(SDUtil.format(schemeBO.getActualPrice(), 2, 0))
-                            && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) <= SDUtil.convertToDouble(SDUtil.format(schemeBO.getMaximumPrice(), 2, 0))
-                            && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) > 0)) {
-                        return false;
+                        if (!(SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) >= SDUtil.convertToDouble(SDUtil.format(schemeBO.getActualPrice(), 2, 0))
+                                && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) <= SDUtil.convertToDouble(SDUtil.format(schemeBO.getMaximumPrice(), 2, 0))
+                                && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedPrice(), 2, 0)) > 0)) {
+                            return false;
+                        }
+
+                    } else if (schemeBO.isAmountTypeSelected()) {
+                        if (!(SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) >= SDUtil.convertToDouble(SDUtil.format(schemeBO.getMinimumAmount(), 2, 0))
+                                && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) <= SDUtil.convertToDouble(SDUtil.format(schemeBO.getMaximumAmount(), 2, 0))
+                                && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) > 0)) {
+                            return false;
+                        }
+
+                    } else if (schemeBO.isDiscountPrecentSelected()) {
+                        if (!(schemeBO.getSelectedPrecent() >= schemeBO.getMinimumPrecent()
+                                && schemeBO.getSelectedPrecent() <= schemeBO
+                                .getMaximumPrecent() && schemeBO.getSelectedPrecent() > 0)) {
+                            return false;
+                        }
                     }
 
-                } else if (schemeBO.isAmountTypeSelected()) {
-                    if (!(SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) >= SDUtil.convertToDouble(SDUtil.format(schemeBO.getMinimumAmount(), 2, 0))
-                            && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) <= SDUtil.convertToDouble(SDUtil.format(schemeBO.getMaximumAmount(), 2, 0))
-                            && SDUtil.convertToDouble(SDUtil.format(schemeBO.getSelectedAmount(), 2, 0)) > 0)) {
-                        return false;
-                    }
 
-                } else if (schemeBO.isDiscountPrecentSelected()) {
-                    if (!(schemeBO.getSelectedPrecent() >= schemeBO.getMinimumPrecent()
-                            && schemeBO.getSelectedPrecent() <= schemeBO
-                            .getMaximumPrecent() && schemeBO.getSelectedPrecent() > 0)) {
-                        return false;
-                    }
                 }
 
-
             }
-
-        }
         return true;
 
     }

@@ -274,6 +274,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
         //if statement to make sure the alert is displayed only for the first time
         if (mPlanoGramHelper.getInStoreLocation().size() != 1 && !isDialogPopup) {
             if (!mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
@@ -686,7 +688,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                         "", getResources().getString(R.string.saved_successfully),
                         false, getActivity().getResources().getString(R.string.ok),
-                        null, new CommonDialog.positiveOnClickListener() {
+                        null, new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         if ("1".equals(calledBy)) {

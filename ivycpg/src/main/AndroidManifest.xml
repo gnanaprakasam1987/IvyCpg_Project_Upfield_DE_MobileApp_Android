@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1300"
+    android:versionCode="1310"
     android:versionName="2.130.0.1676">
 
     <supports-screens
@@ -377,7 +377,7 @@
             android:name="com.ivy.cpg.view.dashboard.olddashboard.SKUWiseTargetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.reports.OrderReportDetail"
+            android:name="com.ivy.cpg.view.reports.orderreport.OrderReportDetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.digitalcontent.DigitalContentActivity"
@@ -482,7 +482,7 @@
             android:name="com.ivy.cpg.view.dashboard.sellerdashboard.SellerKPISKUActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.reports.InvoiceReportDetail"
+            android:name="com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.van.VanLoadStockView_activity"
@@ -563,7 +563,7 @@
             android:name="com.ivy.sd.png.view.RoadActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.reports.ReportActivity"
+            android:name="com.ivy.cpg.view.reports.ReportActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.promotion.PromotionTrackingActivity"
@@ -625,9 +625,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.TimeTrackingActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.planogram.CounterPlanogramActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.TLAttendanceActivity"
@@ -793,6 +790,8 @@
         <activity
             android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
             android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity" />
+        <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity" />
         <activity
             android:name="com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity"
             android:screenOrientation="portrait" />
@@ -805,13 +804,24 @@
         <activity
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
             android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" />
         <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity"
             android:screenOrientation="portrait" />
         <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.asset.PosmGallery"
+            android:screenOrientation="portrait" />
             android:screenOrientation="portrait"/>
+
+
+        <activity
+            android:name="com.ivy.ui.activation.view.ActivationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

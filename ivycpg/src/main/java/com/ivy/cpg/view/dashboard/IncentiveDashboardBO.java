@@ -4,6 +4,7 @@ package com.ivy.cpg.view.dashboard;
  * Created by rahul.j on 2/28/2018.
  */
 
+
 public class IncentiveDashboardBO {
     private String inctype;
     private String groups;
@@ -12,6 +13,15 @@ public class IncentiveDashboardBO {
     private String achper;
     private String ach;
     private String tgt;
+    private boolean isNewGroup;
+
+    public boolean getIsNewGroup() {
+        return isNewGroup;
+    }
+
+    public void setIsNewGroup(boolean isNewGroup) {
+        this.isNewGroup = isNewGroup;
+    }
 
     public String getInctype() {
         return inctype;

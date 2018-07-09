@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatRadioButton;
@@ -160,15 +161,21 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             if (uid != null && selected_position != -1) {
 
                 new CommonDialog(getApplicationContext(), this, "", getResources().getString(
-                        R.string.alert_text_accept_Stock), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        R.string.alert_text_accept_Stock), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         SIHApplyById.add(uid);
                         new UpdateSIH().execute();
-                        applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+                        } else {
+                            applybtn.setBackgroundResource(R.drawable.round_disabled_btn);
+                            rejectbtn.setBackgroundResource(R.drawable.round_disabled_btn);
+                        }
                         applybtn.setTextColor(Color.WHITE);
                         applybtn.setEnabled(false);
-                        rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
                         rejectbtn.setTextColor(Color.WHITE);
                         rejectbtn.setEnabled(false);
                     }
@@ -185,14 +192,20 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             if (uid != null && selected_position != -1) {
 
                 new CommonDialog(getApplicationContext(), this, "", getResources().getString(
-                        R.string.alert_text_reject_Stock), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                        R.string.alert_text_reject_Stock), false, getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         SIHApplyById.add(uid);
-                        applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+                        } else {
+                            applybtn.setBackgroundResource(R.drawable.round_disabled_btn);
+                            rejectbtn.setBackgroundResource(R.drawable.round_disabled_btn);
+                        }
                         applybtn.setTextColor(Color.WHITE);
                         applybtn.setEnabled(false);
-                        rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
                         rejectbtn.setTextColor(Color.WHITE);
                         rejectbtn.setEnabled(false);
                         new RejectVanload().execute();
@@ -269,18 +282,29 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                     // Also If load is already applied, then it will not allow to apply again.
                     if ((bmodel.startjourneyclicked
                             && bmodel.configurationMasterHelper.STOCK_APPROVAL) || SIHApplyById.contains(uid)) {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
+                        } else {
+                            applybtn.setBackgroundResource(R.drawable.round_disabled_btn);
+                            rejectbtn.setBackgroundResource(R.drawable.round_disabled_btn);
+                        }
                         applybtn.setEnabled(false);
-                        applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
                         applybtn.setTextColor(Color.WHITE);
                         rejectbtn.setEnabled(false);
-                        rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
                         rejectbtn.setTextColor(Color.WHITE);
                     } else {
-                        applybtn.setEnabled(true);
-                        applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
-                        rejectbtn.setEnabled(true);
-                        rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
 
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
+                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
+                        } else {
+                            applybtn.setBackgroundResource(R.drawable.button_rounded_corner_blue);
+                            rejectbtn.setBackgroundResource(R.drawable.button_rounded_corner_blue);
+                        }
+                        applybtn.setEnabled(true);
+                        rejectbtn.setEnabled(true);
                     }
 
 

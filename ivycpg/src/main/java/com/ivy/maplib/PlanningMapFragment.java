@@ -805,8 +805,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
     }
 
     public void showMeOnMap() {
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(myLatitude,
-                myLongitude)));
+        try {
+            if (mMap != null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(myLatitude,
+                        myLongitude)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void clearRoute() {

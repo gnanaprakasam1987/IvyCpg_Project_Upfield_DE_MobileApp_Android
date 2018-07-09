@@ -204,6 +204,36 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                         .setText(bmodel.labelsMasterHelper
                                 .applyLabels(findViewById(
                                         R.id.tv_priceMrp_ouTitle).getTag()));
+
+
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.tv_avg_qty_label).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_avg_qty_label))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.tv_avg_qty_label).getTag()));
+
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.tv_avg_rfield1_label).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_avg_rfield1_label))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.tv_avg_rfield1_label).getTag()));
+
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.tv_avg_rfield2_label).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_avg_rfield2_label))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.tv_avg_rfield2_label).getTag()));
+
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.tv_avg_rfield3_label).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_avg_rfield3_label))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.tv_avg_rfield3_label).getTag()));
+
         } catch (Exception e) {
             Commons.printException(e + "");
         }
@@ -306,7 +336,8 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 ((TextView) findViewById(R.id.tv_avg_qty_value)).setText(mProductMasterBO.getQty_klgs() + "");
                 ((TextView) findViewById(R.id.tv_avg_rfield1_value)).setText(mProductMasterBO.getRfield1_klgs() + "");
                 ((TextView) findViewById(R.id.tv_avg_rfield2_value)).setText(mProductMasterBO.getRfield2_klgs() + "");
-                ((TextView) findViewById(R.id.tv_avg_rfield3_value)).setText(mProductMasterBO.getCalc_klgs() + "");
+                ((TextView) findViewById(R.id.tv_avg_rfield3_value)).
+                        setText(mProductMasterBO.getCalc_klgs() != null ? mProductMasterBO.getCalc_klgs() + "" : "0");
             }
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_DD && !bmodel.configurationMasterHelper.SHOW_STOCK_LD
                     && !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_CB)
@@ -733,7 +764,6 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                         mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex)
                                 .setShelfOuter(shelfoqty);
-
 
 
                         if (shelfoqty > 0
@@ -1398,7 +1428,6 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                             .getLocations().get(mSelectedLocationIndex).getReasonId() + ""));
                 }
             }
-
 
 
             if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)

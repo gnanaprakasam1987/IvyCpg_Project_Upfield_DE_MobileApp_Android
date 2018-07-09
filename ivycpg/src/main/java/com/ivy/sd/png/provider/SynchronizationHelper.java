@@ -51,6 +51,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -950,13 +951,6 @@ SynchronizationHelper {
                     "union select count(uid) from VanDeliveryDetail where upload='N'" +
                     "union select count(uid) from SalesReturnReplacementDetails where upload='N'" +
                     "union select count(uid) from SalesReturnTaxDetails where upload='N'" +
-                    "union select count(uid) from CS_StockEntryDetails where upload='N'" +
-                    "union select count(uid) from CS_StockEntryHeader where upload='N'" +
-                    "union select count(uid) from CS_CustomerConcernDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerSaleDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerSampleGivenDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerTrialDetails where upload='N'" +
-                    "union select count(uid) from CS_CustomerVisitHeader where upload='N'" +
                     "union select count(Tid) from ExpenseHeader where upload='N'" +
                     "union select count(Tid) from RetailerContractRenewalDetails where upload='N'" +
                     "union select count(uid) from LeaveApprovalDetails where upload='N'" +
@@ -971,11 +965,6 @@ SynchronizationHelper {
                     "union select count(RetailerId) from RetailerPriorityProducts where upload='N'" +
                     "union select count(UID) from LoyaltyRedemptionDetail where upload='N'" +
                     "union select count(UID) from LoyaltyRedemptionHeader where upload='N'" +
-                    "union select count(pid) from CS_SIHDetails where upload='N'" +
-                    "union select count(receipt_id) from CS_StockReceiptHeader where upload='N'" +
-                    "union select count(uid) from CS_RejectedVarianceStatus where upload='N'" +
-                    "union select count(uid) from CS_GroomingHeader where upload='N'" +
-                    "union select count(uid) from CS_StockEntryVarianceHeader where upload='N'" +
                     "union select count(Tid) from ModuleActivityDetails where upload='N'" +
                     "union select count(uid) from AttendanceTimeDetails where upload='N'" +
                     "union select count(UID) from NonFieldActivity where upload='N'" +
@@ -1446,7 +1435,7 @@ SynchronizationHelper {
         JsonObjectRequest jsonObjectRequest;
         try {
 
-            headerInfo.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            headerInfo.put(MOBILE_DATE_TIME, Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             headerInfo.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             if (!DataMembers.backDate.isEmpty())
@@ -1799,7 +1788,7 @@ SynchronizationHelper {
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
             json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
-            json.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            json.put(MOBILE_DATE_TIME, Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             json.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
 
@@ -2193,7 +2182,7 @@ SynchronizationHelper {
     public Vector<String> getUploadResponse(String headerinfo, String data,
                                             String appendurl) {
         // Update Security key
-        updateAuthenticateToken();
+        updateAuthenticateToken(false);
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
@@ -2224,7 +2213,7 @@ SynchronizationHelper {
     public Vector<String> getUploadResponseForSalesReturn(String headerinfo, String data,
                                                           String appendurl) {
         // Update Security key
-        updateAuthenticateToken();
+        updateAuthenticateToken(false);
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
@@ -2252,7 +2241,7 @@ SynchronizationHelper {
     public Vector<String> getOtpGenerateResponse(String headerinfo, String data,
                                                           String appendurl) {
         // Update Security key
-        updateAuthenticateToken();
+        updateAuthenticateToken(false);
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
@@ -2284,7 +2273,7 @@ SynchronizationHelper {
         // Update Security key
         // updateAuthenticateToken();
         if (isChangePassword)
-            updateAuthenticateToken();
+            updateAuthenticateToken(false);
         else
             updateAuthenticateTokenWithoutPassword();
 
@@ -2332,9 +2321,9 @@ SynchronizationHelper {
                     bmodel.getApplicationVersionNumber());
             jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
-                    bmodel.activationHelper.getIMEINumber());
+                    DeviceUtils.getIMEINumber(context));
             jsonObj.put("RegistrationId", bmodel.regid);
-            jsonObj.put("MobileDate",
+            jsonObj.put(MOBILE_DATE_TIME,
                     Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
@@ -2386,7 +2375,7 @@ SynchronizationHelper {
     }
 
 
-    public void updateAuthenticateToken() {
+    public void updateAuthenticateToken(boolean isInsertUser) {
 
         try {
             mSecurityKey = "";
@@ -2403,9 +2392,9 @@ SynchronizationHelper {
                     bmodel.getApplicationVersionNumber());
             jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
-                    bmodel.activationHelper.getIMEINumber());
+                   DeviceUtils.getIMEINumber(context));
             jsonObj.put("RegistrationId", bmodel.regid);
-            jsonObj.put("DeviceUniqueId", bmodel.activationHelper.getDeviceId());
+            jsonObj.put("DeviceUniqueId",DeviceUtils.getDeviceId(context));
             Commons.print("Update Authentication Token " + jsonObj.toString());
             // adding additional two parameters
             addDeviceValidationParameters(false, jsonObj);
@@ -2426,7 +2415,7 @@ SynchronizationHelper {
                             mAuthErrorCode = jsonObject.get("ErrorCode").toString();
                             mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
 
-                            if (mAuthErrorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (mAuthErrorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE) && isInsertUser) {
                                 bmodel.synchronizationHelper.parseJSONAndInsert(jsonObject, true);
                                 bmodel.userMasterHelper.downloadUserDetails();
                             }
@@ -3261,7 +3250,7 @@ SynchronizationHelper {
                 jsonFormatter.addParameter("LoginId", bmodel.userMasterHelper
                         .getUserMasterBO().getLoginName());
                 jsonFormatter.addParameter("DeviceId",
-                        bmodel.activationHelper.getIMEINumber());
+                        DeviceUtils.getIMEINumber(context));
                 jsonFormatter.addParameter("VersionCode",
                         bmodel.getApplicationVersionNumber());
                 jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
@@ -3272,15 +3261,15 @@ SynchronizationHelper {
                             bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                             "yyyy/MM/dd");
                     if (varianceDwnDate == 0) {
-                        jsonFormatter.addParameter("MobileDate",
+                        jsonFormatter.addParameter(MOBILE_DATE_TIME,
                                 Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                     }
                     if (varianceDwnDate > 0) {
-                        jsonFormatter.addParameter("MobileDate",
+                        jsonFormatter.addParameter(MOBILE_DATE_TIME,
                                 getLastTransactedDate());
                     }
                 } else
-                    jsonFormatter.addParameter("MobileDate",
+                    jsonFormatter.addParameter(MOBILE_DATE_TIME,
                             Utils.getDate("yyyy/MM/dd HH:mm:ss"));
 
                 jsonFormatter.addParameter("MobileUTCDateTime",
@@ -3456,7 +3445,7 @@ SynchronizationHelper {
     }
 
     public String downloadSessionId(String url) {
-        updateAuthenticateToken();
+        updateAuthenticateToken(false);
         String sessionId = "";
         if (getAuthErroCode().equals(AUTHENTICATION_SUCCESS_CODE)) {
             try {
@@ -4103,38 +4092,6 @@ SynchronizationHelper {
 
     };
 
-
-    public boolean isSaleDrafted() {
-        DBUtil db = null;
-        boolean check = true;
-        try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            int counts = 0;
-
-            Cursor c = db
-                    .selectSQL("select COUNT(pid) from CS_CustomerSaleDetails where upload='I'");
-            if (c != null) {
-                if (c.moveToFirst())
-                    counts = c.getInt(0);
-            }
-            Commons.print("Count of isSaleDrafter not completed : ," + counts + "");
-            c.close();
-            db.close();
-
-            if (counts > 0) {
-                check = false;
-            } else {
-                check = true;
-            }
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return check;
-    }
 
     public File getStorageDir(String folderName) {
 

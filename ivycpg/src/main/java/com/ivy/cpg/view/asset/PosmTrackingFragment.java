@@ -46,7 +46,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
@@ -111,6 +110,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
     private String append = "";
     private static String outPutDateFormat;
     private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int POSM_GALLERY = 2;
     private String photoPath = "";
     private int mSelectedLocationIndex;
     private int mSelectedLastFilterSelection = -1;
@@ -687,17 +687,19 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                             if (holder.assetBO.getAvailQty() > 0) {
 
-                                holder.reason1Spin.setEnabled(false);
-                                holder.reason1Spin.setSelection(0);
-                               /* if (holder.assetBO.getImageName() != null && !holder.assetBO.getImageName().isEmpty()
-                                        ) {
-                                    holder.photoBTN.setEnabled(true);
-                                    setPictureToImageView(holder.assetBO.getImageName(), holder.photoBTN);
-                                } else {
-                                    //No Image Found So, setting Default Icon
-                                    holder.photoBTN.setEnabled(true);
-                                    holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
-                                }*/
+                                if (!assetTrackingHelper.SHOW_POSM_TARGET || holder.assetBO.getAvailQty() >= holder.assetBO.getTarget()) {
+
+                                    if (assetTrackingHelper.SHOW_LOCATION_POSM) {
+                                        if (holder.assetBO.getTargetLocId() == holder.assetBO.getLocationID()) {
+                                            holder.reason1Spin.setEnabled(false);
+                                            holder.reason1Spin.setSelection(0);
+                                        } else
+                                            holder.reason1Spin.setEnabled(true);
+                                    } else {
+                                        holder.reason1Spin.setEnabled(false);
+                                        holder.reason1Spin.setSelection(0);
+                                    }
+                                }
 
                                 holder.photoBTN.setEnabled(true);
                                 holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
@@ -857,6 +859,15 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                                 holder.assetBO.setLocationID(SDUtil.convertToInt(reasonBO
                                         .getListID()));
+
+                                if (holder.assetBO.getTargetLocId() == holder.assetBO.getLocationID() && holder.assetBO.getAvailQty() > 0) {
+                                    if (!assetTrackingHelper.SHOW_POSM_TARGET || holder.assetBO.getAvailQty() >= holder.assetBO.getTarget()) {
+                                        holder.reason1Spin.setEnabled(false);
+                                        holder.reason1Spin.setSelection(0);
+                                    } else
+                                        holder.reason1Spin.setEnabled(true);
+                                } else
+                                    holder.reason1Spin.setEnabled(true);
                             }
 
                             @Override
@@ -905,30 +916,16 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                                     + Commons.now(Commons.DATE_TIME)
                                     + "_img.jpg";
 
-                            String mFileNameStarts = moduleName
-                                    + mBModel.getRetailerMasterBO()
-                                    .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
-                                    + holder.assetBO.getAssetID() + "_"
-                                    + Commons.now(Commons.DATE);
-
-
                             assetTrackingHelper.mSelectedAssetID = holder.assetBO
                                     .getAssetID();
                             assetTrackingHelper.mSelectedImageName = imageName;
 
-                            /*boolean nFilesThere = mBModel.checkForNFilesInFolder(photoPath, 1,
-                                    mFileNameStarts);
-                            if (nFilesThere) {
-                                showFileDeleteAlertWithImage(holder.assetBO.getAssetID()
-                                        + "", mFileNameStarts, holder.assetBO.getImgName());
-                            } else {
-                                captureCustom();
-                            }*/
-
-                            if (assetTrackingHelper.POSM_PHOTO_COUNT == holder.assetBO.getImageList().size())
-                                Toast.makeText(getActivity(), getResources().getString(R.string.you_have_already_taken_maximun_images), Toast.LENGTH_SHORT)
-                                        .show();
-                            else
+                            if (holder.assetBO.getImageList().size() != 0) {
+                                Intent intent = new Intent(getActivity(), PosmGallery.class);
+                                intent.putExtra("listId", mSelectedStandardListBO.getListID());
+                                intent.putExtra("assetId", holder.assetBO.getAssetID());
+                                startActivityForResult(intent, POSM_GALLERY);
+                            } else
                                 captureCustom();
 
                         } else {
@@ -1104,19 +1101,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         }
     }
 
-
-    private void setPictureToImageView(String imageName, ImageView imageView) {
-        Glide.with(getActivity()).load(
-                getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                        + "/" + DataMembers.photoFolderName + "/" + imageName)
-                .centerCrop()
-                .placeholder(R.drawable.ic_photo_camera_blue_24dp)
-                .error(R.drawable.no_image_available)
-                .override(35, 20)
-                .transform(mBModel.circleTransform)
-                .into(imageView);
-    }
-
     class ViewHolder {
         AssetTrackingBO assetBO;
         TextView assetNameTV;
@@ -1194,7 +1178,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 getResources().getString(R.string.no),
                 false,
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
-                new CommonDialog.positiveOnClickListener() {
+                new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         ArrayList<AssetTrackingBO> items = assetTrackingHelper
@@ -1271,6 +1255,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             } else {
                 Commons.print(TAG + "," + "Camera Activity : Canceled");
             }
+        } else if (requestCode == POSM_GALLERY) {
+            updateList(-1, mSelectedStandardListBO);
         } else {
 
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -1347,7 +1333,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                     "", getResources().getString(R.string.saved_successfully),
                     false, getActivity().getResources().getString(R.string.ok),
-                    null, new CommonDialog.positiveOnClickListener() {
+                    null, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     Intent intent;

@@ -197,6 +197,9 @@ public class UserSettingsActivity extends PreferenceActivity {
                 isFromLogin = getIntent().getExtras().getBoolean("isFromLogin");
             }
 
+            if (!isFromLogin)
+                LoginHelper.getInstance(context).loadPasswordConfiguration(context);
+
             Preference change_password = findPreference("change_password");
             PreferenceCategory pswCategory = (PreferenceCategory) findPreference("psw");
             if (isFromLogin || !LoginHelper.getInstance(this).SHOW_CHANGE_PASSWORD) {
@@ -431,5 +434,10 @@ public class UserSettingsActivity extends PreferenceActivity {
 
     public boolean isValidFragment(String fragmentName) {
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
     }
 }
