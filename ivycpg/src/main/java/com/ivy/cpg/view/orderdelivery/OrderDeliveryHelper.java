@@ -620,7 +620,7 @@ public class OrderDeliveryHelper {
 
                         String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty," +
                                 "d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice," +
-                                "PcsUOMId,priceoffvalue,PriceOffId,weight,HsnCode,totalDiscountedAmt";
+                                "PcsUOMId,priceoffvalue,PriceOffId,weight,HsnCode,NetAmount";
 
                         String sb = (businessModel.QT(invoiceId) + ",") +
                                 businessModel.QT(productBo.getProductID()) + "," +
@@ -682,10 +682,10 @@ public class OrderDeliveryHelper {
 
                 String invoiceDetailQry = "Insert into InvoiceDetails " +
                         " (ProductID,retailerid,uomid,Qty,Rate,uomCount,pcsQty,CaseQty,d1,d2,d3,DA,outerQty," +
-                        " dOuomQty,dOuomid,batchid,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight,invoiceID,totalDiscountedAmt) " +
+                        " dOuomQty,dOuomid,batchid,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight,invoiceID,NetAmount) " +
                         " select ProductID,retailerid,uomid,Qty,Rate,uomcount,pieceqty,caseQty,d1,d2,d3,DA,outerQty," +
                         " dOuomQty,dOuomid,BatchId,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight," + businessModel.QT(invoiceId) +
-                        " ,totalDiscountedAmt from OrderDetail where OrderId = " + businessModel.QT(orderId);
+                        " ,NetAmount from OrderDetail where OrderId = " + businessModel.QT(orderId);
                 db.executeQ(invoiceDetailQry);
 
                 String invoiceDiscountQry = "Insert into InvoiceDiscountDetail (OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +

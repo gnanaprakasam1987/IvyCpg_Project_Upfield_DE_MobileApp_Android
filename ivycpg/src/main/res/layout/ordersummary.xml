@@ -91,7 +91,6 @@
                     android:drawableTint="@color/BLUE"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="@string/dummy_txt"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/footer_lbl_text_size" />
 

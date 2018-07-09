@@ -2,7 +2,6 @@ package com.ivy.sd.png.model;
 
 import android.app.Activity;
 import android.os.Handler;
-import android.telecom.Call;
 
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
 import com.ivy.cpg.view.login.LoginHelper;
@@ -21,6 +20,7 @@ import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CallAnalysisActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.SubDStockOrderActivity;
@@ -173,7 +173,7 @@ public class MyThread extends Thread {
             if (bmodel.isOnline()) {
 
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOAD,ctx.getApplicationContext());
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOAD, ctx.getApplicationContext());
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 0);
 
                 if (bool == 1) {
@@ -201,7 +201,7 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(frm.getHandler(), DataMembers.SYNC_REALLOC_UPLOAD,ctx.getApplicationContext());
+                int bool = mUploadHelper.uploadUsingHttp(frm.getHandler(), DataMembers.SYNC_REALLOC_UPLOAD, ctx.getApplicationContext());
                 if (bool == 1) {
                     frm.getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOADED);
@@ -231,7 +231,7 @@ public class MyThread extends Thread {
             if (bmodel.isOnline()) {
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 1);
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOADRETAILERWISE,ctx.getApplicationContext());
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOADRETAILERWISE, ctx.getApplicationContext());
 
                 if (bool == 1) {
 
@@ -253,7 +253,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
             UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
             // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 2);
-            int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNC_EXPORT,ctx.getApplicationContext());
+            int bool = mUploadHelper.uploadUsingHttp(fragment.getHandler(), DataMembers.SYNC_EXPORT, ctx.getApplicationContext());
 
             if (bool == 1) {
                 fragment.getHandler().sendEmptyMessage(
@@ -456,6 +456,11 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.DELETE_ORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
+            //delete captured image form folder
+            if (bmodel.getOrderHeaderBO().getOrderImageName().length() > 0)
+                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.getOrderHeaderBO().getOrderImageName());
+
             orderHelper.deleteOrder(ctx, bmodel.getRetailerMasterBO().getRetailerID());
 
 
@@ -515,6 +520,10 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.DELETE_STOCK_AND_ORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
+           //delete captured image form folder
+            if (bmodel.getOrderHeaderBO().getOrderImageName().length() > 0)
+                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.getOrderHeaderBO().getOrderImageName());
 
             orderHelper.deleteStockAndOrder(ctx);
 
@@ -751,7 +760,7 @@ public class MyThread extends Thread {
             }
 
             if (bmodel.isOnline()) {
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSIHUPLOAD,ctx.getApplicationContext());
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSIHUPLOAD, ctx.getApplicationContext());
 
                 if (bool == 2) {
                     handler.sendEmptyMessage(
@@ -784,7 +793,7 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSTKAPPLYUPLOAD,ctx.getApplicationContext());
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCSTKAPPLYUPLOAD, ctx.getApplicationContext());
 
                 if (bool == 2) {
                     handler.sendEmptyMessage(
@@ -803,7 +812,7 @@ public class MyThread extends Thread {
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
             }
 
-        }else if (opt == DataMembers.SYNCLYTYPTUPLOAD) {
+        } else if (opt == DataMembers.SYNCLYTYPTUPLOAD) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
 
@@ -818,7 +827,7 @@ public class MyThread extends Thread {
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
-                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCLYTYPTUPLOAD,ctx.getApplicationContext());
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCLYTYPTUPLOAD, ctx.getApplicationContext());
 
                 if (bool == 2) {
                     handler.sendEmptyMessage(
