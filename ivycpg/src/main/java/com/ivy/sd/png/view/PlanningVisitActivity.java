@@ -30,9 +30,13 @@ public class PlanningVisitActivity extends IvyBaseActivityNoActionBar {
 
 //        bundle.putString("Newplanningsub", "Planningsub");
         Bundle bundle = new Bundle();
-        bundle.putBoolean("isPlanning",true);
-        bundle.putString("From", "Day Planning");
-        bundle.putString("Newplanningsub", "Planningsub");
+        if(getIntent().getBooleanExtra("isPlanning",false)) {
+            bundle.putBoolean("isPlanning", true);
+            bundle.putString("From", "Day Planning");
+        }else if(getIntent().getBooleanExtra("isPlanningSub",false)){
+            bundle.putBoolean("isPlanningSub",true);
+            bundle.putString("Newplanningsub", "Planningsub");
+        }
         fragmentObject = new VisitFragment();
         fragmentObject .setArguments(bundle);
         if(fragmentObject!=null){

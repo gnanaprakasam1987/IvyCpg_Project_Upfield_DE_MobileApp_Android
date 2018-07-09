@@ -27,6 +27,8 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONObject;
 
@@ -216,9 +218,9 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
 
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("DeviceId",
-                        bmodel.activationHelper.getIMEINumber());
+                        DeviceUtils.getIMEINumber(ChangePasswordActivity.this));
                 jsonObject.put("VersionCode",
-                        bmodel.getApplicationVersionNumber());
+                        AppUtils.getApplicationVersionName(ChangePasswordActivity.this));
                 jsonObject.put("UserId", bmodel.userMasterHelper
                         .getUserMasterBO().getUserid());
 

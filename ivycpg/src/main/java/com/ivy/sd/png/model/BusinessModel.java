@@ -60,6 +60,11 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.appmodule.AppComponent;
 import com.ivy.appmodule.AppModule;
 import com.ivy.appmodule.DaggerAppComponent;
+import com.ivy.core.base.view.BaseActivity;
+import com.ivy.core.di.component.DaggerIvyAppComponent;
+import com.ivy.core.di.component.IvyAppComponent;
+import com.ivy.core.di.module.ActivityModule;
+import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
@@ -72,7 +77,7 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
-import com.ivy.cpg.view.reports.InvoiceReportDetail;
+import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.van.LoadManagementHelper;
@@ -182,6 +187,7 @@ import com.ivy.sd.print.GhanaPrintPreviewActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
+import com.ivy.ui.activation.view.ActivationActivity;
 
 import org.jetbrains.annotations.NonNls;
 import org.json.JSONArray;
@@ -293,7 +299,7 @@ public class BusinessModel extends Application {
     public LeaveApprovalHelper leaveApprovalHelper;
     public ExpenseSheetHelper expenseSheetHelper;
     //public LoginHelper mLoginHelper;
-    public UserFeedBackHelper mUserFeedBackHelper;
+    //public UserFeedBackHelper mUserFeedBackHelper;
     public JExcelHelper mJExcelHelper;
     public DeliveryManagementHelper deliveryManagementHelper;
     public CommonPrintHelper mCommonPrintHelper;
@@ -319,7 +325,7 @@ public class BusinessModel extends Application {
     //private String orderIDFormInvoice;
     //private PaymentBO paymentBO;
     private OrderHeader orderHeaderBO;
-    private Activity ctx, activity;
+    private Activity ctx;
 
     private ArrayList<InvoiceHeaderBO> invoiceHeader;
 
@@ -402,6 +408,9 @@ public class BusinessModel extends Application {
     private int printSequenceLevelID;
     private String dashboardUserFilterString;
 
+
+    private IvyAppComponent mApplicationComponent;
+
     private final String mFocusBrand = "Filt11";
     private final String mFocusBrand2 = "Filt12";
     private final String mFocusBrand3 = "Filt20";
@@ -441,30 +450,18 @@ public class BusinessModel extends Application {
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
         closecallhelper = CloseCallHelper.getInstance(this);
         printHelper = PrintHelper.getInstance(this);
-        /*// if norml tax
-        taxHelper = TaxHelper.getInstance(this);
-        // else
-        taxHelper=TaxGstHelper.getInstance(this);*/
 
-        /** OLD **/
         retailerMasterBO = new RetailerMasterBO();
-        //paymentBO = new PaymentBO();
 
         invoiceHeader = new ArrayList<>();
-        //payment = new Vector<Object>();
         setRetailerMaster(new Vector<RetailerMasterBO>());
 
-
         newOutletHelper = NewOutletHelper.getInstance(this);
-        //promotionHelper = PromotionHelper.getInstance(this);
-
-        //mPriceTrackingHelper = PriceTrackingHelper.getInstance(this);
         mAttendanceHelper = AttendanceHelper.getInstance(this);
         competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
         mEmptyReconciliationhelper = EmptyReconciliationHelper
                 .getInstance(this);
         mEmptyReturnHelper = EmptyReturnHelper.getInstance(this);
-        //mSurveyHelperNew = SurveyHelperNew.getInstance(this);
 
         // Shelf Share Helper
         mRetailerHelper = RetailerHelper.getInstance(this);
@@ -476,8 +473,6 @@ public class BusinessModel extends Application {
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
         distTimeStampHeaderHelper = DistTimeStampHeaderHelper.getInstance(this);
         profilehelper = ProfileHelper.getInstance(this);
-        //mLoginHelper = LoginHelper.getInstance(this);
-        mUserFeedBackHelper = UserFeedBackHelper.getInstance(this);
         mJExcelHelper = JExcelHelper.getInstance(this);
         deliveryManagementHelper = DeliveryManagementHelper.getInstance(this);
         mCommonPrintHelper = CommonPrintHelper.getInstance(this);
@@ -544,7 +539,7 @@ public class BusinessModel extends Application {
             myIntent = new Intent(ctxx, Synchronization.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actactivationscreen)) {
-            myIntent = new Intent(ctxx, ScreenActivationActivity.class);
+            myIntent = new Intent(ctxx, ActivationActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actclosingstock)) {
             myIntent = new Intent(ctxx, StockCheckActivity.class);
@@ -754,10 +749,22 @@ public class BusinessModel extends Application {
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
             appComponent.inject(this);
 
+            mApplicationComponent = DaggerIvyAppComponent.builder()
+                    .ivyAppModule(new IvyAppModule(this))
+                    .activityModule(new ActivityModule((BaseActivity) getContext()))
+                    .build();
+
+            mApplicationComponent.inject(this);
+
+
         } catch (Exception ex) {
             Commons.printException(ex);
         }
 
+    }
+
+    public IvyAppComponent getComponent() {
+        return mApplicationComponent;
     }
 
     public AppComponent getAppComponent() {
@@ -3539,7 +3546,7 @@ public class BusinessModel extends Application {
 
         final int idd = id;
 
-        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, "Ok", new CommonDialog.positiveOnClickListener() {
+        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, "Ok", new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick()
 
@@ -5584,6 +5591,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "User" + path;
             } else if (imageName.startsWith("SR_SGN_")) {
                 mBucketName = mBucketDetails + "/" + "SalesReturn" + path;
+            } else if (imageName.startsWith("ORD_")) {
+                mBucketName = mBucketDetails + "/" + "Order" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -5902,7 +5911,7 @@ public class BusinessModel extends Application {
             jsonObj.put("UserId", userMasterHelper.getUserMasterBO()
                     .getUserid());
             jsonObj.put("RetailerId", mRetailerId);
-            jsonObj.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonObj.put("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("OTPValue", mOTP);
@@ -8444,7 +8453,7 @@ public class BusinessModel extends Application {
     }
 
     public void writeToFile(String data, String filename, String foldername) {
-        String path = HomeScreenFragment.photoPath;
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
 
         File folder = new File(path);
         if (!folder.exists()) {

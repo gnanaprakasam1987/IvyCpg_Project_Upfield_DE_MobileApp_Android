@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.ivy.lib.Logs;
 import com.ivy.lib.base64.Base64;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.math.BigDecimal;
@@ -29,7 +28,6 @@ public class SDUtil {
     public static final int GMT_DATE_TIME = 7;
     public static final int DATE_GLOBAL_PLAIN = 8;
     public static final int DATE_GLOBAL_EIPHEN = 9;
-    private BusinessModel bmodel;
 
 
     /**

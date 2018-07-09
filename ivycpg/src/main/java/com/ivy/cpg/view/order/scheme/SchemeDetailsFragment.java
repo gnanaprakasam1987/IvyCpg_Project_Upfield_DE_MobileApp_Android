@@ -242,7 +242,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     ArrayList<String> groupName = new ArrayList<>();
                     if (schemeBuyProducts != null && schemeBuyProducts.size() > 0) {
 
-                        LinearLayout.LayoutParams layoutParam_BuyProductParent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 9) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams layoutParam_BuyProductParent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         LinearLayout layout_BuyProductParent = new LinearLayout(mContext);
                         layout_BuyProductParent.setLayoutParams(layoutParam_BuyProductParent);
                         layout_BuyProductParent.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
@@ -271,7 +271,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         layout_Slab.setLayoutParams(layoutParams_BuyProductTitle);
                         layout_Slab.addView(text_BuyProductsTitle);
 
-                        LinearLayout.LayoutParams layoutParams_slab = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 8) / 100);
+                        LinearLayout.LayoutParams layoutParams_slab = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         layoutParams_slab.gravity = Gravity.CENTER_VERTICAL;
 
 

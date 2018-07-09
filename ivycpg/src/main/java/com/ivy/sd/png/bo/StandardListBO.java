@@ -20,6 +20,16 @@ public class StandardListBO {
     private String userChildName;
     private int userChildId;
 
+    public StandardListBO(StandardListBO item) {
+        this.ListID = item.ListID;
+        this.listCode = item.listCode;
+        this.listName = item.listName;
+    }
+
+    public StandardListBO() {
+
+    }
+
     public boolean isChecked() {
         return checked;
     }

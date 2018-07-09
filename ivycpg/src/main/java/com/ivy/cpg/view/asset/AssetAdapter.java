@@ -2,6 +2,7 @@ package com.ivy.cpg.view.asset;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -264,6 +265,11 @@ public class AssetAdapter extends BaseAdapter {
                     dateBtn = holder.mInstallDate;
                     dateBtn.setTag(holder.assetBO);
                     DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString("MODULE", "ASSET");
+                    args.putString("selectedDate",holder.assetBO.getInstallDate());
+                    args.putString("selectedDateFormat", outPutDateFormat);
+                    newFragment.setArguments(args);
                     newFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), TAG_DATE_PICKER_INSTALLED);
                 }
             });
@@ -274,6 +280,11 @@ public class AssetAdapter extends BaseAdapter {
                     dateBtn = holder.mServiceDate;
                     dateBtn.setTag(holder.assetBO);
                     DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString("MODULE", "ASSET");
+                    args.putString("selectedDate",holder.assetBO.getServiceDate());
+                    args.putString("selectedDateFormat", outPutDateFormat);
+                    newFragment.setArguments(args);
                     newFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), TAG_DATE_PICKER_SERVICED);
                 }
             });
@@ -607,7 +618,7 @@ public class AssetAdapter extends BaseAdapter {
                 mContext.getResources().getString(R.string.no),
                 false,
                 mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
-                new CommonDialog.positiveOnClickListener() {
+                new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
 

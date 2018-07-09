@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -169,6 +170,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         mPreviewTV = (TextView) findViewById(R.id.preView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mPreviewTV.setTypeface(Typeface.createFromAsset(getAssets(), "font/consola.ttf"));
 
 
         isFromOrder = getIntent().getExtras().getBoolean("IsFromOrder", false);
@@ -1193,7 +1195,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     "", msg,
                     false, getResources().getString(R.string.ok),
                     getResources().getString(R.string.cancel),
-                    new CommonDialog.positiveOnClickListener() {
+                    new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             mPrintCountInput = 1;
@@ -1211,7 +1213,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             commonDialog = new CommonDialog(getApplicationContext(), this,
                     "", msg,
                     false, getResources().getString(R.string.ok),
-                    null, new CommonDialog.positiveOnClickListener() {
+                    null, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     moveBack();

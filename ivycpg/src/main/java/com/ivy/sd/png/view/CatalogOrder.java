@@ -53,7 +53,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
-import com.ivy.cpg.view.order.DiscountHelper;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
@@ -84,6 +84,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -117,6 +118,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private final String mDiscount = "Filt18";
     private final String mNearExpiryTag = "Filt19";
     private final String mCompertior = "Filt23";
+    private final String mDrugProducts = "Filt28";
     //public int mSelectedLocationIndex;
     private RecyclerViewAdapter adapter;
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
@@ -129,6 +131,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private int sbdDistAchieved = 0;
     private boolean isSbd, isSbdGaps, isOrdered, isPurchased, isInitiative, isOnAllocation, isInStock, isPromo, isMustSell, isFocusBrand,
             isFocusBrand2, isSIH, isOOS, isNMustSell, isStock, isDiscount, isNearExpiryTag, isFocusBrand3, isFocusBrand4, isSMP;
+    private boolean isDrugProducts;
     //private TypedArray typearr;
     private BusinessModel bmodel;
 
@@ -827,7 +830,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (generaltxt.equalsIgnoreCase(mFocusBrand3) && ret.getIsFocusBrand3() == 1)
                 || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
                 || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
-                || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)) {
+                || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
+                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)) {
             return true;
         }
         return false;
@@ -840,7 +844,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (isPurchased && ret.getIsPurchased() == 1) || (isInitiative && ret.getIsInitiativeProduct() == 1) || (isOnAllocation && ret.isAllocation() == 1
                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) || (isInStock && ret.getWSIH() > 0) || (isPromo && ret.isPromo()) || (isMustSell && ret.getIsMustSell() == 1)
                 || (isFocusBrand && ret.getIsFocusBrand() == 1) || (isFocusBrand2 && ret.getIsFocusBrand2() == 1) || (isSIH && ret.getSIH() > 0) || (isOOS && ret.getOos() == 0)
-                || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && ret.getLocations().get(0).getShelfPiece() > 0) || (isDiscount && ret.getIsDiscountable() == 1)) {
+                || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && ret.getLocations().get(0).getShelfPiece() > 0) || (isDiscount && ret.getIsDiscountable() == 1)
+                || (isDrugProducts && ret.getIsDrug() == 1)) {
 
             return true;
         }
@@ -891,6 +896,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     isFocusBrand4 = true;
                 else if (bo.getConfigCode().equals(mSMP))
                     isSMP = true;
+                else if (bo.getConfigCode().equals(mDrugProducts))
+                    isDrugProducts = true;
             }
         }
     }
@@ -1800,7 +1807,28 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             btn_clear.setVisibility(View.GONE);
             loadProductList();
         } else if (v.getId() == R.id.btn_next) {
-
+            if (bmodel.configurationMasterHelper.IS_ENABLE_LICENSE_VALIDATION) {
+                boolean isDrugLicenseExpired = false;
+                LinkedList<ProductMasterBO> mOrderedProductList = new LinkedList<>();
+                for (int j = 0; j < bmodel.productHelper.getProductMaster().size(); ++j) {
+                    ProductMasterBO product = bmodel.productHelper.getProductMaster().get(j);
+                    if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 ||
+                            product.getOrderedOuterQty() > 0) {
+                        mOrderedProductList.add(product);
+                    }
+                }
+                if (bmodel.productHelper.isDrugOrder(mOrderedProductList) && bmodel.productHelper.isDLDateExpired()) {
+                    isDrugLicenseExpired = true;
+                }
+                if (isDrugLicenseExpired) {
+                    if (!bmodel.configurationMasterHelper.IS_SOFT_LICENSE_VALIDATION) {
+                        bmodel.showAlert(getResources().getString(R.string.drug_license_expired), 0);
+                        return;
+                    } else {
+                        Toast.makeText(CatalogOrder.this, getResources().getString(R.string.drug_license_expired), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
             if (bmodel.getOrderHeaderBO() == null)
                 bmodel.setOrderHeaderBO(new OrderHeader());
 

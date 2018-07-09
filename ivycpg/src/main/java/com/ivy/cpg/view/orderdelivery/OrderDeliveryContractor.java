@@ -14,8 +14,9 @@ public interface OrderDeliveryContractor {
         void getProductData(String from);
         void getSchemeData();
         void getAmountDetails(boolean isEdit);
-        void saveOrderDeliveryDetail(boolean isEdit,String orderId);
+        void saveOrderDeliveryDetail(boolean isEdit,String orderId,String menuCode);
         void doPrintActivity(String orderId);
+        int getRemainingStock(String productId);
     }
 
     interface OrderDeliveryView{

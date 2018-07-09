@@ -1,97 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/background_noise"
-    android:padding="3dp" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_noise">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <LinearLayout
+                android:id="@+id/LL_titleBar"
                 style="?textTitleStyle"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                app:popupTheme="@style/Theme.AppCompat.Light" />
+                android:minHeight="?attr/actionBarSize"
+                android:layout_marginBottom="@dimen/dimens_12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/closeButton"
+                    android:layout_width="@dimen/info_icon"
+                    android:layout_height="@dimen/info_icon"
+                    android:layout_gravity="end|center"
+                    android:layout_margin="@dimen/list_margin"
+                    android:background="@drawable/ic_arrow_back_white_24dp"
+                    android:backgroundTint="@color/white"
+                    android:gravity="end"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/titlebar"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:padding="8dp"
+                    android:text="@string/Product_details"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/actionbar_title_text_size"
+                    android:textStyle="bold" />
+
+
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimens_8dp"
                 android:orientation="horizontal"
-                android:weightSum="2" >
+                android:weightSum="2">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
+                    android:layout_gravity="left"
                     android:layout_weight="1"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/productName2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
+                        android:gravity="left"
                         android:padding="4dp"
                         android:singleLine="true"
                         android:text="@string/inv_amt"
-                        android:textColor="@color/highlighter"
-                        android:textSize="@dimen/font_small">
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/font_medium">
+
                     </TextView>
 
                     <TextView
                         android:id="@+id/tv_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
+                        android:gravity="left"
                         android:padding="4dp"
                         android:singleLine="true"
                         android:text="@string/zero"
                         android:textColor="@color/highlighter"
-                        android:textSize="@dimen/font_small">
+                        android:textSize="@dimen/font_large">
+
                     </TextView>
+
+
+                    <ImageButton
+                        android:id="@+id/img_max_amount"
+                        android:layout_width="@dimen/sub_activity_list_icon_circle"
+                        android:layout_height="@dimen/sub_activity_list_icon_circle"
+                        android:background="@drawable/ic_content_copy_black_24dp"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        >
+
+                    </ImageButton>
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="end"
-                    android:orientation="horizontal" >
+                    android:gravity="right"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/minimumamount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
+                        android:gravity="left"
                         android:padding="4dp"
                         android:singleLine="true"
                         android:text="@string/minimum_amount"
-                        android:textColor="@color/highlighter"
-                        android:textSize="@dimen/font_small">
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/font_medium">
+
                     </TextView>
 
                     <TextView
                         android:id="@+id/tv_minimum_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
+                        android:gravity="left"
                         android:padding="4dp"
                         android:singleLine="true"
                         android:text="@string/zero"
                         android:textColor="@color/highlighter"
-                        android:textSize="@dimen/font_small">
+                        android:textSize="@dimen/font_large">
+
                     </TextView>
+
+                    <ImageButton
+                        android:id="@+id/img_min_amount"
+                        android:layout_width="@dimen/sub_activity_list_icon_circle"
+                        android:layout_height="@dimen/sub_activity_list_icon_circle"
+                        android:background="@drawable/ic_content_copy_black_24dp"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:gravity="center"
+                        android:layout_gravity="center">
+
+                    </ImageButton>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -99,223 +156,318 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_item"
-            android:orientation="vertical"
-            android:paddingTop="5dp" >
+            android:layout_margin="@dimen/dimens_12dp"
+            android:orientation="vertical">
 
-            <TextView
-                style="?attr/customListTitle"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/plano_list_footer_line"
+                android:background="@color/GRAY" />
 
-                android:text="@string/mode" />
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/widget61"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/widget61"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent">
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:paddingEnd="10dp"
-                android:paddingRight="10dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingTop="10dp" >
-
-                    <RadioGroup
-                        android:id="@+id/chequeorcash"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:textColor="@color/RED" >
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
 
-                        <RadioButton
-                            android:id="@+id/cashRadioButton"
-                            android:layout_width="wrap_content"
+                        <RadioGroup
+                            android:id="@+id/chequeorcash"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:tag="@string/ca"
-                            android:text="@string/cash"
-                            android:textColor="?attr/primarycolor"
-                            android:visibility="visible" >
-                        </RadioButton>
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:textColor="@color/RED">
 
-                        <RadioButton
-                            android:id="@+id/chequeRadioButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:gravity="center"
-                            android:tag="@string/cq"
-                            android:text="@string/cheque"
-                            android:textColor="?attr/primarycolor"
-                            android:visibility="visible"
-                            android:layout_marginLeft="5dp">
-                        </RadioButton>
-                        <RadioButton
-                            android:id="@+id/creditNoteRadioButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:gravity="center"
-                            android:tag="@string/credit_note"
-                            android:text="@string/credit_note"
-                            android:textColor="?attr/primarycolor"
-                            android:visibility="visible"
-                            android:layout_marginLeft="5dp">
-                        </RadioButton>
-                    </RadioGroup>
-                </LinearLayout>
-            </HorizontalScrollView>
-        </LinearLayout>
+                            <RadioButton
+                                android:id="@+id/cashRadioButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:tag="@string/ca"
+                                android:text="@string/cash"
+                                android:textSize="@dimen/font_medium"
+                                android:textColor="?attr/primarycolor"
+                                android:visibility="visible">
 
-        <LinearLayout
-            android:id="@+id/g"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal" >
+                            </RadioButton>
 
-            <TextView
-                android:id="@+id/payTotal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:lines="2"
-                android:padding="8dp"
-                android:text="@string/amt_paid"
-                android:textColor="@color/RED"
-                android:textStyle="bold" />
+                            <RadioButton
+                                android:id="@+id/chequeRadioButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:gravity="center"
+                                android:tag="@string/cq"
+                                android:text="@string/cheque"
+                                android:textSize="@dimen/font_medium"
+                                android:textColor="?attr/primarycolor"
+                                android:visibility="visible">
 
-            <EditText
-                android:id="@+id/collectionAmount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/EditTextGravity"
-                android:layout_weight="1"
-                android:hint="@string/enter_amount"
-                android:inputType="number"
-                android:maxLength="15" >
-            </EditText>
-        </LinearLayout>
+                            </RadioButton>
 
-        <LinearLayout
-            android:id="@+id/mode"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+                            <RadioButton
+                                android:id="@+id/creditNoteRadioButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:gravity="center"
+                                android:textSize="@dimen/font_medium"
+                                android:tag="@string/credit_note"
+                                android:text="@string/credit_note"
+                                android:textColor="?attr/primarycolor"
+                                android:visibility="visible">
 
-            <Spinner
-                android:id="@+id/bankName"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/bank_name"
-                android:inputType="number"
-                android:prompt="@string/sel_bank"
-                android:text="@string/sel_bank" />
+                            </RadioButton>
+                        </RadioGroup>
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
 
-            <Spinner
-                android:id="@+id/bankArea"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/branch_area"
-                android:inputType="number"
-                android:prompt="@string/sel_branch" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/plano_list_footer_line"
+                android:background="@color/GRAY" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ccdate"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_margin="@dimen/dimens_10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
 
             <EditText
                 android:id="@+id/collectionchequeNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                style="@style/EditTextGravity"
                 android:hint="@string/cheque_num"
                 android:inputType="number"
-                android:maxLength="8" >
+                android:maxLength="8">
+
             </EditText>
+
 
             <Button
                 android:id="@+id/collectionDate"
+                style="@style/datePickerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="1dp"
-                android:layout_weight="1"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:drawableTint="@color/BLUE"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/date"
-                android:textColor="@android:color/black"
-                android:layout_marginLeft="1dp">
-            </Button>
+                android:textColor="?attr/primarycolor"
+                android:paddingTop="@dimen/dimens_30dp"
+                android:textSize="@dimen/footer_lbl_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimens_10dp"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimens_10dp"
+            android:weightSum="2">
+
             <LinearLayout
-                android:id="@+id/linear_capturecheque"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/capturecheque"
+                <TextView
+                    android:id="@+id/tv_branch_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/icon_photo"/>
+                    android:layout_marginLeft="5dp"
+                    android:text="@string/bank_name"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/bankName"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/bank_name"
+                    android:inputType="number"
+                    android:prompt="@string/sel_bank"
+                    android:text="@string/sel_bank" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llBranch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_bank_title"
+                    android:layout_width="@dimen/cheque_no_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="@string/branch_area"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/text_sz_small"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/bankArea"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/branch_area"
+                    android:inputType="number"
+                    android:prompt="@string/sel_branch" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/capturecheque"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_camera"
+                android:tint="?attr/primarycolor">
+
+            </ImageView>
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/g"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimens_10dp"
+            android:orientation="horizontal">
+
+
+            <EditText
+                android:id="@+id/collectionAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/enter_amount"
+                android:inputType="number"
+                android:maxLength="15">
+
+            </EditText>
+
+
+        </LinearLayout>
+
         <ListView
             android:id="@+id/lv_creditnote"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:visibility="gone"/>
+            android:visibility="gone">
 
+        </ListView>
 
-        <LinearLayout
-            android:id="@+id/foot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="10dp" >
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/btnsubmit"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="1dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/submit"
-                android:layout_marginLeft="1dp">
-            </Button>
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingTop="10dp">
 
         <LinearLayout
             android:id="@+id/footer"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="10dp" >
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <include
+                layout="@layout/keypad"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                layout="@layout/keypad" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_50dp"
+            android:background="@color/footer_bg"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dimen_5dp"
+                android:layout_weight="1"
+                android:gravity="start">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/totalLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:maxLines="1"
+                        android:text="@string/total"
+                        android:textColor="?attr/colorAccent"
+                        android:textSize="@dimen/font_nano_small" />
+
+                    <TextView
+                        android:id="@+id/payTotal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|center"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="@string/zero"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/footer_lbl_text_size" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dimen_5dp"
+                android:layout_weight="1"
+                android:gravity="end">
+
+                <Button
+                    android:id="@+id/btnsubmit"
+                    style="?attr/roundedCustomButtonSmall"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="@string/done"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/font_micro_small">
+
+                </Button>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 </RelativeLayout>

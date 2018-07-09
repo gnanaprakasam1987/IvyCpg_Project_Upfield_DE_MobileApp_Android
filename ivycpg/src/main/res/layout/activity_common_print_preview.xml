@@ -92,7 +92,7 @@
                                 android:background="@color/WHITE"
                                 android:text="Print Preview"
                                 android:textColor="@android:color/black"
-                                android:typeface="monospace"
+                                android:typeface="normal"
                                 />
                         </LinearLayout>
                         <ImageView

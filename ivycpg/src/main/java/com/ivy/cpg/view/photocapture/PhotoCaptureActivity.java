@@ -785,7 +785,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 new CommonDialog(getApplicationContext(), PhotoCaptureActivity.this,
                         "", getResources().getString(R.string.saved_successfully),
                         false, getResources().getString(R.string.ok),
-                        null, new CommonDialog.positiveOnClickListener() {
+                        null, new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         if (isFromSurvey) {

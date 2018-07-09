@@ -79,7 +79,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.attendance.inout.TimeTrackingFragment;
-import com.ivy.sd.png.view.reports.ReportMenufragment;
+import com.ivy.cpg.view.reports.ReportMenuFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -1614,7 +1614,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_SKUWISESTGT);
         PlanningSubScreenFragment mPlanningSubScreenFragment = (PlanningSubScreenFragment) fm
                 .findFragmentByTag(MENU_PLANNING_SUB);
-        ReportMenufragment mReportMenuFragment = (ReportMenufragment) fm
+        ReportMenuFragment mReportMenuFragment = (ReportMenuFragment) fm
                 .findFragmentByTag(MENU_REPORT);
         StockProposalFragment stockProposalFragment = (StockProposalFragment) fm
                 .findFragmentByTag(MENU_LOAD_REQUEST);
@@ -1876,6 +1876,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_PLANNING:
                 bndl = new Bundle();
                 bndl.putString("From", MENU_PLANNING_CONSTANT);
+                bndl.putBoolean("isPlanning",true);
                 isVisit = false;
                 bndl.putString("Newplanningsub", "");
                 fragment = new VisitFragment();
@@ -2072,7 +2073,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bmodel.productHelper.downloadProductFilter("MENU_STK_ORD");
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                fragment = new ReportMenufragment();
+                fragment = new ReportMenuFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_REPORT);
@@ -2241,7 +2242,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_ATTENDANCE);
         TimeTrackingFragment mNonFieldTwoFragment = (TimeTrackingFragment) fm
                 .findFragmentByTag(MENU_IN_OUT);
-        ReportMenufragment mReportMenuFragment = (ReportMenufragment) fm
+        ReportMenuFragment mReportMenuFragment = (ReportMenuFragment) fm
                 .findFragmentByTag(MENU_REPORT);
         LoadManagementFragment mLoadMgmtfragment = (LoadManagementFragment) fm
                 .findFragmentByTag(MENU_LOAD_MANAGEMENT);

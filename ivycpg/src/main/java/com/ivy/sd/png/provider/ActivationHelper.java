@@ -24,6 +24,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * @See {@link com.ivy.ui.activation.presenter.ActivationPresenterImpl}
+ * and {@link com.ivy.ui.activation.data.ActivationDataManagerImpl}
+ * @deprecated This has been Migrated to MVP pattern
+ * Will be removed from @Version 133 Release
+ */
+
+@Deprecated
 public class ActivationHelper {
 
     public final static int NOTIFY_ALREADY_NOT_ACTIVATED = 0;
@@ -85,12 +94,14 @@ public class ActivationHelper {
         else
             return deviceId;
     }
-    public String getDeviceId(){
+
+    public String getDeviceId() {
         String android_id = Settings.Secure.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
         return android_id;
     }
+
     int downloadReponse = 2;
 
     /**
@@ -165,9 +176,9 @@ public class ActivationHelper {
                     Commons.printInformation("Activation"
                             + "onFailure Response->" + status + " Content : "
                             + message);
-                    if (status == DataMembers.IVY_CODE_CUSTOM) {
+                    if (status == DataMembers.IVY_SERVER_ERROR) {
                         downloadReponse = SDUtil.convertToInt(message);
-                    } else if (status == DataMembers.IVY_CODE_EXCEPTION) {
+                    } else if (status == DataMembers.IVY_APP_INTERNAL_EXCEPTION) {
                         downloadReponse = SDUtil.convertToInt(message);
                     } else
                         downloadReponse = 2;
@@ -267,9 +278,9 @@ public class ActivationHelper {
                             + "onFailure Response->" + status + " Content : "
                             + message);
 
-                    if (status == DataMembers.IVY_CODE_CUSTOM) {
+                    if (status == DataMembers.IVY_SERVER_ERROR) {
                         downloadReponse = SDUtil.convertToInt(message);
-                    } else if (status == DataMembers.IVY_CODE_EXCEPTION) {
+                    } else if (status == DataMembers.IVY_APP_INTERNAL_EXCEPTION) {
                         downloadReponse = SDUtil.convertToInt(message);
                     } else
                         downloadReponse = 2;
@@ -309,16 +320,15 @@ public class ActivationHelper {
     }
 
 
-
     public String getSERVER_URL() {
         return SERVER_URL;
     }
 
 
-
     public void setSERVER_URL(String sERVER_URL) {
         SERVER_URL = sERVER_URL.trim();
     }
+
     public void clearAppUrl() {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(context)

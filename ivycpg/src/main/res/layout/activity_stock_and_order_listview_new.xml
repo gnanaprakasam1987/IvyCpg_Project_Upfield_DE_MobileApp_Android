@@ -27,13 +27,13 @@
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_toStartOf="@+id/ivInfoicon"
                 android:layout_toLeftOf="@+id/ivInfoicon"
+                android:layout_toStartOf="@+id/ivInfoicon"
                 android:maxLines="1"
                 android:text="@string/product_name" />
 
@@ -42,8 +42,8 @@
                 android:layout_width="@dimen/info_icon"
                 android:layout_height="@dimen/info_icon"
                 android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/ivInfoicon"
                 android:layout_toLeftOf="@+id/ivInfoicon"
+                android:layout_toStartOf="@+id/ivInfoicon"
                 android:padding="@dimen/list_item_padding"
                 android:src="@drawable/activity_icon_stock_check"
                 android:tint="@color/black_bg1" />
@@ -84,10 +84,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:layout_marginStart="@dimen/margin_5px"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/allocationTitle"
@@ -122,8 +122,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -158,8 +158,8 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="22dp"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="ppq"
                 android:text="@string/ou" />
@@ -169,8 +169,8 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:maxLines="1"
                 android:text="@string/mrp" />
 
@@ -179,8 +179,8 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="msq"
                 android:text="@string/msq"
@@ -191,8 +191,8 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="psq"
                 android:text="@string/psq"
@@ -238,8 +238,8 @@
                 android:id="@+id/llwsih"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/outlet_left_margin"
                 android:layout_marginLeft="@dimen/outlet_left_margin"
+                android:layout_marginStart="@dimen/outlet_left_margin"
                 android:orientation="horizontal">
 
                 <TextView
@@ -273,8 +273,8 @@
                 android:id="@+id/llsihcase"
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -308,8 +308,8 @@
                 android:id="@+id/llsihouter"
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -343,8 +343,8 @@
                 android:id="@+id/llSihPc"
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -378,8 +378,8 @@
                 android:id="@+id/llIo"
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -413,8 +413,8 @@
                 android:id="@+id/llCo"
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -448,8 +448,8 @@
                 android:id="@+id/llSoc"
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -483,8 +483,8 @@
                 android:id="@+id/llSo"
                 android:layout_width="@dimen/widht_medium"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -518,8 +518,8 @@
                 android:id="@+id/llRepCase"
                 android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -553,8 +553,8 @@
                 android:id="@+id/llRepOu"
                 android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -588,8 +588,8 @@
                 android:id="@+id/llRepPc"
                 android:layout_width="@dimen/values_editextWidth"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -623,8 +623,8 @@
                 android:id="@+id/layout_stock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:orientation="horizontal">
 
                 <TextView
@@ -672,13 +672,12 @@
                 android:id="@+id/lleditLaouyt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:layout_toStartOf="@+id/lltotwight"
+                android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@+id/lltotwight"
+                android:layout_toStartOf="@+id/lltotwight"
                 android:background="@color/white"
-                android:orientation="horizontal"
-                android:weightSum="8">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/llAvail"
@@ -778,6 +777,56 @@
                         android:gravity="start" />
 
                 </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/llUom_dropdwon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dimens_4dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/tv_uo_name"
+                        style="?attr/boxCustomButtonSmallGrey"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:text="@string/item_piece"
+                        android:textColor="@color/black_bg1" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llUom_Qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/uomTitle"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="uom_qty"
+                        android:text="@string/qty" />
+
+                    <EditText
+                        android:id="@+id/stock_and_order_listview_uom_qty"
+                        style="@style/EditText_ListItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="@string/zero" />
+
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/llCase"
@@ -948,12 +997,14 @@
                 android:layout_alignTop="@+id/lleditLaouyt"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:gravity="top">
+                android:gravity="top"
+                android:minWidth="@dimen/dimens_80dp">
 
                 <LinearLayout
                     android:id="@+id/llTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="end|top"
                     android:orientation="vertical">
 
@@ -981,6 +1032,7 @@
                     android:id="@+id/llWeight"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="end"
                     android:orientation="vertical">
 

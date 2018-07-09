@@ -1,7 +1,5 @@
 package com.ivy.cpg.view.reports.orderreport;
 
-import com.ivy.cpg.view.reports.OrderReportBO;
-
 import java.util.ArrayList;
 
 /**

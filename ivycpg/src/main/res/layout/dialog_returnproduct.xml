@@ -40,14 +40,23 @@
         android:orientation="vertical">
 
         <LinearLayout
+            style="?textTitleStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">>
+            <TextView
+                android:id="@+id/tv_toolbar_title"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:padding="8dp"
+                android:text="@string/Product_details"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/font_small"
+                android:textStyle="bold" />
 
-            <include
-                android:id="@+id/toolbar"
-                layout="@layout/material_tool_bar" />
         </LinearLayout>
 
         <android.support.v7.widget.CardView

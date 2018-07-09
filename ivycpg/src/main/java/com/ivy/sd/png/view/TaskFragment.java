@@ -7,11 +7,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -220,7 +216,7 @@ public class TaskFragment extends IvyBaseFragment {
                     new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                             "", getResources().getString(R.string.move_next_activity),
                             false, getResources().getString(R.string.ok),
-                            getResources().getString(R.string.cancel), new CommonDialog.positiveOnClickListener() {
+                            getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
