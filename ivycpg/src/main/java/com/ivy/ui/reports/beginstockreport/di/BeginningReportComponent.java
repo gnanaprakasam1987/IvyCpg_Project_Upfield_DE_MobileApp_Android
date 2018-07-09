@@ -1,10 +1,9 @@
-package com.ivy.cpg.view.reports.beginstockreport.di;
+package com.ivy.ui.reports.beginstockreport.di;
 
 
 import com.ivy.core.di.component.IvyAppComponent;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.cpg.view.reports.beginstockreport.presenter.BeginningReportPresenterImpl;
-import com.ivy.cpg.view.reports.beginstockreport.view.BeginningStockFragment;
+import com.ivy.ui.reports.beginstockreport.view.BeginningStockFragment;
 
 import dagger.Component;
 

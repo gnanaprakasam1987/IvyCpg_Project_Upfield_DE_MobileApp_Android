@@ -1,12 +1,12 @@
-package com.ivy.cpg.view.reports.currentreport.di;
+package com.ivy.ui.reports.currentreport.di;
 
 import android.content.Context;
 
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.cpg.view.reports.currentreport.data.CurrentReportManagerImpl;
-import com.ivy.cpg.view.reports.currentreport.presenter.CurrentReportPresenterImpl;
-import com.ivy.cpg.view.reports.currentreport.ICurrentReportContract;
-import com.ivy.cpg.view.reports.currentreport.data.CurrentReportManager;
+import com.ivy.ui.reports.currentreport.data.CurrentReportManagerImpl;
+import com.ivy.ui.reports.currentreport.presenter.CurrentReportPresenterImpl;
+import com.ivy.ui.reports.currentreport.ICurrentReportContract;
+import com.ivy.ui.reports.currentreport.data.CurrentReportManager;
 
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;

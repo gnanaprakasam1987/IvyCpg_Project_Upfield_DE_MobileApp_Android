@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports.beginstockreport.view;
+package com.ivy.ui.reports.beginstockreport.view;
 
 
 import android.view.View;
@@ -7,11 +7,11 @@ import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
-import com.ivy.cpg.view.reports.beginstockreport.BeginningReportContract;
-import com.ivy.cpg.view.reports.beginstockreport.BeginningStockAdapter;
+import com.ivy.ui.reports.beginstockreport.BeginningReportContract;
+import com.ivy.ui.reports.beginstockreport.BeginningStockAdapter;
 
-import com.ivy.cpg.view.reports.beginstockreport.di.BeginningReportModule;
-import com.ivy.cpg.view.reports.beginstockreport.di.DaggerBeginningReportComponent;
+import com.ivy.ui.reports.beginstockreport.di.BeginningReportModule;
+import com.ivy.ui.reports.beginstockreport.di.DaggerBeginningReportComponent;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.model.BusinessModel;

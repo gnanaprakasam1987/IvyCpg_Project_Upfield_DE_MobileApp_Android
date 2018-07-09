@@ -1,12 +1,12 @@
-package com.ivy.cpg.view.reports.beginstockreport.presenter;
+package com.ivy.ui.reports.beginstockreport.presenter;
 
 
 import android.content.Context;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.cpg.view.reports.beginstockreport.BeginningReportContract;
-import com.ivy.cpg.view.reports.beginstockreport.data.BeginningReportManager;
+import com.ivy.ui.reports.beginstockreport.BeginningReportContract;
+import com.ivy.ui.reports.beginstockreport.data.BeginningReportManager;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;

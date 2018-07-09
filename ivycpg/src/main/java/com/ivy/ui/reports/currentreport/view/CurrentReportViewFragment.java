@@ -1,23 +1,18 @@
-package com.ivy.cpg.view.reports.currentreport.view;
+package com.ivy.ui.reports.currentreport.view;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.text.InputType;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
-import com.ivy.cpg.view.reports.currentreport.CurrentReportViewAdapter;
-import com.ivy.cpg.view.reports.currentreport.ICurrentReportContract;
-import com.ivy.cpg.view.reports.currentreport.di.CurrentReportModule;
-import com.ivy.cpg.view.reports.currentreport.di.DaggerCurrentReportComponent;
+import com.ivy.ui.reports.currentreport.CurrentReportViewAdapter;
+import com.ivy.ui.reports.currentreport.ICurrentReportContract;
+import com.ivy.ui.reports.currentreport.di.CurrentReportModule;
+import com.ivy.ui.reports.currentreport.di.DaggerCurrentReportComponent;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.StockReportBO;

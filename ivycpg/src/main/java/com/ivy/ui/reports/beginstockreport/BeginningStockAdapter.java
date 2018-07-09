@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports.beginstockreport;
+package com.ivy.ui.reports.beginstockreport;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.Vector;

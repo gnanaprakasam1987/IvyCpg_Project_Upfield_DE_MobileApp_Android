@@ -1,13 +1,13 @@
-package com.ivy.cpg.view.reports.beginstockreport.di;
+package com.ivy.ui.reports.beginstockreport.di;
 
 
 import android.content.Context;
 
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.cpg.view.reports.beginstockreport.BeginningReportContract;
-import com.ivy.cpg.view.reports.beginstockreport.data.BeginningReportManagerImpl;
-import com.ivy.cpg.view.reports.beginstockreport.presenter.BeginningReportPresenterImpl;
-import com.ivy.cpg.view.reports.beginstockreport.data.BeginningReportManager;
+import com.ivy.ui.reports.beginstockreport.BeginningReportContract;
+import com.ivy.ui.reports.beginstockreport.data.BeginningReportManagerImpl;
+import com.ivy.ui.reports.beginstockreport.presenter.BeginningReportPresenterImpl;
+import com.ivy.ui.reports.beginstockreport.data.BeginningReportManager;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.utils.rx.AppSchedulerProvider;

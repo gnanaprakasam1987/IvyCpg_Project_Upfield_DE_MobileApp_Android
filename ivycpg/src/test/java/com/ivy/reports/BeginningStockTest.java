@@ -4,9 +4,9 @@ package com.ivy.reports;
 import android.content.Context;
 
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.cpg.view.reports.beginstockreport.BeginningReportContract;
-import com.ivy.cpg.view.reports.beginstockreport.data.BeginningReportManager;
-import com.ivy.cpg.view.reports.beginstockreport.presenter.BeginningReportPresenterImpl;
+import com.ivy.ui.reports.beginstockreport.BeginningReportContract;
+import com.ivy.ui.reports.beginstockreport.data.BeginningReportManager;
+import com.ivy.ui.reports.beginstockreport.presenter.BeginningReportPresenterImpl;
 import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;

@@ -25,9 +25,9 @@ import android.widget.Toast;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportFragment;
 import com.ivy.cpg.view.reports.retailerProperty.RetailerPropertyReportFragment;
 import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
-import com.ivy.cpg.view.reports.beginstockreport.BeginningStockFragment;
+import com.ivy.ui.reports.beginstockreport.BeginningStockFragment;
 import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
-import com.ivy.cpg.view.reports.currentreport.CurrentReportViewFragment;
+import com.ivy.ui.reports.currentreport.CurrentReportViewFragment;
 import com.ivy.cpg.view.reports.dayreport.DayReportFragment;
 import com.ivy.cpg.view.reports.eodstockreport.EODStockReportFragmentRe;
 import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
@@ -338,7 +338,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                 StandardListMasterConstants.MENU_BEGINNING_STOCK_REPORT)) {
 
 //            BeginningStockFragment stockreportfragmentnew = new BeginningStockFragment();
-            com.ivy.cpg.view.reports.beginstockreport.BeginningStockFragment stockreportfragmentnew
+            com.ivy.ui.reports.beginstockreport.BeginningStockFragment stockreportfragmentnew
                     = new BeginningStockFragment();
             stockreportfragmentnew.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, stockreportfragmentnew);

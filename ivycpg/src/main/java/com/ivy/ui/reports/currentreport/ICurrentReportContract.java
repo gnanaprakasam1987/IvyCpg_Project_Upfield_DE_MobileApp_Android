@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports.currentreport;
+package com.ivy.ui.reports.currentreport;
 
 
 import android.content.Context;

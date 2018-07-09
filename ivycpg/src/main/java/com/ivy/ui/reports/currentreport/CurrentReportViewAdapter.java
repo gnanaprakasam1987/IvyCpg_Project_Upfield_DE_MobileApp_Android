@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports.currentreport;
+package com.ivy.ui.reports.currentreport;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.reports.currentreport.view.CurrentReportViewFragment;
+import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportBO;
 

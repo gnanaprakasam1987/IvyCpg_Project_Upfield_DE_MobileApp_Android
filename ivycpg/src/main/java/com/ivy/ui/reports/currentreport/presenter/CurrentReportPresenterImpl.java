@@ -1,11 +1,11 @@
-package com.ivy.cpg.view.reports.currentreport.presenter;
+package com.ivy.ui.reports.currentreport.presenter;
 
 import android.content.Context;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.cpg.view.reports.currentreport.ICurrentReportContract;
-import com.ivy.cpg.view.reports.currentreport.data.CurrentReportManager;
+import com.ivy.ui.reports.currentreport.ICurrentReportContract;
+import com.ivy.ui.reports.currentreport.data.CurrentReportManager;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;

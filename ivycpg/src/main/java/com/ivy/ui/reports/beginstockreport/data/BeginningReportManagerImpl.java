@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports.beginstockreport.data;
+package com.ivy.ui.reports.beginstockreport.data;
 
 
 import android.content.Context;
