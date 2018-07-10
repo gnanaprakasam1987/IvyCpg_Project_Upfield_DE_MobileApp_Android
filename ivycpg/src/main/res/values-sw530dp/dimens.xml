@@ -65,7 +65,6 @@
     <dimen name="order_stock_list_product_name_width">240dp</dimen>
     <dimen name="order_stock_list_item_width">59.2dp</dimen>
     <dimen name="order_stock_list_item_width_small">42.4dp</dimen>
-    <dimen name="order_stock_list_item_width_large">112dp</dimen>
     <dimen name="meter_text_width">80dp</dimen>
     <dimen name="meter_value_width_large">96dp</dimen>
     <dimen name="visit_scree_list_two_row">112dp</dimen>
@@ -80,7 +79,6 @@
 
     <!-- Order Split -->
     <dimen name="ordersplit_heder_name_width">160dp</dimen>
-    <dimen name="ordersplit_heder_qty_width">120dp</dimen>
 
     <!-- digital Screen -->
     <dimen name="digital_screen_name_width">400dp</dimen>

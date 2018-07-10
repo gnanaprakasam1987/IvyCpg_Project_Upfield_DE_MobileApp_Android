@@ -59,12 +59,6 @@ import java.util.Vector;
 
 public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
-    private static final String OUR_INTENT_ACTION = "com.ivy.cpg.view.van.LoadManagementScreen.RECVR";
-    private static final String DATA_STRING_TAG = "com.motorolasolutions.emdk.datawedge.data_string";
-    private static final String ACTION_SOFTSCANTRIGGER = "com.motorolasolutions.emdk.datawedge.api.ACTION_SOFTSCANTRIGGER";
-    private static final String EXTRA_PARAM = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
-    private static final String DWAPI_TOGGLE_SCANNING = "TOGGLE_SCANNING";
-
     private static final String MENU_STOCK_PROPOSAL = "MENU_STOCK_PROPOSAL";
     private static final String MENU_MANUAL_VAN_LOAD = "MENU_MANUAL_VAN_LOAD";
     private static final String MENU_ODAMETER = "MENU_ODAMETER";
@@ -72,7 +66,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
     private static final String MENU_VANLOAD_STOCK_VIEW = "MENU_VANLOAD_STOCK_VIEW";
     private static final String MENU_VAN_UNLOAD = "MENU_VAN_UNLOAD";
     private static final String MENU_VAN_PLANOGRAM = "MENU_VAN_PLANOGRAM";
-    private String mSelectedBarCodemodule;
+
 
     private static final HashMap<String, Integer> menuIcons = new HashMap<>();
 
@@ -274,10 +268,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
                 if (mBModel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
                     checkIsAllowed(
-                            MENU_VANLOAD_STOCK_VIEW,
-                            mBModel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION);
-                } else if (mBModel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION) {
-                    checkBarCode(MENU_VANLOAD_STOCK_VIEW);
+                            MENU_VANLOAD_STOCK_VIEW);
                 } else {
                     vanLoadSubRoutine(menuItem.getMenuName());
                 }
@@ -291,10 +282,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
                 if (mBModel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
                     checkIsAllowed(
-                            MENU_VAN_UNLOAD,
-                            mBModel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION);
-                } else if (mBModel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION) {
-                    checkBarCode(MENU_VAN_UNLOAD);
+                            MENU_VAN_UNLOAD);
                 } else {
                     vanUnLoadSubRoutine(menuItem.getMenuName());
                 }
@@ -363,7 +351,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         new DownloadStockViewApply().execute();
     }
 
-    public void checkIsAllowed(String menuString, boolean isValidateBarCode) {
+    public void checkIsAllowed(String menuString) {
         try {
             DBUtil db = new DBUtil(LoadManagementScreen.this,
                     DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -393,9 +381,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 float distance = LocationUtil.calculateDistance(wareLatitude,
                         wareLongitude);
                 if (distance <= ConfigurationMasterHelper.vanDistance) {
-                    if (isValidateBarCode)
-                        checkBarCode(menuString);
-                    else if (MENU_VANLOAD_STOCK_VIEW.equals(menuString))
+                    if (MENU_VANLOAD_STOCK_VIEW.equals(menuString))
                         vanLoadSubRoutine(MENU_VANLOAD_STOCK_VIEW);
                     else if (MENU_VAN_UNLOAD.equals(menuString))
                         vanUnLoadSubRoutine(MENU_VAN_UNLOAD);
@@ -424,79 +410,13 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 .show();
     }
 
-    public void checkBarCode(String menuString) {
-        mSelectedBarCodemodule = menuString;
 
-        Intent i = new Intent();
-        i.setAction(ACTION_SOFTSCANTRIGGER);
-        i.putExtra(EXTRA_PARAM, DWAPI_TOGGLE_SCANNING);
-        LoadManagementScreen.this.sendBroadcast(i);
-    }
 
-    @Override
-    public void onNewIntent(Intent i) {
-        try {
-            if (i != null && mSelectedBarCodemodule != null) {
-                checkBarcodeData(i);
-                mSelectedBarCodemodule = null;
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
-    private void checkBarcodeData(Intent i) {
-        String mScannedData, mBarCode = "";
-        if (i.getAction().contentEquals(OUR_INTENT_ACTION)) {
-            mScannedData = i.getStringExtra(DATA_STRING_TAG);
-            if (mScannedData == null)
-                mScannedData = "";
 
-            DBUtil db = new DBUtil(LoadManagementScreen.this,
-                    DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT barcode FROM WarehouseActivityMapping WHERE activity_code = "
-                            + DatabaseUtils
-                            .sqlEscapeString(mSelectedBarCodemodule));
 
-            if (c != null) {
-                if (c.moveToNext()) {
-                    mBarCode = c.getString(0);
-                }
-                c.close();
-            }
-            db.closeDB();
 
-            if ("".equals(mBarCode))
-                showToastMessageForBarcode(-1);
-            else if ("".equals(mScannedData))
-                showToastMessageForBarcode(-2);
-            else if (mScannedData.equals(mBarCode)) {
-                if (MENU_VANLOAD_STOCK_VIEW.equals(mSelectedBarCodemodule))
-                    vanLoadSubRoutine(MENU_VANLOAD_STOCK_VIEW);
-                else if (MENU_VAN_UNLOAD.equals(mSelectedBarCodemodule))
-                    vanUnLoadSubRoutine(MENU_VAN_UNLOAD);
-            } else
-                showToastMessageForBarcode(-3);
-        }
-    }
 
-    private void showToastMessageForBarcode(int status) {
-        String strTitle = "";
-        if (status == -1)
-            strTitle = getResources().getString(
-                    R.string.warehouse_barcode_not_assigned);
-        else if (status == -2)
-            strTitle = getResources().getString(
-                    R.string.not_able_to_scan_barcode);
-        else if (status == -3)
-            strTitle = getResources().getString(R.string.barcode_not_matched);
-
-        Toast.makeText(LoadManagementScreen.this, strTitle, Toast.LENGTH_SHORT)
-                .show();
-    }
 
     @Override
     protected void onDestroy() {
