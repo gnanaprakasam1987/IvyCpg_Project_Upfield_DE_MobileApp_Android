@@ -336,7 +336,8 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                 ((TextView) findViewById(R.id.tv_avg_qty_value)).setText(mProductMasterBO.getQty_klgs() + "");
                 ((TextView) findViewById(R.id.tv_avg_rfield1_value)).setText(mProductMasterBO.getRfield1_klgs() + "");
                 ((TextView) findViewById(R.id.tv_avg_rfield2_value)).setText(mProductMasterBO.getRfield2_klgs() + "");
-                ((TextView) findViewById(R.id.tv_avg_rfield3_value)).setText(mProductMasterBO.getCalc_klgs() + "");
+                ((TextView) findViewById(R.id.tv_avg_rfield3_value)).
+                        setText(mProductMasterBO.getCalc_klgs() != null ? mProductMasterBO.getCalc_klgs() + "" : "0");
             }
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_DD && !bmodel.configurationMasterHelper.SHOW_STOCK_LD
                     && !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_CB)
