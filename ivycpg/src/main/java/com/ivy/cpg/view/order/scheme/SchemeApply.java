@@ -558,7 +558,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                 if (isChecked) {
 
                                     holder.text_stock_availability.setVisibility(View.GONE);
-                                    if(!holder.schemeBO.isSihAvailableForFreeProducts()){
+                                    if(bModel.configurationMasterHelper.IS_SIH_VALIDATION
+                                            &&!holder.schemeBO.isSihAvailableForFreeProducts()){
                                         holder.text_stock_availability.setVisibility(View.VISIBLE);
                                         holder.quantityCB.setChecked(false);
                                         holder.showFreeBTN.setEnabled(false);

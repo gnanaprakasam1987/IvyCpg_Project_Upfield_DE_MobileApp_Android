@@ -279,10 +279,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
             getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
             /*Below code used to change the layout direction */
-            if (locale.getLanguage().equalsIgnoreCase("ar"))
-                setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            else
-                setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            setLayoutDirection(locale.getLanguage().equalsIgnoreCase("ar") ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
 
         }
     }
@@ -303,11 +300,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void onError(String message) {
-        if (message != null) {
-            showSnackBar(message);
-        } else {
-            showSnackBar(getString(R.string.error));
-        }
+        showSnackBar(message != null ? message : getString(R.string.error));
     }
 
     private void showSnackBar(String message) {
@@ -436,11 +429,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
 
     public void setOrientation(boolean isLandscape) {
-        if (isLandscape) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        setRequestedOrientation(isLandscape ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
 

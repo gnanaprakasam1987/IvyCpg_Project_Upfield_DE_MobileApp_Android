@@ -5588,6 +5588,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "User" + path;
             } else if (imageName.startsWith("SR_SGN_")) {
                 mBucketName = mBucketDetails + "/" + "SalesReturn" + path;
+            } else if (imageName.startsWith("ORD_")) {
+                mBucketName = mBucketDetails + "/" + "Order" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -5906,7 +5908,7 @@ public class BusinessModel extends Application {
             jsonObj.put("UserId", userMasterHelper.getUserMasterBO()
                     .getUserid());
             jsonObj.put("RetailerId", mRetailerId);
-            jsonObj.put("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonObj.put("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("MobileUTCDateTime",
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("OTPValue", mOTP);

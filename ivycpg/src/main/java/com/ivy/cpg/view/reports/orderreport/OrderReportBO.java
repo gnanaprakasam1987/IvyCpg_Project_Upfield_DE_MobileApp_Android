@@ -158,6 +158,7 @@ public class OrderReportBO implements Parcelable {
     private int volumePcsQty;
     private int volumeCaseQty;
     private int volumeOuterQty;
+    private String orderedImage="";
 
     public int getVolumeOuterQty() {
         return volumeOuterQty;
@@ -356,4 +357,11 @@ public class OrderReportBO implements Parcelable {
         this.schemeProducts = schemeProducts;
     }
 
+    public String getOrderedImage() {
+        return orderedImage;
+    }
+
+    public void setOrderedImage(String orderedImage) {
+        this.orderedImage = orderedImage;
+    }
 }

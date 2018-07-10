@@ -1,21 +1,30 @@
 package com.ivy.cpg.view.reports.orderreport;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.HomeScreenFragment;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -25,12 +34,14 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
     ArrayList<OrderReportBO> items;
     private BusinessModel businessModel;
     private Context mContext;
+    private IOrderReportImageView iOrderReportImageView;
 
-    public OrderReportAdapter(ArrayList<OrderReportBO> items, Context mContext, BusinessModel businessModel) {
+    public OrderReportAdapter(ArrayList<OrderReportBO> items, Context mContext, BusinessModel businessModel, IOrderReportImageView iOrderReportImageView) {
         super(mContext, R.layout.row_order_report, items);
         this.items = items;
         this.mContext = mContext;
-       this. businessModel = businessModel;
+        this.businessModel = businessModel;
+        this.iOrderReportImageView = iOrderReportImageView;
     }
 
     @Override
@@ -38,7 +49,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
     public View getView(int position, View convertView, @NotNull ViewGroup parent) {
         final ViewHolder holder;
 
-        OrderReportBO reportBO = items
+        final OrderReportBO reportBO = items
                 .get(position);
         View row = convertView;
 
@@ -74,6 +85,8 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             holder.taxTitle = row.findViewById(R.id.tv_tax_title);
             holder.discTitle = row.findViewById(R.id.tv_disc_title);
 
+            holder.orderImage = row.findViewById(R.id.ord_img_view);
+
             if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                 holder.tvWeight.setVisibility(View.GONE);
                 holder.label_weight.setVisibility(View.GONE);
@@ -107,6 +120,31 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
                 holder.tv_discount_amt.setVisibility(View.GONE);
                 holder.discTitle.setVisibility(View.GONE);
             }
+
+            if (!businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE)
+                holder.orderImage.setVisibility(View.GONE);
+
+
+            holder.orderImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (reportBO.getOrderedImage() != null) {
+                        File imgFile = new File(mContext.getExternalFilesDir(
+                                Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + reportBO.getOrderedImage());
+                        if (imgFile.exists() && !"".equals(reportBO.getOrderedImage())) {
+                            try {
+                                iOrderReportImageView.openImageView(imgFile.getAbsolutePath());
+                            } catch (Exception e) {
+                                Commons.printException("" + e);
+                            }
+                        } else {
+                            Toast.makeText(mContext,
+                                    mContext.getResources().getString(R.string.unloadimage),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
 
 
             row.setTag(holder);
@@ -197,6 +235,26 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
                     R.drawable.list_selector));
         }
 
+        if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
+            if (reportBO.getUpload().equalsIgnoreCase("Y")
+                    && !businessModel.checkForNFilesInFolder(HomeScreenFragment.photoPath,
+                    1, reportBO.getOrderedImage())) {
+
+                holder.orderImage.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_image_available));
+
+            } else {
+
+                Glide.with(mContext)
+                        .load(HomeScreenFragment.photoPath + "/" + reportBO.getOrderedImage())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .centerCrop()
+                        .placeholder(R.drawable.no_image_available)
+                        .into(holder.orderImage);
+
+            }
+        }
+
         try {
             String delivery_date;
 
@@ -238,6 +296,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount;
         TextView text_delivery_date, tv_tax_value, tv_discount_amt, taxTitle, discTitle;
         TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel;
+        ImageView orderImage;
 
     }
 }

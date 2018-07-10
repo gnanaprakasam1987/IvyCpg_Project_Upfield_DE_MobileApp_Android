@@ -153,6 +153,15 @@
                     android:tag="DOT"
                     android:text="@string/zero"
                     android:textColor="@android:color/black" />
+                <TextView
+                    android:id="@+id/text_srp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zero"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/list_primary"
+                    android:visibility="gone"
+                    />
 
             </LinearLayout>
 

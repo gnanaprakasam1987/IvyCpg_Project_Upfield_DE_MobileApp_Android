@@ -530,7 +530,7 @@ public class OrderDeliveryHelper {
         return true;
     }
 
-    boolean updateTableValues(Context context, String orderId, boolean isEdit) {
+    boolean updateTableValues(Context context, String orderId, boolean isEdit,String menuCode) {
         boolean status = true;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -620,7 +620,7 @@ public class OrderDeliveryHelper {
 
                         String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty," +
                                 "d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice," +
-                                "PcsUOMId,priceoffvalue,PriceOffId,weight,HsnCode";
+                                "PcsUOMId,priceoffvalue,PriceOffId,weight,HsnCode,NetAmount";
 
                         String sb = (businessModel.QT(invoiceId) + ",") +
                                 businessModel.QT(productBo.getProductID()) + "," +
@@ -644,7 +644,8 @@ public class OrderDeliveryHelper {
                                 + productBo.getPcUomid() +
                                 "," + priceOffValue + "," + productBo.getPriceOffId() +
                                 "," + productBo.getWeight() +
-                                "," + businessModel.QT(productBo.getHsnCode());
+                                "," + businessModel.QT(productBo.getHsnCode())+
+                                "," + line_total_price;
 
                         db.insertSQL(DataMembers.tbl_InvoiceDetails, columns, sb);
 
@@ -681,10 +682,10 @@ public class OrderDeliveryHelper {
 
                 String invoiceDetailQry = "Insert into InvoiceDetails " +
                         " (ProductID,retailerid,uomid,Qty,Rate,uomCount,pcsQty,CaseQty,d1,d2,d3,DA,outerQty," +
-                        " dOuomQty,dOuomid,batchid,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight,invoiceID) " +
+                        " dOuomQty,dOuomid,batchid,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight,invoiceID,NetAmount) " +
                         " select ProductID,retailerid,uomid,Qty,Rate,uomcount,pieceqty,caseQty,d1,d2,d3,DA,outerQty," +
                         " dOuomQty,dOuomid,BatchId,CasePrice,OuterPrice,PcsUOMId,OrderType,HsnCode,RField1,totalamount,PriceOffValue,PriceOffId,weight," + businessModel.QT(invoiceId) +
-                        " from OrderDetail where OrderId = " + businessModel.QT(orderId);
+                        " ,NetAmount from OrderDetail where OrderId = " + businessModel.QT(orderId);
                 db.executeQ(invoiceDetailQry);
 
                 String invoiceDiscountQry = "Insert into InvoiceDiscountDetail (OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +
@@ -739,6 +740,8 @@ public class OrderDeliveryHelper {
             }
 
             db.closeDB();
+
+            businessModel.saveModuleCompletion(menuCode);
 
         } catch (Exception e) {
             Commons.printException(e);
