@@ -7,7 +7,9 @@ import com.ivy.core.base.view.BaseFragment;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.di.module.ActivityModule;
 import com.ivy.core.di.module.IvyAppModule;
+import com.ivy.core.di.scope.ActivityContext;
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
@@ -16,7 +18,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {IvyAppModule.class, ActivityModule.class})
+@Component(modules = {IvyAppModule.class})
 public interface IvyAppComponent {
 
 
@@ -26,6 +28,8 @@ public interface IvyAppComponent {
     DataManager dataManager();
 
     ConfigurationMasterHelper configurationMasterHelper();
+
+    RetailerMasterBO retailerMasterBo();
 
     void inject(BusinessModel businessModel);
 

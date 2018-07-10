@@ -748,7 +748,6 @@ public class BusinessModel extends Application {
 
             mApplicationComponent = DaggerIvyAppComponent.builder()
                     .ivyAppModule(new IvyAppModule(this))
-                    .activityModule(new ActivityModule((BaseActivity) getContext()))
                     .build();
 
             mApplicationComponent.inject(this);

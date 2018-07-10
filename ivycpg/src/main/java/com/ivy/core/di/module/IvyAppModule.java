@@ -15,7 +15,9 @@ import com.ivy.core.data.sharedpreferences.SharedPreferenceHelperImpl;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
+import com.ivy.core.di.scope.RetailerInfo;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
@@ -64,6 +66,11 @@ public class IvyAppModule {
     protected DBUtil providesDBUtil() {
         return new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
+    }
+
+    @Provides
+    protected RetailerMasterBO providesRetailerBO(){
+        return ((BusinessModel) mContext).retailerMasterBO;
     }
 
     @Provides
