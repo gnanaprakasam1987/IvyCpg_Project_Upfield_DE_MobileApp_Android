@@ -104,7 +104,6 @@
     <string name="received">收到</string>
     <string name="os_amt">未收余额</string>
     <string name="cheque_num">支票号码</string>
-    <string name="mode">模式</string>
     <string name="cash">现金</string>
     <string name="cheque">支票</string>
     <string name="bank_name">银行名称</string>
@@ -262,7 +261,6 @@
     <string name="initiative">初始</string>
     <string name="credit_note">信用证</string>
     <string name="Product_details">产品详情</string>
-    <string name="adjusted_sih">调整库存现货</string>
     <string name="new_task_saved">已保存新任务。</string>
     <string name="choose_brand">选择品牌</string>
     <string name="choose_category">选择类别</string>
@@ -338,7 +336,6 @@
     <string name="planogram">货架图</string>
     <string name="image_desc">无效的</string>
     <string name="adherence">货架陈列被遵循了吗？</string>
-    <string name="please_filldetails">请输入所需的详细信息。</string>
     <string name="unloadimage">图像不可用</string>
     <string name="deviate_retailers">偏离计划的零售商</string>
     <string name="admin_contact_no">管理员联系号码：</string>
@@ -1047,7 +1044,6 @@
     <string name = "percentage">Percentage</string>
     <string name="invoice_qty">Invoice Qty</string>
     <string name="delivery_rep_code">Rep Code</string>
-    <string name="maximum_count_is_exceed">Maximum count is exceed</string>
     <string name="new_retailer">New Retailer</string>
     <string name="delivery_date_is">Delivery Date is: </string>
     <string name="history">History</string>
@@ -1274,5 +1270,4 @@
     </string-array>
 
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
-    <string name="total_collected">Total Collected</string>
 </resources>
