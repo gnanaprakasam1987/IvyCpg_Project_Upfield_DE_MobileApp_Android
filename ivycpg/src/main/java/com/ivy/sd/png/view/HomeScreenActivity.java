@@ -39,16 +39,12 @@ import java.io.OutputStream;
 
 public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements HomeScreenFragment.homeScreenItemClickedListener {
 
-    private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    BusinessModel bmodel;
-    Toolbar toolbar;
-    LinearLayout content_frame;
-    private float lastTranslate = 0.0f;
-    Handler handler;
-    HomeScreenFragment mHomeScreenFragment;
-    IvyBaseFragment baseFragment;
-    Intent i = null;
+    private LinearLayout content_frame;
+    private Handler handler;
+    private HomeScreenFragment mHomeScreenFragment;
+    private IvyBaseFragment baseFragment;
+    private Intent i = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +53,13 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
 
         setContentView(R.layout.activity_homescreen);
 
-        bmodel = (BusinessModel) getApplicationContext();
+        BusinessModel bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        content_frame = (LinearLayout) findViewById(R.id.root);
+        content_frame = findViewById(R.id.root);
 
 
         getSupportActionBar().setTitle(null);
@@ -73,10 +69,9 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //  mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this,
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this,
                 mDrawerLayout, /* DrawerLayout object */
                 R.string.ok, R.string.close) {
             public void onDrawerClosed(View view) {
@@ -95,31 +90,20 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
                 float moveFactor = (drawerView.getWidth() * slideOffset);
 
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(imm!=null && imm.isActive())
+                if (imm != null && imm.isActive())
                     imm.hideSoftInputFromWindow(drawerView.getWindowToken(), 0);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    content_frame.setTranslationX(moveFactor);
-                } else {
-                    TranslateAnimation anim = new TranslateAnimation(lastTranslate, moveFactor, 0.0f, 0.0f);
-                    anim.setDuration(0);
-                    anim.setFillAfter(true);
-                    content_frame.startAnimation(anim);
-
-                    lastTranslate = moveFactor;
-                }
+                content_frame.setTranslationX(moveFactor);
             }
         };
 
         mDrawerToggle.syncState();
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        //mDrawerLayout.openDrawer(GravityCompat.START);
+
 
         mHomeScreenFragment = (HomeScreenFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.homescreen_fragment);
         mHomeScreenFragment.setmHomeScreenItemClickedListener(this);
-
-        // tempDbBackupMethod();
 
     }
 
@@ -145,12 +129,6 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
 
         return super.onOptionsItemSelected(item);
 
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
 
@@ -186,48 +164,6 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
-        }
-    }
-
-    public boolean tempDbBackupMethod() {
-
-//        ivyapp.deleteMethod();
-        String currentDBPath = DataMembers.DB_PATH.concat(ApplicationConfigs.DB_NAME);
-        Boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
-        if (isSDPresent) {
-            File folder;
-            folder = new File(
-                    this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                            + "/pandg/");
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
-
-            String path = folder + "";
-
-            File SDPath = new File(path);
-            if (!SDPath.exists()) {
-                SDPath.mkdir();
-            }
-            try {
-                File currentDB = new File(currentDBPath);
-                InputStream input = new FileInputStream(currentDB);
-                byte dataa[] = new byte[input.available()];
-                input.read(dataa);
-
-                OutputStream out = new FileOutputStream(path + "/"
-                        + ApplicationConfigs.DB_NAME);
-                out.write(dataa);
-                out.flush();
-                out.close();
-                input.close();
-            } catch (Exception e) {
-                Log.d("exception", e + "");
-                return false;
-            }
-            return true;
-        } else {
-            return false;
         }
     }
 }
