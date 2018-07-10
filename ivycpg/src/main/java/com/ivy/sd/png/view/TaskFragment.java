@@ -65,6 +65,7 @@ public class TaskFragment extends IvyBaseFragment {
     private String taskDes[][];
     private String mSelectedRetailerID = "0";
     private TextView mSelectedTaskTV;
+    private Bundle extras;
 
     @Override
     public void onAttach(Context context) {
@@ -95,24 +96,10 @@ public class TaskFragment extends IvyBaseFragment {
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
-        Bundle extras;
-        if (getActivity().getIntent().getExtras() != null)
+        extras = getArguments();
+        if (extras == null)
             extras = getActivity().getIntent().getExtras();
-        else
-            extras = getArguments();
-        //Set Screen Title
-        try {
-            if (extras == null || !extras.containsKey("screentitle")
-                    || extras.getString("screentitle") == null)
-                setScreenTitle(bmodel.getMenuName("MENU_TASK_NEW"));
-            else
-                setScreenTitle(extras.getString("screentitle"));
-        } catch (Exception e) {
 
-            setScreenTitle(getResources().
-                    getString(R.string.task));
-            Commons.printException(e);
-        }
         mDrawerLayout = view.findViewById(R.id.drawer_layout);
         // set a custom shadow that overlays the main content when the drawer
         // opens
@@ -221,7 +208,6 @@ public class TaskFragment extends IvyBaseFragment {
                         public void onPositiveButtonClick() {
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
 
-                            Bundle extras = getArguments();
                             if (extras != null) {
                                 intent.putExtra("IsMoveNextActivity", true);
                                 intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
@@ -283,6 +269,20 @@ public class TaskFragment extends IvyBaseFragment {
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
+        }
+
+        //Set Screen Title
+        try {
+            if (extras == null || !extras.containsKey("screentitle")
+                    || extras.getString("screentitle") == null)
+                setScreenTitle(bmodel.getMenuName("MENU_TASK_NEW"));
+            else
+                setScreenTitle(extras.getString("screentitle"));
+        } catch (Exception e) {
+
+            setScreenTitle(getResources().
+                    getString(R.string.task));
+            Commons.printException(e);
         }
     }
 
