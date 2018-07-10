@@ -13,6 +13,7 @@
         android:layout_weight="1"
         android:gravity="center|start"
         android:text="@string/total"
+        android:padding="@dimen/target_top_margin"
         android:textColor="@color/task_title"
         android:textSize="@dimen/font_small" />
 
