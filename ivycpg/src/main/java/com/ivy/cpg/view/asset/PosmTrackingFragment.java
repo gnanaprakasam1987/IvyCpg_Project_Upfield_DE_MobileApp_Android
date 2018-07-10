@@ -687,17 +687,19 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                             if (holder.assetBO.getAvailQty() > 0) {
 
-                                holder.reason1Spin.setEnabled(false);
-                                holder.reason1Spin.setSelection(0);
-                               /* if (holder.assetBO.getImageName() != null && !holder.assetBO.getImageName().isEmpty()
-                                        ) {
-                                    holder.photoBTN.setEnabled(true);
-                                    setPictureToImageView(holder.assetBO.getImageName(), holder.photoBTN);
-                                } else {
-                                    //No Image Found So, setting Default Icon
-                                    holder.photoBTN.setEnabled(true);
-                                    holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
-                                }*/
+                                if (!assetTrackingHelper.SHOW_POSM_TARGET || holder.assetBO.getAvailQty() >= holder.assetBO.getTarget()) {
+
+                                    if (assetTrackingHelper.SHOW_LOCATION_POSM) {
+                                        if (holder.assetBO.getTargetLocId() == holder.assetBO.getLocationID()) {
+                                            holder.reason1Spin.setEnabled(false);
+                                            holder.reason1Spin.setSelection(0);
+                                        } else
+                                            holder.reason1Spin.setEnabled(true);
+                                    } else {
+                                        holder.reason1Spin.setEnabled(false);
+                                        holder.reason1Spin.setSelection(0);
+                                    }
+                                }
 
                                 holder.photoBTN.setEnabled(true);
                                 holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
@@ -857,6 +859,15 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                                 holder.assetBO.setLocationID(SDUtil.convertToInt(reasonBO
                                         .getListID()));
+
+                                if (holder.assetBO.getTargetLocId() == holder.assetBO.getLocationID() && holder.assetBO.getAvailQty() > 0) {
+                                    if (!assetTrackingHelper.SHOW_POSM_TARGET || holder.assetBO.getAvailQty() >= holder.assetBO.getTarget()) {
+                                        holder.reason1Spin.setEnabled(false);
+                                        holder.reason1Spin.setSelection(0);
+                                    } else
+                                        holder.reason1Spin.setEnabled(true);
+                                } else
+                                    holder.reason1Spin.setEnabled(true);
                             }
 
                             @Override
