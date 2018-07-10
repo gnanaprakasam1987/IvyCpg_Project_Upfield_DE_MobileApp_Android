@@ -97,7 +97,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        Toolbar  toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         try {
@@ -192,7 +192,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                     .findFragmentByTag(StandardListMasterConstants.MENU_SKU_REPORT);
             if (currentStockBatchViewFragment != null) {
                 currentStockBatchViewFragment.onBackButtonClick();
-            }else if(salesVolumeReportFragment!=null){
+            } else if (salesVolumeReportFragment != null) {
                 salesVolumeReportFragment.onBackButtonClick();
             } else {
                 if (fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
@@ -316,18 +316,12 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
             SalesVolumeReportFragment salesVolumeReportFragment = new SalesVolumeReportFragment();
             salesVolumeReportFragment.setArguments(getIntent().getExtras());
-            transaction.replace(R.id.fragment_content, salesVolumeReportFragment,StandardListMasterConstants.MENU_SKU_REPORT);
+            transaction.replace(R.id.fragment_content, salesVolumeReportFragment, StandardListMasterConstants.MENU_SKU_REPORT);
 
             commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT)) {
-            bmodel.productHelper
-                    .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-
-
-            //CurrentStockView stockReportFragment = new CurrentStockView();
-
             CurrentReportViewFragment stockReportFragment = new CurrentReportViewFragment();
             stockReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, stockReportFragment);
@@ -409,20 +403,14 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
 
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT)) {
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                bmodel.productHelper
-                        .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-            } else {
-                bmodel.productHelper
-                        .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-            }
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                bmodel.productHelper.loadProductsWithFiveLevel(
-                        "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
-            else
-                bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                        "MENU_CUR_STK_BATCH");
+            bmodel.productHelper
+                    .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
+
+
+            bmodel.productHelper.loadProductsWithFiveLevel(
+                    "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
+
 
             CurrentStockBatchViewFragment currentStockBatchViewFragment = new CurrentStockBatchViewFragment();
             transaction.replace(R.id.fragment_content, currentStockBatchViewFragment, StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);

@@ -112,11 +112,8 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         menu.findItem(R.id.menu_product_filter).setVisible(false);
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        } else {
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
-        }
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
+
         return super.onPrepareOptionsMenu(menu);
     }
 

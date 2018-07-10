@@ -347,75 +347,44 @@ public class SalesFundamentalHelper {
             int loopEnd;
             String query = "";
 
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
 
-                if (mSFModuleSequence != null) {
-                    if (mSFModuleSequence.size() > 0) {
-                        mChildLevel = mSFModuleSequence.size();
-                    }
-                }
-
-                if (mChildLevel == 0)
-                    mChildLevel = 1;
-
-                Cursor filterCur = db
-                        .selectSQL("SELECT IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0)"
-                                + " FROM ConfigActivityFilter CF"
-                                + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter"
-                                + mChildLevel
-                                + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
-                                + " WHERE CF.ActivityCode = "
-                                + mBModel.QT(moduleName));
-
-                if (filterCur != null) {
-                    if (filterCur.moveToNext()) {
-                        mParentLevel = filterCur.getInt(0);
-                        mContentLevel = filterCur.getInt(1);
-                    }
-                    filterCur.close();
-                }
-
-                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                    loopEnd = mContentLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
-                else
-                    loopEnd = mContentLevel - mParentLevel + 1;
-
-                if (!mSFModuleSequence.isEmpty())
-                    mFirstLevel = mSFModuleSequence.get(mSFModuleSequence.size() - 1).getProductID();
-                else
-                    mFirstLevel = mContentLevel;
-                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                    mFirstLevel = mBModel.configurationMasterHelper.globalSeqId;
-
-            } else {
-                Cursor filterCur = db
-                        .selectSQL("SELECT  IFNULL(PL1.Sequence,0),IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0), PL1.LevelId, PL2.LevelId"
-                                + " FROM ConfigActivityFilter CF"
-                                + " LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter1"
-                                + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter2"
-                                + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
-                                + " WHERE CF.ActivityCode = "
-                                + mBModel.QT(moduleName));
-
-                if (filterCur != null) {
-                    if (filterCur.moveToNext()) {
-                        mParentLevel = filterCur.getInt(0);
-                        mChildLevel = filterCur.getInt(1);
-                        mContentLevel = filterCur.getInt(2);
-                        mParentLevelId = filterCur.getInt(3);
-                        mChildLevelId = filterCur.getInt(4);
-                    }
-                    filterCur.close();
-                }
-
-                if (mChildLevel > 0) {
-                    loopEnd = mContentLevel - mChildLevel + 1;
-                    mFirstLevel = mChildLevelId;
-                } else {
-                    loopEnd = mContentLevel - mParentLevel + 1;
-                    mFirstLevel = mParentLevelId;
+            if (mSFModuleSequence != null) {
+                if (mSFModuleSequence.size() > 0) {
+                    mChildLevel = mSFModuleSequence.size();
                 }
             }
+
+            if (mChildLevel == 0)
+                mChildLevel = 1;
+
+            Cursor filterCur = db
+                    .selectSQL("SELECT IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0)"
+                            + " FROM ConfigActivityFilter CF"
+                            + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter"
+                            + mChildLevel
+                            + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
+                            + " WHERE CF.ActivityCode = "
+                            + mBModel.QT(moduleName));
+
+            if (filterCur != null) {
+                if (filterCur.moveToNext()) {
+                    mParentLevel = filterCur.getInt(0);
+                    mContentLevel = filterCur.getInt(1);
+                }
+                filterCur.close();
+            }
+
+            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                loopEnd = mContentLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
+            else
+                loopEnd = mContentLevel - mParentLevel + 1;
+
+            if (!mSFModuleSequence.isEmpty())
+                mFirstLevel = mSFModuleSequence.get(mSFModuleSequence.size() - 1).getProductID();
+            else
+                mFirstLevel = mContentLevel;
+            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                mFirstLevel = mBModel.configurationMasterHelper.globalSeqId;
 
 
             StringBuffer sBuffer = new StringBuffer();

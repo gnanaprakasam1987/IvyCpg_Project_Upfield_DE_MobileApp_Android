@@ -216,10 +216,8 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
         menu.findItem(R.id.menu_sih_apply).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
+
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        else
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
 
     }
 

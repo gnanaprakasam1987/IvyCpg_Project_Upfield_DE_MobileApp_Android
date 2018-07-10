@@ -424,20 +424,11 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
                     bmodel.vanmodulehelper.downloadSubDepots();
                 }
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
-                } else {
-                    bmodel.productHelper
-                            .downloadProductFilter(MENU_LOAD_MANAGEMENT);
-                }
+                bmodel.productHelper
+                        .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            MENU_LOAD_MANAGEMENT, menuManualVanload);
-                else
-                    bmodel.productHelper.loadProducts(MENU_LOAD_MANAGEMENT,
-                            menuManualVanload);
+                bmodel.productHelper.loadProductsWithFiveLevel(
+                        MENU_LOAD_MANAGEMENT, menuManualVanload);
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
 
@@ -485,13 +476,10 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
-                } else {
-                    bmodel.productHelper
-                            .downloadProductFilter(MENU_LOAD_MANAGEMENT);
-                }
+
+                bmodel.productHelper
+                        .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
+
 
                 bmodel.productHelper.loadProducts(MENU_LOAD_MANAGEMENT, "");
             } catch (Exception e) {

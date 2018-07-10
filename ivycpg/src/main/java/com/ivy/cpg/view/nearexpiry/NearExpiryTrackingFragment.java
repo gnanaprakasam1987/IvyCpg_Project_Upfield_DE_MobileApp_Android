@@ -205,10 +205,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 String.valueOf(mBModel.mSFSelectedFilter));*/
         updateGeneralText(GENERAL);
         updateBrandText(BRAND, -1);
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            FiveFilterFragment();
-        else
-            productFilterClickedFragment();
+        FiveFilterFragment();
+
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
         Button btn_save = (Button) getView().findViewById(R.id.btn_save);
@@ -268,12 +266,11 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_next).setVisible(false);
 
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
+            if (mBModel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
-          /*else
-                menu.findItem(R.id.menu_product_filter).setVisible(true);*/
 
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+
+            if (mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -312,9 +309,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             return true;
         } else if (i == R.id.menu_next) {
             nextButtonClick();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_remarks) {
             android.support.v4.app.FragmentManager ft = getActivity()
@@ -367,57 +361,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     }
 
 
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-
-            if (frag != null)
-                ft.detach(frag);
-
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("isFrom", "NearExpiry");
-
-            if (mBModel.productHelper.getRetailerModuleChildLevelBO().size() > 0)
-                bundle.putString("filterHeader", mBModel.productHelper
-                        .getRetailerModuleChildLevelBO().get(0).getProductLevel());
-            else
-                bundle.putString("filterHeader", mBModel.productHelper
-                        .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
-
-            bundle.putSerializable("serilizeContent",
-                    mBModel.productHelper.getRetailerModuleChildLevelBO());
-
-            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && mBModel.productHelper.getRetailerModuleChildLevelBO().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", mBModel.productHelper
-                        .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
-
-                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
-                        .getRetailerModuleParentLeveBO());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
     class ViewHolder {
         ProductMasterBO mSKUBO;

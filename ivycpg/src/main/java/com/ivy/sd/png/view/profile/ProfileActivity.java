@@ -1975,7 +1975,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (!isCancelled()) {
-                    if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && !bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                    if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                         bmodel.productHelper
                                 .downloadFiveFilterLevels(MENU_STK_ORD);
                         bmodel.productHelper

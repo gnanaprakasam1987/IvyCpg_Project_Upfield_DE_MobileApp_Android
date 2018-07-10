@@ -331,7 +331,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         menu.findItem(R.id.menu_add).setTitle(R.string.addnewasset);
         menu.findItem(R.id.menu_remove).setTitle(R.string.removeasset);
 
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -361,7 +361,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable(MENU_ASSET)) {
+        if (mBModel.productHelper.isFilterAvaiable(MENU_ASSET)) {
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
         }
         if (!assetTrackingHelper.SHOW_MOVE_ASSET) {

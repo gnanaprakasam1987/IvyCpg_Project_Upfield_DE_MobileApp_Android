@@ -528,12 +528,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 surveyBO = sBO;
             }
         }
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mFinalParentIdList != null) {
+        if (mFinalParentIdList != null)
             loadQuestionFromFiveLevelFilter(surveyHelperNew.mSelectedSurvey, mFinalParentIdList);
-        } else {
-            onLoadQuestion(surveyHelperNew.mSelectedSurvey,
-                    surveyHelperNew.mSelectedFilter);
-        }
+
         /* Show or hide footer which display survey score and overall score*/
         if (surveyHelperNew.SHOW_TOTAL_SCORE_IN_SURVEY) {
             // Sometime, one survey may have score but other survey may not.
@@ -1886,7 +1883,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 && bmodel.userMasterHelper.getUserMasterBO()
                 .getJoinCallUserList().size() == 0)
             menu.findItem(R.id.menu_joint_call_survey).setVisible(false);
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -1897,7 +1894,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         }
         menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY && bmodel.productHelper.isFilterAvaiable(mMenuCode))
+        if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY && bmodel.productHelper.isFilterAvaiable(mMenuCode))
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
         if (surveyHelperNew.SHOW_SMS_IN_SURVEY
                 && bmodel.mSelectedActivityConfigCode
@@ -2004,9 +2001,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     }
                 }
             }
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_joint_call_survey) {
             showSupervisiorAlert();
@@ -2135,46 +2129,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             alertDialog.dismiss();
             onLoadQuestion(surveyHelperNew.mSelectedSurvey,
                     surveyHelperNew.mSelectedFilter);
-        }
-    }
-
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", "Brand");
-            bundle.putString("filterHeader", bmodel.productHelper
-                    .getRetailerModuleChildLevelBO().get(0).getProductLevel());
-            bundle.putString("isFrom", "Survey");
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getRetailerModuleChildLevelBO());
-            if (bmodel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && bmodel.productHelper.getRetailerModuleParentLeveBO()
-                    .size() > 0) {
-                bundle.putBoolean("isFormBrand", true);
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getRetailerModuleParentLeveBO().get(0)
-                        .getPl_productLevel());
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getRetailerModuleParentLeveBO());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-            }
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
         }
     }
 

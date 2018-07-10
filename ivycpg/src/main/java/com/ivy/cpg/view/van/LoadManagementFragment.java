@@ -170,13 +170,9 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
             Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
                     .downloadLoadManagementMenu();
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                bmodel.productHelper
-                        .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-            } else {
-                bmodel.productHelper
-                        .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-            }
+
+            bmodel.productHelper
+                    .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
 
             ListView listView = (ListView) view.findViewById(R.id.listView1);
             listView.setCacheColorHint(0);
@@ -319,13 +315,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         StockProposalScreen.class);
                 stockpropintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 stockpropintent.putExtra("screentitle", menuItem.getMenuName());
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
-                else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                            "MENU_STOCK_PROPOSAL");
-
+                bmodel.productHelper.loadProductsWithFiveLevel(
+                        "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STOCK_PROPOSAL), 2);
                 startActivity(stockpropintent);
@@ -375,12 +366,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 break;
             case MENU_VAN_UNLOAD:
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
-                else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                            "MENU_VAN_UNLOAD");
+                bmodel.productHelper.loadProductsWithFiveLevel(
+                        "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
 
@@ -702,12 +689,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     bmodel.vanmodulehelper.downloadSubDepots();
                 }
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            "MENU_LOAD_MANAGEMENT", "MENU_MANUAL_VAN_LOAD");
-                else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                            "MENU_MANUAL_VAN_LOAD");
+                bmodel.productHelper.loadProductsWithFiveLevel(
+                        "MENU_LOAD_MANAGEMENT", "MENU_MANUAL_VAN_LOAD");
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_MANUAL_VAN_LOAD), 2);
 
@@ -848,20 +831,12 @@ public class LoadManagementFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-                } else {
-                    bmodel.productHelper
-                            .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-                }
+                bmodel.productHelper
+                        .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
-                else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                            "MENU_CUR_STK_BATCH");
+                bmodel.productHelper.loadProductsWithFiveLevel(
+                        "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
+
 
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -901,20 +876,11 @@ public class LoadManagementFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-                } else {
-                    bmodel.productHelper
-                            .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-                }
+                bmodel.productHelper
+                        .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
-                else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                            "MENU_CUR_STK_BATCH");
+                bmodel.productHelper.loadProductsWithFiveLevel(
+                        "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
             } catch (Exception e) {
                 Commons.printException("" + e);

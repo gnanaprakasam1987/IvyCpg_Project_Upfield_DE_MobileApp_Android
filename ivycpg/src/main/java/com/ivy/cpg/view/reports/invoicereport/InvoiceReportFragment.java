@@ -258,6 +258,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
     /**
      * Alert dialog for delete
+     *
      * @return return dialog instance
      */
     protected Dialog deleteAlertDialog() {
@@ -453,13 +454,11 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     orderHelper.setOrderId(inv.getOrderID());
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
-                      businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(),mRetailerId);
-                    if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                        businessModel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
-                    else businessModel.productHelper.downloadProducts("MENU_STK_ORD");
+                    businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
+                    businessModel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
 
-                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getContext());
-                    schemeHelper.initializeScheme(getActivity().getApplicationContext(),businessModel.userMasterHelper.getUserMasterBO().getUserid(),businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
+                    SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getContext());
+                    schemeHelper.initializeScheme(getActivity().getApplicationContext(), businessModel.userMasterHelper.getUserMasterBO().getUserid(), businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
 
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
@@ -467,7 +466,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     orderHelper.loadInvoiceProducts(getActivity(), inv.getInvoiceNumber());
 
                     mInvoiceId = inv.getInvoiceNumber();
-                    schemeHelper.loadSchemeReportDetails(getActivity().getApplicationContext(),inv.getInvoiceNumber(), true);
+                    schemeHelper.loadSchemeReportDetails(getActivity().getApplicationContext(), inv.getInvoiceNumber(), true);
                     businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
                     businessModel.batchAllocationHelper.loadOrderedBatchProducts(inv.getInvoiceNumber());
                     businessModel.batchAllocationHelper.downloadProductBatchCount();
@@ -479,7 +478,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     if (businessModel.configurationMasterHelper.SHOW_TAX_MASTER) {
 
                         businessModel.productHelper.taxHelper.downloadProductTaxDetails();
-                        if(businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
+                        if (businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
                             businessModel.productHelper.taxHelper.updateProductWiseExcludeTax();
 //                        else
 //                            businessModel.productHelper.taxHelper.updateProductWiseIncludeTax()

@@ -491,11 +491,11 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && !menuCode.equals("MENU_PLANOGRAM_CS") && mBModel.productHelper.isFilterAvaiable(menuCode)) {
+            if (!menuCode.equals("MENU_PLANOGRAM_CS") && mBModel.productHelper.isFilterAvaiable(menuCode)) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
 
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            if (mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(

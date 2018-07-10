@@ -2492,16 +2492,13 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE)
                     if (bmodel.getRetailerMasterBO().getCredit_balance() != -1
                             && totalvalue > bmodel.getRetailerMasterBO()
-                            .getCredit_balance())
-                    {
+                            .getCredit_balance()) {
                         if (bmodel.configurationMasterHelper.IS_CREDIT_LIMIT_WITH_SOFT_ALERT) {
                             Toast.makeText(this, getResources().getString(R.string.order_exceeds_credit_balance), Toast.LENGTH_LONG).show();
                             nextBtnSubTask();
-                        }
-                        else
+                        } else
                             bmodel.showAlert(getResources().getString(R.string.order_exceeds_credit_balance), 0);
-                    }
-                    else
+                    } else
                         nextBtnSubTask();
                 else
                     nextBtnSubTask();
@@ -2523,7 +2520,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.productHelper.taxHelper.removeTaxFromPrice();
@@ -2987,27 +2984,20 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
         if (!GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // both filter selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
-                        && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            }
+
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
+                    && isSpecialFilterAppliedProduct(generalbutton, ret))
+                return true;
+
         } else if (!GENERAL.equals(generalbutton) && BRAND.equals(brandbutton)) {
             //special filter alone selected
             if (isSpecialFilterAppliedProduct(generalbutton, ret))
                 return true;
         } else if (GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // product filter alone selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID)
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
+                return true;
+
         }
         return false;
     }
@@ -3465,21 +3455,16 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
+        if (bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
             if (isFilter) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
             if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER && sequence.size() == 1) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(false);
             }
-        }/* else {
-            if (isFilter) {
-                menu.findItem(R.id.menu_product_filter).setVisible(true);
-            }
-        }*/
+        }
 
-
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(

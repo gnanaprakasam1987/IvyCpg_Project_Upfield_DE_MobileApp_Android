@@ -737,12 +737,10 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
             menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
-        } else {
-            menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        }
+
         menu.findItem(R.id.menu_barcode).setVisible(!drawerOpen);
 
         menu.findItem(R.id.menu_remarks).setVisible(false);
@@ -758,7 +756,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
         menu.findItem(R.id.menu_barcode).setVisible(bmodel.configurationMasterHelper.IS_BAR_CODE);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(

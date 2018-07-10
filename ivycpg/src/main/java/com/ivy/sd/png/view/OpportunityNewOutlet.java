@@ -1470,27 +1470,17 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
     private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
         if (!GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // both filter selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
-                        && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
+                    && isSpecialFilterAppliedProduct(generalbutton, ret))
+                return true;
         } else if (!GENERAL.equals(generalbutton) && BRAND.equals(brandbutton)) {
             //special filter alone selected
             if (isSpecialFilterAppliedProduct(generalbutton, ret))
                 return true;
         } else if (GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // product filter alone selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID)
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
+                return true;
         }
         return false;
     }
@@ -1816,17 +1806,12 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
+        if (bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
             if (isFilter) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
-        }/* else {
-            if (isFilter) {
-                menu.findItem(R.id.menu_product_filter).setVisible(true);
-            }
-        }*/
-
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        }
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(

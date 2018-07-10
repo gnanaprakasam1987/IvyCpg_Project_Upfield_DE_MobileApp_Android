@@ -308,10 +308,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             updateBrandText(BRAND, mSelectedLastFilterSelection);
         }
 
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-            mSelectedFilterMap.put("General", GENERAL);
-            updateGeneralText(GENERAL);
-        }
+        mSelectedFilterMap.put("General", GENERAL);
+        updateGeneralText(GENERAL);
     }
 
     @Override
@@ -345,7 +343,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_product_filter).setIcon(
                     R.drawable.ic_action_filter_select);
 
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -358,7 +356,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable(MENU_POSM)) {
+        if (mBModel.productHelper.isFilterAvaiable(MENU_POSM)) {
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
         }
 
@@ -447,9 +445,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             Intent intent = new Intent(getActivity(), AssetPosmRemoveActivity.class);
             intent.putExtra("module", screenCode);
             startActivity(intent);
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_fivefilter) {
             if (mBModel.configurationMasterHelper.IS_UNLINK_FILTERS) {
@@ -1562,55 +1557,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), outPutDateFormat));
             }
-        }
-    }
-
-    /**
-     * Product filter click
-     */
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", "Brand");
-            bundle.putString("filterHeader", mBModel.productHelper
-                    .getRetailerModuleChildLevelBO().get(0).getProductLevel());
-            bundle.putString("isFrom", "Survey");
-            bundle.putSerializable("serilizeContent",
-                    mBModel.productHelper.getRetailerModuleChildLevelBO());
-
-            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && mBModel.productHelper.getRetailerModuleParentLeveBO()
-                    .size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", mBModel.productHelper
-                        .getRetailerModuleParentLeveBO().get(0)
-                        .getPl_productLevel());
-
-                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
-                        .getRetailerModuleParentLeveBO());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-            }
-
-            // set Fragment class Arguments
-            FilterFragment mFragment = new FilterFragment(mSelectedFilterMap);
-            mFragment.setArguments(bundle);
-            ft.add(R.id.right_drawer, mFragment, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e.toString());
         }
     }
 

@@ -134,6 +134,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     public HashMap<Integer, Integer> mSelectedIdByLevelId;
     ArrayList<String> fiveFilter_productIDs;
     int mSelectedBrandID = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,9 +195,9 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
                 mDrawerLayout, /* DrawerLayout object *//*
-                                                 * nav drawer image to replace
-												 * 'Up' caret
-												 */
+         * nav drawer image to replace
+         * 'Up' caret
+         */
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */
         ) {
@@ -960,7 +961,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
             menu.findItem(R.id.menu_product_filter).setIcon(
                     R.drawable.ic_action_filter_select);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -1026,7 +1027,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
+        if (bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
        /* else
             menu.findItem(R.id.menu_product_filter).setVisible(true);*/
@@ -1389,27 +1390,17 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
         if (!GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // both filter selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
-                        && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
+                    && isSpecialFilterAppliedProduct(generalbutton, ret))
+                return true;
         } else if (!GENERAL.equals(generalbutton) && BRAND.equals(brandbutton)) {
             //special filter alone selected
             if (isSpecialFilterAppliedProduct(generalbutton, ret))
                 return true;
         } else if (GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // product filter alone selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID)
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
+                return true;
         }
         return false;
     }

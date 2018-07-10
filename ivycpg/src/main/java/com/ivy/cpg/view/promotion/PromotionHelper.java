@@ -55,7 +55,6 @@ public class PromotionHelper {
             businessModel.productHelper.downloadInStoreLocations();
         }
 
-        if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
 
         downloadPromotionMaster(mContext);

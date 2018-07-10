@@ -1436,12 +1436,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && businessModel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
+            if (businessModel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
                 menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
             }
 
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && stockCheckPresenter.mSelectedIdByLevelId != null) {
+            if (stockCheckPresenter.mSelectedIdByLevelId != null) {
                 for (Integer id : stockCheckPresenter.mSelectedIdByLevelId.keySet()) {
                     if (stockCheckPresenter.mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(

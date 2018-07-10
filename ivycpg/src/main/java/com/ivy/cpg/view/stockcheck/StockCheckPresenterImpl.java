@@ -682,23 +682,15 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
         if (!GENERAL.equals(generalButton)) {
             // both filter selected
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
-                        && isSpecialFilterAppliedProduct(generalButton, ret))
-                    return true;
-            } else {
-                if (isSpecialFilterAppliedProduct(generalButton, ret))
-                    return true;
-            }
+
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
+                    && isSpecialFilterAppliedProduct(generalButton, ret))
+                return true;
+
         } else if (GENERAL.equals(generalButton)) {
             // product filter alone selected
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
-                    return true;
-            } else {
-                if (isSpecialFilterAppliedProduct(generalButton, ret))
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
+                return true;
         }
         return false;
     }
@@ -740,8 +732,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     }
 
     /*
-    * Update competitor filtered products
-    * */
+     * Update competitor filtered products
+     * */
 
     public void updateCompetitorFilteredProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
         //  this.mCompetitorSelectedIdByLevelId=mSelectedIdByLevelId;

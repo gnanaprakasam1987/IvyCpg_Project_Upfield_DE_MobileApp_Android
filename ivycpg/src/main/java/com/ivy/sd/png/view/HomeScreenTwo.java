@@ -1507,7 +1507,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
         // this conditon added to load download product
         // filter method once when GLOBAL CATEGORY SELECTION enabled
-        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
+        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
             if (menu.getConfigCode().equals(MENU_STOCK)
                     || menu.getConfigCode().equals(MENU_COMBINED_STOCK)
                     || menu.getConfigCode().equals(MENU_ORDER)
@@ -2115,7 +2115,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         orderHelper.loadSerialNo(this);
                         enableSchemeModule();
                     }
-                    bmodel.productHelper.downloadProductFilter("MENU_STK_ORD");
                     bmodel.productHelper.loadRetailerWiseProductWisePurchased();
                     bmodel.productHelper
                             .loadRetailerWiseProductWiseP4StockAndOrderQty();
@@ -2613,9 +2612,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
 
-                        bmodel.productHelper.downloadSalesReturnProducts();
+
                         if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
                             bmodel.productHelper.downloadSalesReturnSKUs();
+
+                        else
+                            bmodel.productHelper.downloadSalesReturnProducts();
 
 
                         bmodel.productHelper.cloneReasonMaster(false);
@@ -3190,10 +3192,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mShelfShareHelper.setLocations(mSFHelper.cloneLocationList(mSFHelper.getLocationList()));
 
                 //Load filter
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    mSFHelper.downloadSFFiveLevelFilter(MENU_SOS);
-                else
-                    bmodel.productHelper.downloadProductFilter(MENU_SOS);
+                mSFHelper.downloadSFFiveLevelFilter(MENU_SOS);
 
                 //load content data
                 mSFHelper.loadData(MENU_SOS);
@@ -3276,10 +3275,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mShelfShareHelper.setLocations(mSFHelper.cloneLocationList(mSFHelper.getLocationList()));
 
                 //Load filter
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    mSFHelper.downloadSFFiveLevelFilter(MENU_SOD);
-                else
-                    bmodel.productHelper.downloadProductFilter(MENU_SOD);
+                mSFHelper.downloadSFFiveLevelFilter(MENU_SOD);
+
 
                 mSFHelper.loadData(MENU_SOD);
 
@@ -3327,8 +3324,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_ASSET);
 
                 //Load filter
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    mSODAssetHelper.downloadSFFiveLevelFilter(MENU_SOD_ASSET);
+                mSODAssetHelper.downloadSFFiveLevelFilter(MENU_SOD_ASSET);
 
                 mSODAssetHelper.loadSODAssetData(MENU_SOD_ASSET);
 
@@ -3375,10 +3371,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 mSFHelper.updateSalesFundamentalConfigurations();
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    mSFHelper.downloadSFFiveLevelFilter(MENU_SOSKU);
-                else
-                    bmodel.productHelper.downloadProductFilter(MENU_SOSKU);
+                mSFHelper.downloadSFFiveLevelFilter(MENU_SOSKU);
 
                 mSFHelper.loadData(MENU_SOSKU);
 
@@ -4839,12 +4832,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
     //used for filter method loading non products content module
     private void chooseFilterType(String menuCode) {
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            bmodel.productHelper
-                    .downloadFiveLevelFilterNonProducts(menuCode);
-        else
-            bmodel.productHelper
-                    .downloadProductFilter(menuCode);
+        bmodel.productHelper
+                .downloadFiveLevelFilterNonProducts(menuCode);
     }
 
 

@@ -217,7 +217,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         } else {
             updateBrandText("Brand", -1);
         }
-        if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
             FiveFilterFragment();
 
 
@@ -453,11 +452,11 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
 
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && isFilterAvailable) {
+            if (isFilterAvailable) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
 
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            if (mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(

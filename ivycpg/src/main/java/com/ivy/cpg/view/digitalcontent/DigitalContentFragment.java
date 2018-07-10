@@ -123,13 +123,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             calledFrom = calledFrom != null ? calledFrom : "Digi";
         }
 
-        if (calledFrom != null && calledFrom.equalsIgnoreCase(MENU_DGT_SW)) {
-            mBModel.productHelper.downloadProductFilter(MENU_DGT_SW);
-        } else {
-            mBModel.productHelper.downloadProductFilter(MENU_DGT);
-        }
-
-        FrameLayout drawer =  view.findViewById(R.id.right_drawer);
+        FrameLayout drawer = view.findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
@@ -179,9 +173,9 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
         new LoadAsyncTask(-1).execute();
 
-        LinearLayout footer =  view.findViewById(R.id.footer);
+        LinearLayout footer = view.findViewById(R.id.footer);
         footer.setVisibility(View.VISIBLE);
-        Button btnClose =  view.findViewById(R.id.btn_close);
+        Button btnClose = view.findViewById(R.id.btn_close);
         if (mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             btnClose.setVisibility(View.VISIBLE);
 
@@ -217,7 +211,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         } else {
             btnClose.setVisibility(View.GONE);
         }
-        Button btn_next =  view.findViewById(R.id.btn_next);
+        Button btn_next = view.findViewById(R.id.btn_next);
         if (MENU_Init.equals(calledFrom)) {
             btn_next.setVisibility(View.VISIBLE);
             btn_next.setOnClickListener(new View.OnClickListener() {
@@ -262,18 +256,11 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         menu.findItem(R.id.menu_next).setVisible(false);
 
-        if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null && mBModel.productHelper.getRetailerModuleParentLeveBO().size() > 0 || (mBModel.productHelper.getRetailerModuleChildLevelBO() != null && mBModel.productHelper.getRetailerModuleChildLevelBO().size() > 0)) {
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
-        } else
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
-
         menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        }
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -312,9 +299,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             return true;
         } else if (i == R.id.menu_next) {
             click(2);
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_fivefilter) {
             FiveFilterFragment();
@@ -360,54 +344,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             Commons.print("" + e);
         }
     }
-
-    /**
-     * productFilterClickedFragment for calling filter fragment
-     */
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment<?> frag = (FilterFragment<?>) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("filterHeader", mBModel.productHelper
-                    .getRetailerModuleChildLevelBO().get(0).getProductLevel());
-            bundle.putSerializable("serilizeContent",
-                    mBModel.productHelper.getRetailerModuleChildLevelBO());
-
-            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && mBModel.productHelper.getRetailerModuleParentLeveBO().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", mBModel.productHelper
-                        .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
-
-                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
-                        .getRetailerModuleParentLeveBO());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-            }
-
-            // set Fragment class Arguments
-            HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-            FilterFragment<?> mFragment = new FilterFragment(mSelectedFilterMap);
-            mFragment.setArguments(bundle);
-            ft.add(R.id.right_drawer, mFragment, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-
     /**
      * Click action
      *
@@ -418,7 +354,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             isClicked = true;
             if (action == 1) {
 
-                SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
+                SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
                 mDigitalContentHelper.setIsDigitalContent();
                 mDigitalContentHelper.setDigitalContentInDB(getActivity().getApplicationContext());
                 mBModel.getRetailerMasterBO().setIsDigitalContent("Y");
@@ -622,13 +558,13 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
 
 
-       /*
-         * loop through the mImageList size
-         * check the loop count is less than mDigitalContentList size
-         * if yes add the mImageList element to the loop count position
-           * increase loop count to 5
-         * if no add the mImageList element at end of mDigitalContentList.
-        */
+                /*
+                 * loop through the mImageList size
+                 * check the loop count is less than mDigitalContentList size
+                 * if yes add the mImageList element to the loop count position
+                 * increase loop count to 5
+                 * if no add the mImageList element at end of mDigitalContentList.
+                 */
                 int loopCount = 0;
                 mImgCount = 0;
                 mAudioCount = 0;
@@ -700,9 +636,9 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 tabLayout.removeAllTabs();
             }
 
-            tabLayout =  view.findViewById(R.id.tab_layout);
+            tabLayout = view.findViewById(R.id.tab_layout);
             tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-            ViewPager viewPager =  view.findViewById(R.id.pager);
+            ViewPager viewPager = view.findViewById(R.id.pager);
             PagerAdapter adapter = new PagerAdapter
                     (getChildFragmentManager());
             if (mImgCount > 0)
@@ -816,6 +752,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+
         public void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);

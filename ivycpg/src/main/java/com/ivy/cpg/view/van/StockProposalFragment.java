@@ -2786,10 +2786,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        else
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
         menu.findItem(R.id.menu_expand).setVisible(false);
 

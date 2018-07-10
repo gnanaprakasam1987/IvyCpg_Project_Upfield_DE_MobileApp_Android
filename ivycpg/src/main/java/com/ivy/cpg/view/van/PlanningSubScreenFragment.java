@@ -106,7 +106,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         menuIcons.put(menuStockView, R.drawable.icon_stock);
         menuIcons.put(menuVanloadStockView, R.drawable.icon_stock);
         menuIcons.put(menuManualVanload, R.drawable.icon_vanload);
-        menuIcons.put(StandardListMasterConstants.MENU_TASK_REPORT,R.drawable.icon_reports);
+        menuIcons.put(StandardListMasterConstants.MENU_TASK_REPORT, R.drawable.icon_reports);
 
         Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper.downloadPlanningSubMenu();
         Commons.print("load management," + String.valueOf(menuDB.size()));
@@ -221,7 +221,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                             .setTradecoveragetitle(menuItem.getMenuName());
                     Intent i = new Intent(getActivity(),
                             PlanningVisitActivity.class);
-                    i.putExtra("isPlanningSub",true);
+                    i.putExtra("isPlanningSub", true);
                     startActivity(i);
                 }
             }
@@ -262,7 +262,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
             vanloadintent.putExtra("planingsub", true);
             new DownloadManualVanLoad().execute();
 
-        }else if (menuItem.getConfigCode().equals(StandardListMasterConstants.MENU_TASK_REPORT ) ){
+        } else if (menuItem.getConfigCode().equals(StandardListMasterConstants.MENU_TASK_REPORT)) {
 
             ConfigureBO configureBO = new ConfigureBO();
             configureBO.setMenuName(menuItem.getMenuName());
@@ -425,20 +425,11 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
-                } else {
-                    bmodel.productHelper
-                            .downloadProductFilter(MENU_LOAD_MANAGEMENT);
-                }
+                bmodel.productHelper
+                        .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
-                else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                            "MENU_CUR_STK_BATCH");
+                bmodel.productHelper.loadProductsWithFiveLevel(
+                        "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
             } catch (Exception e) {
                 Commons.printException(" + e");
@@ -519,20 +510,12 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                     bmodel.vanmodulehelper.downloadSubDepots();
                 }
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
-                } else {
-                    bmodel.productHelper
-                            .downloadProductFilter(MENU_LOAD_MANAGEMENT);
-                }
+                bmodel.productHelper
+                        .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            MENU_LOAD_MANAGEMENT, menuManualVanload);
-                else
-                    bmodel.productHelper.loadProducts(MENU_LOAD_MANAGEMENT,
-                            menuManualVanload);
+                bmodel.productHelper.loadProductsWithFiveLevel(
+                        MENU_LOAD_MANAGEMENT, menuManualVanload);
+
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
 
