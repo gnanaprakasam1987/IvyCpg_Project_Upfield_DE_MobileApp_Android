@@ -87,6 +87,9 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
             holder.orderImage = row.findViewById(R.id.ord_img_view);
 
+            holder.tvVolumeValue = row.findViewById(R.id.tv_volume);
+            holder.tvVolumeLabel = row.findViewById(R.id.tv_volume_title);
+
             if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                 holder.tvWeight.setVisibility(View.GONE);
                 holder.label_weight.setVisibility(View.GONE);
@@ -123,6 +126,12 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
             if (!businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE)
                 holder.orderImage.setVisibility(View.GONE);
+            businessModel.configurationMasterHelper.SHOW_VOLUME_QTY = true;
+
+            if (!businessModel.configurationMasterHelper.SHOW_VOLUME_QTY) {
+                holder.tvVolumeLabel.setVisibility(View.GONE);
+                holder.tvVolumeValue.setVisibility(View.GONE);
+            }
 
 
             holder.orderImage.setOnClickListener(new View.OnClickListener() {
@@ -162,6 +171,8 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         holder.tvMustSellCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        holder.tvVolumeValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
         holder.label_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         holder.label_weight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         holder.label_PreORPost.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -171,7 +182,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         holder.tv_discount_amt.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         holder.taxTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         holder.discTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
+        holder.tvVolumeLabel.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         try {
             if (businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) != null) {
@@ -202,10 +213,67 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
         holder.text_orderValue.setText(businessModel.formatValue((reportBO
                 .getOrderTotal())));
+
+
         holder.text_LPC.setText(reportBO.getLPC());
         holder.tvwDist.setText(reportBO.getDist());
         holder.tvOrderNo.setText(reportBO.getOrderID());
         holder.tvWeight.setText(String.valueOf(reportBO.getWeight()));
+
+
+        try {
+
+            StringBuilder sb = new StringBuilder();
+            String op = mContext.getResources().getString(R.string.item_piece);
+            String oc = mContext.getResources().getString(R.string.item_case);
+            String ou = mContext.getResources().getString(R.string.item_outer);
+
+            if (businessModel.labelsMasterHelper
+                    .applyLabels("item_piece") != null)
+                op = businessModel.labelsMasterHelper
+                        .applyLabels("item_piece");
+            if (businessModel.labelsMasterHelper
+                    .applyLabels("item_case") != null)
+                oc = businessModel.labelsMasterHelper
+                        .applyLabels("item_case");
+
+            if (businessModel.labelsMasterHelper
+                    .applyLabels("item_outer") != null)
+                ou = businessModel.labelsMasterHelper
+                        .applyLabels("item_outer");
+
+
+            businessModel.configurationMasterHelper.SHOW_ORDER_PCS=true;
+            if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
+
+                sb.append(reportBO.getVolumePcsQty() + " " + op + " ");
+            }
+
+            businessModel.configurationMasterHelper.SHOW_ORDER_CASE = true;
+            if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE) {
+
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    sb.append("\n" + (reportBO.getVolumeCaseQty()) + " "
+                            + oc + " ");
+                else
+                    sb.append(reportBO.getVolumeCaseQty() + " "
+                            + oc + " ");
+            }
+            businessModel.configurationMasterHelper.SHOW_OUTER_CASE = true;
+            if (businessModel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS || businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    sb.append("\n" + (reportBO.getVolumeOuterQty()) + " "
+                            + ou + " ");
+                else
+                    sb.append(reportBO.getVolumeCaseQty() + " "
+                            + ou + " ");
+            }
+
+            holder.tvVolumeValue.setText(sb.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
@@ -293,9 +361,10 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         }
 
         TextView text_retailerName, label_orderNumber;
-        TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount;
+        TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount, tvVolumeValue;
         TextView text_delivery_date, tv_tax_value, tv_discount_amt, taxTitle, discTitle;
-        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel;
+        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight,
+                label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel, tvVolumeLabel;
         ImageView orderImage;
 
     }

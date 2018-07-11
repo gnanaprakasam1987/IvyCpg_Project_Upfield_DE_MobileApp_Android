@@ -743,8 +743,8 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
-            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-            appComponent.inject(this);
+           // appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+           // appComponent.inject(this);
 
             mApplicationComponent = DaggerIvyAppComponent.builder()
                     .ivyAppModule(new IvyAppModule(this))

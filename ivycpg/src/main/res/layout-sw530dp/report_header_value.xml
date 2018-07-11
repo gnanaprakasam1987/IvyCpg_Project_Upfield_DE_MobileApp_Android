@@ -135,6 +135,48 @@
             android:text="0/0"
             android:textColor="@color/white"
             android:textSize="@dimen/login_edittext_text_size" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/ret_card_image"
+            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginTop="@dimen/icons_top_margin"
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/lab_dist_pre_post"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:id="@+id/container_volume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/store_margin_top"
+            android:layout_toRightOf="@+id/view2"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lab_totalVolume"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:text="@string/volume"
+                android:textColor="?attr/accentcolor"
+                android:textSize="@dimen/text_sz_small" />
+
+            <TextView
+                android:id="@+id/txt_totalVolume_val"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:adjustViewBounds="true"
+                android:text="0/0"
+                android:textColor="@color/white"
+                android:textSize="@dimen/login_edittext_text_size" />
+        </LinearLayout>
         <Button
             android:id="@+id/btn_export"
             style="?attr/roundedCustomButtonSmall"

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +77,19 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
 
     @BindView(R.id.list)
     ListView listView;
+
+    @BindView(R.id.container_volume)
+    LinearLayout volumeContainer;
+
+    @BindView(R.id.lab_totalVolume)
+    TextView totalWeightLabel;
+
+    @BindView(R.id.txt_totalVolume_val)
+    TextView totalVolumeValue;
+
+    @BindView(R.id.view2)
+    View dividerVolume;
+
 
     private ArrayList<OrderReportBO> list;
 
@@ -282,8 +296,18 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             view.findViewById(R.id.view0).setVisibility(View.GONE);
         }
 
+         businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME = true;
+        if (businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
+            showOrHideVolume();
+        }
+
         return view;
 
+    }
+
+    private void showOrHideVolume() {
+        volumeContainer.setVisibility(View.VISIBLE);
+        dividerVolume.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -379,6 +403,21 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             text_totalOrderValue.setText(SDUtil.format(reportHelper.getTotValues(getActivity().getApplicationContext()) - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue(getActivity().getApplicationContext()),
                     businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                     businessModel.configurationMasterHelper.VALUE_COMMA_COUNT, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+
+
+        //cpg132-task13
+        businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME = true;
+
+        if (businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
+            float totalVolume = 0;
+            for (OrderReportBO ret : list) {
+                totalVolume = totalVolume + ret.getWeight();
+            }
+            String totalWeight = getString(R.string.total) + "  " + getString(R.string.weight);
+            totalWeightLabel.setText(totalWeight);
+            totalVolumeValue.setText(String.valueOf(totalVolume));
+        }
+
 
         // Load ListView
         //  com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter mSchedule = new com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter(list);
