@@ -64,8 +64,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
-import com.ivy.cpg.view.order.scheme.RetailerInfo;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.order.scheme.RetailerInfo;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -81,7 +83,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UserDialogInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -96,7 +97,6 @@ import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
-import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.sd.png.view.TaskListFragment;
 import com.ivy.sd.png.view.UserDialogue;
 
@@ -160,7 +160,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean isVisible = false;
     private boolean isLatLong;
     private static boolean firstLevZoom;
-    private boolean fromHomeClick = false, visitClick = false, isFromPlanning = false,isFromPlanningSub = false;
+    private boolean fromHomeClick = false, visitClick = false, isFromPlanning = false, isFromPlanningSub = false;
 
     private List<LatLng> markerList = new ArrayList<>();
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID;
@@ -368,7 +368,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         visitClick = getIntent().getBooleanExtra("locvisit", false);
         fromHomeClick = getIntent().getBooleanExtra("hometwo", false);
         isFromPlanning = getIntent().getBooleanExtra("isPlanning", false);
-        isFromPlanningSub=getIntent().getBooleanExtra("isPlanningSub",false);
+        isFromPlanningSub = getIntent().getBooleanExtra("isPlanningSub", false);
 
         try {
             Intent arg = getIntent();
@@ -2084,6 +2084,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
                 i.putExtra("isLocDialog", true);
+                i.putExtra("isMandatoryDialog", true);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
                 finish();
@@ -2160,12 +2161,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_VISIT"));
                     finish();
-                } else if(isFromPlanning) {
+                } else if (isFromPlanning) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING"));
                     finish();
 
-                }else if(isFromPlanningSub){
+                } else if (isFromPlanningSub) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING_SUB"));
                     finish();
@@ -2204,7 +2205,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     i.putExtra("isPlanning", true);
                     startActivity(i);
                     finish();
-                }else if(calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)){
+                } else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)) {
                     Intent i = new Intent(ProfileActivity.this, PlanningVisitActivity.class);
                     i.putExtra("isPlanningSub", true);
                     startActivity(i);
