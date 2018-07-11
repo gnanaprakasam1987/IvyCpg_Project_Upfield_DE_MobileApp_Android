@@ -529,49 +529,6 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    private void productFilterClickedFragment() {
-        try {
-
-            QUANTITY = null;
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("filterHeader", bmodel.productHelper
-                    .getChildLevelBo().get(0).getProductLevel());
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-
-            if (bmodel.productHelper.getParentLevelBo() != null
-                    && bmodel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -589,16 +546,12 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
         if (!generalbutton.equals(GENERAL))
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
-        if (!brandbutton.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
 
         menu.findItem(R.id.menu_crown).setVisible(true);
         menu.findItem(R.id.menu_remarks).setVisible(false);
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-        menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_next).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_spl_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_crown).setVisible(!drawerOpen);
@@ -663,14 +616,7 @@ public class CrownReturnActivity extends IvyBaseActivityNoActionBar implements
 			 */
 
             return true;
-        } else if (i == R.id.menu_product_filter) {// Normal Filter Fragment
-            if (bmodel.configurationMasterHelper.IS_UNLINK_FILTERS) {
-                generalbutton = GENERAL;
-                mSelectedFilterMap.put("General", GENERAL);
-            }
-            productFilterClickedFragment();
-            return true;
-        } else if (i == R.id.menu_spl_filter) {
+        }  else if (i == R.id.menu_spl_filter) {
             generalFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_crown) {

@@ -113,14 +113,6 @@ public class CurrentReportViewFragment extends Fragment implements ICurrentRepor
 
         Vector<ChildLevelBo> items = new Vector<>();
         int siz = 0;
-        try {
-            items = bModel.productHelper.getChildLevelBo();
-            siz = items.size();
-            if (siz == 0)
-                return view;
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
 
 
         final Vector<StockReportBO> mylist = bModel.reportHelper.downloadCurrentStockReport();

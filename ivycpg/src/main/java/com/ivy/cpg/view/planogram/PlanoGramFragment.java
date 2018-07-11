@@ -488,7 +488,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             }
 
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
             if (!menuCode.equals("MENU_PLANOGRAM_CS") && mBModel.productHelper.isFilterAvaiable(menuCode)) {
@@ -594,55 +593,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         Toast.LENGTH_SHORT).show();
             }
 
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    @Deprecated
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-
-            if (frag != null)
-                ft.detach(frag);
-
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("filterHeader", mPlanoGramHelper
-                    .getmChildLevelBo().get(0).getProductLevel());
-            bundle.putBoolean("ishideAll", true);
-            bundle.putSerializable("serilizeContent",
-                    mPlanoGramHelper.getmChildLevelBo());
-
-            if (mPlanoGramHelper.getmParentLevelBo() != null
-                    && mPlanoGramHelper.getmParentLevelBo()
-                    .size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader",
-                        mPlanoGramHelper.getmParentLevelBo()
-                                .get(0).getPl_productLevel());
-
-                mBModel.productHelper
-                        .setPlevelMaster(mPlanoGramHelper
-                                .getmParentLevelBo());
-            } else
-                bundle.putBoolean("isFormBrand", false);
-
-            // set Fragment class Arguments
-            HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-            FilterFragment fragment = new FilterFragment(mSelectedFilterMap);
-            fragment.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragment, "filter");
-            ft.commit();
         } catch (Exception e) {
             Commons.printException("" + e);
         }

@@ -711,9 +711,6 @@ public class StockProposalScreen extends ToolBarwithFilter implements
         } else if (i == R.id.menu_spl_filter) {
             generalFilterClickedFragment();
             return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }

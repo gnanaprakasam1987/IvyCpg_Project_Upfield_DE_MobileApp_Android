@@ -296,7 +296,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 mPlanoGramHelper.downloadPlanoGram(getApplicationContext(), MENU_VAN_PLANOGRAM);
                 mPlanoGramHelper.downloadPlanoGramProductLocations(getApplicationContext(), MENU_VAN_PLANOGRAM, mBModel.getRetailerMasterBO().getRetailerID(), null);
                 mPlanoGramHelper.loadPlanoGramInEditMode(getApplicationContext(), "0");
-                if (mBModel.productHelper.getChildLevelBo() != null && mBModel.productHelper.getChildLevelBo().size() > 0) {
+                if (mPlanoGramHelper.getmChildLevelBo() != null && mPlanoGramHelper.getmChildLevelBo().size() > 0) {
                     Intent in = new Intent(LoadManagementScreen.this,
                             PlanoGramActivity.class);
                     in.putExtra("from", "1");
@@ -409,13 +409,6 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         Toast.makeText(LoadManagementScreen.this, strTitle, Toast.LENGTH_SHORT)
                 .show();
     }
-
-
-
-
-
-
-
 
 
     @Override

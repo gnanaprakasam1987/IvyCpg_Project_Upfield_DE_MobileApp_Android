@@ -493,7 +493,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
     protected void onStart() {
         super.onStart();
         Commons.print("OnStart Called");
-        productFilterClickedFragment(); // Normal Filter Fragment
         mDrawerLayout.closeDrawer(GravityCompat.END);
     }
 
@@ -1761,17 +1760,11 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
 
-        if (!brandbutton.equals(BRAND)) {
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
-        }
-
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
-        menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_next).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_spl_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_remarks).setVisible(!drawerOpen);
@@ -1804,7 +1797,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         menu.findItem(R.id.menu_barcode).setVisible(bmodel.configurationMasterHelper.IS_BAR_CODE);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         if (bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
             if (isFilter) {
@@ -1884,15 +1876,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         } else if (i == R.id.menu_loc_filter) {
 
             showLocation();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-
-            if (bmodel.configurationMasterHelper.IS_UNLINK_FILTERS) {
-                generalbutton = GENERAL;
-                mSelectedFilterMap.put("General", GENERAL);
-            }
-
-            productFilterClickedFragment(); // Normal Filter Fragment
             return true;
         } else if (i == R.id.menu_remarks) {
 
@@ -2032,57 +2015,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
             ft.commit();
         } catch (Exception e) {
             Commons.printException(e);
-        }
-    }
-
-    private void productFilterClickedFragment() {
-        try {
-            QUANTITY = null;
-
-            mDrawerLayout.openDrawer(GravityCompat.END);
-
-            FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-
-            if (bmodel.productHelper.getChildLevelBo().size() > 0)
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getChildLevelBo().get(0).getProductLevel());
-            else
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-
-            if (bmodel.productHelper.getParentLevelBo() != null
-                    && bmodel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e + "");
         }
     }
 

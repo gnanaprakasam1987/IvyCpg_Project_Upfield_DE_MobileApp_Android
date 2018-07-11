@@ -160,7 +160,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
         int i = item.getItemId();
         if (i == R.id.menu_filter) {
             //ReportMenuFragmentActivity.mDrawerLayout.closeDrawer(GravityCompat.START);
-            productFilterClickedFragment();
+            fiveFilterClickedFragment();
             return true;
         }
 
@@ -180,7 +180,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
         }
     }
 
-    private void productFilterClickedFragment() {
+    private void fiveFilterClickedFragment() {
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
 

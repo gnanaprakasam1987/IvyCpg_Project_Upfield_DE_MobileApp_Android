@@ -598,7 +598,7 @@ public class PlanoGramHelper {
         this.mParentLevelBo = mParentLevelBo;
     }
 
-    Vector<ChildLevelBo> getmChildLevelBo() {
+    public Vector<ChildLevelBo> getmChildLevelBo() {
         return mChildLevelBo;
     }
 

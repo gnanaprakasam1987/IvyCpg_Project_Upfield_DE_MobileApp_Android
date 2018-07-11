@@ -221,21 +221,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
         updateBrandText(BRAND_STRING, -1);
 
-        if (bmodel.productHelper.getChildLevelBo() != null) {
-            // Check weather Object are still exist or not.
-            int siz = 0;
-            try {
-                Vector<ChildLevelBo> items = bmodel.productHelper.getChildLevelBo();
-                siz = items.size();
-            } catch (Exception nulle) {
-                Toast.makeText(getActivity(), "Session out. Login again.",
-                        Toast.LENGTH_SHORT).show();
-                Commons.printException(nulle);
-            }
-            if (siz == 0)
-                return;
-        }
-
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
 

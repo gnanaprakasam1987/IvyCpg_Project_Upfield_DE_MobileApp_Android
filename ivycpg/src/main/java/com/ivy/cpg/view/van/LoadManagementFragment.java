@@ -391,7 +391,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 mPlanoGramHelper.downloadPlanoGram(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM);
                 mPlanoGramHelper.downloadPlanoGramProductLocations(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
                 mPlanoGramHelper.loadPlanoGramInEditMode(getContext().getApplicationContext(), "0");
-                if (bmodel.productHelper.getChildLevelBo() != null && bmodel.productHelper.getChildLevelBo().size() > 0) {
+                if (mPlanoGramHelper.getmChildLevelBo() != null && mPlanoGramHelper.getmChildLevelBo().size() > 0) {
                     Intent in = new Intent(getActivity(),
                             PlanoGramActivity.class);
                     in.putExtra("from", "1");

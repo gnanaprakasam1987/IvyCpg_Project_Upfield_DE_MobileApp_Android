@@ -469,35 +469,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    /**
-     * Used to Filter Category and Brand.
-     */
-    private void productFilterClickedFragment() {
-        try {
-
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = ManualVanLoadActivity.this
-                    .getSupportFragmentManager();
-            FilterFragment<?> frag = (FilterFragment<?>) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putBoolean("isFormBrand", true);
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
     @Override
     public void updateBrandText(String mFilterText, int id) {
         // Close the drawer
@@ -555,19 +526,13 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if (!brandFilterText.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
-
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
-        menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_bottle_return).setVisible(!drawerOpen);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN && bmodel.configurationMasterHelper.VANLOAD_TYPE == 0)
             menu.findItem(R.id.menu_bottle_return).setVisible(true);
@@ -589,9 +554,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 mDrawerLayout.closeDrawers();
             else
                 onBackButtonClick();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_bottle_return) {
             if (!isClicked) {

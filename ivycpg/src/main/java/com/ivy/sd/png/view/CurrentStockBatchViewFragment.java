@@ -64,12 +64,12 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
         setHasOptionsMenu(true);
         /*
          * if (bmodel.configurationMasterHelper.SELECT_DEFAULT_FILTER) {
-		 * selectByDefaultFirstFilter(); } else { if
-		 * (bmodel.mPriceChangeCheckHelper.mSelectedFilter == 0)
-		 * bmodel.mPriceChangeCheckHelper.mSelectedFilter = -1; if
-		 * (bmodel.mPriceChangeCheckHelper.mSelectedParentFilter == 0)
-		 * bmodel.mPriceChangeCheckHelper.mSelectedParentFilter = -1; }
-		 */
+         * selectByDefaultFirstFilter(); } else { if
+         * (bmodel.mPriceChangeCheckHelper.mSelectedFilter == 0)
+         * bmodel.mPriceChangeCheckHelper.mSelectedFilter = -1; if
+         * (bmodel.mPriceChangeCheckHelper.mSelectedParentFilter == 0)
+         * bmodel.mPriceChangeCheckHelper.mSelectedParentFilter = -1; }
+         */
 
         priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
 
@@ -173,7 +173,6 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
         viewFlipper = (ViewFlipper) getView().findViewById(R.id.view_flipper);
 
 
-
         bmodel.reportHelper.updateBaseUOM("ORDER", 3);
 
 
@@ -207,7 +206,6 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         menu.findItem(R.id.menu_spl_filter).setVisible(false);
         menu.findItem(R.id.menu_next).setVisible(false);
@@ -217,17 +215,14 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
         menu.findItem(R.id.menu_sih_apply).setVisible(false);
 
 
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
-            return true;
-        } else if (i == R.id.menu_fivefilter) {
+        if (i == R.id.menu_fivefilter) {
             fiveFilterFragment();
             return true;
         }
@@ -246,6 +241,7 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
+
     @Override
     public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
 
@@ -502,59 +498,6 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
             FilterFiveFragment<Object> fragobj = new FilterFiveFragment<Object>();
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
-            ft.commit();
-        } catch (Exception e) {
-
-            Commons.printException(e);
-        }
-    }
-
-    public void productFilterClickedFragment() {
-        try {
-
-            Vector vect = bmodel.productHelper.getChildLevelBo();
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            // To hide Key Board
-
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-
-            if (bmodel.productHelper.getChildLevelBo().size() > 0)
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getChildLevelBo().get(0).getProductLevel());
-            else
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-
-            if (bmodel.productHelper.getParentLevelBo() != null
-                    && bmodel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
             ft.commit();
         } catch (Exception e) {
 

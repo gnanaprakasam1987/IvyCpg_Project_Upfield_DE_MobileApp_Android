@@ -93,16 +93,13 @@ public class ProductHelper {
 
     private Vector<LevelBO> globalCategory = new Vector<LevelBO>();
 
-    private Vector<ParentLevelBo> mParentLevelBo;
-    private Vector<ChildLevelBo> mChildLevelBo;
-    private Vector<ParentLevelBo> plevelMaster;
     private Vector<LevelBO> pfilterlevel;
-    private Vector<LevelBO> sequencevalues;
-    private Vector<LevelBO> mrRetailerModuleSequence;
 
-    private HashMap<Integer, Vector<LevelBO>> mfilterlevelBo;
-    private HashMap<Integer, Vector<LevelBO>> mRetailerModuleFilterObjectBySequence;
+    private Vector<LevelBO> filterProductLevels;
+    private Vector<LevelBO> filterProductLevelsRex;
 
+    private HashMap<Integer, Vector<LevelBO>> filterProductsByLevelId;
+    private HashMap<Integer, Vector<LevelBO>> filterProductsByLevelIdRex;
 
     private HashMap<Integer, ArrayList<StoreWiseDiscountBO>> mProductIdListByDiscoutId;
     private ArrayList<Integer> mDiscountIdList;
@@ -242,29 +239,6 @@ public class ProductHelper {
         return instance;
     }
 
-    public Vector<ParentLevelBo> getParentLevelBo() {
-        if (mParentLevelBo != null) {
-            return mParentLevelBo;
-        }
-        return new Vector<ParentLevelBo>();
-    }
-
-    public Vector<ParentLevelBo> getPlevelMaster() {
-        return plevelMaster;
-    }
-
-    public void setPlevelMaster(Vector<ParentLevelBo> plevelMaster) {
-        this.plevelMaster = plevelMaster;
-    }
-
-    public Vector<ChildLevelBo> getChildLevelBo() {
-        return mChildLevelBo;
-    }
-
-    private void setChildLevelBo(Vector<ChildLevelBo> mChildLevelBo) {
-        this.mChildLevelBo = mChildLevelBo;
-    }
-
     public Vector<ProductMasterBO> getProductMaster() {
         if (productMaster == null)
             productMaster = new Vector<>();
@@ -284,19 +258,19 @@ public class ProductHelper {
     }
 
     public HashMap<Integer, Vector<LevelBO>> getFiveLevelFilters() {
-        return mfilterlevelBo;
+        return filterProductsByLevelId;
     }
 
     public Vector<LevelBO> getSequenceValues() {
-        return sequencevalues;
+        return filterProductLevels;
     }
 
     public HashMap<Integer, Vector<LevelBO>> getRetailerModuleFilerContentBySequenct() {
-        return mRetailerModuleFilterObjectBySequence;
+        return filterProductsByLevelIdRex;
     }
 
     public Vector<LevelBO> getRetailerModuleSequenceValues() {
-        return mrRetailerModuleSequence;
+        return filterProductLevelsRex;
     }
 
     public HashMap<Integer, Vector<Integer>> getmAttributeByProductId() {
@@ -649,7 +623,7 @@ public class ProductHelper {
                         + " WHERE  CA.ActivityCode='" + moduleName + "'");
 
         LevelBO mLevelBO;
-        mrRetailerModuleSequence = new Vector<>();
+        filterProductLevelsRex = new Vector<>();
         while (listCursor.moveToNext()) {
 
             mLevelBO = new LevelBO();
@@ -657,22 +631,22 @@ public class ProductHelper {
             mLevelBO.setLevelName(listCursor.getString(1));
             mLevelBO.setSequence(listCursor.getInt(2));
 
-            mrRetailerModuleSequence.add(mLevelBO);
+            filterProductLevelsRex.add(mLevelBO);
         }
 
         listCursor.close();
 
-        mRetailerModuleFilterObjectBySequence = new HashMap<>();
+        filterProductsByLevelIdRex = new HashMap<>();
         try {
 
-            if (mrRetailerModuleSequence.size() > 0) {
-                loadParentFilter(moduleName, mrRetailerModuleSequence.get(0)
+            if (filterProductLevelsRex.size() > 0) {
+                loadParentFilter(moduleName, filterProductLevelsRex.get(0)
                         .getProductID());
-                for (int i = 1; i < mrRetailerModuleSequence.size(); i++) {
-                    loadChildFilter(mrRetailerModuleSequence.get(i).getSequence(),
-                            mrRetailerModuleSequence.get(i - 1).getSequence(),
-                            moduleName, mrRetailerModuleSequence.get(i).getProductID(),
-                            mrRetailerModuleSequence.get(i - 1).getProductID());
+                for (int i = 1; i < filterProductLevelsRex.size(); i++) {
+                    loadChildFilter(filterProductLevelsRex.get(i).getSequence(),
+                            filterProductLevelsRex.get(i - 1).getSequence(),
+                            moduleName, filterProductLevelsRex.get(i).getProductID(),
+                            filterProductLevelsRex.get(i - 1).getProductID());
                 }
             }
 
@@ -716,10 +690,10 @@ public class ProductHelper {
                 pfilterlevel.add(mLevelBO);
             }
             if (isRetailerModule(mModuleCode)) {
-                mRetailerModuleFilterObjectBySequence.put(mProductLevelId,
+                filterProductsByLevelIdRex.put(mProductLevelId,
                         pfilterlevel);
             } else {
-                mfilterlevelBo.put(mProductLevelId, pfilterlevel);
+                filterProductsByLevelId.put(mProductLevelId, pfilterlevel);
             }
             c.close();
         }
@@ -775,10 +749,10 @@ public class ProductHelper {
             }
 
             if (isRetailerModule(mModuleCode)) {
-                mRetailerModuleFilterObjectBySequence.put(mProductLevelId,
+                filterProductsByLevelIdRex.put(mProductLevelId,
                         pfilterlevel);
             } else {
-                mfilterlevelBo.put(mProductLevelId, pfilterlevel);
+                filterProductsByLevelId.put(mProductLevelId, pfilterlevel);
             }
             c.close();
             db.close();
@@ -966,7 +940,7 @@ public class ProductHelper {
                         + " WHERE  CA.ActivityCode='" + moduleName + "'");
 
         LevelBO mLevelBO;
-        sequencevalues = new Vector<>();
+        filterProductLevels = new Vector<>(); // list of level like category,brand etc shown in left side of filter
         while (listCursor.moveToNext()) {
 
             mLevelBO = new LevelBO();
@@ -974,7 +948,7 @@ public class ProductHelper {
             mLevelBO.setLevelName(listCursor.getString(1));
             mLevelBO.setSequence(listCursor.getInt(2));
 
-            sequencevalues.add(mLevelBO);
+            filterProductLevels.add(mLevelBO);
         }
 
         listCursor.close();
@@ -993,33 +967,33 @@ public class ProductHelper {
 
         seqCur.close();
 
-        mfilterlevelBo = new HashMap<>();
+        filterProductsByLevelId = new HashMap<>();
 
         try {
 
-            if (sequencevalues.size() > 0) {
+            if (filterProductLevels.size() > 0) {
 
                 if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
                     loopEnd = contentlevel - bmodel.configurationMasterHelper.globalSeqId
                             + 1;
                 else
-                    loopEnd = contentlevel - sequencevalues.get(0).getSequence()
+                    loopEnd = contentlevel - filterProductLevels.get(0).getSequence()
                             + 1;
-                loadParentFilter(loopEnd, sequencevalues.get(0).getProductID());
+                loadParentFilter(loopEnd, filterProductLevels.get(0).getProductID());
 
-                for (int i = 1; i < sequencevalues.size(); i++) {
+                for (int i = 1; i < filterProductLevels.size(); i++) {
                     if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
                         loopEnd = contentlevel - bmodel.configurationMasterHelper.globalSeqId
                                 + 1;
                     else
                         loopEnd = contentlevel
-                                - sequencevalues.get(i - 1).getSequence() + 1;
+                                - filterProductLevels.get(i - 1).getSequence() + 1;
 
                     loadChildFilter(loopEnd,
-                            sequencevalues.get(i).getSequence(),
-                            sequencevalues.get(i - 1).getSequence(),
-                            sequencevalues.get(i).getProductID(),
-                            sequencevalues.get(i - 1).getProductID());
+                            filterProductLevels.get(i).getSequence(),
+                            filterProductLevels.get(i - 1).getSequence(),
+                            filterProductLevels.get(i).getProductID(),
+                            filterProductLevels.get(i - 1).getProductID());
                 }
             }
 
@@ -1073,7 +1047,7 @@ public class ProductHelper {
                 mLevelBO.setLevelName(c.getString(1));
                 pfilterlevel.add(mLevelBO);
             }
-            mfilterlevelBo.put(mProductLevelId, pfilterlevel);
+            filterProductsByLevelId.put(mProductLevelId, pfilterlevel);
             c.close();
         }
     }
@@ -1126,7 +1100,7 @@ public class ProductHelper {
                 mLevelBO.setLevelName(c.getString(2));
                 pfilterlevel.add(mLevelBO);
             }
-            mfilterlevelBo.put(mLevelId, pfilterlevel);
+            filterProductsByLevelId.put(mLevelId, pfilterlevel);
             c.close();
             db.close();
         }
@@ -1266,9 +1240,9 @@ public class ProductHelper {
             Commons.print("filter" + filter);
             String sql = "";
 
-      /*      if (sequencevalues != null) {
-                if (sequencevalues.size() > 0) {
-                    mChildLevel = sequencevalues.size();
+      /*      if (filterProductLevels != null) {
+                if (filterProductLevels.size() > 0) {
+                    mChildLevel = filterProductLevels.size();
                 }
             }*/
 
@@ -3795,9 +3769,9 @@ public class ProductHelper {
         int mContentLevel = 0;
         int mFilterLevel = 0;
 
-        if (sequencevalues != null) {
-            if (sequencevalues.size() > 0) {
-                mChildLevel = sequencevalues.size();
+        if (filterProductLevels != null) {
+            if (filterProductLevels.size() > 0) {
+                mChildLevel = filterProductLevels.size();
             }
         }
 
@@ -4737,9 +4711,9 @@ public class ProductHelper {
             Commons.print("filter" + filter);
             String sql = "";
 
-            if (sequencevalues != null) {
-                if (sequencevalues.size() > 0) {
-                    mChildLevel = sequencevalues.size();
+            if (filterProductLevels != null) {
+                if (filterProductLevels.size() > 0) {
+                    mChildLevel = filterProductLevels.size();
                 }
             }
 
@@ -5786,12 +5760,12 @@ public class ProductHelper {
     public void loadCategoryExpandableList() {
         if (getFiveLevelFilters() != null) {
             //if(getFiveLevelFilters().get(categoryLevelId)!=null){
-            if (mfilterlevelBo.get(sequencevalues.get(0)) != null) {
-                categoryExpandableList.addAll(mfilterlevelBo.get(sequencevalues.get(0)));//getFiveLevelFilters().get(categoryLevelId));
+            if (filterProductsByLevelId.get(filterProductLevels.get(0)) != null) {
+                categoryExpandableList.addAll(filterProductsByLevelId.get(filterProductLevels.get(0)));//getFiveLevelFilters().get(categoryLevelId));
             }
             //if(getFiveLevelFilters().get(brandLevelId)!=null){
-            if (mfilterlevelBo.get(sequencevalues.get(1)) != null) {
-                parentChildMap.addAll(mfilterlevelBo.get(sequencevalues.get(1)));//getFiveLevelFilters().get(brandLevelId));
+            if (filterProductsByLevelId.get(filterProductLevels.get(1)) != null) {
+                parentChildMap.addAll(filterProductsByLevelId.get(filterProductLevels.get(1)));//getFiveLevelFilters().get(brandLevelId));
             }
         }
         LevelBO levelBO = new LevelBO();
@@ -6231,9 +6205,9 @@ public class ProductHelper {
             Commons.print("filter" + filter);
             String sql = "";
 
-            if (sequencevalues != null) {
-                if (sequencevalues.size() > 0) {
-                    mChildLevel = sequencevalues.size();
+            if (filterProductLevels != null) {
+                if (filterProductLevels.size() > 0) {
+                    mChildLevel = filterProductLevels.size();
                 }
             }
 
