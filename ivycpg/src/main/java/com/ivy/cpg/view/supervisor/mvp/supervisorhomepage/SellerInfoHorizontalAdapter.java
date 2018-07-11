@@ -9,15 +9,20 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity;
 import com.ivy.sd.png.asean.view.R;
+
+import java.util.ArrayList;
 
 public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfoHorizontalAdapter.MyViewHolder> {
 
     private Context context;
+    private ArrayList<SupervisorModelBo> sellerArrayList = new ArrayList<>();
 
-    SellerInfoHorizontalAdapter(Context context){
+    SellerInfoHorizontalAdapter(Context context, ArrayList<SupervisorModelBo> sellerArrayList){
         this.context = context;
+        this.sellerArrayList = sellerArrayList;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -66,6 +71,6 @@ public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfo
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 3;
     }
 }

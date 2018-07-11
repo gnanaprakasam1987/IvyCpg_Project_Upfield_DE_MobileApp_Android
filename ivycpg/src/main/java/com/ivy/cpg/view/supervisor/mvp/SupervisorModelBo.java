@@ -1,18 +1,21 @@
 package com.ivy.cpg.view.supervisor.mvp;
 
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 public class SupervisorModelBo {
 
-    private String userName,status,activityName,time,retailerName;
+    private String userName,status,activityName,retailerName;
     private int userId,batterStatus,retailerId,billed,covered;
-    private boolean isMockLocationEnabled,isGpsEnabled,isDeviated,isOrdered;
+    private boolean isMockLocationEnabled,isGpsEnabled,isDeviated,isOrdered,isAttendanceDone = false;
     private double latitude,longitude;
-    private Long orderValue,timeIn,timeOut;
-
+    private Long orderValue,timeIn,timeOut,time;
+    private MarkerOptions markerOptions;
     private Marker marker;
+
+    private ArrayList<SupervisorModelBo> detailsArrayList = new ArrayList<>();
 
     public Marker getMarker() {
         return marker;
@@ -22,7 +25,13 @@ public class SupervisorModelBo {
         this.marker = marker;
     }
 
-    private ArrayList<SupervisorModelBo> supervisorModelBos = new ArrayList<>();
+    public MarkerOptions getMarkerOptions() {
+        return markerOptions;
+    }
+
+    public void setMarkerOptions(MarkerOptions markerOptions) {
+        this.markerOptions = markerOptions;
+    }
 
     public String getUserName() {
         return userName;
@@ -72,11 +81,11 @@ public class SupervisorModelBo {
         this.timeOut = timeOut;
     }
 
-    public String getTime() {
+    public Long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 
@@ -178,11 +187,19 @@ public class SupervisorModelBo {
         isOrdered = ordered;
     }
 
-    public ArrayList<SupervisorModelBo> getSupervisorModelBos() {
-        return supervisorModelBos;
+    public ArrayList<SupervisorModelBo> getDetailsArrayList() {
+        return detailsArrayList;
     }
 
-    public void setSupervisorModelBos(ArrayList<SupervisorModelBo> supervisorModelBos) {
-        this.supervisorModelBos = supervisorModelBos;
+    public void setDetailsArrayList(ArrayList<SupervisorModelBo> detailsArrayList) {
+        this.detailsArrayList = detailsArrayList;
+    }
+
+    public boolean isAttendanceDone() {
+        return isAttendanceDone;
+    }
+
+    public void setAttendanceDone(boolean attendanceDone) {
+        isAttendanceDone = attendanceDone;
     }
 }

@@ -1452,12 +1452,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
 
-    private static final String CODE_SUP_USER_LOAD_LEVEL = "SUP_USER_LOAD_LEVEL";
-    public int SUP_USER_LOAD_LEVEL;
-
-    private static final String CODE_SUP_UPDATE_USER_LOC = "SUP_UPDATE_USER_LOC";
-    public int SUP_UPDATE_USER_LOC;
-
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2564,8 +2558,6 @@ public class ConfigurationMasterHelper {
             loadLicenseValidationConfig();
         }
 
-        this.SUP_USER_LOAD_LEVEL = hashMapHHTModuleOrder.get(CODE_SUP_USER_LOAD_LEVEL) != null ? hashMapHHTModuleOrder.get(CODE_SUP_USER_LOAD_LEVEL) : 0;
-        this.SUP_UPDATE_USER_LOC = hashMapHHTModuleOrder.get(CODE_SUP_UPDATE_USER_LOC) != null ? hashMapHHTModuleOrder.get(CODE_SUP_UPDATE_USER_LOC) : 0;
     }
 
     private boolean isInOutModule() {

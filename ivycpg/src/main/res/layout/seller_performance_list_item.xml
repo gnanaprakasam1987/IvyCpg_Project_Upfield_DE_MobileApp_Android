@@ -8,7 +8,7 @@
     android:layout_marginRight="@dimen/_15sdp"
     android:layout_marginTop="@dimen/_5sdp"
     android:layout_marginBottom="@dimen/_5sdp"
-    app:cardElevation="@dimen/_4sdp"
+    app:cardElevation="@dimen/_1sdp"
     app:cardBackgroundColor="@color/white">
 
     <LinearLayout
@@ -19,10 +19,24 @@
         android:gravity="center_vertical"
         android:weightSum="1">
 
-        <com.ivy.cpg.view.supervisor.helper.CircleImageView
+        <RelativeLayout
             android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:src="@drawable/user_default"/>
+            android:layout_height="@dimen/_50sdp">
+
+            <com.ivy.cpg.view.supervisor.helper.CircleImageView
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:src="#61b9b9b9"/>
+
+            <com.ivy.cpg.view.supervisor.helper.CircleImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_default_user"/>
+
+        </RelativeLayout>
+
+
 
         <LinearLayout
             android:layout_width="0dp"

@@ -32,13 +32,25 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/_10sdp">
 
-                <com.ivy.cpg.view.supervisor.helper.CircleImageView
+                <RelativeLayout
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp"
-                    android:src="@drawable/face"
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_5sdp"
-                    android:layout_marginTop="@dimen/_2sdp"/>
+                    android:layout_marginTop="@dimen/_2sdp">
+
+                    <com.ivy.cpg.view.supervisor.helper.CircleImageView
+                        android:layout_width="@dimen/_50sdp"
+                        android:layout_height="@dimen/_50sdp"
+                        android:src="#61b9b9b9" />
+
+                    <com.ivy.cpg.view.supervisor.helper.CircleImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_default_user" />
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -28,6 +28,7 @@ public class SDUtil {
     public static final int GMT_DATE_TIME = 7;
     public static final int DATE_GLOBAL_PLAIN = 8;
     public static final int DATE_GLOBAL_EIPHEN = 9;
+    public static final int DATE_DOB_FORMAT_PLAIN = 10;
 
 
     /**
@@ -273,7 +274,10 @@ public class SDUtil {
         } else if (DATE_GLOBAL_EIPHEN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        } else {
+        } else if (DATE_DOB_FORMAT_PLAIN == dateFormat) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
+            return sdf.format(cal.getTime());
+        }else {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyHHmmss", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         }

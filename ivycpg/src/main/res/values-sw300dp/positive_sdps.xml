@@ -601,7 +601,7 @@
 	<dimen name="_599sdp">599.00dp</dimen>
 	<dimen name="_600sdp">600.00dp</dimen>
 
-	<dimen name="_3_4sdp">1.05dp</dimen>
+	<dimen name="_3_4sdp">0.9dp</dimen>
 	<dimen name="_0_7sdp">0.20dp</dimen>
 
 	<dimen name="map_4sdp">1.54dp</dimen>

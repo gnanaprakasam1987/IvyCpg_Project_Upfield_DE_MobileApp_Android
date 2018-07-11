@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
@@ -37,12 +38,19 @@ import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
+import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerListActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
+import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SupervisorHomeFragment extends IvyBaseFragment implements
@@ -50,15 +58,18 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         GoogleMap.OnInfoWindowClickListener,SupervisorHomeContract.SupervisorHomeView{
 
     private GoogleMap mMap;
-    boolean isFirst = true;
     private BottomSheetBehavior bottomSheetBehavior;
-    private TextView totalSeller, absentSeller, marketSeller;
+    private TextView totalSeller, absentSeller, marketSeller
+            , tvCoveredOutlet, tvUnbilledOutlet, tvTotalOutlet, tvOrderValue;
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName;
     private RecyclerViewPager mRecyclerView;
-    @SuppressLint("UseSparseArrays")
-    private HashMap<Integer, SupervisorModelBo> sellerInfoHasMap = new HashMap<>();
+    private SupervisorHomePresenter supervisorHomePresenter;
+    private SellerInfoHorizontalAdapter sellerInfoHorizontalAdapter;
+
+    private ArrayList<SupervisorModelBo> sellerArrayList = new ArrayList<>();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,8 +107,10 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         initViews(view);
         initViewPager(view);
 
-        SupervisorHomePresenter supervisorHomePresenter = new SupervisorHomePresenter();
-        supervisorHomePresenter.loginToFirebase(getContext().getApplicationContext(),this);
+        supervisorHomePresenter = new SupervisorHomePresenter();
+        supervisorHomePresenter.setView(this,getContext());
+
+//        supervisorHomePresenter.getSellerListAWS();
 
         return view;
     }
@@ -112,6 +125,12 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         totalSeller = view.findViewById(R.id.tv_ttl_seller);
         absentSeller = view.findViewById(R.id.tv_ttl_absent_seller);
         marketSeller = view.findViewById(R.id.tv_ttl_market_seller);
+        tvCoveredOutlet = view.findViewById(R.id.tv_covered_outlet);
+        tvUnbilledOutlet = view.findViewById(R.id.tv_unbilled_outlet);
+        tvTotalOutlet = view.findViewById(R.id.tv_ttl_outlet);
+        tvOrderValue = view.findViewById(R.id.tv_order_value);
+
+        tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
 
         view.findViewById(R.id.ttl_seller_layout).setOnClickListener(this);
         view.findViewById(R.id.ttl_outlet_layout).setOnClickListener(this);
@@ -119,24 +138,120 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         view.findViewById(R.id.unbilled_layout).setOnClickListener(this);
         view.findViewById(R.id.seller_view_btn).setOnClickListener(this);
 
+
+        //Bottom sheet layout Typeface
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_outlet)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
+        ((TextView) view.findViewById(R.id.tv_txt_covered_outlet)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
+        ((TextView) view.findViewById(R.id.tv_txt_unbilled_outlet)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
+        ((TextView) view.findViewById(R.id.tv_txt_order_value)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getContext()));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getContext()));
+        ((TextView) view.findViewById(R.id.tv_inmarket_seller)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getContext()));
+
+        totalSeller.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+        absentSeller.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+        marketSeller.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+        tvCoveredOutlet.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+        tvUnbilledOutlet.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+        tvTotalOutlet.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+        tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+
+
         mapWrapperLayout = view.findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(getContext(), 39 + 20));
 
-        tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
-
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
+
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        if(mRecyclerView.getVisibility() == View.VISIBLE) {
+                            bottomSheetBehavior.setHideable(true);
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        }
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        view.findViewById(R.id.ttl_seller_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SellerListActivity.class);
+                intent.putExtra("TabPos", 0);
+                intent.putExtra("Screen", "Seller");
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.ttl_outlet_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
+                intent.putExtra("TabPos", 0);
+                intent.putExtra("Screen", "Outlet");
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.covered_outlet_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
+                intent.putExtra("TabPos", 1);
+                intent.putExtra("Screen", "Outlet");
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.unbilled_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
+                intent.putExtra("TabPos", 2);
+                intent.putExtra("Screen", "Outlet");
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.seller_view_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), SellerPerformanceListActivity.class);
+                intent.putExtra("Screen", "Seller Performance");
+                startActivity(intent);
+            }
+        });
 
     }
 
-    protected void initViewPager(final View view) {
+    private void initViewPager(final View view) {
         mRecyclerView = view.findViewById(R.id.viewpager);
         mRecyclerView.setVisibility(View.GONE);
         LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL,
                 false);
         mRecyclerView.setLayoutManager(layout);
 
-        SellerInfoHorizontalAdapter myAdapter = new SellerInfoHorizontalAdapter(getContext().getApplicationContext());
-        mRecyclerView.setAdapter(myAdapter);
+        sellerInfoHorizontalAdapter = new SellerInfoHorizontalAdapter(getContext().getApplicationContext(),sellerArrayList);
+        mRecyclerView.setAdapter(sellerInfoHorizontalAdapter);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLongClickable(true);
@@ -178,6 +293,14 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         mRecyclerView.addOnPageChangedListener(new RecyclerViewPager.OnPageChangedListener() {
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
+
+                double angle = 130.0;
+                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen._3_4sdp);
+                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen._0_7sdp));
+                sellerArrayList.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(sellerArrayList.get(newPosition).getMarker().getPosition()));
+                sellerArrayList.get(newPosition).getMarker().showInfoWindow();
 
 
             }
@@ -258,7 +381,28 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        return false;
+        if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            bottomSheetBehavior.setHideable(true);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
+
+        supervisorHomePresenter.getSellerMarkerInfo(marker.getSnippet());
+
+        mRecyclerView.setVisibility(View.VISIBLE);
+
+        int pagerPos = 0;
+        int count=0;
+        for(SupervisorModelBo detailsBo : sellerArrayList){
+            if(detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())){
+                pagerPos = count;
+                break;
+            }
+            count = count+1;
+        }
+
+        mRecyclerView.scrollToPosition(pagerPos);
+
+        return true;
     }
 
     @Override
@@ -299,6 +443,8 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
 
             }
         });
+
+        supervisorHomePresenter.loginToFirebase(getContext().getApplicationContext());
     }
 
     @Override
@@ -319,56 +465,48 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     @Override
     public void updateSellerFirebaseInfo(SupervisorModelBo supervisorModelBo) {
 
-        System.out.println("supervisorModelBo User Name = " + supervisorModelBo.getUserName());
+    }
+
+    @Override
+    public void createMarker(SupervisorModelBo supervisorModelBo) {
+
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+        Marker marker = mMap.addMarker(supervisorModelBo.getMarkerOptions());
+        marker.setIcon(icon);
+        supervisorModelBo.setMarker(marker);
+
+    }
+
+    @Override
+    public void updateMaker(SupervisorModelBo supervisorModelBo) {
 
         LatLng destLatLng = new LatLng(supervisorModelBo.getLatitude(), supervisorModelBo.getLongitude());
 
-        if(!sellerInfoHasMap.containsKey(supervisorModelBo.getUserId())) {
+        SupervisorActivityHelper.getInstance().animateMarkerNew(destLatLng,supervisorModelBo.getMarker(),mMap);
+    }
 
-            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
-            Marker marker = mMap.addMarker(new MarkerOptions()
-                    .flat(true)
-                    .title(supervisorModelBo.getUserName())
-                    .position(destLatLng)
-                    .snippet(String.valueOf(supervisorModelBo.getUserId())));
-            marker.setIcon(icon);
-            supervisorModelBo.setMarker(marker);
+    @Override
+    public void focusMarker(LatLngBounds.Builder builder) {
 
-            sellerInfoHasMap.put(supervisorModelBo.getUserId(), supervisorModelBo);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
+    }
 
-        }else{
+    @Override
+    public void setSellerListAdapter(ArrayList<SupervisorModelBo> modelBoArrayList) {
+        sellerArrayList = modelBoArrayList;
+        sellerInfoHorizontalAdapter.notifyDataSetChanged();
+    }
 
-            isFirst = false;
+    @Override
+    public void updateSellerAttendance(int totalSellerCount, int absentSellerCount, int marketSellerCount) {
+        totalSeller.setText(String.valueOf(totalSellerCount));
+        absentSeller.setText(String.valueOf(absentSellerCount));
+        marketSeller.setText(String.valueOf(marketSellerCount));
+    }
 
-            SupervisorModelBo supervisorModelObj = sellerInfoHasMap.get(supervisorModelBo.getUserId());
-
-            supervisorModelObj.setBilled(supervisorModelBo.getBilled());
-            supervisorModelObj.setCovered(supervisorModelBo.getCovered());
-            supervisorModelObj.setLatitude(supervisorModelBo.getLatitude());
-            supervisorModelObj.setLongitude(supervisorModelBo.getLongitude());
-            supervisorModelObj.setOrderValue(supervisorModelBo.getOrderValue());
-            supervisorModelObj.setOrdered(supervisorModelBo.isOrdered());
-            supervisorModelObj.setTimeIn(supervisorModelBo.getTimeIn());
-            supervisorModelObj.setTimeOut(supervisorModelBo.getTimeOut());
-            supervisorModelObj.setRetailerId(supervisorModelBo.getRetailerId());
-            supervisorModelObj.setRetailerName(supervisorModelBo.getRetailerName());
-
-            SupervisorActivityHelper.getInstance().animateMarkerNew(destLatLng,supervisorModelObj.getMarker(),mMap);
-
-
-        }
-
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-        //Will animate only for the first time when app opens
-        if(isFirst) {
-            for (SupervisorModelBo detailsBo : sellerInfoHasMap.values()) {
-                builder.include(detailsBo.getMarker().getPosition());
-            }
-
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
-        }
-
+    @Override
+    public void updateOrderValue(int totalOrderValue) {
+        tvOrderValue.setText(String.valueOf(totalOrderValue));
     }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
@@ -382,7 +520,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         @Override
         public View getInfoWindow(final Marker marker) {
 
-            tvMapInfoUserName.setText(marker.getTitle()+" Id "+marker.getSnippet());
+            tvMapInfoUserName.setText(marker.getTitle());
 
             mapWrapperLayout.setMarkerWithInfoWindow(marker, mymarkerview);
 
@@ -396,4 +534,9 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         return (int) (dp * scale + 0.5f);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        supervisorHomePresenter.removeFirestoreListener();
+    }
 }

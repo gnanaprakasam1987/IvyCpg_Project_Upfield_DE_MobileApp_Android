@@ -11,37 +11,49 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/chart_layout"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_below="@+id/toolbar"
-        android:background="@drawable/total_outlet_bg_gradient">
+        android:weightSum="1">
 
-        <com.github.mikephil.charting.charts.CombinedChart
-            android:id="@+id/combined_chart"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_200sdp"
-            android:layout_margin="@dimen/_10sdp"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_calendar"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_10sdp"/>
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:id="@+id/chart_layout"
+            android:background="@drawable/total_outlet_bg_gradient">
+
+            <com.github.mikephil.charting.charts.CombinedChart
+                android:id="@+id/combined_chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_10sdp"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_calendar"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"/>
 
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/seller_list_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:background="#f6f9fc"
-        android:layout_below="@+id/chart_layout"
-        android:layout_marginTop="@dimen/_5sdp"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/seller_list_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:scrollbars="none"
+            android:background="#f6f9fc"
+            android:layout_below="@+id/chart_layout"
+            android:layout_marginTop="@dimen/_5sdp"/>
+
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="wrap_content"

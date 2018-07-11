@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="@dimen/_130sdp"
+        android:layout_width="@dimen/_100sdp"
         android:layout_height="@dimen/_22sdp"
         android:clickable="false"
         android:focusable="false"
@@ -28,7 +28,7 @@
             android:gravity="center_vertical"
             android:padding="@dimen/_2sdp"
             android:singleLine="true"
-            android:text="Big info window to test the size of the info window XML values"
+            android:text="Shivnaraine"
             android:textColor="#de000000"
             android:textSize="@dimen/_10sdp" />
 
