@@ -62,6 +62,7 @@ import com.ivy.appmodule.AppModule;
 import com.ivy.appmodule.DaggerAppComponent;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.db.DBHelperImpl;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
 import com.ivy.core.di.module.ActivityModule;
@@ -785,6 +786,13 @@ public class BusinessModel extends Application {
             outletTimeStampHelper.setTimeIn(inTime);
     }
 
+    public void setModuleTime(String moduleInTime, boolean isFromProvider) {
+        if (!isFromProvider)
+            appDataProvider.setModuleInTime(moduleInTime);
+        else
+            outletTimeStampHelper.setTimeInModuleWise(moduleInTime);
+    }
+
 
     public void setRetailerMasterBO(RetailerMasterBO retailerMasterBO, boolean isFromProvider) {
         //TODO remove business model retailer master
@@ -1230,6 +1238,11 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * @return Order Value
+     * @See {@link DBHelperImpl#getOrderValue()}
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public double getOrderValue() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,

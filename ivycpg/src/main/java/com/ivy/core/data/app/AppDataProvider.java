@@ -12,7 +12,13 @@ public interface AppDataProvider {
 
     String getUniqueId();
 
+    void setModuleInTime(String moduleInTime);
+
+    String getModuleIntime();
+
     void setRetailerMaster(RetailerMasterBO retailerMaster);
 
     RetailerMasterBO getRetailMaster();
+
+
 }

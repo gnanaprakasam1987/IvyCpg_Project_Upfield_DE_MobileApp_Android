@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.location.Location;
 import android.os.BatteryManager;
 
+import com.ivy.core.data.app.AppDataProviderImpl;
+import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -63,20 +65,38 @@ public class OutletTimeStampHelper {
         return instance;
     }
 
+    /**
+     * @See {@link AppDataProviderImpl#getInTime()}
+     * @deprecated
+     */
     public String getTimeIn() {
         return timeIn;
     }
 
+    /**
+     * @param timeIn
+     * @See {@link com.ivy.core.data.app.AppDataProviderImpl#setInTime(String)}
+     * @deprecated
+     */
     public void setTimeIn(String timeIn) {
         // Until all the code is refactored, Timein is updated in the Appdataprovider and business model
         bmodel.setInTime(timeIn, false);
         this.timeIn = timeIn;
     }
 
+    /**
+     * @See {@link AppDataProviderImpl#getUniqueId()}
+     * @deprecated
+     */
     public String getUid() {
         return uid;
     }
 
+    /**
+     * @param uid Unique Identifier
+     * @See {@link com.ivy.core.data.app.AppDataProviderImpl#setUniqueId(String)}
+     * @deprecated
+     */
     public void setUid(String uid) {
         // Until all the code is refactored, Unique is updated in the Appdataprovider and business model
         bmodel.setUniqueId(uid, false);
@@ -87,8 +107,16 @@ public class OutletTimeStampHelper {
         return "'" + data + "'";
     }
 
+    public void setTimeInModuleWise(String timeInModuleWise) {
+        this.timeInModuleWise = timeInModuleWise;
+    }
+
+
     /**
      * Used to delete timeStamp.
+     *
+     * @See {@link OutletTimeStampDataManagerImpl#deleteTimeStamps()}
+     * @deprecated
      */
     public void deleteTimeStamp() {
 
@@ -107,6 +135,9 @@ public class OutletTimeStampHelper {
 
     /**
      * Used to delete timeStamp.
+     *
+     * @See {@link OutletTimeStampDataManagerImpl#deleteTimeStamps()}
+     * @deprecated
      */
     public void deleteTimeStampAllModule() {
         try {
@@ -124,6 +155,9 @@ public class OutletTimeStampHelper {
 
     /**
      * Used to delete timeStamp.
+     *
+     * @See {@link OutletTimeStampDataManagerImpl#deleteTimeStamps()}
+     * @deprecated
      */
     public void deleteTimeStampImages() {
         try {
@@ -246,11 +280,14 @@ public class OutletTimeStampHelper {
         }
     }
 
+
     /**
      * Used to set Time Stamp.
      *
      * @param date   module start-in date
      * @param timeIn module start-in time
+     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#saveTimeStampModuleWise(String, String, String)}
+     * @deprecated This has been Migrated to MVP pattern
      */
     public void saveTimeStampModuleWise(String date, String timeIn, String moduleCode) {
         try {
@@ -258,7 +295,10 @@ public class OutletTimeStampHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
+
             timeInModuleWise = QT(date + " " + timeIn);
+
+            bmodel.setModuleTime(timeInModuleWise, false);
             String values = getUid() + ","
                     + QT(moduleCode) + ","
                     + timeInModuleWise + "," + timeInModuleWise
@@ -271,10 +311,12 @@ public class OutletTimeStampHelper {
         }
     }
 
+
     /**
-     * Set Time Out
-     *
      * @param timeOut module exit time
+     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#updateTimeStampModuleWise(String)}
+     * Set Time Out
+     * @deprecated This has been Migrated to MVP pattern
      */
     public void updateTimeStampModuleWise(String timeOut) {
         try {
@@ -415,6 +457,12 @@ public class OutletTimeStampHelper {
         return false;
     }
 
+    /**
+     * @param retailerId
+     * @return
+     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#isVisited(String)}
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public boolean isVisited(String retailerId) {
         DBUtil db = null;
         try {

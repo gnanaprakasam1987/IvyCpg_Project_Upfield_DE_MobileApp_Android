@@ -20,6 +20,9 @@ public class AppDataProviderImpl implements AppDataProvider {
     /* In time at a store */
     private String inTime;
 
+    /*In time in to a module*/
+    private String moduleInTime;
+
     /* Unique Id*/
     private String uniqueId;
 
@@ -31,6 +34,7 @@ public class AppDataProviderImpl implements AppDataProvider {
     public void setInTime(String inTime) {
         //TODO to be removed post refactoring
         mContext.setInTime(inTime, true);
+
         this.inTime = inTime;
     }
 
@@ -43,6 +47,7 @@ public class AppDataProviderImpl implements AppDataProvider {
     public void setUniqueId(String uniqueId) {
         //TODO to be removed post refactoring
         mContext.setUniqueId(uniqueId, true);
+
         this.uniqueId = uniqueId;
     }
 
@@ -52,9 +57,23 @@ public class AppDataProviderImpl implements AppDataProvider {
     }
 
     @Override
+    public void setModuleInTime(String moduleInTime) {
+        //TODO to be removed post refactoring
+        mContext.setModuleTime(uniqueId, true);
+
+        this.moduleInTime = moduleInTime;
+    }
+
+    @Override
+    public String getModuleIntime() {
+        return moduleInTime;
+    }
+
+    @Override
     public void setRetailerMaster(RetailerMasterBO retailerMaster) {
         //TODO to be removed post refactoring
         mContext.setRetailerMasterBO(retailerMaster, true);
+
         this.retailerMaster = retailerMaster;
     }
 

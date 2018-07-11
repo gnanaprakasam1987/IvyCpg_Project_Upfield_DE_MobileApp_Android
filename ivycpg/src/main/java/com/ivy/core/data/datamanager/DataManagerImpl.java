@@ -2,9 +2,11 @@ package com.ivy.core.data.datamanager;
 
 import android.content.Context;
 
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.db.DbHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 
 import javax.inject.Inject;
 
@@ -16,12 +18,14 @@ public class DataManagerImpl implements DataManager {
 
     private SharedPreferenceHelper mSharedPreferenceHelper;
     private DbHelper dbHelper;
+    private AppDataProvider appDataProvider;
 
     @Inject
-    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper) {
+    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper, AppDataProvider appDataProvider) {
         this.mContext = context;
         this.mSharedPreferenceHelper = sharedPreferenceHelper;
         this.dbHelper = dbHelper;
+        this.appDataProvider=appDataProvider;
     }
 
     @Override
@@ -72,5 +76,35 @@ public class DataManagerImpl implements DataManager {
     @Override
     public Single<String> getFontSize() {
         return dbHelper.getFontSize();
+    }
+
+    @Override
+    public void setInTime(String inTime) {
+        appDataProvider.setInTime(inTime);
+    }
+
+    @Override
+    public String getInTime() {
+        return appDataProvider.getInTime();
+    }
+
+    @Override
+    public void setUniqueId(String uniqueId) {
+        appDataProvider.setUniqueId(uniqueId);
+    }
+
+    @Override
+    public String getUniqueId() {
+        return appDataProvider.getUniqueId();
+    }
+
+    @Override
+    public void setRetailerMaster(RetailerMasterBO retailerMaster) {
+        appDataProvider.setRetailerMaster(retailerMaster);
+    }
+
+    @Override
+    public RetailerMasterBO getRetailMaster() {
+        return appDataProvider.getRetailMaster();
     }
 }

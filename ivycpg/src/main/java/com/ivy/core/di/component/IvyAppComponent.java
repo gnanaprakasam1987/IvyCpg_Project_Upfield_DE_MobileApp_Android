@@ -30,6 +30,8 @@ public interface IvyAppComponent {
 
     ConfigurationMasterHelper configurationMasterHelper();
 
+    AppDataProvider appDataProvider();
+
     void inject(BusinessModel businessModel);
 
     void inject(BaseFragment baseFragment);

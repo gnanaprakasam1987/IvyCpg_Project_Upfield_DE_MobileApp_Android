@@ -129,4 +129,16 @@ public class AppUtils {
         return new Gson().fromJson(jsonString, object.getClass());
     }
 
+
+    /*
+     * This method will return total acheived value of the seller for the day.
+     * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
+     * value will not be considered.
+     */
+
+    public static String QT(String data) {
+        return "'" + data + "'";
+    }
+
+
 }
