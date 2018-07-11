@@ -377,6 +377,8 @@ public class TaskFragment extends IvyBaseFragment {
             Intent i = new Intent(getActivity(), TaskCreation.class);
             i.putExtra("fromHomeScreen", fromHomeScreen);
             i.putExtra("IsRetailerwisetask", IsRetailerwisetask);
+            i.putExtra("screentitle", extras.containsKey("screentitle") ? extras.getString("screentitle") : getResources().
+                    getString(R.string.task));
             startActivity(i);
             getActivity().finish();
             return true;
