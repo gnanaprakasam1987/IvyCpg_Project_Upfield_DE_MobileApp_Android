@@ -529,7 +529,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
     public boolean floating_Survey = false;
-    public boolean floating_np_reason_photo = false;
+    public boolean floating_np_reason_photo = true;
     public boolean IS_NEW_TASK;
     public boolean IS_SUGGESTED_ORDER; // used order screen to hid SO colom
     public boolean IS_SUGGESTED_ORDER_LOGIC;//used order screen to calculate so column
@@ -1168,7 +1168,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
 
-    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED,SHOW_STOCK_RETURN;
+    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
@@ -1866,14 +1866,15 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * This method will return RFiled1 column value from the hhtmenuMaster table.
+     * This method will return Regex column value from the hhtmenuMaster table.
      *
-     * @return boolean true - npReasonwith photo is required.
+     * @return boolean false - npReasonwith photo is not required.
+     * boolean true - npReasonwith photo is required.
      */
     public void downloadFloatingNPReasonWithPhoto(String moduleCode) {
-        floating_np_reason_photo = false;
+        floating_np_reason_photo = true;
         try {
-            String sql = "select RField1 from " + DataMembers.tbl_HhtMenuMaster
+            String sql = "select Regex from " + DataMembers.tbl_HhtMenuMaster
                     + " where hhtCode=" + bmodel.QT(moduleCode);
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1882,7 +1883,7 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 while (c.moveToNext()) {
                     if (c.getInt(0) == 1) {
-                        floating_np_reason_photo = true;
+                        floating_np_reason_photo = false;
                     }
 
                 }
@@ -1891,7 +1892,6 @@ public class ConfigurationMasterHelper {
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
-            floating_np_reason_photo = false;
         }
 
 
@@ -2504,7 +2504,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_INDICATIVE_SR = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
         this.IS_INVOICE_SR = hashMapHHTModuleConfig.get(CODE_SR_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INVOICE) : false;
-        this.IS_GENERATE_SR_IN_DELIVERY=hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) : false;
+        this.IS_GENERATE_SR_IN_DELIVERY = hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) : false;
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
 
         this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
