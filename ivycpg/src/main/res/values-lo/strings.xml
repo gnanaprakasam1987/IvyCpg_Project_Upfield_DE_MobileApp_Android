@@ -103,7 +103,6 @@
     <string name="received">Received</string>
     <string name="os_amt">OS Amt</string>
     <string name="cheque_num">Cheque Num</string>
-    <string name="mode">Mode</string>
     <string name="cash">Cash</string>
     <string name="cheque">Cheque</string>
     <string name="bank_name">Bank Name</string>
@@ -261,7 +260,6 @@
     <string name="initiative">Initiative</string>
     <string name="credit_note">Credit Note</string>
     <string name="Product_details">ລາຍລະອຽດຜະລິດຕະພັນ</string>
-    <string name="adjusted_sih">Adj.sih</string>
     <string name="new_task_saved">ຫນ້າວຽກໃຫມ່ຖືກບັນທຶກ</string>
     <string name="choose_brand">ເລືອກຍີຫໍ້</string>
     <string name="choose_category">ເລືອກຫມວດ</string>
@@ -340,7 +338,6 @@
     <string name="planogram">ແບບ​ຈັດ​ໂຊ​ສິນ​ຄ້າ</string>
     <string name="image_desc">ເປົາຫວ່າງ</string>
     <string name="adherence">ການ​ຢຶດ​ໝັ້ນແບບ​ຈັດ​ໂຊ​ສິນ​ຄ້າ</string>
-    <string name="please_filldetails">ກະລຸນນາໃສ່ລາຍລະອຽດທີຈຳເປັນ</string>
     <string name="unloadimage">ຮູບພາບບໍ່ມີ</string>
     <string name="deviate_retailers">ຮ້ານຄ້ານອກເສັ້ນທາງ</string>
     <string name="admin_contact_no">ເບີໂທຕິດຫ້ອງ​ການ</string>
@@ -1047,7 +1044,6 @@
     <string name = "percentage">Percentage</string>
     <string name="invoice_qty">Invoice Qty</string>
     <string name="delivery_rep_code">Rep Code</string>
-    <string name="maximum_count_is_exceed">Maximum count is exceed</string>
     <string name="delivery_date_is">Delivery Date is: </string>
     <string name="old_order_volume">Original value</string>
     <string name="new_retailer">New Retailer</string>
@@ -1275,6 +1271,5 @@
     </string-array>
 
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
-    <string name="total_collected">Total Collected</string>
 
 </resources>
