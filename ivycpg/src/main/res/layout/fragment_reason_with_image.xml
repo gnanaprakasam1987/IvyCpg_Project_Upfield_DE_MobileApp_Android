@@ -13,36 +13,36 @@
         android:background="?attr/primarycolor">
 
         <Button
-            android:id="@+id/saveBTN"
+            android:id="@+id/closeBTN"
             android:layout_width="@dimen/dimen_30dp"
             android:layout_height="@dimen/dimen_30dp"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_6dp"
             android:layout_marginStart="@dimen/dimen_6dp"
-            android:background="@drawable/icon_save"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="@dimen/dimen_6dp" />
+            android:background="@drawable/ic_action_circle_close" />
 
         <TextView
+            android:id="@+id/header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:id="@+id/header_text"
             android:text="@string/reason_with_photo_title"
             android:textColor="@color/WHITE"
             android:textSize="@dimen/font_medium"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/closeBTN"
+            android:id="@+id/saveBTN"
             android:layout_width="@dimen/dimen_30dp"
             android:layout_height="@dimen/dimen_30dp"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dimen_6dp"
-            android:background="@drawable/ic_action_circle_close"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dimen_6dp" />
+            android:layout_marginRight="@dimen/dimen_6dp"
+            android:background="@drawable/icon_save" />
     </RelativeLayout>
 
     <Spinner
