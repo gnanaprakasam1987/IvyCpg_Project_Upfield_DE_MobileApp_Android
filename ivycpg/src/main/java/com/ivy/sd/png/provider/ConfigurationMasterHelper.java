@@ -514,7 +514,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
     public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
 
-    private static final String CODE_LICENSE_VALIDATION = "DRUG_LICENSE_VLD";
+    private static final String CODE_LICENSE_VALIDATION = "ORDB73";
     public boolean IS_ENABLE_LICENSE_VALIDATION;
     public boolean IS_SOFT_LICENSE_VALIDATION;
     /**

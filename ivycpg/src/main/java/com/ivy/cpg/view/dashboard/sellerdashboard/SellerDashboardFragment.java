@@ -88,11 +88,12 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private Spinner dashSpinner;
     private Spinner userSpinner;
     private Spinner monthSpinner;
+    private Spinner weekSpinner;
 
     private static final String MONTH = "MONTH";
     private static final String DAY = "DAY";
     private static final String P3M = "P3M";
-
+    private static final String WEEK = "WEEK";
 
     private int NUM_ITEMS = 1;
     private int chartpositionSMP = 0;
@@ -375,7 +376,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
 
         @Override
-        public void onBindViewHolder(final SellerDashboardFragment.DashBoardListViewAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(final SellerDashboardFragment.DashBoardListViewAdapter.ViewHolder holder, final int position) {
             final DashBoardBO dashboardData = dashboardList.get(position);
             if (bmodel.configurationMasterHelper.SHOW_SCORE_DASH
                     || !bmodel.configurationMasterHelper.SHOW_INCENTIVE_DASH) {
@@ -417,6 +418,17 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 public void onClick(View view) {
 //                    if (selectedInterval.equals(P3M)) {
                     if (show_trend_chart) {
+
+                        if(selectedInterval.equalsIgnoreCase(WEEK)) {
+                            //Weekly chart Specific Change
+                            dashBoardHelper.getDashListViewList().clear();
+                            for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                                if (dashBoardBO.getCode().equals(mDashboardList.get(position).getCode())) {
+                                    dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                                }
+                            }
+                        }
+
                         if (mDashboardList != null && mDashboardList.size() > 0) {
                             dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
                         }
@@ -877,7 +889,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             // attaching data adapter to spinner
             dashSpinner.setAdapter(dataAdapter);
             monthSpinner = view.findViewById(R.id.monthSpinner);
-
+            weekSpinner = view.findViewById(R.id.weekSpinner);
         } catch (Exception e) {
 
         }
@@ -908,13 +920,30 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     dashBoardListViewAdapter.notifyDataSetChanged();
                 } else if (selectedInterval.equals(P3M)) {
                     monthSpinner.setVisibility(View.VISIBLE);
+                    weekSpinner.setVisibility(View.GONE);
                     final ArrayList<String> monthNameList = dashBoardHelper.getSellerKpiMonthNameList();
                     ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthNameList);
                     monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
                     monthSpinner.setAdapter(monthdapter);
                     monthSpinner.setOnItemSelectedListener(this);
                     monthSpinner.setSelection(0);
+                } else if (selectedInterval.equals(WEEK)) {
+                    dashBoardHelper.getSellerKpiWeekList();
+                    final ArrayList<String> monthNameList = dashBoardHelper.getWeekList();
+                    if(monthNameList != null && monthNameList.size() > 0) {
+                        weekSpinner.setVisibility(View.VISIBLE);
+                        ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthNameList);
+                        monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+                        weekSpinner.setAdapter(monthdapter);
+                        weekSpinner.setOnItemSelectedListener(this);
+                        weekSpinner.setSelection(dashBoardHelper.getCurrentWeek());
+                    } else{
+                        weekSpinner.setVisibility(View.GONE);
+                        dashBoardHelper.loadSellerDashBoardforWeek(Integer.toString(mSelectedUserId));
+                        updateWeek("");
+                    }
                 } else {
+                    weekSpinner.setVisibility(View.GONE);
                     dashBoardListViewAdapter.notifyDataSetChanged();
                 }
 
@@ -957,6 +986,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                 final String filterName = monthSpinner.getSelectedItem().toString();
                 updateMonth(filterName);
+            } else if (menuid == R.id.weekSpinner) {
+                final String filterName = dashBoardHelper.getEnumNamefromValue(weekSpinner.getSelectedItem().toString());
+                dashBoardHelper.loadSellerDashBoardforWeek(Integer.toString(mSelectedUserId));
+                updateWeek(filterName);
             }
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -978,6 +1011,36 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         }
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
+            checkandaddScreens();
+            if (mDashboardList != null && mDashboardList.size() > 0) {
+                dashBoardHelper.setDashboardBO(mDashboardList.get(0));
+            }
+            dashBoardHelper.loadP3MTrendChaart(Integer.toString(mSelectedUserId));
+            adapterViewPager = new MyPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList);
+            new setAdapterTask().execute();
+        }
+    }
+
+    private void updateWeek(String weekName) {
+        mDashboardList = new ArrayList<>();
+
+        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+            if (dashBoardBO.getMonthName().equalsIgnoreCase(weekName) || weekName.equals("")) {
+                mDashboardList.add(dashBoardBO);
+            }
+        }
+
+        dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
+        if (show_trend_chart) {
+
+            //Weekly chart Specific Change
+            dashBoardHelper.getDashListViewList().clear();
+            for(DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                if(dashBoardBO.getCode().equals(mDashboardList.get(0).getCode())){
+                    dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                }
+            }
+
             checkandaddScreens();
             if (mDashboardList != null && mDashboardList.size() > 0) {
                 dashBoardHelper.setDashboardBO(mDashboardList.get(0));
