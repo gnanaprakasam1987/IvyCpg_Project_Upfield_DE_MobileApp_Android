@@ -61,6 +61,7 @@ import com.ivy.appmodule.AppComponent;
 import com.ivy.appmodule.AppModule;
 import com.ivy.appmodule.DaggerAppComponent;
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
 import com.ivy.core.di.module.ActivityModule;
@@ -219,7 +220,14 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
 
+import javax.inject.Inject;
+
 public class BusinessModel extends Application {
+
+    @Inject
+    AppDataProvider appDataProvider;
+
+    private IvyAppComponent mApplicationComponent;
 
     // to show the time taken on call analysis
 
@@ -406,15 +414,13 @@ public class BusinessModel extends Application {
     private String dashboardUserFilterString;
 
 
-    private IvyAppComponent mApplicationComponent;
-
     private final String mFocusBrand = "Filt11";
     private final String mFocusBrand2 = "Filt12";
     private final String mFocusBrand3 = "Filt20";
     private final String mFocusBrand4 = "Filt21";
 
-    private ArrayList<String> orderedBrands=new ArrayList<>();
-    private ArrayList<String> totalFocusBrandList=new ArrayList<>();
+    private ArrayList<String> orderedBrands = new ArrayList<>();
+    private ArrayList<String> totalFocusBrandList = new ArrayList<>();
 
     public BusinessModel() {
 
@@ -759,13 +765,36 @@ public class BusinessModel extends Application {
 
     }
 
+    /***********************************************************************Code Refactoring Initiatives******************************************************************/
+
     public IvyAppComponent getComponent() {
         return mApplicationComponent;
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
+    public void setUniqueId(String uniqueId, boolean isFromProvider) {
+        if (!isFromProvider)
+            appDataProvider.setUniqueId(uniqueId);
+        else
+            outletTimeStampHelper.setUid(uniqueId);
     }
+
+    public void setInTime(String inTime, boolean isFromProvider) {
+        if (!isFromProvider)
+            appDataProvider.setInTime(inTime);
+        else
+            outletTimeStampHelper.setTimeIn(inTime);
+    }
+
+
+    public void setRetailerMasterBO(RetailerMasterBO retailerMasterBO, boolean isFromProvider) {
+        //TODO remove business model retailer master
+        if (isFromProvider)
+            this.retailerMasterBO = retailerMasterBO;
+    }
+
+
+    /*******************************************************************************************************************************************************************************/
+
 
     @Override
     public void onTerminate() {
@@ -1832,61 +1861,61 @@ public class BusinessModel extends Application {
         }
     }
 
-    public int getTotalFocusBrands(){
-        try{
+    public int getTotalFocusBrands() {
+        try {
 
-            int focusBrandCount=0;
+            int focusBrandCount = 0;
 
             int focusBrandProducts1 = 0;
             int focusBrandProducts2 = 0;
             int focusBrandProducts3 = 0;
             int focusBrandProducts4 = 0;
 
-            Vector<ProductMasterBO> products=productHelper.getProductMaster();
-            if(products!=null){
-                for(int index=0;index<products.size();index++){
-                    if(products.get(index).getIsFocusBrand()==1)
-                        focusBrandProducts1=1;
-                    else if (products.get(index).getIsFocusBrand2()==1)
-                        focusBrandProducts2=1;
-                    else if(products.get(index).getIsFocusBrand3()==1)
-                        focusBrandProducts3=1;
-                    else if(products.get(index).getIsFocusBrand4()==1)
-                        focusBrandProducts4=1;
+            Vector<ProductMasterBO> products = productHelper.getProductMaster();
+            if (products != null) {
+                for (int index = 0; index < products.size(); index++) {
+                    if (products.get(index).getIsFocusBrand() == 1)
+                        focusBrandProducts1 = 1;
+                    else if (products.get(index).getIsFocusBrand2() == 1)
+                        focusBrandProducts2 = 1;
+                    else if (products.get(index).getIsFocusBrand3() == 1)
+                        focusBrandProducts3 = 1;
+                    else if (products.get(index).getIsFocusBrand4() == 1)
+                        focusBrandProducts4 = 1;
 
                 }
             }
 
             getTotalFocusBrandList().clear();
-            if(focusBrandProducts1==1){
+            if (focusBrandProducts1 == 1) {
                 getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand));
             }
-            if(focusBrandProducts2==1){
+            if (focusBrandProducts2 == 1) {
                 getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand2));
             }
-            if(focusBrandProducts3==1){
+            if (focusBrandProducts3 == 1) {
                 getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand3));
             }
-            if(focusBrandProducts4==1){
+            if (focusBrandProducts4 == 1) {
                 getTotalFocusBrandList().add(getFocusFilterName(mFocusBrand4));
             }
 
-            focusBrandCount=focusBrandProducts1+focusBrandProducts2+focusBrandProducts3+focusBrandProducts4;
+            focusBrandCount = focusBrandProducts1 + focusBrandProducts2 + focusBrandProducts3 + focusBrandProducts4;
 
             return focusBrandCount;
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
 
         return 0;
     }
 
-    public void getOrderedFocusBrandList(){
+    public void getOrderedFocusBrandList() {
 
         try {
 
-            ArrayList<String> mOrderedProductList=new ArrayList<>();
+            ArrayList<String> mOrderedProductList = new ArrayList<>();
 
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1909,7 +1938,7 @@ public class BusinessModel extends Application {
 
             for (String productID : mOrderedProductList) {
 
-                ProductMasterBO bo=productHelper.getProductMasterBOById(productID);
+                ProductMasterBO bo = productHelper.getProductMasterBOById(productID);
                 if (bo.getIsFocusBrand() == 1) {
                     focusBrandProducts1 = 1;
                 }
@@ -1937,7 +1966,7 @@ public class BusinessModel extends Application {
             if (focusBrandProducts4 == 1) {
                 getOrderedFocusBrands().add(getFocusFilterName(mFocusBrand4));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
 
@@ -3663,8 +3692,8 @@ public class BusinessModel extends Application {
                             DataMembers.actHomeScreenTwo);
                 } else if (idd == DataMembers.NOTIFY_CLOSE_HOME) {
                     HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) ctx).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
-                    if(currentFragment!=null)
-                    currentFragment.refreshList(false);
+                    if (currentFragment != null)
+                        currentFragment.refreshList(false);
                 } else if (idd == DataMembers.NOTIFY_SALES_RETURN_SAVED) {
                     SalesReturnSummery frm = (SalesReturnSummery) ctx;
                     Intent intent = new Intent();
@@ -3918,6 +3947,10 @@ public class BusinessModel extends Application {
     }
 
     public void setRetailerMasterBO(RetailerMasterBO retailerMasterBO) {
+        // Until all the code is refactored, Retail master is updated in the Appdataprovider and business model
+        appDataProvider.setRetailerMaster(retailerMasterBO);
+
+        //TODO remove business model retailer master
         this.retailerMasterBO = retailerMasterBO;
     }
 
@@ -7762,7 +7795,7 @@ public class BusinessModel extends Application {
                     // Download Date
                     else if (mRules.get(i).contains("YYYY")) {
                         mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(),
-                                mRules.get(i).replace("{", "").replace("}","")));
+                                mRules.get(i).replace("{", "").replace("}", "")));
                     }
 
                     // Get Sequence ID

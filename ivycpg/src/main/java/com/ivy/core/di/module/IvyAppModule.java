@@ -6,6 +6,8 @@ import dagger.Provides;
 import android.content.Context;
 
 import com.ivy.core.IvyConstants;
+import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.core.data.db.DBHelperImpl;
@@ -68,10 +70,6 @@ public class IvyAppModule {
                 DataMembers.DB_PATH);
     }
 
-    @Provides
-    protected RetailerMasterBO providesRetailerBO(){
-        return ((BusinessModel) mContext).retailerMasterBO;
-    }
 
     @Provides
     protected ConfigurationMasterHelper providesConfigurationHelper() {
@@ -83,6 +81,14 @@ public class IvyAppModule {
     protected DataManager providesDataManager(DataManagerImpl dataManager) {
         return dataManager;
     }
+
+
+    @Singleton
+    @Provides
+    protected AppDataProvider providesAppData(AppDataProviderImpl appDataProvider){
+        return appDataProvider;
+    }
+
 
 
 }

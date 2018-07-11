@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.ivy.core.base.view.BaseFragment;
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.di.module.ActivityModule;
 import com.ivy.core.di.module.IvyAppModule;
@@ -28,8 +29,6 @@ public interface IvyAppComponent {
     DataManager dataManager();
 
     ConfigurationMasterHelper configurationMasterHelper();
-
-    RetailerMasterBO retailerMasterBo();
 
     void inject(BusinessModel businessModel);
 

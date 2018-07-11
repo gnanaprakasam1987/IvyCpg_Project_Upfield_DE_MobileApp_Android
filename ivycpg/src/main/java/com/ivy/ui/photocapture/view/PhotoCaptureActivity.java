@@ -36,12 +36,12 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     public void initializeDi() {
         DaggerPhotoCaptureComponent.builder()
                 .photoCaptureModule(new PhotoCaptureModule(this))
+                .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
                 .build()
                 .inject(this);
 
         setBasePresenter((BasePresenter) photoCapturePresenter);
 
-        setUnBinder(ButterKnife.bind(this));
     }
 
     @Override
@@ -55,6 +55,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     @Override
     protected void setUpViews() {
+        setUnBinder(ButterKnife.bind(this));
+
         checkAndRequestPermissionAtRunTime(CAMERA_AND_WRITE_PERMISSION);
 
     }
