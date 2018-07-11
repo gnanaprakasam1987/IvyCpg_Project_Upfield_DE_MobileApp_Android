@@ -448,8 +448,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 totalQty += (product.getLocations().get(i).getShelfOuter() * product
                         .getOutersize());
 /*
-            if (product.getLocations().get(i).getAvailability() > -1)
-                totalQty += product.getLocations().get(i).getAvailability();*/
+            if (product.downloadInStoreLocationsForStockCheck().get(i).getAvailability() > -1)
+                totalQty += product.downloadInStoreLocationsForStockCheck().get(i).getAvailability();*/
         }
         return totalQty;
 

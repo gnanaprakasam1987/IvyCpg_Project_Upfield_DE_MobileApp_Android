@@ -56,65 +56,105 @@ import java.util.Map;
 import java.util.Vector;
 
 public class ProductHelper {
+
+    /* Variable declarations*/
+
     public int locid = 0, chid = 0;
     public int achLevelID = 0, totLevelID = 0;//used for call analysis
+    private static final String CASH_TYPE = "CASH";
+    private static ProductHelper instance = null;
+    private float buffer = 0;
 
     private Context mContext;
     private BusinessModel bmodel;
+
     private Vector<ProductMasterBO> productMaster = null;
-
-
     private Map<String, ProductMasterBO> productMasterById;
 
-
-    private static final String CASH_TYPE = "CASH";
-
-    private static ProductHelper instance = null;
-    private float buffer = 0;
     private Map<String, Integer> oldBatchId;
     private Map<String, Double> oldBatchBasePrice;
 
     public ArrayList<LocationBO> locations;
+    private Vector<StandardListBO> inStoreLocation = new Vector<>();
+
     public ArrayList<LoyaltyBO> lotyPointsList;
     private ArrayList<LoyaltyBenifitsBO> ltyBenifitsList;
-    private ArrayList<NearExpiryDateBO> dateList = new ArrayList<NearExpiryDateBO>();
-    private Vector<ProductMasterBO> mTaggedProducts = null;
-    private Map<String, ProductMasterBO> mTaggedProductById;
-    private Vector<ProductMasterBO> mSalesReturnProducts = null;
-    private Map<String, ProductMasterBO> mSalesReturnProductById;
-    private ArrayList<Integer> mIndicativeList;
-
-    public String mHomeScreenThreeActivityName = "";
-    private Vector<StandardListBO> inStoreLocation = new Vector<>();
-    private Vector<LevelBO> globalCategory = new Vector<LevelBO>();
     private Vector<LoyaltyBO> loyaltyproductList = new Vector<LoyaltyBO>();
 
+    private ArrayList<NearExpiryDateBO> dateList = new ArrayList<NearExpiryDateBO>();
+
+    private Vector<ProductMasterBO> mTaggedProducts = null;
+    private Map<String, ProductMasterBO> mTaggedProductById;
+
+    private Vector<ProductMasterBO> mSalesReturnProducts = null;
+    private Map<String, ProductMasterBO> mSalesReturnProductById;
+
+    private ArrayList<Integer> mIndicativeList;
+
+    private Vector<LevelBO> globalCategory = new Vector<LevelBO>();
 
     private Vector<ParentLevelBo> mParentLevelBo;
     private Vector<ChildLevelBo> mChildLevelBo;
-
     private Vector<ParentLevelBo> plevelMaster;
-
     private Vector<LevelBO> pfilterlevel;
-    private HashMap<Integer, Vector<LevelBO>> mfilterlevelBo;
     private Vector<LevelBO> sequencevalues;
-    private HashMap<Integer, Vector<LevelBO>> mRetailerModuleFilterObjectBySequence;
     private Vector<LevelBO> mrRetailerModuleSequence;
+
+    private HashMap<Integer, Vector<LevelBO>> mfilterlevelBo;
+    private HashMap<Integer, Vector<LevelBO>> mRetailerModuleFilterObjectBySequence;
+
 
     private HashMap<Integer, ArrayList<StoreWiseDiscountBO>> mProductIdListByDiscoutId;
     private ArrayList<Integer> mDiscountIdList;
-
-
     private SparseArray<ArrayList<Integer>> mDiscountIdListByTypeid;
+
     private ArrayList<Integer> mTypeIdList;
     private HashMap<Integer, String> mDescriptionByTypeId;
-
 
     private SparseArray<LoadManagementBO> mLoadManagementBOByProductId;
 
     private HashMap<Integer, Vector<CompetitorFilterLevelBO>> mCompetitorFilterlevelBo;
     private Vector<CompetitorFilterLevelBO> mCompetitorSequenceValues;
+    private Vector<ProductMasterBO> competitorProductMaster = new Vector<>();
 
+    private ArrayList<ProductTaggingBO> productTaggingList;
+
+    private ArrayList<ProductMasterBO> mIndicateOrderList = new ArrayList<ProductMasterBO>();
+
+    private LinkedList<String> mProductidOrderByEntry = new LinkedList<>();
+
+    private HashMap<Integer, Integer> mProductidOrderByEntryMap = new HashMap<>();
+
+    public TaxInterface taxHelper;
+
+    public int mSelectedLocationIndex = 0;
+    private int mSelectedGLobalLocationIndex = 0;
+    private int mSelectedGlobalLevelID = 0;
+    private int mSelectedGlobalProductId = 0;
+    private int mLoadedGlobalProductId = 0;
+
+    private HashMap<Integer, Vector<Integer>> mAttributeByProductId;
+    private HashMap<Integer, Vector<Integer>> mProductIdByBrandId;
+
+    private ArrayList<AttributeBO> lstProductAttributeMapping;
+
+    private ArrayList<BomReturnBO> bomReturnProducts;
+    private ArrayList<BomMasterBO> bomMaster;
+    private ArrayList<BomReturnBO> bomReturnTypeProducts;
+
+    /* Getters and setters*/
+
+    public HashMap<Integer, Vector<CompetitorFilterLevelBO>> getCompetitorFiveLevelFilters() {
+        return mCompetitorFilterlevelBo;
+    }
+
+    public Vector<CompetitorFilterLevelBO> getCompetitorSequenceValues() {
+        return mCompetitorSequenceValues;
+    }
+
+    public ArrayList<AttributeBO> getLstProductAttributeMapping() {
+        return lstProductAttributeMapping;
+    }
 
     public int getmSelectedLocationIndex() {
         return mSelectedLocationIndex;
@@ -123,13 +163,6 @@ public class ProductHelper {
     public void setmSelectedLocationIndex(int mSelectedLocationIndex) {
         this.mSelectedLocationIndex = mSelectedLocationIndex;
     }
-
-    public int mSelectedLocationIndex = 0;
-    private int mSelectedGLobalLocationIndex = 0;
-    private int mSelectedGlobalLevelID = 0;
-    private int mSelectedGlobalProductId = 0;
-    private int mLoadedGlobalProductId = 0;
-    ArrayList<ProductTaggingBO> productTaggingList;
 
     public int getmSelectedGLobalLocationIndex() {
         return mSelectedGLobalLocationIndex;
@@ -175,10 +208,6 @@ public class ProductHelper {
         this.productTaggingList = productTaggingList;
     }
 
-    private ArrayList<ProductMasterBO> mIndicateOrderList = new ArrayList<ProductMasterBO>();
-
-    private LinkedList<String> mProductidOrderByEntry = new LinkedList<>();
-
     public HashMap<Integer, Integer> getmProductidOrderByEntryMap() {
         return mProductidOrderByEntryMap;
     }
@@ -186,11 +215,6 @@ public class ProductHelper {
     public void setmProductidOrderByEntryMap(HashMap<Integer, Integer> mProductidOrderByEntryMap) {
         this.mProductidOrderByEntryMap = mProductidOrderByEntryMap;
     }
-
-    private HashMap<Integer, Integer> mProductidOrderByEntryMap = new HashMap<>();
-
-    public TaxInterface taxHelper;
-
 
     private ProductHelper(Context context) {
         this.mContext = context;
@@ -258,6 +282,41 @@ public class ProductHelper {
             return new Vector<>();
         return mSalesReturnProducts;
     }
+
+    public HashMap<Integer, Vector<LevelBO>> getFiveLevelFilters() {
+        return mfilterlevelBo;
+    }
+
+    public Vector<LevelBO> getSequenceValues() {
+        return sequencevalues;
+    }
+
+    public HashMap<Integer, Vector<LevelBO>> getRetailerModuleFilerContentBySequenct() {
+        return mRetailerModuleFilterObjectBySequence;
+    }
+
+    public Vector<LevelBO> getRetailerModuleSequenceValues() {
+        return mrRetailerModuleSequence;
+    }
+
+    public HashMap<Integer, Vector<Integer>> getmAttributeByProductId() {
+        return mAttributeByProductId;
+    }
+
+    public HashMap<Integer, Vector<Integer>> getmProductIdByBrandId() {
+        return mProductIdByBrandId;
+    }
+
+    public float getBuffer() {
+        return buffer;
+    }
+
+    public void setBuffer(float buffer) {
+        this.buffer = buffer;
+    }
+
+
+    /* Start of implementations*/
 
     private String QT(String data) // Quote
     {
@@ -401,7 +460,6 @@ public class ProductHelper {
                 product.setRfield2_klgs(rField2);
                 product.setCalc_klgs(calulatedValue);
 
-                return;
             }
         }
 
@@ -501,7 +559,7 @@ public class ProductHelper {
      * @param list list
      * @return clone list
      */
-    public static ArrayList<LocationBO> cloneLocationList(
+    public static ArrayList<LocationBO> cloneInStoreLocationList(
             ArrayList<LocationBO> list) {
         ArrayList<LocationBO> clone = new ArrayList<LocationBO>(list.size());
         for (LocationBO item : list)
@@ -509,7 +567,10 @@ public class ProductHelper {
         return clone;
     }
 
-    public void getLocations() {
+    /**
+     * Download Instore location and set in location BO.
+     */
+    public void downloadInStoreLocationsForStockCheck() {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -520,15 +581,11 @@ public class ProductHelper {
             LocationBO locBO;
             Cursor locCur = null;
 
-            // Load All Locations
-            if (bmodel.getCounterId() == 0) {
-                locCur = db
-                        .selectSQL("SELECT ListId FROM StandardListMaster"
-                                + " WHERE listtype ='PL' ORDER BY ListId");
-            } else {
-                locCur = db
-                        .selectSQL("SELECT ListId FROM StandardListMaster WHERE ListType = 'COUNTER_STOCK_TYPE'");
-            }
+
+            locCur = db
+                    .selectSQL("SELECT ListId FROM StandardListMaster"
+                            + " WHERE listtype ='PL' ORDER BY ListId");
+
 
             if (locCur != null) {
                 while (locCur.moveToNext()) {
@@ -538,12 +595,6 @@ public class ProductHelper {
                 }
                 locCur.close();
                 db.closeDB();
-            }
-
-            if (bmodel.getCounterId() != 0) {
-                locBO = new LocationBO();
-                locBO.setLocationId(0);
-                locations.add(0, locBO);
             }
 
             // Set 0 for Default Location if No Locations
@@ -557,7 +608,7 @@ public class ProductHelper {
         }
     }
 
-    private void generateDate() {
+    private void generateDateListForNearExpiry() {
 
         NearExpiryDateBO bo;
         dateList.clear();
@@ -580,24 +631,6 @@ public class ProductHelper {
         }
     }
 
-    public HashMap<Integer, Vector<LevelBO>> getFiveLevelFilters() {
-
-        return mfilterlevelBo;
-
-    }
-
-    public Vector<LevelBO> getSequenceValues() {
-        return sequencevalues;
-
-    }
-
-    public HashMap<Integer, Vector<LevelBO>> getRetailerModuleFilerContentBySequenct() {
-        return mRetailerModuleFilterObjectBySequence;
-    }
-
-    public Vector<LevelBO> getRetailerModuleSequenceValues() {
-        return mrRetailerModuleSequence;
-    }
 
     @SuppressLint("UseSparseArrays")
     public void downloadFiveLevelFilterNonProducts(String moduleName) {
@@ -752,6 +785,7 @@ public class ProductHelper {
         }
     }
 
+    @SuppressLint("UseSparseArrays")
     public void downloadCompetitorFiveFilterLevels() {
 
 
@@ -912,6 +946,7 @@ public class ProductHelper {
             db.close();
         }
     }
+
 
     @SuppressLint("UseSparseArrays")
     public void downloadFiveFilterLevels(String moduleName) {
@@ -1098,8 +1133,9 @@ public class ProductHelper {
     }
 
 
+
     private boolean isRetailerModule(String moduleName) {
-        if (moduleName.equals("MENU_SURVEY")
+        return moduleName.equals("MENU_SURVEY")
                 || moduleName.equals("MENU_NEAREXPIRY")
                 || moduleName.equals("MENU_PRICE")
                 || moduleName.equals("MENU_AVAILABILITY")
@@ -1111,11 +1147,8 @@ public class ProductHelper {
                 || moduleName.equals("MENU_POSM")
                 || moduleName.equals("MENU_PLANOGRAM")
                 || moduleName.equals("MENU_DGT")
-                || moduleName.equals("MENU_DGT_CS")) {
-            return true;
-        }
+                || moduleName.equals("MENU_DGT_CS");
 
-        return false;
     }
 
     public void downloadProductsWithFiveLevelFilter(String moduleCode) {
@@ -1125,9 +1158,9 @@ public class ProductHelper {
         try {
 
             // load location and date
-            getLocations();
-            generateDate();
-            getUomListName();
+            downloadInStoreLocationsForStockCheck();
+            generateDateListForNearExpiry();
+            ArrayList<StandardListBO> uomList = downloadUomList();
 
             ProductMasterBO product;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1500,7 +1533,7 @@ public class ProductHelper {
                     product.setcParentid(c.getInt(39));
 
                     product.setGroupid(c.getInt(c.getColumnIndex("groupid")));
-                    product.setLocations(cloneLocationList(locations));
+                    product.setLocations(cloneInStoreLocationList(locations));
 
                     for (int i = 0; i < locations.size(); i++) {
                         product.getLocations().get(i)
@@ -1569,6 +1602,7 @@ public class ProductHelper {
         }
 
     }
+
 
     /**
      * Download products based on given distribution type(Route/Retailer/SalesType)
@@ -1699,23 +1733,6 @@ public class ProductHelper {
         return beatids;
     }
 
-
-    public HashMap<Integer, Vector<Integer>> getmAttributeByProductId() {
-        return mAttributeByProductId;
-    }
-
-    public HashMap<Integer, Vector<Integer>> getmProductIdByBrandId() {
-        return mProductIdByBrandId;
-    }
-
-    private HashMap<Integer, Vector<Integer>> mAttributeByProductId;
-    private HashMap<Integer, Vector<Integer>> mProductIdByBrandId;
-
-    public ArrayList<AttributeBO> getLstProductAttributeMapping() {
-        return lstProductAttributeMapping;
-    }
-
-    private ArrayList<AttributeBO> lstProductAttributeMapping;
 
     private void downloadAttributeProductMapping() {
         DBUtil db = null;
@@ -1978,7 +1995,6 @@ public class ProductHelper {
         }
 
     }
-
 
     /**
      * Method will return tagged products list as a string with comma separator.
@@ -2369,7 +2385,6 @@ public class ProductHelper {
         }
     }
 
-
     public void clearCombindStockCheckedTable() {
         ProductMasterBO product;
         int siz = productMaster.size();
@@ -2419,7 +2434,6 @@ public class ProductHelper {
         }
     }
 
-
     public void clearOrderTableChecked() {
         ProductMasterBO product;
         int siz = productMaster.size();
@@ -2432,15 +2446,6 @@ public class ProductHelper {
             product.setCheked(false);
         }
     }
-
-    public float getBuffer() {
-        return buffer;
-    }
-
-    public void setBuffer(float buffer) {
-        this.buffer = buffer;
-    }
-
 
     public boolean isMustSellFilled() {
         ProductMasterBO product;
@@ -2664,11 +2669,6 @@ public class ProductHelper {
         }
         return true;
     }
-
-
-    private ArrayList<BomReturnBO> bomReturnProducts;
-    private ArrayList<BomMasterBO> bomMaster;
-    private ArrayList<BomReturnBO> bomReturnTypeProducts;
 
     /**
      * Download the isReturnable products and its Quantity from ProductMaster
@@ -4717,7 +4717,7 @@ public class ProductHelper {
 
     public void downloadDistributorProductsWithFiveLevelFilter(String moduleCode) {
         productMasterById = new HashMap<String, ProductMasterBO>();
-        getLocations();
+        downloadInStoreLocationsForStockCheck();
         try {
 
 
@@ -4867,7 +4867,7 @@ public class ProductHelper {
                     product.setBaseprice(c.getFloat(25));
 //                    product.setBrandname(c.getString(26));
                     product.setcParentid(c.getInt(27));
-                    product.setLocations(cloneLocationList(locations));
+                    product.setLocations(cloneInStoreLocationList(locations));
 
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
@@ -5133,7 +5133,7 @@ public class ProductHelper {
                         else
                             product.setParentid(0);
 
-                        product.setLocations(cloneLocationList(locations));
+                        product.setLocations(cloneInStoreLocationList(locations));
                         for (int i = 0; i < locations.size(); i++) {
                             product.getLocations().get(i)
                                     .setNearexpiryDate(cloneDateList(dateList));
@@ -6124,8 +6124,8 @@ public class ProductHelper {
         try {
 
             // load location and date
-            getLocations();
-            generateDate();
+            downloadInStoreLocationsForStockCheck();
+            generateDateListForNearExpiry();
 
             ProductMasterBO product;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -6442,7 +6442,7 @@ public class ProductHelper {
                     product.setcParentid(c.getInt(39));
 
                     product.setGroupid(c.getInt(c.getColumnIndex("groupid")));
-                    product.setLocations(cloneLocationList(locations));
+                    product.setLocations(cloneInStoreLocationList(locations));
 
                     for (int i = 0; i < locations.size(); i++) {
                         product.getLocations().get(i)
@@ -6575,7 +6575,7 @@ public class ProductHelper {
         return competitorProductMaster;
     }
 
-    private Vector<ProductMasterBO> competitorProductMaster = new Vector<>();
+
 
     /**
      * get competitor tagged products and update the productBO.
@@ -6586,9 +6586,7 @@ public class ProductHelper {
         try {
 
             String productIds = getCompetitorTaggingDetails(mMenuCode);
-            List<String> mSKUId = new ArrayList<>();
 
-            mSKUId = Arrays.asList(productIds.split(","));
 
             if (mTaggedProducts == null) {
                 mTaggedProducts = new Vector<ProductMasterBO>();
@@ -6596,32 +6594,22 @@ public class ProductHelper {
             if (mTaggedProductById == null) {
                 mTaggedProductById = new HashMap<String, ProductMasterBO>();
             }
-            String competitorParentIds = "";
+
             if (productIds != null && !productIds.trim().equals("")) {
                 for (ProductMasterBO sku : getCompetitorProductMaster()) {
                     //if (mSKUId.contains(sku.getProductID())) {
                     mTaggedProducts.add(sku);
                     mTaggedProductById.put(sku.getProductID(), sku);
-                    competitorParentIds += sku.getCompParentId() + ",";
-                    /*}else{
-                        mTaggedProducts.add(sku);
-                        mTaggedProductById.put(sku.getProductID(), sku);
-                        competitorParentIds += sku.getCompParentId() + ",";
-                    }*/
+
                 }
             } else {
                 for (ProductMasterBO sku : getCompetitorProductMaster()) {
                     mTaggedProducts.add(sku);
                     mTaggedProductById.put(sku.getProductID(), sku);
-                    competitorParentIds += sku.getCompParentId() + ",";
+
                 }
             }
-            if (competitorParentIds.endsWith(",")) {
-                competitorParentIds = competitorParentIds.substring(0, competitorParentIds.length() - 1);
-            }
-            if (!competitorParentIds.equals("")) {
-                getCompetitorFilter(competitorParentIds);
-            }
+
 
             Vector<ProductMasterBO> tagItems = getTaggedProducts();
             if (tagItems != null)
@@ -6677,7 +6665,7 @@ public class ProductHelper {
                     product.setOwnPID("0");
                     product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
 
-                    product.setLocations(cloneLocationList(locations));
+                    product.setLocations(cloneInStoreLocationList(locations));
                     for (int i = 0; i < locations.size(); i++) {
                         product.getLocations().get(i)
                                 .setNearexpiryDate(cloneDateList(dateList));
@@ -6761,38 +6749,8 @@ public class ProductHelper {
         }
     }
 
-    public ArrayList<CompetitorFilterLevelBO> getCompetitorFilterList() {
-        return competitorFilterList;
-    }
 
-    ArrayList<CompetitorFilterLevelBO> competitorFilterList;
 
-    private void getCompetitorFilter(String competitorParentIds) {
-        DBUtil db = null;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            db.openDataBase();
-            Cursor c = db.selectSQL("Select CPM.CPID,CPM.CPName,PL.LevelName from CompetitorProductMaster CPM Left join ProductLevel PL on PL.LevelId = CPM.Plid" +
-                    " where CPID in (" + competitorParentIds + ")");
-            if (c.getCount() > 0) {
-                CompetitorFilterLevelBO competitorBO;
-                competitorFilterList = new ArrayList<CompetitorFilterLevelBO>();
-                while (c.moveToNext()) {
-                    competitorBO = new CompetitorFilterLevelBO();
-                    competitorBO.setProductId(c.getInt(0));
-                    competitorBO.setProductName(c.getString(1));
-                    competitorBO.setLevelName(c.getString(2));
-                    competitorFilterList.add(competitorBO);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-    }
 
 
     public ArrayList<ConfigureBO> downloadOrderSummaryDialogFields(Context context) {
@@ -6831,26 +6789,22 @@ public class ProductHelper {
         return list;
     }
 
-    public HashMap<Integer, Vector<CompetitorFilterLevelBO>> getCompetitorFiveLevelFilters() {
 
-        return mCompetitorFilterlevelBo;
-
-    }
-
-    public Vector<CompetitorFilterLevelBO> getCompetitorSequenceValues() {
-        return mCompetitorSequenceValues;
-
-    }
-
-    //If SAO Config enabled this method will be called
-    //this method will take ProductId and compair with BomMaster and passes Product name
+    /**
+     * If SAO Config enabled this method will be called this method will take
+     * ProductId and compare with BomMaster and passes Product name
+     * @param productId product id
+     * @return List of Product Short Name
+     */
     public ArrayList<String> getSkuMixtureProductName(String productId) {
+
         ArrayList<String> mBpids = new ArrayList<>();
         ArrayList<String> productShortName = new ArrayList<>();
+
         if (bmodel.productHelper.getBomMaster() != null) {
-            for (BomMasterBO id : bmodel.productHelper.getBomMaster()) {
-                if (id.getPid().equalsIgnoreCase(productId))
-                    for (BomBO bom : id.getBomBO()) {
+            for (BomMasterBO bomMasterBO : bmodel.productHelper.getBomMaster()) {
+                if (bomMasterBO.getPid().equalsIgnoreCase(productId))
+                    for (BomBO bom : bomMasterBO.getBomBO()) {
                         mBpids.add(bom.getbPid());
                     }
             }
@@ -6867,24 +6821,30 @@ public class ProductHelper {
     }
 
     public float getSalesReturnValue() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
         float total = 0;
-        Cursor c = db
-                .selectSQL("select ifnull(sum(returnvalue),0) from SalesReturnHeader where retailerid="
-                        + QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
-        if (c != null) {
-            if (c.getCount() > 0) {
-                c.moveToNext();
-                total = c.getFloat(0);
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db
+                    .selectSQL("select ifnull(sum(returnvalue),0) from SalesReturnHeader where retailerid="
+                            + QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    c.moveToNext();
+                    total = c.getFloat(0);
+                }
+                c.close();
             }
-            c.close();
+            db.closeDB();
+        }catch (Exception e){
+            Commons.printException(e);
         }
-        db.closeDB();
         return total;
     }
+
 
     public boolean isDrugOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
         for (ProductMasterBO bo : mOrderedProductList) {
@@ -6912,19 +6872,20 @@ public class ProductHelper {
         return false;
     }
 
-    ArrayList<StandardListBO> uomList = null;
 
-    public ArrayList<StandardListBO> getUomListName() {
+
+    /**
+     * Download UOM List from StandardListMaster.
+     * @return ArrayList of type StandardList BO.
+     */
+    private ArrayList<StandardListBO> downloadUomList() {
         DBUtil db = null;
+        ArrayList<StandardListBO> uomList = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
-
             db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select listid,listname from standardlistmaster ");
-            sb.append("where listtype=" + bmodel.QT("PRODUCT_UOM"));
-            Cursor c = db.selectSQL(sb.toString());
+            Cursor c = db.selectSQL(("select listid,listname from standardlistmaster where listtype=" + bmodel.QT("PRODUCT_UOM")));
             if (c.getCount() > 0) {
                 StandardListBO standardListBO;
                 uomList = new ArrayList<StandardListBO>();
@@ -6960,6 +6921,7 @@ public class ProductHelper {
         }
         return clone;
     }
+
 }
 
 

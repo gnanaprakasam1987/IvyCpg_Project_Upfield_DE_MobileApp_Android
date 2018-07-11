@@ -686,7 +686,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 boolean isChecked) {
                                             if (isChecked
                                                     && holder.productObj
-                                                    .getLocations()
+                                                    .downloadInStoreLocationsForStockCheck()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex)
                                                     .getShelfPiece() == -1) {
                                                 if (businessModel.configurationMasterHelper.SHOW_STOCK_SP) {
@@ -701,7 +701,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 } else if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP
                                                         && !businessModel.configurationMasterHelper.SHOW_STOCK_SC
                                                         && !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                                                    holder.productObj.getLocations()
+                                                    holder.productObj.downloadInStoreLocationsForStockCheck()
                                                             .get(stockCheckPresenter.mSelectedLocationIndex)
                                                             .setShelfPiece(1);
                                                 }
@@ -713,7 +713,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 }
                                             } else if (isChecked
                                                     && holder.productObj
-                                                    .getLocations()
+                                                    .downloadInStoreLocationsForStockCheck()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex)
                                                     .getShelfPiece() > 0) {
                                                 if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
@@ -741,7 +741,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 } else if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP
                                                         && !businessModel.configurationMasterHelper.SHOW_STOCK_SC
                                                         && !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                                                    holder.productObj.getLocations()
+                                                    holder.productObj.downloadInStoreLocationsForStockCheck()
                                                             .get(stockCheckPresenter.mSelectedLocationIndex)
                                                             .setShelfPiece(-1);
                                                 }
