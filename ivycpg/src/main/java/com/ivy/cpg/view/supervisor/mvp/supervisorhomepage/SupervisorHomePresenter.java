@@ -54,23 +54,41 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
 
     @Override
     public void computeSellerInfo() {
-        supervisorHomeView.setSellerListAdapter(new ArrayList<>(sellerInfoHasMap.values()));
+
+        ArrayList<SupervisorModelBo> markerList = new ArrayList<>();
 
         int totalSellerCount = sellerInfoHasMap.size();
         int marketSellerCount = 0;
         int absentSellerCount;
         long totatlOrderValue = 0L;
+        int coveredOutlet = 0;
+        int billedOutlet = 0;
+
         for(SupervisorModelBo supervisorModelBo : sellerInfoHasMap.values()){
             if(supervisorModelBo.isAttendanceDone())
                 marketSellerCount = marketSellerCount+1;
 
             if(supervisorModelBo.getOrderValue() !=null )
                 totatlOrderValue = totatlOrderValue + supervisorModelBo.getOrderValue();
+
+            if(sellerMarkerHasmap.get(supervisorModelBo.getUserId()) != null)
+                markerList.add(supervisorModelBo);
+
+            coveredOutlet = coveredOutlet + supervisorModelBo.getCovered();
+            billedOutlet = billedOutlet + supervisorModelBo.getBilled();
+
         }
 
         absentSellerCount = totalSellerCount - marketSellerCount;
 
-        supervisorHomeView.updateSellerAttendance(totalSellerCount,absentSellerCount,marketSellerCount);
+        supervisorHomeView.updateSellerAttendance(absentSellerCount,marketSellerCount);
+        supervisorHomeView.updateOrderValue((int)totatlOrderValue);
+        supervisorHomeView.updateCoveredCount(coveredOutlet);
+
+        int unBilledoutlet = coveredOutlet - billedOutlet;
+        supervisorHomeView.updateUnbilledCount(unBilledoutlet);
+
+        supervisorHomeView.setSellerListAdapter(markerList);
     }
 
     @Override
@@ -81,9 +99,6 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
 
     @Override
     public void loginToFirebase(final Context context) {
-
-        getSellerListAWS();
-        isRealtimeLocation();
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             String email = LocationConstants.FIREBASE_EMAIL;
@@ -245,6 +260,8 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
                 sellerInfoHasMap.put(supervisorModelBo.getUserId(), supervisorModelBo);
             }
         }
+
+        computeSellerInfo();
     }
 
     private void setValues(DocumentSnapshot documentSnapshot){
@@ -284,6 +301,7 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
                 supervisorModelObj.setRetailerId(supervisorModelBo.getRetailerId());
                 supervisorModelObj.setRetailerName(supervisorModelBo.getRetailerName());
                 supervisorModelObj.setMarkerOptions(supervisorModelBo.getMarkerOptions());
+                supervisorModelObj.setAttendanceDone(supervisorModelBo.isAttendanceDone());
 
                 supervisorModelBo = supervisorModelObj;
 
@@ -341,7 +359,8 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
 //        getMarkerForFocus();
     }
 
-    private void isRealtimeLocation(){
+    @Override
+    public void isRealtimeLocation(){
 
         try {
             String sql = "select flag from "
@@ -386,7 +405,11 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
 
     }
 
+    @Override
     public void getSellerListAWS(){
+
+        int totalSellerCount = 0;
+
         DBUtil db = null;
         try {
 
@@ -410,6 +433,8 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
                         sellerInfoHasMap.put(supervisorModelBo.getUserId(), supervisorModelBo);
                     }
 
+                    totalSellerCount = totalSellerCount + 1;
+
                 }
                 c.close();
             }
@@ -422,5 +447,41 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
                 db.closeDB();
         }
 
+        supervisorHomeView.displayTotalSellerCount(totalSellerCount);
+
     }
+
+    @Override
+    public void getSellerWiseRetailerAWS(){
+
+        int totalOutletCount = 0;
+
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String queryStr = "select sellerId,retailerId,sequence from SupRetailerMaster";
+
+            Cursor c = db.selectSQL(queryStr);
+            if (c != null) {
+
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+            if (db != null)
+                db.closeDB();
+        }
+
+        supervisorHomeView.displayTotalOutletCount(totalOutletCount);
+
+    }
+
 }

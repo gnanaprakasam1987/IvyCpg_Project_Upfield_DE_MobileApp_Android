@@ -19,8 +19,12 @@ public interface SupervisorHomeContract {
         void updateMaker(SupervisorModelBo supervisorModelBo);
         void focusMarker(LatLngBounds.Builder builder);
         void setSellerListAdapter(ArrayList<SupervisorModelBo> modelBoArrayList);
-        void updateSellerAttendance(int totalSellerCount,int absentSellerCount,int marketSellerCount);
+        void displayTotalSellerCount(int totalSellerCount);
+        void updateSellerAttendance(int absentSellerCount,int marketSellerCount);
         void updateOrderValue(int totalOrderValue);
+        void displayTotalOutletCount(int totalOutlet);
+        void updateCoveredCount(int coveredOutlet);
+        void updateUnbilledCount(int unBilledOutlet);
 
     }
 
@@ -36,6 +40,8 @@ public interface SupervisorHomeContract {
         void realtimeLocationInfoListener();
         void getSellerAttendanceInfoListener();
         void getSellerListAWS();
+        void getSellerWiseRetailerAWS();
+        void isRealtimeLocation();
     }
 
 }

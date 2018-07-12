@@ -444,6 +444,10 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
             }
         });
 
+        supervisorHomePresenter.getSellerListAWS();
+        supervisorHomePresenter.getSellerWiseRetailerAWS();
+        supervisorHomePresenter.isRealtimeLocation();
+
         supervisorHomePresenter.loginToFirebase(getContext().getApplicationContext());
     }
 
@@ -493,13 +497,17 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
 
     @Override
     public void setSellerListAdapter(ArrayList<SupervisorModelBo> modelBoArrayList) {
-        sellerArrayList = modelBoArrayList;
+        sellerArrayList.addAll(modelBoArrayList);
         sellerInfoHorizontalAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void updateSellerAttendance(int totalSellerCount, int absentSellerCount, int marketSellerCount) {
+    public void displayTotalSellerCount(int totalSellerCount) {
         totalSeller.setText(String.valueOf(totalSellerCount));
+    }
+
+    @Override
+    public void updateSellerAttendance(int absentSellerCount, int marketSellerCount) {
         absentSeller.setText(String.valueOf(absentSellerCount));
         marketSeller.setText(String.valueOf(marketSellerCount));
     }
@@ -507,6 +515,21 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     @Override
     public void updateOrderValue(int totalOrderValue) {
         tvOrderValue.setText(String.valueOf(totalOrderValue));
+    }
+
+    @Override
+    public void displayTotalOutletCount(int totalOutlet) {
+        tvTotalOutlet.setText(String.valueOf(totalOutlet));
+    }
+
+    @Override
+    public void updateCoveredCount(int coveredOutlet) {
+        tvCoveredOutlet.setText(String.valueOf(coveredOutlet));
+    }
+
+    @Override
+    public void updateUnbilledCount(int unBilledOutlet) {
+        tvUnbilledOutlet.setText(String.valueOf(unBilledOutlet));
     }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
