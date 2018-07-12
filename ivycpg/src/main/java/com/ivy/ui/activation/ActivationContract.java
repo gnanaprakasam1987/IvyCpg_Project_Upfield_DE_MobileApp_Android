@@ -46,17 +46,17 @@ public interface ActivationContract {
     @PerActivity
     interface ActivationPresenter<V extends ActivationView> extends BaseIvyPresenter<V>{
 
-         void validateActivationKey(String key);
+        void validateActivationKey(String key);
 
-         void triggerIMEIActivation(String imei, String versionName,String versionNumber);
+        void triggerIMEIActivation(String imei, String versionName,String versionNumber);
 
-         void checkServerStatus(String url);
+        void checkServerStatus(String url);
 
         void doActionForActivationDismiss();
 
         void doActivation(String activationKey, String imei, String versionName,String versionNumber);
 
-        public List<ActivationBO> getAppUrls();
+        List<ActivationBO> getAppUrls();
     }
 
 

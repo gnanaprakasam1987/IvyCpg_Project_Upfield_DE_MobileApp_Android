@@ -28,8 +28,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
                 URL urlobj = new URL(serverUrl);
                 HttpURLConnection urlConnection = (HttpURLConnection) urlobj.openConnection();
                 int responseCode = urlConnection.getResponseCode();
-                Commons.print("Sync Url Success response code>>>>>>>>>>"
-                        + responseCode);
+                Commons.print("Sync Url Success response code>>>>>>>>>>" + responseCode);
                 return responseCode == HttpURLConnection.HTTP_OK;
 
             }

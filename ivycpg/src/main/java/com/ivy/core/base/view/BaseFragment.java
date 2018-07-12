@@ -115,6 +115,8 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
         return ((BaseActivity) getActivity()).isNetworkConnected();
     }
 
+
+
     /**
      * Set the unBinder object from butter knife so that the unbinding can be
      * taken care from the base activity on destroy

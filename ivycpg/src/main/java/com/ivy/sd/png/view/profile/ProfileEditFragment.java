@@ -104,6 +104,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         implements RetailerOTPDialog.OTPListener, IProfileEditCallback {
 
     public static final String TAG = ProfileEditFragment.class.getSimpleName();
+
     /*Configuration Profile id's List */
     private static final String PROFILE_02 = "PROFILE02";//STORENAME,length validation=Y,Has Edit=0,RetailerMaster
     private static final String PROFILE_03 = "PROFILE03";//ADDRESS1,length validation=Y,Has Edit=1,RetailerMaster
@@ -172,97 +173,82 @@ public class ProfileEditFragment extends IvyBaseFragment
     private static final String CT_2_TITLE = "CT2TITLE";
     private static final String CT_1_TITLE = "CT1TITLE";
 
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int LATLONG_CAMERA_REQUEST_CODE = 2;
 
-    private BusinessModel bmodel = null;
-    @NonNls
-    private RetailerMasterBO retailerObj = null;
+    private ScrollView mProfielEditScrollView;
+    private TextInputLayout editTextInputLayout1,editTextInputLayout2,editTextInputLayout3,editTextInputLayout4;
+    private TextView latlongtextview, priorityproducttextview,nearbyTextView;
+    private Button mButtonSave;
+    private ImageView imageView,latlongCameraBtn;
+    private AppCompatCheckBox inSEZcheckBox = null;
+    private AlertDialog alertDialog;
 
-    private ScrollView profielEditScrollView;
-    private TextView textview[] = new TextView[100];
-    private AppCompatEditText editText[] = new AppCompatEditText[100];
-    private TextView latlongtextview, priorityproducttextview;
+    @SuppressLint("StaticFieldLeak")
+    static TextView dlExpDateTextView = null,flExpDateTextView = null;
+
     private LinearLayout.LayoutParams params3, params4, params5;
     private LinearLayout.LayoutParams weight1, weight2, weight3;
     private LinearLayout.LayoutParams paramsAttrib, paramsAttribSpinner;
-    private TextInputLayout editTextInputLayout1;
-    private TextInputLayout editTextInputLayout2;
-    private TextInputLayout editTextInputLayout3;
-    private TextInputLayout editTextInputLayout4;
-    private Button saveTxtBtn;
-    private TextView nearbyTextView;
-    private ImageView imageView;
-    private AppCompatCheckBox inSEZcheckBox = null;
-    private ImageView latlongCameraBtn;
-    @SuppressLint("StaticFieldLeak")
-    static TextView dlExpDateTextView = null;
-    @SuppressLint("StaticFieldLeak")
-    static TextView flExpDateTextView = null;
 
-    private ArrayList<LocationBO> mLocationMasterList1 = null;
-    private ArrayList<LocationBO> mLocationMasterList2 = null;
-    private ArrayList<LocationBO> mLocationMasterList3 = null;
-    private Vector<ChannelBO> channelMaster = null;
+    private BusinessModel bmodel = null;
+    private RetailerMasterBO retailerObj = null;
 
-    private Vector<ConfigureBO> profileConfig = null;
-    private ArrayAdapter<LocationBO> locationAdapter1 = null;
-    private ArrayAdapter<LocationBO> locationAdapter2 = null;
+    private ArrayAdapter<LocationBO> locationAdapter1 = null,locationAdapter2 = null;
     private ArrayAdapter<NewOutletBO> contactTitleAdapter = null;
-    private ArrayList<NewOutletBO> mcontactTitleList = null;
-    private ArrayList<NewOutletBO> mcontractStatusList = null;
-    private ArrayList<StandardListBO> mPriorityProductList = null;
-    private ArrayList<StandardListBO> selectedPriorityProductList = null;
+
+    private TextView textview[] = new TextView[100];
+    private AppCompatEditText editText[] = new AppCompatEditText[100];
+
+    private ArrayList<NewOutletBO> mcontactTitleList = null,mcontractStatusList = null;
+    private ArrayList<NewOutletAttributeBO> attributeList = null,attributeHeaderList = null;
+    private ArrayList<StandardListBO> mPriorityProductList = null,selectedPriorityProductList = null;
+    private ArrayList<LocationBO> mLocationMasterList1 = null,mLocationMasterList2 = null,mLocationMasterList3 = null;
+    private ArrayList<Integer> attributeIndexList = null;
+    private ArrayList<InputFilter> inputFilters =null;
+
+    private Vector<ChannelBO> channelMaster = null;
+    private Vector<ConfigureBO> profileConfig = null;
     private Vector<RetailerMasterBO> mNearbyRetIds = null;
     private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
-    private ArrayList<NewOutletAttributeBO> attributeList = null;
-    private ArrayList<NewOutletAttributeBO> attributeHeaderList = null;
-    private ArrayList<Integer> attributeIndexList = null;
+
     private HashMap<String, ArrayList<Integer>> attributeIndexMap = null;
     private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap = null;
-    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList = null; // Hashmap to retreive selected level of Attribute
+    // HashMap to retreive selected level of Attribute
+    private HashMap<Integer,NewOutletAttributeBO> selectedAttribList = null;
     private HashMap<String, MaterialSpinner> spinnerHashMap = null;
     private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
     private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap = null;
-    private HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelId;
-    private ArrayList<InputFilter> inputFilters =null;
+    private HashMap<Integer,ArrayList<Integer>> mAttributeListByChannelId;
 
-    private static final int CAMERA_REQUEST_CODE = 1;
-    private static final int LATLONG_CAMERA_REQUEST_CODE = 2;
-    private int other1_editText_index, other2_editText_index, lName1_editText_index,
-            lName2_editText_index;
-    private int locid = 0, loc2id = 0;
-    private int check = 0;
-    private int spinnerCount = 0;
-    double outStanding = 0.0, invoiceAmount = 0.0;
-    static String lat = "";
-    static String longitude = "";
-    private String selectedProductID = "";
-    private String mcontact_title1_lovId = "",
-            mcontact_title2_lovId = "", mcontact_title1_text = "0", mcontact_title2_text = "0";
+
+    private int other1_editText_index, other2_editText_index, lName1_editText_index, lName2_editText_index;
+    private int locid = 0, loc2id = 0,check = 0,spinnerCount = 0,subChannelSpinnerCount = 0;
+
+    static  String lat = "",longitude = "";
+    private String selectedProductID = "",cameraFilePath = "",imageFileName;
+    private String mcontact_title1_lovId = "", mcontact_title2_lovId = "",
+            mcontact_title1_text = "0", mcontact_title2_text = "0";
+
     private boolean is_contact_title1 = false, is_contact_title2 = false, isLatLong = false;
-    private String cameraFilePath = "";
-    @NonNls
-    private String imageFileName;
-    boolean isLatLongCameravailable = false;
+    private boolean isLatLongCameravailable = false;
     private boolean isMobileNoVerfied = false, isEmailVerfied = false;
-    private int subChannelSpinnerCount = 0;
 
     private MaterialSpinner channel, subchannel, location1, location2, location3,
             contactTitleSpinner1, contactTitleSpinner2, contractSpinner,
             rField5Spinner, rField6Spinner, rField7Spinner, rField4Spinner;
-    private AlertDialog alertDialog;
-
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         View view = inflater.inflate(R.layout.fragment_profile_edit, container, false);
-        profielEditScrollView = view.findViewById(R.id.profile_edit_scrollview);
-        saveTxtBtn = view.findViewById(R.id.profile_edit_save);
-        saveTxtBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mProfielEditScrollView = view.findViewById(R.id.profile_edit_scrollview);
+        mButtonSave = view.findViewById(R.id.profile_edit_save);
+        mButtonSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         setHasOptionsMenu(true);
 
         onDownloadAsyncTask();//AsyncTask To download from local database
@@ -271,11 +257,6 @@ public class ProfileEditFragment extends IvyBaseFragment
         return view;
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
 
     @Override
     public void onResume() {
@@ -287,7 +268,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                 bmodel.locationUtil.startLocationListener();
             }
         }
-
     }
 
     @Override
@@ -305,16 +285,14 @@ public class ProfileEditFragment extends IvyBaseFragment
     public void onDestroyView() {
         super.onDestroyView();
         //Log.d(TAG, "onDestroyView() has been called.");
-
         if (dlExpDateTextView != null)
             dlExpDateTextView = null;
         if (flExpDateTextView != null)
             flExpDateTextView = null;
     }
 
-
     private void onButtonClick() {
-        saveTxtBtn.setOnClickListener(new View.OnClickListener() {
+        mButtonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -373,11 +351,13 @@ public class ProfileEditFragment extends IvyBaseFragment
             if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_42) && configureBO.isFlag() == 1 && configureBO.getModule_Order() == 1)
                 is_contact_title2 = true;
 
+            double outStanding = 0.0;
             if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_47) && configureBO.isFlag() == 1)
                 outStanding = bmodel.getInvoiceAmount() - bmodel.getOutStandingInvoiceAmount();
 
 
             //String retailerCreditLimit = "0.0";
+            double invoiceAmount = 0.0;
             if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_48) && configureBO.isFlag() == 1)
                 //retailerCreditLimit = bmodel.getRetailerMasterBO().getProfile_creditLimit();
 
@@ -472,7 +452,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             contactTitleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         }
 
-        if (profielEditScrollView != null) profielEditScrollView.removeAllViews();
+        if (mProfielEditScrollView != null) mProfielEditScrollView.removeAllViews();
 
         LinearLayout.LayoutParams commonsparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commonsparams.setMargins(10, 15, 10, 0);
@@ -1438,7 +1418,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
             }
 
-            profielEditScrollView.addView(totalView);
+            mProfielEditScrollView.addView(totalView);
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -2536,8 +2516,6 @@ public class ProfileEditFragment extends IvyBaseFragment
 
             @Override
             public void onClick(View v) {
-
-
                 lat = LocationUtil.latitude + "";
                 longitude = LocationUtil.longitude + "";
                 onMapViewClicked();

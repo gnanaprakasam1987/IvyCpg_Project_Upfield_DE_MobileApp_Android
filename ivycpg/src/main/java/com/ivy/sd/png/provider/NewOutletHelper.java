@@ -1669,32 +1669,24 @@ public class NewOutletHelper {
                             if (levelId != 0) {
                                 mLocationListByLevelId.put(levelId,
                                         locationList);
-
                                 locationList = new ArrayList<>();
                                 locationList.add(locationBo);
                                 levelId = c.getInt(4);
 
-
                             } else {
-
                                 locationList.add(locationBo);
                                 levelId = c.getInt(4);
-
                             }
                         } else {
                             locationList.add(locationBo);
                         }
-
                     }
-
                     if (locationList.size() > 0) {
                         mLocationListByLevelId.put(levelId, locationList);
-
                     }
                 }
                 c.close();
             }
-
 
         } catch (Exception e) {
             Commons.printException("" + e);

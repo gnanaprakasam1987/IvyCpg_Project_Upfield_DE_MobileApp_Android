@@ -54,4 +54,6 @@ public interface BaseIvyView {
 
     void pauseNFCManager();
 
+
+
 }

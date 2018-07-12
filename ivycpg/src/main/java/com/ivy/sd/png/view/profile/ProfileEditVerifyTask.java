@@ -37,8 +37,7 @@ public class ProfileEditVerifyTask extends AsyncTask<Integer,Integer,Integer> {
             int listid = bmodel.configurationMasterHelper.getActivtyType("RE");
 
             JSONObject jsonData = new JSONObject();
-            jsonData.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
+            jsonData.put("UserId", bmodel.userMasterHelper.getUserMasterBO().getUserid());
             jsonData.put("RetailerId", bmodel.getRetailerMasterBO().getRetailerID());
             jsonData.put("ActivityType", listid);
             JSONObject notObj = new JSONObject();
@@ -70,8 +69,7 @@ public class ProfileEditVerifyTask extends AsyncTask<Integer,Integer,Integer> {
 
             String appendUrl = bmodel.synchronizationHelper.generateOtpUrl();
 
-            Vector<String> responseVector = bmodel.synchronizationHelper.getOtpGenerateResponse(jsonFormatter.getDataInJson(),
-                    jsonData.toString(), appendUrl);
+            Vector<String> responseVector = bmodel.synchronizationHelper.getOtpGenerateResponse(jsonFormatter.getDataInJson(), jsonData.toString(), appendUrl);
 
             if (responseVector.size() > 0) {
                 for (String s : responseVector) {

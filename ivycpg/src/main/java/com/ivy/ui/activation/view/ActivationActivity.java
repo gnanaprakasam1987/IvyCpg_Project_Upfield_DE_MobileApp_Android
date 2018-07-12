@@ -97,8 +97,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
     @Override
-    protected void getMessageFromAliens() {
-    }
+    protected void getMessageFromAliens() {}
 
 
     @SuppressLint("SetTextI18n")
