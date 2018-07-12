@@ -80,7 +80,7 @@ android {
     buildTypes {
         debug {
             resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
-            buildConfigField("boolean", "ACTIVATION", "true");
+            buildConfigField("boolean", "ACTIVATION", "false");
 
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
@@ -135,6 +135,35 @@ android {
         }
     }
 
+    android {
+        sourceSets {
+            main {
+                res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
+            }
+        }
+    }
+
+}
+
+static def getLayoutList(path) {
+    // let's say path = "app/src/main/res/layouts/
+    File file = new File(path)
+
+    def throwAway = file.path.split("/")[0]
+    // throwAway = 'app'
+
+    def newPath = file.path.substring(throwAway.length() + 1) // +1 is for '/'
+    // newPath = src/main/res/layouts/
+
+    def array = file.list().collect {
+        // println "filename: ${it}" // uncomment for debugging
+        "${newPath}/${it}"
+    }
+
+    array.push("src/main/res");
+    // println "result: ${array}" // uncomment for debugging
+
+    return array
 }
 
 dependencies {

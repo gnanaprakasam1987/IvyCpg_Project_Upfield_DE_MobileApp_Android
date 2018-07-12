@@ -145,7 +145,7 @@ public class PromotionHelper {
             if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
                 query = query + "and PPM.PId = " + businessModel.productHelper.getmSelectedGlobalProductId();
 
-            c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname,P.PName"
+            c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname,P.PName,PMM.StartDate,PMM.EndDate"
                     + "  from PromotionMapping PM"
                     + " inner join PromotionMaster PMM on PM.HId = PMM.HId and " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " between PMM.StartDate and PMM.EndDate inner join PromotionProductMapping PPM on PPM.PromoId=PM.PromoId"
@@ -164,6 +164,8 @@ public class PromotionHelper {
                     promotionMaster.setMappingId(c.getInt(3));
                     promotionMaster.setGroupName(c.getString(4));
                     promotionMaster.setpName(c.getString(5));
+                    promotionMaster.setFromDate(c.getString(6));
+                    promotionMaster.setToDate(c.getString(7));
                     getPromotionList().add(promotionMaster);
                 }
 

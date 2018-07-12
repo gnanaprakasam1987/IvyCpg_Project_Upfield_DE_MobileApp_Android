@@ -103,7 +103,6 @@
     <string name="received">Received</string>
     <string name="os_amt">OS Amt</string>
     <string name="cheque_num">Cheque Num</string>
-    <string name="mode">Mode</string>
     <string name="cash">Cash</string>
     <string name="cheque">Cheque</string>
     <string name="bank_name">Bank Name</string>
@@ -261,7 +260,6 @@
     <string name="initiative">Initiative</string>
     <string name="credit_note">Credit Note</string>
     <string name="Product_details">Product Details</string>
-    <string name="adjusted_sih">Adj.sih</string>
     <string name="new_task_saved">New Task has been saved.</string>
     <string name="choose_brand">Choose Brand</string>
     <string name="choose_category">Choose Category</string>
@@ -341,7 +339,6 @@
     <string name="planogram">Planogram</string>
     <string name="image_desc">null</string>
     <string name="adherence">Planogram Adherence?</string>
-    <string name="please_filldetails">Please enter required details.</string>
     <string name="unloadimage">Image is not available</string>
     <string name="deviate_retailers">Deviate Retailers</string>
     <string name="admin_contact_no">Admin Contact No :</string>
@@ -1047,7 +1044,6 @@
     <string name="percentage">Percentage</string>
     <string name="invoice_qty">Invoice Qty</string>
     <string name="delivery_rep_code">Rep Code</string>
-    <string name="maximum_count_is_exceed">Maximum count is exceed</string>
     <string name="select_reason_for_no_order">Select Reason for no order</string>
     <string name="delivery_date_is">Delivery Date is: </string>
     <string name="old_order_volume">Original value</string>
@@ -1275,7 +1271,6 @@
 
 
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
-    <string name="total_collected">Total Collected</string>
 
 
 
