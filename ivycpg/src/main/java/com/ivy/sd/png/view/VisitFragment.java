@@ -460,7 +460,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                         R.id.label_TodayTgt)
                                         .getTag()));
 
-            bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME =true;
+
             if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
                 lbl_TodayTgt.setText(getString(R.string.total_vol));
             }
@@ -708,14 +708,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             Commons.printException("" + e);
         }
 
-        bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME = true;
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
             tv_target.setText(String.valueOf(getStoreVisited()));
 
-        //cpg132-task13
+            //cpg132-task13
         else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
-            tv_target.setText(String.valueOf(getStoreVisitedInVolume()));
+            tv_target.setText(String.valueOf(getTotalVolume()));
         else
             tv_target.setText(getTotalVisitActual());
 
@@ -1931,28 +1930,101 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         return count;
     }
 
-
-    private String getStoreVisitedInVolume() {
-//        String retailerId = bmodel.retailerMasterBO.getRetailerID();
+    private String getTotalVolume() {
+        tv_target.setTextSize(14);
         DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
-        double f = 0;
+        int pcQty = 0;
+        int caseQty = 0;
+        int outQty = 0;
         try {
-            Cursor c;
-            c = db.selectSQL("select sum (totalWeight) from OrderHeader");
+
+            Cursor c = db.selectSQL("select sum (pieceqty) from OrderDetail");
             if (c != null) {
                 if (c.moveToNext()) {
-                    f = c.getDouble(0);
+                    pcQty = c.getInt(0);
 
                 }
                 c.close();
             }
+
+
+            Cursor c1 = db.selectSQL("select sum (caseQty) from OrderDetail");
+
+            if (c1 != null) {
+                if (c1.moveToNext()) {
+                    caseQty = c1.getInt(0);
+                }
+                c1.close();
+            }
+
+
+            Cursor c2 = db.selectSQL("select sum (outerQty) from OrderDetail");
+            if (c2 != null) {
+                if (c2.moveToNext()) {
+                    outQty = c2.getInt(0);
+                }
+                c2.close();
+            }
+
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
         db.closeDB();
-        return String.valueOf(f);
 
+
+        try {
+
+            StringBuilder sb = new StringBuilder();
+            String op = getString(R.string.item_piece);
+            String oc = getString(R.string.item_case);
+            String ou = getString(R.string.item_outer);
+
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("item_piece") != null)
+                op = bmodel.labelsMasterHelper
+                        .applyLabels("item_piece");
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("item_case") != null)
+                oc = bmodel.labelsMasterHelper
+                        .applyLabels("item_case");
+
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("item_outer") != null)
+                ou = bmodel.labelsMasterHelper
+                        .applyLabels("item_outer");
+
+
+            bmodel.configurationMasterHelper.SHOW_ORDER_PCS = true;
+            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+
+                sb.append(op + " " + pcQty);
+            }
+
+            bmodel.configurationMasterHelper.SHOW_ORDER_CASE = true;
+            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    sb.append(" : " + oc + " " + (caseQty));
+                else
+                    sb.append(caseQty + " " + oc + " ");
+            }
+            bmodel.configurationMasterHelper.SHOW_OUTER_CASE = true;
+            if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS || bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    sb.append(" : " + ou + " " + outQty);
+                else
+                    sb.append(ou + " " + outQty);
+            }
+
+            return sb.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
 

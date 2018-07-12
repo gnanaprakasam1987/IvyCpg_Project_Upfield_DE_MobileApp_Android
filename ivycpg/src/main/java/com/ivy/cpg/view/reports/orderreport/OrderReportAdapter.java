@@ -126,7 +126,6 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
             if (!businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE)
                 holder.orderImage.setVisibility(View.GONE);
-            businessModel.configurationMasterHelper.SHOW_VOLUME_QTY = true;
 
             if (!businessModel.configurationMasterHelper.SHOW_VOLUME_QTY) {
                 holder.tvVolumeLabel.setVisibility(View.GONE);
@@ -243,26 +242,25 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
                         .applyLabels("item_outer");
 
 
-            businessModel.configurationMasterHelper.SHOW_ORDER_PCS=true;
             if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
 
                 sb.append(reportBO.getVolumePcsQty() + " " + op + " ");
             }
 
-            businessModel.configurationMasterHelper.SHOW_ORDER_CASE = true;
+
             if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE) {
 
                 if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    sb.append("\n" + (reportBO.getVolumeCaseQty()) + " "
+                    sb.append(": " + (reportBO.getVolumeCaseQty()) + " "
                             + oc + " ");
                 else
                     sb.append(reportBO.getVolumeCaseQty() + " "
                             + oc + " ");
             }
-            businessModel.configurationMasterHelper.SHOW_OUTER_CASE = true;
+
             if (businessModel.configurationMasterHelper.SHOW_OUTER_CASE) {
                 if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS || businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    sb.append("\n" + (reportBO.getVolumeOuterQty()) + " "
+                    sb.append(": " + (reportBO.getVolumeOuterQty()) + " "
                             + ou + " ");
                 else
                     sb.append(reportBO.getVolumeCaseQty() + " "

@@ -112,7 +112,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        System.out.println("Start"+System.currentTimeMillis());
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         View view = inflater.inflate(R.layout.fragment_order_report, container, false);
@@ -155,9 +155,9 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
         text_totalValueTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lab_dist_pre_post.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        list = businessModel.reportHelper.downloadOrderreport();
+        //list = businessModel.reportHelper.downloadOrderreport();
 
-        list = mOrderReportModelPresenter.getOrderReport();
+         list = mOrderReportModelPresenter.getOrderReport();
 
         updateOrderGrid();
 
@@ -296,11 +296,10 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             view.findViewById(R.id.view0).setVisibility(View.GONE);
         }
 
-         businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME = true;
         if (businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
             showOrHideVolume();
         }
-
+        System.out.println("Start"+System.currentTimeMillis());
         return view;
 
     }
@@ -406,16 +405,72 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
 
 
         //cpg132-task13
-        businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME = true;
 
         if (businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
-            float totalVolume = 0;
+            int pcQty = 0;
+            int caseQty = 0;
+            int outQty = 0;
+
+
             for (OrderReportBO ret : list) {
-                totalVolume = totalVolume + ret.getWeight();
+                pcQty = pcQty + ret.getVolumePcsQty();
+                caseQty = caseQty + ret.getVolumeCaseQty();
+                outQty = outQty + ret.getVolumeOuterQty();
             }
-            String totalWeight = getString(R.string.total) + "  " + getString(R.string.weight);
-            totalWeightLabel.setText(totalWeight);
-            totalVolumeValue.setText(String.valueOf(totalVolume));
+            totalWeightLabel.setText(getString(R.string.total_vol));
+
+
+            try {
+
+                StringBuilder sb = new StringBuilder();
+                String op = getString(R.string.item_piece);
+                String oc = getString(R.string.item_case);
+                String ou = getString(R.string.item_outer);
+
+                if (businessModel.labelsMasterHelper
+                        .applyLabels("item_piece") != null)
+                    op = businessModel.labelsMasterHelper
+                            .applyLabels("item_piece");
+                if (businessModel.labelsMasterHelper
+                        .applyLabels("item_case") != null)
+                    oc = businessModel.labelsMasterHelper
+                            .applyLabels("item_case");
+
+                if (businessModel.labelsMasterHelper
+                        .applyLabels("item_outer") != null)
+                    ou = businessModel.labelsMasterHelper
+                            .applyLabels("item_outer");
+
+
+
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
+
+                    sb.append(pcQty + " " + op);
+                }
+
+
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE) {
+
+                    if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+                        sb.append(" : " + caseQty + " " + oc);
+                    else
+                        sb.append(caseQty + " " + oc);
+                }
+
+                if (businessModel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                    if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS || businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+                        sb.append(" : " + outQty + " " + ou);
+                    else
+                        sb.append(outQty + " " + ou);
+                }
+
+                totalVolumeValue.setText(sb.toString());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
         }
 
 

@@ -1299,7 +1299,7 @@ public class ConfigurationMasterHelper {
 
 
     //cpg132-task 13
-    public boolean SHOW_TOTAL_ACHIEVED_VOLUME;
+    public boolean SHOW_TOTAL_ACHIEVED_VOLUME = true;
     private static final String SHOW_TOTAL_ACHIEVEDVOLUME = "FUN00";
 
     public static final String CODE_TAX_MODEL = "TAX_MODEL";
