@@ -435,6 +435,15 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                                 }
                             }
                         }
+                        //P3M chart Specific Change
+                        if(selectedInterval.equals(P3M)){
+                            dashBoardHelper.getDashListViewList().clear();
+                            for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                                if (dashBoardBO.getCode().equals(mDashboardList.get(position).getCode())) {
+                                    dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                                }
+                            }
+                        }
 
                         if (mDashboardList != null && mDashboardList.size() > 0) {
                             dashBoardHelper.setDashboardBO(holder.dashboardDataObj);
@@ -1026,13 +1035,22 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private void updateMonth(String monthName) {
         mDashboardList = new ArrayList<>();
 
-        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
+        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
             if (dashBoardBO.getMonthName().equals(monthName)) {
                 mDashboardList.add(dashBoardBO);
             }
         }
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
+            //P3M chart Specific Change
+            if(selectedInterval.equals(P3M)){
+                dashBoardHelper.getDashListViewList().clear();
+                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                    if (dashBoardBO.getCode().equals(mDashboardList.get(0).getCode())) {
+                        dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                    }
+                }
+            }
             checkandaddScreens();
             if (mDashboardList != null && mDashboardList.size() > 0) {
                 dashBoardHelper.setDashboardBO(mDashboardList.get(0));
