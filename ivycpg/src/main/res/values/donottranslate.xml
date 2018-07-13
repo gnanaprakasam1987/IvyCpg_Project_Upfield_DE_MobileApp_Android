@@ -162,4 +162,8 @@
 
     <string name="drug_license_expired">Drug License Expired</string>
     <string name="uom_not_available">Uom Not Available</string>
+    <string name="title_activity_posm_image_gallery">PosmImageGallery</string>
+    <string name="title_activity_posm_gallery">PosmGallery</string>
+    <string name="pwd_policy_not_match">Password Policy Not Matched</string>
+    <string name="please_complete">Please Complete</string>
 </resources>

@@ -112,8 +112,6 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
         loginPresenter = new LoginPresenterImpl(getApplicationContext());
         loginPresenter.setView(this);
 
-        loginPresenter.loadInitialData();
-
         //progressDialog = null;
 
         mForgotPasswordTV = (TextView) findViewById(R.id.txtResetPassword);
@@ -128,6 +126,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
         Button buttonLogin = (Button) findViewById(R.id.loginButton);
         buttonLogin.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
+        loginPresenter.loadInitialData();
         loginPresenter.getSupportNo();
 
         updateImageViews();

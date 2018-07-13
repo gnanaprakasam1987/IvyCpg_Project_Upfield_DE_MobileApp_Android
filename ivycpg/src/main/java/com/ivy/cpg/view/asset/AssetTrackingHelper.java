@@ -329,6 +329,8 @@ public class AssetTrackingHelper {
                         SHOW_REMARKS_POSM = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_SHOW_POSM_LOCATION))
                         SHOW_LOCATION_POSM = true;
+                    else if (c.getString(0).equalsIgnoreCase(POSM_REASON))
+                        SHOW_POSM_REASON = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_POSM_PHOTO_COUNT))
                         if (c.getString(1) != null) {
 
