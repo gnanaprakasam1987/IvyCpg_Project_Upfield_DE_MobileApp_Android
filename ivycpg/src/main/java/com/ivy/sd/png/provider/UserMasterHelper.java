@@ -3,6 +3,10 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.app.AppDataProviderImpl;
+import com.ivy.core.data.db.DBHelperImpl;
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -34,6 +38,10 @@ public class UserMasterHelper {
         return instance;
     }
 
+    /**
+     * @See {@link UserDataManagerImpl#fetchUserDetails()}
+     * @deprecated
+     */
     public void downloadUserDetails() {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -97,6 +105,16 @@ public class UserMasterHelper {
                             .getColumnIndex("BackupUserId")));
                     userMasterBO.setBackup(false);
 
+                    /** Code cleanup data**/
+                    bmodel.codeCleanUpUtil.setDistributionId(c.getInt(c
+                            .getColumnIndex("distributorid")), false);
+                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
+                            .getColumnIndex("userid")), false);
+                    bmodel.codeCleanUpUtil.setDownloadDate(c.getString(c
+                            .getColumnIndex("downloaddate")), false);
+                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
+                            .getColumnIndex("branchid")), false);
+
                 }
                 c.close();
             }
@@ -105,6 +123,13 @@ public class UserMasterHelper {
             Commons.printException("" + e);
         }
     }
+
+    /**
+     * @return <code>true</code> if data is synced <code>false</code> if not synced
+     * @see {@link UserDataManagerImpl#isSynced()}
+     * Checks if data is synced
+     * @deprecated
+     */
 
     public boolean getSyncStatus() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -130,8 +155,13 @@ public class UserMasterHelper {
                             .getColumnIndex("branchid")));
                     userMasterBO.setVanId(c.getInt(c
                             .getColumnIndex("vanid")));
+
                     userMasterBO.setUserid(c.getInt(c
                             .getColumnIndex("userid")));
+
+                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
+                            .getColumnIndex("userid")), false);
+
                     userMasterBO.setUserName(c.getString(c
                             .getColumnIndex("username")));
                     userMasterBO.setUserType(c.getString(c
@@ -152,6 +182,16 @@ public class UserMasterHelper {
                             .getColumnIndex("SchemeFactor")));
                     userMasterBO.setUpliftFactor(c.getInt(c
                             .getColumnIndex("upliftFactor")));
+
+                    /** Code cleanup data**/
+                    bmodel.codeCleanUpUtil.setDistributionId(c.getInt(c
+                            .getColumnIndex("distributorid")), false);
+                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
+                            .getColumnIndex("userid")), false);
+                    bmodel.codeCleanUpUtil.setDownloadDate(c.getString(c
+                            .getColumnIndex("downloaddate")), false);
+                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
+                            .getColumnIndex("branchid")), false);
                 }
                 c.close();
             }
@@ -163,8 +203,14 @@ public class UserMasterHelper {
     }
 
     /**
+     *
+     */
+
+    /**
+     * @see {@link UserDataManagerImpl#fetchJoinCallDetails()}
      * Method to use download joinCall users list from usermaster where isDeviceuser = 0 and relationShip = PARENT
      * Set the joint call users list inside UserMasterBO
+     * @deprecated
      */
     public void downloadJoinCallusers() {
         ArrayList<UserMasterBO> mJoinCallUserlist = new ArrayList<>();
@@ -250,10 +296,29 @@ public class UserMasterHelper {
     }
 
 
+    /**
+     * @return User BO
+     * @See {@link AppDataProviderImpl#getUser()}
+     * @deprecated Only the necessary data is stored in the {@link com.ivy.core.data.app.AppDataProviderImpl} Singleton
+     */
     public UserMasterBO getUserMasterBO() {
         return userMasterBO;
     }
 
+    /**
+     * @return User BO
+     * @See {@link AppDataProviderImpl#setCurrentUser(UserMasterBO)}
+     * @deprecated Only the necessary data is stored in the {@link com.ivy.core.data.app.AppDataProviderImpl} Singleton
+     */
+    public void setUserMasterBO(UserMasterBO userMasterBO) {
+        this.userMasterBO = userMasterBO;
+    }
+
+
+    /**
+     * @See {@link UserDataManagerImpl#fetchDistributionDetails()} ()}
+     * @deprecated
+     */
     public void downloadDistributionDetails() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -291,6 +356,8 @@ public class UserMasterHelper {
      * @param UserID       -userID
      * @param pwd-password
      * @return - true or false
+     * @see {@link UserDataManagerImpl#changeUserPassword(int, String)}
+     * @deprecated
      */
     public boolean changePassword(int UserID, String pwd) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,

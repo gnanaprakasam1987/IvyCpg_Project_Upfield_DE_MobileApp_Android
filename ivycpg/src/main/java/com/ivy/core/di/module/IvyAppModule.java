@@ -19,6 +19,7 @@ import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
 import com.ivy.core.di.scope.RetailerInfo;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -75,6 +76,7 @@ public class IvyAppModule {
     protected ConfigurationMasterHelper providesConfigurationHelper() {
         return ((BusinessModel) mContext).configurationMasterHelper;
     }
+
 
     @Provides
     @Singleton

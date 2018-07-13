@@ -1,6 +1,7 @@
 package com.ivy.core.data.app;
 
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.UserMasterBO;
 
 public interface AppDataProvider {
 
@@ -19,6 +20,26 @@ public interface AppDataProvider {
     void setRetailerMaster(RetailerMasterBO retailerMaster);
 
     RetailerMasterBO getRetailMaster();
+
+    void setUserId(int userId);
+
+    int getUserId();
+
+    void setDistributionId(int distributionId);
+
+    int getDistributionId();
+
+    void setBranchId(int branchId);
+
+    int getBranchId();
+
+    void setDownloadDate(String downloadDate);
+
+    String getDownloadDate();
+
+    void setCurrentUser(UserMasterBO userData);
+
+    UserMasterBO getUser();
 
 
 }

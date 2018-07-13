@@ -2,29 +2,35 @@ package com.ivy.core.data.outlettime;
 
 import android.database.Cursor;
 
-import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
+import static com.ivy.sd.png.commons.SDUtil.DATE_GLOBAL;
+import static com.ivy.sd.png.commons.SDUtil.now;
 import static com.ivy.utils.AppUtils.QT;
 
 public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManager {
 
-    private AppDataProvider appDataProvider;
 
     private DBUtil mDbUtil;
 
+    private DataManager mDataManager;
+
     @Inject
-    public OutletTimeStampDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider) {
-        this.appDataProvider = appDataProvider;
+    public OutletTimeStampDataManagerImpl(@DataBaseInfo DBUtil dbUtil, DataManager dataManager) {
         this.mDbUtil = dbUtil;
+        this.mDataManager = dataManager;
     }
 
 
@@ -58,29 +64,28 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
      * @param timeOut module exit time
      */
     @Override
-    public Single<Boolean> updateTimeStampModuleWise(final String timeOut) {
-        return Single.fromCallable(new Callable<Boolean>() {
+    public Completable updateTimeStampModuleWise(final String timeOut) {
+        return Completable.fromCallable(new Callable() {
             @Override
-            public Boolean call() {
+            public Void call() {
                 try {
                     mDbUtil.createDataBase();
                     mDbUtil.openDataBase();
 
-                    String dateTime = com.ivy.sd.png.commons.SDUtil.now(com.ivy.sd.png.commons.SDUtil.DATE_GLOBAL) + " " + timeOut;
+                    String dateTime = now(DATE_GLOBAL) + " " + timeOut;
                     String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + dateTime
                             + "'  WHERE RetailerID = '"
-                            + appDataProvider.getRetailMaster().getRetailerID()
-                            + "' AND TimeIn = " + appDataProvider.getModuleIntime() + " AND UID = " + appDataProvider.getUniqueId();
+                            + mDataManager.getRetailMaster().getRetailerID()
+                            + "' AND TimeIn = " + mDataManager.getModuleIntime() + " AND UID = " + mDataManager.getUniqueId();
                     mDbUtil.updateSQL(query);
 
-                    return true;
                 } catch (Exception e) {
-                    return false;
                 } finally {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
                 }
 
+                return null;
             }
         });
     }
@@ -92,61 +97,98 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
      * @param timeIn module start-in time
      */
     @Override
-    public Single<Boolean> saveTimeStampModuleWise(final String date, final String timeIn, final String moduleCode) {
-        return Single.fromCallable(new Callable<Boolean>() {
+    public Completable saveTimeStampModuleWise(final String date, final String timeIn, final String moduleCode) {
+        return Completable.fromCallable(new Callable() {
             @Override
-            public Boolean call() {
-                appDataProvider.setModuleInTime(QT(date + " " + timeIn));
+            public Void call() {
+                mDataManager.setModuleInTime(QT(date + " " + timeIn));
                 try {
                     mDbUtil.createDataBase();
                     mDbUtil.openDataBase();
 
-                    String values = appDataProvider.getUniqueId() + ","
+                    String values = mDataManager.getUniqueId() + ","
                             + QT(moduleCode) + ","
-                            + appDataProvider.getModuleIntime() + "," + appDataProvider.getModuleIntime()
+                            + mDataManager.getModuleIntime() + "," + mDataManager.getModuleIntime()
                             + ","
-                            + QT(appDataProvider.getRetailMaster().getRetailerID());
+                            + QT(mDataManager.getRetailMaster().getRetailerID());
                     mDbUtil.insertSQL(DataMembers.tbl_outlet_time_stamp_detail, DataMembers.tbl_outlet_time_stamp_detail_cols, values);
 
-                    return true;
                 } catch (Exception e) {
-                    return false;
                 } finally {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
                 }
 
+                return null;
             }
         });
     }
 
     @Override
-    public Single<Boolean> deleteTimeStamps() {
-        return Single.fromCallable(new Callable<Boolean>() {
+    public Completable deleteTimeStamps() {
+        return Completable.fromCallable(new Callable<Void>() {
             @Override
-            public Boolean call() {
+            public Void call() {
                 try {
                     mDbUtil.createDataBase();
                     mDbUtil.openDataBase();
 
                     mDbUtil.deleteSQL(DataMembers.tbl_OutletTimestamp, "retailerid="
-                            + appDataProvider.getRetailMaster().getRetailerID(), false);
+                            + mDataManager.getRetailMaster().getRetailerID(), false);
                     mDbUtil.deleteSQL(DataMembers.tbl_outlet_time_stamp_detail, "retailerid="
-                            + appDataProvider.getRetailMaster().getRetailerID() + " AND UID=" + appDataProvider.getUniqueId(), false);
+                            + mDataManager.getRetailMaster().getRetailerID() + " AND UID=" + mDataManager.getUniqueId(), false);
                     mDbUtil.deleteSQL(DataMembers.tbl_OutletTimestamp_images, "uid="
-                            + appDataProvider.getUniqueId(), false);
+                            + mDataManager.getUniqueId(), false);
 
                     mDbUtil.closeDB();
 
-                    return true;
                 } catch (Exception e) {
-                    return false;
                 } finally {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
                 }
-
+                return null;
             }
         });
     }
+
+    @Override
+    public Completable updateTimeStamp(final String timeOut, final String reasonDesc, final int batteryPercentage, final boolean isGPSEnabled) {
+        return Completable.fromCallable(new Callable() {
+            @Override
+            public Void call() {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+
+                    String dateTime = now(DATE_GLOBAL) + " " + timeOut;
+                    String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
+                            + "',feedback=" + QT(reasonDesc)
+                            + ", OrderValue = " + QT(String.valueOf(mDataManager.getOrderValue()))
+                            + ", outLatitude = " + QT(LocationUtil.latitude + "")
+                            + ", outLongitude = " + QT(LocationUtil.longitude + "")
+                            + ", LocationProvider = " + QT(LocationUtil.mProviderName)
+                            + ", gpsAccuracy = " + QT(LocationUtil.accuracy + "")
+                            + ", Battery = " + batteryPercentage
+                            + ", IsLocationEnabled = " + QT(String.valueOf(isGPSEnabled))
+                            + ", IsDeviated = " + QT(String.valueOf(mDataManager.getRetailMaster().getIsDeviated()))
+                            + "  WHERE RetailerID = '"
+                            + mDataManager.getRetailMaster().getRetailerID()
+                            + "' AND TimeIn = '" + mDataManager.getInTime() + "'";
+                    mDbUtil.updateSQL(query);
+
+                    mDbUtil.closeDB();
+
+
+                } catch (Exception e) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
+                return null;
+            }
+        });
+    }
+
+
 }

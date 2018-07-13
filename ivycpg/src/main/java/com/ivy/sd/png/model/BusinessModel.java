@@ -60,6 +60,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.appmodule.AppComponent;
 import com.ivy.appmodule.AppModule;
 import com.ivy.appmodule.DaggerAppComponent;
+import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.db.DBHelperImpl;
@@ -759,6 +760,8 @@ public class BusinessModel extends Application {
 
             mApplicationComponent.inject(this);
 
+            codeCleanUpUtil = CodeCleanUpUtil.getInstance(this,appDataProvider);
+
 
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -768,36 +771,10 @@ public class BusinessModel extends Application {
 
     /***********************************************************************Code Refactoring Initiatives******************************************************************/
 
+    public CodeCleanUpUtil codeCleanUpUtil;
+
     public IvyAppComponent getComponent() {
         return mApplicationComponent;
-    }
-
-    public void setUniqueId(String uniqueId, boolean isFromProvider) {
-        if (!isFromProvider)
-            appDataProvider.setUniqueId(uniqueId);
-        else
-            outletTimeStampHelper.setUid(uniqueId);
-    }
-
-    public void setInTime(String inTime, boolean isFromProvider) {
-        if (!isFromProvider)
-            appDataProvider.setInTime(inTime);
-        else
-            outletTimeStampHelper.setTimeIn(inTime);
-    }
-
-    public void setModuleTime(String moduleInTime, boolean isFromProvider) {
-        if (!isFromProvider)
-            appDataProvider.setModuleInTime(moduleInTime);
-        else
-            outletTimeStampHelper.setTimeInModuleWise(moduleInTime);
-    }
-
-
-    public void setRetailerMasterBO(RetailerMasterBO retailerMasterBO, boolean isFromProvider) {
-        //TODO remove business model retailer master
-        if (isFromProvider)
-            this.retailerMasterBO = retailerMasterBO;
     }
 
 

@@ -458,6 +458,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                    // businessModel.activationHelper.clearAppUrl();
                     clearAppUrl();
                     businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
+                    businessModel.codeCleanUpUtil.setUserId(0,false);
                     try {
                         Uri path;
                         if (Build.VERSION.SDK_INT >= 24) {

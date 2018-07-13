@@ -14,18 +14,16 @@ import io.reactivex.Single;
 
 public class DataManagerImpl implements DataManager {
 
-    private Context mContext;
 
     private SharedPreferenceHelper mSharedPreferenceHelper;
     private DbHelper dbHelper;
     private AppDataProvider appDataProvider;
 
     @Inject
-    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper, AppDataProvider appDataProvider) {
-        this.mContext = context;
+    public DataManagerImpl(SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper, AppDataProvider appDataProvider) {
         this.mSharedPreferenceHelper = sharedPreferenceHelper;
         this.dbHelper = dbHelper;
-        this.appDataProvider=appDataProvider;
+        this.appDataProvider = appDataProvider;
     }
 
     @Override
@@ -79,6 +77,11 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public Single<Double> getOrderValue() {
+        return dbHelper.getOrderValue();
+    }
+
+    @Override
     public void setInTime(String inTime) {
         appDataProvider.setInTime(inTime);
     }
@@ -99,6 +102,16 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public void setModuleInTime(String moduleInTime) {
+        appDataProvider.setModuleInTime(moduleInTime);
+    }
+
+    @Override
+    public String getModuleIntime() {
+        return appDataProvider.getModuleIntime();
+    }
+
+    @Override
     public void setRetailerMaster(RetailerMasterBO retailerMaster) {
         appDataProvider.setRetailerMaster(retailerMaster);
     }
@@ -106,5 +119,45 @@ public class DataManagerImpl implements DataManager {
     @Override
     public RetailerMasterBO getRetailMaster() {
         return appDataProvider.getRetailMaster();
+    }
+
+    @Override
+    public void setUserId(int userId) {
+        appDataProvider.setUserId(userId);
+    }
+
+    @Override
+    public int getUserId() {
+        return appDataProvider.getUserId();
+    }
+
+    @Override
+    public void setDistributionId(int distributionId) {
+        appDataProvider.setDistributionId(distributionId);
+    }
+
+    @Override
+    public int getDistributionId() {
+        return appDataProvider.getDistributionId();
+    }
+
+    @Override
+    public void setBranchId(int branchId) {
+        appDataProvider.setBranchId(branchId);
+    }
+
+    @Override
+    public int getBranchId() {
+        return appDataProvider.getBranchId();
+    }
+
+    @Override
+    public void setDownloadDate(String downloadDate) {
+        appDataProvider.setDownloadDate(downloadDate);
+    }
+
+    @Override
+    public String getDownloadDate() {
+        return appDataProvider.getDownloadDate();
     }
 }
