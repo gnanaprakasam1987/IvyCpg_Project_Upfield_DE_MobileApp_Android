@@ -2257,6 +2257,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 Task.class);
                         intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                         intent.putExtra("IsRetailerwisetask", true);
+                        intent.putExtra("screentitle", menu.getMenuName());
 
                         startActivity(intent);
                         isCreated = false;
