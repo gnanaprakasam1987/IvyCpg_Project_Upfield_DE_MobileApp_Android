@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.ivy.cpg.view.supervisor.CircleImageView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -315,6 +316,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .centerCrop()
+                        .transform(businessModel.circleTransform)
                         .placeholder(R.drawable.no_image_available)
                         .into(holder.orderImage);
 
@@ -363,7 +365,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         TextView text_delivery_date, tv_tax_value, tv_discount_amt, taxTitle, discTitle;
         TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight,
                 label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel, tvVolumeLabel;
-        ImageView orderImage;
+       ImageView orderImage;
 
     }
 }

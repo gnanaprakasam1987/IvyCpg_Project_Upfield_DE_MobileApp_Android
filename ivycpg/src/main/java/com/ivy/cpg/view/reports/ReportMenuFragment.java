@@ -200,7 +200,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
             }
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ORDER_REPORT)) {
 
-            if ( bmodel.reportHelper.downloadOrderreport() != null&& bmodel.reportHelper.downloadOrderreport().size() >= 1) {
+            if (  bmodel.reportHelper.downloadOrderreport().size() >= 1) {
                 intoreportacti(config);
             } else {
                 Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
