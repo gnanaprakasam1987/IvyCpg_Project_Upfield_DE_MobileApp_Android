@@ -584,9 +584,6 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
         // Change color if Filter is selected
         try {
-            if (!brandFilterText.equals(BRAND))
-                menu.findItem(R.id.menu_product_filter).setIcon(
-                        R.drawable.ic_action_filter_select);
 
             if (mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
@@ -615,7 +612,6 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
             menu.findItem(R.id.menu_next).setVisible(false);
 
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
             if (mBModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOSKU))

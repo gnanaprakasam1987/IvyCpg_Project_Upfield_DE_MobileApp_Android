@@ -70,6 +70,7 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -160,7 +161,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean isVisible = false;
     private boolean isLatLong;
     private static boolean firstLevZoom;
-    private boolean fromHomeClick = false, visitClick = false, isFromPlanning = false,isFromPlanningSub = false;
+    private boolean fromHomeClick = false, visitClick = false, isFromPlanning = false, isFromPlanningSub = false;
 
     private List<LatLng> markerList = new ArrayList<>();
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID;
@@ -368,7 +369,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         visitClick = getIntent().getBooleanExtra("locvisit", false);
         fromHomeClick = getIntent().getBooleanExtra("hometwo", false);
         isFromPlanning = getIntent().getBooleanExtra("isPlanning", false);
-        isFromPlanningSub=getIntent().getBooleanExtra("isPlanningSub",false);
+        isFromPlanningSub = getIntent().getBooleanExtra("isPlanningSub", false);
 
         try {
             Intent arg = getIntent();
@@ -1976,10 +1977,18 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             try {
                 if (!isCancelled()) {
                     if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                        bmodel.productHelper
+                     /*   bmodel.productHelper
                                 .downloadFiveFilterLevels(MENU_STK_ORD);
                         bmodel.productHelper
-                                .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
+                                .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);*/
+
+
+                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_STK_ORD));
+                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_STK_ORD,
+                                bmodel.productHelper.getFilterProductLevels()));
+                        bmodel.productHelper.downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
+
+
                     } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                         //to reload product filter if diffrent retailer selected
                         bmodel.productHelper.setmLoadedGlobalProductId(0);
@@ -2160,12 +2169,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_VISIT"));
                     finish();
-                } else if(isFromPlanning) {
+                } else if (isFromPlanning) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING"));
                     finish();
 
-                }else if(isFromPlanningSub){
+                } else if (isFromPlanningSub) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING_SUB"));
                     finish();
@@ -2204,7 +2213,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     i.putExtra("isPlanning", true);
                     startActivity(i);
                     finish();
-                }else if(calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)){
+                } else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)) {
                     Intent i = new Intent(ProfileActivity.this, PlanningVisitActivity.class);
                     i.putExtra("isPlanningSub", true);
                     startActivity(i);

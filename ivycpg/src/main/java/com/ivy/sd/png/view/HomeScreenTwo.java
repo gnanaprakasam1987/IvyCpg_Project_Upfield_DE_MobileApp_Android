@@ -2493,47 +2493,44 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
                     bmodel.collectionHelper.loadPaymentMode();
-                    if (!isClick) {
-                        isClick = true;
-                        if (bmodel.getInvoiceHeaderBO() != null
-                                && bmodel.getInvoiceHeaderBO().size() > 0) {
+                    if (bmodel.getInvoiceHeaderBO() != null
+                            && bmodel.getInvoiceHeaderBO().size() > 0) {
 
-                            //load currency data
-                            if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
-                                bmodel.downloadCurrencyConfig();
-                            }
-
-                            bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL),
-                                    SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-
-                            if (menu.getConfigCode().equals(
-                                    StandardListMasterConstants.MENU_COLLECTION_VIEW)) {
-                                bmodel.collectionHelper.setCollectionView(true);
-                                bmodel.getRetailerMasterBO().setIsCollectionView("Y");
-                                bmodel.isModuleCompleted("MENU_COLLECTION_VIEW");
-                            }
-
-                            Intent intent = new Intent(HomeScreenTwo.this,
-                                    CollectionScreen.class);
-                            bmodel.mSelectedActivityName = menu.getMenuName();
-                            intent.putExtra("screentitle", menu.getMenuName());
-                            intent.putExtra("CurrentActivityCode", menu.getConfigCode());
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(
-                                    this,
-                                    getResources()
-                                            .getString(
-                                                    R.string.no_data_exists),
-                                    Toast.LENGTH_SHORT).show();
-                            isCreated = false;
-                            isClick = false;
-                            menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
-                            if (!menuCode.equals(menu.getConfigCode()))
-                                menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
+                        //load currency data
+                        if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
+                            bmodel.downloadCurrencyConfig();
                         }
+
+                        bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
+                        if (menu.getConfigCode().equals(
+                                StandardListMasterConstants.MENU_COLLECTION_VIEW)) {
+                            bmodel.collectionHelper.setCollectionView(true);
+                            bmodel.getRetailerMasterBO().setIsCollectionView("Y");
+                            bmodel.isModuleCompleted("MENU_COLLECTION_VIEW");
+                        }
+
+                        Intent intent = new Intent(HomeScreenTwo.this,
+                                CollectionScreen.class);
+                        bmodel.mSelectedActivityName = menu.getMenuName();
+                        intent.putExtra("screentitle", menu.getMenuName());
+                        intent.putExtra("CurrentActivityCode", menu.getConfigCode());
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(
+                                this,
+                                getResources()
+                                        .getString(
+                                                R.string.no_data_exists),
+                                Toast.LENGTH_SHORT).show();
+                        isCreated = false;
+                        isClick = false;
+                        menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
+                        if (!menuCode.equals(menu.getConfigCode()))
+                            menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
                     }
 
 

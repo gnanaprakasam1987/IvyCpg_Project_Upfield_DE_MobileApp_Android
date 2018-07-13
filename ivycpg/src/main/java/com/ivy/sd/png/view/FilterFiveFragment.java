@@ -26,6 +26,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
@@ -47,6 +48,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     private Button cancelButton;
     private Button btnOK;
     private BrandDialogInterface brandInterface;
+    private FiveLevelFilterCallBack fiveLevelFilterCallBack;
     private FilterGridAdapter gridadapter;
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
     private HashMap<Integer, Integer> mSelectedIdByLevelId = new HashMap<>();
@@ -55,6 +57,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
     private FilterAdapter adapter;
     private String filterText = "";
+    private int filteredProductId = 0;
 
     private String isFrom;
 
@@ -87,68 +90,61 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         btnOK.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 try {
-                int size = sequence.size();
-                for (int i = size - 1; i >= 0; i--) {
-                    if (mSelectedIdByLevelId.get(sequence.get(i).getProductID()) != null && mSelectedIdByLevelId.get(sequence.get(i).getProductID()) > 0) {
-                        for (LevelBO bo : loadedFilterValues.get(sequence.get(i).getProductID())) {
-                            if (bo.getProductID() == mSelectedIdByLevelId.get(sequence.get(i).getProductID())) {
-                                filterText = bo.getLevelName();
-                                i = -1;
-                                break;
+                    int size = sequence.size();
+                    for (int i = size - 1; i >= 0; i--) {
+                        if (mSelectedIdByLevelId.get(sequence.get(i).getProductID()) != null && mSelectedIdByLevelId.get(sequence.get(i).getProductID()) > 0) {
+                            for (LevelBO bo : loadedFilterValues.get(sequence.get(i).getProductID())) {
+                                if (bo.getProductID() == mSelectedIdByLevelId.get(sequence.get(i).getProductID())) {
+                                    filterText = bo.getLevelName();
+                                    filteredProductId = bo.getProductID();
+                                    i = -1;
+                                    break;
+                                }
                             }
                         }
                     }
-                }
 
 
-                Vector<LevelBO> finalParentList = new Vector<>();
+                    Vector<LevelBO> finalParentList = new Vector<>();
 
-                if (isAttributeFilter && bmodel.productHelper.getmAttributeTypes() != null && bmodel.productHelper.getmAttributeTypes().size() > 0) {
+                    if (isAttributeFilter && bmodel.productHelper.getmAttributeTypes() != null && bmodel.productHelper.getmAttributeTypes().size() > 0) {
 
-                    if (isAttributeFilterSelected()) {
-                        //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
-                        if (filterText.length() > 0) {
-                            if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
-                                finalParentList = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
-                            }
-                        }
-
-                        ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
-                        for (LevelBO bo : sequence) {
-                            for (int i = 0; i < mSelectedIdByLevelId.size(); i++) {
-                                if (mSelectedIdByLevelId.get(bo.getProductID()) > 0) {
-                                    lstSelectedAttributesIds.add(mSelectedIdByLevelId.get(bo.getProductID()));
-                                }
-
-                            }
-                        }
-
-                        ArrayList<Integer> lstFinalProductIds = new ArrayList<>();
-                        for (int j = 0; j < lstSelectedAttributesIds.size(); j++) {
-                            for (int k = 0; k < bmodel.productHelper.getLstProductAttributeMapping().size(); k++) {
-
-                                if (bmodel.productHelper.getLstProductAttributeMapping().get(k).getAttributeId() == lstSelectedAttributesIds.get(j)
-                                        && !lstFinalProductIds.contains(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId())) {
-                                    lstFinalProductIds.add(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId());
+                        if (isAttributeFilterSelected()) {
+                            //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
+                            if (filterText.length() > 0) {
+                                if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
+                                    finalParentList = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
                                 }
                             }
 
+                            ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
+                            for (LevelBO bo : sequence) {
+                                for (int i = 0; i < mSelectedIdByLevelId.size(); i++) {
+                                    if (mSelectedIdByLevelId.get(bo.getProductID()) > 0) {
+                                        lstSelectedAttributesIds.add(mSelectedIdByLevelId.get(bo.getProductID()));
+                                    }
+
+                                }
+                            }
+
+                            ArrayList<Integer> lstFinalProductIds = new ArrayList<>();
+                            for (int j = 0; j < lstSelectedAttributesIds.size(); j++) {
+                                for (int k = 0; k < bmodel.productHelper.getLstProductAttributeMapping().size(); k++) {
+
+                                    if (bmodel.productHelper.getLstProductAttributeMapping().get(k).getAttributeId() == lstSelectedAttributesIds.get(j)
+                                            && !lstFinalProductIds.contains(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId())) {
+                                        lstFinalProductIds.add(bmodel.productHelper.getLstProductAttributeMapping().get(k).getProductId());
+                                    }
+                                }
+
+                            }
+                            fiveLevelFilterCallBack.updateFromFiveLevelFilter(filteredProductId, mSelectedIdByLevelId, lstFinalProductIds, filterText);
+                            return;
                         }
-                        brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, filterText);
-                        return;
-                    } else {
-                        if (filterText.length() > 0)
-                            finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
                     }
-                } else {
-                    if (filterText.length() > 0)
-                        finalParentList = updateProductLoad(sequence.size());
-                }
-
-                brandInterface.updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, filterText);
-                brandInterface.updateCancel();
-                }
-                catch (Exception ex){
+                    fiveLevelFilterCallBack.updateFromFiveLevelFilter(filteredProductId, mSelectedIdByLevelId, null, filterText);
+                    brandInterface.updateCancel();
+                } catch (Exception ex) {
                     Commons.printException(ex);
                 }
 
@@ -158,11 +154,10 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
-                mSelectedIdByLevelId.clear();
-                onStart();
-                }
-                catch (Exception ex){
+                try {
+                    mSelectedIdByLevelId.clear();
+                    onStart();
+                } catch (Exception ex) {
                     Commons.printException(ex);
                 }
             }
@@ -202,8 +197,8 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     case "STK":
                         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER)
                             bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
-                        loadedFilterValues.putAll(bmodel.productHelper.getFiveLevelFilters());
-                        sequence.addAll(bmodel.productHelper.getSequenceValues());
+                        loadedFilterValues.putAll(bmodel.productHelper.getFilterProductsByLevelId());
+                        sequence.addAll(bmodel.productHelper.getFilterProductLevels());
                         break;
                     case "SF":
                         loadedFilterValues.putAll(mSFHelper.getFiveLevelFilters());
@@ -219,8 +214,8 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                         break;
                 }
             } else {
-                loadedFilterValues.putAll(bmodel.productHelper.getFiveLevelFilters());
-                sequence.addAll(bmodel.productHelper.getSequenceValues());
+                loadedFilterValues.putAll(bmodel.productHelper.getFilterProductsByLevelId());
+                sequence.addAll(bmodel.productHelper.getFilterProductLevels());
             }
 
             if (loadedFilterValues != null) {
@@ -272,14 +267,14 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     loadTagProductFilters(levelID);
                 Vector<LevelBO> filterValues = new Vector<>();
                 filterValues.addAll(loadedFilterValues.get(levelID));
-                if(filterValues != null && filterValues.size() > 0) {
+                if (filterValues != null && filterValues.size() > 0) {
                     gridadapter = new FilterGridAdapter(filterValues);
                     filtergridview.setAdapter(gridadapter);
                     gridadapter.notifyDataSetChanged();
                 }
             }
 
-        } catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
 
@@ -292,7 +287,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
         if (loadedFilterValues != null)
             loadedFilterValues.clear();
@@ -321,6 +316,12 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                 this.brandInterface = (BrandDialogInterface) activity;
             }
         }
+        if (fiveLevelFilterCallBack == null) {
+            if (activity instanceof BrandDialogInterface) {
+                this.fiveLevelFilterCallBack = (FiveLevelFilterCallBack) activity;
+            }
+        }
+
     }
 
     public void setBrandDialogInterface(SalesVolumeReportFragment sellerOrderReportFragment) {
@@ -402,7 +403,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     mSelectedLevelBO = holder.levelBO;
                     // To restrict filter's based on tagged products
                     if (bmodel.configurationMasterHelper.IS_FILTER_TAG_PRODUCTS && isTagged)
-                    loadTagProductFilters(mSelectedLevelBO.getProductID());
+                        loadTagProductFilters(mSelectedLevelBO.getProductID());
 
                     int size = 0;
                     if (isAttributeFilter && bmodel.productHelper.getmAttributeTypes() != null)
@@ -411,7 +412,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     if (position < (sequence.size() - size)) {
                         //Product Level
                         Vector<LevelBO> filterList = updateFilterSelection(position);
-                        if(filterList != null && filterList.size() > 0) {
+                        if (filterList != null && filterList.size() > 0) {
                             gridadapter = new FilterGridAdapter(filterList);
                             filtergridview.setAdapter(gridadapter);
                         }
@@ -450,14 +451,14 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                                 }
 
                             }
-                            if(filterList != null && filterList.size() > 0) {
+                            if (filterList != null) {
                                 gridadapter = new FilterGridAdapter(filterList);
                                 filtergridview.setAdapter(gridadapter);
                             }
 
                         } else {
                             Vector<LevelBO> filterList = updateFilterSelection(position);
-                            if(filterList != null && filterList.size() > 0) {
+                            if (filterList != null && filterList.size() > 0) {
                                 gridadapter = new FilterGridAdapter(filterList);
                                 filtergridview.setAdapter(gridadapter);
                             }
@@ -480,14 +481,14 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
             if (isFilterContentSelected(pos) && pos != 0) {
 
                 int selectedGridLevelID = 0;
-                ArrayList<Integer> parentIdList = null;
+                String parentIdList = "";
 
                 for (int i = 0; i <= pos; i++) {
                     LevelBO levelBO = sequence.get(i);
 
                     if (i != 0) {
 
-                        parentIdList = getParenIdList(selectedGridLevelID, parentIdList, levelBO);
+                        parentIdList = parentIdList + getParentHierarchy(selectedGridLevelID, parentIdList, levelBO);
 
                     }
                     selectedGridLevelID = mSelectedIdByLevelId.get(levelBO.getProductID());
@@ -497,19 +498,18 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                         Vector<LevelBO> gridViewlist = loadedFilterValues
                                 .get(levelBO.getProductID());
                         finalValuelist = new Vector<>();
-                        if (!parentIdList.isEmpty()) {
-                            for (int productID : parentIdList) {
-                                for (LevelBO gridViewBO : gridViewlist) {
-                                    if (productID == gridViewBO.getProductID()) {
-                                        finalValuelist.add(gridViewBO);
-                                    }
-
+                        if (parentIdList.length() > 0) {
+                            for (LevelBO gridViewBO : gridViewlist) {
+                                if (parentIdList.contains("/" + gridViewBO.getProductID() + "/")) {
+                                    finalValuelist.add(gridViewBO);
                                 }
+
                             }
                         }
                     }
 
                 }
+
             } else {
 
                 finalValuelist = loadedFilterValues.get(sequence.get(pos)
@@ -658,6 +658,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     }
 
 
+    // still used for attribute need to re visit it //Mansoor
     private Vector<LevelBO> updateProductLoad(int pos) {
 
         Vector<LevelBO> finalValuelist = new Vector<>();
@@ -721,6 +722,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
 
     }
 
+    //used for attribute type filter need to re visit it Mansoor
     private ArrayList<Integer> getParenIdList(int selectedGridLevelID,
                                               ArrayList<Integer> list, LevelBO levelBO) {
         ArrayList<Integer> parentIdList = new ArrayList<>();
@@ -752,6 +754,32 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
         }
 
         return parentIdList;
+    }
+
+    private String getParentHierarchy(int selectedGridLevelID, String parentIds, LevelBO levelBO) {
+        String parentHierarchy = "";
+        Vector<LevelBO> filterProductList = loadedFilterValues.get(levelBO
+                .getProductID());
+        if (selectedGridLevelID != 0) {
+            if (filterProductList != null) {
+                for (LevelBO gridlevelBO : filterProductList) {
+                    if (gridlevelBO.getParentHierarchy().contains("/" + selectedGridLevelID + "/")) {
+                        parentHierarchy = parentHierarchy + gridlevelBO.getParentHierarchy();
+                    }
+
+                }
+            }
+
+        } else {
+            if (filterProductList != null && parentIds != null && parentIds.length() > 0) {
+                for (LevelBO gridlevelBO : filterProductList) {
+                    if (parentIds.contains("/" + gridlevelBO.getProductID() + "/")) {
+                        parentHierarchy = parentHierarchy + gridlevelBO.getParentHierarchy();
+                    }
+                }
+            }
+        }
+        return parentHierarchy;
     }
 
     //Compute Filter's based on Tagged Products Parent Hierarchy

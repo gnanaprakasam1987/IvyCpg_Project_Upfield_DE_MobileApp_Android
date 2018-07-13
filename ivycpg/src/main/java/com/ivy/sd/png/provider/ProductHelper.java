@@ -19,7 +19,6 @@ import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.BomReturnBO;
-import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
@@ -28,7 +27,6 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.LoyaltyBO;
 import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
-import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -93,7 +91,6 @@ public class ProductHelper {
 
     private Vector<LevelBO> globalCategory = new Vector<LevelBO>();
 
-    private Vector<LevelBO> pfilterlevel;
 
     private Vector<LevelBO> filterProductLevels;
     private Vector<LevelBO> filterProductLevelsRex;
@@ -257,17 +254,26 @@ public class ProductHelper {
         return mSalesReturnProducts;
     }
 
-    public HashMap<Integer, Vector<LevelBO>> getFiveLevelFilters() {
+    public HashMap<Integer, Vector<LevelBO>> getFilterProductsByLevelId() {
         return filterProductsByLevelId;
     }
 
-    public Vector<LevelBO> getSequenceValues() {
+    public void setFilterProductsByLevelId(HashMap<Integer, Vector<LevelBO>> filterProductsByLevelId) {
+        this.filterProductsByLevelId = filterProductsByLevelId;
+    }
+
+    public Vector<LevelBO> getFilterProductLevels() {
         return filterProductLevels;
+    }
+
+    public void setFilterProductLevels(Vector<LevelBO> filterProductLevels) {
+        this.filterProductLevels = filterProductLevels;
     }
 
     public HashMap<Integer, Vector<LevelBO>> getRetailerModuleFilerContentBySequenct() {
         return filterProductsByLevelIdRex;
     }
+
 
     public Vector<LevelBO> getRetailerModuleSequenceValues() {
         return filterProductLevelsRex;
@@ -682,7 +688,7 @@ public class ProductHelper {
         Cursor c = db.selectSQL(query);
 
         if (c != null) {
-            pfilterlevel = new Vector<>();
+            Vector<LevelBO> pfilterlevel = new Vector<>();
             while (c.moveToNext()) {
                 LevelBO mLevelBO = new LevelBO();
                 mLevelBO.setProductID(c.getInt(0));
@@ -739,7 +745,7 @@ public class ProductHelper {
         Cursor c = db.selectSQL(query);
 
         if (c != null) {
-            pfilterlevel = new Vector<>();
+            Vector<LevelBO> pfilterlevel = new Vector<>();
             while (c.moveToNext()) {
                 LevelBO mLevelBO = new LevelBO();
                 mLevelBO.setParentID(c.getInt(0));
@@ -1040,7 +1046,7 @@ public class ProductHelper {
 
         if (c != null) {
 
-            pfilterlevel = new Vector<>();
+            Vector<LevelBO> pfilterlevel = new Vector<>();
             while (c.moveToNext()) {
                 LevelBO mLevelBO = new LevelBO();
                 mLevelBO.setProductID(c.getInt(0));
@@ -1092,7 +1098,7 @@ public class ProductHelper {
         Cursor c = db.selectSQL(query);
 
         if (c != null) {
-            pfilterlevel = new Vector<>();
+            Vector<LevelBO> pfilterlevel = new Vector<>();
             while (c.moveToNext()) {
                 LevelBO mLevelBO = new LevelBO();
                 mLevelBO.setParentID(c.getInt(0));
@@ -1106,6 +1112,109 @@ public class ProductHelper {
         }
     }
 
+    public Vector<LevelBO> downloadFiveFilterLevel(String moduleName) {
+        Vector<LevelBO> filterLevel = new Vector<>();
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor listCursor = db
+                    .selectSQL(" SELECT PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
+                            + " INNER JOIN ConfigActivityFilter CA  ON "
+                            + " PL.LevelID =CA.ProductFilter1 OR  "
+                            + " PL.LevelID =CA.ProductFilter2 OR  "
+                            + " PL.LevelID =CA.ProductFilter3 OR  "
+                            + " PL.LevelID =CA.ProductFilter4 OR  "
+                            + " PL.LevelID =CA.ProductFilter5  "
+                            + " WHERE  CA.ActivityCode='" + moduleName + "'");
+
+            LevelBO mLevelBO;
+            while (listCursor.moveToNext()) {
+
+                mLevelBO = new LevelBO();
+                mLevelBO.setProductID(listCursor.getInt(0));
+                mLevelBO.setLevelName(listCursor.getString(1));
+                mLevelBO.setSequence(listCursor.getInt(2));
+
+                filterLevel.add(mLevelBO);
+            }
+            listCursor.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        if (moduleName.equals("MENU_STK_ORD") && bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+            mLoadedGlobalProductId = mSelectedGlobalProductId;
+
+        return filterLevel;
+    }
+
+    public HashMap<Integer, Vector<LevelBO>> downloadFiveFilterLevelProducts(String moduleName, Vector<LevelBO> filterProductLevels) {
+        HashMap<Integer, Vector<LevelBO>> filterLevelPrdByLevelId = new HashMap<>();
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            int contentlevelId = 0;
+
+            Cursor seqCur = db
+                    .selectSQL("SELECT IFNULL(PL.LevelId,0) "
+                            + "FROM ConfigActivityFilter CF "
+                            + "LEFT JOIN ProductLevel PL ON PL.LevelId = CF.ProductContent "
+                            + "WHERE  CF.ActivityCode= '" + moduleName + "'");
+            if (seqCur.moveToNext()) {
+                contentlevelId = seqCur.getInt(0);
+            }
+
+            if (filterProductLevels != null) {
+                String pLIds = "";
+                for (LevelBO levelBO : filterProductLevels) {
+                    pLIds = pLIds + levelBO.getProductID();
+                    if (pLIds.length() > 0)
+                        pLIds = pLIds + ",";
+                }
+                if (pLIds.endsWith(","))
+                    pLIds = pLIds.substring(0, pLIds.length() - 1);
+
+
+                String query = "SELECT DISTINCT PM.PID, PM.PName,PM.ParentHierarchy,PM.PLid,PM.ParentId FROM ProductMaster PM "
+                        + " INNER JOIN ProductMaster prdm on prdm.ParentHierarchy LIKE '%/' || PM.PID || '/%' and prdm.PLid =" + contentlevelId
+                        + " WHERE PM.PLid in (" + pLIds + ") Order By PM.RowId";
+
+                seqCur = db.selectSQL(query);
+                if (seqCur != null) {
+
+
+                    while (seqCur.moveToNext()) {
+                        LevelBO mLevelBO = new LevelBO();
+                        mLevelBO.setProductID(seqCur.getInt(0));
+                        mLevelBO.setLevelName(seqCur.getString(1));
+                        mLevelBO.setParentHierarchy(seqCur.getString(2));
+                        mLevelBO.setParentID(seqCur.getInt(4));
+
+                        if (filterLevelPrdByLevelId.get(seqCur.getInt(3)) != null) {
+                            filterLevelPrdByLevelId.get(seqCur.getInt(3)).add(mLevelBO);
+                        } else {
+                            Vector<LevelBO> pfilterlevel = new Vector<>();
+                            pfilterlevel.add(mLevelBO);
+                            filterLevelPrdByLevelId.put(seqCur.getInt(3), pfilterlevel);
+                        }
+
+                    }
+
+                    seqCur.close();
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return filterLevelPrdByLevelId;
+    }
 
 
     private boolean isRetailerModule(String moduleName) {
@@ -1246,214 +1355,71 @@ public class ProductHelper {
                 }
             }*/
 
-            if (mChildLevel == 0 && !bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
 
-                int mContentLevelId = 0;
-                Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = " + bmodel.QT(moduleCode));
-                if (cur != null) {
-                    if (cur.moveToNext()) {
-                        mContentLevelId = cur.getInt(0);
-                        mContentLevel = cur.getInt(1);
-                    }
-                    cur.close();
+            int mContentLevelId = 0;
+            Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF " +
+                    "INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = " + bmodel.QT(moduleCode));
+
+            if (cur != null) {
+                if (cur.moveToNext()) {
+                    mContentLevelId = cur.getInt(0);
+                    mContentLevel = cur.getInt(1);
                 }
-
-                sql = "select A.pid, A.pcode,A.pname,A.parentid,A.sih, "
-                        + "A.psname,A.barcode,A.vat,A.isfocus, max(ifnull("
-                        + str
-                        + ")) as srp , ifnull("
-                        + csrp
-                        + ") as csrp ,ifnull("
-                        + osrp
-                        + ") as osrp ,A.msqqty,"
-                        + "A.dUomQty,A.duomid, u.ListCode,A.MRP,ifnull(sbd.DrpQty,0),ifnull(sbd.grpName,''),A.RField1,PWHS.qty,A.IsAlloc, "
-                        + ((filter10) ? "A.pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
-                        + ((filter11) ? "A.pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
-                        + ((filter12) ? "A.pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                        + "dOuomQty,dOuomid,caseBarcode,outerBarcode,count(A.pid),piece_uomid,A.mrp, A.mrp,"
-                        + " A.isSalable,A.isReturnable,A.isBom,A.TypeID,A.baseprice, '' as brandname,0"
-                        + ((filter16) ? ",A.pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ") + ",A.weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount"
-                        + ",A.Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
-                        + ((filter20) ? "A.pid in(" + FCBND3productIds + ") as IsFocusBrand3, " : " 0 as IsFocusBrand3,")
-                        + ((filter21) ? "A.pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
-                        + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
-                        + "A.tagDescription as tagDescription,"
-                        + "A.HSNId as HSNId,"
-                        + "HSN.HSNCode as HSNCode,"
-                        + "A.IsDrug as IsDrug,"
-                        + "A.ParentHierarchy as ParentHierarchy,"
-                        + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
-                        + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid"
-                        + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom"
-                        + " from ProductMaster A";
-
-                if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
-                    //downloading product distribution and preparing query to get products mapped..
-                    String pdQuery = downloadProductDistribution(mContentLevel);
-                    if (pdQuery.length() > 0) {
-                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
-                    }
-                }
-
-                sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = "
-                        + bmodel.getRetailerMasterBO().getGroupId()
-                        + " left join PriceMaster G on A.Pid = G.pid  and G.scid = 0 "
-                        + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
-                        + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid="
-                        + bmodel.getRetailerMasterBO().getChannelID()
-                        + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON A.ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
-                        + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
-                        + " WHERE A.PLid IN(" + mContentLevelId + ") ";
-                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                    sql = sql + " and A.ParentHierarchy LIKE '%/' || " + bmodel.productHelper.getmSelectedGlobalProductId() + " || '/%'";
-
-                sql = sql + " group by A.pid ORDER BY " + filter + " A.rowid";
-
-            } else {
-
-                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && mChildLevel == 0)
-                    mChildLevel = 1;
-
-                Cursor filterCur = db
-                        .selectSQL("SELECT IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0)"
-                                + " FROM ConfigActivityFilter CF"
-                                + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter"
-                                + mChildLevel
-                                + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
-                                + " WHERE CF.ActivityCode = "
-                                + bmodel.QT(moduleCode));
-
-                if (filterCur != null) {
-                    if (filterCur.moveToNext()) {
-                        mFiltrtLevel = filterCur.getInt(0);
-                        mContentLevel = filterCur.getInt(1);
-                    }
-                    filterCur.close();
-                }
-
-                int loopEnd;
-                int parentLevelID = 1;
-                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                    loopEnd = mContentLevel - bmodel.configurationMasterHelper.globalSeqId + 1;
-                } else
-                    loopEnd = mContentLevel - mFiltrtLevel + 1;
-
-                String batchWiseHighestPrice = " ";
-                if (!bmodel.configurationMasterHelper.IS_APPLY_BATCH_PRICE_FROM_PRODUCT) {
-                    batchWiseHighestPrice = " and F.batchid="
-                            + "ifnull((select batchid from batchmaster where mfgdate=(select max(mfgdate) from batchmaster) and  "
-                            + "batchmaster .pid=A" + loopEnd + ".pid),0)";
-                }
-
-
-                sql = "select A"
-                        + loopEnd
-                        + ".pid, A"
-                        + loopEnd
-                        + ".pcode,A"
-                        + loopEnd
-                        + ".pname,A" + (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY ? bmodel.configurationMasterHelper.globalSeqId : parentLevelID) + ".pid,A"
-                        + loopEnd
-                        + ".sih,A"
-                        + loopEnd
-                        + ".psname,A"
-                        + loopEnd
-                        + ".barcode,A"
-                        + loopEnd
-                        + ".vat,A"
-                        + loopEnd
-                        + ".isfocus, max(ifnull("
-                        + str
-                        + ")) as srp , ifnull("
-                        + csrp
-                        + ") as csrp ,ifnull("
-                        + osrp
-                        + ") as osrp ,A"
-                        + loopEnd
-                        + ".msqqty,A"
-                        + loopEnd
-                        + ".dUomQty,A"
-                        + loopEnd
-                        + ".duomid, u.ListCode,A"
-                        + loopEnd
-                        + ".MRP,ifnull(sbd.DrpQty,0),ifnull(sbd.grpName,''),A"
-                        + loopEnd
-                        + ".RField1,PWHS.qty,A"
-                        + loopEnd
-                        + ".IsAlloc, "
-                        + ((filter10) ? "A" + loopEnd + ".pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
-                        + ((filter11) ? "A" + loopEnd + ".pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
-                        + ((filter12) ? "A" + loopEnd + ".pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                        + "A" + loopEnd + ".dOuomQty,A" + loopEnd + ".dOuomid,A" + loopEnd
-                        + ".caseBarcode,A" + loopEnd
-                        + ".outerBarcode,count(A1.pid),A" + loopEnd
-                        + ".piece_uomid,A" + loopEnd + ".mrp, A" + loopEnd
-                        + ".mrp,A" + loopEnd + ".isSalable,A" + loopEnd
-                        + ".isReturnable,A" + loopEnd + ".isBom,A" + loopEnd
-                        + ".TypeID,A" + loopEnd
-                        + ".baseprice,A1.pname as brandname,A1.parentid"
-                        + ((filter16) ? ",A" + loopEnd + ".pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ")
-                        + ",A" + loopEnd + ".weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,A" + loopEnd + ".Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
-                        + ((filter20) ? "A" + loopEnd + ".pid in(" + FCBND3productIds + ") as IsFocusBrand3, " : " 0 as IsFocusBrand3,")
-                        + ((filter21) ? "A" + loopEnd + ".pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
-                        + ((filter22) ? "A" + loopEnd + ".pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
-                        + "A" + loopEnd + ".tagDescription as tagDescription,"
-                        + "A" + loopEnd + ".HSNId as HSNId,"
-                        + "HSN.HSNCode as HSNCode,"
-                        + "A" + loopEnd + ".IsDrug as IsDrug,"
-                        + "A" + loopEnd + ".ParentHierarchy as ParentHierarchy,"
-                        + ((filter19) ? "A" + loopEnd + ".pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry")
-                        //+ ",(Select imagename from DigitalContentMaster where imageid=(Select imgid from DigitalContentProductMapping where pid=A" + loopEnd + ".pid)) as imagename "
-                        + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid"
-                        + ",(CASE WHEN PWHS.PID=A" + loopEnd + ".PID then 'true' else 'false' end) as IsAvailWareHouse,A" + loopEnd + ".DefaultUom as DefaultUom"
-                        + " from ProductMaster A1 ";
-
-                for (int i = 2; i <= loopEnd; i++)
-                    sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
-                            + ".ParentId = A" + (i - 1) + ".PID";
-
-                if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
-                    //downloading product distribution and preparing query to get products(content level) mapped..
-                    String pdQuery = downloadProductDistribution(mContentLevel);
-                    if (pdQuery.length() > 0) {
-                        sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A" + loopEnd + ".pid = PD.productid";
-                    }
-                }
-                sql = sql + " left join " + "PriceMaster F on A" + loopEnd
-                        + ".Pid = F.pid and F.scid = "
-                        + bmodel.getRetailerMasterBO().getGroupId()
-                        + batchWiseHighestPrice
-
-                        + " left join PriceMaster G on A" + loopEnd
-                        + ".Pid = G.pid  and G.scid = 0 "
-                        + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A" + loopEnd + ".dUOMId = U.ListId"
-                        + " left join SbdDistributionMaster sbd on A" + loopEnd
-                        + ".pid=sbd.productid and sbd.channelid="
-                        + bmodel.getRetailerMasterBO().getChannelID()
-                        + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A" + loopEnd + ".pid and PWHS.UomID=A" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                        + " LEFT JOIN DiscountProductMapping DPM ON A" + loopEnd + ".ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
-                        + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A" + loopEnd + ".HSNId";
-                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                    sql = sql + " WHERE A1.PLid = " + bmodel.productHelper.getmSelectedGLobalLevelID()
-                            + " AND A1.PID = " + bmodel.productHelper.getmSelectedGlobalProductId()
-                            // + " AND A" + loopEnd
-                            // + ".isSalable = 1 "
-                            + " group by A" + loopEnd + ".pid ORDER BY " + filter
-                            + " A" + loopEnd + ".rowid";
-                } else {
-                    sql = sql + " WHERE A1.PLid IN (SELECT ProductFilter"
-                            + mChildLevel + " FROM ConfigActivityFilter"
-                            + " WHERE ActivityCode = "
-                            + bmodel.QT(moduleCode)
-                            + ")"
-                            // + " AND A" + loopEnd
-                            // + ".isSalable = 1 "
-                            + " group by A" + loopEnd + ".pid ORDER BY " + filter
-                            + " A" + loopEnd + ".rowid";
-                }
-
+                cur.close();
             }
+
+            sql = "select A.pid, A.pcode,A.pname,A.parentid,A.sih, "
+                    + "A.psname,A.barcode,A.vat,A.isfocus, max(ifnull("
+                    + str
+                    + ")) as srp , ifnull("
+                    + csrp
+                    + ") as csrp ,ifnull("
+                    + osrp
+                    + ") as osrp ,A.msqqty,"
+                    + "A.dUomQty,A.duomid, u.ListCode,A.MRP,ifnull(sbd.DrpQty,0),ifnull(sbd.grpName,''),A.RField1,PWHS.qty,A.IsAlloc, "
+                    + ((filter10) ? "A.pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
+                    + ((filter11) ? "A.pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
+                    + ((filter12) ? "A.pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
+                    + "dOuomQty,dOuomid,caseBarcode,outerBarcode,count(A.pid),piece_uomid,A.mrp, A.mrp,"
+                    + " A.isSalable,A.isReturnable,A.isBom,A.TypeID,A.baseprice, '' as brandname,0"
+                    + ((filter16) ? ",A.pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ") + ",A.weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount"
+                    + ",A.Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
+                    + ((filter20) ? "A.pid in(" + FCBND3productIds + ") as IsFocusBrand3, " : " 0 as IsFocusBrand3,")
+                    + ((filter21) ? "A.pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
+                    + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
+                    + "A.tagDescription as tagDescription,"
+                    + "A.HSNId as HSNId,"
+                    + "HSN.HSNCode as HSNCode,"
+                    + "A.IsDrug as IsDrug,"
+                    + "A.ParentHierarchy as ParentHierarchy,"
+                    + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
+                    + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid"
+                    + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom"
+                    + " from ProductMaster A";
+
+            if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                //downloading product distribution and preparing query to get products mapped..
+                String pdQuery = downloadProductDistribution(mContentLevel);
+                if (pdQuery.length() > 0) {
+                    sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
+                }
+            }
+
+            sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = "
+                    + bmodel.getRetailerMasterBO().getGroupId()
+                    + " left join PriceMaster G on A.Pid = G.pid  and G.scid = 0 "
+                    + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
+                    + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid="
+                    + bmodel.getRetailerMasterBO().getChannelID()
+                    + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
+                    + " LEFT JOIN DiscountProductMapping DPM ON A.ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
+                    + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
+                    + " WHERE A.PLid IN(" + mContentLevelId + ") ";
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                sql = sql + " and A.ParentHierarchy LIKE '%/' || " + mSelectedGlobalProductId + " || '/%'";
+
+            sql = sql + " group by A.pid ORDER BY " + filter + " A.rowid";
+
 
             Cursor c = db.selectSQL(sql);
 
@@ -1564,8 +1530,8 @@ public class ProductHelper {
                 taxHelper.downloadProductTaxDetails();
             }
 
-            if (mChildLevel > 0)
-                downloadLeastBrandProductMapping((mContentLevel - mFiltrtLevel + 1), mChildLevel, moduleCode);
+            if (filterProductLevels.size() > 0)
+                downloadLeastBrandProductMapping(mContentLevelId, filterProductLevels.size(), moduleCode);
 
             downloadAttributeProductMapping();
             downloadAttributes();
@@ -1744,38 +1710,21 @@ public class ProductHelper {
 
     }
 
-    private void downloadLeastBrandProductMapping(int loopend, int childLevel, String moduleCode) {
-        DBUtil db = null;
+    private void downloadLeastBrandProductMapping(int contentlevelId, int childLevel, String moduleCode) {
         try {
-            String sql = "select A"
-                    + loopend
-                    + ".pid,A1.pid as parentid"
-                    + " from ProductMaster A1 ";
+            String sql = "SELECT prdm.PID,PM.PID FROM ProductMaster PM "
+                    + " INNER JOIN ProductMaster prdm on prdm.ParentHierarchy LIKE '%/' || PM.PID || '/%' and prdm.PLid =" + contentlevelId
+                    + " WHERE PM.PLid IN (SELECT ProductFilter" + childLevel + " FROM ConfigActivityFilter"
+                    + " WHERE ActivityCode = " + bmodel.QT(moduleCode) + ")";
 
-            for (int i = 2; i <= loopend; i++)
-                sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
-                        + ".ParentId = A" + (i - 1) + ".PID";
-
-            sql = sql + " WHERE A1.PLid IN (SELECT ProductFilter"
-                    + childLevel + " FROM ConfigActivityFilter"
-                    + " WHERE ActivityCode = "
-                    + bmodel.QT(moduleCode)
-                    + ")"
-
-                    + " ORDER BY A1.pid";
-
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
 
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c.getCount() > 0) {
                 mProductIdByBrandId = new HashMap<>();
-                AttributeBO attBO;
                 while (c.moveToNext()) {
-                    attBO = new AttributeBO();
-                    attBO.setProductId(c.getInt(0));
-                    attBO.setLeastParentId(c.getInt(1));
 
                     if (mProductIdByBrandId.get(c.getInt(1)) == null) {
                         Vector<Integer> temp = new Vector<>();
@@ -5758,14 +5707,14 @@ public class ProductHelper {
     private Vector<LevelBO> parentChildMap = new Vector<>();
 
     public void loadCategoryExpandableList() {
-        if (getFiveLevelFilters() != null) {
-            //if(getFiveLevelFilters().get(categoryLevelId)!=null){
+        if (getFilterProductsByLevelId() != null) {
+            //if(getFilterProductsByLevelId().get(categoryLevelId)!=null){
             if (filterProductsByLevelId.get(filterProductLevels.get(0)) != null) {
-                categoryExpandableList.addAll(filterProductsByLevelId.get(filterProductLevels.get(0)));//getFiveLevelFilters().get(categoryLevelId));
+                categoryExpandableList.addAll(filterProductsByLevelId.get(filterProductLevels.get(0)));//getFilterProductsByLevelId().get(categoryLevelId));
             }
-            //if(getFiveLevelFilters().get(brandLevelId)!=null){
+            //if(getFilterProductsByLevelId().get(brandLevelId)!=null){
             if (filterProductsByLevelId.get(filterProductLevels.get(1)) != null) {
-                parentChildMap.addAll(filterProductsByLevelId.get(filterProductLevels.get(1)));//getFiveLevelFilters().get(brandLevelId));
+                parentChildMap.addAll(filterProductsByLevelId.get(filterProductLevels.get(1)));//getFilterProductsByLevelId().get(brandLevelId));
             }
         }
         LevelBO levelBO = new LevelBO();
@@ -5856,7 +5805,7 @@ public class ProductHelper {
 
         } else {
             parentChildMap = new Vector<>();
-            parentChildMap.addAll(getFiveLevelFilters().get(brandLevelId));
+            parentChildMap.addAll(getFilterProductsByLevelId().get(brandLevelId));
         }
     }
 
@@ -6550,7 +6499,6 @@ public class ProductHelper {
     }
 
 
-
     /**
      * get competitor tagged products and update the productBO.
      *
@@ -6724,9 +6672,6 @@ public class ProductHelper {
     }
 
 
-
-
-
     public ArrayList<ConfigureBO> downloadOrderSummaryDialogFields(Context context) {
         ArrayList<ConfigureBO> list = new ArrayList<>();
         try {
@@ -6767,6 +6712,7 @@ public class ProductHelper {
     /**
      * If SAO Config enabled this method will be called this method will take
      * ProductId and compare with BomMaster and passes Product name
+     *
      * @param productId product id
      * @return List of Product Short Name
      */
@@ -6813,7 +6759,7 @@ public class ProductHelper {
                 c.close();
             }
             db.closeDB();
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
         return total;
@@ -6847,9 +6793,9 @@ public class ProductHelper {
     }
 
 
-
     /**
      * Download UOM List from StandardListMaster.
+     *
      * @return ArrayList of type StandardList BO.
      */
     private ArrayList<StandardListBO> downloadUomList() {

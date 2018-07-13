@@ -231,7 +231,6 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(true);
 

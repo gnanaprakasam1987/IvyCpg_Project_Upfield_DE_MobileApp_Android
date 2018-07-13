@@ -98,6 +98,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -126,7 +127,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener, MOQHighlightDialog.savePcsValue {
+        BrandDialogInterface, OnEditorActionListener, MOQHighlightDialog.savePcsValue, FiveLevelFilterCallBack {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -1031,8 +1032,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         Commons.print("OnStart Called");
         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
-            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-            sequence = bmodel.productHelper.getSequenceValues();
+            loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
+            sequence = bmodel.productHelper.getFilterProductLevels();
 
             if (loadedFilterValues != null) {
                 if (loadedFilterValues.get(-1) == null) {
@@ -1105,6 +1106,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     public void saveChanges() {
         lvwplist.invalidateViews();
     }
+
 
     private class MyAdapter extends ArrayAdapter<ProductMasterBO> {
         private final Vector<ProductMasterBO> items;
@@ -5245,8 +5247,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
-            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-            sequence = bmodel.productHelper.getSequenceValues();
+            loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
+            sequence = bmodel.productHelper.getFilterProductLevels();
 
             if (loadedFilterValues != null) {
                 if (loadedFilterValues.get(-1) == null) {
@@ -5452,7 +5454,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             showLocation();
             return true;
-        }  else if (i == R.id.menu_remarks) {
+        } else if (i == R.id.menu_remarks) {
 
             FragmentTransaction ft = this
                     .getSupportFragmentManager().beginTransaction();
@@ -6122,6 +6124,221 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                     && productBO.getIndicativeOrder_oc() > 0)) {
                                 if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+                                    if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                        continue;
+                                    mylist.add(productBO);
+                                    fiveFilter_productIDs.add(productBO.getProductID());
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (ProductMasterBO productBO : items) {
+
+                    if (loadStockedProduct == -1
+                            || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
+
+                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                && productBO.getIndicativeOrder_oc() > 0)) {
+                            if (productBO.getIsSaleable() == 1) {
+                                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                    continue;
+                                mylist.add(productBO);
+                                fiveFilter_productIDs.add(productBO.getProductID());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+//        Applying special filter in product filtered list(mylist)
+        if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.SHOW_SPL_FLIER_NOT_NEEDED) {
+
+            Vector<ProductMasterBO> temp = new Vector<>();
+            String generaltxt = generalbutton;
+            for (ProductMasterBO ret : mylist) {
+                if (generaltxt.equals(GENERAL))//No special filters selected
+                {
+                    if (mEdt_searchproductName.getText().length() >= 3) {// User entry filter
+                        if (isUserEntryFilterSatisfied(ret))
+                            temp.add(ret);
+                    } else
+                        temp.add(ret);
+                } else {
+                    if (isSpecialFilterAppliedProduct(generaltxt, ret)) { //special filter selected
+
+                        if (mEdt_searchproductName.getText().length() >= 3) {
+                            if (isUserEntryFilterSatisfied(ret))
+                                temp.add(ret);
+                        } else
+                            temp.add(ret);
+                    }
+                }
+            }
+            mylist.clear();
+            mylist.addAll(temp);
+        }
+        if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
+            getProductBySequence();
+
+        mSchedule = new MyAdapter(mylist);
+        lvwplist.setAdapter(mSchedule);
+        strBarCodeSearch = "ALL";
+        updateValue();
+        mDrawerLayout.closeDrawers();
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        updateOrderedCount();
+
+        if (!bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
+            if (count == 1) {
+                String strPname = filtertext + " (" + mylist.size() + ")";
+                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                    if (totalOrdCount.equals("0"))
+                        setScreenTitle(strPname);
+                    else
+                        setScreenTitle(totalOrdCount + "/" + strPname);
+                }
+            } else {
+                String strPname = getResources().getString(R.string.product_name) + " (" + mylist.size() + ")";
+                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                    if (totalOrdCount.equals("0"))
+                        setScreenTitle(strPname);
+                    else
+                        setScreenTitle(totalOrdCount + "/" + strPname);
+                }
+            }
+        } else {
+            if (generalbutton.equals(GENERAL) && filtertext.equals(BRAND)) {
+                String strPname = getResources().getString(
+                        R.string.product_name)
+                        + " (" + mylist.size() + ")";
+                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                    if (totalOrdCount.equals("0"))
+                        setScreenTitle(strPname);
+                    else
+                        setScreenTitle(totalOrdCount + "/" + strPname);
+                }
+            } else if (!generalbutton.equals(GENERAL)) {
+                String strPname = getFilterName(generalbutton) + " ("
+                        + mylist.size() + ")";
+                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                    if (totalOrdCount.equals("0"))
+                        setScreenTitle(strPname);
+                    else
+                        setScreenTitle(totalOrdCount + "/" + strPname);
+                }
+            } else {
+                String strPname = filtertext + " (" + mylist.size() + ")";
+                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+                    if (totalOrdCount.equals("0"))
+                        setScreenTitle(strPname);
+                    else
+                        setScreenTitle(totalOrdCount + "/" + strPname);
+                }
+            }
+        }
+        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+            filterAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        String filtertext = getResources().getString(R.string.product_name);
+        if (!mFilterText.equals("")) {
+            filtertext = mFilterText;
+            mSelectedFiltertext = mFilterText;
+        } else
+            mSelectedFiltertext = BRAND;
+
+        brandbutton = filtertext;
+        fiveFilter_productIDs = new ArrayList<>();
+
+        int count = 0;
+        mylist = new Vector<>();
+        Vector<ProductMasterBO> items = productList;
+        if (mAttributeProducts != null) {
+            count = 0;
+            if (mProductId!=0) {
+                if (mFilterText.length() > 0) {
+                    count++;
+                    for (ProductMasterBO productBO : items) {
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
+
+                            if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
+
+                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mProductId+"/")) {
+                                    // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                                    if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+
+                                        if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                            continue;
+                                        mylist.add(productBO);
+                                        fiveFilter_productIDs.add(productBO.getProductID());
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                } else {
+                    for (ProductMasterBO productBO : items) {
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
+
+                            if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
+
+                                if (productBO.getIsSaleable() == 1) {
+                                    // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                                    if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+
+                                        if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                            continue;
+                                        mylist.add(productBO);
+                                        fiveFilter_productIDs.add(productBO.getProductID());
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            } else {
+                for (int pid : mAttributeProducts) {
+                    for (ProductMasterBO productBO : items) {
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
+
+
+                            if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
+                                if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
+                                    if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                        continue;
+                                    mylist.add(productBO);
+                                    fiveFilter_productIDs.add(productBO.getProductID());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if (mFilterText.length() > 0) {
+                if (mProductId!=0) {
+                    count++;
+                    for (ProductMasterBO productBO : items) {
+
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
+
+                            if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                    || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                                    && productBO.getIndicativeOrder_oc() > 0)) {
+                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mProductId+"/")) {
                                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                         continue;
                                     mylist.add(productBO);
@@ -7113,5 +7330,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         return uomName;
     }
+
 
 }

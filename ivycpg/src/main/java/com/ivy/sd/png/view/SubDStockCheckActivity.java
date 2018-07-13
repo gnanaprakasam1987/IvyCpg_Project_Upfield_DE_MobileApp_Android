@@ -1455,8 +1455,8 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
 
         Commons.print("OnStart Called");
         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
-            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-            sequence = bmodel.productHelper.getSequenceValues();
+            loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
+            sequence = bmodel.productHelper.getFilterProductLevels();
 
             if (loadedFilterValues != null) {
                 if (loadedFilterValues.get(-1) == null) {
@@ -3328,8 +3328,8 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
-            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-            sequence = bmodel.productHelper.getSequenceValues();
+            loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
+            sequence = bmodel.productHelper.getFilterProductLevels();
 
             if (loadedFilterValues != null) {
                 if (loadedFilterValues.get(-1) == null) {

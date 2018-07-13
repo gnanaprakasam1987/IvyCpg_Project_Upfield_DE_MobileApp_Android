@@ -233,10 +233,6 @@ public class StockViewActivity extends ToolBarwithFilter implements
         if (!generalbutton.equals(GENERAL))
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
-        if (!brandbutton.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
-
 
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
         return super.onPrepareOptionsMenu(menu);

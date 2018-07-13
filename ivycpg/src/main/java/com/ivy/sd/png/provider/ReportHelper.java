@@ -889,9 +889,9 @@ public class ReportHelper {
             int mChildLevel = 0;
             int mContentLevel = 0;
 
-            if (bmodel.productHelper.getSequenceValues() != null) {
-                if (bmodel.productHelper.getSequenceValues().size() > 0) {
-                    mChildLevel = bmodel.productHelper.getSequenceValues().size();
+            if (bmodel.productHelper.getFilterProductLevels() != null) {
+                if (bmodel.productHelper.getFilterProductLevels().size() > 0) {
+                    mChildLevel = bmodel.productHelper.getFilterProductLevels().size();
                 }
             }
 

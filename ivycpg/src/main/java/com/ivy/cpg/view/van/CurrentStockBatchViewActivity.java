@@ -111,7 +111,6 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
         return super.onPrepareOptionsMenu(menu);

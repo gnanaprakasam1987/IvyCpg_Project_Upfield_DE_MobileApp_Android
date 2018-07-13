@@ -648,9 +648,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     public void onStart() {
 
         super.onStart();
-        loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-        if (bmodel.productHelper.getSequenceValues() != null && bmodel.productHelper.getSequenceValues().size() != 0) {
-            sequence = bmodel.productHelper.getSequenceValues();
+        loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
+        if (bmodel.productHelper.getFilterProductLevels() != null && bmodel.productHelper.getFilterProductLevels().size() != 0) {
+            sequence = bmodel.productHelper.getFilterProductLevels();
             for (int i = 0; i < sequence.size(); i++) {
                 if (sequence.get(i).getLevelName().equals("Category")) {
                     categoryIndex = i;
@@ -1102,12 +1102,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
 
-        /*if (!brandbutton.equals(BRAND)) {
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
-        }*/
-
-
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
@@ -1123,7 +1117,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         menu.findItem(R.id.menu_survey).setVisible(false);
         menu.findItem(R.id.menu_barcode).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(true);
 

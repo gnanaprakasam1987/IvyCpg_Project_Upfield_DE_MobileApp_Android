@@ -588,7 +588,6 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_spl_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         menu.findItem(R.id.menu_barcode).setVisible(false);

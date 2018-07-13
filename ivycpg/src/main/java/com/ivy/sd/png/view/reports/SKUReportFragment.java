@@ -19,7 +19,6 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
 public class SKUReportFragment extends IvyBaseFragment {
@@ -68,8 +67,8 @@ public class SKUReportFragment extends IvyBaseFragment {
 			childLevelBO.setLevelName(getResources().getString(R.string.all));
 			vbeat.add(childLevelBO);
 			bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
-			HashMap<Integer, Vector<LevelBO>> loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-			Vector<LevelBO> sequence = bmodel.productHelper.getSequenceValues();
+			HashMap<Integer, Vector<LevelBO>> loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
+			Vector<LevelBO> sequence = bmodel.productHelper.getFilterProductLevels();
 			int sequenceVal = sequence.get(0).getSequence();
 			Integer filterVal = sequence.get(0).getProductID();
 			for(int i = 0;i<sequence.size();i++){
