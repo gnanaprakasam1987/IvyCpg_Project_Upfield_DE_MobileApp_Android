@@ -53,10 +53,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
-import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
@@ -179,6 +179,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     public Timer orderTimer;
     private MOQHighlightDialog mMOQHighlightDialog;
     SearchAsync searchAsync;
+    private int loadStockedProduct;
 
     private AlertDialog alertDialog;
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
@@ -289,6 +290,18 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
+
+
+        /**
+         * To check stock validation
+         * product will load based on loadStockedProduct
+         * -1  - load all products
+         *  1  - load SIH available products
+         *  0  - load WSIH available products
+         */
+        loadStockedProduct = -1;
+        if (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY)
+            loadStockedProduct = checkStockValidation();
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
@@ -588,10 +601,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 break;
             }
 
-            if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                    && ret.getSIH() > 0)
-                    || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
+            if (loadStockedProduct == -1
+                    || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
 
                 if (mSelectedFilter.equals(getResources().getString(
                         R.string.order_dialog_barcode))) {
@@ -686,6 +697,16 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     }
 
+    private int checkStockValidation() {
+        int flag;
+
+        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            flag = bmodel.getRetailerMasterBO().getIsVansales() == 1 ? 1 : 0;
+        } else {
+            flag = bmodel.configurationMasterHelper.IS_INVOICE ? 1 : 0;
+        }
+        return flag;
+    }
 
     @Override
     public void updateBrandText(String filtertext, int bid) {
@@ -731,10 +752,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         || productMasterBO.getOuterbarcode().equals(strBarCodeSearch)
                         || strBarCodeSearch.equals("ALL")) {
 
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && productMasterBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productMasterBO.getWSIH() > 0)) {
+                    if (loadStockedProduct == -1
+                            || (loadStockedProduct == 1 ? productMasterBO.getSIH() > 0 : productMasterBO.getWSIH() > 0)) {
 
                         if ((bid == -1 || bid == productMasterBO.getParentid()) && generaltxt.equals(GENERAL) && productMasterBO.getIsSaleable() == 1) {
                             // product filter alone
@@ -974,10 +993,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 for (LevelBO levelBO : parentidList) {
                     count++;
                     for (ProductMasterBO productBO : items) {
-                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                                && productBO.getSIH() > 0)
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
 
                             if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
@@ -995,10 +1012,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             } else {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
-                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                                && productBO.getSIH() > 0)
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
                             if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                                 mylist.add(productBO);
@@ -1013,10 +1028,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (filtertext.length() > 0) {
                 for (ProductMasterBO productBO : items) {
                     for (LevelBO levelBO : parentidList) {
-                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                                && productBO.getSIH() > 0)
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
+                        if (loadStockedProduct == -1
+                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
                             if (productBO.getIsSaleable() == 1) {
                                 if (levelBO.getProductID() == productBO.getParentid()) {
@@ -1030,10 +1043,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             } else {
                 for (ProductMasterBO productBO : items) {
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && productBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)) {
+                    if (loadStockedProduct == -1
+                            || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
                         if (productBO.getIsSaleable() == 1) {
                             //  filtertext = levelBO.getLevelName();
@@ -1714,10 +1725,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
 
-                if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                        && ret.getSIH() > 0)
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getSIH() > 0)) {
+                if (loadStockedProduct == -1
+                        || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
 
                     if (ret.getIsSaleable() == 1) {
                         if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
