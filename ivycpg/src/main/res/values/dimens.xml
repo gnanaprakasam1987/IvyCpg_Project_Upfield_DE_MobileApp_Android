@@ -78,7 +78,6 @@
     <dimen name="order_stock_list_product_name_width">148dp</dimen>
     <dimen name="order_stock_list_item_width">40dp</dimen>
     <dimen name="order_stock_list_item_width_small">40dp</dimen>
-    <dimen name="order_stock_list_item_width_large">90dp</dimen>
     <dimen name="meter_text_width">50dp</dimen>
     <dimen name="meter_value_width_large">100dp</dimen>
     <dimen name="visit_scree_list_two_row">60dp</dimen>
@@ -92,7 +91,6 @@
     <dimen name="target_plan_editbox_width">90dp</dimen>
     <!-- Order Split -->
     <dimen name="ordersplit_heder_name_width">150dp</dimen>
-    <dimen name="ordersplit_heder_qty_width">100dp</dimen>
 
     <!-- digital Screen -->
     <dimen name="digital_screen_name_width">260dp</dimen>
@@ -819,5 +817,4 @@
     <dimen name="score_card_height">120dp</dimen>
     <dimen name="qn_text_margin_left">5dp</dimen>
     <dimen name="web_view_width">180dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
 </resources>

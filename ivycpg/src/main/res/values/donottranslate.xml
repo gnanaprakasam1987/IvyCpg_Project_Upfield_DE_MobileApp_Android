@@ -142,7 +142,6 @@
 
     <string name="collection_mandatory">Please do collection for Pending Invoice !</string>
     <string name="todate_validation">To Date should be greater than From Date</string>
-    <string name="no_config_exist">No Configuration Exist</string>
     <string name="backup_seller">Backup Seller</string>
     <string name="error_connecting_printer">Error connecting Printer</string>
     <string name="allocation">Allocation</string>
@@ -165,4 +164,6 @@
     <string name="uom_not_available">Uom Not Available</string>
     <string name="title_activity_posm_image_gallery">PosmImageGallery</string>
     <string name="title_activity_posm_gallery">PosmGallery</string>
+    <string name="pwd_policy_not_match">Password Policy Not Matched</string>
+    <string name="please_complete">Please Complete</string>
 </resources>

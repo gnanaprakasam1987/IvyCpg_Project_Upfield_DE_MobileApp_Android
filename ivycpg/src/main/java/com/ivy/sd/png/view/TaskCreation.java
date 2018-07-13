@@ -47,6 +47,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean fromHomeScreen = false;
     private boolean isRetailerTask = false;
+    private String screenTitle = "";
 
 
     private int taskChannelId;
@@ -82,6 +83,10 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
 
             if (extras.containsKey("IsRetailerwisetask")) {
                 isRetailerTask = extras.getBoolean("IsRetailerwisetask");
+            }
+
+            if (extras.containsKey("screentitle")) {
+                screenTitle = extras.getString("screentitle");
             }
         }
 
@@ -332,7 +337,8 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                         HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
             else
                 startActivity(new Intent(TaskCreation.this,
-                        Task.class).putExtra("IsRetailerwisetask", isRetailerTask));
+                        Task.class).putExtra("IsRetailerwisetask", isRetailerTask)
+                        .putExtra("screentitle", screenTitle));
             finish();
             return true;
         }
@@ -423,7 +429,8 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                         HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
             else
                 startActivity(new Intent(TaskCreation.this,
-                        Task.class).putExtra("IsRetailerwisetask", isRetailerTask));
+                        Task.class).putExtra("IsRetailerwisetask", isRetailerTask)
+                        .putExtra("screentitle", screenTitle));
 
             finish();
 
