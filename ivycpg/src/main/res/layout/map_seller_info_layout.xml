@@ -39,12 +39,12 @@
                     android:layout_marginRight="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_2sdp">
 
-                    <com.ivy.cpg.view.supervisor.helper.CircleImageView
+                    <com.ivy.cpg.view.supervisor.customviews.CircleImageView
                         android:layout_width="@dimen/_50sdp"
                         android:layout_height="@dimen/_50sdp"
                         android:src="#61b9b9b9" />
 
-                    <com.ivy.cpg.view.supervisor.helper.CircleImageView
+                    <com.ivy.cpg.view.supervisor.customviews.CircleImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -68,7 +68,7 @@
                         android:maxLines="1"
                         android:textColor="#de000000"
                         android:textSize="@dimen/_14sdp"
-                        android:text="Test" />
+                        android:text="" />
 
                     <TextView
                         android:id="@+id/tv_start_time"
@@ -80,7 +80,7 @@
                         android:maxLines="1"
                         android:textColor="#8b000000"
                         android:textSize="@dimen/_12sdp"
-                        android:text="Day start : 09:35 AM" />
+                        android:text="@string/visit_time"/>
 
                     <TextView
                         android:id="@+id/tv_address"
@@ -93,7 +93,7 @@
                         android:maxLines="1"
                         android:textColor="#8b000000"
                         android:textSize="@dimen/_12sdp"
-                        android:text="Last visit : ECR" />
+                        android:text="@string/last_vist" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -114,7 +114,7 @@
                             android:paddingRight="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_5sdp"
                             android:paddingTop="@dimen/_5sdp"
-                            android:text="Targeted 05"
+                            android:text="@string/targeted"
                             android:textSize="@dimen/_10sdp"
                             android:background="@drawable/target_bg_gradient"/>
 
@@ -129,7 +129,7 @@
                             android:paddingRight="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_5sdp"
                             android:paddingTop="@dimen/_5sdp"
-                            android:text="Covered 05"
+                            android:text="@string/covered"
                             android:textSize="@dimen/_10sdp"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:background="@drawable/covered_bg_gradient"/>

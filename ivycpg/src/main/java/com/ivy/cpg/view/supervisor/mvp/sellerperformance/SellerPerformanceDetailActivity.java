@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +22,10 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
-import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -221,8 +219,8 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         LineData d = new LineData();
 
-        ArrayList<Entry> entries1 = new ArrayList<Entry>();
-        ArrayList<Entry> entries2 = new ArrayList<Entry>();
+        ArrayList<Entry> entries1 = new ArrayList<>();
+        ArrayList<Entry> entries2 = new ArrayList<>();
 
         entries1.add(new Entry(2f,10f));
         entries1.add(new Entry(4f,8f));

@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.supervisor.mvp.supervisorhomepage;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,11 @@ import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity;
 import com.ivy.sd.png.asean.view.R;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfoHorizontalAdapter.MyViewHolder> {
 
@@ -27,12 +32,17 @@ public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView userName;
+        private TextView userName, retailerName,retailerVisit,target,covered;
         private LinearLayout routeLayout;
 
         public MyViewHolder(View view) {
             super(view);
             userName = view.findViewById(R.id.tv_user_name);
+            retailerName = view.findViewById(R.id.tv_address);
+            retailerVisit = view.findViewById(R.id.tv_start_time);
+            target = view.findViewById(R.id.tv_target_outlet);
+            covered = view.findViewById(R.id.tv_outlet_covered);
+
             routeLayout = view.findViewById(R.id.route_layout);
         }
     }
@@ -45,12 +55,16 @@ public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfo
         return new MyViewHolder(itemView);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        final View itemView = holder.itemView;
-
-        holder.userName.setText("Test "+position);
+        holder.userName.setText(sellerArrayList.get(position).getUserName());
+        holder.retailerName.setText(context.getResources().getString(R.string.last_vist)+" "+sellerArrayList.get(position).getRetailerName());
+        if(sellerArrayList.get(position).getTimeIn() != null)
+            holder.retailerVisit.setText(context.getResources().getString(R.string.visit_time)+" "+convertTime(sellerArrayList.get(position).getTimeIn()));
+        holder.target.setText(context.getResources().getString(R.string.targeted)+" "+sellerArrayList.get(position).getTarget());
+        holder.covered.setText(context.getResources().getString(R.string.covered)+" "+sellerArrayList.get(position).getCovered());
 
         holder.routeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +85,16 @@ public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfo
 
     @Override
     public int getItemCount() {
-        return 3;
+        return sellerArrayList.size();
+    }
+
+    public String convertTime(long time){
+
+        if(time != 0) {
+            Date date = new Date(time);
+            Format format = new SimpleDateFormat("hh:mm a", Locale.US);
+            return format.format(date);
+        }else
+            return "";
     }
 }

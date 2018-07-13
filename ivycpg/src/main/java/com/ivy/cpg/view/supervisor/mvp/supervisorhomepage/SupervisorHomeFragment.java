@@ -3,6 +3,7 @@ package com.ivy.cpg.view.supervisor.mvp.supervisorhomepage;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,25 +36,20 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
-import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SupervisorHomeFragment extends IvyBaseFragment implements
         OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener,
@@ -116,9 +114,6 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     }
 
     private void initViews(final View view) {
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
         this.mymarkerview = (ViewGroup) getLayoutInflater().inflate(R.layout.map_custom_info_window, null);
 
@@ -137,7 +132,6 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         view.findViewById(R.id.covered_outlet_layout).setOnClickListener(this);
         view.findViewById(R.id.unbilled_layout).setOnClickListener(this);
         view.findViewById(R.id.seller_view_btn).setOnClickListener(this);
-
 
         //Bottom sheet layout Typeface
         ((TextView) view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
@@ -241,6 +235,10 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
             }
         });
 
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
     }
 
     private void initViewPager(final View view) {
@@ -341,6 +339,24 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_supervisor_screen, menu);
+
+        SearchManager searchManager = (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getActivity().getComponentName()) : null);
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
     }
 
     @Override

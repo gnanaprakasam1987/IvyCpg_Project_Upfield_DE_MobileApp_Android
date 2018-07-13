@@ -42,19 +42,18 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
-import com.ivy.cpg.view.supervisor.helper.DataParser;
+import com.ivy.cpg.view.supervisor.customviews.DataParser;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
-import com.ivy.cpg.view.supervisor.helper.LatLngInterpolator;
+import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
-import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import org.json.JSONObject;
 

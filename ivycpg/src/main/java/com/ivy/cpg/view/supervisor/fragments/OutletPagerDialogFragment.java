@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.customviews.scrollingpagerindicator.ScrollingPagerIndicator;
-import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.List;

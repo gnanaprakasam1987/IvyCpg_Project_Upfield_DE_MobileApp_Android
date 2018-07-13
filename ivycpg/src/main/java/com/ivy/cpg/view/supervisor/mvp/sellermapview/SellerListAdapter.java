@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.customviews.tooltip.Tooltip;
-import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 

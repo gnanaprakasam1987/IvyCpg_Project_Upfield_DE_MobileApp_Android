@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ivy.cpg.view.supervisor.adapter;
+package com.ivy.cpg.view.supervisor.dummyadapter;
 
 import android.content.Context;
 import android.content.Intent;

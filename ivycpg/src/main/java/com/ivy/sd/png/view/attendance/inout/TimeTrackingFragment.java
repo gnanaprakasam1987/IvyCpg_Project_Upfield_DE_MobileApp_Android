@@ -50,6 +50,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.StringTokenizer;
 
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
+
 public class TimeTrackingFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
@@ -537,7 +540,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE && reasonId.equalsIgnoreCase("10454")) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
             RealTimeLocationTracking.stopLocationTracking(getContext());
-            realTimeLocation.updateAttendanceOut(getContext(), "movement_tracking");
+            realTimeLocation.updateAttendanceOut(getContext(), REALTIME_LOCATION_PATH);
         }
 
         uploadAttendance("OUT", reasonId);
@@ -551,9 +554,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
 
             if (IN_OUT.equalsIgnoreCase("IN")) {
-                realTimeLocation.updateAttendanceIn(getContext(), "Attendance");
+                realTimeLocation.updateAttendanceIn(getContext(), ATTENDANCE_PATH);
             } else {
-                realTimeLocation.updateAttendanceOut(getContext(), "Attendance");
+                realTimeLocation.updateAttendanceOut(getContext(), ATTENDANCE_PATH);
             }
         }
     }

@@ -45,12 +45,12 @@
                     android:layout_marginRight="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_2sdp">
 
-                    <com.ivy.cpg.view.supervisor.helper.CircleImageView
+                    <com.ivy.cpg.view.supervisor.customviews.CircleImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="#61b9b9b9" />
 
-                    <com.ivy.cpg.view.supervisor.helper.CircleImageView
+                    <com.ivy.cpg.view.supervisor.customviews.CircleImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"

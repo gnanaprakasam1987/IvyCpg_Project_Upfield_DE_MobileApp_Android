@@ -165,4 +165,9 @@
     <string name="uom_not_available">Uom Not Available</string>
     <string name="title_activity_posm_image_gallery">PosmImageGallery</string>
     <string name="title_activity_posm_gallery">PosmGallery</string>
+
+    <string name="last_vist">Last Vist : </string>
+    <string name="visit_time">Visit Time : </string>
+    <string name="targeted">Targeted </string>
+    <string name="covered">Covered </string>
 </resources>

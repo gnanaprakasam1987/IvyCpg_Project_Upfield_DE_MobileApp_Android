@@ -19,10 +19,10 @@ import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
-import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

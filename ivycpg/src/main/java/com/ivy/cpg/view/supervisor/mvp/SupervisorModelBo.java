@@ -8,14 +8,16 @@ import java.util.ArrayList;
 public class SupervisorModelBo {
 
     private String userName,status,activityName,retailerName;
-    private int userId,batterStatus,retailerId,billed,covered;
+    private int userId,batterStatus,retailerId,billed,covered,target;
     private boolean isMockLocationEnabled,isGpsEnabled,isDeviated,isOrdered,isAttendanceDone = false;
     private double latitude,longitude;
     private Long orderValue,timeIn,timeOut,time;
     private MarkerOptions markerOptions;
     private Marker marker;
+    private int sellerListPos;
 
     private ArrayList<SupervisorModelBo> detailsArrayList = new ArrayList<>();
+    private ArrayList<RetailerBo> retailerBoArrayList = new ArrayList<>();
 
     public Marker getMarker() {
         return marker;
@@ -201,5 +203,29 @@ public class SupervisorModelBo {
 
     public void setAttendanceDone(boolean attendanceDone) {
         isAttendanceDone = attendanceDone;
+    }
+
+    public int getTarget() {
+        return target;
+    }
+
+    public void setTarget(int target) {
+        this.target = target;
+    }
+
+    public int getSellerListPos() {
+        return sellerListPos;
+    }
+
+    public void setSellerListPos(int sellerListPos) {
+        this.sellerListPos = sellerListPos;
+    }
+
+    public ArrayList<RetailerBo> getRetailerBoArrayList() {
+        return retailerBoArrayList;
+    }
+
+    public void setRetailerBoArrayList(ArrayList<RetailerBo> retailerBoArrayList) {
+        this.retailerBoArrayList = retailerBoArrayList;
     }
 }

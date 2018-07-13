@@ -5,15 +5,12 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -23,6 +20,12 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_PASSWORD;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 
 public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
@@ -36,8 +39,8 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
 
-            String email = LocationConstants.FIREBASE_EMAIL;
-            String password = LocationConstants.FIREBASE_PASSWORD;
+            String email = FIREBASE_EMAIL;
+            String password = FIREBASE_PASSWORD;
 
             if(email.trim().length() > 0 && password.trim().length() > 0) {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(
@@ -59,7 +62,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         }
     }
 
-    public FireBaseRealtimeLocationUpload(Parcel parcel) {
+    private FireBaseRealtimeLocationUpload(Parcel parcel) {
 
     }
 
@@ -72,7 +75,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         locationDetailBO.setOutTime("");
         locationDetailBO.setStatus("IN");
 
-        updateFirebaseData(context, locationDetailBO, "movement_tracking");
+        updateFirebaseData(context, locationDetailBO);
 
     }
 
@@ -103,8 +106,8 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                 attendanceObj.put(ids, true);
         }
 
-        db.collection(LocationConstants.FIRESTORE_BASE_PATH)
-                .document("Attendance")
+        db.collection(FIRESTORE_BASE_PATH)
+                .document(ATTENDANCE_PATH)
                 .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
                 .document(userId+"")
                 .set(attendanceObj);
@@ -127,8 +130,8 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         attendanceObj.put("outTime", System.currentTimeMillis());
         attendanceObj.put("status", "Day Closed");
 
-        db.collection(LocationConstants.FIRESTORE_BASE_PATH)
-                .document("Attendance")
+        db.collection(FIRESTORE_BASE_PATH)
+                .document(ATTENDANCE_PATH)
                 .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
                 .document(userId)
                 .update(attendanceObj);
@@ -137,7 +140,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
     /**
      * Insert or update Location data and attendance data in Firebase Node
      */
-    private void updateFirebaseData(Context context, LocationDetailBO locationDetailBO, String nodePath) {
+    private void updateFirebaseData(Context context, LocationDetailBO locationDetailBO) {
         int userId = 0 ;
         String userName = "";
         UserMasterBO userMasterBO = getUserDetail(context);
@@ -164,8 +167,8 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             if (!ids.isEmpty())
                 locationObj.put(ids,true);
 
-        db.collection(LocationConstants.FIRESTORE_BASE_PATH)
-                .document(nodePath)
+        db.collection(FIRESTORE_BASE_PATH)
+                .document(REALTIME_LOCATION_PATH)
                 .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
                 .document(userId+"")
                 .set(locationObj);

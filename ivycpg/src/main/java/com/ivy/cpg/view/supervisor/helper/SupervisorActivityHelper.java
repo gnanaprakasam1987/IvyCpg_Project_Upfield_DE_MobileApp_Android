@@ -42,6 +42,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.cpg.view.supervisor.Seller;
+import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
+import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -83,8 +85,8 @@ public class SupervisorActivityHelper {
     public void loginToFirebase(final Context context) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null || FirebaseDatabase.getInstance() == null) {
-            String email = LocationConstants.FIREBASE_EMAIL;
-            String password = LocationConstants.FIREBASE_PASSWORD;
+            String email = SupervisorModuleConstants.FIREBASE_EMAIL;
+            String password = SupervisorModuleConstants.FIREBASE_PASSWORD;
             // Authenticate with Firebase and subscribe to updates
 
             if(email.trim().length() > 0 && password.trim().length() > 0) {
@@ -119,7 +121,7 @@ public class SupervisorActivityHelper {
             else
                 path = "/movement_tracking/";
 
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(LocationConstants.FIREBASE_BASE_PATH + path);
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(SupervisorModuleConstants.FIREBASE_BASE_PATH + path);
 
 
             ref.addChildEventListener(new ChildEventListener() {
@@ -158,7 +160,7 @@ public class SupervisorActivityHelper {
             loginToFirebase(context);
         } else {
 
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(LocationConstants.FIREBASE_BASE_PATH + "/Attendance/");
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(SupervisorModuleConstants.FIREBASE_BASE_PATH + "/Attendance/");
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -178,7 +180,7 @@ public class SupervisorActivityHelper {
      */
     public void subscribeSellerDetails(final Context context, final Seller seller, String pathNode) {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(LocationConstants.FIREBASE_BASE_PATH + pathNode);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(SupervisorModuleConstants.FIREBASE_BASE_PATH + pathNode);
 
         ref.orderByKey().addChildEventListener(new ChildEventListener() {
             @Override

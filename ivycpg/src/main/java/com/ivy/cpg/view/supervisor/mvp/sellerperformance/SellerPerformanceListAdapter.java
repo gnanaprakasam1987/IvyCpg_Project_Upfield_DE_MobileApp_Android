@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.supervisor.utils.FontUtils;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.utils.FontUtils;
 
 public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPerformanceListAdapter.MyViewHolder> {
 

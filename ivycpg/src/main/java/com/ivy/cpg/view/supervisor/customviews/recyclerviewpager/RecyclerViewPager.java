@@ -20,7 +20,6 @@ import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 
 
-import com.ivy.cpg.view.supervisor.customviews.RecyclerViewPagerAdapter;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 

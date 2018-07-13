@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.supervisor.mvp.supervisorhomepage;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -21,8 +22,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.locationservice.LocationConstants;
+import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
+import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -38,13 +42,18 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
     private CollectionReference queryRef = db
             .collection("activity_tracking_v2");
 
+    @SuppressLint("UseSparseArrays")
     private HashMap<Integer, SupervisorModelBo> sellerInfoHasMap = new HashMap<>();
+    @SuppressLint("UseSparseArrays")
     private HashMap<Integer, MarkerOptions> sellerMarkerHasmap = new HashMap<>();
     private SupervisorHomeContract.SupervisorHomeView supervisorHomeView;
     private Context context;
     private ListenerRegistration registration ;
 
     private boolean isRealTimeLocationOn = false;
+
+    private int sellerCount = 0;
+    private boolean isZoomed = false;
 
     @Override
     public void setView(SupervisorHomeContract.SupervisorHomeView supervisorHomeView,Context context) {
@@ -101,8 +110,8 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
     public void loginToFirebase(final Context context) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            String email = LocationConstants.FIREBASE_EMAIL;
-            String password = LocationConstants.FIREBASE_PASSWORD;
+            String email = SupervisorModuleConstants.FIREBASE_EMAIL;
+            String password = SupervisorModuleConstants.FIREBASE_PASSWORD;
             // Authenticate with Firebase and subscribe to updates
 
             if(email.trim().length() > 0 && password.trim().length() > 0) {
@@ -125,12 +134,12 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
 
     private void initiateAllMethods(){
 
-        getSellerActivityInfoListener();
-
         getSellerAttendanceInfoListener();
 
-        if (isRealTimeLocationOn)
-            realtimeLocationInfoListener();
+        getSellerActivityInfoListener();
+
+//        if (isRealTimeLocationOn)
+//            realtimeLocationInfoListener();
 
     }
 
@@ -157,6 +166,9 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
 
                         if(queryDocumentSnapshots!=null) {
+
+                            if (!isRealTimeLocationOn)
+                                sellerCount = queryDocumentSnapshots.size();
 
                             for (DocumentChange snapshot : queryDocumentSnapshots.getDocumentChanges()) {
 
@@ -185,6 +197,8 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
 
                         if (queryDocumentSnapshots != null) {
+
+                            sellerCount = queryDocumentSnapshots.size();
 
                             System.out.println("updateRealtimeLocationInfoListener = " );
 
@@ -233,17 +247,15 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
     public void getMarkerForFocus() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        for (SupervisorModelBo detailsBo : sellerInfoHasMap.values()) {
-            if(detailsBo.getMarkerOptions() != null)
-                builder.include(detailsBo.getMarkerOptions().getPosition());
+        for (MarkerOptions markerOptions : sellerMarkerHasmap.values()) {
+            if(markerOptions != null && markerOptions.getPosition().latitude > 0 && markerOptions.getPosition().longitude > 0)
+                builder.include(markerOptions.getPosition());
         }
 
         supervisorHomeView.focusMarker(builder);
     }
 
     private void setAttendanceValues(DocumentSnapshot documentSnapshot){
-
-        SupervisorModelBo supervisorModelBo = new SupervisorModelBo();
 
         if (documentSnapshot.getData() != null) {
 
@@ -252,16 +264,16 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
             Long id = (Long) documentSnapshot.getData().get("userId");
             Integer userId = (int) (long) id;
 
-            supervisorModelBo.setUserId(userId);
-            supervisorModelBo.setUserName((String) documentSnapshot.getData().get("userName"));
-            supervisorModelBo.setAttendanceDone(true);
-
-            if (!sellerInfoHasMap.containsKey(supervisorModelBo.getUserId())) {
-                sellerInfoHasMap.put(supervisorModelBo.getUserId(), supervisorModelBo);
+            if (sellerInfoHasMap.get(userId) != null) {
+                sellerInfoHasMap.get(userId).setAttendanceDone(true);
             }
         }
 
         computeSellerInfo();
+    }
+
+    private void computeAttendance(){
+
     }
 
     private void setValues(DocumentSnapshot documentSnapshot){
@@ -308,18 +320,7 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
             }
 
             if (!isRealTimeLocationOn) {
-                if (!sellerMarkerHasmap.containsKey(supervisorModelBo.getUserId())) {
-                    sellerMarkerHasmap.put(supervisorModelBo.getUserId(), supervisorModelBo.getMarkerOptions());
-                    supervisorHomeView.createMarker(sellerInfoHasMap.get(supervisorModelBo.getUserId()));
-                } else {
-
-                    sellerInfoHasMap.get(supervisorModelBo.getUserId()).setMarkerOptions(supervisorModelBo.getMarkerOptions());
-
-                    supervisorHomeView.updateMaker(supervisorModelBo);
-
-                }
-
-                getMarkerForFocus();
+                setMarkerHasMap(supervisorModelBo);
             }
         }
 
@@ -344,19 +345,30 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
 
             supervisorModelBo.setAttendanceDone(true);
 
-            if(!sellerMarkerHasmap.containsKey(supervisorModelBo.getUserId())) {
-                sellerMarkerHasmap.put(supervisorModelBo.getUserId(), supervisorModelBo.getMarkerOptions());
-                supervisorHomeView.createMarker(sellerInfoHasMap.get(supervisorModelBo.getUserId()));
-            }else{
+            sellerInfoHasMap.get(supervisorModelBo.getUserId()).setMarkerOptions(supervisorModelBo.getMarkerOptions());
 
-                sellerInfoHasMap.get(supervisorModelBo.getUserId()).setMarkerOptions(supervisorModelBo.getMarkerOptions());
+            setMarkerHasMap(supervisorModelBo);
 
-                supervisorHomeView.updateMaker(supervisorModelBo);
-
-            }
         }
 
 //        getMarkerForFocus();
+    }
+
+    private void setMarkerHasMap(SupervisorModelBo supervisorModelBo) {
+        if(!sellerMarkerHasmap.containsKey(supervisorModelBo.getUserId())) {
+            supervisorHomeView.createMarker(sellerInfoHasMap.get(supervisorModelBo.getUserId()));
+        }else{
+            supervisorHomeView.updateMaker(sellerInfoHasMap.get(supervisorModelBo.getUserId()));
+        }
+
+        sellerMarkerHasmap.put(supervisorModelBo.getUserId(), supervisorModelBo.getMarkerOptions());
+
+        if(sellerCount == sellerMarkerHasmap.size() && !isZoomed){
+            isZoomed = true;
+            getMarkerForFocus();
+
+            computeSellerInfo();
+        }
     }
 
     @Override
@@ -464,11 +476,19 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select sellerId,retailerId,sequence from SupRetailerMaster";
+            String queryStr = "select sellerId,count(sellerId) from SupRetailerMaster group by sellerId";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {
+                while (c.moveToNext()) {
 
+                    int count = c.getInt(1);
+
+                    totalOutletCount = totalOutletCount + count;
+
+                    if(sellerInfoHasMap.get(c.getInt(0)) != null)
+                        sellerInfoHasMap.get(c.getInt(0)).setTarget(c.getInt(1));
+                }
                 c.close();
             }
 
