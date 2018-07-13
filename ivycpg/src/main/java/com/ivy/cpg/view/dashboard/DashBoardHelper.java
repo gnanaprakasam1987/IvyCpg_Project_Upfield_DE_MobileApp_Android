@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.PriorityBo;
 import com.ivy.sd.png.bo.RetailerKPIBO;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
@@ -91,29 +90,32 @@ public class DashBoardHelper {
     private static final String WEEK = "WEEK";
     ArrayList<String> weekList = new ArrayList<>();
 
-    public enum WEEKTYPE {
-        wk1("Week 1"), wk2("Week 2"), wk3("Week 3"), wk4("Week 4");
-
-        private final String dataItem;
-
-        WEEKTYPE(String Item) {
-            dataItem = Item;
-        }
-
-        public String toString() {
-            return dataItem;
-        }
-
-        public static String getEnumByString(String code) {
-            for (WEEKTYPE e : WEEKTYPE.values()) {
-                if (code.equals(e.dataItem)) return e.name();
-            }
-            return null;
-        }
-    }
+//    public enum WEEKTYPE {
+//        wk1("Week 1"), wk2("Week 2"), wk3("Week 3"), wk4("Week 4");
+//
+//        private final String dataItem;
+//
+//        WEEKTYPE(String Item) {
+//            dataItem = Item;
+//        }
+//
+//        public String toString() {
+//            return dataItem;
+//        }
+//
+//        public static String getEnumByString(String code) {
+//            for (WEEKTYPE e : WEEKTYPE.values()) {
+//                if (code.equals(e.dataItem)) return e.name();
+//            }
+//            return null;
+//        }
+//    }
 
     public String getEnumNamefromValue(String filterName) {
-        return WEEKTYPE.getEnumByString(filterName);
+        //WEEKTYPE.getEnumByString(filterName);
+        String weekCode = (filterName.contains("Week"))?"wk" + filterName.substring(filterName.length()-1,
+                filterName.length()) : "";
+        return weekCode;
     }
 
     private DashBoardHelper(Context context) {
@@ -253,7 +255,12 @@ public class DashBoardHelper {
             int index = 0;
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    weekList.add(WEEKTYPE.valueOf(c.getString(0)).toString());
+                    //WEEKTYPE.valueOf(c.getString(0)).toString()
+                    String weekName = (c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
+                            c.getString(0).length()) : "";
+                    if(weekName.trim().length()>0) {
+                        weekList.add(weekName);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -274,7 +281,10 @@ public class DashBoardHelper {
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    return getWeekList().indexOf(WEEKTYPE.valueOf(c.getString(0)).toString());
+                    //WEEKTYPE.valueOf(c.getString(0)).toString()
+                    int index = getWeekList().indexOf((c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
+                            c.getString(0).length()) : "");
+                    return index;
                 }
             }
         } catch (Exception e) {
@@ -526,6 +536,65 @@ public class DashBoardHelper {
                     sbo.setFlex1(c.getInt(8));
                     sbo.setSubDataCount(c.getInt(9));
 
+                    getDashChartDataList().add(sbo);
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    public void loadRouteDashBoard(String interval) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            getDashChartDataList().clear();
+
+
+            String sql = "SELECT SLM.ListName,RKD.Target,RKD.Achievement,"
+                    + " ROUND(CASE WHEN (100-((RKD.Achievement*100)/((RKD.Target)*1.0))) < 0"
+                    + " THEN 100 ELSE ((RKD.Achievement*100)/((RKD.Target)*1.0)) END ,2) AS conv_ach_perc"
+                    + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,count(rkdd.KPIParamLovId),BeatDescription FROM RouteKPI RK"
+                    + " inner join RouteKPIDetail RKD on RKD.KPIID= RK.KPIID"
+                    + " LEFT join RouteKPIScore RKS on RKD.KPIID= RKS.KPIID and RKD.KPIParamLovId = RKS.KPIParamLovId"
+                    + " inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId"
+                    + " LEFT join RouteKPISKUDetail rkdd on rkdd.KPIParamLovId =RKD.KPIParamLovId "
+                    + " inner join BeatMaster on RouteID = BeatID "
+                    + " where interval= '" + interval + "' "
+                    + " AND "
+                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + " between RK.fromdate and RK.todate group by SLM.Listid,RKD.KPiid order by DisplaySeq,RKD.KPiid asc";
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    DashBoardBO sbo = new DashBoardBO();
+                    sbo.setPId(0);
+                    sbo.setText(c.getString(0));
+                    sbo.setKpiTarget(c.getString(1));
+                    sbo.setKpiAcheived(c.getString(2));
+
+                    sbo.setCalculatedPercentage(c.getFloat(3));
+                    if (sbo.getCalculatedPercentage() >= 100) {
+                        sbo.setConvTargetPercentage(0);
+                        sbo.setConvAcheivedPercentage(100);
+                    } else {
+                        sbo.setConvTargetPercentage(100 - sbo
+                                .getCalculatedPercentage());
+                        sbo.setConvAcheivedPercentage(sbo
+                                .getCalculatedPercentage());
+                    }
+                    sbo.setKpiScore(c.getString(4));
+                    sbo.setKpiIncentive(c.getString(5));
+                    sbo.setKpiID(c.getInt(6));
+                    sbo.setKpiTypeLovID(c.getInt(7));
+                    sbo.setFlex1(c.getInt(8));
+                    sbo.setSubDataCount(c.getInt(9));
+                    sbo.setMonthName(c.getString(10));
                     getDashChartDataList().add(sbo);
                 }
                 c.close();
@@ -839,6 +908,32 @@ public class DashBoardHelper {
         return dashList;
     }
 
+    public ArrayList<String> getRouteDashList() {
+
+        ArrayList<String> dashList = null;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String sql;
+            sql = "select distinct interval from RouteKPI";
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                dashList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    dashList.add(c.getString(0));
+                }
+
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return dashList;
+    }
 
     private void getMonths(String month) {
         String tempMonth;
@@ -1190,7 +1285,6 @@ public class DashBoardHelper {
                     + " where userid = "
                     + bmodel.QT(userid)
                     + " and interval= 'WEEK'"
-                    //+ " AND Weekcode = " + bmodel.QT(weekend)
                     + " group by SLM.Listid,SK.WeekCode order by DisplaySeq asc";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
@@ -1222,9 +1316,6 @@ public class DashBoardHelper {
                     sbo.setKpiFlex(c.getString(c.getColumnIndex("kpiFlex1")));
                     sbo.setMonthName(c.getString(11));
                     getDashChartDataList().add(sbo);
-//                    } else {
-//                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
-//                    }
                 }
                 c.close();
             }
