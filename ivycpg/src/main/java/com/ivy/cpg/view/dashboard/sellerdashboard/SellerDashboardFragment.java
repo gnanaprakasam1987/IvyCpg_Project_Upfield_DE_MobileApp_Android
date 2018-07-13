@@ -13,6 +13,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -1118,7 +1119,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     }
 
 
-    public class MyPagerAdapter extends FragmentPagerAdapter {
+    public class MyPagerAdapter extends FragmentStatePagerAdapter {
         private ArrayList<Fragment> fragmentList = new ArrayList<>();
 
         public MyPagerAdapter(FragmentManager fragmentManager, ArrayList<Fragment> fragmentList) {
@@ -1183,17 +1184,17 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         fragmentList = new ArrayList<>();
 
         if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
-            if (bmodel.configurationMasterHelper.SHOW_P3M_DASH) {
+            if (!selectedInterval.matches("WEEK|ROUTE") && bmodel.configurationMasterHelper.SHOW_P3M_DASH) {
                 NUM_ITEMS++;
                 dashBoardHelper.loadP3MTrendChaart(mFilterUser);
                 fragmentList.add(new P3MChartFragment());
             }
-            if (bmodel.configurationMasterHelper.SHOW_SMP_DASH) {
+            if (!selectedInterval.matches("WEEK|ROUTE") && bmodel.configurationMasterHelper.SHOW_SMP_DASH) {
                 NUM_ITEMS++;
                 fragmentList.add(new SMPChartFragment());
                 chartpositionSMP = NUM_ITEMS;
             }
-            if (bmodel.configurationMasterHelper.SHOW_INV_DASH) {
+            if (!selectedInterval.matches("WEEK|ROUTE") && bmodel.configurationMasterHelper.SHOW_INV_DASH) {
                 NUM_ITEMS++;
                 Fragment fragment = new TotalAchivedFragment();
                 Bundle args = new Bundle();

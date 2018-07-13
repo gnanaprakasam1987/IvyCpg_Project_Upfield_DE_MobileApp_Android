@@ -73,7 +73,7 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         ArrayList<String> mStirngList = new ArrayList<>();
         for (int i = 0; i < dashBoardList.size(); i++) {
             if(selectedInterval != null && selectedInterval.equals("WEEK")){
-                mStirngList.add(dashBoardList.get(i).getMonthName());
+                mStirngList.add((dashBoardList.get(i).getMonthName() != null && dashBoardList.get(i).getMonthName().length() == 0) ? dashBoardList.get(i).getText() : dashBoardList.get(i).getMonthName());
             } else{
                 mStirngList.add(dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText());
             }
