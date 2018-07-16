@@ -103,7 +103,6 @@
     <string name="received">Recibido</string>
     <string name="os_amt">Monto Orden</string>
     <string name="cheque_num">No Cheque</string>
-    <string name="mode">Modo</string>
     <string name="cash">Efectivo</string>
     <string name="cheque">Cheque</string>
     <string name="bank_name">Nombre del Banco</string>
@@ -261,7 +260,6 @@
     <string name="initiative">Iniciativa</string>
     <string name="credit_note">Nota de Crédito</string>
     <string name="Product_details">Detalles de Producto</string>
-    <string name="adjusted_sih">Ajuste SIH</string>
     <string name="new_task_saved">Se guardó la Nueva Tarea</string>
     <string name="choose_brand">Escoja Marca</string>
     <string name="choose_category">Escoja Categoría</string>
@@ -341,7 +339,6 @@
     <string name="planogram">Planograma</string>
     <string name="image_desc">null</string>
     <string name="adherence">¿Se cumple con el planograma?</string>
-    <string name="please_filldetails">Favor de ingresar los detalles requeridos</string>
     <string name="unloadimage">Imagen no disponible</string>
     <string name="deviate_retailers">Tiendas Desviadas</string>
     <string name="admin_contact_no">Contacto de Administrador:</string>
@@ -1048,7 +1045,6 @@
     <string name="percentage">Porcentaje</string>
     <string name="invoice_qty">Cantidad Facturada</string>
     <string name="delivery_rep_code">Código Representante:</string>
-    <string name="maximum_count_is_exceed">Máximo número se excedió</string>
     <string name="delivery_date_is">Delivery Date is: </string>
     <string name="old_order_volume">Original value</string>
     <string name="Would_you_like_to_add_this_store_in_today_plan">Would you like to add this store in today’s plan?</string>
@@ -1274,6 +1270,5 @@
     </string-array>
 
     <string name="sales_return_allowed_only_for_ordered_products">Retorno de ventas Permitido solo para productos pedidos</string>
-    <string name="total_collected">Total recogido</string>
 
 </resources>

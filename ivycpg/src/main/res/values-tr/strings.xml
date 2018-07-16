@@ -103,7 +103,6 @@
     <string name="received">Alınan</string>
     <string name="os_amt">OS Amt</string>
     <string name="cheque_num">Çek Numarası</string>
-    <string name="mode">Mod</string>
     <string name="cash">Nakit</string>
     <string name="cheque">Çek</string>
     <string name="bank_name">Banka Adı</string>
@@ -261,7 +260,6 @@
     <string name="initiative">Initiative</string>
     <string name="credit_note">Kredi notu</string>
     <string name="Product_details">Ürün Detayları</string>
-    <string name="adjusted_sih">Adj.sih</string>
     <string name="new_task_saved">Yeni görev kaydedildi.</string>
     <string name="choose_brand">Ürün Ailesi Seç</string>
     <string name="choose_category">Kategori seç</string>
@@ -341,7 +339,6 @@
     <string name="planogram">Planogram</string>
     <string name="image_desc">Görüntü Açıklaması</string>
     <string name="adherence">Planograma uygunluk?</string>
-    <string name="please_filldetails">Lütfen gerekli detayları girin.</string>
     <string name="unloadimage">Görüntüye ulaşılamıyor</string>
     <string name="deviate_retailers">Plandışı Müşteri Ekle</string>
     <string name="admin_contact_no">Admin Numarası:</string>
@@ -1047,7 +1044,6 @@
     <string name="percentage">Yüzde</string>
     <string name="invoice_qty">Fatura Adedi</string>
     <string name="delivery_rep_code">Temsilci Kodu</string>
-    <string name="maximum_count_is_exceed">Maksimum sayı aşıldı</string>
     <string name="old_order_volume">Önceki Tutar</string>
     <string name="delivery_date_is">Teslimat Tarihi </string>
     <string name="Would_you_like_to_add_this_store_in_today_plan">Mağaza bugünün ziyaret planına eklensin mi?</string>
@@ -1275,6 +1271,5 @@
     </string-array>
 
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
-    <string name="total_collected">Total Collected</string>
 
 </resources>

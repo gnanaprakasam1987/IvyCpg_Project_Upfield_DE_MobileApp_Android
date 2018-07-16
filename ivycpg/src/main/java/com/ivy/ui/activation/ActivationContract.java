@@ -9,52 +9,63 @@ import java.util.List;
 
 public interface ActivationContract {
 
-    interface ActivationView extends BaseIvyView{
+    interface ActivationView extends BaseIvyView {
 
+        // Error alert
         void showActivationEmptyError();
 
+        // Error alert
         void showInvalidActivationError();
 
-        void navigateToLoginScreen();
+        //Error alert
+        void showTryValidKeyError();
 
-        void showActivationError(String activationError);
+        //Error alert
+        void showActivationFailedError();
 
+        //Error toast
+        void showConfigureUrlMessage();
+
+        //Error toast
         void showAppUrlIsEmptyError();
 
-
+        //Error toast
         void showServerError();
 
+        // Error toast
         void showPreviousActivationError();
+
+        //Error toast
+        void showContactAdminMessage();
+
+        // This method should be used for all errors
+        void showActivationError(String activationError);
+
+        // Do we need this?
+        void navigateToLoginScreen();
+
 
         void showActivationDialog();
 
-        void showTryValidKeyError();
-
         void doValidationSuccess();
-
-        void showActivationFailedError();
 
         void showSuccessfullyActivatedAlert();
 
 
-        void showConfigureUrlMessage();
-
-        void showContactAdminMessage();
-
     }
 
     @PerActivity
-    interface ActivationPresenter<V extends ActivationView> extends BaseIvyPresenter<V>{
+    interface ActivationPresenter<V extends ActivationView> extends BaseIvyPresenter<V> {
 
-         void validateActivationKey(String key);
+        void validateActivationKey(String key);
 
-         void triggerIMEIActivation(String imei, String versionName,String versionNumber);
+        void triggerIMEIActivation(String imei, String versionName, String versionNumber);
 
-         void checkServerStatus(String url);
+        void checkServerStatus(String url);
 
         void doActionForActivationDismiss();
 
-        void doActivation(String activationKey, String imei, String versionName,String versionNumber);
+        void doActivation(String activationKey, String imei, String versionName, String versionNumber);
 
         public List<ActivationBO> getAppUrls();
     }

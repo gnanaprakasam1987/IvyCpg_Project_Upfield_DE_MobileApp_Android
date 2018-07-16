@@ -129,21 +129,20 @@ public class CompetitorTrackingHelper {
                 }
             }
 
-            c = db.selectSQL("Select CPMM.PID,CPM.CPCode,CM.CompanyName  ||'  '|| CPM.CPName as CPName ,CPM.CPLId,CPM.CPID,CPM.CompanyID from CompetitorProductMaster CPM inner join CompetitorMappingMaster CPMM on CPM.CPID = CPMM.CPID  INNER JOIN CompanyMaster CM on CM.CompanyID = CPM.CompanyID "
+            c = db.selectSQL("Select CPM.CPCode,CM.CompanyName  ||'  '|| CPM.CPName as CPName ,CPM.CPLId,CPM.CPID,CPM.CompanyID from CompetitorProductMaster CPM INNER JOIN CompanyMaster CM on CM.CompanyID = CPM.CompanyID "
                     + " where plid in (select ProductFilter1 from configactivityfilter where ActivityCode ="
                     + bmodel.QT(moduleCode) + ")");
             if (c != null) {
                 competitorMaster = new ArrayList<CompetitorBO>();
                 while (c.moveToNext()) {
                     competitorBo = new CompetitorBO();
-                    competitorBo.setProductid(c.getInt(0));
-                    competitorBo.setProductcode(c.getString(1));
-                    competitorBo.setProductname(c.getString(2));
-                    competitorBo.setPlevelid(c.getInt(3));
-                    competitorBo.setCompetitorpid(c.getInt(4));
+                    competitorBo.setProductcode(c.getString(0));
+                    competitorBo.setProductname(c.getString(1));
+                    competitorBo.setPlevelid(c.getInt(2));
+                    competitorBo.setCompetitorpid(c.getInt(3));
                     competitorBo
                             .setCompetitoreason(cloneTrackingList(trackingList));
-                    competitorBo.setCompanyID(c.getInt(5));
+                    competitorBo.setCompanyID(c.getInt(4));
                     competitorMaster.add(competitorBo);
 
                 }

@@ -129,6 +129,28 @@
                     android:overlapAnchor="false"
                     android:visibility="gone" />
 
+                <Spinner
+                    android:id="@+id/weekSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="?mtdDashboardBackground"
+                    android:dropDownSelector="?dashboardSpinnerSelector"
+                    android:gravity="center"
+                    android:overlapAnchor="false"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/routeSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="?mtdDashboardBackground"
+                    android:dropDownSelector="?dashboardSpinnerSelector"
+                    android:gravity="center"
+                    android:overlapAnchor="false"
+                    android:visibility="gone" />
+
                 <View
                     android:layout_width="4dp"
                     android:layout_height="match_parent" />

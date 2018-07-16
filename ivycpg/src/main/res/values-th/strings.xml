@@ -104,7 +104,6 @@
     <string name="received">Received</string>
     <string name="os_amt">OS Amount</string>
     <string name="cheque_num">Cheque Num</string>
-    <string name="mode">Mode</string>
     <string name="cash">Cash</string>
     <string name="cheque">Cheque</string>
     <string name="bank_name">Bank Name</string>
@@ -263,7 +262,6 @@
     <string name="initiative">สินค้าใหม่</string>
     <string name="focus_merchandising">SBD Merchandising</string>
     <string name="Product_details">รายละเอียดสินค้า</string>
-    <string name="adjusted_sih">Adj.sih</string>
     <string name="new_task_saved">New Task has been saved.</string>
     <string name="choose_brand">Choose Brand</string>
     <string name="choose_category">Choose Category</string>
@@ -343,7 +341,6 @@
     <string name="planogram">ค่าว่างเปล่า</string>
     <string name="image_desc">null</string>
     <string name="adherence">โปรดใส่รายละเอียดที่ต้องการ</string>
-    <string name="please_filldetails">ไม่พบรูปภาพ</string>
     <string name="unloadimage">Image is not available</string>
     <string name="deviate_retailers">หมายเลขติดต่อของ admin</string>
     <string name="admin_contact_no">หมายเลขสั่งซื้อ</string>
@@ -1049,7 +1046,6 @@
     <string name = "percentage">Percentage</string>
     <string name="invoice_qty">Invoice Qty</string>
     <string name="delivery_rep_code">Rep Code</string>
-    <string name="maximum_count_is_exceed">Maximum count is exceed</string>
     <string name="delivery_date_is">Delivery Date is: </string>
     <string name="old_order_volume">Original value</string>
     <string name="new_retailer">New Retailer</string>
@@ -1278,6 +1274,5 @@
         <item>Sat</item>
     </string-array>
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
-    <string name="total_collected">Total Collected</string>
 
 </resources>
