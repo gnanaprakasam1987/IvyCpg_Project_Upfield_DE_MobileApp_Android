@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.van;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,7 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.StockReportMasterBO;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -54,14 +54,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class VanLoadStockView extends IvyBaseFragment implements OnClickListener {
+public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClickListener {
     private static final String TAG = "Vanload Print";
 
-    private ArrayList<StockReportMasterBO> tempData;
+    private ArrayList<VanLoadStockApplyBO> tempData;
     private ListView lvwplist;
     private BusinessModel bmodel;
-    private Vector<StockReportMasterBO> mylist;
-    private Vector<StockReportMasterBO> mylist3;
+    private Vector<VanLoadStockApplyBO> mylist;
+    private Vector<VanLoadStockApplyBO> mylist3;
     private TextView productname;
     private TextView prodlabel, batchlabel, caselabel, outerlabel, piecelabel, totallabel;
     private Button applybtn, rejectbtn;
@@ -87,7 +87,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_stock_report, container,
+        View view = inflater.inflate(R.layout.fragment_vanload_stockview, container,
                 false);
         typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
@@ -220,7 +220,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
     }
 
     public void updateStockReportGrid() {
-        Vector<StockReportMasterBO> mylist1;
+        Vector<VanLoadStockApplyBO> mylist1;
         if (mylist == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
@@ -228,10 +228,10 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         }
         mylist1 = bmodel.stockreportmasterhelper.getStockReportMasterAll();
         int siz = mylist1.size();
-        ArrayList<StockReportMasterBO> temp = new ArrayList<>();
+        ArrayList<VanLoadStockApplyBO> temp = new ArrayList<>();
         for (int i = 0; i < siz; ++i) {
 
-            StockReportMasterBO ret = mylist1.get(i);
+            VanLoadStockApplyBO ret = mylist1.get(i);
 
             temp.add(ret);
         }
@@ -251,7 +251,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         tempData = new ArrayList<>();
         for (int i = 0; i < siz; ++i) {
 
-            StockReportMasterBO ret = mylist.get(i);
+            VanLoadStockApplyBO ret = mylist.get(i);
             if (mylist.get(i).getUid().equals(uid))
                 tempData.add(ret);
 
@@ -481,7 +481,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 mCaseTotalValue = 0;
                 mPcTotalValue = 0;
                 mOuterTotalValue = 0;
-                for (StockReportMasterBO productBO : tempData) {
+                for (VanLoadStockApplyBO productBO : tempData) {
 
                     mCaseTotalValue += productBO.getCaseQuantity();
                     mPcTotalValue += productBO.getPieceQuantity();
@@ -707,16 +707,16 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
         }
     }
 
-    private class MyAdapter extends ArrayAdapter<StockReportMasterBO> {
-        StockReportMasterBO product;
-        private ArrayList<StockReportMasterBO> items;
+    private class MyAdapter extends ArrayAdapter<VanLoadStockApplyBO> {
+        VanLoadStockApplyBO product;
+        private ArrayList<VanLoadStockApplyBO> items;
 
-        public MyAdapter(ArrayList<StockReportMasterBO> items) {
+        public MyAdapter(ArrayList<VanLoadStockApplyBO> items) {
             super(getActivity(), R.layout.row_stock_report_listview, items);
             this.items = items;
         }
 
-        public StockReportMasterBO getItem(int position) {
+        public VanLoadStockApplyBO getItem(int position) {
             return items.get(position);
         }
 
@@ -1010,7 +1010,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
             mCaseTotalValue = 0;
             mPcTotalValue = 0;
             mOuterTotalValue = 0;
-            for (StockReportMasterBO productBO : tempData) {
+            for (VanLoadStockApplyBO productBO : tempData) {
 
                 mCaseTotalValue += productBO.getCaseQuantity();
                 mPcTotalValue += productBO.getPieceQuantity();

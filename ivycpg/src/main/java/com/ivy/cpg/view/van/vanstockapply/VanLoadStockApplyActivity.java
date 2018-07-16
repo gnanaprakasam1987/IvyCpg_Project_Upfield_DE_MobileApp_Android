@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.vanstockapply;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -23,8 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.van.VanLoadStockViewActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -39,8 +39,8 @@ import java.util.Vector;
 public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener {
     private Toolbar toolbar;
     BusinessModel bmodel;
-    private Vector<StockReportMasterBO> mylist;
-    private Vector<StockReportMasterBO> mylist2;
+    private Vector<VanLoadStockApplyBO> mylist;
+    private Vector<VanLoadStockApplyBO> mylist2;
     private Button applybtn, rejectbtn;
     private TextView labelTxt1, labelTxt2, toolbarTxt;
     private String uid = null;
@@ -226,9 +226,9 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
     public class StockApplyAdapter extends RecyclerView.Adapter<StockApplyAdapter.ViewHolder> {
 
-        private Vector<StockReportMasterBO> items;
+        private Vector<VanLoadStockApplyBO> items;
 
-        public StockApplyAdapter(Vector<StockReportMasterBO> items) {
+        public StockApplyAdapter(Vector<VanLoadStockApplyBO> items) {
             this.items = items;
         }
 
@@ -242,7 +242,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         @Override
         public void onBindViewHolder(StockApplyAdapter.ViewHolder holder, final int position) {
 
-            final StockReportMasterBO projObj = items.get(position);
+            final VanLoadStockApplyBO projObj = items.get(position);
 
             if (position % 2 == 0)
                 holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
@@ -316,7 +316,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                 public void onClick(View v) {
                     bmodel.configurationMasterHelper.loadVanStockUOMConfiguration();
                     bmodel.stockreportmasterhelper.setStockReportMaster(mylist);
-                    Intent i = new Intent(VanLoadStockApplyActivity.this, VanLoadStockView_activity.class);
+                    Intent i = new Intent(VanLoadStockApplyActivity.this, VanLoadStockViewActivity.class);
                     i.putExtra("screentitle", screenTitle);
                     i.putExtra("uid", projObj.getUid());
                     startActivity(i);

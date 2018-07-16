@@ -5,14 +5,12 @@ import android.content.Context;
 
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
-import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.ui.reports.beginstockreport.data.BeginningStockReportBO;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public interface BeginningReportContract {
 

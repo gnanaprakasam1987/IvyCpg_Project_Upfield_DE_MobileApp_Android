@@ -5,19 +5,16 @@ import android.content.Context;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.ui.reports.beginstockreport.BeginningReportContract;
-import com.ivy.ui.reports.beginstockreport.data.BeginningReportManager;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
+import com.ivy.ui.reports.beginstockreport.BeginningReportContract;
+import com.ivy.ui.reports.beginstockreport.data.BeginningReportManager;
 import com.ivy.ui.reports.beginstockreport.data.BeginningStockReportBO;
 import com.ivy.utils.rx.SchedulerProvider;
 
-
 import java.util.ArrayList;
-import java.util.Vector;
 
 import javax.inject.Inject;
 

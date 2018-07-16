@@ -4,14 +4,14 @@ package com.ivy.reports;
 import android.content.Context;
 
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.ui.reports.beginstockreport.BeginningReportContract;
-import com.ivy.ui.reports.beginstockreport.data.BeginningReportManager;
-import com.ivy.ui.reports.beginstockreport.presenter.BeginningReportPresenterImpl;
-import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
+import com.ivy.ui.reports.beginstockreport.BeginningReportContract;
+import com.ivy.ui.reports.beginstockreport.data.BeginningReportManager;
+import com.ivy.ui.reports.beginstockreport.data.BeginningStockReportBO;
+import com.ivy.ui.reports.beginstockreport.presenter.BeginningReportPresenterImpl;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
 import org.junit.Before;
@@ -60,7 +60,7 @@ public class BeginningStockTest {
     private Context context;
 
     @Mock
-    private StockReportMasterBO stockReportMasterBO;
+    private BeginningStockReportBO stockReportMasterBO;
 
     @Mock
     private UserMasterHelper userMasterHelper;
@@ -77,7 +77,7 @@ public class BeginningStockTest {
 
     @Test
     public void downloadBeginningStockTest() {
-        Vector<StockReportMasterBO> stockReportMasterBOS = new Vector<>();
+        Vector<BeginningStockReportBO> stockReportMasterBOS = new Vector<>();
         stockReportMasterBOS.add(stockReportMasterBO);
         given(beginningReportManager.downloadBeginningStock(context)).willReturn(Observable.just(stockReportMasterBOS));
         mPresenter.downloadBeginningStock(context);

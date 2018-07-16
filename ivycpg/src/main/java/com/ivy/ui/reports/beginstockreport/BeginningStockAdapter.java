@@ -9,13 +9,11 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.reports.beginstockreport.data.BeginningStockReportBO;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 
 public class BeginningStockAdapter extends ArrayAdapter<BeginningStockReportBO> {

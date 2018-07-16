@@ -1,8 +1,10 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.van.vanstockapply;
+
+import com.ivy.sd.png.bo.VanLoadSpinnerBO;
 
 import java.util.Comparator;
 
-public class StockReportMasterBO {
+public class VanLoadStockApplyBO {
     private int caseQuantity, pcsQuantity, caseSize, productId, outerQty, outerSize,
             totalQty, BatchId;
     private String batchNumber;
