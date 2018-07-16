@@ -129,7 +129,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             for (int i = 0; i < mylist.size(); i++) {
                 mylist2.add(mylist.get(i));
                 mManuvalVanloadFlagByuid.put(mylist.get(i).getUid(), mylist.get(i)
-                        .getIsManuvalVanload());
+                        .getIsManualVanload());
             }
 
 

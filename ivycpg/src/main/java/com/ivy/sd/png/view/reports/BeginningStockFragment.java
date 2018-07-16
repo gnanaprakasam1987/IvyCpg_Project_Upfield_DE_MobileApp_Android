@@ -185,13 +185,13 @@ public class BeginningStockFragment extends IvyBaseFragment {
                 holder = (ViewHolder) row.getTag();
             }
 
-            holder.psname.setText(product.getProductshortname());
-            holder.caseqty.setText(String.valueOf(product.getCaseqty()));
-            holder.pcsqty.setText(String.valueOf(product.getPieceqty()));
+            holder.psname.setText(product.getProductShortName());
+            holder.caseqty.setText(String.valueOf(product.getCaseQuantity()));
+            holder.pcsqty.setText(String.valueOf(product.getPieceQuantity()));
             holder.outerqty.setText(String.valueOf(product.getOuterQty()));
-            holder.pname = product.getProductname();
-            double unitprice = (product.getCaseqty() * product.getCasesize() + product
-                    .getPieceqty()) * product.getBasePrice();
+            holder.pname = product.getProductName();
+            double unitprice = (product.getCaseQuantity() * product.getCaseSize() + product
+                    .getPieceQuantity()) * product.getBasePrice();
             holder.unitprice.setText(bmodel.formatValue(unitprice));
             return row;
         }

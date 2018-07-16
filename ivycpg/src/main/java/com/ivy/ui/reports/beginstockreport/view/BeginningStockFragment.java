@@ -20,6 +20,7 @@ import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.inject.Inject;
@@ -124,7 +125,7 @@ public class BeginningStockFragment extends BaseFragment implements
     }
 
     @Override
-    public void setAdapter(Vector<StockReportMasterBO> stockReportMasterBOS, ConfigurationMasterHelper configurationMasterHelper) {
+    public void setAdapter(ArrayList<StockReportMasterBO> stockReportMasterBOS, ConfigurationMasterHelper configurationMasterHelper) {
         BeginningStockAdapter mSchedule = new BeginningStockAdapter(stockReportMasterBOS, getActivity(), configurationMasterHelper);
         mSchedule.setBeginningStockAdapterCallback(BeginningStockFragment.this);
         lvWpList.setAdapter(mSchedule);

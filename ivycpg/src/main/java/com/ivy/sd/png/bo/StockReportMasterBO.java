@@ -3,15 +3,16 @@ package com.ivy.sd.png.bo;
 import java.util.Comparator;
 
 public class StockReportMasterBO {
-    private int caseqty, pcsqty, duomqty, productId, outerQty, dOuomQty,
+    private int caseQuantity, pcsQuantity, caseSize, productId, outerQty, outerSize,
             totalQty, BatchId;
+    private String batchNumber;
 
     private String productName, productShortName;
     private float mrp, basePrice;
     private String uid;
     private String loadNO;
     private String date;
-    private int isManuvalVanload;
+    private int isManualVanload;
 
     public int getBatchId() {
         return BatchId;
@@ -30,11 +31,11 @@ public class StockReportMasterBO {
     }
 
     public int getOuterSize() {
-        return dOuomQty;
+        return outerSize;
     }
 
     public void setOuterSize(int dOuomQty) {
-        this.dOuomQty = dOuomQty;
+        this.outerSize = dOuomQty;
     }
 
     public int getOuterQty() {
@@ -53,51 +54,51 @@ public class StockReportMasterBO {
         this.uid = uid;
     }
 
-    public int getCaseqty() {
-        return caseqty;
+    public int getCaseQuantity() {
+        return caseQuantity;
     }
 
-    public void setCaseqty(int caseqty) {
-        this.caseqty = caseqty;
+    public void setCaseQuantity(int caseQuantity) {
+        this.caseQuantity = caseQuantity;
     }
 
-    public int getPieceqty() {
-        return pcsqty;
+    public int getPieceQuantity() {
+        return pcsQuantity;
     }
 
-    public void setPieceqty(int pcsqty) {
-        this.pcsqty = pcsqty;
+    public void setPieceQuantity(int pcsqty) {
+        this.pcsQuantity = pcsqty;
     }
 
-    public int getCasesize() {
-        return duomqty;
+    public int getCaseSize() {
+        return caseSize;
     }
 
-    public void setCasesize(int duomqty) {
-        this.duomqty = duomqty;
+    public void setCaseSize(int duomqty) {
+        this.caseSize = duomqty;
     }
 
-    public String getProductname() {
+    public String getProductName() {
         return productName;
     }
 
-    public void setProductname(String productName) {
+    public void setProductName(String productName) {
         this.productName = productName;
     }
 
-    public String getProductshortname() {
+    public String getProductShortName() {
         return productShortName;
     }
 
-    public void setProductshortname(String productShortName) {
+    public void setProductShortName(String productShortName) {
         this.productShortName = productShortName;
     }
 
-    public int getProductid() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductid(int productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
 
     }
@@ -121,18 +122,16 @@ public class StockReportMasterBO {
     /**
      * @return the batch_number
      */
-    public String getBatch_number() {
-        return batch_number;
+    public String getBatchNumber() {
+        return batchNumber;
     }
 
     /**
-     * @param batch_number the batch_number to set
+     * @param batchNumber the batch_number to set
      */
-    public void setBatch_number(String batch_number) {
-        this.batch_number = batch_number;
+    public void setBatchNumber(String batchNumber) {
+        this.batchNumber = batchNumber;
     }
-
-    private String batch_number;
 
     public float getBasePrice() {
         return basePrice;
@@ -142,12 +141,12 @@ public class StockReportMasterBO {
         this.basePrice = basePrice;
     }
 
-    public int getIsManuvalVanload() {
-        return isManuvalVanload;
+    public int getIsManualVanload() {
+        return isManualVanload;
     }
 
-    public void setIsManuvalVanload(int isManuvalVanload) {
-        this.isManuvalVanload = isManuvalVanload;
+    public void setIsManualVanload(int isManualVanload) {
+        this.isManualVanload = isManualVanload;
     }
 
     public String getLoadNO() {

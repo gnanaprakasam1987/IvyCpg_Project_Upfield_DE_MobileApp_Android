@@ -13,14 +13,15 @@ import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 
 public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
-    private Vector<StockReportMasterBO> items;
+    private ArrayList<StockReportMasterBO> items;
     private ConfigurationMasterHelper configurationMasterHelper;
 
-    public BeginningStockAdapter(Vector<StockReportMasterBO> items, Context context, ConfigurationMasterHelper masterHelper) {
+    public BeginningStockAdapter(ArrayList<StockReportMasterBO> items, Context context, ConfigurationMasterHelper masterHelper) {
         super(context, R.layout.row_begining_stock_listview, items);
         this.items = items;
         this.configurationMasterHelper = masterHelper;
@@ -52,7 +53,7 @@ public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
             holder.psName = row.findViewById(R.id.productname);
             holder.caseQty = row.findViewById(R.id.caseqty);
             holder.pcsQty = row.findViewById(R.id.pieceqty);
-            holder.unitPrice = row.findViewById(R.id.unitprice);
+            holder.lineValue = row.findViewById(R.id.lineValue);
             holder.outerQty = row.findViewById(R.id.outerqty);
             row.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -61,10 +62,16 @@ public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
             });
 
             if (configurationMasterHelper.SHOW_ORDER_CASE)
+                holder.caseQty.setVisibility(View.VISIBLE);
+            else
                 holder.caseQty.setVisibility(View.GONE);
             if (configurationMasterHelper.SHOW_ORDER_PCS)
+                holder.pcsQty.setVisibility(View.VISIBLE);
+            else
                 holder.pcsQty.setVisibility(View.GONE);
             if (configurationMasterHelper.SHOW_OUTER_CASE)
+                holder.outerQty.setVisibility(View.VISIBLE);
+            else
                 holder.outerQty.setVisibility(View.GONE);
 
             row.setTag(holder);
@@ -72,19 +79,19 @@ public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
             holder = (ViewHolder) row.getTag();
         }
 
-        holder.psName.setText(product.getProductshortname());
-        holder.caseQty.setText(String.valueOf(product.getCaseqty()));
-        holder.pcsQty.setText(String.valueOf(product.getPieceqty()));
+        holder.psName.setText(product.getProductShortName());
+        holder.caseQty.setText(String.valueOf(product.getCaseQuantity()));
+        holder.pcsQty.setText(String.valueOf(product.getPieceQuantity()));
         holder.outerQty.setText(String.valueOf(product.getOuterQty()));
-        holder.pName = product.getProductname();
-        double unitprice = (product.getCaseqty() * product.getCasesize() + product
-                .getPieceqty()) * product.getBasePrice();
-        holder.unitPrice.setText(formatValue(unitprice));
+        holder.pName = product.getProductName();
+        double lineValue = (product.getCaseQuantity() * product.getCaseSize() + product
+                .getPieceQuantity()) * product.getBasePrice();
+        holder.lineValue.setText(formatValue(lineValue));
         return row;
     }
 
     class ViewHolder {
-        TextView psName, caseQty, pcsQty, unitPrice, outerQty;
+        TextView psName, caseQty, pcsQty, lineValue, outerQty;
         String pName;
     }
 

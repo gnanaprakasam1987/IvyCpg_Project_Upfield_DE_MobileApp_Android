@@ -10,7 +10,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -18,33 +18,37 @@ import io.reactivex.ObservableOnSubscribe;
 
 public class BeginningReportManagerImpl implements BeginningReportManager {
 
-    public Observable<Vector<StockReportMasterBO>> downloadBeginningStock(final Context context) {
+    public Observable<ArrayList<StockReportMasterBO>> downloadBeginningStock(final Context context) {
 
-        return Observable.create(new ObservableOnSubscribe<Vector<StockReportMasterBO>>() {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<StockReportMasterBO>>() {
             @Override
-            public void subscribe(final ObservableEmitter<Vector<StockReportMasterBO>> subscriber) throws Exception {
+            public void subscribe(final ObservableEmitter<ArrayList<StockReportMasterBO>> subscriber) throws Exception {
 
-                Vector<StockReportMasterBO> BeginningStockReport = new Vector<>();
+                ArrayList<StockReportMasterBO> beginningStockReport = new ArrayList<>();
                 try {
                     StockReportMasterBO stock;
                     DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                             DataMembers.DB_PATH);
                     db.openDataBase();
 
-                    String query = "select DISTINCT A.pid,A.caseQty,A.pcsQty,B.pname,B.psname,B.mrp,B.dUomQty,A.uid,A.outerQty,B.dOuomQty,B.baseprice,IFNULL(A.LoadNo,A.uid) from VanLoad A inner join productmaster B on A.pid=B.pid ";
+                    String query = "select DISTINCT " +
+                            "A.pid,A.caseQty,A.pcsQty,B.pname,B.psname,B.mrp," +
+                            "B.dUomQty,A.uid,A.outerQty,B.dOuomQty,B.baseprice,IFNULL(A.LoadNo,A.uid) " +
+                            "from VanLoad A " +
+                            "inner join productmaster B on A.pid=B.pid ";
                     Cursor c = db.selectSQL(query);
 
                     if (c != null) {
-                        BeginningStockReport = new Vector<>();
+                        beginningStockReport = new ArrayList<>();
                         while (c.moveToNext()) {
                             stock = new StockReportMasterBO();
-                            stock.setProductid(c.getInt(0));
-                            stock.setCaseqty(c.getInt(1));
-                            stock.setPieceqty(c.getInt(2));
-                            stock.setProductname(c.getString(3));
-                            stock.setProductshortname(c.getString(4));
+                            stock.setProductId(c.getInt(0));
+                            stock.setCaseQuantity(c.getInt(1));
+                            stock.setPieceQuantity(c.getInt(2));
+                            stock.setProductName(c.getString(3));
+                            stock.setProductShortName(c.getString(4));
                             stock.setMrp(c.getFloat(5));
-                            stock.setCasesize(c.getInt(6));
+                            stock.setCaseSize(c.getInt(6));
                             stock.setUid(c.getString(7));
                             stock.setOuterQty(c.getInt(8));
                             stock.setOuterSize(c.getInt(9));
@@ -53,14 +57,14 @@ public class BeginningReportManagerImpl implements BeginningReportManager {
 
                             stock.setBasePrice(c.getFloat(10));
                             stock.setLoadNO(c.getString(11));
-                            BeginningStockReport.add(stock);
+                            beginningStockReport.add(stock);
 
 
                         }
                         c.close();
                     }
                     db.closeDB();
-                    subscriber.onNext(BeginningStockReport);
+                    subscriber.onNext(beginningStockReport);
                 } catch (Exception e) {
                     subscriber.onError(new Throwable("SqLite Exception"));
                     Commons.printException(e);

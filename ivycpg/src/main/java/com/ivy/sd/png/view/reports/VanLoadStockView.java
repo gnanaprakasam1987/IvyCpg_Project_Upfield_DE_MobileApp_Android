@@ -483,18 +483,18 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 mOuterTotalValue = 0;
                 for (StockReportMasterBO productBO : tempData) {
 
-                    mCaseTotalValue += productBO.getCaseqty();
-                    mPcTotalValue += productBO.getPieceqty();
+                    mCaseTotalValue += productBO.getCaseQuantity();
+                    mPcTotalValue += productBO.getPieceQuantity();
                     mOuterTotalValue += productBO.getOuterQty();
                     x += 30;
 
                     printItem.append("T 5 0 10 ").append(x).append(" ");
-                    printItem.append(productBO.getProductname().toLowerCase()).append("\r\n");
+                    printItem.append(productBO.getProductName().toLowerCase()).append("\r\n");
 
                     x += 30;
                     if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
                         printItem.append("T 5 0 280 ").append(x).append(" ");
-                        printItem.append(productBO.getCaseqty()).append("\r\n");
+                        printItem.append(productBO.getCaseQuantity()).append("\r\n");
                     }
                     if (bmodel.configurationMasterHelper.SHOW_VAN_STK_OU) {
                         printItem.append("T 5 0 330 ").append(x).append(" ");
@@ -502,7 +502,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                     }
                     if (bmodel.configurationMasterHelper.SHOW_VAN_STK_PS) {
                         printItem.append("T 5 0 390 ").append(x).append(" ");
-                        printItem.append(productBO.getPieceqty()).append("\r\n");
+                        printItem.append(productBO.getPieceQuantity()).append("\r\n");
                     }
 
 
@@ -775,25 +775,25 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 holder = (ViewHolder) row.getTag();
             }
 
-            tv = product.getProductshortname();
+            tv = product.getProductShortName();
             holder.psname.setText(tv);
-            tv = product.getCaseqty() + "";
+            tv = product.getCaseQuantity() + "";
             holder.caseqty.setText(tv);
-            tv = product.getPieceqty() + "";
+            tv = product.getPieceQuantity() + "";
             holder.pcsqty.setText(tv);
             tv = product.getOuterQty() + "";
             holder.outerqty.setText(tv);
-            holder.pname = product.getProductname();
-            double unitprice = (product.getCaseqty() * product.getCasesize()
-                    + product.getPieceqty() + product.getOuterQty()
+            holder.pname = product.getProductName();
+            double unitprice = (product.getCaseQuantity() * product.getCaseSize()
+                    + product.getPieceQuantity() + product.getOuterQty()
                     * product.getOuterSize())
                     * product.getBasePrice();
             tv = bmodel.formatValue(unitprice) + "";
             holder.unitprice.setText(tv);
-            if (product.getBatch_number() != null) {
+            if (product.getBatchNumber() != null) {
                 tv = getResources().getString(
                         R.string.batch_no)
-                        + ": " + product.getBatch_number() + "";
+                        + ": " + product.getBatchNumber() + "";
                 holder.batchid.setText(tv);
             } else {
                 holder.batchid.setText("");
@@ -1012,20 +1012,20 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
             mOuterTotalValue = 0;
             for (StockReportMasterBO productBO : tempData) {
 
-                mCaseTotalValue += productBO.getCaseqty();
-                mPcTotalValue += productBO.getPieceqty();
+                mCaseTotalValue += productBO.getCaseQuantity();
+                mPcTotalValue += productBO.getPieceQuantity();
                 mOuterTotalValue += productBO.getOuterQty();
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + productBO.getProductname().toLowerCase() + "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + productBO.getProductName().toLowerCase() + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
 
                 if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 " + productBO.getCaseqty() + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 280 + " 1 " + productBO.getCaseQuantity() + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
                 }
@@ -1041,7 +1041,7 @@ public class VanLoadStockView extends IvyBaseFragment implements OnClickListener
                 if (bmodel.configurationMasterHelper.SHOW_VAN_STK_PS) {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 420 + " 1 " + productBO.getPieceqty() + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 420 + " 1 " + productBO.getPieceQuantity() + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
                 }

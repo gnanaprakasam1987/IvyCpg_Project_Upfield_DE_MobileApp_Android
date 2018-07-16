@@ -57,13 +57,13 @@ public class StockReportMasterHelper {
                 StockReportMaster = new Vector<StockReportMasterBO>();
                 while (c.moveToNext()) {
                     stock = new StockReportMasterBO();
-                    stock.setProductid(c.getInt(0));
-                    stock.setCaseqty(c.getInt(1));
-                    stock.setPieceqty(c.getInt(2));
-                    stock.setProductname(c.getString(3));
-                    stock.setProductshortname(c.getString(4));
+                    stock.setProductId(c.getInt(0));
+                    stock.setCaseQuantity(c.getInt(1));
+                    stock.setPieceQuantity(c.getInt(2));
+                    stock.setProductName(c.getString(3));
+                    stock.setProductShortName(c.getString(4));
                     stock.setMrp(c.getFloat(5));
-                    stock.setCasesize(c.getInt(6));
+                    stock.setCaseSize(c.getInt(6));
                     stock.setUid(c.getString(7));
                     stock.setOuterQty(c.getInt(8));
                     stock.setOuterSize(c.getInt(9));
@@ -71,9 +71,9 @@ public class StockReportMasterHelper {
                             + (c.getInt(8) * c.getInt(9)));
                     stock.setBatchId(c.getInt(10));
 
-                    stock.setBatch_number(c.getString(13));
+                    stock.setBatchNumber(c.getString(13));
                     stock.setBasePrice(c.getFloat(14));
-                    stock.setIsManuvalVanload(c.getInt(15));
+                    stock.setIsManualVanload(c.getInt(15));
                     stock.setLoadNO(c.getString(16));
                     stock.setDate(c.getString(17));
                     StockReportMaster.add(stock);
@@ -88,22 +88,22 @@ public class StockReportMasterHelper {
                 StockReportMasterAll = new Vector<StockReportMasterBO>();
                 while (c1.moveToNext()) {
                     stock1 = new StockReportMasterBO();
-                    stock1.setProductid(c1.getInt(0));
-                    stock1.setCaseqty(c1.getInt(1));
-                    stock1.setPieceqty(c1.getInt(2));
-                    stock1.setProductname(c1.getString(3));
-                    stock1.setProductshortname(c1.getString(4));
+                    stock1.setProductId(c1.getInt(0));
+                    stock1.setCaseQuantity(c1.getInt(1));
+                    stock1.setPieceQuantity(c1.getInt(2));
+                    stock1.setProductName(c1.getString(3));
+                    stock1.setProductShortName(c1.getString(4));
                     stock1.setMrp(c1.getFloat(5));
-                    stock1.setCasesize(c1.getInt(6));
+                    stock1.setCaseSize(c1.getInt(6));
                     stock1.setUid(c1.getString(7));
                     stock1.setOuterQty(c1.getInt(8));
                     stock1.setOuterSize(c1.getInt(9));
                     stock1.setTotalQty((c1.getInt(1) * c1.getInt(6))
                             + c1.getInt(2) + (c1.getInt(8) * c1.getInt(9)));
                     stock1.setBatchId(c1.getInt(10));
-                    stock1.setBatch_number(c1.getString(11));
+                    stock1.setBatchNumber(c1.getString(11));
                     stock1.setBasePrice(c1.getFloat(12));
-                    stock1.setIsManuvalVanload(c1.getInt(13));
+                    stock1.setIsManualVanload(c1.getInt(13));
                     stock1.setLoadNO(c1.getString(14));
                     stock1.setDate(c1.getString(15));
                     StockReportMasterAll.add(stock1);
@@ -149,7 +149,7 @@ public class StockReportMasterHelper {
                 if (SIHApplyById.contains(mylist.get(i).getUid())) {
                     String sql = "update ProductMaster set sih=" +
                             +product.getTotalQty() + " where PID = "
-                            + product.getProductid();
+                            + product.getProductId();
                     db.executeQ(sql);
                 }
             }
@@ -223,9 +223,9 @@ public class StockReportMasterHelper {
             if (batchIDList.size() == 0) {
                 for (StockReportMasterBO stockReport : mylist) {
                     if (uid.equals(stockReport.getUid())) {
-                        if (!isAlreadyStockAvailable(stockReport.getProductid() + "", stockReport.getBatchId() + "", db)) {
+                        if (!isAlreadyStockAvailable(stockReport.getProductId() + "", stockReport.getBatchId() + "", db)) {
                             String columns = "pid,qty,batchid";
-                            String values = stockReport.getProductid() + ","
+                            String values = stockReport.getProductId() + ","
                                     + stockReport.getTotalQty() + ","
                                     + stockReport.getBatchId();
 
@@ -233,7 +233,7 @@ public class StockReportMasterHelper {
                         } else {
                             String sql = "update StockInHandMaster set upload='N',qty=qty+"
                                     + stockReport.getTotalQty() + " where pid="
-                                    + stockReport.getProductid() + " and batchid="
+                                    + stockReport.getProductId() + " and batchid="
                                     + stockReport.getBatchId();
                             db.executeQ(sql);
                         }
@@ -241,7 +241,7 @@ public class StockReportMasterHelper {
 
                         String sql = "update ProductMaster set sih= sih+"
                                 + stockReport.getTotalQty() + " where PID = "
-                                + stockReport.getProductid();
+                                + stockReport.getProductId();
                         db.executeQ(sql);
 
                     }
@@ -400,13 +400,13 @@ public class StockReportMasterHelper {
                 BeginingStockReport = new Vector<StockReportMasterBO>();
                 while (c.moveToNext()) {
                     stock = new StockReportMasterBO();
-                    stock.setProductid(c.getInt(0));
-                    stock.setCaseqty(c.getInt(1));
-                    stock.setPieceqty(c.getInt(2));
-                    stock.setProductname(c.getString(3));
-                    stock.setProductshortname(c.getString(4));
+                    stock.setProductId(c.getInt(0));
+                    stock.setCaseQuantity(c.getInt(1));
+                    stock.setPieceQuantity(c.getInt(2));
+                    stock.setProductName(c.getString(3));
+                    stock.setProductShortName(c.getString(4));
                     stock.setMrp(c.getFloat(5));
-                    stock.setCasesize(c.getInt(6));
+                    stock.setCaseSize(c.getInt(6));
                     stock.setUid(c.getString(7));
                     stock.setOuterQty(c.getInt(8));
                     stock.setOuterSize(c.getInt(9));

@@ -10,13 +10,14 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public interface BeginningReportContract {
 
 
     interface IBeginningStockView extends BaseIvyView {
-        void setAdapter(Vector<StockReportMasterBO> stockReportMasterBOS, ConfigurationMasterHelper configurationMasterHelper);
+        void setAdapter(ArrayList<StockReportMasterBO> stockReportMasterBOS, ConfigurationMasterHelper configurationMasterHelper);
 
         void showError();
 
