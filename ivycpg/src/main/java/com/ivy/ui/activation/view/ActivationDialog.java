@@ -24,10 +24,8 @@ import com.ivy.utils.FontUtils;
 import java.util.List;
 
 public class ActivationDialog extends Dialog implements OnClickListener {
-    private Button add, close;
     private OnDismissListener addBatch;
     private Activity activity;
-    private ListView listView;
     private ActivationListViewAdapter adapter;
     private List<ActivationBO> appUrls;
 
@@ -44,16 +42,16 @@ public class ActivationDialog extends Dialog implements OnClickListener {
         setContentView(R.layout.dialog_activation);
         setCancelable(true);
 
-        TextView title = (TextView) findViewById(R.id.title);
+        TextView title = findViewById(R.id.title);
         title.setTypeface(FontUtils.getFontBalooHai(activity, FontUtils.FontType.MEDIUM));
-        add = (Button) findViewById(R.id.add);
+        Button add = findViewById(R.id.add);
         add.setTypeface(FontUtils.getFontBalooHai(activity, FontUtils.FontType.REGULAR));
         add.setOnClickListener(this);
-        close = (Button) findViewById(R.id.close);
+        Button close = findViewById(R.id.close);
         close.setTypeface(FontUtils.getFontBalooHai(activity, FontUtils.FontType.REGULAR));
         close.setOnClickListener(this);
 
-        listView = findViewById(R.id.list);
+        ListView listView = findViewById(R.id.list);
         adapter = new ActivationListViewAdapter(appUrls);
         listView.setAdapter(adapter);
     }
@@ -99,7 +97,7 @@ public class ActivationDialog extends Dialog implements OnClickListener {
         public View getView(final int position, View convertView,
                             ViewGroup parent) {
             final ViewHolder holder;
-            activationObj = (ActivationBO) items.get(position);
+            activationObj = items.get(position);
 
             View row = convertView;
             if (row == null) {
@@ -107,7 +105,7 @@ public class ActivationDialog extends Dialog implements OnClickListener {
                 row = inflater.inflate(R.layout.row_activation_dialog, parent,
                         false);
                 holder = new ViewHolder();
-                holder.environmentRadioBtn = (RadioButton) row
+                holder.environmentRadioBtn = row
                         .findViewById(R.id.environmentRadioBtn);
                 holder.environmentRadioBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,activity));
                 holder.environmentRadioBtn
