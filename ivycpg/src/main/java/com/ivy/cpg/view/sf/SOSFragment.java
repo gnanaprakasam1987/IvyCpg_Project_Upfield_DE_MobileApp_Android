@@ -990,42 +990,61 @@ public class SOSFragment extends IvyBaseFragment implements
                 .setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!mCategoryForDialog.isEmpty()) {
-                            for (int i = 0; i < mCategoryForDialog.size(); i++) {
+                        boolean isValid = false;
+                        try {
+                            if (!mCategoryForDialog.isEmpty()) {
+                                for (int i = 0; i < mCategoryForDialog.size(); i++) {
 
-                                SOSBO sosBO = mCategoryForDialog.get(i);
+                                    SOSBO sosBO = mCategoryForDialog.get(i);
 
+                                    int total = Integer.valueOf(sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal());
+                                    int actualVal = Integer.valueOf(sosBO.getLocations().get(mSelectedLocationIndex).getActual());
 
-                                if (SDUtil.convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal()) > 0) {
+                                    if (total >= actualVal) {
+                                        isValid = true;
 
-                                    float parentTotal = SDUtil
-                                            .convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal());
-                                    float mNorm = sosBO.getNorm();
-                                    float actual = SDUtil.convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex)
-                                            .getActual());
+                                        if (SDUtil.convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal()) > 0) {
 
-                                    float target = (parentTotal * mNorm) / 100;
-                                    float gap = target - actual;
-                                    float percentage = 0;
-                                    if (parentTotal > 0)
-                                        percentage = (actual / parentTotal) * 100;
+                                            float parentTotal = SDUtil
+                                                    .convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal());
+                                            float mNorm = sosBO.getNorm();
+                                            float actual = SDUtil.convertToFloat(sosBO.getLocations().get(mSelectedLocationIndex)
+                                                    .getActual());
 
-                                    sosBO.getLocations().get(mSelectedLocationIndex).setTarget(SDUtil.roundIt(target, 2));
-                                    sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(mBModel
-                                            .formatPercent(percentage));
-                                    sosBO.getLocations().get(mSelectedLocationIndex).setGap(SDUtil.roundIt(-gap, 2));
-                                } else {
-                                    sosBO.getLocations().get(mSelectedLocationIndex).setTarget(Integer.toString(0));
-                                    sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(Integer.toString(0));
-                                    sosBO.getLocations().get(mSelectedLocationIndex).setGap(Integer.toString(0));
+                                            float target = (parentTotal * mNorm) / 100;
+                                            float gap = target - actual;
+                                            float percentage = 0;
+                                            if (parentTotal > 0)
+                                                percentage = (actual / parentTotal) * 100;
+
+                                            sosBO.getLocations().get(mSelectedLocationIndex).setTarget(SDUtil.roundIt(target, 2));
+                                            sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(mBModel
+                                                    .formatPercent(percentage));
+                                            sosBO.getLocations().get(mSelectedLocationIndex).setGap(SDUtil.roundIt(-gap, 2));
+                                        } else {
+                                            sosBO.getLocations().get(mSelectedLocationIndex).setTarget(Integer.toString(0));
+                                            sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(Integer.toString(0));
+                                            sosBO.getLocations().get(mSelectedLocationIndex).setGap(Integer.toString(0));
+                                        }
+                                    } else {
+                                        isValid = false;
+                                    }
                                 }
                             }
+                            if (isValid)
+                                calculateTotalValues();
+                            else
+                                Toast.makeText(getActivity(), getResources().
+                                        getString(R.string.total_value_lesser_actual), Toast.LENGTH_LONG).show();
+                            calculateTotalValues();
+                            if (dialog != null && isValid) {
+                                dialog.dismiss();
+                                mListView.invalidateViews();
+                                dialog = null;
+                            }
+                        } catch (Exception e) {
+                            Commons.printException(e);
                         }
-                        calculateTotalValues();
-                        if (dialog != null)
-                            dialog.dismiss();
-                        mListView.invalidateViews();
-                        dialog = null;
                     }
                 });
 
@@ -1748,9 +1767,17 @@ public class SOSFragment extends IvyBaseFragment implements
                             sb = holder.etActual.getText().toString();
 
                         if (!"".equals(s)) {
-
+                            int tot = 0;
                             try {
+                                if (!holder.etTotal.getText().toString().isEmpty())
+                                    tot = Integer.valueOf(holder.sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal());
+                                if (tot >= Integer.valueOf(s.toString()))
                                 holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
+                                else {
+                                    mBModel.showAlert(getResources().
+                                            getString(R.string.actual_value_exceeds_total), 0);
+                                    holder.etActual.setText(holder.sosBO.getLocations().get(mSelectedLocationIndex).getActual());
+                                }
                             } catch (Exception e) {
                                 holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(Integer.toString(0));
                                 Commons.printException("" + e);
