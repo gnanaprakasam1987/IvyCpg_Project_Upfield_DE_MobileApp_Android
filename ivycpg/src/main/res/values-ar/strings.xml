@@ -102,7 +102,6 @@
     <string name="received">تم الاستلام </string>
     <string name="os_amt">القيمة OS</string>
     <string name="cheque_num">رقم الشيك </string>
-    <string name="mode">الوضع </string>
     <string name="cash">نقداً </string>
     <string name="cheque">الشيك</string>
     <string name="bank_name">اسم البنك </string>
@@ -257,7 +256,6 @@
     <string name="promotion">عرض ترويج </string>
     <string name="credit_note">إشعار دائن </string>
     <string name="Product_details">تفاصيل المنتجات </string>
-    <string name="adjusted_sih">SIH معدلة </string>
     <string name="new_task_saved">مهمة جديدة تم حفظها </string>
     <string name="choose_brand">اختيار الماركة </string>
     <string name="choose_category">اختيار التصنيف</string>
@@ -336,7 +334,6 @@
     <string name="planogram">مخطط بلانو جرام.</string>
     <string name="image_desc">لا يوجد </string>
     <string name="adherence">الالتزام بالبلانو جرام ؟</string>
-    <string name="please_filldetails">نرجو إدخال التفاصيل المطلوبة. </string>
     <string name="unloadimage">الصورة غير متوافرة.</string>
     <string name="deviate_retailers">اختلاف وحدات تجارة التجزئة.</string>
     <string name="admin_contact_no">رقم اتصال المدير.</string>
@@ -924,7 +921,6 @@
     <string name="percentage">النسبة المئوية </string>
     <string name="invoice_qty">كمية الفاتورة </string>
     <string name="delivery_rep_code">كود ممثل التوريد.</string>
-    <string name="maximum_count_is_exceed">تم تجاوز العدد الأقصى.</string>
     <string name="select_reason_for_no_order">اختيار السبب لعدم الطلب.</string>
     <string name="delivery_date_is">تاريخ التسليم هو : </string>
     <string name="old_order_volume">القيمة الأصلية </string>
@@ -1275,6 +1271,5 @@
     </string-array>
 
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
-    <string name="total_collected">Total Collected</string>
 
 </resources>

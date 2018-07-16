@@ -46,7 +46,6 @@
 
     <!-- Target Plan Screen -->
     <dimen name="ordersplit_heder_name_width">300dp</dimen>
-    <dimen name="ordersplit_heder_qty_width">180dp</dimen>
     <!-- digital Screen -->
     <dimen name="digital_screen_name_width">750dp</dimen>
 

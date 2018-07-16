@@ -57,12 +57,12 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.supervisor.fragments.SupervisorMapFragment;
 import com.ivy.cpg.view.supervisor.mvp.supervisorhomepage.SupervisorHomeFragment;
+import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.PlanningSubScreenFragment;
 import com.ivy.cpg.view.van.StockProposalFragment;
-import com.ivy.cpg.view.van.VanStockAdjustActivity;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.camera.CameraActivity;
@@ -80,7 +80,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.attendance.inout.TimeTrackingFragment;
-import com.ivy.cpg.view.reports.ReportMenuFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -115,7 +114,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_LOAD_MANAGEMENT = "MENU_LOAD_MANAGEMENT";
     private static final String MENU_PLANNING_SUB = "MENU_PLANNING_SUB";
     private static final String MENU_LOAD_REQUEST = "MENU_STK_PRO";
-    private static final String MENU_STOCK_ADJUSTMENT = "MENU_STOCK_ADJUSTMENT";
     private static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     private static final String MENU_JOINT_CALL = "MENU_JOINT_CALL";
     private static final String MENU_SURVEY_SW = "MENU_SURVEY_SW";
@@ -148,18 +146,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_SUPERVISOR_REALTIME = "MENU_SUPERVISOR_REALTIME";
     private static final String MENU_SUPERVISOR_MOVEMENT = "MENU_SUPERVISOR_MOVEMENT";
     private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_ACTIVITY";
-//    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
-
-    //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
     private static final String MENU_NON_FIELD = "MENU_NON_FIELD";
-
-    //Deleiver MAnagement
-    private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET";
-    //Offline Planning
-    private static final String MENU_OFLNE_PLAN = "MENU_OFLNE_PLAN";
-
-    //Subd
+    private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET"; //Deleiver Management
+    private static final String MENU_OFLNE_PLAN = "MENU_OFLNE_PLAN"; //Offline Planning
     private static final String MENU_SUBD = "MENU_SUBD";
 
 
@@ -1076,29 +1066,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 getActivity().finish();
             }
 
-        } else if (menuItem.getConfigCode().equals(MENU_STOCK_ADJUSTMENT)) {
-
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.next_day_coverage),
-                        Toast.LENGTH_SHORT).show();
-
-            } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.mark_attendance),
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.leaveToday),
-                            Toast.LENGTH_SHORT).show();
-            } else {
-
-                vanUnloadStockAdjustmentSubroutine(menuItem.getMenuName());
-            }
         } else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
             if (isLeave_today) {
                 if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
@@ -2419,15 +2386,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         return super.onOptionsItemSelected(item);
     }
 
-    public void vanUnloadStockAdjustmentSubroutine(String menuName) {
-        vanUnloadStockAdjustmentIntent = new Intent(getActivity(),
-                VanStockAdjustActivity.class);
-        vanUnloadStockAdjustmentIntent
-                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        vanUnloadStockAdjustmentIntent.putExtra("screentitle", menuName);
-
-        (new DownloadStockAdjustment()).execute();
-    }
 
 
     @Override
@@ -2652,43 +2610,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     }
 
-    class DownloadStockAdjustment extends AsyncTask<Integer, Integer, Boolean> {
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
 
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-
-            try {
-                /** Load filter **/
-                bmodel.productHelper
-                        .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-
-                bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT", "MENU_STOCK_ADJUSTMENT");
-
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE;
-        }
-
-        protected void onPostExecute(Boolean result) {
-            alertDialog.dismiss();
-            startActivity(vanUnloadStockAdjustmentIntent);
-            getActivity().finish();
-
-        }
-
-    }
 
     private boolean checkMenusAvailable() {
 

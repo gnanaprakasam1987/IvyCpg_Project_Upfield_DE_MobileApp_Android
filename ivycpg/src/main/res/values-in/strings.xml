@@ -103,7 +103,6 @@
     <string name="received">Diterima</string>
     <string name="os_amt">Nilai Outstanding</string>
     <string name="cheque_num">Nomor Cek</string>
-    <string name="mode">Mode</string>
     <string name="cash">Kas</string>
     <string name="cheque">Cek</string>
     <string name="bank_name">Nama Bank</string>
@@ -261,7 +260,6 @@
     <string name="initiative">Inisiatif</string>
     <string name="credit_note">Catatan Kredit</string>
     <string name="Product_details">Detil Produk</string>
-    <string name="adjusted_sih">Adjust Stock In Hand</string>
     <string name="new_task_saved">Tugas Baru Telah Di Simpan</string>
     <string name="choose_brand">Pilih Brand</string>
     <string name="choose_category">Pilih Kategori</string>
@@ -341,7 +339,6 @@
     <string name="planogram">Melebihi Batas Kredit</string>
     <string name="image_desc">Planogram</string>
     <string name="adherence">Kosong</string>
-    <string name="please_filldetails">Planogram Apakah Valid?</string>
     <string name="unloadimage">Silakan Memasukkan Detil Yang Diperlukan</string>
     <string name="deviate_retailers">Gambar Tidak Tersedia</string>
     <string name="admin_contact_no">Toko Unplanned </string>
@@ -1047,7 +1044,6 @@
     <string name="percentage">Presentase</string>
     <string name="invoice_qty">Kuantiti Tagihan</string>
     <string name="delivery_rep_code">Kode Rep</string>
-    <string name="maximum_count_is_exceed">Jumlah Maksimum Melebihi</string>
     <string name="delivery_date_is">Delivery Date is: </string>
     <string name="old_order_volume">Original value</string>
     <string name="new_retailer">New Retailer</string>
@@ -1275,7 +1271,6 @@
     </string-array>
 
     <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
-    <string name="total_collected">Total Collected</string>
 
 </resources>
 
