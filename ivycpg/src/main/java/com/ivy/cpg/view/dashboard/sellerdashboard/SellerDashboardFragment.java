@@ -1202,27 +1202,29 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         fragmentList = new ArrayList<>();
 
         if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
-            if (!selectedInterval.matches("WEEK|ROUTE") && bmodel.configurationMasterHelper.SHOW_P3M_DASH) {
-                NUM_ITEMS++;
-                dashBoardHelper.loadP3MTrendChaart(mFilterUser);
-                fragmentList.add(new P3MChartFragment());
-            }
-            if (!selectedInterval.matches("WEEK|ROUTE") && bmodel.configurationMasterHelper.SHOW_SMP_DASH) {
-                NUM_ITEMS++;
-                fragmentList.add(new SMPChartFragment());
-                chartpositionSMP = NUM_ITEMS;
-            }
-            if (!selectedInterval.matches("WEEK|ROUTE") && bmodel.configurationMasterHelper.SHOW_INV_DASH) {
-                NUM_ITEMS++;
-                Fragment fragment = new TotalAchivedFragment();
-                Bundle args = new Bundle();
-                if (mDashboardList != null && mDashboardList.size() > 0) {
-                    args.putInt("flex1", mDashboardList.get(0).getFlex1());
-                } else {
-                    args.putInt("flex1", 0);
+            if (!selectedInterval.matches("WEEK|ROUTE")) {
+                if (bmodel.configurationMasterHelper.SHOW_P3M_DASH) {
+                    NUM_ITEMS++;
+                    dashBoardHelper.loadP3MTrendChaart(mFilterUser);
+                    fragmentList.add(new P3MChartFragment());
                 }
-                fragment.setArguments(args);
-                fragmentList.add(fragment);
+                if (bmodel.configurationMasterHelper.SHOW_SMP_DASH) {
+                    NUM_ITEMS++;
+                    fragmentList.add(new SMPChartFragment());
+                    chartpositionSMP = NUM_ITEMS;
+                }
+                if (bmodel.configurationMasterHelper.SHOW_INV_DASH) {
+                    NUM_ITEMS++;
+                    Fragment fragment = new TotalAchivedFragment();
+                    Bundle args = new Bundle();
+                    if (mDashboardList != null && mDashboardList.size() > 0) {
+                        args.putInt("flex1", mDashboardList.get(0).getFlex1());
+                    } else {
+                        args.putInt("flex1", 0);
+                    }
+                    fragment.setArguments(args);
+                    fragmentList.add(fragment);
+                }
             }
             if (bmodel.configurationMasterHelper.SHOW_KPIBARCHART_DASH) {
                 NUM_ITEMS++;
