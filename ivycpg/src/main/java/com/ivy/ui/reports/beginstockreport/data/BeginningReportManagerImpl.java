@@ -18,15 +18,15 @@ import io.reactivex.ObservableOnSubscribe;
 
 public class BeginningReportManagerImpl implements BeginningReportManager {
 
-    public Observable<ArrayList<StockReportMasterBO>> downloadBeginningStock(final Context context) {
+    public Observable<ArrayList<BeginningStockReportBO>> downloadBeginningStock(final Context context) {
 
-        return Observable.create(new ObservableOnSubscribe<ArrayList<StockReportMasterBO>>() {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<BeginningStockReportBO>>() {
             @Override
-            public void subscribe(final ObservableEmitter<ArrayList<StockReportMasterBO>> subscriber) throws Exception {
+            public void subscribe(final ObservableEmitter<ArrayList<BeginningStockReportBO>> subscriber) throws Exception {
 
-                ArrayList<StockReportMasterBO> beginningStockReport = new ArrayList<>();
+                ArrayList<BeginningStockReportBO> beginningStockReport = new ArrayList<>();
                 try {
-                    StockReportMasterBO stock;
+                    BeginningStockReportBO stock;
                     DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                             DataMembers.DB_PATH);
                     db.openDataBase();
@@ -41,22 +41,16 @@ public class BeginningReportManagerImpl implements BeginningReportManager {
                     if (c != null) {
                         beginningStockReport = new ArrayList<>();
                         while (c.moveToNext()) {
-                            stock = new StockReportMasterBO();
+                            stock = new BeginningStockReportBO();
                             stock.setProductId(c.getInt(0));
                             stock.setCaseQuantity(c.getInt(1));
-                            stock.setPieceQuantity(c.getInt(2));
+                            stock.setPcsQuantity(c.getInt(2));
                             stock.setProductName(c.getString(3));
                             stock.setProductShortName(c.getString(4));
-                            stock.setMrp(c.getFloat(5));
                             stock.setCaseSize(c.getInt(6));
-                            stock.setUid(c.getString(7));
                             stock.setOuterQty(c.getInt(8));
                             stock.setOuterSize(c.getInt(9));
-                            stock.setTotalQty((c.getInt(1) * c.getInt(6)) + c.getInt(2)
-                                    + (c.getInt(8) * c.getInt(9)));
-
                             stock.setBasePrice(c.getFloat(10));
-                            stock.setLoadNO(c.getString(11));
                             beginningStockReport.add(stock);
 
 

@@ -12,22 +12,23 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.ui.reports.beginstockreport.data.BeginningStockReportBO;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
 
-public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
-    private ArrayList<StockReportMasterBO> items;
+public class BeginningStockAdapter extends ArrayAdapter<BeginningStockReportBO> {
+    private ArrayList<BeginningStockReportBO> items;
     private ConfigurationMasterHelper configurationMasterHelper;
 
-    public BeginningStockAdapter(ArrayList<StockReportMasterBO> items, Context context, ConfigurationMasterHelper masterHelper) {
+    public BeginningStockAdapter(ArrayList<BeginningStockReportBO> items, Context context, ConfigurationMasterHelper masterHelper) {
         super(context, R.layout.row_begining_stock_listview, items);
         this.items = items;
         this.configurationMasterHelper = masterHelper;
     }
 
-    public StockReportMasterBO getItem(int position) {
+    public BeginningStockReportBO getItem(int position) {
         return items.get(position);
     }
 
@@ -43,7 +44,7 @@ public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         final ViewHolder holder;
-        StockReportMasterBO product = items.get(position);
+        BeginningStockReportBO product = items.get(position);
 
         View row = convertView;
         if (row == null) {
@@ -81,11 +82,11 @@ public class BeginningStockAdapter extends ArrayAdapter<StockReportMasterBO> {
 
         holder.psName.setText(product.getProductShortName());
         holder.caseQty.setText(String.valueOf(product.getCaseQuantity()));
-        holder.pcsQty.setText(String.valueOf(product.getPieceQuantity()));
+        holder.pcsQty.setText(String.valueOf(product.getPcsQuantity()));
         holder.outerQty.setText(String.valueOf(product.getOuterQty()));
         holder.pName = product.getProductName();
         double lineValue = (product.getCaseQuantity() * product.getCaseSize() + product
-                .getPieceQuantity()) * product.getBasePrice();
+                .getPcsQuantity()) * product.getBasePrice();
         holder.lineValue.setText(formatValue(lineValue));
         return row;
     }

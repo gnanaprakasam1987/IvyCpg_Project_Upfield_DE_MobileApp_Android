@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
+import com.ivy.ui.reports.beginstockreport.data.BeginningStockReportBO;
 import com.ivy.utils.rx.SchedulerProvider;
 
 
@@ -98,10 +99,10 @@ public class BeginningReportPresenterImpl<V extends BeginningReportContract.IBeg
 
 
 
-    private DisposableObserver<ArrayList<StockReportMasterBO>> getObserver() {
-        return new DisposableObserver<ArrayList<StockReportMasterBO>>() {
+    private DisposableObserver<ArrayList<BeginningStockReportBO>> getObserver() {
+        return new DisposableObserver<ArrayList<BeginningStockReportBO>>() {
             @Override
-            public void onNext(ArrayList<StockReportMasterBO> stockReportMasterBOS) {
+            public void onNext(ArrayList<BeginningStockReportBO> stockReportMasterBOS) {
                 getIvyView().hideLoading();
                 getIvyView().setAdapter(stockReportMasterBOS, configurationMasterHelper);
             }

@@ -10,6 +10,7 @@ import com.ivy.core.base.view.BaseFragment;
 import com.ivy.ui.reports.beginstockreport.BeginningReportContract;
 import com.ivy.ui.reports.beginstockreport.BeginningStockAdapter;
 
+import com.ivy.ui.reports.beginstockreport.data.BeginningStockReportBO;
 import com.ivy.ui.reports.beginstockreport.di.BeginningReportModule;
 import com.ivy.ui.reports.beginstockreport.di.DaggerBeginningReportComponent;
 import com.ivy.sd.png.asean.view.R;
@@ -125,7 +126,7 @@ public class BeginningStockFragment extends BaseFragment implements
     }
 
     @Override
-    public void setAdapter(ArrayList<StockReportMasterBO> stockReportMasterBOS, ConfigurationMasterHelper configurationMasterHelper) {
+    public void setAdapter(ArrayList<BeginningStockReportBO> stockReportMasterBOS, ConfigurationMasterHelper configurationMasterHelper) {
         BeginningStockAdapter mSchedule = new BeginningStockAdapter(stockReportMasterBOS, getActivity(), configurationMasterHelper);
         mSchedule.setBeginningStockAdapterCallback(BeginningStockFragment.this);
         lvWpList.setAdapter(mSchedule);

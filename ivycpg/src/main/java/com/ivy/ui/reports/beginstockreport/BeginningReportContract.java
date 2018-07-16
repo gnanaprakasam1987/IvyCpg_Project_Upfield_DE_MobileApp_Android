@@ -9,6 +9,7 @@ import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
+import com.ivy.ui.reports.beginstockreport.data.BeginningStockReportBO;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -17,7 +18,7 @@ public interface BeginningReportContract {
 
 
     interface IBeginningStockView extends BaseIvyView {
-        void setAdapter(ArrayList<StockReportMasterBO> stockReportMasterBOS, ConfigurationMasterHelper configurationMasterHelper);
+        void setAdapter(ArrayList<BeginningStockReportBO> stockReportMasterBOS, ConfigurationMasterHelper configurationMasterHelper);
 
         void showError();
 
