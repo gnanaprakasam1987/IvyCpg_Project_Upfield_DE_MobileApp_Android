@@ -58,7 +58,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     private GoogleMap mMap;
     private BottomSheetBehavior bottomSheetBehavior;
     private TextView totalSeller, absentSeller, marketSeller
-            , tvCoveredOutlet, tvUnbilledOutlet, tvTotalOutlet, tvOrderValue;
+            , tvCoveredOutlet, tvUnbilledOutlet, tvTotalOutlet, tvOrderValue,tvSellerProductivePercent;
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName;
@@ -124,6 +124,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         tvUnbilledOutlet = view.findViewById(R.id.tv_unbilled_outlet);
         tvTotalOutlet = view.findViewById(R.id.tv_ttl_outlet);
         tvOrderValue = view.findViewById(R.id.tv_order_value);
+        tvSellerProductivePercent = view.findViewById(R.id.seller_perform_percent);
 
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
 
@@ -150,6 +151,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         tvUnbilledOutlet.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
         tvTotalOutlet.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
         tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+        tvSellerProductivePercent.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
 
 
         mapWrapperLayout = view.findViewById(R.id.map_wrap_layout);
@@ -491,6 +493,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     public void createMarker(SupervisorModelBo supervisorModelBo) {
 
         BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+//        BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
         Marker marker = mMap.addMarker(supervisorModelBo.getMarkerOptions());
         marker.setIcon(icon);
         supervisorModelBo.setMarker(marker);
@@ -513,6 +516,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
 
     @Override
     public void setSellerListAdapter(ArrayList<SupervisorModelBo> modelBoArrayList) {
+        sellerArrayList.clear();
         sellerArrayList.addAll(modelBoArrayList);
         sellerInfoHorizontalAdapter.notifyDataSetChanged();
     }
@@ -546,6 +550,12 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     @Override
     public void updateUnbilledCount(int unBilledOutlet) {
         tvUnbilledOutlet.setText(String.valueOf(unBilledOutlet));
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void sellerProductivity(int productivityPercent) {
+        tvSellerProductivePercent.setText(productivityPercent+"%");
     }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {

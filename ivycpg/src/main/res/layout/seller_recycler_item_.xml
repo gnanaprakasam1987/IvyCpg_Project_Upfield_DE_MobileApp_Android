@@ -83,7 +83,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/_2sdp"
                             android:maxLines="1"
-                            android:text="Target/Covered : 103/100"
+                            android:text="Target/Covered "
                             android:textColor="#8b000000"
                             android:textSize="@dimen/_12sdp"
                             android:visibility="visible" />
@@ -100,7 +100,7 @@
                                 android:layout_width="@dimen/_120sdp"
                                 android:layout_height="@dimen/_8sdp"
                                 android:indeterminate="false"
-                                android:progress="35"
+                                android:progress="0"
                                 android:layout_centerVertical="true"
                                 android:progressDrawable="@drawable/horizontal_progress_bg" />
 
@@ -111,7 +111,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/_10sdp"
                                 android:maxLines="1"
-                                android:text="35%"
+                                android:text="0%"
                                 android:textColor="#8b000000"
                                 android:visibility="visible"
                                 android:gravity="center_vertical"
@@ -136,7 +136,7 @@
                             android:layout_alignParentRight="true"
                             android:background="@drawable/covered_bg_gradient"
                             android:paddingBottom="@dimen/_4sdp"
-                            android:paddingLeft="@dimen/_10sdp"
+                            android:paddingLeft="@dimen/_4sdp"
                             android:paddingRight="@dimen/_4sdp"
                             android:paddingTop="@dimen/_4sdp">
 
@@ -146,7 +146,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:gravity="center_vertical|right"
+                                android:gravity="center"
                                 android:maxLines="1"
                                 android:text="In Market"
                                 android:textSize="@dimen/_10sdp"
@@ -154,6 +154,7 @@
 
                             <ImageView
                                 android:id="@+id/info_icon"
+                                android:visibility="visible"
                                 android:layout_width="@dimen/_13sdp"
                                 android:layout_height="@dimen/_13sdp"
                                 android:layout_centerVertical="true"

@@ -88,7 +88,7 @@ public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfo
         return sellerArrayList.size();
     }
 
-    public String convertTime(long time){
+    private String convertTime(long time){
 
         if(time != 0) {
             Date date = new Date(time);

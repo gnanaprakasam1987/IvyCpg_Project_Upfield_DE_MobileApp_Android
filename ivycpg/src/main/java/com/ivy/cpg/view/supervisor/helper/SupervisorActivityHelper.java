@@ -417,9 +417,9 @@ public class SupervisorActivityHelper {
 //                                .zoom(14f)
 //                                .build()));
 
-                        float bearing = getBearing(startPosition, destination);
-                        if (bearing >= 0)
-                            marker.setRotation(getBearing(startPosition, destination));
+//                        float bearing = getBearing(startPosition, destination);
+//                        if (bearing >= 0)
+//                            marker.setRotation(getBearing(startPosition, destination));
                     } catch (Exception ex) {
                     }
                 }

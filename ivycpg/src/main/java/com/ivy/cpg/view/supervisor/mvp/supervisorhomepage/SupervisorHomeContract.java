@@ -25,6 +25,7 @@ public interface SupervisorHomeContract {
         void displayTotalOutletCount(int totalOutlet);
         void updateCoveredCount(int coveredOutlet);
         void updateUnbilledCount(int unBilledOutlet);
+        void sellerProductivity(int productivityPercent);
 
     }
 

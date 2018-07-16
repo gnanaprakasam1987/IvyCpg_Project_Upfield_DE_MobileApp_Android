@@ -43,12 +43,14 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
             .collection("activity_tracking_v2");
 
     @SuppressLint("UseSparseArrays")
-    private HashMap<Integer, SupervisorModelBo> sellerInfoHasMap = new HashMap<>();
+    public static HashMap<Integer, SupervisorModelBo> sellerInfoHasMap = new HashMap<>();
     @SuppressLint("UseSparseArrays")
     private HashMap<Integer, MarkerOptions> sellerMarkerHasmap = new HashMap<>();
     private SupervisorHomeContract.SupervisorHomeView supervisorHomeView;
     private Context context;
     private ListenerRegistration registration ;
+
+    private int inMarketSellerCount = 0;
 
     private boolean isRealTimeLocationOn = false;
 
@@ -62,48 +64,137 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
     }
 
     @Override
-    public void computeSellerInfo() {
+    public void getSellerListAWS(){
 
-        ArrayList<SupervisorModelBo> markerList = new ArrayList<>();
+        int totalSellerCount = 0;
 
-        int totalSellerCount = sellerInfoHasMap.size();
-        int marketSellerCount = 0;
-        int absentSellerCount;
-        long totatlOrderValue = 0L;
-        int coveredOutlet = 0;
-        int billedOutlet = 0;
+        DBUtil db = null;
+        try {
 
-        for(SupervisorModelBo supervisorModelBo : sellerInfoHasMap.values()){
-            if(supervisorModelBo.isAttendanceDone())
-                marketSellerCount = marketSellerCount+1;
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
 
-            if(supervisorModelBo.getOrderValue() !=null )
-                totatlOrderValue = totatlOrderValue + supervisorModelBo.getOrderValue();
+            String queryStr = "select userId,userName from usermaster where isDeviceuser!=1 and userlevel = '"+loadUserLevel()+"'";
 
-            if(sellerMarkerHasmap.get(supervisorModelBo.getUserId()) != null)
-                markerList.add(supervisorModelBo);
+            Cursor c = db.selectSQL(queryStr);
+            if (c != null) {
+                while (c.moveToNext()) {
 
-            coveredOutlet = coveredOutlet + supervisorModelBo.getCovered();
-            billedOutlet = billedOutlet + supervisorModelBo.getBilled();
+                    SupervisorModelBo supervisorModelBo = new SupervisorModelBo();
 
+                    supervisorModelBo.setUserId(c.getInt(0));
+                    supervisorModelBo.setUserName(c.getString(1));
+
+                    if (!sellerInfoHasMap.containsKey(supervisorModelBo.getUserId())) {
+                        sellerInfoHasMap.put(supervisorModelBo.getUserId(), supervisorModelBo);
+                    }
+
+                    totalSellerCount = totalSellerCount + 1;
+
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+            if (db != null)
+                db.closeDB();
         }
 
-        absentSellerCount = totalSellerCount - marketSellerCount;
+        supervisorHomeView.displayTotalSellerCount(totalSellerCount);
+        supervisorHomeView.updateSellerAttendance(totalSellerCount,0);
 
-        supervisorHomeView.updateSellerAttendance(absentSellerCount,marketSellerCount);
-        supervisorHomeView.updateOrderValue((int)totatlOrderValue);
-        supervisorHomeView.updateCoveredCount(coveredOutlet);
+    }
 
-        int unBilledoutlet = coveredOutlet - billedOutlet;
-        supervisorHomeView.updateUnbilledCount(unBilledoutlet);
+    private String loadUserLevel() {
 
-        supervisorHomeView.setSellerListAdapter(markerList);
+        String code = "";
+        try {
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='SUP_USER_LOAD_LEVEL' and flag = 1";
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                while (c.moveToNext()) {
+                    code = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return code;
+
     }
 
     @Override
-    public void removeFirestoreListener() {
-        if(registration != null)
-            registration.remove();
+    public void getSellerWiseRetailerAWS(){
+
+        int totalOutletCount = 0;
+
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String queryStr = "select sellerId,count(sellerId) from SupRetailerMaster group by sellerId";
+
+            Cursor c = db.selectSQL(queryStr);
+            if (c != null) {
+                while (c.moveToNext()) {
+
+                    int count = c.getInt(1);
+
+                    totalOutletCount = totalOutletCount + count;
+
+                    if(sellerInfoHasMap.get(c.getInt(0)) != null)
+                        sellerInfoHasMap.get(c.getInt(0)).setTarget(c.getInt(1));
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+            if (db != null)
+                db.closeDB();
+        }
+
+        supervisorHomeView.displayTotalOutletCount(totalOutletCount);
+
+    }
+
+    @Override
+    public void isRealtimeLocation(){
+
+        try {
+            String sql = "select flag from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='FIRESTORE01'";
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.moveToNext()) {
+                isRealTimeLocationOn = (c.getInt(0)) == 1;
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
     }
 
     @Override
@@ -138,8 +229,8 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
 
         getSellerActivityInfoListener();
 
-//        if (isRealTimeLocationOn)
-//            realtimeLocationInfoListener();
+        if (isRealTimeLocationOn)
+            realtimeLocationInfoListener();
 
     }
 
@@ -255,76 +346,118 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
         supervisorHomeView.focusMarker(builder);
     }
 
+    @Override
+    public void computeSellerInfo() {
+
+        ArrayList<SupervisorModelBo> markerList = new ArrayList<>();
+
+        long totatlOrderValue = 0L;
+        int coveredOutlet = 0;
+        int billedOutlet = 0;
+
+        for(SupervisorModelBo supervisorModelBo : sellerInfoHasMap.values()){
+            if(supervisorModelBo.getOrderValue() !=null )
+                totatlOrderValue = totatlOrderValue + supervisorModelBo.getOrderValue();
+
+            coveredOutlet = coveredOutlet + supervisorModelBo.getCovered();
+            billedOutlet = billedOutlet + supervisorModelBo.getBilled();
+
+            if(sellerMarkerHasmap.get(supervisorModelBo.getUserId()) != null)
+                markerList.add(supervisorModelBo);
+        }
+
+        supervisorHomeView.updateOrderValue((int)totatlOrderValue);
+        supervisorHomeView.updateCoveredCount(coveredOutlet);
+
+        int unBilledoutlet = coveredOutlet - billedOutlet;
+        supervisorHomeView.updateUnbilledCount(unBilledoutlet);
+
+        int sellerProductive = 0;
+        if (coveredOutlet!=0) {
+            sellerProductive = (int)((float)billedOutlet / (float)coveredOutlet * 100);
+        }
+        supervisorHomeView.sellerProductivity(sellerProductive);
+
+        supervisorHomeView.setSellerListAdapter(markerList);
+    }
+
+    @Override
+    public void removeFirestoreListener() {
+        if(registration != null)
+            registration.remove();
+    }
+
     private void setAttendanceValues(DocumentSnapshot documentSnapshot){
 
         if (documentSnapshot.getData() != null) {
 
             System.out.println("setAttendanceValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
-            Long id = (Long) documentSnapshot.getData().get("userId");
-            Integer userId = (int) (long) id;
+            Integer userId = (int) (long) documentSnapshot.getData().get("userId");
 
-            if (sellerInfoHasMap.get(userId) != null) {
-                sellerInfoHasMap.get(userId).setAttendanceDone(true);
+            if (sellerInfoHasMap.get(userId) != null && !sellerInfoHasMap.get(userId).isAttendanceDone()) {
+                computeSellerAttendance(userId);
             }
         }
 
         computeSellerInfo();
     }
 
-    private void computeAttendance(){
+    private void computeSellerAttendance(int userId){
 
+        inMarketSellerCount = inMarketSellerCount + 1;
+        sellerInfoHasMap.get(userId).setAttendanceDone(true);
+
+        int totalSellerCount = sellerInfoHasMap.size();
+        int absentSellerCount;
+
+        absentSellerCount = totalSellerCount - inMarketSellerCount;
+
+        supervisorHomeView.updateSellerAttendance(absentSellerCount,inMarketSellerCount);
     }
 
     private void setValues(DocumentSnapshot documentSnapshot){
 
         SupervisorModelBo supervisorModelBo = documentSnapshot.toObject((SupervisorModelBo.class));
 
-        if (supervisorModelBo != null) {
+        System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
-            System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+        if(supervisorModelBo != null && sellerInfoHasMap.get(supervisorModelBo.getUserId()) != null) {
 
-            LatLng destLatLng = new LatLng(supervisorModelBo.getLatitude(), supervisorModelBo.getLongitude());
+            SupervisorModelBo supervisorModelObj = sellerInfoHasMap.get(supervisorModelBo.getUserId());
 
-            supervisorModelBo.setMarkerOptions(new MarkerOptions()
-                    .flat(true)
-                    .title(supervisorModelBo.getUserName())
-                    .position(destLatLng)
-                    .snippet(String.valueOf(supervisorModelBo.getUserId())));
+            supervisorModelObj.setBilled(supervisorModelBo.getBilled());
+            supervisorModelObj.setCovered(supervisorModelBo.getCovered());
+            supervisorModelObj.setLatitude(supervisorModelBo.getLatitude());
+            supervisorModelObj.setLongitude(supervisorModelBo.getLongitude());
+            supervisorModelObj.setOrderValue(supervisorModelBo.getOrderValue()!=null?supervisorModelBo.getOrderValue():0);
+            supervisorModelObj.setOrdered(supervisorModelBo.isOrdered());
+            supervisorModelObj.setTimeIn(supervisorModelBo.getTimeIn()!=null?supervisorModelBo.getTimeIn():0);
+            supervisorModelObj.setTimeOut(supervisorModelBo.getTimeOut()!=null?supervisorModelBo.getTimeOut():0);
+            supervisorModelObj.setRetailerId(supervisorModelBo.getRetailerId());
+            supervisorModelObj.setRetailerName(supervisorModelBo.getRetailerName()!=null?supervisorModelBo.getRetailerName():"");
 
-            supervisorModelBo.setAttendanceDone(true);
-
-            if(!sellerInfoHasMap.containsKey(supervisorModelBo.getUserId())) {
-
-                sellerInfoHasMap.put(supervisorModelBo.getUserId(), supervisorModelBo);
-
-            }else{
-
-                SupervisorModelBo supervisorModelObj = sellerInfoHasMap.get(supervisorModelBo.getUserId());
-
-                supervisorModelObj.setBilled(supervisorModelBo.getBilled());
-                supervisorModelObj.setCovered(supervisorModelBo.getCovered());
-                supervisorModelObj.setLatitude(supervisorModelBo.getLatitude());
-                supervisorModelObj.setLongitude(supervisorModelBo.getLongitude());
-                supervisorModelObj.setOrderValue(supervisorModelBo.getOrderValue());
-                supervisorModelObj.setOrdered(supervisorModelBo.isOrdered());
-                supervisorModelObj.setTimeIn(supervisorModelBo.getTimeIn());
-                supervisorModelObj.setTimeOut(supervisorModelBo.getTimeOut());
-                supervisorModelObj.setRetailerId(supervisorModelBo.getRetailerId());
-                supervisorModelObj.setRetailerName(supervisorModelBo.getRetailerName());
-                supervisorModelObj.setMarkerOptions(supervisorModelBo.getMarkerOptions());
-                supervisorModelObj.setAttendanceDone(supervisorModelBo.isAttendanceDone());
-
-                supervisorModelBo = supervisorModelObj;
-
+            if (!supervisorModelObj.isAttendanceDone()) {
+                computeSellerAttendance(supervisorModelBo.getUserId());
             }
 
             if (!isRealTimeLocationOn) {
-                setMarkerHasMap(supervisorModelBo);
-            }
-        }
 
-        computeSellerInfo();
+                LatLng destLatLng = new LatLng(supervisorModelBo.getLatitude(), supervisorModelBo.getLongitude());
+
+                supervisorModelBo.setMarkerOptions(new MarkerOptions()
+                        .flat(true)
+                        .title(supervisorModelObj.getUserName())
+                        .position(destLatLng)
+                        .snippet(String.valueOf(supervisorModelObj.getUserId())));
+
+                supervisorModelObj.setMarkerOptions(supervisorModelBo.getMarkerOptions());
+
+                setMarkerHasMap(supervisorModelObj);
+            }
+
+            computeSellerInfo();
+        }
     }
 
     private void setLocationValues(DocumentSnapshot documentSnapshot){
@@ -337,171 +470,47 @@ public class SupervisorHomePresenter implements SupervisorHomeContract.Superviso
 
             LatLng destLatLng = new LatLng(supervisorModelBo.getLatitude(), supervisorModelBo.getLongitude());
 
-            supervisorModelBo.setMarkerOptions(new MarkerOptions()
+            SupervisorModelBo sellerHasmapBo = sellerInfoHasMap.get(supervisorModelBo.getUserId());
+
+            sellerHasmapBo.setMarkerOptions(new MarkerOptions()
                     .flat(true)
-                    .title(supervisorModelBo.getUserName())
+                    .title(sellerHasmapBo.getUserName())
                     .position(destLatLng)
-                    .snippet(String.valueOf(supervisorModelBo.getUserId())));
+                    .snippet(String.valueOf(sellerHasmapBo.getUserId())));
 
-            supervisorModelBo.setAttendanceDone(true);
 
-            sellerInfoHasMap.get(supervisorModelBo.getUserId()).setMarkerOptions(supervisorModelBo.getMarkerOptions());
 
-            setMarkerHasMap(supervisorModelBo);
+            sellerHasmapBo.setLatitude(supervisorModelBo.getLatitude());
+            sellerHasmapBo.setLongitude(supervisorModelBo.getLongitude());
+
+            if (!sellerHasmapBo.isAttendanceDone()) {
+                computeSellerAttendance(sellerHasmapBo.getUserId());
+            }
+
+            sellerHasmapBo.setMarkerOptions(sellerHasmapBo.getMarkerOptions());
+
+            setMarkerHasMap(sellerHasmapBo);
 
         }
-
-//        getMarkerForFocus();
     }
 
     private void setMarkerHasMap(SupervisorModelBo supervisorModelBo) {
-        if(!sellerMarkerHasmap.containsKey(supervisorModelBo.getUserId())) {
+        if(sellerMarkerHasmap.get(supervisorModelBo.getUserId()) == null) {
             supervisorHomeView.createMarker(sellerInfoHasMap.get(supervisorModelBo.getUserId()));
+            sellerMarkerHasmap.put(supervisorModelBo.getUserId(), supervisorModelBo.getMarkerOptions());
+
+            computeSellerInfo();
+
         }else{
+            sellerMarkerHasmap.put(supervisorModelBo.getUserId(), supervisorModelBo.getMarkerOptions());
             supervisorHomeView.updateMaker(sellerInfoHasMap.get(supervisorModelBo.getUserId()));
         }
 
-        sellerMarkerHasmap.put(supervisorModelBo.getUserId(), supervisorModelBo.getMarkerOptions());
-
-        if(sellerCount == sellerMarkerHasmap.size() && !isZoomed){
+        if(sellerCount == sellerMarkerHasmap.size() && sellerMarkerHasmap.size() > 0 && !isZoomed){
             isZoomed = true;
             getMarkerForFocus();
-
-            computeSellerInfo();
         }
     }
 
-    @Override
-    public void isRealtimeLocation(){
-
-        try {
-            String sql = "select flag from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='FIRESTORE01'";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db.selectSQL(sql);
-            if (c != null && c.moveToNext()) {
-                isRealTimeLocationOn = (c.getInt(0)) == 1;
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    private String loadUserLevel() {
-
-        String code = "";
-        try {
-            String sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='SUP_USER_LOAD_LEVEL' and flag = 1";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                while (c.moveToNext()) {
-                    code = c.getString(0);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return code;
-
-    }
-
-    @Override
-    public void getSellerListAWS(){
-
-        int totalSellerCount = 0;
-
-        DBUtil db = null;
-        try {
-
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            String queryStr = "select userId,userName from usermaster where isDeviceuser!=1 and userlevel = '"+loadUserLevel()+"'";
-
-            Cursor c = db.selectSQL(queryStr);
-            if (c != null) {
-                while (c.moveToNext()) {
-
-                    SupervisorModelBo supervisorModelBo = new SupervisorModelBo();
-
-                    supervisorModelBo.setUserId(c.getInt(0));
-                    supervisorModelBo.setUserName(c.getString(1));
-
-                    if (!sellerInfoHasMap.containsKey(supervisorModelBo.getUserId())) {
-                        sellerInfoHasMap.put(supervisorModelBo.getUserId(), supervisorModelBo);
-                    }
-
-                    totalSellerCount = totalSellerCount + 1;
-
-                }
-                c.close();
-            }
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-            if (db != null)
-                db.closeDB();
-        }
-
-        supervisorHomeView.displayTotalSellerCount(totalSellerCount);
-
-    }
-
-    @Override
-    public void getSellerWiseRetailerAWS(){
-
-        int totalOutletCount = 0;
-
-        DBUtil db = null;
-        try {
-
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            String queryStr = "select sellerId,count(sellerId) from SupRetailerMaster group by sellerId";
-
-            Cursor c = db.selectSQL(queryStr);
-            if (c != null) {
-                while (c.moveToNext()) {
-
-                    int count = c.getInt(1);
-
-                    totalOutletCount = totalOutletCount + count;
-
-                    if(sellerInfoHasMap.get(c.getInt(0)) != null)
-                        sellerInfoHasMap.get(c.getInt(0)).setTarget(c.getInt(1));
-                }
-                c.close();
-            }
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-            if (db != null)
-                db.closeDB();
-        }
-
-        supervisorHomeView.displayTotalOutletCount(totalOutletCount);
-
-    }
 
 }

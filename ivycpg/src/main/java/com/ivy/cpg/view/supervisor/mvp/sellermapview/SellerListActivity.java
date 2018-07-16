@@ -14,25 +14,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.supervisor.helper.DetailsBo;
-import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
+import com.ivy.cpg.view.supervisor.mvp.supervisorhomepage.SupervisorHomePresenter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SellerListActivity extends IvyBaseActivityNoActionBar {
 
     private ViewPager viewPager;
-    private ArrayList<DetailsBo> detailsBos = new ArrayList<>();
-    private HashMap<Integer,Integer> integerHashMap = new HashMap<>();
     private TabLayout tabLayout;
+
+    private ArrayList<SupervisorModelBo> sellersList = new ArrayList<>();
+    private ArrayList<SupervisorModelBo> sellersInMarketList = new ArrayList<>();
+    private ArrayList<SupervisorModelBo> sellersAbsentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,21 +54,21 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        integerHashMap.put(0,0);
-        integerHashMap.put(1,0);
-        integerHashMap.put(2,0);
+        sellersList = new ArrayList<>(SupervisorHomePresenter.sellerInfoHasMap.values());
 
-        setScreenTitle("Total Sellers");
+        for (SupervisorModelBo supervisorModelBo : sellersList)
+            if(supervisorModelBo.isAttendanceDone())
+                sellersInMarketList.add(supervisorModelBo);
+            else
+                sellersAbsentList.add(supervisorModelBo);
 
         viewPager = findViewById(R.id.viewPager);
 
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);//setting tab over viewpager
 
-        detailsBos.addAll(SupervisorActivityHelper.getInstance().getDetailsBoHashMap().values());
-
         PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(), detailsBos);
+                (getSupportFragmentManager(), tabLayout.getTabCount());
 
         viewPager.setOffscreenPageLimit(1);
         viewPager.setAdapter(adapter);
@@ -76,13 +80,13 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
 
                 switch (tab.getPosition()) {
                     case 0:
-                        setScreenTitle("Total Sellers (" + integerHashMap.get(tab.getPosition()) + ")");
+                        setScreenTitle("Total Sellers (" + sellersList.size() + ")");
                         break;
                     case 1:
-                        setScreenTitle("Absent Sellers (" + integerHashMap.get(tab.getPosition()) + ")");
+                        setScreenTitle("InMarket Sellers (" + sellersInMarketList.size() + ")");
                         break;
                     case 2:
-                        setScreenTitle("InMarket Sellers (" + integerHashMap.get(tab.getPosition()) + ")");
+                        setScreenTitle("Absent Sellers (" + sellersAbsentList.size() + ")");
                         break;
                 }
             }
@@ -95,6 +99,8 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        setScreenTitle("Total Sellers (" + sellersList.size() + ")");
 
         try {
             int pos = getIntent().getExtras()!=null?getIntent().getExtras().getInt("TabPos"):0;
@@ -118,7 +124,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                displaySearchItem(newText);
+//                displaySearchItem(newText);
                 return true;
             }
 
@@ -151,29 +157,23 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void displaySearchItem(String searchText){
-        int pos = tabLayout.getSelectedTabPosition();
-        ArrayList<DetailsBo> detailsBos = prepareListValues(pos);
+        ArrayList<SupervisorModelBo> detailsBos = prepareListValues(tabLayout.getSelectedTabPosition());
 
         for(int i = 0;i<detailsBos.size();i++){
-            if (searchText != null) {
-                this.detailsBos.clear();
-                if (detailsBos.get(i).getUserName().toLowerCase()
-                        .contains(searchText.toLowerCase()) ){
-                    this.detailsBos.add(detailsBos.get(i));
-                }
+            if (detailsBos.get(i).getUserName().toLowerCase()
+                    .contains(searchText.toLowerCase()) ){
+                detailsBos.add(detailsBos.get(i));
             }
         }
     }
 
     public class PagerAdapter extends FragmentStatePagerAdapter {
         int mNumOfTabs;
-        ArrayList<DetailsBo> detailsBos;
-        String[] title = {"Total Seller", "Absent Seller", "InMarket Seller", "Seller"};
+        String[] title = {"Total Seller", "InMarket Seller", "Absent Seller", "Seller"};
 
-        PagerAdapter(FragmentManager fm, int NumOfTabs, ArrayList<DetailsBo> detailsBos) {
+        PagerAdapter(FragmentManager fm, int NumOfTabs) {
             super(fm);
             this.mNumOfTabs = NumOfTabs;
-            this.detailsBos = detailsBos;
         }
 
         @Override
@@ -192,35 +192,20 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
-    private ArrayList<DetailsBo> prepareListValues(int position) {
+    private ArrayList<SupervisorModelBo> prepareListValues(int position) {
 
-        ArrayList<DetailsBo> detailsBos = new ArrayList<>();
+        ArrayList<SupervisorModelBo> detailsBos = new ArrayList<>();
         switch (position) {
             case 0:
-                detailsBos = new ArrayList<>(SupervisorActivityHelper.getInstance().getDetailsBoHashMap().values());
+                detailsBos = sellersList;
                 break;
             case 1:
-                ArrayList<DetailsBo> detailsBosTemp = new ArrayList<>();
-                for (DetailsBo detailsBo : SupervisorActivityHelper.getInstance().getDetailsBoHashMap().values()) {
-                    if (detailsBo.getStatus() != null && detailsBo.getStatus().equalsIgnoreCase("Absent"))
-                        detailsBosTemp.add(detailsBo);
-                }
-                detailsBos = detailsBosTemp;
+                detailsBos = sellersInMarketList;
                 break;
             case 2:
-                ArrayList<DetailsBo> detailsBosMarketTemp = new ArrayList<>();
-                for (DetailsBo detailsBo : SupervisorActivityHelper.getInstance().getDetailsBoHashMap().values()) {
-                    if (detailsBo.getStatus() != null && detailsBo.getStatus().equalsIgnoreCase("In Market"))
-                        detailsBosMarketTemp.add(detailsBo);
-                }
-                detailsBos = detailsBosMarketTemp;
+                detailsBos = sellersAbsentList;
                 break;
         }
-
-        this.detailsBos = detailsBos;
-
-        integerHashMap.put(position,detailsBos.size());
-
         return detailsBos;
     }
 
@@ -238,6 +223,14 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                 }
             }
         }
+    }
+
+    public void filter(){
+
+    }
+
+    public void sort(){
+
     }
 
 }

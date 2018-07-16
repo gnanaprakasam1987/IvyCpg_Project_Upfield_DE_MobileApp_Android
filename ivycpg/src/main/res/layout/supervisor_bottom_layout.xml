@@ -30,7 +30,7 @@
             android:background="@drawable/curve_left_green"
             android:gravity="center"
             android:padding="@dimen/_5sdp"
-            android:text="00"
+            android:text="0"
             android:textColor="@color/white"
             android:textSize="@dimen/_16sdp" />
 
@@ -74,7 +74,7 @@
             android:background="@drawable/curve_right_red"
             android:gravity="center"
             android:padding="@dimen/_5sdp"
-            android:text="00"
+            android:text="0"
             android:textColor="@color/white"
             android:textSize="@dimen/_16sdp" />
 
@@ -435,7 +435,7 @@
                         android:layout_height="@dimen/_45sdp"
                         android:layout_centerInParent="true"
                         android:gravity="center"
-                        android:text="170%"
+                        android:text="0%"
                         android:textColor="#262e4f"
                         android:textSize="@dimen/_12sdp"
                         android:id="@+id/seller_perform_percent"/>
