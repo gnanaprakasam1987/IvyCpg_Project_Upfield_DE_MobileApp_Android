@@ -1,5 +1,6 @@
 package com.ivy.ui.reports.currentreport.view;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -9,6 +10,9 @@ import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
+import com.ivy.core.di.scope.ActivityContext;
+import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.ui.reports.currentreport.CurrentReportViewAdapter;
 import com.ivy.ui.reports.currentreport.ICurrentReportContract;
 import com.ivy.ui.reports.currentreport.di.CurrentReportModule;
@@ -26,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import butterknife.BindView;
 
@@ -52,12 +57,8 @@ public class CurrentReportViewFragment extends BaseFragment implements ICurrentR
     @BindView(R.id.sihTitle)
     TextView sihTitle;
 
-
     @Inject
-    LabelsMasterHelper labelsMasterHelper;
-
-    @Inject
-    UserMasterHelper userMasterHelper;
+    ProductHelper productHelper;
 
 
     @Inject
@@ -72,7 +73,6 @@ public class CurrentReportViewFragment extends BaseFragment implements ICurrentR
 
     @Override
     public void initVariables(View view) {
-        initializeBusinessModel();
         spinnerBrand.setOnItemSelectedListener(this);
     }
 
@@ -80,65 +80,22 @@ public class CurrentReportViewFragment extends BaseFragment implements ICurrentR
     protected void getMessageFromAliens() {
     }
 
-    @Inject
-    public void initializeUserHelper(UserMasterHelper userMasterHelper) {
-        currentReportModelPresenter.setUserMasterHelper(userMasterHelper);
-    }
-
-    @Inject
-    public void initializeLabelMaster(LabelsMasterHelper labelsMasterHelper) {
-        currentReportModelPresenter.setLabelsMasterHelper(labelsMasterHelper);
-    }
 
     @Override
     protected void setUpViews() {
-
+        currentReportModelPresenter.downLoadUserDetails();
         currentReportModelPresenter.setSihTitle(sihTitle.getTag());
 
         currentReportModelPresenter.checkUserId();
 
         currentReportModelPresenter.setUpTitles();
-
         lvWpList.setCacheColorHint(0);
 
-        setUpSpinner();
-
+        currentReportModelPresenter.getSpinnerData();
     }
 
 
-    private void setUpSpinner() {
 
-        BusinessModel bModel = (BusinessModel) getActivity().getApplicationContext();
-        bModel.setContext(getActivity());
-
-        Vector<ChildLevelBo> items = new Vector<>();
-        try {
-            items = bModel.productHelper.getChildLevelBo();
-            if (items.size() == 0)
-                return;
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-
-        currentReportModelPresenter.downloadCurrentStockReport(getActivity(), bModel);
-
-        bModel.reportHelper.updateBaseUOM("ORDER", 2);
-
-        ArrayAdapter<ChildLevelBo> childAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
-        childAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        childAdapter.add(new ChildLevelBo(0, 0, getResources().getString(R.string.all)));
-
-        for (int i = 0; i < items.size(); ++i) {
-            childAdapter.add(items.elementAt(i));
-        }
-        spinnerBrand.setAdapter(childAdapter);
-    }
-
-
-    private void initializeBusinessModel() {
-
-    }
 
 
     @Override
@@ -197,8 +154,8 @@ public class CurrentReportViewFragment extends BaseFragment implements ICurrentR
     }
 
     @Override
-    public void showError() {
-
+    public void showError(String message) {
+        showMessage(message);
     }
 
 
@@ -218,4 +175,20 @@ public class CurrentReportViewFragment extends BaseFragment implements ICurrentR
     public void setStockReportBOSList(Vector<StockReportBO> stockReportBOSList) {
         this.stockReportBOSList = stockReportBOSList;
     }
+
+    @Override
+    public void setUpBrandSpinner(Vector<ChildLevelBo> items) {
+        currentReportModelPresenter.updateBaseUOM(getActivity(), "ORDER", 2);
+
+        ArrayAdapter<ChildLevelBo> childAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
+        childAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        childAdapter.add(new ChildLevelBo(0, 0, getResources().getString(R.string.all)));
+
+        for (int i = 0; i < items.size(); ++i) {
+            childAdapter.add(items.elementAt(i));
+        }
+        spinnerBrand.setAdapter(childAdapter);
+    }
+
+
 }

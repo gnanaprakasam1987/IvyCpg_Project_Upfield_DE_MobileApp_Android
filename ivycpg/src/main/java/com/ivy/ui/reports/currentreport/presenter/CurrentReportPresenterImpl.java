@@ -1,9 +1,14 @@
 package com.ivy.ui.reports.currentreport.presenter;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Context;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.sd.png.bo.ChildLevelBo;
+import com.ivy.sd.png.provider.ProductHelper;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.reports.currentreport.ICurrentReportContract;
 import com.ivy.ui.reports.currentreport.data.CurrentReportManager;
 import com.ivy.sd.png.bo.StockReportBO;
@@ -33,24 +38,23 @@ public class CurrentReportPresenterImpl<V extends ICurrentReportContract.ICurren
 
     private CurrentReportManager currentReportManager;
 
+    private ProductHelper productHelper;
+
 
     @Inject
     public CurrentReportPresenterImpl(DataManager dataManager,
                                       SchedulerProvider schedulerProvider,
                                       CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper,
-                                      CurrentReportManager currentReportManager, ICurrentReportContract.ICurrentReportView view) {
+                                      CurrentReportManager currentReportManager,
+                                      UserMasterHelper userMasterHelper, LabelsMasterHelper labelsMasterHelper, ProductHelper productHelper, ICurrentReportContract.ICurrentReportView view) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, (V) view);
         this.configurationMasterHelper = configurationMasterHelper;
         this.currentReportManager = currentReportManager;
-
-    }
-
-
-    @Override
-    public void setUserMasterHelper(UserMasterHelper userMasterHelper) {
         this.userMasterHelper = userMasterHelper;
-        userMasterHelper.downloadUserDetails();
+        this.labelsMasterHelper = labelsMasterHelper;
+        this.productHelper = productHelper;
     }
+
 
     @Override
     public void checkUserId() {
@@ -59,11 +63,31 @@ public class CurrentReportPresenterImpl<V extends ICurrentReportContract.ICurren
     }
 
     @Override
-    public void downloadCurrentStockReport(Context context, BusinessModel bModel) {
-        getCompositeDisposable().add((Disposable) currentReportManager.downloadCurrentStockReport(context, bModel)
+    public void downloadCurrentStockReport() {
+        getCompositeDisposable().add((Disposable) currentReportManager.downloadCurrentStockReport(productHelper)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(getDownloadCurrentStockObserver()));
+    }
+
+    @Override
+    public void updateBaseUOM(Context context, String order, int type) {
+        currentReportManager.updateBaseUOM(context, order, type);
+    }
+
+    @Override
+    public void getSpinnerData() {
+        Vector<ChildLevelBo> items = new Vector<>();
+        try {
+            items = productHelper.getChildLevelBo();
+            if (items.size() == 0)
+                return;
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        downloadCurrentStockReport();
+        getIvyView().setUpBrandSpinner(items);
+
     }
 
     private DisposableObserver<Vector<StockReportBO>> getDownloadCurrentStockObserver() {
@@ -77,19 +101,13 @@ public class CurrentReportPresenterImpl<V extends ICurrentReportContract.ICurren
             @Override
             public void onError(Throwable e) {
                 getIvyView().hideLoading();
-                getIvyView().showError();
+                getIvyView().showError(e.getMessage());
             }
 
             @Override
             public void onComplete() {
             }
         };
-    }
-
-
-    public void setLabelsMasterHelper(LabelsMasterHelper labelsMasterHelper) {
-        this.labelsMasterHelper = labelsMasterHelper;
-        labelsMasterHelper.downloadLabelsMaster();
     }
 
     @Override
@@ -126,5 +144,21 @@ public class CurrentReportPresenterImpl<V extends ICurrentReportContract.ICurren
         if (labelsMasterHelper.applyLabels(tag) != null)
             getIvyView().setSihTitle(labelsMasterHelper.applyLabels(tag));
     }
+
+    @Override
+    public void downLoadUserDetails() {
+        userMasterHelper.downloadUserDetails();
+        labelsMasterHelper.downloadLabelsMaster();
+    }
+
+
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    public void onDestroyView() {
+       labelsMasterHelper = null;
+       userMasterHelper = null;
+       currentReportManager = null;
+    }
+
 
 }

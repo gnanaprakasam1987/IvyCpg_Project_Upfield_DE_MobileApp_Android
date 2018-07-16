@@ -3,6 +3,8 @@ package com.ivy.ui.reports.currentreport.di;
 import android.content.Context;
 
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.sd.png.provider.ProductHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.ui.reports.currentreport.data.CurrentReportManagerImpl;
 import com.ivy.ui.reports.currentreport.presenter.CurrentReportPresenterImpl;
 import com.ivy.ui.reports.currentreport.ICurrentReportContract;
@@ -12,6 +14,8 @@ import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,6 +62,19 @@ public class CurrentReportModule {
     SchedulerProvider provideSchedulerProvider() {
         return new AppSchedulerProvider();
     }
+
+    @Provides
+    public ReportHelper provideReportHelper(){
+        return new ReportHelper(mContext);
+    }
+
+
+    @Provides
+    public ProductHelper provideProductHelper(){
+        return  ProductHelper.getInstance(mContext);
+    }
+
+
 
 
     @Provides

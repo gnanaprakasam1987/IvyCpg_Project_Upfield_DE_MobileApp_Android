@@ -58,8 +58,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.appmodule.AppComponent;
-import com.ivy.appmodule.AppModule;
-import com.ivy.appmodule.DaggerAppComponent;
+
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
@@ -743,8 +742,8 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
-            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-            appComponent.inject(this);
+           // appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+           // appComponent.inject(this);
 
             mApplicationComponent = DaggerIvyAppComponent.builder()
                     .ivyAppModule(new IvyAppModule(this))

@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
+import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -23,14 +24,17 @@ public interface ICurrentReportContract {
 
         void setSihTitle(Object tag);
 
-        void setLabelsMasterHelper(LabelsMasterHelper labelsMasterHelper);
-
-        void setUserMasterHelper(UserMasterHelper userMasterHelper);
+        void downLoadUserDetails();
 
         void checkUserId();
 
 
-        void downloadCurrentStockReport(Context context,BusinessModel bModel);
+        void downloadCurrentStockReport();
+
+        void updateBaseUOM(Context context,String order, int type);
+
+        void getSpinnerData();
+
 
     }
 
@@ -49,9 +53,12 @@ public interface ICurrentReportContract {
 
         void finishActivity();
 
-        void showError();
+        void showError(String message);
 
         void setStockReportBOSList(Vector<StockReportBO> stockReportBO);
+
+        void setUpBrandSpinner(Vector<ChildLevelBo> items);
+
 
     }
 
