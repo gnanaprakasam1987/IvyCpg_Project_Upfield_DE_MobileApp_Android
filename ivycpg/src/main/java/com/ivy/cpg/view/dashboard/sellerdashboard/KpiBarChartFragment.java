@@ -72,10 +72,12 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         set1.setColors(ColorTemplate.MATERIAL_COLORS);
         ArrayList<String> mStirngList = new ArrayList<>();
         for (int i = 0; i < dashBoardList.size(); i++) {
-            if(selectedInterval != null && selectedInterval.equals("WEEK")){
-                mStirngList.add(dashBoardList.get(i).getMonthName());
+            String text = dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText();
+            if(selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))){
+                mStirngList.add((dashBoardList.get(i).getMonthName() != null && dashBoardList.get(i).getMonthName().length() == 0) ?
+                        text : "(" + dashBoardList.get(i).getMonthName() + ")" + text);
             } else{
-                mStirngList.add(dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText());
+                mStirngList.add(text);
             }
         }
 

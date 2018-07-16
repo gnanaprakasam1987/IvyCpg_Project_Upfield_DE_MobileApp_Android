@@ -13,6 +13,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -431,6 +432,15 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                                     if (dashBoardBO.getCode().equals(mDashboardList.get(position).getCode())) {
                                         dashBoardHelper.getDashListViewList().add(dashBoardBO);
                                     }
+                                }
+                            }
+                        }
+                        //P3M chart Specific Change
+                        if(selectedInterval.equals(P3M)){
+                            dashBoardHelper.getDashListViewList().clear();
+                            for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                                if (dashBoardBO.getCode().equals(mDashboardList.get(position).getCode())) {
+                                    dashBoardHelper.getDashListViewList().add(dashBoardBO);
                                 }
                             }
                         }
@@ -1025,13 +1035,22 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private void updateMonth(String monthName) {
         mDashboardList = new ArrayList<>();
 
-        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
+        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
             if (dashBoardBO.getMonthName().equals(monthName)) {
                 mDashboardList.add(dashBoardBO);
             }
         }
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
+            //P3M chart Specific Change
+            if(selectedInterval.equals(P3M)){
+                dashBoardHelper.getDashListViewList().clear();
+                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                    if (dashBoardBO.getCode().equals(mDashboardList.get(0).getCode())) {
+                        dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                    }
+                }
+            }
             checkandaddScreens();
             if (mDashboardList != null && mDashboardList.size() > 0) {
                 dashBoardHelper.setDashboardBO(mDashboardList.get(0));
@@ -1118,7 +1137,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     }
 
 
-    public class MyPagerAdapter extends FragmentPagerAdapter {
+    public class MyPagerAdapter extends FragmentStatePagerAdapter {
         private ArrayList<Fragment> fragmentList = new ArrayList<>();
 
         public MyPagerAdapter(FragmentManager fragmentManager, ArrayList<Fragment> fragmentList) {
@@ -1183,27 +1202,29 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         fragmentList = new ArrayList<>();
 
         if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {
-            if (bmodel.configurationMasterHelper.SHOW_P3M_DASH) {
-                NUM_ITEMS++;
-                dashBoardHelper.loadP3MTrendChaart(mFilterUser);
-                fragmentList.add(new P3MChartFragment());
-            }
-            if (bmodel.configurationMasterHelper.SHOW_SMP_DASH) {
-                NUM_ITEMS++;
-                fragmentList.add(new SMPChartFragment());
-                chartpositionSMP = NUM_ITEMS;
-            }
-            if (bmodel.configurationMasterHelper.SHOW_INV_DASH) {
-                NUM_ITEMS++;
-                Fragment fragment = new TotalAchivedFragment();
-                Bundle args = new Bundle();
-                if (mDashboardList != null && mDashboardList.size() > 0) {
-                    args.putInt("flex1", mDashboardList.get(0).getFlex1());
-                } else {
-                    args.putInt("flex1", 0);
+            if (!selectedInterval.matches("WEEK|ROUTE")) {
+                if (bmodel.configurationMasterHelper.SHOW_P3M_DASH) {
+                    NUM_ITEMS++;
+                    dashBoardHelper.loadP3MTrendChaart(mFilterUser);
+                    fragmentList.add(new P3MChartFragment());
                 }
-                fragment.setArguments(args);
-                fragmentList.add(fragment);
+                if (bmodel.configurationMasterHelper.SHOW_SMP_DASH) {
+                    NUM_ITEMS++;
+                    fragmentList.add(new SMPChartFragment());
+                    chartpositionSMP = NUM_ITEMS;
+                }
+                if (bmodel.configurationMasterHelper.SHOW_INV_DASH) {
+                    NUM_ITEMS++;
+                    Fragment fragment = new TotalAchivedFragment();
+                    Bundle args = new Bundle();
+                    if (mDashboardList != null && mDashboardList.size() > 0) {
+                        args.putInt("flex1", mDashboardList.get(0).getFlex1());
+                    } else {
+                        args.putInt("flex1", 0);
+                    }
+                    fragment.setArguments(args);
+                    fragmentList.add(fragment);
+                }
             }
             if (bmodel.configurationMasterHelper.SHOW_KPIBARCHART_DASH) {
                 NUM_ITEMS++;
