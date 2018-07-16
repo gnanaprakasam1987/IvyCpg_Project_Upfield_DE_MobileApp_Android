@@ -76,7 +76,6 @@ import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
@@ -159,7 +158,6 @@ import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaskHelper;
 import com.ivy.sd.png.provider.TeamLeaderMasterHelper;
-import com.ivy.sd.png.provider.UserFeedBackHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -2210,7 +2208,12 @@ public class BusinessModel extends Application {
         }
     }
 
-
+    /**
+     * Update isToday and is_vansales.
+     * IS_DEFAULT_PRESALE - true than update is_vansales = 0 based on
+     * ORDB08 config RField Value is 1
+     * IS_DEFAULT_PRESALE - fales than update is_vansales = 1
+     */
     public void updateIsTodayAndIsVanSalesInRetailerMasterInfo() {
         DBUtil db = null;
         try {
@@ -6641,40 +6644,24 @@ public class BusinessModel extends Application {
             return false;
     }
 
+    /**
+     * download retailer wise seller type
+     */
+
     public void getRetailerWiseSellerType() {
         try {
             DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
+            retailerMasterBO.setIsVansales(0);
             String query = "select is_vansales from retailermasterinfo where retailerid="
                     + QT(retailerMasterBO.getRetailerID());
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
-                while (c.moveToNext()) {
+                if (c.moveToNext()) {
                     int flag = c.getInt(0);
-
-                    SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getContext());
-                    if (flag == 1) {
-                        configurationMasterHelper.IS_SIH_VALIDATION = configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
-                        configurationMasterHelper.IS_STOCK_IN_HAND = configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
-                        configurationMasterHelper.IS_WSIH = false;
-                        schemeHelper.IS_SCHEME_ON = schemeHelper.IS_SCHEME_ON_MASTER;
-                        schemeHelper.IS_SCHEME_SHOW_SCREEN = schemeHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
-                        configurationMasterHelper.SHOW_TAX = configurationMasterHelper.SHOW_TAX_MASTER;
-
-
-                        retailerMasterBO.setIsVansales(1);
-                    } else {
-                        configurationMasterHelper.IS_SIH_VALIDATION = false;
-                        configurationMasterHelper.IS_STOCK_IN_HAND = false;
-                        configurationMasterHelper.IS_WSIH = configurationMasterHelper.IS_WSIH_MASTER;
-                        schemeHelper.IS_SCHEME_ON = false;
-                        schemeHelper.IS_SCHEME_SHOW_SCREEN = false;
-                        configurationMasterHelper.SHOW_TAX = false;
-
-                        retailerMasterBO.setIsVansales(0);
-                    }
+                    retailerMasterBO.setIsVansales(flag);
                 }
             }
             c.close();
