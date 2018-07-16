@@ -14,6 +14,7 @@ public interface PhotoCaptureContract {
     @PerActivity
     interface PhotoCapturePresenter<V extends PhotoCaptureView> extends BaseIvyPresenter<V> {
 
+        boolean isMaxPhotoLimitReached();
     }
 
 }

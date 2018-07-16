@@ -7,6 +7,7 @@ import com.ivy.core.data.db.DbHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.UserMasterBO;
 
 import javax.inject.Inject;
 
@@ -87,6 +88,11 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public void setInTime(String inTime, boolean isFromBModel) {
+        appDataProvider.setInTime(inTime,isFromBModel);
+    }
+
+    @Override
     public String getInTime() {
         return appDataProvider.getInTime();
     }
@@ -97,6 +103,11 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public void setUniqueId(String uniqueId, boolean isFromBModel) {
+        appDataProvider.setUniqueId(uniqueId,isFromBModel);
+    }
+
+    @Override
     public String getUniqueId() {
         return appDataProvider.getUniqueId();
     }
@@ -104,6 +115,11 @@ public class DataManagerImpl implements DataManager {
     @Override
     public void setModuleInTime(String moduleInTime) {
         appDataProvider.setModuleInTime(moduleInTime);
+    }
+
+    @Override
+    public void setModuleInTime(String moduleInTime, boolean isFromBModel) {
+        appDataProvider.setModuleInTime(moduleInTime, isFromBModel);
     }
 
     @Override
@@ -122,42 +138,17 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
-    public void setUserId(int userId) {
-        appDataProvider.setUserId(userId);
+    public void setCurrentUser(UserMasterBO userData) {
+        appDataProvider.setCurrentUser(userData);
     }
 
     @Override
-    public int getUserId() {
-        return appDataProvider.getUserId();
+    public void setCurrentUser(UserMasterBO userData, boolean isFromBModelF) {
+        appDataProvider.setCurrentUser(userData, isFromBModelF);
     }
 
     @Override
-    public void setDistributionId(int distributionId) {
-        appDataProvider.setDistributionId(distributionId);
-    }
-
-    @Override
-    public int getDistributionId() {
-        return appDataProvider.getDistributionId();
-    }
-
-    @Override
-    public void setBranchId(int branchId) {
-        appDataProvider.setBranchId(branchId);
-    }
-
-    @Override
-    public int getBranchId() {
-        return appDataProvider.getBranchId();
-    }
-
-    @Override
-    public void setDownloadDate(String downloadDate) {
-        appDataProvider.setDownloadDate(downloadDate);
-    }
-
-    @Override
-    public String getDownloadDate() {
-        return appDataProvider.getDownloadDate();
+    public UserMasterBO getUser() {
+        return appDataProvider.getUser();
     }
 }

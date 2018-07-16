@@ -80,7 +80,7 @@ public class OutletTimeStampHelper {
      */
     public void setTimeIn(String timeIn) {
         // Until all the code is refactored, Timein is updated in the Appdataprovider and business model
-        bmodel.codeCleanUpUtil.setInTime(timeIn, false);
+        bmodel.codeCleanUpUtil.setInTime(timeIn);
         this.timeIn = timeIn;
     }
 
@@ -99,7 +99,7 @@ public class OutletTimeStampHelper {
      */
     public void setUid(String uid) {
         // Until all the code is refactored, Unique is updated in the Appdataprovider and business model
-        bmodel.codeCleanUpUtil.setUniqueId(uid, false);
+        bmodel.codeCleanUpUtil.setUniqueId(uid);
         this.uid = uid;
     }
 
@@ -298,7 +298,7 @@ public class OutletTimeStampHelper {
 
             timeInModuleWise = QT(date + " " + timeIn);
 
-            bmodel.codeCleanUpUtil.setModuleTime(timeInModuleWise, false);
+            bmodel.codeCleanUpUtil.setModuleTime(timeInModuleWise);
             String values = getUid() + ","
                     + QT(moduleCode) + ","
                     + timeInModuleWise + "," + timeInModuleWise

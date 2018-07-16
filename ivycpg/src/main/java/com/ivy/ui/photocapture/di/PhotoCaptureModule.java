@@ -1,5 +1,9 @@
 package com.ivy.ui.photocapture.di;
 
+import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
+import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
+import com.ivy.core.data.user.UserDataManager;
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
@@ -20,7 +24,6 @@ public class PhotoCaptureModule {
         this.mView = mView;
     }
 
-
     @Provides
     public PhotoCaptureContract.PhotoCaptureView provideView() {
         return mView;
@@ -35,6 +38,7 @@ public class PhotoCaptureModule {
     SchedulerProvider provideSchedulerProvider() {
         return new AppSchedulerProvider();
     }
+
 
     @Provides
     @PerActivity

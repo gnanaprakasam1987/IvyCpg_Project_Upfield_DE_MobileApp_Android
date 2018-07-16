@@ -33,22 +33,17 @@ public class AppDataProviderImpl implements AppDataProvider {
     /*Current User*/
     private UserMasterBO userData;
 
-    /*Current User Id*/
-    private int userId;
-
-    /*Current User's Distribution Id*/
-    private int distributionId;
-
-    /*Current User's Branch Id*/
-    private int branchId;
-
-    /*Data download date*/
-    private String downloadDate;
 
     @Override
     public void setInTime(String inTime) {
         //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setInTime(inTime, true);
+        mContext.codeCleanUpUtil.setBModelInTime(inTime);
+
+        this.inTime = inTime;
+    }
+
+    @Override
+    public void setInTime(String inTime, boolean isFromBModel) {
 
         this.inTime = inTime;
     }
@@ -61,8 +56,13 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public void setUniqueId(String uniqueId) {
         //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setUniqueId(uniqueId, true);
+        mContext.codeCleanUpUtil.setBModelUniqueId(uniqueId);
 
+        this.uniqueId = uniqueId;
+    }
+
+    @Override
+    public void setUniqueId(String uniqueId, boolean isFromBModel) {
         this.uniqueId = uniqueId;
     }
 
@@ -74,8 +74,13 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public void setModuleInTime(String moduleInTime) {
         //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setModuleTime(uniqueId, true);
+        mContext.codeCleanUpUtil.setBModelModuleTime(uniqueId);
 
+        this.moduleInTime = moduleInTime;
+    }
+
+    @Override
+    public void setModuleInTime(String moduleInTime, boolean isFromBModel) {
         this.moduleInTime = moduleInTime;
     }
 
@@ -97,63 +102,18 @@ public class AppDataProviderImpl implements AppDataProvider {
         return retailerMaster;
     }
 
-    @Override
-    public void setUserId(int userId) {
-        //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setUserId(userId, true);
-
-        this.userId = userId;
-    }
-
-    @Override
-    public int getUserId() {
-        return userId;
-    }
-
-    @Override
-    public void setDistributionId(int distributionId) {
-        //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setDistributionId(distributionId, true);
-
-        this.distributionId = distributionId;
-    }
-
-    @Override
-    public int getDistributionId() {
-        return distributionId;
-    }
-
-    @Override
-    public void setBranchId(int branchId) {
-        //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setBranchId(branchId, true);
-
-        this.branchId = branchId;
-    }
-
-    @Override
-    public int getBranchId() {
-        return branchId;
-    }
-
-    @Override
-    public void setDownloadDate(String downloadDate) {
-        //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setDownloadDate(downloadDate, true);
-
-        this.downloadDate = downloadDate;
-    }
-
-    @Override
-    public String getDownloadDate() {
-        return downloadDate;
-    }
 
     @Override
     public void setCurrentUser(UserMasterBO userData) {
-        //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setUserData(userData, true);
 
+        //TODO to be removed post refactoring
+        mContext.codeCleanUpUtil.setBmodelUserBO(userData);
+
+        this.userData = userData;
+    }
+
+    @Override
+    public void setCurrentUser(UserMasterBO userData, boolean isFromBModelF) {
         this.userData = userData;
     }
 

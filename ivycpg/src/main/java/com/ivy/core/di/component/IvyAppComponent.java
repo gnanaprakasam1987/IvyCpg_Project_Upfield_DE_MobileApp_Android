@@ -6,10 +6,14 @@ import android.content.Context;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
+import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.di.module.ActivityModule;
 import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.core.di.scope.ActivityContext;
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.core.di.scope.OutletTimeStampInfo;
+import com.ivy.core.di.scope.UserInfo;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -31,6 +35,12 @@ public interface IvyAppComponent {
     ConfigurationMasterHelper configurationMasterHelper();
 
     AppDataProvider appDataProvider();
+
+    @UserInfo
+    UserDataManager userDataManager();
+
+    @OutletTimeStampInfo
+    OutletTimeStampDataManager outletTimeStampDataManager();
 
     void inject(BusinessModel businessModel);
 

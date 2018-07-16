@@ -7,37 +7,37 @@ public interface AppDataProvider {
 
     void setInTime(String inTime);
 
+    void setInTime(String inTime, boolean isFromBModel);
+
     String getInTime();
+
+
 
     void setUniqueId(String uniqueId);
 
+    void setUniqueId(String uniqueId, boolean isFromBModel);
+
     String getUniqueId();
+
+
 
     void setModuleInTime(String moduleInTime);
 
+    void setModuleInTime(String moduleInTime, boolean isFromBModel);
+
     String getModuleIntime();
+
+
 
     void setRetailerMaster(RetailerMasterBO retailerMaster);
 
     RetailerMasterBO getRetailMaster();
 
-    void setUserId(int userId);
 
-    int getUserId();
-
-    void setDistributionId(int distributionId);
-
-    int getDistributionId();
-
-    void setBranchId(int branchId);
-
-    int getBranchId();
-
-    void setDownloadDate(String downloadDate);
-
-    String getDownloadDate();
 
     void setCurrentUser(UserMasterBO userData);
+
+    void setCurrentUser(UserMasterBO userData, boolean isFromBModelF);
 
     UserMasterBO getUser();
 

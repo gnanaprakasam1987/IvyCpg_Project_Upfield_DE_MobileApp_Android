@@ -103,15 +103,8 @@ public class UserMasterHelper {
                             .getColumnIndex("BackupUserId")));
                     userMasterBO.setBackup(false);
 
-                    /** Code cleanup data**/
-                    bmodel.codeCleanUpUtil.setDistributionId(c.getInt(c
-                            .getColumnIndex("distributorid")), false);
-                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
-                            .getColumnIndex("userid")), false);
-                    bmodel.codeCleanUpUtil.setDownloadDate(c.getString(c
-                            .getColumnIndex("downloaddate")), false);
-                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
-                            .getColumnIndex("branchid")), false);
+
+                    bmodel.codeCleanUpUtil.setUserData(userMasterBO);
 
                 }
                 c.close();
@@ -157,9 +150,6 @@ public class UserMasterHelper {
                     userMasterBO.setUserid(c.getInt(c
                             .getColumnIndex("userid")));
 
-                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
-                            .getColumnIndex("userid")), false);
-
                     userMasterBO.setUserName(c.getString(c
                             .getColumnIndex("username")));
                     userMasterBO.setUserType(c.getString(c
@@ -182,14 +172,7 @@ public class UserMasterHelper {
                             .getColumnIndex("upliftFactor")));
 
                     /** Code cleanup data**/
-                    bmodel.codeCleanUpUtil.setDistributionId(c.getInt(c
-                            .getColumnIndex("distributorid")), false);
-                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
-                            .getColumnIndex("userid")), false);
-                    bmodel.codeCleanUpUtil.setDownloadDate(c.getString(c
-                            .getColumnIndex("downloaddate")), false);
-                    bmodel.codeCleanUpUtil.setUserId(c.getInt(c
-                            .getColumnIndex("branchid")), false);
+                    bmodel.codeCleanUpUtil.setUserData(userMasterBO);
                 }
                 c.close();
             }
@@ -284,6 +267,8 @@ public class UserMasterHelper {
                     mJoinCallUserlist.add(userBO);
                 }
                 userMasterBO.setJoinCallUserList(mJoinCallUserlist);
+
+                bmodel.codeCleanUpUtil.setUserData(userMasterBO);
                 c.close();
             }
 
@@ -309,6 +294,7 @@ public class UserMasterHelper {
      * @deprecated Only the necessary data is stored in the {@link com.ivy.core.data.app.AppDataProviderImpl} Singleton
      */
     public void setUserMasterBO(UserMasterBO userMasterBO) {
+        bmodel.codeCleanUpUtil.setUserData(userMasterBO);
         this.userMasterBO = userMasterBO;
     }
 
@@ -339,6 +325,8 @@ public class UserMasterHelper {
                     userMasterBO.setDistributorCode(c.getString(8));
                     userMasterBO.setGSTNumber(c.getString(9));
                 }
+
+                bmodel.codeCleanUpUtil.setUserData(userMasterBO);
                 c.close();
             }
         } catch (Exception e) {

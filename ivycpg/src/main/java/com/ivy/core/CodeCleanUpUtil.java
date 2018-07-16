@@ -27,25 +27,28 @@ public class CodeCleanUpUtil {
         return instance;
     }
 
-    public void setUniqueId(String uniqueId, boolean isFromProvider) {
-        if (!isFromProvider)
-            appDataProvider.setUniqueId(uniqueId);
-        else
-            bmodel.outletTimeStampHelper.setUid(uniqueId);
+    public void setUniqueId(String uniqueId) {
+        appDataProvider.setUniqueId(uniqueId,true);
     }
 
-    public void setInTime(String inTime, boolean isFromProvider) {
-        if (!isFromProvider)
-            appDataProvider.setInTime(inTime);
-        else
-            bmodel.outletTimeStampHelper.setTimeIn(inTime);
+    public void setBModelUniqueId(String uniqueId) {
+        bmodel.outletTimeStampHelper.setUid(uniqueId);
     }
 
-    public void setModuleTime(String moduleInTime, boolean isFromProvider) {
-        if (!isFromProvider)
-            appDataProvider.setModuleInTime(moduleInTime);
-        else
-            bmodel.outletTimeStampHelper.setTimeInModuleWise(moduleInTime);
+    public void setInTime(String inTime) {
+        appDataProvider.setInTime(inTime,true);
+    }
+
+    public void setBModelInTime(String inTime) {
+        bmodel.outletTimeStampHelper.setTimeIn(inTime);
+    }
+
+    public void setModuleTime(String moduleInTime) {
+        appDataProvider.setModuleInTime(moduleInTime,true);
+    }
+
+    public void setBModelModuleTime(String moduleTime) {
+        bmodel.outletTimeStampHelper.setTimeInModuleWise(moduleTime);
     }
 
 
@@ -55,43 +58,17 @@ public class CodeCleanUpUtil {
             bmodel.retailerMasterBO = retailerMasterBO;
     }
 
-    public void setUserId(int userId, boolean isFromProvider) {
-        if (isFromProvider)
-            bmodel.userMasterHelper.getUserMasterBO().setUserid(userId);
-        else
-            appDataProvider.setUserId(userId);
 
+    public void setUserData(UserMasterBO userData) {
+        appDataProvider.setCurrentUser(userData,true);
     }
 
-    public void setDistributionId(int distributionId, boolean isFromProvider) {
-        if (isFromProvider)
-            bmodel.userMasterHelper.getUserMasterBO().setDistributorid(distributionId);
-        else
-            appDataProvider.setDistributionId(distributionId);
-
+    public void setBmodelUserBO(UserMasterBO userBO) {
+        bmodel.userMasterHelper.setUserMasterBO(userBO);
     }
 
-
-    public void setBranchId(int distributionId, boolean isFromProvider) {
-        if (isFromProvider)
-            bmodel.userMasterHelper.getUserMasterBO().setBranchId(distributionId);
-        else
-            appDataProvider.setBranchId(distributionId);
-
-    }
-
-    public void setDownloadDate(String downloadDate, boolean isFromProvider) {
-        if (isFromProvider)
-            bmodel.userMasterHelper.getUserMasterBO().setDownloadDate(downloadDate);
-        else
-            appDataProvider.setDownloadDate(downloadDate);
-
-    }
-
-    public void setUserData(UserMasterBO userData, boolean isFromProvider) {
-        if (isFromProvider)
-            bmodel.userMasterHelper.setUserMasterBO(userData);
-        else
-            appDataProvider.setCurrentUser(userData);
+    public void setUserId(int userId){
+        appDataProvider.getUser().setUserid(userId);
+        bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
     }
 }

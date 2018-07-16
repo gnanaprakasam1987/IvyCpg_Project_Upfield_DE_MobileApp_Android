@@ -144,7 +144,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
             }
         });
 
-            /* Display version information on the login screen. */
+        /* Display version information on the login screen. */
         TextView version = (TextView) findViewById(R.id.version);
         version.setText(getResources().getString(R.string.version) + businessModel.getApplicationVersionName());
         version.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -161,7 +161,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
 
         loginPresenter.checkDB();
 
-            /* Register receiver to receive download status. */
+        /* Register receiver to receive download status. */
         IntentFilter filter = new IntentFilter(MyReceiver.PROCESS_RESPONSE);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         receiver = new MyReceiver();
@@ -388,23 +388,23 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
     private final Handler fileDownloadHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
-            /*
-             * Handling MESSAGE_UPDATE_PROGRESS_BAR: 1. Get the current
-			 * progress, as indicated in the arg1 field of the Message. 2.
-			 * Update the progress bar.
-			 */
+                /*
+                 * Handling MESSAGE_UPDATE_PROGRESS_BAR: 1. Get the current
+                 * progress, as indicated in the arg1 field of the Message. 2.
+                 * Update the progress bar.
+                 */
                 case DataMembers.MESSAGE_UPDATE_PROGRESS_BAR:
                     if (progressDialog != null) {
                         int currentProgress = msg.arg1;
                         progressDialog.setProgress(currentProgress);
                     }
                     break;
-            /*
-             * Handling MESSAGE_CONNECTING_STARTED: 1. Get the URL of the file
-			 * being downloaded. This is stored in the obj field of the Message.
-			 * 2. Create an indeterminate progress bar. 3. Set the message that
-			 * should be sent if user cancels. 4. Show the progress bar.
-			 */
+                /*
+                 * Handling MESSAGE_CONNECTING_STARTED: 1. Get the URL of the file
+                 * being downloaded. This is stored in the obj field of the Message.
+                 * 2. Create an indeterminate progress bar. 3. Set the message that
+                 * should be sent if user cancels. 4. Show the progress bar.
+                 */
                 case DataMembers.MESSAGE_CONNECTING_STARTED:
                     if (msg.obj != null && msg.obj instanceof String) {
                         String url = (String) msg.obj;
@@ -423,15 +423,15 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                                 .getString(R.string.progress_dialog_message_prefix_connecting) + " " + url, 0, null, false);
                     }
                     break;
-            /*
-             * Handling MESSAGE_DOWNLOAD_STARTED: 1. Create a progress bar with
-			 * specified max value and current value 0; assign it to
-			 * progressDialog. The arg1 field will contain the max value. 2. Set
-			 * the title and text for the progress bar. The obj field of the
-			 * Message will contain a String that represents the name of the
-			 * file being downloaded. 3. Set the message that should be sent if
-			 * dialog is canceled. 4. Make the progress bar visible.
-			 */
+                /*
+                 * Handling MESSAGE_DOWNLOAD_STARTED: 1. Create a progress bar with
+                 * specified max value and current value 0; assign it to
+                 * progressDialog. The arg1 field will contain the max value. 2. Set
+                 * the title and text for the progress bar. The obj field of the
+                 * Message will contain a String that represents the name of the
+                 * file being downloaded. 3. Set the message that should be sent if
+                 * dialog is canceled. 4. Make the progress bar visible.
+                 */
                 case DataMembers.MESSAGE_DOWNLOAD_STARTED:
                     // obj will contain a String representing the file name
                     if (msg.obj != null && msg.obj instanceof String) {
@@ -445,19 +445,19 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                     }
                     break;
 
-			/*
-             * Handling MESSAGE_APK_DOWNLOAD_COMPLETE: 1. Remove the progress bar
-			 * from the screen. 2. Display Toast that says download is complete.
-			 */
+                /*
+                 * Handling MESSAGE_APK_DOWNLOAD_COMPLETE: 1. Remove the progress bar
+                 * from the screen. 2. Display Toast that says download is complete.
+                 */
                 case DataMembers.MESSAGE_APK_DOWNLOAD_COMPLETE:
 
                     dismissCurrentProgressDialog();
 
                     LoginHelper.getInstance(LoginScreen.this).deleteAllValues(getApplicationContext());
-                   // businessModel.activationHelper.clearAppUrl();
+                    // businessModel.activationHelper.clearAppUrl();
                     clearAppUrl();
                     businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
-                    businessModel.codeCleanUpUtil.setUserId(0,false);
+                    businessModel.codeCleanUpUtil.setUserId(0);
                     try {
                         Uri path;
                         if (Build.VERSION.SDK_INT >= 24) {
@@ -501,12 +501,12 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
 
                     break;
 
-			/*
-             * Handling MESSAGE_ENCOUNTERED_ERROR_APK: 1. Check the obj field of the
-			 * message for the actual error message that will be displayed to
-			 * the user. 2. Remove any progress bars from the screen. 3. Display
-			 * a Toast with the error message.
-			 */
+                /*
+                 * Handling MESSAGE_ENCOUNTERED_ERROR_APK: 1. Check the obj field of the
+                 * message for the actual error message that will be displayed to
+                 * the user. 2. Remove any progress bars from the screen. 3. Display
+                 * a Toast with the error message.
+                 */
                 case DataMembers.MESSAGE_ENCOUNTERED_ERROR_APK:
                     // obj will contain a string representing the error message
                     if (msg.obj != null && msg.obj instanceof String) {
@@ -704,7 +704,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                     loginPresenter.applyOutletPerformancePref();
                     loginPresenter.callUpdateFinish();
                 } else if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    updateProgress(updateTableCount,totalTableCount);
+                    updateProgress(updateTableCount, totalTableCount);
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
@@ -717,7 +717,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                 break;
             case SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    updateProgress(updateTableCount,totalTableCount);
+                    updateProgress(updateTableCount, totalTableCount);
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
@@ -732,7 +732,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
                 break;
             case SynchronizationHelper.LAST_VISIT_TRAN_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode.equals(SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE)) {
-                    updateProgress(updateTableCount,totalTableCount);
+                    updateProgress(updateTableCount, totalTableCount);
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         loginPresenter.applyLastSyncPref();
@@ -750,7 +750,7 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
         }
     }
 
-    private void updateProgress(int updateTableCount, int totalTableCount){
+    private void updateProgress(int updateTableCount, int totalTableCount) {
         String formattedString = "";
         try {
             formattedString = String.format(getResources().getString(R.string.out_of), totalTableCount);

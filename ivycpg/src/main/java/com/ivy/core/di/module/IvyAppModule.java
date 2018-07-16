@@ -12,12 +12,18 @@ import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.core.data.db.DBHelperImpl;
 import com.ivy.core.data.db.DbHelper;
+import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
+import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelperImpl;
+import com.ivy.core.data.user.UserDataManager;
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
 import com.ivy.core.di.scope.RetailerInfo;
+import com.ivy.core.di.scope.UserInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -73,6 +79,19 @@ public class IvyAppModule {
 
 
     @Provides
+    @UserInfo
+    UserDataManager providesUserDataManager(UserDataManagerImpl userDataManager) {
+        return userDataManager;
+    }
+
+    @Provides
+    @OutletTimeStampInfo
+    OutletTimeStampDataManager providesOutletTimeStampManager(OutletTimeStampDataManagerImpl outletTimeStampDataManager) {
+        return outletTimeStampDataManager;
+    }
+
+
+    @Provides
     protected ConfigurationMasterHelper providesConfigurationHelper() {
         return ((BusinessModel) mContext).configurationMasterHelper;
     }
@@ -87,10 +106,9 @@ public class IvyAppModule {
 
     @Singleton
     @Provides
-    protected AppDataProvider providesAppData(AppDataProviderImpl appDataProvider){
+    protected AppDataProvider providesAppData(AppDataProviderImpl appDataProvider) {
         return appDataProvider;
     }
-
 
 
 }
