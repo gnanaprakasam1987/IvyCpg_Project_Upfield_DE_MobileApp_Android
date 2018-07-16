@@ -3,9 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
-import com.ivy.core.data.db.DBHelperImpl;
 import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.lib.existing.DBUtil;
@@ -387,6 +385,13 @@ public class UserMasterHelper {
         }
     }
 
+    /**
+     * @param distid
+     * @param parentId
+     * @param distname
+     * @See {@link UserDataManagerImpl#updateDistributorId(String, String, String)}
+     * @deprecated
+     */
     public void updateDistributorId(String distid, String parentId, String distname) {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -410,6 +415,11 @@ public class UserMasterHelper {
         }
     }
 
+
+    /**
+     * @See {@link UserDataManagerImpl#fetchUsers()}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadUserList() {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -445,6 +455,11 @@ public class UserMasterHelper {
         return userList;
     }
 
+    /**
+     * @return
+     * @See {@link UserDataManagerImpl#fetchAdhocUsers()}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadAdHocUserList() {
         ArrayList<UserMasterBO> userList = null;
         String codeChild = "CHILD";
@@ -474,6 +489,12 @@ public class UserMasterHelper {
         return userList;
     }
 
+    /**
+     * @param distributorId
+     * @return
+     * @See {@link UserDataManagerImpl#fetchUsersForDistributor(int)}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadUserList(int distributorId) {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -502,6 +523,12 @@ public class UserMasterHelper {
         return userList;
     }
 
+    /**
+     * @param distributorId
+     * @return
+     * @See {@link UserDataManagerImpl#fetchUsersForDistributors(String)}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadUserList(String distributorId) {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -556,6 +583,11 @@ public class UserMasterHelper {
         }
     }
 
+    /**
+     * @param userMasterBO
+     * @See {@link UserDataManagerImpl#updateUserProfile(UserMasterBO)}
+     * @deprecated
+     */
     public void saveUserProfile(UserMasterBO userMasterBO) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -595,6 +627,11 @@ public class UserMasterHelper {
         }
     }
 
+    /**
+     * @return Current logged in user along with list of his child users
+     * @See {@link UserDataManagerImpl#fetchAllUsers()}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadAllUser() {
         ArrayList<UserMasterBO> userList = null;
         String codeChild = "CHILD";
@@ -624,6 +661,10 @@ public class UserMasterHelper {
         return userList;
     }
 
+    /**
+     * @See {@link UserDataManagerImpl#fetchBackupSellers()}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> getBackupSellerList() {
         return backupSellerList;
     }
@@ -632,6 +673,10 @@ public class UserMasterHelper {
         this.backupSellerList = backupSellerList;
     }
 
+    /**
+     * @See {@link UserDataManagerImpl#fetchBackupSellers()}
+     * @deprecated
+     */
     public void downloadBackupSeller() {
         String codeChild = "CHILD";
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,

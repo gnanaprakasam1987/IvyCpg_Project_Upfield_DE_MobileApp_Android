@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
@@ -511,7 +512,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PLANO_IMG_COUNT = "PLANO_IMG_COUNT";
     public int PLANO_IMG_COUNT;
 
-    private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
+    public static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
     public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
 
     private static final String CODE_LICENSE_VALIDATION = "ORDB73";
@@ -2642,6 +2643,11 @@ public class ConfigurationMasterHelper {
         }
     }
 
+
+    /**
+     * @See {@link UserDataManagerImpl#fetchUsers()}
+     * @deprecated
+     */
     public void loadDashboardUserFilter() {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,

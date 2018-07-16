@@ -20,12 +20,13 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
+import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_ENABLE_USER_FILTER_DASHBOARD;
 import static com.ivy.utils.AppUtils.QT;
-import static io.reactivex.Single.*;
 
 public class UserDataManagerImpl implements UserDataManager {
 
@@ -135,7 +136,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
     @Override
     public Single<Boolean> isSynced() {
-        return fromCallable(new Callable<Boolean>() {
+        return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 try {
@@ -317,7 +318,7 @@ public class UserDataManagerImpl implements UserDataManager {
                         c.close();
                     }
 
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 } finally {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
@@ -330,7 +331,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
     @Override
     public Completable changeUserPassword(final int UserID, final String pwd) {
-        return zip(fromCallable(new Callable<Boolean>() {
+        return Single.zip(Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 try {
@@ -354,7 +355,7 @@ public class UserDataManagerImpl implements UserDataManager {
                         mDbUtil.closeDB();
                 }
             }
-        }), fromCallable(new Callable<String>() {
+        }), Single.fromCallable(new Callable<String>() {
             @Override
             public String call() {
                 try {
@@ -371,8 +372,6 @@ public class UserDataManagerImpl implements UserDataManager {
                         }
                         c.close();
                     }
-
-
                     return type;
                 } catch (Exception e) {
                     return "";
@@ -415,26 +414,346 @@ public class UserDataManagerImpl implements UserDataManager {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
                 }
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public Completable updateDistributorId(final String distid, final String parentId, final String distname) {
+        return Completable.fromCallable(new Callable() {
+            @Override
+            public Void call() {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+
+                    String query = "update userMaster set distributorid=" + parentId
+                            + ", branchid=" + distid + ", distributorName='" + distname + "' where userID=" + appDataProvider.getUser().getUserid();
+
+                    mDbUtil.updateSQL(query);
+
+                    appDataProvider.getUser().setDistributorid(SDUtil.convertToInt(parentId));
+                    appDataProvider.getUser().setBranchId(SDUtil.convertToInt(distid));
+
+                } catch (Exception ignored) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
 
                 return null;
             }
-
-
         });
-
-
-
     }
 
     @Override
-    public Completable updateDistributorId(String distid, String parentId, String distname) {
-        return null;
+    public Observable<ArrayList<UserMasterBO>> fetchUsers() {
+
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+                    String filter = "";
+                    String sql = "select RField from "
+                            + DataMembers.tbl_HhtModuleMaster
+                            + " where hhtCode=" + QT(CODE_ENABLE_USER_FILTER_DASHBOARD) + " and Flag=1 and ForSwitchSeller = 0";
+                    Cursor c = mDbUtil.selectSQL(sql);
+                    if (c != null && c.getCount() != 0) {
+                        if (c.moveToNext()) {
+                            filter = (c.getString(0).replaceAll("^|$", "'").replaceAll(",", "','"));
+                        }
+                        c.close();
+                    }
+                    return filter;
+                } catch (Exception e) {
+                    return "";
+                }
+            }
+        }).flatMapObservable(new Function<String, Observable<ArrayList<UserMasterBO>>>() {
+            @Override
+            public Observable<ArrayList<UserMasterBO>> apply(final String dashboardFilter) {
+                return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+                    @Override
+                    public ArrayList<UserMasterBO> call() throws Exception {
+                        try {
+                            String subQuery = "";
+                            ArrayList<UserMasterBO> userList = new ArrayList<>();
+                            if (configurationMasterHelper.IS_ENABLE_USER_FILTER_DASHBOARD) {
+                                if (dashboardFilter.trim().length() > 0) {
+                                    subQuery = " and UserLevel in (" + dashboardFilter + ")";
+                                }
+                            }
+                            String query = "select userid,username from usermaster where isDeviceuser!=1" + subQuery;
+                            Cursor c = mDbUtil.selectSQL(query);
+                            if (c != null) {
+
+                                UserMasterBO userMasterBO;
+                                while (c.moveToNext()) {
+                                    userMasterBO = new UserMasterBO();
+                                    userMasterBO.setUserid(c.getInt(0));
+                                    userMasterBO.setUserName(c.getString(1));
+                                    userList.add(userMasterBO);
+                                }
+                                c.close();
+                            }
+
+                            return userList;
+                        } catch (Exception ignored) {
+                        } finally {
+                            if (mDbUtil != null)
+                                mDbUtil.closeDB();
+                        }
+
+                        return new ArrayList<>();
+                    }
+                });
+            }
+        });
     }
 
     @Override
-    public Single<Boolean> isPasswordEncrypted() {
-        return null;
+    public Observable<ArrayList<UserMasterBO>> fetchAdhocUsers() {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() throws Exception {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+                    String codeChild = "CHILD";
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username from usermaster where isDeviceuser!=1 AND relationship =" + QT(codeChild);
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+
+                    return userList;
+                } catch (Exception ignored) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
+
+                return new ArrayList<>();
+            }
+        });
     }
+
+    @Override
+    public Observable<ArrayList<UserMasterBO>> fetchUsersForDistributor(final int distributorId) {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() throws Exception {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username from usermaster where distributorid = " + distributorId;
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+
+                    return userList;
+                } catch (Exception ignored) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
+
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<UserMasterBO>> fetchUsersForDistributors(final String distributorIds) {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() throws Exception {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username from usermaster where distributorid in (" + distributorIds + ")";
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+
+                    return userList;
+                } catch (Exception ignored) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
+
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
+    public Completable updateUserProfile(final UserMasterBO userMasterBO) {
+        return Completable.fromCallable(new Callable() {
+            @Override
+            public Void call() {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+
+                    String tid = appDataProvider.getUser().getUserid()
+                            + "" + appDataProvider.getRetailMaster().getRetailerID()
+                            + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+                    mDbUtil.deleteSQL(DataMembers.tbl_UserEditDetail, " Code =" + QT("ProfileImagePath") + "and UserID=" + appDataProvider.getUser().getUserid(), false);
+
+                    String imagePath = "User" + "/" + appDataProvider.getUser().getDownloadDate().replace("/", "")
+                            + "/"
+                            + appDataProvider.getUser().getUserid()
+                            + "/" + userMasterBO.getImagePath();
+                    String insertquery = "insert into UserEditDetail (Tid,UserID,Code,Value,Upload)" +
+                            "values (" + QT(tid) + "," + userMasterBO.getUserid()
+                            + ",'ProfileImagePath'," + QT(imagePath) + ",'N')";
+                    mDbUtil.executeQ(insertquery);
+
+                } catch (Exception ignored) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
+
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<UserMasterBO>> fetchAllUsers() {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() throws Exception {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username from usermaster where isDeviceuser = 1 OR relationship =" + QT("CHILD");
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+
+                    return userList;
+                } catch (Exception ignored) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
+
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<UserMasterBO>> fetchBackupSellers() {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() throws Exception {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username from usermaster where relationship =" + QT("CHILD") + " OR relationship = 'ASSOCIATE'";
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userMasterBO.setBackup(false);
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+
+                    return userList;
+                } catch (Exception ignored) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
+
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> hasProfileImagePath(final int userId) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+                    Cursor c = mDbUtil
+                            .selectSQL("SELECT Value FROM UserEditDetail  where Code='ProfileImagePath' AND UserID=" + userId);
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            if (c.moveToNext()) {
+                                return true;
+                            }
+                        }
+                        c.close();
+                    }
+                    return false;
+                } catch (Exception e) {
+                    return false;
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
+            }
+        });
+    }
+
 
     private String encryptPassword(String pwd, String encrtptionType) {
         if (encrtptionType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
