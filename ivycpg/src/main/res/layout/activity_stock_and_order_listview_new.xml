@@ -157,7 +157,7 @@
                 android:id="@+id/stock_and_order_listview_ppq"
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
-                android:layout_height="22dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
                 android:maxLines="1"
