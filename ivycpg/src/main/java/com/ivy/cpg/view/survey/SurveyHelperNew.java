@@ -936,6 +936,9 @@ public class SurveyHelperNew {
 
                                 }
                             }
+                            //To Check all the subquestions
+                            if (returnFlag)
+                                returnFlag = isMandatorySubQuestionsAnswered(subQBO, surveyBO);
                         }
                     }
                 }
@@ -1166,7 +1169,7 @@ public class SurveyHelperNew {
                                     isData = true;
                                     isAnswered = true;
 
-                                } else {
+                                } else if (questionBO.getSelectedAnswerIDs().get(j) > 0) {
                                     String detailvalues = values1
                                             + ","
                                             + questionBO.getSelectedAnswerIDs()
@@ -1354,7 +1357,7 @@ public class SurveyHelperNew {
                                         isData = true;
                                         isAnswered = true;
 
-                                    } else {
+                                    } else if (questionBO.getSelectedAnswerIDs().get(j) > 0) {
                                         String detailvalues = values1
                                                 + ","
                                                 + questionBO.getSelectedAnswerIDs()
