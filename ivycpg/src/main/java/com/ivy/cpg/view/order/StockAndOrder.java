@@ -73,6 +73,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.order.scheme.UpSellingActivity;
@@ -4371,12 +4372,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             finish();
         } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
-            Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
-            init.putExtra("ScreenCode", screenCode);
-            init.putExtra("ForScheme", screenCode);
-            startActivity(init);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
+            if(schemeHelper.IS_SCHEME_QPS_TRACKING){
+                Intent init = new Intent(StockAndOrder.this, QPSSchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            } else {
+                Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            }
         } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
             Intent init = new Intent(StockAndOrder.this, OrderDiscount.class);
             init.putExtra("ScreenCode", screenCode);

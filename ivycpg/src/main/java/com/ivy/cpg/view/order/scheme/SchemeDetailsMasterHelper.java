@@ -132,6 +132,7 @@ public class SchemeDetailsMasterHelper {
     public boolean IS_SCHEME_ON_MASTER;
     public boolean IS_SCHEME_SHOW_SCREEN_MASTER;
     public boolean IS_UP_SELLING;
+    public boolean IS_SCHEME_QPS_TRACKING;
     private int UP_SELLING_PERCENTAGE = 70;
 
     private boolean isBatchWiseProducts;
@@ -231,6 +232,9 @@ public class SchemeDetailsMasterHelper {
                     if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_ON)) {
                         IS_SCHEME_ON = true;
                         IS_SCHEME_ON_MASTER = true;
+                        if (c.getInt(1) > 0) {
+                            IS_SCHEME_QPS_TRACKING = true;
+                        }
                     } else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_EDITABLE))
                         IS_SCHEME_EDITABLE = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_SHOW_SCREEN)) {
@@ -2758,7 +2762,7 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-    private HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeId() {
+    public HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeId() {
         return mSchemeHistoryListBySchemeId;
     }
 
