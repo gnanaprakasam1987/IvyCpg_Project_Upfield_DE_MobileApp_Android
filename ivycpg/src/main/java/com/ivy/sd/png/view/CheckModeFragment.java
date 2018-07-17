@@ -144,7 +144,7 @@ public class CheckModeFragment extends IvyBaseFragment
         llAccountNo = (LinearLayout) rootView.findViewById(R.id.llAccountNo);
 
         if (mPaymentBO.getAmount() > 0) {
-            mCollectAmountET.setText(bmodel.getWithoutExponential(mPaymentBO.getAmount()));
+            mCollectAmountET.setText(SDUtil.getWithoutExponential(mPaymentBO.getAmount()));
             mCollectAmountET.setSelection(mCollectAmountET.getText().length());
         }
 
@@ -359,7 +359,7 @@ public class CheckModeFragment extends IvyBaseFragment
                         else
                             qty = "";
 
-                        mCollectAmountET.setText(bmodel.getWithoutExponential(SDUtil.convertToDouble(qty)));
+                        mCollectAmountET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(qty)));
                         Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                                 Toast.LENGTH_SHORT).show();
                     } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CHEQUE)) {
@@ -371,7 +371,7 @@ public class CheckModeFragment extends IvyBaseFragment
                         else
                             qty = "";
 
-                        mCollectAmountET.setText(bmodel.getWithoutExponential(SDUtil.convertToDouble(qty)));
+                        mCollectAmountET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(qty)));
                         Toast.makeText(
                                 getActivity(),
                                 getResources()
@@ -384,7 +384,7 @@ public class CheckModeFragment extends IvyBaseFragment
                 } else {
                     qty = qty.length() > 1 ? qty
                             .substring(0, qty.length() - 1) : "0";
-                    mCollectAmountET.setText(bmodel.getWithoutExponential(SDUtil.convertToDouble(qty)));
+                    mCollectAmountET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(qty)));
                 }
             }
         });
@@ -614,7 +614,7 @@ public class CheckModeFragment extends IvyBaseFragment
     public void updateView(PaymentBO paymentBO) {
         mPaymentBO = paymentBO;
         String strAmt = mPaymentBO.getAmount() + "";
-        mCollectAmountET.setText(bmodel.getWithoutExponential(SDUtil.convertToDouble(strAmt)));
+        mCollectAmountET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(strAmt)));
         mCollectAmountET.setSelection(mCollectAmountET.getText().length());
 
         mChequeDateBTN.setText(DateUtil.convertFromServerDateToRequestedFormat(

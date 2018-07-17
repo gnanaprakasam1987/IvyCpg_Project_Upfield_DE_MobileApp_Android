@@ -4198,7 +4198,7 @@ public class ProductHelper {
                 sb.append(bomReturnBo.getpSrp() + ","
                         + bomReturnBo.getPieceUomId() + ","
                         + bomReturnBo.getTypeId() + ",");
-                sb.append(QT(bmodel.getWithoutExponential((bomReturnBo.getLiableQty() - bomReturnBo
+                sb.append(QT(SDUtil.getWithoutExponential((bomReturnBo.getLiableQty() - bomReturnBo
                         .getReturnQty()) * (double) bomReturnBo.getpSrp())) + ",");
                 sb.append(QT(bmodel.getRetailerMasterBO().getRetailerID()));
 

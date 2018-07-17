@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -289,7 +290,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
             holder.PRDNAME.setText(holder.productMasterBO.getProductShortName());
             holder.pdt_total_qty.setText(holder.productMasterBO.getTotalQty() + "");
-            holder.pdt_total_value.setText(bmodel.getWithoutExponential(holder.productMasterBO.getTotalamount()) + "");
+            holder.pdt_total_value.setText(SDUtil.getWithoutExponential(holder.productMasterBO.getTotalamount()) + "");
 
             return (row);
         }
