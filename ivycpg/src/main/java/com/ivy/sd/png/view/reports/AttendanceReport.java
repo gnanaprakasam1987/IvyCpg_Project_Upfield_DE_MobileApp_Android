@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttendanceReportBo;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.Vector;
@@ -22,7 +23,7 @@ import java.util.Vector;
 /**
  * Created by mansoor.k on 12-10-2016.
  */
-public class AttendanceReport extends Fragment {
+public class AttendanceReport extends IvyBaseFragment {
 
     private ListView lvwplist;
     private BusinessModel bmodel;

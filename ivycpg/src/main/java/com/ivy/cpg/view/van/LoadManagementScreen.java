@@ -358,7 +358,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
     private void vanLoadSubRoutine(String menuName) {
         vanLoadStockView = new Intent(LoadManagementScreen.this,
-                VanLoadStockView_activity.class);
+                VanLoadStockViewActivity.class);
         vanLoadStockView.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         vanLoadStockView.putExtra("screentitle", menuName);
         new DownloadStockViewApply().execute();

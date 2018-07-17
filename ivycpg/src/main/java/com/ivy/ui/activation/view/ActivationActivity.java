@@ -48,7 +48,7 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_activation;
+        return 0;
     }
 
     @Override
