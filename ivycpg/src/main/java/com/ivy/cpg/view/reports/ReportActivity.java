@@ -1,17 +1,11 @@
 package com.ivy.cpg.view.reports;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +13,6 @@ import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.ivy.core.base.view.BaseActivity;
@@ -36,13 +29,11 @@ import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
-import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.TaxGstHelper;
 import com.ivy.sd.png.provider.TaxHelper;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
@@ -50,7 +41,7 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
 import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
 import com.ivy.sd.png.view.reports.AssetTrackingReportFragment;
-import com.ivy.sd.png.view.reports.AttendanceReport;
+import com.ivy.cpg.view.reports.attendancereport.AttendanceReport;
 import com.ivy.sd.png.view.reports.BrandwisePerformance;
 import com.ivy.sd.png.view.reports.ClosingStockReportFragment;
 import com.ivy.sd.png.view.reports.CreditNoteReportFragment;
@@ -78,8 +69,6 @@ import com.ivy.sd.png.view.reports.WebViewArchivalReportFragment;
 import com.ivy.ui.reports.beginstockreport.view.BeginningStockFragment;
 import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,37 +93,6 @@ public class ReportActivity extends BaseActivity implements
 
         Toolbar  toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        try {
-            LinearLayout rootBg = (LinearLayout) findViewById(R.id.root);
-            File f = new File(
-                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                            + "/"
-                            + bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserid() + "APP");
-            if (f.isDirectory()) {
-                File files[] = f.listFiles(new FilenameFilter() {
-                    public boolean accept(File directory, String fileName) {
-                        return fileName.startsWith("bg_menu");
-                    }
-                });
-                for (File temp : files) {
-                    Bitmap bitmapImage = BitmapFactory.decodeFile(temp
-                            .getAbsolutePath());
-                    Drawable bgrImage1 = new BitmapDrawable(this.getResources(), bitmapImage);
-                    int sdk = android.os.Build.VERSION.SDK_INT;
-                    if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        rootBg.setBackgroundDrawable(bgrImage1);
-                    } else {
-                        rootBg.setBackground(bgrImage1);
-                    }
-                    break;
-                }
-
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
 
         // Set title to actionbar
         setScreenTitle(getResources().getString(R.string.report));
@@ -176,14 +134,6 @@ public class ReportActivity extends BaseActivity implements
     public void initializeDi() {
 
     }
-
-    /*@SuppressLint("NewApi")
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.report_menu_fragment_activity_layout);
-
-    }*/
 
     private void setLanguage() {
         SharedPreferences sharedPrefs = PreferenceManager.
@@ -262,7 +212,6 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_ATTENDANCE_REPORT)) {
-            bmodel.reportHelper.downloadAttendanceReport();
 
             AttendanceReport attendanceReport = new AttendanceReport();
             transaction.replace(R.id.fragment_content, attendanceReport);
