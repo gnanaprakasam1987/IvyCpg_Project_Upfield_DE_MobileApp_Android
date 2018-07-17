@@ -2011,6 +2011,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                     if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                         bmodel.getRetailerWiseSellerType();
+                        bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
                     }
 
 

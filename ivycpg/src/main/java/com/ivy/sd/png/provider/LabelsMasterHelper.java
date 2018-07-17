@@ -9,6 +9,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +17,14 @@ import java.util.Map;
 public class LabelsMasterHelper {
 
     private final Context mContext;
-    private final BusinessModel bmodel;
+   // private final BusinessModel bmodel;
 
     private static LabelsMasterHelper instance = null;
     private Map<String, String> labelsMap;
 
-    private LabelsMasterHelper(Context context) {
+    public LabelsMasterHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        //this.bmodel = (BusinessModel) context;
     }
 
     public static LabelsMasterHelper getInstance(Context context) {
@@ -43,7 +44,7 @@ public class LabelsMasterHelper {
 
             Cursor c = db
                     .selectSQL("SELECT key,value from LabelsMaster where lang = "
-                            + bmodel.QT(PreferenceManager
+                            + AppUtils.QT(PreferenceManager
                             .getDefaultSharedPreferences(mContext)
                             .getString("languagePref",
                                     ApplicationConfigs.LANGUAGE)));
@@ -109,7 +110,7 @@ public class LabelsMasterHelper {
 
             Cursor c = db
                     .selectSQL("SELECT value from LabelsMaster where lang = "
-                            + bmodel.QT(PreferenceManager
+                            + AppUtils.QT(PreferenceManager
                             .getDefaultSharedPreferences(mContext)
                             .getString("languagePref",
                                     ApplicationConfigs.LANGUAGE)) + " and key = 'SYNC_CONTENT'");

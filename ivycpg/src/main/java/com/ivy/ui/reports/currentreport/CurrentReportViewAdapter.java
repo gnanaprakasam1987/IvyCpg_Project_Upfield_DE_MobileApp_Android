@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports.currentreport;
+package com.ivy.ui.reports.currentreport;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,21 +8,23 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StockReportBO;
-import com.ivy.sd.png.model.BusinessModel;
+
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
 
 public class CurrentReportViewAdapter extends ArrayAdapter<StockReportBO> {
     private ArrayList<StockReportBO> items;
-    private BusinessModel businessModel;
+    private ConfigurationMasterHelper configurationMasterHelper;
 
-
-    public CurrentReportViewAdapter(ArrayList<StockReportBO> items, Context context, BusinessModel businessModel, CurrentReportModel currentReportModel) {
+    public CurrentReportViewAdapter(ArrayList<StockReportBO> items, Context context,
+                                    ConfigurationMasterHelper configurationMasterHelper, CurrentReportViewFragment currentReportModel) {
         super(context, R.layout.row_stock_report, items);
         this.items = items;
-        this.businessModel = businessModel;
+        this.configurationMasterHelper = configurationMasterHelper;
         this.currentReportViewAdapterCallback = currentReportModel;
     }
 
@@ -50,19 +52,18 @@ public class CurrentReportViewAdapter extends ArrayAdapter<StockReportBO> {
             holder = new ViewHolder();
 
             holder.psName = row.findViewById(R.id.orderPRODNAME);
-            holder.psName.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+            holder.psName.setMaxLines(configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
             holder.sih = row.findViewById(R.id.sih);
             holder.sihCase = row.findViewById(R.id.sih_case);
             holder.sihOuter = row.findViewById(R.id.sih_outer);
             holder.prodCode = row.findViewById(R.id.prdcode);
             row.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    //productName.setText(holder.pnNme);
                     currentReportViewAdapterCallback.productName(holder.pnNme);
                 }
             });
 
-            if (businessModel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+            if (configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
                 holder.sihCase.setVisibility(View.VISIBLE);
                 holder.sihOuter.setVisibility(View.VISIBLE);
             } else {
@@ -77,7 +78,7 @@ public class CurrentReportViewAdapter extends ArrayAdapter<StockReportBO> {
         holder.ref = position;
         holder.psName.setText(product.getProductShortName());
         holder.pnNme = product.getProductName();
-        if (businessModel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+        if (configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
             boolean isUomWiseSplitted = false;
             int rem_sih = 0;
             int totalQty = product.getSih();

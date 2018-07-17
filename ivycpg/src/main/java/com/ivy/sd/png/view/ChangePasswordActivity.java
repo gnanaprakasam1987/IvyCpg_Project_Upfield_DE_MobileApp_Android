@@ -303,6 +303,8 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                 onCreateDialog(1, getResources().getString(R.string.invalid_password));
             } else if (result == -1) {
                 onCreateDialog(1, errorMsg);
+            } else if (result == -3) {
+                onCreateDialog(2, getResources().getString(R.string.pwd_policy_not_match));
             }
         }
 

@@ -1,10 +1,9 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.van.vanstockapply;
 
 import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.StockReportMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -14,24 +13,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class StockReportMasterHelper {
+public class VanLoadStockApplyHelper {
 
     private Context context;
     private BusinessModel bmodel;
-    private static StockReportMasterHelper instance = null;
-    private Vector<StockReportMasterBO> StockReportMaster = null;
-    private Vector<StockReportMasterBO> StockReportMasterAll = null;
-    private Vector<StockReportMasterBO> BeginingStockReport;
+    private static VanLoadStockApplyHelper instance = null;
+    private Vector<VanLoadStockApplyBO> StockReportMaster = null;
+    private Vector<VanLoadStockApplyBO> StockReportMasterAll = null;
     private HashMap<String, ArrayList<String>> mBatchIDByProductID;
 
-    protected StockReportMasterHelper(Context context) {
+    protected VanLoadStockApplyHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
     }
 
-    public static StockReportMasterHelper getInstance(Context context) {
+    public static VanLoadStockApplyHelper getInstance(Context context) {
         if (instance == null) {
-            instance = new StockReportMasterHelper(context);
+            instance = new VanLoadStockApplyHelper(context);
         }
         return instance;
     }
@@ -39,9 +37,9 @@ public class StockReportMasterHelper {
     /**
      * @return
      */
-    public Vector<StockReportMasterBO> downloadStockReportMaster() {
+    public Vector<VanLoadStockApplyBO> downloadStockReportMaster() {
         try {
-            StockReportMasterBO stock, stock1;
+            VanLoadStockApplyBO stock, stock1;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -54,16 +52,16 @@ public class StockReportMasterHelper {
             Cursor c = db.selectSQL(query);
 
             if (c != null) {
-                StockReportMaster = new Vector<StockReportMasterBO>();
+                StockReportMaster = new Vector<VanLoadStockApplyBO>();
                 while (c.moveToNext()) {
-                    stock = new StockReportMasterBO();
-                    stock.setProductid(c.getInt(0));
-                    stock.setCaseqty(c.getInt(1));
-                    stock.setPieceqty(c.getInt(2));
-                    stock.setProductname(c.getString(3));
-                    stock.setProductshortname(c.getString(4));
+                    stock = new VanLoadStockApplyBO();
+                    stock.setProductId(c.getInt(0));
+                    stock.setCaseQuantity(c.getInt(1));
+                    stock.setPieceQuantity(c.getInt(2));
+                    stock.setProductName(c.getString(3));
+                    stock.setProductShortName(c.getString(4));
                     stock.setMrp(c.getFloat(5));
-                    stock.setCasesize(c.getInt(6));
+                    stock.setCaseSize(c.getInt(6));
                     stock.setUid(c.getString(7));
                     stock.setOuterQty(c.getInt(8));
                     stock.setOuterSize(c.getInt(9));
@@ -71,9 +69,9 @@ public class StockReportMasterHelper {
                             + (c.getInt(8) * c.getInt(9)));
                     stock.setBatchId(c.getInt(10));
 
-                    stock.setBatch_number(c.getString(13));
+                    stock.setBatchNumber(c.getString(13));
                     stock.setBasePrice(c.getFloat(14));
-                    stock.setIsManuvalVanload(c.getInt(15));
+                    stock.setIsManualVanload(c.getInt(15));
                     stock.setLoadNO(c.getString(16));
                     stock.setDate(c.getString(17));
                     StockReportMaster.add(stock);
@@ -85,25 +83,25 @@ public class StockReportMasterHelper {
             Cursor c1 = db
                     .selectSQL("select A.pid,sum(A.caseQty),sum(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,A.uid,sum(A.outerQty),B.dOuomQty,A.BatchId,C.batchNum, B.baseprice,A.Flag,IFNULL(A.LoadNo,A.uid),A.date from VanLoad A inner join productmaster B on A.pid=B.pid LEFT JOIN BatchMaster C on A.BatchId=C.batchid and A.pid=C.pid  group by A.pid,C.batchid ORDER BY B.rowid");
             if (c1 != null) {
-                StockReportMasterAll = new Vector<StockReportMasterBO>();
+                StockReportMasterAll = new Vector<VanLoadStockApplyBO>();
                 while (c1.moveToNext()) {
-                    stock1 = new StockReportMasterBO();
-                    stock1.setProductid(c1.getInt(0));
-                    stock1.setCaseqty(c1.getInt(1));
-                    stock1.setPieceqty(c1.getInt(2));
-                    stock1.setProductname(c1.getString(3));
-                    stock1.setProductshortname(c1.getString(4));
+                    stock1 = new VanLoadStockApplyBO();
+                    stock1.setProductId(c1.getInt(0));
+                    stock1.setCaseQuantity(c1.getInt(1));
+                    stock1.setPieceQuantity(c1.getInt(2));
+                    stock1.setProductName(c1.getString(3));
+                    stock1.setProductShortName(c1.getString(4));
                     stock1.setMrp(c1.getFloat(5));
-                    stock1.setCasesize(c1.getInt(6));
+                    stock1.setCaseSize(c1.getInt(6));
                     stock1.setUid(c1.getString(7));
                     stock1.setOuterQty(c1.getInt(8));
                     stock1.setOuterSize(c1.getInt(9));
                     stock1.setTotalQty((c1.getInt(1) * c1.getInt(6))
                             + c1.getInt(2) + (c1.getInt(8) * c1.getInt(9)));
                     stock1.setBatchId(c1.getInt(10));
-                    stock1.setBatch_number(c1.getString(11));
+                    stock1.setBatchNumber(c1.getString(11));
                     stock1.setBasePrice(c1.getFloat(12));
-                    stock1.setIsManuvalVanload(c1.getInt(13));
+                    stock1.setIsManualVanload(c1.getInt(13));
                     stock1.setLoadNO(c1.getString(14));
                     stock1.setDate(c1.getString(15));
                     StockReportMasterAll.add(stock1);
@@ -119,53 +117,18 @@ public class StockReportMasterHelper {
     }
 
     public void setStockReportMaster(
-            Vector<StockReportMasterBO> stockReportMaster) {
+            Vector<VanLoadStockApplyBO> stockReportMaster) {
         StockReportMaster = stockReportMaster;
     }
 
-    public Vector<StockReportMasterBO> getStockReportMaster() {
+    public Vector<VanLoadStockApplyBO> getStockReportMaster() {
 
         return StockReportMaster;
     }
 
-    public Vector<StockReportMasterBO> getStockReportMasterAll() {
+    public Vector<VanLoadStockApplyBO> getStockReportMasterAll() {
 
         return StockReportMasterAll;
-    }
-
-    public void updateSIH(Vector<StockReportMasterBO> mylist,
-                          Vector<String> SIHApplyById) {
-
-        try {
-            String uid;
-            StockReportMasterBO product;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            int size = mylist.size();
-            for (int i = 0; i < size; i++) {
-                product = mylist.get(i);
-                if (SIHApplyById.contains(mylist.get(i).getUid())) {
-                    String sql = "update ProductMaster set sih=" +
-                            +product.getTotalQty() + " where PID = "
-                            + product.getProductid();
-                    db.executeQ(sql);
-                }
-            }
-            for (int i = 0; i < SIHApplyById.size(); i++) {
-                uid = SIHApplyById.get(i);
-                String sql1 = "insert into StockApply(uid,date) values("
-                        + uid
-                        + ","
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME)) + ")";
-                db.executeQ(sql1);
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            Commons.printException(e);
-        }
     }
 
     /**
@@ -176,7 +139,7 @@ public class StockReportMasterHelper {
      *                     <p>
      *                     method to use update stock in productmaster and stockinhandmaster,while stock apply
      */
-    public void updateSIHMaster(Vector<StockReportMasterBO> mylist,
+    public void updateSIHMaster(Vector<VanLoadStockApplyBO> mylist,
                                 Vector<String> SIHApplyById, String uid, int flag) {
 
         ArrayList<Integer> batchIDList = new ArrayList<Integer>();
@@ -221,11 +184,11 @@ public class StockReportMasterHelper {
             }
 
             if (batchIDList.size() == 0) {
-                for (StockReportMasterBO stockReport : mylist) {
+                for (VanLoadStockApplyBO stockReport : mylist) {
                     if (uid.equals(stockReport.getUid())) {
-                        if (!isAlreadyStockAvailable(stockReport.getProductid() + "", stockReport.getBatchId() + "", db)) {
+                        if (!isAlreadyStockAvailable(stockReport.getProductId() + "", stockReport.getBatchId() + "", db)) {
                             String columns = "pid,qty,batchid";
-                            String values = stockReport.getProductid() + ","
+                            String values = stockReport.getProductId() + ","
                                     + stockReport.getTotalQty() + ","
                                     + stockReport.getBatchId();
 
@@ -233,7 +196,7 @@ public class StockReportMasterHelper {
                         } else {
                             String sql = "update StockInHandMaster set upload='N',qty=qty+"
                                     + stockReport.getTotalQty() + " where pid="
-                                    + stockReport.getProductid() + " and batchid="
+                                    + stockReport.getProductId() + " and batchid="
                                     + stockReport.getBatchId();
                             db.executeQ(sql);
                         }
@@ -241,7 +204,7 @@ public class StockReportMasterHelper {
 
                         String sql = "update ProductMaster set sih= sih+"
                                 + stockReport.getTotalQty() + " where PID = "
-                                + stockReport.getProductid();
+                                + stockReport.getProductId();
                         db.executeQ(sql);
 
                     }
@@ -321,27 +284,6 @@ public class StockReportMasterHelper {
 
     }
 
-    private boolean isAlreadySihAvailable(String productid, String batchid) {
-
-
-        if (mBatchIDByProductID != null) {
-
-
-            ArrayList<String> batchidList = mBatchIDByProductID.get(productid);
-            if (batchidList == null) {
-                return false;
-            } else {
-                for (String bid : batchidList) {
-                    if (bid.equals(batchid)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     private boolean isAlreadyStockAvailable(String productid, String batchid, DBUtil db) {
         String query = "select count(pid) from Stockinhandmaster where pid=" + productid
                 + " and batchid=" + batchid;
@@ -386,47 +328,7 @@ public class StockReportMasterHelper {
         return tot;
     }
 
-    public Vector<StockReportMasterBO> downloadBeginingStockReport() {
-        try {
-            StockReportMasterBO stock;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
 
-            String query = "select DISTINCT A.pid,A.caseQty,A.pcsQty,B.pname,B.psname,B.mrp,B.dUomQty,A.uid,A.outerQty,B.dOuomQty,B.baseprice,IFNULL(A.LoadNo,A.uid) from VanLoad A inner join productmaster B on A.pid=B.pid ";
-            Cursor c = db.selectSQL(query);
-
-            if (c != null) {
-                BeginingStockReport = new Vector<StockReportMasterBO>();
-                while (c.moveToNext()) {
-                    stock = new StockReportMasterBO();
-                    stock.setProductid(c.getInt(0));
-                    stock.setCaseqty(c.getInt(1));
-                    stock.setPieceqty(c.getInt(2));
-                    stock.setProductname(c.getString(3));
-                    stock.setProductshortname(c.getString(4));
-                    stock.setMrp(c.getFloat(5));
-                    stock.setCasesize(c.getInt(6));
-                    stock.setUid(c.getString(7));
-                    stock.setOuterQty(c.getInt(8));
-                    stock.setOuterSize(c.getInt(9));
-                    stock.setTotalQty((c.getInt(1) * c.getInt(6)) + c.getInt(2)
-                            + (c.getInt(8) * c.getInt(9)));
-
-                    stock.setBasePrice(c.getFloat(10));
-                    stock.setLoadNO(c.getString(11));
-                    BeginingStockReport.add(stock);
-
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-
-            Commons.printException(e);
-        }
-        return BeginingStockReport;
-    }
 
     /**
      * @param uid
@@ -452,8 +354,9 @@ public class StockReportMasterHelper {
                     + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME))
                     + ",'C'," + bmodel.QT(upload) + ")";
             db.executeQ(sql1);
+            db.closeDB();
         } catch (Exception e) {
-            db.close();
+            Commons.printException(e);
         }
     }
 }

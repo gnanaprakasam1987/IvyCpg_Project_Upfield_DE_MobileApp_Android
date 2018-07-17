@@ -72,8 +72,6 @@ public class ReportHelper {
     private String webViewPlanUrl = "";
     private String webReportUrl = "";
     private ArrayList<CreditNoteListBO> creditNoteList;
-    private ArrayList<AttendanceReportBo> attendanceList;
-    private ArrayList<String> attendanceMonth;
 
     private ArrayList<RetailerMasterBO> assetRetailerList;
     private ArrayList<AssetTrackingBrandBO> assetBrandList;
@@ -2465,23 +2463,6 @@ public class ReportHelper {
         this.creditNoteList = creditNoteList;
     }
 
-    public ArrayList<AttendanceReportBo> getAttendanceList() {
-
-        return attendanceList;
-    }
-
-    public void setAttendanceList(ArrayList<AttendanceReportBo> attendanceList) {
-        this.attendanceList = attendanceList;
-    }
-
-    public ArrayList<String> getAttendanceMonth() {
-        return attendanceMonth;
-    }
-
-    public void setAttendanceMonth(ArrayList<String> attendanceMonth) {
-        this.attendanceMonth = attendanceMonth;
-    }
-
     public void loadCreditNote() {
         try {
             creditNoteList = new ArrayList<>();
@@ -2716,79 +2697,9 @@ public class ReportHelper {
         }
     }
 
-    public void downloadAttendanceReport() {
-        try {
-            attendanceList = new ArrayList<>();
-            attendanceMonth = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT Date,Status,TimeIn,TimeOut,TimeSpent,Month from AttendanceReport where " +
-                            "userid =" + bmodel.userMasterHelper.getUserMasterBO().getUserid());
-            if (c != null) {
-                while (c.moveToNext()) {
-                    AttendanceReportBo obj = new AttendanceReportBo();
-                    obj.setDate(c.getString(0));
-                    obj.setDay(getDay(c.getString(0)));
-                    obj.setStatus(c.getString(1));
-                    obj.setTimeIn(c.getString(2));
-                    obj.setTimeOut(c.getString(3));
-                    obj.setTimeSpent(c.getString(4));
-                    obj.setMonth(c.getString(5));
 
 
-                    attendanceList.add(obj);
-                }
-                c.close();
-            }
-            c = db
-                    .selectSQL("SELECT distinct Month from AttendanceReport where " +
-                            "userid =" + bmodel.userMasterHelper.getUserMasterBO().getUserid());
-            if (c != null) {
-                while (c.moveToNext()) {
-                    attendanceMonth.add(c.getString(0));
-                }
-                c.close();
-            }
-            db.closeDB();
 
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-    }
-
-    private String getDay(String date) {
-        try {
-            DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-            Date mdate = formatter.parse(date);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(mdate);
-            switch (cal.get(Calendar.DAY_OF_WEEK)) {
-                case 1:
-                    return "Sunday";
-                case 2:
-                    return "Monday";
-                case 3:
-                    return "Tuesday";
-                case 4:
-                    return "Wednesday";
-                case 5:
-                    return "Thursday";
-                case 6:
-                    return "Friday";
-                case 7:
-                    return "Saturday";
-                default:
-                    return "Monday";
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-            return "Monday";
-        }
-    }
 
     public int getPaymentPrintCount(String groupId) {
         int count = 0;
