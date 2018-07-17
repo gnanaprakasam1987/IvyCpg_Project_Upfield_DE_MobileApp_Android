@@ -330,7 +330,7 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
-    public Completable changeUserPassword(final int UserID, final String pwd) {
+    public Completable changeUserPassword(final int userID, final String pwd) {
         return Single.zip(Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() {
@@ -402,7 +402,7 @@ public class UserDataManagerImpl implements UserDataManager {
                         password = pwd;
                     }
                     String query = "Update UserMaster set Password='" + password
-                            + "' where userID=" + UserID;
+                            + "' where userID=" + userID;
                     mDbUtil.executeQ(query);
                     appDataProvider.getUser().setPassword(password);
                     String query1 = "Update AppVariables set PasswordCreatedDate=" + QT(appDataProvider.getUser().getDownloadDate());

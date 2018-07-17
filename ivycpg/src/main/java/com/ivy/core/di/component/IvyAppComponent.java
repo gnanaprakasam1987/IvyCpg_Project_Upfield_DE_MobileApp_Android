@@ -3,6 +3,7 @@ package com.ivy.core.di.component;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.android.gms.common.util.DbUtils;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
@@ -12,8 +13,10 @@ import com.ivy.core.di.module.ActivityModule;
 import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.core.di.scope.ActivityContext;
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.UserInfo;
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -33,6 +36,9 @@ public interface IvyAppComponent {
     DataManager dataManager();
 
     ConfigurationMasterHelper configurationMasterHelper();
+
+    @DataBaseInfo
+    DBUtil dbUtil();
 
     AppDataProvider appDataProvider();
 

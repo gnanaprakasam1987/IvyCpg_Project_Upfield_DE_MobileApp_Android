@@ -7,6 +7,8 @@ import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
+import com.ivy.ui.photocapture.data.PhotoCaptureDataManager;
+import com.ivy.ui.photocapture.data.PhotoCaptureDataManagerImpl;
 import com.ivy.ui.photocapture.presenter.PhotoCapturePresenterImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
@@ -39,6 +41,10 @@ public class PhotoCaptureModule {
         return new AppSchedulerProvider();
     }
 
+    @Provides
+    PhotoCaptureDataManager providesPhotoCaptureDataManager(PhotoCaptureDataManagerImpl photoCaptureDataManager){
+        return photoCaptureDataManager;
+    }
 
     @Provides
     @PerActivity
