@@ -1329,10 +1329,10 @@ public class ProfileFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             //updateLocationMasterList();
             bmodel.newOutletHelper.downloadLinkRetailer();
-            bmodel.mRetailerHelper.loadContractData();
             bmodel.newOutletHelper.loadContactTitle();
             bmodel.newOutletHelper.loadContactStatus();
-            //channelMaster = bmodel.channelMasterHelper.getChannelMaster();
+            bmodel.mRetailerHelper.loadContractData();
+
             return true;
         }
     }

@@ -62,8 +62,7 @@ public class IvyAppModule {
     @Provides
     @DataBaseInfo
     protected DBUtil providesDBUtil() {
-        return new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        return new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
     }
 
     @Provides

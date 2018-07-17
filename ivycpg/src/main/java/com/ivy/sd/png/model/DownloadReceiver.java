@@ -13,7 +13,7 @@ import com.ivy.sd.png.view.NewOutletFragment.NewRetailerReceiver;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.sd.png.view.TLAttendanceActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
-import com.ivy.sd.png.view.profile.ProfileEditFragment;
+
 
 public class DownloadReceiver extends BroadcastReceiver {
 

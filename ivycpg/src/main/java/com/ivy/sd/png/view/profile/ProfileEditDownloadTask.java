@@ -31,14 +31,16 @@ public class ProfileEditDownloadTask extends AsyncTask<Integer,Integer,Boolean> 
 
     @Override
     protected Boolean doInBackground(Integer... integers) {
+
         bmodel.newOutletHelper.loadContactTitle();
         bmodel.newOutletHelper.loadContactStatus();
         bmodel.newOutletHelper.downloadLinkRetailer();
-        bmodel.mRetailerHelper.loadContractData();
-        bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
-        channelMaster = bmodel.channelMasterHelper.getChannelMaster();
         bmodel.newOutletHelper.downloadLocationMaster();
         LinkedHashMap<Integer, ArrayList<LocationBO>> locationListByLevId = bmodel.newOutletHelper.getLocationListByLevId();
+        bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
+        bmodel.mRetailerHelper.loadContractData();
+        channelMaster = bmodel.channelMasterHelper.getChannelMaster();
+
         if (locationListByLevId != null) {
             int count = 0;
             for (Map.Entry<Integer, ArrayList<LocationBO>> entry : locationListByLevId.entrySet()) {

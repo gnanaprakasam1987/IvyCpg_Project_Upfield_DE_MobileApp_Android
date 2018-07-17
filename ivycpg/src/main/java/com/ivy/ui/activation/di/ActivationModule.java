@@ -1,7 +1,6 @@
 package com.ivy.ui.activation.di;
 
 
-import com.ivy.core.di.module.ActivityModule;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.activation.ActivationContract;
 import com.ivy.ui.activation.data.ActivationDataManager;
@@ -47,7 +46,8 @@ public class ActivationModule {
 
     @Provides
     @PerActivity
-    ActivationContract.ActivationPresenter<ActivationContract.ActivationView> providesActivationPresenter(ActivationPresenterImpl<ActivationContract.ActivationView> activationPresenter) {
+    ActivationContract.ActivationPresenter<ActivationContract.ActivationView>
+    providesActivationPresenter(ActivationPresenterImpl<ActivationContract.ActivationView> activationPresenter) {
         return activationPresenter;
     }
 

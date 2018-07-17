@@ -197,8 +197,8 @@ public class ProfileEditFragment extends IvyBaseFragment
     private ArrayAdapter<LocationBO> locationAdapter1 = null,locationAdapter2 = null;
     private ArrayAdapter<NewOutletBO> contactTitleAdapter = null;
 
-    private TextView textview[] = new TextView[100];
-    private AppCompatEditText editText[] = new AppCompatEditText[100];
+    private TextView textview[] = new TextView[150];
+    private AppCompatEditText editText[] = new AppCompatEditText[150];
 
     private ArrayList<NewOutletBO> mcontactTitleList = null,mcontractStatusList = null;
     private ArrayList<NewOutletAttributeBO> attributeList = null,attributeHeaderList = null;
@@ -445,7 +445,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         if (is_contact_title2 || is_contact_title1) {
             mcontactTitleList = new ArrayList<>();
-            mcontactTitleList.add(0, new NewOutletBO(-1, getResources().getString(R.string.select_str) + " Title Name"));
+            mcontactTitleList.add(0, new NewOutletBO(-1, getResources().getString(R.string.select_str) + "Title Name"));
             mcontactTitleList.addAll(bmodel.newOutletHelper.getContactTitleList());
             mcontactTitleList.add(bmodel.newOutletHelper.getContactTitleList().size() + 1, new NewOutletBO(0, "Others"));
             contactTitleAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontactTitleList);
@@ -558,8 +558,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
 
                 } else if (configCode.equals(PROFILE_04) && flag == 1 && Order == 1) {
-                    if (retailerObj.getAddress2() == null
-                            || retailerObj.getAddress2().equals("null")) {
+                    if (retailerObj.getAddress2() == null || retailerObj.getAddress2().equals("null")) {
                         retailerObj.setAddress2("");
                     }
 
@@ -569,13 +568,10 @@ public class ProfileEditFragment extends IvyBaseFragment
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
                                 commonsparams);
                     else
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
 
@@ -1860,7 +1856,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                 //contact title other edit text
                 editTextInputLayout4 = new TextInputLayout(getActivity());
-                editTextInputLayout4.addView(getSingleEditTextView(other2_editText_index,mConfigCode,getResources().getString(R.string.title),""));
+                editTextInputLayout4.addView(getSingleEditTextView(other2_editText_index,mConfigCode,"Title",""));
                 editText[other2_editText_index].addTextChangedListener(new TextWatcher() {
                     @Override
                     public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
@@ -2052,7 +2048,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         }
 
-        if (menuCode.equals("PROFILE43")) {
+        if (menuCode.equals(PROFILE_43)) {
             int selected_pos = 0;
             try {
                 contractSpinner = new MaterialSpinner(getActivity());
@@ -2269,11 +2265,9 @@ public class ProfileEditFragment extends IvyBaseFragment
             rField5Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
-
                 }
 
                 public void onNothingSelected(AdapterView<?> arg0) {
-
                 }
 
             });
@@ -2568,7 +2562,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     dialogFragment.show(fm, "Sample Fragment");
                     dialogFragment.setCancelable(false);
                 } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.priority_products_not_available), Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getActivity(), getResources().getString(R.string.priority_products_not_available), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -4195,7 +4189,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (value != null && !value.isEmpty() && value.length() == 10)
                         verifyOtpAsyncTask(value, type);
                     else
-                        Toast.makeText(getActivity(), getResources().getString(R.string.invalid_mobile_number), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), getResources().getString(R.string.invalid_mobile_number), Toast.LENGTH_LONG).show();
                     break;
                 case "EMAIL":
                     if (isValidEmail(value))

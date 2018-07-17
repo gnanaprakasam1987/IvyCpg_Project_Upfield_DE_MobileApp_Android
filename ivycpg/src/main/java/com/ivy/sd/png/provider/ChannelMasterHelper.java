@@ -20,6 +20,20 @@ public class ChannelMasterHelper {
     private Vector<ChannelBO> channelMaster;
     private Vector<RetailerMasterBO> retailerMaster;
 
+    private static ChannelMasterHelper instance = null;
+
+    public static ChannelMasterHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new ChannelMasterHelper(context);
+        }
+        return instance;
+    }
+
+    protected ChannelMasterHelper(Context context) {
+        this.context = context;
+        this.bmodel = (BusinessModel) context;
+    }
+
     public Vector<RetailerMasterBO> getRetailerMaster() {
         return retailerMaster;
     }
@@ -28,20 +42,6 @@ public class ChannelMasterHelper {
         this.retailerMaster = retailerMaster;
     }
 
-    private static ChannelMasterHelper instance = null;
-
-    protected ChannelMasterHelper(Context context) {
-        this.context = context;
-
-        this.bmodel = (BusinessModel) context;
-    }
-
-    public static ChannelMasterHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new ChannelMasterHelper(context);
-        }
-        return instance;
-    }
 
     public void setChannelMaster(Vector<ChannelBO> channelMaster) {
         this.channelMaster = channelMaster;
@@ -235,6 +235,7 @@ public class ChannelMasterHelper {
             str = "0";
         return str;
     }
+
 
     public String getLocationHierarchy(Context mContext) {
         String sql, sql1 = "", str = bmodel.getRetailerMasterBO().getLocationId() + ",";
