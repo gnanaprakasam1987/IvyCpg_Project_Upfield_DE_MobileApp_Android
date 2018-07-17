@@ -44,6 +44,7 @@ import com.zebra.sdk.printer.ZebraPrinterFactory;
 import java.util.ArrayList;
 import java.util.Vector;
 
+@Deprecated
 public class DailyReportFragmentNew extends IvyBaseFragment {
     private static final String TAG = "DailyReportFragmentNew";
 

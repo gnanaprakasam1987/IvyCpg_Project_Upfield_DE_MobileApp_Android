@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.sd.png.view.reports.piramal;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,9 +16,10 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 /**
- * Created by maheswaran.m on 08-10-2015.
+ * Created by maheswaran.m on 16-10-2015.
  */
-public class OpportunitiesReport extends Fragment {
+public class TimeAndTravelReport extends Fragment {
+
     private FragmentTabHost mTabHost;
     private boolean createdTab = false;
     private BusinessModel bmodel;
@@ -26,18 +27,15 @@ public class OpportunitiesReport extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment_container);
         mTabHost.setForegroundGravity(Gravity.CENTER);
-        mTabHost.addTab(mTabHost.newTabSpec("Top 10").setIndicator("Top 10"),
-                TopTenRetailers.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("Remaining").setIndicator("Opportunity"),
-                TopOpportunities.class, null);
+        mTabHost.addTab(mTabHost.newTabSpec("Time Taken").setIndicator("Time Taken"),
+                OrderTakenTimeReport.class, null);
+        mTabHost.addTab(mTabHost.newTabSpec("Travel On Map").setIndicator("Travel On Map"),
+                TravelOnMap.class, null);
 
 
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
@@ -71,5 +69,4 @@ public class OpportunitiesReport extends Fragment {
         super.onDestroyView();
         mTabHost = null;
     }
-
 }

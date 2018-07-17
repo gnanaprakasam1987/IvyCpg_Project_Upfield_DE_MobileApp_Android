@@ -1,6 +1,8 @@
 package com.ivy.sd.png.view.reports;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +15,7 @@ import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
-import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.SalesFundamentalGapReportBO;
+import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
@@ -24,8 +25,6 @@ public class SalesFundamentalGapReportFragment extends Fragment {
     private ListView lv;
     private int beatID = 0;
     private String choice = "";
-    private ArrayAdapter<BeatMasterBO> brandAdapter;
-    private ArrayAdapter<String> choiceAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,13 +36,14 @@ public class SalesFundamentalGapReportFragment extends Fragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lv = (ListView) view.findViewById(R.id.list);
-        Spinner spnBeat = (Spinner) view.findViewById(R.id.spinnerBeat);
-        Spinner spnChoice = (Spinner) view.findViewById(R.id.spinnerChoice);
+        lv = view.findViewById(R.id.list);
+
+        Spinner spnBeat = view.findViewById(R.id.spinnerBeat);
+        Spinner spnChoice = view.findViewById(R.id.spinnerChoice);
 
         bmodel.beatMasterHealper.downloadBeats();
 
-        brandAdapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<BeatMasterBO> brandAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.call_analysis_spinner_layout);
         brandAdapter.add(new BeatMasterBO(0, getResources().getString(
                 R.string.select), 0));
@@ -72,9 +72,8 @@ public class SalesFundamentalGapReportFragment extends Fragment {
 
             }
         });
-        //------------------------
 
-        choiceAdapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<String> choiceAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.call_analysis_spinner_layout);
         choiceAdapter.add(getResources().getString(R.string.select));
         choiceAdapter.add("SOS");
@@ -100,8 +99,6 @@ public class SalesFundamentalGapReportFragment extends Fragment {
 
             }
         });
-        //-----------------
-
 
         return view;
     }
@@ -120,10 +117,6 @@ public class SalesFundamentalGapReportFragment extends Fragment {
         TextView txtProdName;
         TextView txtsosgap;
         TextView txtsospm;
-//        TextView txtsodgap;
-//        TextView txtsodpm;
-//        TextView txtsoskugap;
-//        TextView txtsoskupm;
     }
 
     private class MyAdapter extends ArrayAdapter<SalesFundamentalGapReportBO> {
@@ -146,8 +139,10 @@ public class SalesFundamentalGapReportFragment extends Fragment {
             return items.size();
         }
 
+        @NonNull
+        @SuppressLint("SetTextI18n")
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
 
             if (convertView == null) {
@@ -157,17 +152,11 @@ public class SalesFundamentalGapReportFragment extends Fragment {
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
                 convertView = inflater.inflate(R.layout.row_sfg_report, parent, false);
 
-                holder.txtProdName = (TextView) convertView.findViewById(R.id.txtProdName);
+                holder.txtProdName = convertView.findViewById(R.id.txtProdName);
                 holder.txtProdName.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-                holder.txtsosgap = (TextView) convertView.findViewById(R.id.txtsosgap);
-                holder.txtsospm = (TextView) convertView.findViewById(R.id.txtsospm);
-
-//                holder.txtsodgap = (TextView) convertView.findViewById(R.id.txtsodgap);
-//                holder.txtsodpm = (TextView) convertView.findViewById(R.id.txtsodpm);
-//
-//                holder.txtsoskugap = (TextView) convertView.findViewById(R.id.txtsoskugap);
-//                holder.txtsoskupm = (TextView) convertView.findViewById(R.id.txtsoskupm);
+                holder.txtsosgap = convertView.findViewById(R.id.txtsosgap);
+                holder.txtsospm = convertView.findViewById(R.id.txtsospm);
 
                 convertView.setTag(holder);
 
@@ -177,17 +166,9 @@ public class SalesFundamentalGapReportFragment extends Fragment {
 
             holder.mSKUBO = items.get(position);
             holder.position = position;
-
-            holder.txtProdName.setText(holder.mSKUBO.getPName() + "");
-
-            holder.txtsosgap.setText(holder.mSKUBO.getGap() + "");
+            holder.txtProdName.setText(holder.mSKUBO.getPName()+"");
+            holder.txtsosgap.setText(holder.mSKUBO.getGap()+"");
             holder.txtsospm.setText(holder.mSKUBO.getPM() + "");
-
-//            holder.txtsodgap.setText(holder.mSKUBO.getSODGap() + "");
-//            holder.txtsodpm.setText(holder.mSKUBO.getSODPM() + "");
-//
-//            holder.txtsoskugap.setText(holder.mSKUBO.getSOSKUGap() + "");
-//            holder.txtsoskupm.setText(holder.mSKUBO.getSOSKUPM() + "");
 
             return convertView;
         }
