@@ -8822,14 +8822,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    DecimalFormat df = new DecimalFormat("###.00");
-
-    public String getWithoutExponential(Double value) {
-        return ((value + "").contains("E")
-                ? df.format(new BigDecimal(value)) : (SDUtil.format(value, 2, 0)));
-    }
-
-
     /**
      * This method will called to planeDeviateReason
      * reason.

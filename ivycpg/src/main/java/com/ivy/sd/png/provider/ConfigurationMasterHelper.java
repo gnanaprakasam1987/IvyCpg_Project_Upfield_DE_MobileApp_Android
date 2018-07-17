@@ -517,6 +517,19 @@ public class ConfigurationMasterHelper {
     private static final String CODE_LICENSE_VALIDATION = "ORDB73";
     public boolean IS_ENABLE_LICENSE_VALIDATION;
     public boolean IS_SOFT_LICENSE_VALIDATION;
+
+    private static final String CODE_ORD_DIGIT = "ORDB74";
+    public boolean IS_ORD_DIGIT;
+    public int ORD_DIGIT;
+
+    private static final String CODE_SWITCH_WITH_OUT_TGT_SELLER_DASHBOARD = "DASH15";
+    public boolean IS_SWITCH_WITH_OUT_TGT;
+    public String SELLER_KPI_CODES;
+
+    private static final String CODE_SWITCH_WITH_OUT_TGT_SKU_WISE_DASHBOARD = "DASH16";
+    public boolean IS_SWITCH_WITH_OUT_SKU_WISE_TGT;
+    public String SELLER_SKU_WISE_KPI_CODES;
+
     /**
      * RoadActivity config *
      */
@@ -3749,6 +3762,12 @@ public class ConfigurationMasterHelper {
             IS_SHOW_DEFAULT_UOM = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
             IS_SHOW_ORDER_PHOTO_CAPTURE = false;
+            IS_ORD_DIGIT = false;
+            ORD_DIGIT = 0;
+            IS_SWITCH_WITH_OUT_TGT = false;
+            SELLER_KPI_CODES = "";
+            IS_SWITCH_WITH_OUT_SKU_WISE_TGT = false;
+            SELLER_SKU_WISE_KPI_CODES = "";
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4398,6 +4417,46 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     IS_SHOW_ORDER_PHOTO_CAPTURE = true;
+                }
+                c.close();
+            }
+
+
+            //Order Digit config
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_ORD_DIGIT) + " and Flag=1 and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    ORD_DIGIT = (c.getInt(0) <= 5) ? 5 : c.getInt(0);
+                    IS_ORD_DIGIT = true;
+                }
+                c.close();
+            }
+
+
+            //Seller KPI Dashboard
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SWITCH_WITH_OUT_TGT_SELLER_DASHBOARD) + " and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()
+                        && c.getString(0).length() > 0) {
+                    IS_SWITCH_WITH_OUT_TGT = true;
+                    SELLER_KPI_CODES = c.getString(0);
+                }
+                c.close();
+            }
+
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SWITCH_WITH_OUT_TGT_SKU_WISE_DASHBOARD) + " and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()
+                        && c.getString(0).length() > 0) {
+                    IS_SWITCH_WITH_OUT_SKU_WISE_TGT = true;
+                    SELLER_SKU_WISE_KPI_CODES = c.getString(0);
                 }
                 c.close();
             }
