@@ -52,7 +52,7 @@ import com.ivy.sd.png.view.reports.PndInvoiceReportFragment;
 import com.ivy.cpg.view.reports.promotion.PromotionTrackingReport;
 import com.ivy.sd.png.view.reports.QuestionReportFragment;
 import com.ivy.sd.png.view.reports.SOreportFragment;
-import com.ivy.sd.png.view.reports.SalesFundamentalGapReportFragment;
+import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
 import com.ivy.sd.png.view.reports.SalesReturnReportFragment;
 import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 import com.ivy.sd.png.view.reports.SellerMapViewReportFragment;
