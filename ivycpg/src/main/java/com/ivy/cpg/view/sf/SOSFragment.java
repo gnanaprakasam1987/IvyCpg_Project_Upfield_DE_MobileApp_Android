@@ -997,8 +997,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
                                     SOSBO sosBO = mCategoryForDialog.get(i);
 
-                                    int total = Integer.valueOf(sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal());
-                                    int actualVal = Integer.valueOf(sosBO.getLocations().get(mSelectedLocationIndex).getActual());
+                                    float total = SDUtil.convertToFloat((sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal()));
+                                    float actualVal = SDUtil.convertToFloat((sosBO.getLocations().get(mSelectedLocationIndex).getActual()));
 
                                     if (total >= actualVal) {
                                         isValid = true;
@@ -1028,6 +1028,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                         }
                                     } else {
                                         isValid = false;
+                                        break;
                                     }
                                 }
                             }
@@ -1767,11 +1768,11 @@ public class SOSFragment extends IvyBaseFragment implements
                             sb = holder.etActual.getText().toString();
 
                         if (!"".equals(s)) {
-                            int tot = 0;
+                            float tot = 0;
                             try {
                                 if (!holder.etTotal.getText().toString().isEmpty())
-                                    tot = Integer.valueOf(holder.sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal());
-                                if (tot >= Integer.valueOf(s.toString()))
+                                    tot = SDUtil.convertToFloat((holder.sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal()));
+                                if (tot >= SDUtil.convertToFloat(s.toString()))
                                 holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
                                 else {
                                     mBModel.showAlert(getResources().
