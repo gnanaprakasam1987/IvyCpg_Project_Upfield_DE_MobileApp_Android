@@ -12,6 +12,6 @@ import dagger.Component;
 @Singleton
 @Component(modules = {AppModule.class})
 public interface AppComponent {
-    BusinessModel provideAppContext();
-    void inject(BusinessModel main);
+   /* BusinessModel provideAppContext();
+    void inject(BusinessModel main);*/
 }

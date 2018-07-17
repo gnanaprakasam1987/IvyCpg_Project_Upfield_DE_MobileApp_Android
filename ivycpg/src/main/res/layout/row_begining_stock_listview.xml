@@ -9,6 +9,8 @@
         android:textSize="@dimen/font_small"
         android:textColor="@android:color/black"
         android:layout_width="@dimen/list_product_name_width"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
         android:layout_height="@dimen/stock_screen_txtview_height"
         android:singleLine="true"
         android:text="@string/product_name" />
@@ -45,7 +47,7 @@
         android:text="@string/zero" />
 
     <TextView
-        android:id="@+id/unitprice"
+        android:id="@+id/lineValue"
         android:textSize="@dimen/font_small"
         android:textColor="@android:color/black"
         android:layout_width="@dimen/meter_value_width_large"

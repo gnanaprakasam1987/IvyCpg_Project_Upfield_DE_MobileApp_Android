@@ -89,7 +89,7 @@ public class StockProposalModuleHelper {
 					// + ",uid = " + QT(invid) + ",pcsQty="
 					// + product.getPcsQty() + ",qty=" + product.getTotalqty()
 					// + ",duomid=" + product.getDuomid() + ",duomQty="
-					// + product.getCasesize() + ",dOuomQty="
+					// + product.getCaseSize() + ",dOuomQty="
 					// + product.getOuterSize() + ",dOuomid="
 					// + product.getDouomid() + ",date="
 					// + QT(SDUtil.now(SDUtil.DATE_GLOBAL))

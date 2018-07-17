@@ -15,7 +15,7 @@ import dagger.Provides;
 
 @Module
 public class AppModule {
-    private final BusinessModel application;
+ /*   private final BusinessModel application;
 
     public AppModule(BusinessModel application) {
         this.application = application;
@@ -25,5 +25,5 @@ public class AppModule {
     @Singleton
     BusinessModel provideApplication() {
         return application;
-    }
+    }*/
 }

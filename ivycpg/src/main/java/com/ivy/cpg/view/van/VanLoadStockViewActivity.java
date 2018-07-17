@@ -13,24 +13,26 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
-public class VanLoadStockView_activity extends IvyBaseActivityNoActionBar {
-    private Toolbar toolbar;
-    private TextView toolbarTxt;
+public class VanLoadStockViewActivity extends IvyBaseActivityNoActionBar {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        Commons.print("vanloadstockview activity");
+
         setContentView(R.layout.activity_vanload_stockview);
+
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
         BusinessModel bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbarTxt = (TextView) findViewById(R.id.tv_toolbar_title);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView toolbarTxt = findViewById(R.id.tv_toolbar_title);
         toolbarTxt.setTypeface(bmodel.configurationMasterHelper
                 .getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         setSupportActionBar(toolbar);

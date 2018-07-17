@@ -34,6 +34,7 @@ import com.ivy.sd.png.view.CollectionReportDialog;
 
 import java.util.List;
 
+@Deprecated
 public class CollectionReportFragment extends Fragment {
 
     ExpandableListView collectionListView;
