@@ -8822,7 +8822,7 @@ public class BusinessModel extends Application {
         }
     }
 
-    DecimalFormat df = new DecimalFormat("###.00");
+    DecimalFormat df = new DecimalFormat("###.000");
 
     public String getWithoutExponential(Double value) {
         return ((value + "").contains("E")

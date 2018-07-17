@@ -190,7 +190,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                         else
                             qty = "";
 
-                        mCollectAmtET.setText(qty);
+                        mCollectAmtET.setText(bmodel.getWithoutExponential(SDUtil.convertToDouble(qty)));
                         Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                                 Toast.LENGTH_SHORT).show();
                     } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CASH)) {
@@ -203,7 +203,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                             else
                                 qty = "";
 
-                            mCollectAmtET.setText(qty);
+                            mCollectAmtET.setText(bmodel.getWithoutExponential(SDUtil.convertToDouble(qty)));
                             Toast.makeText(
                                     getActivity(),
                                     getResources()
@@ -214,8 +214,9 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                     }
                     mCollectAmtET.setSelection(mCollectAmtET.getText().length());
                 } else {
-                    mCollectAmtET.setText(qty.length() > 1 ? qty
-                            .substring(0, qty.length() - 1) : "0");
+                    qty = qty.length() > 1 ? qty
+                            .substring(0, qty.length() - 1) : "0";
+                    mCollectAmtET.setText(bmodel.getWithoutExponential(SDUtil.convertToDouble(qty)));
                 }
             }
         });
@@ -271,7 +272,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
         String strAmt = mPaymentBO.getAmount() + "";
         if ("0.0".equals(strAmt))
             strAmt = "0";
-        mCollectAmtET.setText(strAmt);
+        mCollectAmtET.setText(bmodel.getWithoutExponential(SDUtil.convertToDouble(strAmt)));
         mCollectAmtET.setSelection(mCollectAmtET.getText().length());
         CollectionFragmentNew.CaseMODE caseMODE = CollectionFragmentNew.CaseMODE.valueOf(mPaymentBO.getCashMode());
         switch (caseMODE) {
