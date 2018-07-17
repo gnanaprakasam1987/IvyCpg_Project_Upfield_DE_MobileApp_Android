@@ -141,7 +141,7 @@ android {
 
 
                 res.srcDirs =  [
-                        'src/main/res/layouts/layouts_activation',
+                        'src/main/res/layouts/activation',
                         'src/main/res/layouts',
                         'src/main/res'
                 ]
