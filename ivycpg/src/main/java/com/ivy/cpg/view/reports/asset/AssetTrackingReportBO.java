@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo.asset;
+package com.ivy.cpg.view.reports.asset;
 
 /**
  * Created by anandasir.v on 8/31/2017.

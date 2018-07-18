@@ -885,7 +885,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE19": {
-                String text = bmodel.getWithoutExponential(retailerObj
+                String text = SDUtil.getWithoutExponential(retailerObj
                         .getCreditLimit());
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
