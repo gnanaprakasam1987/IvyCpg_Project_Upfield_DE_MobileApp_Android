@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.salesdeliveryreturn.SalesReturnDeliveryActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -271,7 +272,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
      *               start the Report Activity with corresponding Config object
      */
     private void gotoReportActivity(ConfigureBO config) {
-        Intent intent = new Intent(getActivity(), ReportActivity.class);
+        Intent intent = new Intent(getActivity(), SalesReturnDeliveryActivity.class);
         Bundle bun = new Bundle();
         bun.putSerializable("config", config);
         bun.putString("FROM", "REPORT");

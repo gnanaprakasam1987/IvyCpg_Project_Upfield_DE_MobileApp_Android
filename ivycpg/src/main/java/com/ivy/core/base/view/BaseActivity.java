@@ -397,8 +397,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         if (isReplace) {
             for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
-                fragmentManager.popBackStack();
-            }
+                fragmentManager.popBackStack();  }
             fragmentManager.executePendingTransactions();
         }
 
