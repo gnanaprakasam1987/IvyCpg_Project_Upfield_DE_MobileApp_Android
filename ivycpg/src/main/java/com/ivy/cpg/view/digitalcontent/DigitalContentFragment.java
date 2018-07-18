@@ -256,7 +256,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         menu.findItem(R.id.menu_next).setVisible(false);
 
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
@@ -270,7 +269,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             }
         }
         if (calledFrom.equalsIgnoreCase("MENU_DGT_SW") || calledFrom.equalsIgnoreCase("DigiCS")) {
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
         }
 

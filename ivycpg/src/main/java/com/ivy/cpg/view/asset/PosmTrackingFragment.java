@@ -339,10 +339,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         else
             menu.findItem(R.id.menu_remarks).setVisible(false);
 
-        if (!mBrandButton.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
-
         if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
@@ -353,7 +349,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             }
         }
 
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
         if (mBModel.productHelper.isFilterAvaiable(MENU_POSM)) {

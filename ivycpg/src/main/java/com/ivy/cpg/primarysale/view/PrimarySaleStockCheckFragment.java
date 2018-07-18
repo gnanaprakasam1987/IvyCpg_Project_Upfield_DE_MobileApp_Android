@@ -352,7 +352,6 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
         super.onPrepareOptionsMenu(menu);
         try {
             menu.findItem(R.id.menu_remarks).setVisible(false);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
             menu.findItem(R.id.menu_remarks).setVisible(false);
             menu.findItem(R.id.menu_scheme).setVisible(false);

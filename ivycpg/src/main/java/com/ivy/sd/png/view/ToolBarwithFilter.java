@@ -938,9 +938,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         if (!generalbutton.equals(GENERAL))
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
-        if (!brandbutton.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
 
         if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
@@ -958,11 +955,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-
-        if (isProductFilter_enabled)
-            menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
-        else
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         if (isSpecialFilter_enabled)
             menu.findItem(R.id.menu_spl_filter).setVisible(!drawerOpen);
@@ -1006,7 +998,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
             menu.findItem(R.id.menu_sih_apply).setVisible(false);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         if (bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
             menu.findItem(R.id.menu_fivefilter).setVisible(true);

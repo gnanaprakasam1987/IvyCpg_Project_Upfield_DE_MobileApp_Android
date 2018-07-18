@@ -415,7 +415,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_promo, menu);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_add).setVisible(false);
         menu.findItem(R.id.menu_next).setVisible(false);
     }

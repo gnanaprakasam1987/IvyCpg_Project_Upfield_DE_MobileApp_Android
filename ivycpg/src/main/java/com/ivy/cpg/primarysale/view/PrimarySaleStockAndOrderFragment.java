@@ -317,7 +317,6 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_next).setIcon(
                     R.drawable.ic_action_navigation_next_item);
             menu.findItem(R.id.menu_remarks).setVisible(false);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
             menu.findItem(R.id.menu_remarks).setVisible(false);
             menu.findItem(R.id.menu_scheme).setVisible(false);

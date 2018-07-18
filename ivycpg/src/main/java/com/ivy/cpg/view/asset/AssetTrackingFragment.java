@@ -358,7 +358,6 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
             menu.findItem(R.id.menu_survey).setVisible(true);
         }
 
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
         if (mBModel.productHelper.isFilterAvaiable(MENU_ASSET)) {
@@ -421,9 +420,6 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
             Intent intent = new Intent(getActivity(), AssetPosmRemoveActivity.class);
             intent.putExtra("module", MENU_ASSET);
             startActivity(intent);
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-
             return true;
         } else if (i == R.id.menu_loc_filter) {
             showLocation();

@@ -252,7 +252,6 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
 
             menu.findItem(R.id.menu_photo).setVisible(!bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_add).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
             menu.findItem(R.id.menu_loc_filter).setVisible(false);

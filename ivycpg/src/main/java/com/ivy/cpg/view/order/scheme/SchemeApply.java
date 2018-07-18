@@ -229,7 +229,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         if (screenCode.equalsIgnoreCase("CSale")) {
             menu.findItem(R.id.menu_counter_remark).setVisible(true);
         }
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }

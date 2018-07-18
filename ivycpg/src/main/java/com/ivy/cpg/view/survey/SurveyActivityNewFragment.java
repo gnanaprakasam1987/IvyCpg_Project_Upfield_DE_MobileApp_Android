@@ -1892,7 +1892,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 }
             }
         }
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY && bmodel.productHelper.isFilterAvaiable(mMenuCode))
             menu.findItem(R.id.menu_fivefilter).setVisible(true);

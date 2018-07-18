@@ -149,7 +149,6 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                 menu.findItem(R.id.menu_survey).setVisible(true);
 
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
 
 
             if (drawerOpen || navDrawerOpen)

@@ -263,7 +263,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_remarks).setVisible(false);
 
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_next).setVisible(false);
 
             if (mBModel.productHelper.isFilterAvaiable("MENU_STK_ORD"))

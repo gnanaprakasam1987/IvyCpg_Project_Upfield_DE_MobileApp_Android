@@ -732,7 +732,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         menu.findItem(R.id.menu_scheme).setVisible(false);
         menu.findItem(R.id.menu_apply_so).setVisible(false);
         menu.findItem(R.id.menu_apply_std_qty).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_sih_apply).setVisible(false);
         menu.findItem(R.id.menu_next).setIcon(
                 R.drawable.ic_action_navigation_next_item);
