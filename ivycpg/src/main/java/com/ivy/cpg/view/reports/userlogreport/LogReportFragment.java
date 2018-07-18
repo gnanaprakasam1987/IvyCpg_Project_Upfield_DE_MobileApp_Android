@@ -1,7 +1,8 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports.userlogreport;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -14,29 +15,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LogReportBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LogReportFragment extends Fragment {
+public class LogReportFragment extends IvyBaseFragment {
 
-    BusinessModel bmodel;
-    private ListView list;
-    private TextView tvTotalHrs;
     private static final String FORMAT = "%02d:%02d";
 
     @Override
@@ -46,19 +44,21 @@ public class LogReportFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_report_log,
                 container, false);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        BusinessModel bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        bmodel.reportHelper.downloadLogReport();
 
-        ArrayList<LogReportBO> myList = bmodel.reportHelper.getLogReport();
 
-        list = (ListView) view.findViewById(R.id.list);
-        tvTotalHrs = (TextView) view.findViewById(R.id.tvTotalHrs);
+        UserLogReport userLogReport=new UserLogReport(getContext());
+        ArrayList<LogReportBO> myList = userLogReport.downloadLogReport();
+
+        ListView list = view.findViewById(R.id.list);
+        TextView tvTotalHrs = view.findViewById(R.id.tvTotalHrs);
 
         if (myList.size() > 0) {
+
             Collections.sort(myList, new Comparator<LogReportBO>() {
-                SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+                SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
 
                 public int compare(LogReportBO o1, LogReportBO o2) {
                     try {
@@ -68,12 +68,15 @@ public class LogReportFragment extends Fragment {
                     }
                 }
             });
+
             list.setAdapter(new MyAdapter(myList));
             for (LogReportBO logBo : myList) {
                 calculateHrsSpent(logBo.getInTime(), logBo.getOutTime());
             }
+
             String hrsMin = parseTime(totMinutes);
             tvTotalHrs.setText(hrsMin);
+
         } else {
             Toast.makeText(getActivity(), getString(R.string.alert_activity_log), Toast.LENGTH_LONG).show();
         }
@@ -86,7 +89,7 @@ public class LogReportFragment extends Fragment {
 
     private void calculateHrsSpent(String startTime, String endTime) {
 
-        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss",Locale.ENGLISH);
         try {
             Date date1 = sdf1.parse(startTime);
             Date date2 = sdf1.parse(endTime);
@@ -134,8 +137,9 @@ public class LogReportFragment extends Fragment {
             return items.size();
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
 
             if (convertView == null) {
@@ -144,11 +148,11 @@ public class LogReportFragment extends Fragment {
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
 
-                convertView = (View) inflater.inflate(R.layout.row_report_log, null);
+                convertView = inflater.inflate(R.layout.row_report_log, null);
 
-                holder.tvRetailerName = (TextView) convertView.findViewById(R.id.tv_retailer_name);
-                holder.tvInterval = (TextView) convertView.findViewById(R.id.tv_time_interval);
-                holder.btnStatus = (Button) convertView.findViewById(R.id.btnStatus);
+                holder.tvRetailerName = convertView.findViewById(R.id.tv_retailer_name);
+                holder.tvInterval = convertView.findViewById(R.id.tv_time_interval);
+                holder.btnStatus = convertView.findViewById(R.id.btnStatus);
 
                 convertView.setTag(holder);
 
@@ -177,8 +181,8 @@ public class LogReportFragment extends Fragment {
     }
 
     private String to12hrFormat(String time) {
-        DateFormat f1 = new SimpleDateFormat("HH:mm:ss"); //HH for hour of the day (0 - 23)
-        DateFormat f2 = new SimpleDateFormat("h:mm a");
+        DateFormat f1 = new SimpleDateFormat("HH:mm:ss",Locale.ENGLISH); //HH for hour of the day (0 - 23)
+        DateFormat f2 = new SimpleDateFormat("h:mm a",Locale.ENGLISH);
         String time_converted = "";
         try {
             Date d = f1.parse(time);

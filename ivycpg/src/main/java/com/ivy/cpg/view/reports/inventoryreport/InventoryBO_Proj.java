@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.reports.inventoryreport;
 
 /**
  * Created by rajkumar.s on 8/23/2017.
