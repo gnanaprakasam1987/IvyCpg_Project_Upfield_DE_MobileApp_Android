@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.mvp.sellermapview;
+package com.ivy.cpg.view.supervisor.mvp.sellerlistview;
 
 
 import android.os.Bundle;
@@ -12,8 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
-import com.ivy.cpg.view.supervisor.Seller;
-import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;

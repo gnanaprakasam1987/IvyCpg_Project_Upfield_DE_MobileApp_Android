@@ -796,7 +796,7 @@
             android:name="com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerListActivity"
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity"

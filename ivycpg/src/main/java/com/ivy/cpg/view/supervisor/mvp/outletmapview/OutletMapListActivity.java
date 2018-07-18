@@ -219,8 +219,8 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         Commons.print("on Marker Click called");
 
         double angle = 130.0;
-        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.map_4sdp);
-        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.map_0_7sdp));
+        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
+        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.outlet_map_info_y));
         marker.setInfoWindowAnchor((float)x, (float)y);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));

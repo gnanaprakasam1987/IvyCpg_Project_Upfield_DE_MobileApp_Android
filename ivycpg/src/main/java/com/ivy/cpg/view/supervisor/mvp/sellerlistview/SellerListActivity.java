@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.mvp.sellermapview;
+package com.ivy.cpg.view.supervisor.mvp.sellerlistview;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -14,8 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +21,6 @@ import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.supervisorhomepage.SupervisorHomePresenter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 

@@ -40,7 +40,7 @@ import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPag
 import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
-import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerListActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
@@ -295,8 +295,8 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
             public void OnPageChanged(int oldPosition, int newPosition) {
 
                 double angle = 130.0;
-                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen._3_4sdp);
-                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen._0_7sdp));
+                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.supervisor_home_map_info_x);
+                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.supervisor_home_map_info_y));
                 sellerArrayList.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(sellerArrayList.get(newPosition).getMarker().getPosition()));

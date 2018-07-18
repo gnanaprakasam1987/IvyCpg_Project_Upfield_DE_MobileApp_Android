@@ -600,4 +600,12 @@
 	<dimen name="_598sdp">837.20dp</dimen>
 	<dimen name="_599sdp">838.60dp</dimen>
 	<dimen name="_600sdp">840.00dp</dimen>
+
+
+	<dimen name="supervisor_home_map_info_x">2.5dp</dimen>
+	<dimen name="supervisor_home_map_info_y">0.5dp</dimen>
+
+	<dimen name="outlet_map_info_x">4dp</dimen>
+	<dimen name="outlet_map_info_y">1dp</dimen>
+
 </resources>

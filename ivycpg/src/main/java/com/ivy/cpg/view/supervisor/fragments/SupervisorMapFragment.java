@@ -38,7 +38,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
-import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerListActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
@@ -256,8 +256,8 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
 //                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + 4.2;
 //                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - 0.7);
 
-                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen._3_4sdp);
-                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen._0_7sdp));
+                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.supervisor_home_map_info_x);
+                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.supervisor_home_map_info_y));
                 detailsBos.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(detailsBos.get(newPosition).getMarker().getPosition()));

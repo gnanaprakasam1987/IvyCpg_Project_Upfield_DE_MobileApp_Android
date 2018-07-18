@@ -1,9 +1,14 @@
 package com.ivy.cpg.view.supervisor.mvp;
 
+import android.annotation.SuppressLint;
+import android.util.SparseArray;
+
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SupervisorModelBo {
 
@@ -14,10 +19,10 @@ public class SupervisorModelBo {
     private Long orderValue,timeIn,timeOut,time;
     private MarkerOptions markerOptions;
     private Marker marker;
-    private int sellerListPos;
+    private int sellerListPos,sequence;
 
-    private ArrayList<SupervisorModelBo> detailsArrayList = new ArrayList<>();
-    private ArrayList<RetailerBo> retailerBoArrayList = new ArrayList<>();
+    private SparseArray<ArrayList<SupervisorModelBo>> sellerDetailsList = new SparseArray<>();
+    private ArrayList<SupervisorModelBo> sellerDetailArrayList = new ArrayList<>();
 
     public Marker getMarker() {
         return marker;
@@ -98,8 +103,6 @@ public class SupervisorModelBo {
     public void setRetailerName(String retailerName) {
         this.retailerName = retailerName;
     }
-
-
 
     public double getLatitude() {
         return latitude;
@@ -189,14 +192,6 @@ public class SupervisorModelBo {
         isOrdered = ordered;
     }
 
-    public ArrayList<SupervisorModelBo> getDetailsArrayList() {
-        return detailsArrayList;
-    }
-
-    public void setDetailsArrayList(ArrayList<SupervisorModelBo> detailsArrayList) {
-        this.detailsArrayList = detailsArrayList;
-    }
-
     public boolean isAttendanceDone() {
         return isAttendanceDone;
     }
@@ -221,11 +216,27 @@ public class SupervisorModelBo {
         this.sellerListPos = sellerListPos;
     }
 
-    public ArrayList<RetailerBo> getRetailerBoArrayList() {
-        return retailerBoArrayList;
+    public SparseArray<ArrayList<SupervisorModelBo>> getSellerDetailsList() {
+        return sellerDetailsList;
     }
 
-    public void setRetailerBoArrayList(ArrayList<RetailerBo> retailerBoArrayList) {
-        this.retailerBoArrayList = retailerBoArrayList;
+    public void setSellerDetailsList(SparseArray<ArrayList<SupervisorModelBo>> sellerDetailsList) {
+        this.sellerDetailsList = sellerDetailsList;
+    }
+
+    public int getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
+    }
+
+    public ArrayList<SupervisorModelBo> getSellerDetailArrayList() {
+        return sellerDetailArrayList;
+    }
+
+    public void setSellerDetailArrayList(ArrayList<SupervisorModelBo> sellerDetailArrayList) {
+        this.sellerDetailArrayList = sellerDetailArrayList;
     }
 }

@@ -1,8 +1,7 @@
-package com.ivy.cpg.view.supervisor.mvp.sellermapview;
+package com.ivy.cpg.view.supervisor.mvp.sellerlistview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,6 +43,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
         private RelativeLayout statusLayout;
         private ImageView infoIconImg;
         private ProgressBar progressBar;
+        private LinearLayout routeLayout;
 
         public MyViewHolder(View view) {
             super(view);
@@ -55,6 +56,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
             messageText = view.findViewById(R.id.tv_message);
             infoIconImg = view.findViewById(R.id.info_icon);
             progressBar = view.findViewById(R.id.progress_bar);
+            routeLayout = view.findViewById(R.id.route_layout);
 
             userName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             routeText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
@@ -129,15 +131,15 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
             holder.infoIconImg.setVisibility(View.GONE);
         }
 
-        holder.routeText.setOnClickListener(new View.OnClickListener() {
+        holder.routeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, SellerMapViewActivity.class);
-                intent.putExtra("SellerId", 1695);
-                intent.putExtra("screentitle", "VSR01" );
-                intent.putExtra("TrackingType", 2);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
+//                Intent intent = new Intent(context, SellerMapViewActivity.class);
+//                intent.putExtra("SellerId", 1695);
+//                intent.putExtra("screentitle", "VSR01" );
+//                intent.putExtra("TrackingType", 2);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                context.startActivity(intent);
             }
         });
     }

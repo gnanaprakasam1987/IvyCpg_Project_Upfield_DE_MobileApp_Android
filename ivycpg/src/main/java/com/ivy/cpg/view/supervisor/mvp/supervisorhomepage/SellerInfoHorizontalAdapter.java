@@ -70,9 +70,9 @@ public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, SellerMapViewActivity.class);
-                intent.putExtra("SellerId", "1695");
-                intent.putExtra("screentitle", "Seller");
-                intent.putExtra("TrackingType", 1);
+                intent.putExtra("SellerId", sellerArrayList.get(position).getUserId());
+                intent.putExtra("screentitle", sellerArrayList.get(position).getUserName());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

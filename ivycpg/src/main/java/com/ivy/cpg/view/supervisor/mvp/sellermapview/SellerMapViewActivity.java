@@ -1,15 +1,16 @@
 package com.ivy.cpg.view.supervisor.mvp.sellermapview;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,10 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,20 +33,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.ivy.cpg.view.supervisor.Seller;
-import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
 import com.ivy.cpg.view.supervisor.customviews.DataParser;
+import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
-import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
-import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
@@ -63,26 +59,32 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 
-public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements OnMapReadyCallback,Seller,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener  {
+public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements SellerMapViewContractor.SellerMapView,
+        OnMapReadyCallback,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener  {
 
     private GoogleMap mMap;
     private LinkedHashMap<String,DetailsBo> sellerDetailHashmap = new LinkedHashMap<>();
-    private String id;
-    private int count =0;
-    private int sellerDetailPos = 0,sellerLatLngPos = 0;
+    private int userId;
+    private int sellerDetailPos = 0;
     ArrayList<LatLng> latLngArrayList = new ArrayList<>();
-    private Marker marker;
-    private int trackingType;
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName,tvSellerName,tvSellerStartTime,tvSellerLastVisit,tvSellerPerformanceBtn,tvTarget,tvCovered;
     private ImageView imgMessage;
     private BottomSheetBehavior bottomSheetBehavior;
+
+    private SellerMapViewPresenter sellerMapViewPresenter;
+    private OutletListAdapter outletListAdapter;
+    private ArrayList<SupervisorModelBo> outletListBos = new ArrayList<>();
 
 
     @Override
@@ -109,30 +111,22 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             if (extras == null)
                 setScreenTitle("Seller");
             else {
-                id = extras.getString("SellerId");
+                userId = extras.getInt("SellerId");
                 setScreenTitle(extras.getString("screentitle"));
-                trackingType = extras.getInt("TrackingType");
             }
         } catch (Exception e) {
             setScreenTitle("Seller");
             Commons.printException(e);
         }
 
+        sellerMapViewPresenter = new SellerMapViewPresenter();
+        sellerMapViewPresenter.setView(this,SellerMapViewActivity.this);
+
         initViews();
         setViewValues();
-
-        String date = SDUtil.now(8);
-        String nodePath;
-        if(trackingType == 1)
-            nodePath = "/movement_tracking_history/"+id+"_"+date;
-        else
-            nodePath = "/activity_tracking_history/"+id+"_"+date;
-        SupervisorActivityHelper.getInstance().subscribeSellerDetails(this,this,nodePath);
     }
 
     private void initViews() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
         mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_outlet_info_window, null);
 
@@ -162,10 +156,10 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, getPixelsFromDp(this, 39 + 20)));
 
-        RecyclerView recyclerView = findViewById(R.id.outlet_list);;
+        RecyclerView recyclerView = findViewById(R.id.outlet_list);
 
-        MyAdapter myAdapter = new MyAdapter(this);
-        recyclerView.setAdapter(myAdapter);
+        outletListAdapter = new OutletListAdapter(this, outletListBos);
+        recyclerView.setAdapter(outletListAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -186,6 +180,9 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         });
 
         bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.user_info_layout));
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     private void setViewValues(){
@@ -219,107 +216,48 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMaxZoomPreference(24);
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-        mMap.setOnMarkerClickListener(this);
-        mMap.setOnInfoWindowClickListener(this);
-        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this.getApplicationContext(), "Enable location permission from App Settings", Toast.LENGTH_SHORT).show();
 
+        }else{
+            mMap.setMyLocationEnabled(true);
+        }
+
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        //map style restricting landmarks
+//        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
+
+        mMap.setOnMarkerClickListener(this);
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+//        mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng latLng) {
-//                if(infoWindowLayout.getVisibility() == View.VISIBLE)
-//                    infoWindowLayout.setVisibility(View.GONE);
+
+
+
             }
         });
 
-    }
+        sellerMapViewPresenter.getSellerInfoAWS(userId);
+        sellerMapViewPresenter.isRealtimeLocation();
 
-    @Override
-    public void setSellerMarker(DataSnapshot dataSnapshot) {
-        String key = dataSnapshot.getKey();
-
-        if(dataSnapshot.getValue() != null) {
-            HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
-
-            String userId = value.get("userId")!=null?value.get("userId").toString():"";
-            String userName = value.get("userName")!=null?value.get("userName").toString():"";
-            String status = value.get("status")!=null?value.get("status").toString():"";
-            String activityStatus = value.get("activityType")!=null?value.get("activityType").toString():"";
-            String inTime = value.get("inTime")!=null?value.get("inTime").toString():"0";
-            String outTime = value.get("outTime")!=null?value.get("outTime").toString():"0";
-            int batteryStatus = Integer.valueOf(value.get("batterStatus")!=null?value.get("batterStatus").toString():"0");
-            double lat = SDUtil.convertToDouble(value.get("latitude")!= null?value.get("latitude").toString():"0");
-            double lng = SDUtil.convertToDouble(value.get("latitude")!= null?value.get("longitude").toString():"0");
-
-            String retailerName = value.get("RetailerName")!=null?value.get("RetailerName").toString():"";
-            String orderValue = value.get("orderValue")!=null?value.get("orderValue").toString():"";
-            boolean isDeviated = Boolean.valueOf(value.get("isDeviated")!=null?value.get("isDeviated").toString():"false");
-
-            LatLng destLatLng = new LatLng(lat, lng);
-
-//            count = count+1;
-//            BitmapDescriptor icon= BitmapDescriptorFactory.fromBitmap(SupervisorActivityHelper.getInstance().setMarkerDrawable(count,this));
-
-            BitmapDescriptor icon;
-            if(orderValue.equalsIgnoreCase("1"))
-                icon= BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
-            else if(orderValue.equalsIgnoreCase("2"))
-                icon= BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
-            else if(orderValue.equalsIgnoreCase("10"))
-                icon= BitmapDescriptorFactory.fromResource(R.drawable.marker_red);
-            else
-                icon= BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
-
-            DetailsBo detailsBo = new DetailsBo();
-            detailsBo.setUserName(userName);
-            detailsBo.setActivityName(activityStatus);
-            detailsBo.setStatus(status);
-            detailsBo.setBatterStatus(batteryStatus);
-            detailsBo.setInTime(inTime);
-            detailsBo.setOutTime(outTime);
-            detailsBo.setUserId(userId.length()>0?Integer.valueOf(userId) : 0);
-            detailsBo.setTime(key);
-            detailsBo.setMarker(mMap.addMarker(new MarkerOptions().flat(true).
-                    title(userName).position(destLatLng).snippet(key).icon(icon)));
-            detailsBo.setRetailerName(retailerName);
-            detailsBo.setOrderValue(orderValue);
-            detailsBo.setDeviated(isDeviated);
-
-            sellerDetailHashmap.put(key,detailsBo);
-
-            final LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-            for (DetailsBo detailBo : sellerDetailHashmap.values()) {
-                builder.include(detailBo.getMarker().getPosition());
-            }
-
-            mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-                @Override
-                public void onMapLoaded() {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
-                }
-            });
-        }
-    }
-
-    @Override
-    public void setMarker(DataSnapshot dataSnapshot) {
+        sellerMapViewPresenter.getSellerActivityListener(userId);
+        sellerMapViewPresenter.getSellerActivityDetailListener(userId);
 
     }
 
-    @Override
-    public void updateSellerInfo(DataSnapshot dataSnapshot) {
-
-    }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         Commons.print("on Marker Click called");
 
         double angle = 130.0;
-        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.map_4sdp);
-        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.map_0_7sdp));
+        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
+        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.outlet_map_info_y));
         marker.setInfoWindowAnchor((float)x, (float)y);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
@@ -333,10 +271,48 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         return true;
     }
 
-    private void showInfoWindow(final Marker marker){
-
+    @Override
+    public void displaySellerList() {
 
     }
+
+    @Override
+    public void setRetailerMarker(SupervisorModelBo retailerMarker) {
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_grey);
+//        BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+        Marker marker = mMap.addMarker(retailerMarker.getMarkerOptions());
+        marker.setIcon(icon);
+        retailerMarker.setMarker(marker);
+    }
+
+    @Override
+    public void focusMarker(final LatLngBounds.Builder builder) {
+
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
+            }
+        });
+    }
+
+    @Override
+    public void setOutletListAdapter(SupervisorModelBo supervisorModelBo) {
+        outletListBos.clear();
+        outletListBos.addAll(supervisorModelBo.getSellerDetailArrayList());
+        outletListAdapter.notifyDataSetChanged();
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void updateSellerInfo(SupervisorModelBo supervisorModelBo) {
+        tvSellerName.setText(supervisorModelBo.getUserName());
+        tvSellerStartTime.setText(getResources().getString(R.string.visit_time)+" "+convertTime(supervisorModelBo.getTimeIn()));
+        tvSellerLastVisit.setText(getResources().getString(R.string.last_vist)+" "+supervisorModelBo.getRetailerName());
+        tvTarget.setText(getResources().getString(R.string.targeted)+" "+supervisorModelBo.getTarget());
+        tvCovered.setText(getResources().getString(R.string.covered)+" "+supervisorModelBo.getCovered());
+    }
+
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
@@ -348,7 +324,7 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         @Override
         public View getInfoWindow(final Marker marker) {
 
-            tvMapInfoUserName.setText("Big Text message for the info window to test size of info window");
+            tvMapInfoUserName.setText(marker.getTitle());
 
             mapWrapperLayout.setMarkerWithInfoWindow(marker, mymarkerview);
 
@@ -409,9 +385,9 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
 
-//        }else if(i == R.id.menu_route){
+//        }else if(i == R.userId.menu_route){
 //            drawRoute();
-//        }else if(i == R.id.menu_navigate){
+//        }else if(i == R.userId.menu_navigate){
 //            moveMarkerInPath();
         }
         return super.onOptionsItemSelected(item);
@@ -595,105 +571,23 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    /**
-     * Animate the seller marker in map path
-     */
-    void moveMarkerInPath() {
-
-        if(sellerLatLngPos < latLngArrayList.size()-1) {
-
-            final LatLng start = latLngArrayList.get(sellerLatLngPos);
-            final LatLng destination = latLngArrayList.get(sellerLatLngPos+1);
-
-            if (marker == null) {
-                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.location_icon);
-                marker = mMap.addMarker(new MarkerOptions()
-                        .position(start).icon(icon));
-
-                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
-                        .target(start)
-                        .zoom(18f)
-                        .build()));
-            } else
-                marker.setPosition(start);
-
-            final LatLng startPosition = marker.getPosition();
-            final LatLng endPosition = new LatLng(destination.latitude, destination.longitude);
-
-            final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.LinearFixed();
-
-            ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-            valueAnimator.setDuration(800); // duration 800ms
-            valueAnimator.setInterpolator(new LinearInterpolator());
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    try {
-                        float v = animation.getAnimatedFraction();
-                        LatLng newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition);
-                        marker.setPosition(newPosition);
-//                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
-//                                .target(newPosition)
-//                                .zoom(18f)
-//                                .build()));
-
-//                        float bearing = getBearing(startPosition, destination);
-//                        if (bearing >= 0)
-//                            marker.setRotation(getBearing(startPosition, destination));
-                    } catch (Exception ex) {
-                        Commons.printException(ex);
-                    }
-                }
-            });
-            valueAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    sellerLatLngPos= sellerLatLngPos+1;
-                    moveMarkerInPath();
-                    // if (mMarker != null) {
-                    // mMarker.remove();
-                    // }
-                    // mMarker = googleMap.addMarker(new MarkerOptions().position(endPosition).icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_car)));
-
-                }
-            });
-            valueAnimator.start();
-        }
-
-    }
-
-    //Method for finding bearing between two points
-    private float getBearing(LatLng begin, LatLng end) {
-        double lat = Math.abs(begin.latitude - end.latitude);
-        double lng = Math.abs(begin.longitude - end.longitude);
-
-        if (begin.latitude < end.latitude && begin.longitude < end.longitude)
-            return (float) (Math.toDegrees(Math.atan(lng / lat)));
-        else if (begin.latitude >= end.latitude && begin.longitude < end.longitude)
-            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 90);
-        else if (begin.latitude >= end.latitude && begin.longitude >= end.longitude)
-            return (float) (Math.toDegrees(Math.atan(lng / lat)) + 180);
-        else if (begin.latitude < end.latitude && begin.longitude >= end.longitude)
-            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 270);
-        return -1;
-    }
-
     private int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
 
-    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+    public class OutletListAdapter extends RecyclerView.Adapter<OutletListAdapter.MyViewHolder> {
 
         private Context context;
-        MyAdapter(Context context){
+        private ArrayList<SupervisorModelBo> outletListBos;
+        OutletListAdapter(Context context,ArrayList<SupervisorModelBo> outletListBos){
             this.context = context;
+            this.outletListBos = outletListBos;
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             private LinearLayout linearLayout;
-            private TextView tvSerialNumber,tvStoreName,tvTimeIn,tvTimeOut;
+            private TextView tvSerialNumber,tvStoreName,tvTimeIn,tvTimeOut,tvSkipped;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -703,11 +597,13 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
                 tvStoreName = view.findViewById(R.id.store_text);
                 tvTimeIn = view.findViewById(R.id.time_in_text);
                 tvTimeOut = view.findViewById(R.id.time_out_text);
+                tvSkipped = view.findViewById(R.id.skipped_text);
 
                 tvSerialNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
                 tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
                 tvTimeIn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
                 tvTimeOut.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvSkipped.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
 
             }
         }
@@ -728,12 +624,34 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             else
                 holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.outlet_item_bg));
 
+            holder.tvSerialNumber.setText(String.valueOf(outletListBos.get(position).getSequence()));
+            holder.tvStoreName.setText(outletListBos.get(position).getRetailerName());
+            holder.tvTimeIn.setText(convertTime(outletListBos.get(position).getTimeIn()));
+            holder.tvTimeOut.setText(convertTime(outletListBos.get(position).getTimeOut()));
+
+            if(convertTime(outletListBos.get(position).getTimeIn()).isEmpty()){
+                holder.tvTimeIn.setVisibility(View.GONE);
+                holder.tvTimeOut.setVisibility(View.GONE);
+                holder.tvSkipped.setVisibility(View.VISIBLE);
+            }else
+                holder.tvSkipped.setVisibility(View.GONE);
+
         }
 
         @Override
         public int getItemCount() {
-            return 20;
+            return outletListBos.size();
         }
+    }
+
+    private String convertTime(Long time){
+
+        if(time != null && time != 0) {
+            Date date = new Date(time);
+            Format format = new SimpleDateFormat("hh:mm a", Locale.US);
+            return format.format(date);
+        }else
+            return "";
     }
 
 }
