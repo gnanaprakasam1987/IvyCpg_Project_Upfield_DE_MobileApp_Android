@@ -139,6 +139,7 @@ public class ProductHelper {
 
     public void setmSelectedGLobalLocationIndex(int mSelectedGLobalLocationIndex) {
         this.mSelectedGLobalLocationIndex = mSelectedGLobalLocationIndex;
+        bmodel.codeCleanUpUtil.setGlobalLocationId(mSelectedGLobalLocationIndex);
     }
 
     public Vector<StandardListBO> getInStoreLocation() {

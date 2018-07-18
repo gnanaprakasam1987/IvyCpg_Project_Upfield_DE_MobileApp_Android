@@ -161,5 +161,42 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
     }
 
+    @Override
+    public Observable<ArrayList<PhotoTypeMasterBO>> fetchPhotoCaptureTypes() {
+        return Observable.fromCallable(new Callable<ArrayList<PhotoTypeMasterBO>>() {
+            @Override
+            public ArrayList<PhotoTypeMasterBO> call() {
+
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+
+                    ArrayList<PhotoTypeMasterBO> photoTypeMasterBOS = new ArrayList<>();
+
+                    Cursor c = mDbUtil.selectSQL("SELECT ListId, ListName, ListCode FROM StandardListMaster WHERE ListType = 'PHOTO_TYPE'");
+
+
+                    PhotoTypeMasterBO typeMasterBO;
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            typeMasterBO = new PhotoTypeMasterBO();
+                            typeMasterBO.setPhotoTypeId(c.getInt(0));
+                            typeMasterBO.setPhotoTypeDesc(c.getString(1));
+                            typeMasterBO.setPhotoTypeCode(c.getString(2));
+                            photoTypeMasterBOS.add(typeMasterBO);
+                        }
+                        c.close();
+                    }
+                    return photoTypeMasterBOS;
+                } catch (Exception ignored) {
+
+                }
+
+                return new ArrayList<>();
+            }
+        });
+
+    }
+
 
 }

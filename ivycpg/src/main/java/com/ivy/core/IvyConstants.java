@@ -32,4 +32,6 @@ public class IvyConstants {
 
 
     public static final String NAMESPACE = "http://tempuri.org/";
+
+    public static String DEFAULT_DATE_FORMAT = "MM/dd/yyyy"; // Default Date Format
 }

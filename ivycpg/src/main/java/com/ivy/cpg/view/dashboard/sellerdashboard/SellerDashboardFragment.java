@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -147,7 +148,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
         bundle = getArguments();
         if (bundle == null)
-            bundle = getActivity().getIntent().getExtras();
+        bundle = getActivity().getIntent().getExtras();
         boolean isFromTab = false;
 
         if (bundle != null) {
@@ -200,7 +201,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         ((TextView) view.findViewById(R.id.textView)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         categories = new ArrayList<>();
-        if (type != null && type.equals(ROUTE)) {
+        if(type != null && type.equals(ROUTE)){
             categories = dashBoardHelper.getRouteDashList();
         } else {
             categories = dashBoardHelper.getDashList(isFromHomeScreenTwo);

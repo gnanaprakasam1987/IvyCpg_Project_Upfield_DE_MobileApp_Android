@@ -33,6 +33,9 @@ public class AppDataProviderImpl implements AppDataProvider {
     /*Current User*/
     private UserMasterBO userData;
 
+    /**/
+    private int globalLocationIndex;
+
 
     @Override
     public void setInTime(String inTime) {
@@ -113,12 +116,30 @@ public class AppDataProviderImpl implements AppDataProvider {
     }
 
     @Override
-    public void setCurrentUser(UserMasterBO userData, boolean isFromBModelF) {
+    public void setCurrentUser(UserMasterBO userData, boolean isFromBModel) {
         this.userData = userData;
     }
 
     @Override
     public UserMasterBO getUser() {
         return userData;
+    }
+
+    @Override
+    public void setGlobalLocationIndex(int locationIndex) {
+        //TODO to be removed post refactoring
+        mContext.codeCleanUpUtil.setGlobalLocationId(locationIndex);
+
+        this.globalLocationIndex = locationIndex;
+    }
+
+    @Override
+    public void setGlobalLocationIndex(int locationIndex, boolean isFromBModel) {
+        this.globalLocationIndex = locationIndex;
+    }
+
+    @Override
+    public int getGlobalLocationIndex() {
+        return globalLocationIndex;
     }
 }

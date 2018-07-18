@@ -1,13 +1,19 @@
 package com.ivy.core.data.datamanager;
 
 import android.content.Context;
+import android.os.Environment;
 
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.db.DbHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
-import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+
+import java.io.File;
+import java.io.FilenameFilter;
 
 import javax.inject.Inject;
 
@@ -19,12 +25,16 @@ public class DataManagerImpl implements DataManager {
     private SharedPreferenceHelper mSharedPreferenceHelper;
     private DbHelper dbHelper;
     private AppDataProvider appDataProvider;
+    private ConfigurationMasterHelper configurationMasterHelper;
+    private Context mContext;
 
     @Inject
-    public DataManagerImpl(SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper, AppDataProvider appDataProvider) {
+    public DataManagerImpl(Context context, SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper) {
         this.mSharedPreferenceHelper = sharedPreferenceHelper;
         this.dbHelper = dbHelper;
         this.appDataProvider = appDataProvider;
+        this.configurationMasterHelper = configurationMasterHelper;
+        this.mContext = context;
     }
 
     @Override
@@ -143,12 +153,62 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
-    public void setCurrentUser(UserMasterBO userData, boolean isFromBModelF) {
-        appDataProvider.setCurrentUser(userData, isFromBModelF);
+    public void setCurrentUser(UserMasterBO userData, boolean isFromBModel) {
+        appDataProvider.setCurrentUser(userData, isFromBModel);
     }
 
     @Override
     public UserMasterBO getUser() {
         return appDataProvider.getUser();
+    }
+
+    @Override
+    public void setGlobalLocationIndex(int locationId) {
+        appDataProvider.setGlobalLocationIndex(locationId);
+    }
+
+    @Override
+    public void setGlobalLocationIndex(int locationId, boolean isFromBModel) {
+        appDataProvider.setGlobalLocationIndex(locationId,isFromBModel);
+    }
+
+    @Override
+    public int getGlobalLocationIndex() {
+        return appDataProvider.getGlobalLocationIndex();
+    }
+
+    @Override
+    public int getSavedImageCount() {
+
+        int imageSize = 0;
+        try {
+            File f = new File(
+                    mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                            + "/" + DataMembers.photoFolderName + "/");
+            if (f.exists()) {
+                File files[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
+
+                        return fileName.endsWith(".jpg");
+                    }
+                });
+
+                File printfiles[] = f.listFiles(new FilenameFilter() {
+                    public boolean accept(File directory, String fileName) {
+
+                        return fileName.startsWith("PF");
+                    }
+                });
+
+                if (configurationMasterHelper.IS_PRINT_FILE_SAVE)
+                    imageSize = files.length + printfiles.length;
+                else
+                    imageSize = files.length;
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return imageSize;
+
     }
 }

@@ -30,6 +30,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
@@ -312,9 +313,10 @@ SynchronizationHelper {
 
 
     /**
-     * This will return number of images left in mobile SDCard.
-     *
      * @return imageCount
+     * @See {@link DataManagerImpl#getSavedImageCount()}
+     * This will return number of images left in mobile SDCard.
+     * @deprecated
      */
     public int countImageFiles() {
         int imageSize = 0;
@@ -771,7 +773,6 @@ SynchronizationHelper {
             db.closeDB();
 
 
-
             deleteDBFromSD();
 
             try {
@@ -845,7 +846,7 @@ SynchronizationHelper {
         int hhtCount = 0, standList = 0;
         try {
             c = db.selectSQL("select count(hhtCode) from "
-                    + DataMembers.tbl_HhtModuleMaster+" Where ForSwitchSeller = 0");
+                    + DataMembers.tbl_HhtModuleMaster + " Where ForSwitchSeller = 0");
             if (c != null) {
                 if (c.moveToNext()) {
                     hhtCount = c.getInt(0);
@@ -1088,7 +1089,7 @@ SynchronizationHelper {
                     firstValue = firstValue.replaceAll("\\[", "").replaceAll("\\]",
                             "");*/
 
-                firstValue=firstValue.substring(1,firstValue.length()-1);
+                firstValue = firstValue.substring(1, firstValue.length() - 1);
 
                 firstValue = firstValue.replace("\\/", "/");
 
@@ -2239,7 +2240,7 @@ SynchronizationHelper {
 
 
     public Vector<String> getOtpGenerateResponse(String headerinfo, String data,
-                                                          String appendurl) {
+                                                 String appendurl) {
         // Update Security key
         updateAuthenticateToken(false);
         StringBuilder url = new StringBuilder();
@@ -2392,9 +2393,9 @@ SynchronizationHelper {
                     bmodel.getApplicationVersionNumber());
             jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
-                   DeviceUtils.getIMEINumber(context));
+                    DeviceUtils.getIMEINumber(context));
             jsonObj.put("RegistrationId", bmodel.regid);
-            jsonObj.put("DeviceUniqueId",DeviceUtils.getDeviceId(context));
+            jsonObj.put("DeviceUniqueId", DeviceUtils.getDeviceId(context));
             Commons.print("Update Authentication Token " + jsonObj.toString());
             // adding additional two parameters
             addDeviceValidationParameters(false, jsonObj);
@@ -2507,9 +2508,9 @@ SynchronizationHelper {
     }
 
     /*Methods used add deviceID's json Validation params
-    *  - isDeviceChanged - false - validate -1 and Update -0
-    *  - isDeviceChaned - True - validate -0 and Update - 1
-    *  if activation false or is in internal activation ie uses ivy apis both values set to 0*/
+     *  - isDeviceChanged - false - validate -1 and Update -0
+     *  - isDeviceChaned - True - validate -0 and Update - 1
+     *  if activation false or is in internal activation ie uses ivy apis both values set to 0*/
     public void addDeviceValidationParameters(boolean isDeviceChanged, JSONObject jsonObject) {
         int mDeviceIdValidate, mDeviceIdChange;
         try {
@@ -2902,10 +2903,10 @@ SynchronizationHelper {
             db.closeDB();
         }
 
-       return downloadUrl;
+        return downloadUrl;
     }
 
-    public void downloadWareHouseStock(String wareHouseWebApi){
+    public void downloadWareHouseStock(String wareHouseWebApi) {
 
         try {
 
@@ -3798,7 +3799,7 @@ SynchronizationHelper {
             } else {
                 isPwd = password.equals(jointCallUser.getPassword());
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
             return false;
         }
@@ -4117,7 +4118,7 @@ SynchronizationHelper {
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
         return downloadurl;

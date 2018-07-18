@@ -12,13 +12,11 @@ public interface AppDataProvider {
     String getInTime();
 
 
-
     void setUniqueId(String uniqueId);
 
     void setUniqueId(String uniqueId, boolean isFromBModel);
 
     String getUniqueId();
-
 
 
     void setModuleInTime(String moduleInTime);
@@ -28,18 +26,23 @@ public interface AppDataProvider {
     String getModuleIntime();
 
 
-
     void setRetailerMaster(RetailerMasterBO retailerMaster);
 
     RetailerMasterBO getRetailMaster();
 
 
-
     void setCurrentUser(UserMasterBO userData);
 
-    void setCurrentUser(UserMasterBO userData, boolean isFromBModelF);
+    void setCurrentUser(UserMasterBO userData, boolean isFromBModel);
 
     UserMasterBO getUser();
+
+
+    void setGlobalLocationIndex(int locationId);
+
+    void setGlobalLocationIndex(int locationId, boolean isFromBModel);
+
+    int getGlobalLocationIndex();
 
 
 }

@@ -71,4 +71,12 @@ public class CodeCleanUpUtil {
         appDataProvider.getUser().setUserid(userId);
         bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
     }
+
+    public void setGlobalLocationId(int locationId){
+        appDataProvider.setGlobalLocationIndex(locationId,true);
+    }
+
+    public void setBmodelGlobalLocationId(){
+
+    }
 }
