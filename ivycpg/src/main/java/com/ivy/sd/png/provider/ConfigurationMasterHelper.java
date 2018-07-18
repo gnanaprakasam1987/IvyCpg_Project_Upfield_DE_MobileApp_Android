@@ -1465,6 +1465,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
 
+    private static final String CODE_SHOW_ALL_SKU_ON_EDIT = "ORDB75";
+    public boolean IS_SHOW_ALL_SKU_ON_EDIT;
+
+    private static final String CODE_KPI_CALENDAR = "KPI_CALENDER";
+    public boolean IS_KPI_CALENDAR;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2570,6 +2576,9 @@ public class ConfigurationMasterHelper {
         if (IS_ENABLE_LICENSE_VALIDATION) {
             loadLicenseValidationConfig();
         }
+        //CODE_SHOW_ALL_SKU_ON_EDIT
+        this.IS_SHOW_ALL_SKU_ON_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_ALL_SKU_ON_EDIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ALL_SKU_ON_EDIT) : false;
+        this.IS_KPI_CALENDAR = hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) != null ? hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) : false;
     }
 
     private boolean isInOutModule() {

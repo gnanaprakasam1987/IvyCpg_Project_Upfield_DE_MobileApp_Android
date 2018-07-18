@@ -437,7 +437,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                                 //Weekly chart Specific Change
                                 dashBoardHelper.getDashListViewList().clear();
                                 for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                                    if (dashBoardBO.getCode().equals(mDashboardList.get(position).getCode())) {
+                                    if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(position).getCode())) {
                                         dashBoardHelper.getDashListViewList().add(dashBoardBO);
                                     }
                                 }
@@ -447,7 +447,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         if (selectedInterval.equals(P3M)) {
                             dashBoardHelper.getDashListViewList().clear();
                             for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                                if (dashBoardBO.getCode().equals(mDashboardList.get(position).getCode())) {
+                                if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(position).getCode())) {
                                     dashBoardHelper.getDashListViewList().add(dashBoardBO);
                                 }
                             }
@@ -1024,7 +1024,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 final String filterName = monthSpinner.getSelectedItem().toString();
                 updateMonth(filterName);
             } else if (menuid == R.id.weekSpinner) {
-                final String filterName = dashBoardHelper.getEnumNamefromValue(weekSpinner.getSelectedItem().toString());
+                //final String filterName = dashBoardHelper.getEnumNamefromValue(weekSpinner.getSelectedItem().toString());
+                final String filterName = weekSpinner.getSelectedItem().toString();
                 updateWeek(filterName);
             } else if (menuid == R.id.routeSpinner) {
                 final String filterName = routeSpinner.getSelectedItem().toString();
@@ -1044,7 +1045,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         mDashboardList = new ArrayList<>();
 
         for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-            if (dashBoardBO.getMonthName().equals(monthName)) {
+            if (dashBoardBO.getMonthName().equalsIgnoreCase(monthName)) {
                 mDashboardList.add(dashBoardBO);
             }
         }
@@ -1054,7 +1055,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             if (selectedInterval.equals(P3M)) {
                 dashBoardHelper.getDashListViewList().clear();
                 for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                    if (dashBoardBO.getCode().equals(mDashboardList.get(0).getCode())) {
+                    if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(0).getCode())) {
                         dashBoardHelper.getDashListViewList().add(dashBoardBO);
                     }
                 }
@@ -1085,7 +1086,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             if (!weekName.equals("")) {
                 dashBoardHelper.getDashListViewList().clear();
                 for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                    if (dashBoardBO.getCode().equals(mDashboardList.get(0).getCode())) {
+                    if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(0).getCode())) {
                         dashBoardHelper.getDashListViewList().add(dashBoardBO);
                     }
                 }
@@ -1105,7 +1106,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         mDashboardList = new ArrayList<>();
 
         for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-            if (dashBoardBO.getMonthName().equals(routeName)) {
+            if (dashBoardBO.getMonthName().equalsIgnoreCase(routeName)) {
                 mDashboardList.add(dashBoardBO);
             }
         }
@@ -1115,7 +1116,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
             dashBoardHelper.getDashListViewList().clear();
             for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                if (dashBoardBO.getMonthName().equals(routeName)) {
+                if (dashBoardBO.getMonthName().equalsIgnoreCase(routeName)) {
                     dashBoardHelper.getDashListViewList().add(dashBoardBO);
                 }
             }
