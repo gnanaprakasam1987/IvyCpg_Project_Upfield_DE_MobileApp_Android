@@ -34,7 +34,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
     public Observable<ArrayList<PhotoCaptureProductBO>> fetchPhotoCaptureProducts() {
         return Observable.fromCallable(new Callable<ArrayList<PhotoCaptureProductBO>>() {
             @Override
-            public ArrayList<PhotoCaptureProductBO> call() throws Exception {
+            public ArrayList<PhotoCaptureProductBO> call() {
                 try {
                     mDbUtil.createDataBase();
                     mDbUtil.openDataBase();
@@ -54,73 +54,111 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
                     return photoCaptureProductBOS;
                 } catch (Exception ignored) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
                 }
 
                 return new ArrayList<>();
             }
-        });/*.flatMap(new Function<ArrayList<PhotoCaptureProductBO>, ObservableSource<ArrayList<PhotoCaptureProductBO>>>() {
-            @Override
-            public ObservableSource<ArrayList<PhotoCaptureProductBO>> apply(final ArrayList<PhotoCaptureProductBO> photoCaptureProductBOS) throws Exception {
-                return Observable.fromCallable(new Callable<ArrayList<PhotoCaptureProductBO>>() {
-                    @Override
-                    public ArrayList<PhotoCaptureProductBO> call() throws Exception {
-
-
-                        try {
-                            String sql1 = "SELECT phototypeid,pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName FROM Photocapture WHERE RetailerID="
-                                    + retailerID + " And DistributorID=" + distributorId;
-                            Cursor cursor = mDbUtil.selectSQL(sql1);
-
-                            if (cursor != null) {
-                                while (cursor.moveToNext()) {
-
-                                    for (PhotoTypeMasterBO tempTypeBO : getPhotoTypeMaster()) {
-                                        ArrayList<PhotoCaptureProductBO> tempCaptureBO = tempTypeBO
-                                                .getPhotoCaptureProductList();
-                                        for (PhotoCaptureProductBO photo : tempCaptureBO) {
-                                            for (PhotoCaptureLocationBO lbo : photo.getInStoreLocations())
-                                                if (lbo.getProductID() == cursor.getInt(1)
-                                                        && tempTypeBO.getPhotoTypeId() == cursor
-                                                        .getInt(0) && lbo.getLocationId() == cursor.getInt(5)) {
-                                                    lbo.setImagePath(cursor.getString(2));
-                                                    lbo.setFromDate(DateUtil.convertFromServerDateToRequestedFormat(
-                                                            cursor.getString(3),
-                                                            ConfigurationMasterHelper.outDateFormat));
-                                                    lbo.setToDate(DateUtil.convertFromServerDateToRequestedFormat(
-                                                            cursor.getString(4),
-                                                            ConfigurationMasterHelper.outDateFormat));
-                                                    lbo.setSKUName(cursor.getString(6));
-                                                    lbo.setAbv(cursor.getString(7));
-                                                    lbo.setLotCode(cursor.getString(8));
-                                                    lbo.setSequenceNO(cursor.getString(9));
-                                                    lbo.setFeedback(cursor.getString(10));
-                                                    lbo.setImageName(cursor.getString(11));
-                                                    break;
-                                                }
-                                        } // End of Capture BO
-                                    } // End of TypeBO
-
-                                }
-                                cursor.close();
-                            }
-
-
-                            return photoCaptureProductBOS;
-                        } catch (Exception ignored) {
-                        } finally {
-                            if (mDbUtil != null)
-                                mDbUtil.closeDB();
-                        }
-                        return photoCaptureProductBOS;
-                    }
-                });
-            }
-        });*/
+        });
     }
 
     @Override
-    public Observable<ArrayList<PhotoCaptureLocationBO>> fetchLocations(String retailerID, int distributorId) {
-        return null;
+    public Observable<ArrayList<PhotoCaptureLocationBO>> fetchEditedLocations(final String retailerID, final int distributorId) {
+        return Observable.fromCallable(new Callable<ArrayList<PhotoCaptureLocationBO>>() {
+            @Override
+            public ArrayList<PhotoCaptureLocationBO> call() {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+                    ArrayList<PhotoCaptureLocationBO> photoCaptureLocationBOS = new ArrayList<>();
+                    String sql1 = "SELECT phototypeid,pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName FROM Photocapture WHERE RetailerID="
+                            + retailerID + " And DistributorID=" + distributorId;
+                    Cursor cursor = mDbUtil.selectSQL(sql1);
+                    PhotoCaptureLocationBO lbo;
+                    if (cursor != null) {
+                        while (cursor.moveToNext()) {
+                            lbo = new PhotoCaptureLocationBO();
+                            lbo.setPhotoTypeId(cursor
+                                    .getInt(0));
+                            lbo.setProductID(cursor.getInt(1));
+                            lbo.setImagePath(cursor.getString(2));
+                            lbo.setFromDate(DateUtil.convertFromServerDateToRequestedFormat(
+                                    cursor.getString(3),
+                                    ConfigurationMasterHelper.outDateFormat));
+                            lbo.setToDate(DateUtil.convertFromServerDateToRequestedFormat(
+                                    cursor.getString(4),
+                                    ConfigurationMasterHelper.outDateFormat));
+                            lbo.setLocationId(cursor.getInt(5));
+                            lbo.setSKUName(cursor.getString(6));
+                            lbo.setAbv(cursor.getString(7));
+                            lbo.setLotCode(cursor.getString(8));
+                            lbo.setSequenceNO(cursor.getString(9));
+                            lbo.setFeedback(cursor.getString(10));
+                            lbo.setImageName(cursor.getString(11));
+
+
+                        }
+                        return photoCaptureLocationBOS;
+                    }
+                } catch (Exception ignored) {
+                } finally {
+                    if (mDbUtil != null)
+                        mDbUtil.closeDB();
+                }
+
+
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<PhotoCaptureLocationBO>> fetchLocations() {
+        return Observable.fromCallable(new Callable<ArrayList<PhotoCaptureLocationBO>>() {
+            @Override
+            public ArrayList<PhotoCaptureLocationBO> call() {
+
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+
+                    ArrayList<PhotoCaptureLocationBO> photoCaptureLocationBOS = new ArrayList<>();
+
+                    String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
+                            + " FROM StandardListMaster SL  where SL.Listtype='PL' ORDER BY SL.ListId";
+
+                    Cursor c = mDbUtil.selectSQL(sql1);
+
+                    PhotoCaptureLocationBO locations;
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            locations = new PhotoCaptureLocationBO();
+                            locations.setLocationId(c.getInt(0));
+                            locations.setLocationName(c.getString(1));
+                            photoCaptureLocationBOS.add(locations);
+                        }
+                        c.close();
+                    }
+
+
+                    if (photoCaptureLocationBOS.size() == 0) {
+                        locations = new PhotoCaptureLocationBO();
+                        locations.setLocationId(0);
+                        locations.setLocationName("Store");
+                        photoCaptureLocationBOS.add(locations);
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+
+                return new ArrayList<>();
+            }
+        });
+
+
     }
 
 

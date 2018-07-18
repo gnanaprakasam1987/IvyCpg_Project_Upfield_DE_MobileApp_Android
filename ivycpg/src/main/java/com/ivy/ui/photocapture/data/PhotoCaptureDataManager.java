@@ -12,6 +12,8 @@ public interface PhotoCaptureDataManager {
 
     Observable<ArrayList<PhotoCaptureProductBO>> fetchPhotoCaptureProducts();
 
+    Observable<ArrayList<PhotoCaptureLocationBO>> fetchEditedLocations(final String retailerID, final int distributorId);
 
-    Observable<ArrayList<PhotoCaptureLocationBO>> fetchLocations(final String retailerID, final int distributorId);
+
+    Observable<ArrayList<PhotoCaptureLocationBO>> fetchLocations();
 }

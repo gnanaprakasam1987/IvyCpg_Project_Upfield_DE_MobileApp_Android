@@ -19,6 +19,17 @@ public class PhotoCaptureLocationBO {
     private String feedback = "";
     private int productID;
 
+    //Refactor field introduced to remove cloning of lists
+    private int photoTypeId;
+
+    public int getPhotoTypeId() {
+        return photoTypeId;
+    }
+
+    public void setPhotoTypeId(int photoTypeId) {
+        this.photoTypeId = photoTypeId;
+    }
+
     public String getImageName() {
         return mImageName;
     }

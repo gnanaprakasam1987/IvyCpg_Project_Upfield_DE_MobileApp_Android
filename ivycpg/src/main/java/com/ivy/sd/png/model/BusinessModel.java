@@ -59,6 +59,7 @@ import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.appmodule.AppComponent;
 
+import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.db.DBHelperImpl;

@@ -121,10 +121,6 @@ public class AppUtils {
         return dialog;
     }
 
-    public static String QT(String data) {
-        return "'" + data + "'";
-    }
-
     public static String convertToSting(Object object) {
         return new Gson().toJson(object);
     }
