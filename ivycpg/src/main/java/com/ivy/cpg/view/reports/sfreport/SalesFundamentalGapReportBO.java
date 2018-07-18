@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.reports.sfreport;
 
 /**
  * Created by anandasir.v on 8/24/2017.

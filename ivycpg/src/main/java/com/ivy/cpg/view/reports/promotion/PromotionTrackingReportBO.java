@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.reports.promotion;
 
 /**
  * Created by anandasir.v on 8/30/2017.

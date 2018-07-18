@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -148,7 +147,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
         bundle = getArguments();
         if (bundle == null)
-        bundle = getActivity().getIntent().getExtras();
+            bundle = getActivity().getIntent().getExtras();
         boolean isFromTab = false;
 
         if (bundle != null) {
@@ -201,7 +200,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         ((TextView) view.findViewById(R.id.textView)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         categories = new ArrayList<>();
-        if(type != null && type.equals(ROUTE)){
+        if (type != null && type.equals(ROUTE)) {
             categories = dashBoardHelper.getRouteDashList();
         } else {
             categories = dashBoardHelper.getDashList(isFromHomeScreenTwo);
@@ -374,8 +373,17 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         @Override
         public SellerDashboardFragment.DashBoardListViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.seller_dashboard_row_layout, parent, false);
+            View v;
+            if (bmodel.configurationMasterHelper.IS_SWITCH_WITH_OUT_TGT
+                    && (bmodel.configurationMasterHelper.SELLER_KPI_CODES.contains(dashboardList.get(viewType).getCode()) ||
+                    SDUtil.convertToInt(dashboardList.get(viewType).getKpiTarget()) == 0)) {
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.seller_dashboard_without_target_row_layout, parent, false);
+            } else {
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.seller_dashboard_row_layout, parent, false);
+            }
+
             return new SellerDashboardFragment.DashBoardListViewAdapter.ViewHolder(v);
         }
 
@@ -424,22 +432,22 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 //                    if (selectedInterval.equals(P3M)) {
                     if (show_trend_chart) {
 
-                        if(selectedInterval.equalsIgnoreCase(WEEK)) {
-                            if(!mDashboardList.get(position).getMonthName().equals("")) {
+                        if (selectedInterval.equalsIgnoreCase(WEEK)) {
+                            if (!mDashboardList.get(position).getMonthName().equals("")) {
                                 //Weekly chart Specific Change
                                 dashBoardHelper.getDashListViewList().clear();
                                 for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                                    if (dashBoardBO.getCode().equals(mDashboardList.get(position).getCode())) {
+                                    if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(position).getCode())) {
                                         dashBoardHelper.getDashListViewList().add(dashBoardBO);
                                     }
                                 }
                             }
                         }
                         //P3M chart Specific Change
-                        if(selectedInterval.equals(P3M)){
+                        if (selectedInterval.equals(P3M)) {
                             dashBoardHelper.getDashListViewList().clear();
                             for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                                if (dashBoardBO.getCode().equals(mDashboardList.get(position).getCode())) {
+                                if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(position).getCode())) {
                                     dashBoardHelper.getDashListViewList().add(dashBoardBO);
                                 }
                             }
@@ -461,7 +469,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
             if (dashboardData.getSubDataCount() > 0) {
                 holder.tvSkuWise.setVisibility(View.VISIBLE);
-                holder.verticalSkuWise.setVisibility(View.VISIBLE);
+                //  holder.verticalSkuWise.setVisibility(View.VISIBLE);
                 SpannableString str = new SpannableString(holder.tvSkuWise
                         .getText().toString());
                 str.setSpan(new UnderlineSpan(), 0, str.length(),
@@ -481,7 +489,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 public void onClick(View v) {
                     try {
 
-                        new LoadAsyncTask(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), holder.dashboardDataObj.getFlex1(), holder.dashboardDataObj.getPId()).execute();
+                        new LoadAsyncTask(holder.dashboardDataObj.getKpiID(), holder.dashboardDataObj.getKpiTypeLovID(), holder.dashboardDataObj.getFlex1(), holder.dashboardDataObj.getPId(), holder.dashboardDataObj.getCode()).execute();
 
 
                     } catch (Exception e) {
@@ -951,14 +959,14 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 } else if (selectedInterval.equals(WEEK)) {
                     dashBoardHelper.getSellerKpiWeekList();
                     final ArrayList<String> monthNameList = dashBoardHelper.getWeekList();
-                    if(monthNameList != null && monthNameList.size() > 0) {
+                    if (monthNameList != null && monthNameList.size() > 0) {
                         weekSpinner.setVisibility(View.VISIBLE);
                         ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthNameList);
                         monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
                         weekSpinner.setAdapter(monthdapter);
                         weekSpinner.setOnItemSelectedListener(this);
                         weekSpinner.setSelection(dashBoardHelper.getCurrentWeek());
-                    } else{
+                    } else {
                         weekSpinner.setVisibility(View.GONE);
                         dashBoardHelper.loadSellerDashBoardforWeek(Integer.toString(mSelectedUserId));
                         updateWeek("");
@@ -1016,7 +1024,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 final String filterName = monthSpinner.getSelectedItem().toString();
                 updateMonth(filterName);
             } else if (menuid == R.id.weekSpinner) {
-                final String filterName = dashBoardHelper.getEnumNamefromValue(weekSpinner.getSelectedItem().toString());
+                //final String filterName = dashBoardHelper.getEnumNamefromValue(weekSpinner.getSelectedItem().toString());
+                final String filterName = weekSpinner.getSelectedItem().toString();
                 updateWeek(filterName);
             } else if (menuid == R.id.routeSpinner) {
                 final String filterName = routeSpinner.getSelectedItem().toString();
@@ -1036,17 +1045,17 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         mDashboardList = new ArrayList<>();
 
         for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-            if (dashBoardBO.getMonthName().equals(monthName)) {
+            if (dashBoardBO.getMonthName().equalsIgnoreCase(monthName)) {
                 mDashboardList.add(dashBoardBO);
             }
         }
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
             //P3M chart Specific Change
-            if(selectedInterval.equals(P3M)){
+            if (selectedInterval.equals(P3M)) {
                 dashBoardHelper.getDashListViewList().clear();
                 for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                    if (dashBoardBO.getCode().equals(mDashboardList.get(0).getCode())) {
+                    if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(0).getCode())) {
                         dashBoardHelper.getDashListViewList().add(dashBoardBO);
                     }
                 }
@@ -1074,10 +1083,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         if (show_trend_chart) {
 
             //Weekly chart Specific Change
-            if(!weekName.equals("")) {
+            if (!weekName.equals("")) {
                 dashBoardHelper.getDashListViewList().clear();
                 for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                    if (dashBoardBO.getCode().equals(mDashboardList.get(0).getCode())) {
+                    if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(0).getCode())) {
                         dashBoardHelper.getDashListViewList().add(dashBoardBO);
                     }
                 }
@@ -1097,7 +1106,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         mDashboardList = new ArrayList<>();
 
         for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-            if(dashBoardBO.getMonthName().equals(routeName)) {
+            if (dashBoardBO.getMonthName().equalsIgnoreCase(routeName)) {
                 mDashboardList.add(dashBoardBO);
             }
         }
@@ -1107,7 +1116,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
             dashBoardHelper.getDashListViewList().clear();
             for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
-                if(dashBoardBO.getMonthName().equals(routeName)) {
+                if (dashBoardBO.getMonthName().equalsIgnoreCase(routeName)) {
                     dashBoardHelper.getDashListViewList().add(dashBoardBO);
                 }
             }
@@ -1254,14 +1263,16 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         private ProgressDialog progressDialogue;
         private int kpiId, kpiTypeLovId;
         private int flex1, pId;
+        private String dashCode;
 
 
-        public LoadAsyncTask(int kpiId, int kpiTypeLovId, int flex1, int pId) {
+        public LoadAsyncTask(int kpiId, int kpiTypeLovId, int flex1, int pId, String dashCode) {
             super();
             this.kpiId = kpiId;
             this.kpiTypeLovId = kpiTypeLovId;
             this.flex1 = flex1;
             this.pId = pId;
+            this.dashCode = dashCode;
         }
 
         @Override
@@ -1308,6 +1319,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 i.putExtra("flex1", flex1);
                 i.putExtra("pid", pId);
                 i.putExtra("isFromDash", true);
+                i.putExtra("dashCode", dashCode);
                 startActivity(i);
             } else {
                 bmodel.showAlert(

@@ -12,31 +12,26 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ContractBO;
 import com.ivy.sd.png.bo.CreditNoteListBO;
-import com.ivy.sd.png.bo.InventoryBO_Proj;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
-import com.ivy.sd.png.bo.LogReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.bo.OrderTakenTimeBO;
 import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductivityReportBO;
-import com.ivy.sd.png.bo.PromotionTrackingReportBO;
 import com.ivy.sd.png.bo.QuestionReportBO;
 import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
 import com.ivy.sd.png.bo.SKUReportBO;
-import com.ivy.sd.png.bo.SalesFundamentalGapReportBO;
+import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.SyncStatusBO;
 import com.ivy.sd.png.bo.TaskReportBo;
-import com.ivy.sd.png.bo.asset.AssetTrackingBrandBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingReportBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -65,16 +60,13 @@ public class ReportHelper {
     private Vector<QuestionReportBO> questionReport;
     private HashMap<String, StockReportBO> mEODReportBOByProductID;
 
-    private ArrayList<LogReportBO> mLogReportList;
+
     private String webViewPlanUrl = "";
     private String webReportUrl = "";
     private ArrayList<CreditNoteListBO> creditNoteList;
 
-    private ArrayList<RetailerMasterBO> assetRetailerList;
-    private ArrayList<AssetTrackingBrandBO> assetBrandList;
 
-    private Vector<RetailerMasterBO> retailerMaster;
-    private HashMap<String, ArrayList<ProductMasterBO>> closingStkReportByRetailId;
+
     private ArrayList<SyncStatusBO> mSyncStatusBOList;
 
 
@@ -94,9 +86,6 @@ public class ReportHelper {
         return mEODStockReportList;
     }
 
-    public ArrayList<LogReportBO> getLogReport() {
-        return mLogReportList;
-    }
 
     /**
      * This method will download the orderHeader details like OrderId,RetailerId
@@ -196,23 +185,27 @@ public class ReportHelper {
     }
 
     public ArrayList<SalesFundamentalGapReportBO> downloadSFGreport(int BeatID, String filter) {
-        ArrayList<SalesFundamentalGapReportBO> reportordbooking = null;
+        ArrayList<SalesFundamentalGapReportBO> salesFundamentalGapReportBOArrayList = null;
         try {
-            SalesFundamentalGapReportBO orderreport;
+            SalesFundamentalGapReportBO salesFundamentalGapReportBO;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
             String tableName = "", pm = "";
-            if (filter.equals("SOS")) {
-                pm = "SOSGap";
-                tableName = "SOS_Tracking_Detail";
-            } else if (filter.equals("SOD")) {
-                pm = "SODGap";
-                tableName = "SOD_Tracking_Detail";
-            } else if (filter.equals("SOSKU")) {
-                pm = "SOSKUGap";
-                tableName = "SOSKU_Tracking_Detail";
+            switch (filter) {
+                case "SOS":
+                    pm = "SOSGap";
+                    tableName = "SOS_Tracking_Detail";
+                    break;
+                case "SOD":
+                    pm = "SODGap";
+                    tableName = "SOD_Tracking_Detail";
+                    break;
+                case "SOSKU":
+                    pm = "SOSKUGap";
+                    tableName = "SOSKU_Tracking_Detail";
+                    break;
             }
 
             StringBuilder sb = new StringBuilder();
@@ -223,31 +216,16 @@ public class ReportHelper {
             sb.append("where A.PLid  = (Select LevelID from ProductLevel where LevelID not in (Select ParentID from ProductLevel)) and D.BeatID ='" + BeatID + "' ");
             sb.append("group by A.PName order by A.Pname");
 
-
-//            StringBuilder sb = new StringBuilder();
-//            sb.append("Select A.PName, ifnull(sum(0+B.Gap),0) as SOSGap, ifnull(sum(0+E.SOSGap),0) as SOSPM,");
-//            sb.append("ifnull(sum(0+C.Gap),0) as SODGap, ifnull(sum(0+E.SODGap),0) as SODPM,");
-//            sb.append("ifnull(sum(0+D.Gap),0) as SOSKUGap, ifnull(sum(0+E.SOSKUGap),0) as SOSKUPM from ProductMaster A ");
-//            sb.append("left join SOS_Tracking_Detail B on B.Pid = A.Pid ");
-//            sb.append("left join SOD_Tracking_Detail C on C.Pid = A.Pid ");
-//            sb.append("left join SOSKU_Tracking_Detail D on D.Pid = A.Pid ");
-//            sb.append("left join SFGapReportMaster E on E.Brandid = A.Pid ");
-//            sb.append("left join RetailerMaster F on F.RetailerID = B.RetailerID and F.RetailerID = C.RetailerID and F.RetailerID = D.RetailerID and F.RetailerID = E.RetailerID ");
-//            sb.append("where PLid  = (Select LevelID from ProductLevel where LevelID not in (Select ParentID from ProductLevel)) ");
-//            if (BeatID != 0) {
-//                sb.append("and F.BeatID ='" + BeatID + "' ");
-//            }
-//            sb.append("group by A.PName order by A.Pname");
             Cursor c = db
                     .selectSQL(sb.toString());
             if (c != null) {
-                reportordbooking = new ArrayList<>();
+                salesFundamentalGapReportBOArrayList = new ArrayList<>();
                 while (c.moveToNext()) {
-                    orderreport = new SalesFundamentalGapReportBO();
-                    orderreport.setPName(c.getString(0));
-                    orderreport.setGap(c.getString(1));
-                    orderreport.setPM(c.getString(2));
-                    reportordbooking.add(orderreport);
+                    salesFundamentalGapReportBO = new SalesFundamentalGapReportBO();
+                    salesFundamentalGapReportBO.setPName(c.getString(0));
+                    salesFundamentalGapReportBO.setGap(c.getString(1));
+                    salesFundamentalGapReportBO.setPM(c.getString(2));
+                    salesFundamentalGapReportBOArrayList.add(salesFundamentalGapReportBO);
                 }
                 c.close();
             }
@@ -255,74 +233,9 @@ public class ReportHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return reportordbooking;
+        return salesFundamentalGapReportBOArrayList;
     }
 
-    public ArrayList<PromotionTrackingReportBO> downloadPromotionTrackingreport(int retailerID) {
-        ArrayList<PromotionTrackingReportBO> reportordbooking = null;
-        try {
-            PromotionTrackingReportBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("SELECT D.PSName as PSName, A.PromoName, Case When (B.IsExecuted =1) then 'YES' else 'NO' End as IsExecuted, Case When (B.HasAnnouncer =1) then ");
-            sb.append("'YES' else 'NO' End as HasAnnouncer, ifNull(C.ListName,'') as Reason  FROM PromotionProductMapping A ");
-            sb.append("inner join PromotionDetail B on A.PID = B.BrandID ");
-            sb.append("left join StandardListMaster C on C.ListID = B.ReasonID and C.ListType = 'REASON' ");
-            sb.append("inner join ProductMaster D on D.Pid = B.BrandID ");
-            sb.append("inner join RetailerMaster E on B.RetailerID = E.RetailerID Where E.RetailerID='" + retailerID + "'");
-
-            Cursor c = db
-                    .selectSQL(sb.toString());
-            if (c != null) {
-                reportordbooking = new ArrayList<>();
-                while (c.moveToNext()) {
-                    orderreport = new PromotionTrackingReportBO();
-                    orderreport.setBrandName(c.getString(0));
-                    orderreport.setPromoName(c.getString(1));
-                    orderreport.setIsExecuted(c.getString(2));
-                    orderreport.setHasAnnouncer(c.getString(3));
-                    orderreport.setReason(c.getString(4));
-                    reportordbooking.add(orderreport);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return reportordbooking;
-    }
-
-    public ArrayList<RetailerMasterBO> downloadPromotionTrackingRetailerMaster() {
-        ArrayList<RetailerMasterBO> reportordbooking = null;
-        try {
-            RetailerMasterBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("Select distinct A.RetailerID, A.RetailerName from RetailerMaster A inner join PromotionHeader B on A.RetailerID = B.RetailerID");
-
-            Cursor c = db
-                    .selectSQL(sb.toString());
-            if (c != null) {
-                reportordbooking = new ArrayList<>();
-                while (c.moveToNext()) {
-                    orderreport = new RetailerMasterBO();
-                    orderreport.setRetailerID(c.getString(0));
-                    orderreport.setRetailerName(c.getString(1));
-                    reportordbooking.add(orderreport);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return reportordbooking;
-    }
 
     // download focus brand specific order reports-- rajkumar
     public ArrayList<OrderDetail> downloadFBOrderDetailForDayReport(String productIds) {
@@ -2235,100 +2148,6 @@ public class ReportHelper {
         return retailersreportlist;
     }
 
-    public void downloadLogReport() {
-        mLogReportList = new ArrayList<>();
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-
-            sb.append("SELECT TimeIn from AttendanceDetail ");
-            sb.append(" Where DateIn = " + bmodel.QT(getTodayDate()));
-
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    LogReportBO logReportBO = new LogReportBO();
-                    logReportBO.setRetailerName("Day Started");
-                    logReportBO.setInTime("");
-                    String time[] = c.getString(0).split(" ");
-                    logReportBO.setOutTime(time[1]);
-                    logReportBO.setInterval(false);
-
-                    mLogReportList.add(logReportBO);
-                }
-            }
-
-            c.close();
-
-            // get Break details of the user
-            sb = new StringBuffer();
-            sb.append("select RM.ListName,AT.inTime,AT.outTime from AttendanceTimeDetails AT ");
-            sb.append("inner join StandardListMaster RM on RM.ListId= AT.reasonid ");
-            sb.append(" where AT.date = " + bmodel.QT(getTodayDate()));
-
-            c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    LogReportBO logReportBO = new LogReportBO();
-                    logReportBO.setRetailerName(c.getString(0));
-                    String[] time1 = c.getString(1).split(" ");
-                    logReportBO.setInTime(time1[1]);
-                    String[] time2 = c.getString(2).split(" ");
-                    logReportBO.setOutTime(time2[1]);
-                    logReportBO.setInterval(true);
-
-                    mLogReportList.add(logReportBO);
-                }
-            }
-            c.close();
-
-            // get Retailer wise activity log of the of the user
-            sb = new StringBuffer();
-            sb.append("select distinct RM.RetailerName,OT.TimeIn,OT.TimeOut from OutletTimestamp OT ");
-            sb.append("inner join RetailerMaster RM on RM.RetailerID= OT.RetailerID ");
-            sb.append(" where OT.VisitDate = " + bmodel.QT(getTodayDate()));
-
-            c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    LogReportBO logReportBO = new LogReportBO();
-                    logReportBO.setRetailerName(c.getString(0));
-                    String[] time1 = c.getString(1).split(" ");
-                    logReportBO.setInTime(time1[1]);
-                    String[] time2 = c.getString(2).split(" ");
-                    logReportBO.setOutTime(time2[1]);
-                    logReportBO.setInterval(false);
-
-                    mLogReportList.add(logReportBO);
-                }
-            }
-            c.close();
-
-            sb = new StringBuffer();
-            sb.append("SELECT TimeOut from DayClose ");
-            sb.append("where status = 1");
-
-            c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    LogReportBO logReportBO = new LogReportBO();
-                    logReportBO.setRetailerName("Day Closed");
-                    logReportBO.setInTime("");
-                    String[] time = c.getString(0).split(" ");
-                    logReportBO.setOutTime(time[1]);
-                    logReportBO.setInterval(false);
-
-                    mLogReportList.add(logReportBO);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
     private String getTodayDate() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
@@ -2804,161 +2623,8 @@ public class ReportHelper {
         }
     }
 
-    public ArrayList<RetailerMasterBO> getAssetRetailerList() {
-        return assetRetailerList;
-    }
 
-    public void setAssetRetailerList(ArrayList<RetailerMasterBO> assetRetailerList) {
-        this.assetRetailerList = assetRetailerList;
-    }
 
-    public ArrayList<AssetTrackingBrandBO> getAssetBrandList() {
-        return assetBrandList;
-    }
-
-    public void setAssetBrandList(ArrayList<AssetTrackingBrandBO> assetBrandList) {
-        this.assetBrandList = assetBrandList;
-    }
-
-    public void downloadAssetTrackingRetailerMaster() {
-        try {
-            RetailerMasterBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("Select distinct A.RetailerID,B.RetailerName from SOD_Assets_Detail A inner join RetailerMaster B on A.RetailerID = B.RetailerID");
-
-            Cursor c = db
-                    .selectSQL(sb.toString());
-            if (c != null) {
-                assetRetailerList = new ArrayList<>();
-                while (c.moveToNext()) {
-                    orderreport = new RetailerMasterBO();
-                    orderreport.setRetailerID(c.getString(0));
-                    orderreport.setRetailerName(c.getString(1));
-                    assetRetailerList.add(orderreport);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public void downloadAssetTrackingBrandMaster() {
-        try {
-            AssetTrackingBrandBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("Select distinct A.ProductID,B.PName from SOD_Assets_Detail A inner join ProductMaster B on A.ProductID = B.PID");
-
-            Cursor c = db
-                    .selectSQL(sb.toString());
-            if (c != null) {
-                assetBrandList = new ArrayList<>();
-                while (c.moveToNext()) {
-                    orderreport = new AssetTrackingBrandBO();
-                    orderreport.setBrandID(c.getInt(0));
-                    orderreport.setBrandName(c.getString(1));
-                    assetBrandList.add(orderreport);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public ArrayList<AssetTrackingReportBO> downloadAssetTrackingreport(int retailerID, int brandID) {
-        ArrayList<AssetTrackingReportBO> reportordbooking = null;
-        try {
-            AssetTrackingReportBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("Select distinct A.PosmDesc,D.PName,ifnull(B.Target,0),ifnull(B.Actual,0),ifnull(C.ListName,'') from PosmMaster A ");
-            sb.append("inner join SOD_Assets_Detail B on A.PosmID = B.AssetID ");
-            sb.append("left join StandardListMaster C on C.ListID = B.ReasonID and C.ListType = 'REASON' ");
-            sb.append("inner join ProductMaster D on B.ProductID = D.PID ");
-            sb.append("inner join RetailerMaster E on B.RetailerID = E.RetailerID ");
-            sb.append("where E.RetailerID = '" + retailerID + "' ");
-            if (brandID != 0) {
-                sb.append("and B.ProductID = '" + brandID + "'");
-            }
-
-            Cursor c = db
-                    .selectSQL(sb.toString());
-            if (c != null) {
-                reportordbooking = new ArrayList<>();
-                while (c.moveToNext()) {
-                    orderreport = new AssetTrackingReportBO();
-                    orderreport.setAssetDescription(c.getString(0));
-                    orderreport.setBrandname(c.getString(1));
-                    orderreport.setTarget(c.getString(2));
-                    orderreport.setActual(c.getString(3));
-                    orderreport.setReason(c.getString(4));
-                    reportordbooking.add(orderreport);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return reportordbooking;
-    }
-
-    public ArrayList<InventoryBO_Proj> downloadInventoryReport(int retailerId, String type) {
-        ArrayList<InventoryBO_Proj> lst = new ArrayList<>();
-        try {
-            bmodel.setRetailerMasterBO(bmodel.getRetailerBoByRetailerID().get(retailerId + ""));
-            String focusBrandIds = "";
-            if (type.equalsIgnoreCase("Filt11"))
-                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND");
-            else if (type.equals("Filt12"))
-                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND2");
-
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            String s = "select distinct CD.productid,Shelfpqty,Shelfcqty,Shelfoqty,SM.listname,PM.psname from ClosingStockDetail CD inner join ClosingStockHeader CH"
-                    + " ON CD.stockid=CH.stockid LEFT JOIN StandardListMaster SM ON SM.listid=CD.reasonid"
-                    + " LEFT JOIN Productmaster PM ON PM.pid=CD.productid where CH.retailerid=" + retailerId + " and CH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + " and CD.productid in(" + focusBrandIds + ")";
-
-            Cursor c = db.selectSQL(s);
-            if (c != null) {
-                InventoryBO_Proj bo;
-                while (c.moveToNext()) {
-                    bo = new InventoryBO_Proj();
-                    bo.setProductId(c.getString(0));
-                    if (c.getInt(1) > 0 || c.getInt(2) > 0 || c.getInt(3) > 0) {
-                        bo.setAvailability("Y");
-                        bo.setReasonDesc("");
-                    } else {
-                        bo.setAvailability("N");
-                        bo.setReasonDesc(c.getString(4));
-                    }
-                    bo.setProductName(c.getString(5));
-
-                    lst.add(bo);
-
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception ex) {
-
-        }
-
-        return lst;
-    }
 
     /**
      * Method to retrieve transaction invoice details from invoicedetails table
@@ -3555,96 +3221,8 @@ public class ReportHelper {
         }
     }
 
-    public Vector<RetailerMasterBO> getRetailerMaster() {
-        return retailerMaster;
-    }
 
-    public void setRetailerMaster(Vector<RetailerMasterBO> retailerMaster) {
-        this.retailerMaster = retailerMaster;
-    }
 
-    public void downloadClosingStockRetailers() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        try {
-            retailerMaster = new Vector<>();
-
-            RetailerMasterBO temp;
-
-            Cursor cursor = db.selectSQL("select RM.retailerid,RM.RetailerName from ClosingStockDetail SD " +
-                    " INNER JOIN RetailerMaster RM ON RM.RetailerID = SD.RetailerID group by RM.RetailerID");
-
-            if (cursor != null && cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    temp = new RetailerMasterBO();
-                    temp.setTretailerId(SDUtil.convertToInt(cursor.getString(0)));
-                    temp.setTretailerName(cursor.getString(1));
-                    retailerMaster.add(temp);
-                }
-                cursor.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            db.closeDB();
-            Commons.printException(e);
-        }
-    }
-
-    public ArrayList<ProductMasterBO> getClosingStkReport(String retailId) {
-        if (closingStkReportByRetailId == null)
-            return null;
-        return closingStkReportByRetailId.get(retailId);
-    }
-
-    public void downloadClosingStock() {
-        closingStkReportByRetailId = new HashMap<>();
-
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-
-        try {
-
-            ArrayList<ProductMasterBO> productMasterBOs;
-
-            Cursor cursor = db.selectSQL("select PM.PName,SH.retailerid,productId,Sum(shelfpqty),Sum(shelfcqty)," +
-                    "Sum(shelfoqty),Facing,PM.pCode,RM.RetailerName,SD.uomqty,SD.ouomqty from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId " +
-                    "INNER JOIN ProductMaster PM ON PM.PID = SD.ProductID INNER JOIN RetailerMaster RM ON RM.RetailerID = SH.RetailerID " +
-                    "group by SH.RetailerID,productId");
-
-            if (cursor != null && cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    ProductMasterBO temp = new ProductMasterBO();
-                    temp.setProductName(cursor.getString(0));
-                    temp.setProductID(cursor.getString(2));
-                    temp.setCsCase(cursor.getInt(4));
-                    temp.setCsPiece(cursor.getInt(3));
-                    temp.setCsOuter(cursor.getInt(5));
-                    temp.setProductCode(cursor.getString(7));
-                    temp.setCaseSize(cursor.getInt(9));
-                    temp.setOutersize(cursor.getInt(10));
-
-                    if (closingStkReportByRetailId.get(cursor.getString(1)) != null) {
-                        ArrayList<ProductMasterBO> productMasterBO1 = closingStkReportByRetailId.get(cursor.getString(1));
-                        productMasterBO1.add(temp);
-
-                    } else {
-                        productMasterBOs = new ArrayList<>();
-                        productMasterBOs.add(temp);
-                        closingStkReportByRetailId.put(cursor.getString(1), productMasterBOs);
-                    }
-                }
-                cursor.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            db.closeDB();
-            Commons.printException(e);
-        }
-    }
 
     public ArrayList<SyncStatusBO> getmSyncStatusBOList() {
         return mSyncStatusBOList;

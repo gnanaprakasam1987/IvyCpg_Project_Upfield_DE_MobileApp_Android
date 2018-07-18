@@ -1,8 +1,7 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports.inventoryreport;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,8 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.InventoryBO_Proj;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -29,16 +28,17 @@ import java.util.Vector;
  * Created by rajkumar.s on 8/23/2017.
  */
 
-public class InventoryReportFragment extends Fragment {
+public class InventoryReportFragment extends IvyBaseFragment {
 
-    View view;
-    BusinessModel bmodel;
-    Spinner spnRetailers;
-    Spinner spnType;
-    ArrayAdapter<RetailerMasterBO> spinnerAdapter;
-    ArrayAdapter<ConfigureBO> inventoryTypeAdapter;
-    ListView listView;
-    ArrayList<InventoryBO_Proj> lstData;
+    private View view;
+    private BusinessModel bmodel;
+    private Spinner spnRetailers;
+    private Spinner spnType;
+    private ArrayAdapter<RetailerMasterBO> spinnerAdapter;
+    private ArrayAdapter<ConfigureBO> inventoryTypeAdapter;
+    private ListView listView;
+    private ArrayList<InventoryBO_Proj> lstData;
+    private InventoryReportHelper inventoryReportHelper;
 
 
     @Nullable
@@ -50,8 +50,10 @@ public class InventoryReportFragment extends Fragment {
 
 
         view = inflater.inflate(R.layout.fragment_inventory_report, container, false);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -60,9 +62,11 @@ public class InventoryReportFragment extends Fragment {
             getActivity().finish();
         }
 
-        spnRetailers=(Spinner)view.findViewById(R.id.spn_retailer);
-        spnType=(Spinner)view.findViewById(R.id.spn_type);
-        listView=(ListView)view.findViewById(R.id.list);
+        inventoryReportHelper=new InventoryReportHelper(getContext(),bmodel);
+
+        spnRetailers= view.findViewById(R.id.spn_retailer);
+        spnType= view.findViewById(R.id.spn_type);
+        listView= view.findViewById(R.id.list);
 
         spinnerAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);
@@ -79,9 +83,10 @@ public class InventoryReportFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(inventoryTypeAdapter.getCount()>0) {
-                    lstData = bmodel.reportHelper.downloadInventoryReport(spinnerAdapter.getItem(i).getTretailerId(),
+                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(i).getTretailerId(),
                             inventoryTypeAdapter.getItem(spnType.getSelectedItemPosition()).getConfigCode());
-                refreshLsit();}
+                refreshLsit();
+                }
             }
 
             @Override
@@ -109,7 +114,7 @@ public class InventoryReportFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 if(spnRetailers.getCount()>0) {
-                    lstData = bmodel.reportHelper.downloadInventoryReport(spinnerAdapter.getItem(spnRetailers.getSelectedItemPosition()).getTretailerId(),
+                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(spnRetailers.getSelectedItemPosition()).getTretailerId(),
                             inventoryTypeAdapter.getItem(i).getConfigCode());
                 refreshLsit();  }
 
@@ -160,9 +165,9 @@ public class InventoryReportFragment extends Fragment {
                 row = inflater
                         .inflate(R.layout.row_inventory_report, parent, false);
                 holder = new ViewHolder();
-                holder.tv_productName = (TextView) row.findViewById(R.id.tv_productname);
-                holder.tv_availability = (TextView) row.findViewById(R.id.tv_availability);
-                holder.tv_reasonDesc = (TextView) row.findViewById(R.id.tv_reason);
+                holder.tv_productName = row.findViewById(R.id.tv_productname);
+                holder.tv_availability = row.findViewById(R.id.tv_availability);
+                holder.tv_reasonDesc = row.findViewById(R.id.tv_reason);
 
                 holder.tv_productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_availability.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));

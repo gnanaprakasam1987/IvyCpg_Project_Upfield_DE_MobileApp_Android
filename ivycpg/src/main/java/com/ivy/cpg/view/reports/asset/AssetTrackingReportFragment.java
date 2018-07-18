@@ -1,6 +1,8 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports.asset;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +13,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.reports.promotion.RetailerNamesBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.asset.AssetTrackingBrandBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingReportBO;
+import com.ivy.cpg.view.reports.asset.AssetTrackingBrandBO;
+import com.ivy.cpg.view.reports.asset.AssetTrackingReportBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
@@ -25,13 +28,14 @@ import java.util.ArrayList;
  * 
  */
 
-public class AssetTrackingReportFragment extends Fragment {
+public class AssetTrackingReportFragment extends IvyBaseFragment {
+
     private BusinessModel bmodel;
     private ListView lv;
+
     private int retailerID = 0;
     private int brandID = 0;
-    private ArrayAdapter<RetailerMasterBO> brandAdapter;
-    private ArrayAdapter<AssetTrackingBrandBO> choiceAdapter;
+    AssetTrackingReportsHelper assetTrackingReportsHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,21 +47,22 @@ public class AssetTrackingReportFragment extends Fragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lv = (ListView) view.findViewById(R.id.list);
-        Spinner spnBeat = (Spinner) view.findViewById(R.id.spinnerStore);
-        Spinner spnChoice = (Spinner) view.findViewById(R.id.spinnerBrand);
+        lv = view.findViewById(R.id.list);
+        Spinner spnBeat = view.findViewById(R.id.spinnerStore);
+        Spinner spnChoice = view.findViewById(R.id.spinnerBrand);
 
-        bmodel.reportHelper.downloadAssetTrackingRetailerMaster();
-        bmodel.reportHelper.downloadAssetTrackingBrandMaster();
+        assetTrackingReportsHelper = new AssetTrackingReportsHelper(getContext());
+        ArrayList<RetailerNamesBO> assetRetailerList = assetTrackingReportsHelper.downloadAssetTrackingRetailerMaster();
+        ArrayList<AssetTrackingBrandBO> assetbrandList=assetTrackingReportsHelper.downloadAssetTrackingBrandMaster();
 
-        brandAdapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<RetailerMasterBO> brandAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.call_analysis_spinner_layout);
         brandAdapter.add(new RetailerMasterBO(0, getResources().getString(
                 R.string.select)));
-        for (int i = 0; i < bmodel.reportHelper.getAssetRetailerList().size(); i++) {
+        for (int i = 0; i < assetRetailerList.size(); i++) {
             brandAdapter
-                    .add(new RetailerMasterBO(SDUtil.convertToInt(bmodel.reportHelper.getAssetRetailerList().get(i).getRetailerID()),
-                            bmodel.reportHelper.getAssetRetailerList().get(i).getRetailerName()));
+                    .add(new RetailerMasterBO(assetRetailerList.get(i).getRetailerId(),
+                            assetRetailerList.get(i).getRetailerName()));
         }
         brandAdapter
                 .setDropDownViewResource(R.layout.call_analysis_spinner_list_item);
@@ -78,13 +83,13 @@ public class AssetTrackingReportFragment extends Fragment {
             }
         });
 
-        choiceAdapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<AssetTrackingBrandBO> choiceAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.call_analysis_spinner_layout);
         choiceAdapter.add(new AssetTrackingBrandBO(0, getResources().getString(
                 R.string.all)));
-        for (int i = 0; i < bmodel.reportHelper.getAssetBrandList().size(); i++) {
+        for (int i = 0; i < assetbrandList.size(); i++) {
             choiceAdapter
-                    .add(bmodel.reportHelper.getAssetBrandList().get(i));
+                    .add(assetbrandList.get(i));
         }
         choiceAdapter
                 .setDropDownViewResource(R.layout.call_analysis_spinner_list_item);
@@ -109,7 +114,7 @@ public class AssetTrackingReportFragment extends Fragment {
     }
 
     private void loadData(int brandID, int RetailerID) {
-        ArrayList<AssetTrackingReportBO> SFGDataList = bmodel.reportHelper.downloadAssetTrackingreport(RetailerID, brandID);
+        ArrayList<AssetTrackingReportBO> SFGDataList = assetTrackingReportsHelper.downloadAssetTrackingreport(RetailerID, brandID);
         MyAdapter adapter = new MyAdapter(SFGDataList);
         lv.setAdapter(adapter);
     }
@@ -144,8 +149,10 @@ public class AssetTrackingReportFragment extends Fragment {
             return items.size();
         }
 
+        @SuppressLint("SetTextI18n")
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
 
             if (convertView == null) {
@@ -155,12 +162,12 @@ public class AssetTrackingReportFragment extends Fragment {
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
                 convertView = inflater.inflate(R.layout.row_asset_tracking_report, parent, false);
 
-                holder.txtAsset = (TextView) convertView.findViewById(R.id.txtAsset);
+                holder.txtAsset = convertView.findViewById(R.id.txtAsset);
                 holder.txtAsset.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                holder.txtBrand = (TextView) convertView.findViewById(R.id.txtBrand);
-                holder.txtTarget = (TextView) convertView.findViewById(R.id.txtTarget);
-                holder.txtActual = (TextView) convertView.findViewById(R.id.txtActual);
-                holder.txtReason = (TextView) convertView.findViewById(R.id.txtReason);
+                holder.txtBrand = convertView.findViewById(R.id.txtBrand);
+                holder.txtTarget = convertView.findViewById(R.id.txtTarget);
+                holder.txtActual = convertView.findViewById(R.id.txtActual);
+                holder.txtReason = convertView.findViewById(R.id.txtReason);
                 convertView.setTag(holder);
 
             } else {

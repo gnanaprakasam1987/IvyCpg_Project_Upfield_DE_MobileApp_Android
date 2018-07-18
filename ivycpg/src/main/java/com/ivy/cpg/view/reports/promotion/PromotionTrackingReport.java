@@ -1,6 +1,8 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports.promotion;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,22 +14,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.BeatMasterBO;
-import com.ivy.sd.png.bo.PromotionTrackingReportBO;
-import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.SalesFundamentalGapReportBO;
-import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
 
-public class PromotionTrackingReport extends Fragment {
+public class PromotionTrackingReport extends IvyBaseFragment {
     private BusinessModel bmodel;
     private ListView lv;
     private int retailerID = 0;
-    private ArrayAdapter<RetailerMasterBO> brandAdapter;
-    private ArrayList<RetailerMasterBO> retailerMasterList;
+    PromotionTrackingReportsHelper promotionTrackingReportsHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,18 +36,19 @@ public class PromotionTrackingReport extends Fragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lv = (ListView) view.findViewById(R.id.list);
-        Spinner spnBeat = (Spinner) view.findViewById(R.id.spinnerBeat);
+        lv = view.findViewById(R.id.list);
+        Spinner spnBeat = view.findViewById(R.id.spinnerBeat);
 
-        retailerMasterList = bmodel.reportHelper.downloadPromotionTrackingRetailerMaster();
+        promotionTrackingReportsHelper=new PromotionTrackingReportsHelper(getContext());
+        ArrayList<RetailerNamesBO> retailerMasterList = promotionTrackingReportsHelper.downloadPromotionTrackingRetailerMaster();
 
-        brandAdapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<RetailerMasterBO> brandAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.call_analysis_spinner_layout);
         brandAdapter.add(new RetailerMasterBO(0, getResources().getString(
                 R.string.select)));
         for (int i = 0; i < retailerMasterList.size(); i++) {
             brandAdapter
-                    .add(new RetailerMasterBO(SDUtil.convertToInt(retailerMasterList.get(i).getRetailerID()),
+                    .add(new RetailerMasterBO(retailerMasterList.get(i).getRetailerId(),
                             retailerMasterList.get(i).getRetailerName()));
         }
         brandAdapter
@@ -75,7 +73,7 @@ public class PromotionTrackingReport extends Fragment {
     }
 
     private void loadData(int retailerId) {
-        ArrayList<PromotionTrackingReportBO> SFGDataList = bmodel.reportHelper.downloadPromotionTrackingreport(retailerId);
+        ArrayList<PromotionTrackingReportBO> SFGDataList = promotionTrackingReportsHelper.downloadPromotionTrackingreport(retailerId);
         if (SFGDataList != null && SFGDataList.size() > 0) {
             MyAdapter adapter = new MyAdapter(SFGDataList);
             lv.setAdapter(adapter);
@@ -110,8 +108,10 @@ public class PromotionTrackingReport extends Fragment {
             return items.size();
         }
 
+        @SuppressLint("SetTextI18n")
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
 
             if (convertView == null) {
@@ -121,13 +121,13 @@ public class PromotionTrackingReport extends Fragment {
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
                 convertView = inflater.inflate(R.layout.row_promotion_tracking_report, parent, false);
 
-                holder.txtProdName = (TextView) convertView.findViewById(R.id.txtProdName);
+                holder.txtProdName = convertView.findViewById(R.id.txtProdName);
                 holder.txtProdName.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-                holder.txtPromoName = (TextView) convertView.findViewById(R.id.txtPromoName);
-                holder.txtisExecuted = (TextView) convertView.findViewById(R.id.txtisExecuted);
-                holder.txtHasAnnouncer = (TextView) convertView.findViewById(R.id.txthasAnnouncer);
-                holder.txtReason = (TextView) convertView.findViewById(R.id.txtReason);
+                holder.txtPromoName = convertView.findViewById(R.id.txtPromoName);
+                holder.txtisExecuted = convertView.findViewById(R.id.txtisExecuted);
+                holder.txtHasAnnouncer = convertView.findViewById(R.id.txthasAnnouncer);
+                holder.txtReason = convertView.findViewById(R.id.txtReason);
 
                 convertView.setTag(holder);
 
@@ -144,12 +144,6 @@ public class PromotionTrackingReport extends Fragment {
             holder.txtisExecuted.setText(holder.mPromotionTrackingReportBO.getIsExecuted() + "");
             holder.txtHasAnnouncer.setText(holder.mPromotionTrackingReportBO.getHasAnnouncer() + "");
             holder.txtReason.setText(holder.mPromotionTrackingReportBO.getReason() + "");
-
-//            holder.txtsodgap.setText(holder.mSKUBO.getSODGap() + "");
-//            holder.txtsodpm.setText(holder.mSKUBO.getSODPM() + "");
-//
-//            holder.txtsoskugap.setText(holder.mSKUBO.getSOSKUGap() + "");
-//            holder.txtsoskupm.setText(holder.mSKUBO.getSOSKUPM() + "");
 
             return convertView;
         }

@@ -246,15 +246,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 } else
                     showToast();
                 break;
-            case StandardListMasterConstants.MENU_CLOSING_STK_RPT:
 
-                bmodel.reportHelper.downloadClosingStockRetailers();
-
-                if (bmodel.reportHelper.getRetailerMaster().size() > 0)
-                    gotoReportActivity(config);
-                else
-                    showToast();
-                break;
             default:
                 gotoReportActivity(config);
                 break;
@@ -355,7 +347,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                     if (holder.menuCode.equals("MENU_AUDITSCORE_REPORT") || holder.menuCode.equals("MENU_DAY_PERFORMA")
                             || holder.menuCode.equals("MENU_FOCUS_REPORT") || holder.menuCode.equals("MENU_MSL_REPORT") || holder.menuCode.equals("MENU_POSM_REPORT")
                             || holder.menuCode.equals("MENU_SCHEME_REPORT") || holder.menuCode.equals("MENU_STORERANK_REPORT")
-                            || holder.menuCode.equals("MENU_TIME_REPORT") || holder.menuCode.equals("MENU_REPORT01")) {
+                            || holder.menuCode.equals("MENU_TIME_REPORT") || holder.menuCode.equals("MENU_REPORT01") || holder.menuCode.equals("MENU_SUP_TEST_SCORE")) {
 
                         Toast.makeText(getActivity(), "Report not exist.", Toast.LENGTH_LONG).show();
 
