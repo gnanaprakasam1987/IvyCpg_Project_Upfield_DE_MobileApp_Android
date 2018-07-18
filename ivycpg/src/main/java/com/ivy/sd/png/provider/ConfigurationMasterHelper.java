@@ -990,6 +990,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "CSSTK07";
     public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
 
+    //To show Product Code
+    private static final String CODE_SHOW_SKU_CODE = "CODE7";
+    public boolean IS_SHOW_SKU_CODE;
+
 
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
@@ -2557,6 +2561,8 @@ public class ConfigurationMasterHelper {
         if (IS_ENABLE_LICENSE_VALIDATION) {
             loadLicenseValidationConfig();
         }
+
+        this.IS_SHOW_SKU_CODE = hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) : false;
     }
 
     private boolean isInOutModule() {

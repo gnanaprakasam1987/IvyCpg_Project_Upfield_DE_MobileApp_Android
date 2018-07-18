@@ -3,90 +3,101 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:weightSum="10"
-    android:padding="@dimen/dimen_5dp">
-    <LinearLayout
+    android:padding="@dimen/dimen_5dp"
+    android:weightSum="10">
+
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical"
         android:layout_weight="4"
-        >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/PRDNAME"
-            android:textColor="@android:color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/product_name"
-            android:textSize="@dimen/font_micro_small"
-            />
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/product_code"
+            style="?attr/customListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/PRDNAME"
+            android:layout_marginRight="@dimen/dimens_2dp"
+            android:gravity="center"
+            android:text="@string/prod_code" />
 
         <TextView
             android:id="@+id/batch_no"
+            style="?attr/customListItemSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?attr/customListItemSecondary"
-            android:text=""
+            android:layout_below="@+id/PRDNAME"
+            android:layout_marginLeft="@dimen/dimens_2dp"
+            android:layout_toEndOf="@+id/product_code"
+            android:layout_toRightOf="@+id/product_code"
             android:gravity="center"
-            />
+            android:text="@string/batch_no" />
+
         <TextView
             android:id="@+id/prdweight"
+            style="?attr/customListItemSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:tag="sih"
+            android:layout_below="@+id/product_code"
             android:gravity="center"
-            android:text="56656"
-            style="?attr/customListItemSecondary"
-            android:layout_marginBottom="@dimen/icons_top_margin"
-            />
+            android:tag="sih"
+            android:text="56656" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/PRDQTY"
-        android:textColor="@android:color/black"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="2"
         android:gravity="center"
-        android:text="0"
-        android:textSize="@dimen/font_micro_small"
         android:maxLines="1"
-        android:layout_weight="2"/>
+        android:text="0"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_micro_small" />
 
     <TextView
         android:id="@+id/PRDPCSQTY"
-        android:textColor="@android:color/black"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
         android:singleLine="true"
         android:tag="sih_piece"
         android:text="0"
-        android:textSize="@dimen/font_micro_small"
-        android:layout_weight="1"/>
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_micro_small" />
 
     <TextView
         android:id="@+id/outerCaseQty"
-        android:textColor="@android:color/black"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
         android:singleLine="true"
         android:text="0"
-        android:textSize="@dimen/font_micro_small"
-        android:layout_weight="1"/>
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_micro_small" />
 
     <TextView
         android:id="@+id/PRDVAL"
-        android:textColor="@android:color/black"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center"
         android:singleLine="true"
         android:tag="sih_piece"
-        android:gravity="center"
         android:text="5"
-        android:layout_weight="2"
+        android:textColor="@android:color/black"
         android:textSize="@dimen/font_micro_small" />
     <!-- <TextView
          android:id="@+id/prdweight"

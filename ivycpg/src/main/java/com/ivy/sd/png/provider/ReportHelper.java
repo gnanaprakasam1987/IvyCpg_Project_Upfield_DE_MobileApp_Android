@@ -9,7 +9,6 @@ import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.AttendanceReportBo;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ContractBO;
 import com.ivy.sd.png.bo.CreditNoteListBO;
@@ -45,10 +44,8 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2698,9 +2695,6 @@ public class ReportHelper {
     }
 
 
-
-
-
     public int getPaymentPrintCount(String groupId) {
         int count = 0;
         try {
@@ -3021,7 +3015,7 @@ public class ReportHelper {
         sb.append("select psname,freeproductid,freeqty,BM.batchnum,");
         sb.append("CASE WHEN uomid= PM.dUomid THEN " + bmodel.QT("CASE"));
         sb.append(" WHEN uomid=PM.dOUomid THEN " + bmodel.QT("OUTER") + " ELSE " + bmodel.QT("PIECE") + " END AS you ");
-        sb.append("from SchemeFreeProductDetail SFP ");
+        sb.append(",PM.pcode from SchemeFreeProductDetail SFP ");
         sb.append("inner join Productmaster PM on SFP.freeproductid=PM.pid ");
         sb.append("left join Batchmaster BM on SFP.freeproductid=BM.pid and SFP.batchid=BM.batchid ");
         if (isInvoice)
@@ -3038,6 +3032,7 @@ public class ReportHelper {
                 schemeProductBO.setQuantitySelected(c.getInt(2));
                 schemeProductBO.setBatchId(c.getString(3));
                 schemeProductBO.setUomDescription(c.getString(4));
+                schemeProductBO.setProductCode(c.getString(5));
                 freeProductList.add(schemeProductBO);
 
             }

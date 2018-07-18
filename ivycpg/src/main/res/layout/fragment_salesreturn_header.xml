@@ -173,6 +173,7 @@
                             android:background="@color/list_title_bg_color"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
+                            android:weightSum="3"
                             android:paddingStart="@dimen/list_padding_left_n_right"
                             android:paddingEnd="@dimen/list_padding_left_n_right">
 

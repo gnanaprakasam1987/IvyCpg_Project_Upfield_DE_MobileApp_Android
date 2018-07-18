@@ -45,7 +45,7 @@ public class VanLoadStockApplyHelper {
             db.openDataBase();
             String query = "select A.pid,sum(A.caseQty),SUM(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,"
                     + " A.uid,A.outerQty,B.dOuomQty,A.BatchId,o.isstarted,C.batchId,C.batchNum, B.baseprice,"
-                    + " A.Flag,IFNULL(A.LoadNo,A.uid),A.date from VanLoad A inner join productmaster B on A.pid=B.pid"
+                    + " A.Flag,IFNULL(A.LoadNo,A.uid),A.date,A.pCode from VanLoad A inner join productmaster B on A.pid=B.pid"
                     + " LEFT JOIN BatchMaster C on A.BatchId=C.batchid  AND C.Pid = B.pid"
                     + " left join Odameter o"
                     + " where B.IsSalable=1 OR B.IsSalable=0 GROUP BY A.uid,A.pid,C.batchid ORDER BY B.rowid";
@@ -74,6 +74,7 @@ public class VanLoadStockApplyHelper {
                     stock.setIsManualVanload(c.getInt(15));
                     stock.setLoadNO(c.getString(16));
                     stock.setDate(c.getString(17));
+                    stock.setProductCode(c.getString(18));
                     StockReportMaster.add(stock);
                     if (c.getInt(11) == 1)
                         bmodel.startjourneyclicked = true;
@@ -81,7 +82,7 @@ public class VanLoadStockApplyHelper {
                 c.close();
             }
             Cursor c1 = db
-                    .selectSQL("select A.pid,sum(A.caseQty),sum(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,A.uid,sum(A.outerQty),B.dOuomQty,A.BatchId,C.batchNum, B.baseprice,A.Flag,IFNULL(A.LoadNo,A.uid),A.date from VanLoad A inner join productmaster B on A.pid=B.pid LEFT JOIN BatchMaster C on A.BatchId=C.batchid and A.pid=C.pid  group by A.pid,C.batchid ORDER BY B.rowid");
+                    .selectSQL("select A.pid,sum(A.caseQty),sum(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,A.uid,sum(A.outerQty),B.dOuomQty,A.BatchId,C.batchNum, B.baseprice,A.Flag,IFNULL(A.LoadNo,A.uid),A.date,A.pCode from VanLoad A inner join productmaster B on A.pid=B.pid LEFT JOIN BatchMaster C on A.BatchId=C.batchid and A.pid=C.pid  group by A.pid,C.batchid ORDER BY B.rowid");
             if (c1 != null) {
                 StockReportMasterAll = new Vector<VanLoadStockApplyBO>();
                 while (c1.moveToNext()) {
@@ -104,6 +105,7 @@ public class VanLoadStockApplyHelper {
                     stock1.setIsManualVanload(c1.getInt(13));
                     stock1.setLoadNO(c1.getString(14));
                     stock1.setDate(c1.getString(15));
+                    stock1.setProductCode(c.getString(16));
                     StockReportMasterAll.add(stock1);
                 }
                 c1.close();
@@ -327,7 +329,6 @@ public class VanLoadStockApplyHelper {
         }
         return tot;
     }
-
 
 
     /**
