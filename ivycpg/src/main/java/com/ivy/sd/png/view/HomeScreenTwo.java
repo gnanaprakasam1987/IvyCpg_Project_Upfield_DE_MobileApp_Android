@@ -51,10 +51,10 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
-import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity;
 import com.ivy.cpg.view.orderdelivery.OrderDeliveryHelper;
@@ -215,6 +215,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private int mSelectedCategoryIndex = 0;
     private boolean isStoreCheckMenu = false;
     private boolean isLocDialogShow = false;
+    private boolean isMandatoryDialogShow = false;
     private HashMap<String, String> menuCodeList = new HashMap<>();
     String menuCode = "";
     private SchemeDetailsMasterHelper schemeHelper;
@@ -242,6 +243,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         activityView.setHasFixedSize(true);
         activityView.setNestedScrollingEnabled(false);
         isLocDialogShow = getIntent().getBooleanExtra("isLocDialog", false);
+        isMandatoryDialogShow = getIntent().getBooleanExtra("isMandatoryDialog", false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         activityView.setLayoutManager(linearLayoutManager);
@@ -470,10 +472,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             showLocation();
         }
 
-        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                && bmodel.getRetailerMasterBO().getIsVansales() == 0) {
-            bmodel.configurationMasterHelper.downloadSwitchConfig();
-        }
+
     }
 
     private int getCategoryIndex() {
@@ -717,6 +716,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         mActivityDoneCount.setText(new DecimalFormat("0").format((isStoreCheckMenu ? (totalVisitCount != 0 ? (getStoreMenuVisitCount(mTempMenuStoreList) > 0 ? totalVisitCount - 1 : totalVisitCount) : 0) : totalVisitCount)));
 
         mActivityTotalCount.setText(String.valueOf("/" + ((isStoreCheckMenu ? mTempMenuList.size() - 1 : mTempMenuList.size()) + mTempMenuStoreList.size())));
+
+        // this dialog will return when mandatory module is not completed otherwise not show
+        if (isMandatoryDialogShow)
+            onCreateDialog(6);
     }
 
 
@@ -2250,6 +2253,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 Task.class);
                         intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                         intent.putExtra("IsRetailerwisetask", true);
+                        intent.putExtra("screentitle", menu.getMenuName());
 
                         startActivity(intent);
                         isCreated = false;
@@ -4062,13 +4066,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                         int which) {
                                         String selectedType = mSalesTypeArray[which];
                                         if (selectedType.equals(VAN_SALES)) {
-                                            updateConfigurationSelectedSellerType(false);
+                                            bmodel.configurationMasterHelper.
+                                                    updateConfigurationSelectedSellerType(false);
                                             updateRetailerwiseSellertype(1); // Vansales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(1);
 
                                         } else {
-                                            updateConfigurationSelectedSellerType(true);
+                                            bmodel.configurationMasterHelper.
+                                                    updateConfigurationSelectedSellerType(true);
                                             updateRetailerwiseSellertype(0); // Presales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(0);
@@ -4134,7 +4140,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         .setCancelable(false)
                         .setTitle(getResources().getString(
                                 R.string.please_finish_mandatory_modules))
-                        .setMessage(getMandatoryModules())
+                        .setMessage(getMandatoryModules(1))
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
@@ -4147,6 +4153,28 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 bmodel.applyAlertDialogTheme(builder5);
                 break;
+            case 6:
+                String mandatoryStr = getMandatoryModules(2);
+                if (mandatoryStr.length() > 0) {
+                    AlertDialog.Builder builder6 = new AlertDialog.Builder(HomeScreenTwo.this)
+                            .setIcon(null)
+                            .setCancelable(false)
+                            .setTitle(getResources().getString(
+                                    R.string.please_finish_mandatory_modules))
+                            .setMessage(mandatoryStr)
+                            .setPositiveButton(getResources().getString(R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,
+                                                            int whichButton) {
+                                            dialog.dismiss();
+
+                                        }
+
+                                    });
+
+                    bmodel.applyAlertDialogTheme(builder6);
+                }
+                break;
 
 
         }
@@ -4154,7 +4182,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         return null;
     }
 
-    private String getMandatoryModules() {
+    private String getMandatoryModules(int flag) {
         StringBuilder sb = new StringBuilder();
 
         for (ConfigureBO config : menuDB) {
@@ -4162,8 +4190,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     && !config.getConfigCode().equals(MENU_CALL_ANLYS)
                     && !config.getConfigCode().equals(MENU_CLOSE_CALL) && !config.getConfigCode().equals(MENU_CLOSE_KLGS)) {
 
-                sb.append(config.getMenuName() + " "
-                        + getResources().getString(R.string.is_not_done) + "\n");
+                if (flag == 1)
+                    sb.append(config.getMenuName() + " "
+                            + getResources().getString(R.string.is_not_done) + "\n");
+                else if (flag == 2)
+                    sb.append(getResources().getString(R.string.please_complete) + " " + config.getMenuName() +
+                            "\n");
             }
 
         }
@@ -4173,8 +4205,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (config.getMandatory() == 1 && !config.isDone()
                         && !config.getConfigCode().equals("MENU_CLOSE")) {
 
-                    sb.append(config.getMenuName() + " "
-                            + getResources().getString(R.string.is_not_done) + "\n");
+                    if (flag == 1)
+                        sb.append(config.getMenuName() + " "
+                                + getResources().getString(R.string.is_not_done) + "\n");
+                    else if (flag == 2)
+                        sb.append(getResources().getString(R.string.please_complete) + " " + config.getMenuName() +
+                                "\n");
                 }
 
             }
@@ -4311,30 +4347,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 0);
     }
 
-    /**
-     * Method to use change some specify configuration flag depends on selected
-     * seller type
-     *
-     * @param switchToPreSeller
-     */
-    private void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
-        if (switchToPreSeller) {
-            bmodel.configurationMasterHelper.downloadSwitchConfig();
-        } else {
-            bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
-            bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
-            schemeHelper.IS_SCHEME_ON = schemeHelper.IS_SCHEME_ON_MASTER;
-            schemeHelper.IS_SCHEME_SHOW_SCREEN = schemeHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
-            bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
-            bmodel.configurationMasterHelper.IS_GST = bmodel.configurationMasterHelper.IS_GST_MASTER;
-            bmodel.configurationMasterHelper.IS_GST_HSN = bmodel.configurationMasterHelper.IS_GST_HSN_MASTER;
-            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
-            bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
-            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
-            bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
-        }
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

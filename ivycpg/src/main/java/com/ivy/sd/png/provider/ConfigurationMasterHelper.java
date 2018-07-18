@@ -513,9 +513,22 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
     public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
 
-    private static final String CODE_LICENSE_VALIDATION = "DRUG_LICENSE_VLD";
+    private static final String CODE_LICENSE_VALIDATION = "ORDB73";
     public boolean IS_ENABLE_LICENSE_VALIDATION;
     public boolean IS_SOFT_LICENSE_VALIDATION;
+
+    private static final String CODE_ORD_DIGIT = "ORDB74";
+    public boolean IS_ORD_DIGIT;
+    public int ORD_DIGIT;
+
+    private static final String CODE_SWITCH_WITH_OUT_TGT_SELLER_DASHBOARD = "DASH15";
+    public boolean IS_SWITCH_WITH_OUT_TGT;
+    public String SELLER_KPI_CODES;
+
+    private static final String CODE_SWITCH_WITH_OUT_TGT_SKU_WISE_DASHBOARD = "DASH16";
+    public boolean IS_SWITCH_WITH_OUT_SKU_WISE_TGT;
+    public String SELLER_SKU_WISE_KPI_CODES;
+
     /**
      * RoadActivity config *
      */
@@ -528,7 +541,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
     public boolean floating_Survey = false;
-    public boolean floating_np_reason_photo = false;
+    public boolean floating_np_reason_photo = true;
     public boolean IS_NEW_TASK;
     public boolean IS_SUGGESTED_ORDER; // used order screen to hid SO colom
     public boolean IS_SUGGESTED_ORDER_LOGIC;//used order screen to calculate so column
@@ -1166,7 +1179,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
 
-    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED,SHOW_STOCK_RETURN;
+    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
@@ -1864,14 +1877,15 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * This method will return RFiled1 column value from the hhtmenuMaster table.
+     * This method will return Regex column value from the hhtmenuMaster table.
      *
-     * @return boolean true - npReasonwith photo is required.
+     * @return boolean false - npReasonwith photo is not required.
+     * boolean true - npReasonwith photo is required.
      */
     public void downloadFloatingNPReasonWithPhoto(String moduleCode) {
-        floating_np_reason_photo = false;
+        floating_np_reason_photo = true;
         try {
-            String sql = "select RField1 from " + DataMembers.tbl_HhtMenuMaster
+            String sql = "select Regex from " + DataMembers.tbl_HhtMenuMaster
                     + " where hhtCode=" + bmodel.QT(moduleCode);
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1880,7 +1894,7 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 while (c.moveToNext()) {
                     if (c.getInt(0) == 1) {
-                        floating_np_reason_photo = true;
+                        floating_np_reason_photo = false;
                     }
 
                 }
@@ -1889,7 +1903,6 @@ public class ConfigurationMasterHelper {
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
-            floating_np_reason_photo = false;
         }
 
 
@@ -2500,7 +2513,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_INDICATIVE_SR = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
         this.IS_INVOICE_SR = hashMapHHTModuleConfig.get(CODE_SR_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INVOICE) : false;
-        this.IS_GENERATE_SR_IN_DELIVERY=hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) : false;
+        this.IS_GENERATE_SR_IN_DELIVERY = hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_GENERATE_SR_IN_DELIVERY) : false;
         this.IS_SYNC_FROM_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_IS_SYNC_FROM_CALL_ANALYSIS) : false;
 
         this.IS_REALTIME_LOCATION_CAPTURE = hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_REALTIME_LOCATION_CAPTURE) : false;
@@ -3745,6 +3758,12 @@ public class ConfigurationMasterHelper {
             IS_SHOW_DEFAULT_UOM = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
             IS_SHOW_ORDER_PHOTO_CAPTURE = false;
+            IS_ORD_DIGIT = false;
+            ORD_DIGIT = 0;
+            IS_SWITCH_WITH_OUT_TGT = false;
+            SELLER_KPI_CODES = "";
+            IS_SWITCH_WITH_OUT_SKU_WISE_TGT = false;
+            SELLER_SKU_WISE_KPI_CODES = "";
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4394,6 +4413,46 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     IS_SHOW_ORDER_PHOTO_CAPTURE = true;
+                }
+                c.close();
+            }
+
+
+            //Order Digit config
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_ORD_DIGIT) + " and Flag=1 and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    ORD_DIGIT = (c.getInt(0) <= 5) ? 5 : c.getInt(0);
+                    IS_ORD_DIGIT = true;
+                }
+                c.close();
+            }
+
+
+            //Seller KPI Dashboard
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SWITCH_WITH_OUT_TGT_SELLER_DASHBOARD) + " and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()
+                        && c.getString(0).length() > 0) {
+                    IS_SWITCH_WITH_OUT_TGT = true;
+                    SELLER_KPI_CODES = c.getString(0);
+                }
+                c.close();
+            }
+
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SWITCH_WITH_OUT_TGT_SKU_WISE_DASHBOARD) + " and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()
+                        && c.getString(0).length() > 0) {
+                    IS_SWITCH_WITH_OUT_SKU_WISE_TGT = true;
+                    SELLER_SKU_WISE_KPI_CODES = c.getString(0);
                 }
                 c.close();
             }
@@ -6051,5 +6110,31 @@ public class ConfigurationMasterHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    /**
+     * Method to use change some specify configuration flag depends on selected
+     * seller type
+     *
+     * @param switchToPreSeller
+     */
+    public void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
+        if (switchToPreSeller) {
+            bmodel.configurationMasterHelper.downloadSwitchConfig();
+        } else {
+            SchemeDetailsMasterHelper schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(context);
+            bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
+            bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
+            schemeDetailsMasterHelper.IS_SCHEME_ON = schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER;
+            schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN = schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
+            bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
+            bmodel.configurationMasterHelper.IS_GST = bmodel.configurationMasterHelper.IS_GST_MASTER;
+            bmodel.configurationMasterHelper.IS_GST_HSN = bmodel.configurationMasterHelper.IS_GST_HSN_MASTER;
+            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
+            bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
+            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
+            bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
+        }
+
     }
 }

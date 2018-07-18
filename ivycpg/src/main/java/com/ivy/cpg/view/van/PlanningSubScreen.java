@@ -222,7 +222,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
 
     private void vanLoadSubRoutine(String menuName) {
         vanloadstockview = new Intent(PlanningSubScreen.this,
-                VanLoadStockView_activity.class);
+                VanLoadStockViewActivity.class);
         vanloadstockview.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         vanloadstockview.putExtra("screentitle", menuName);
         new DownloadStockViewApply().execute();

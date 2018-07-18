@@ -173,6 +173,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
                 } else if (mCapturedBarcode.equals(assetBO.getSerialNo())) {
                     assetBO.setScanComplete(1);
+                    assetBO.setAvailQty(1);
                     mAssetList.add(assetBO);
                 } else {
                     if (mAllAssetTrackingList != null) {

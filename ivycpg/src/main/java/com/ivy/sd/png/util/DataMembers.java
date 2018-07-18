@@ -77,7 +77,7 @@ public class DataMembers {
     public static final String FIT_ASSET = "FIT_ASSET";
     public static final String FIT_POSM = "FIT_POSM";
 
-    public static final String MODULE_STOCK = "Stock & Order";
+    public static final String MODULE_STOCK = "Stock Check";
     public static final String MODULE_PRICE = "Price Check";
     public static final String MODULE_ASSET = "Asset Tracking";
     public static final String MODULE_POSM = "POSM Tracking";
@@ -281,6 +281,7 @@ public class DataMembers {
     private static final String tbl_Photocaptureupload = "Photocapture";
     public static final String tbl_DayClose = "DayClose";
     private static final String tbl_NonProductiveTable = "Nonproductivereasonmaster";
+    private static final String tbl_NonProductiveModuleTable = "NonProductiveModules";
     public static final String tbl_AssetHeader = "AssetHeader";
     public static final String tbl_AssetDetail = "AssetDetail";
     public static final String tbl_AssetImgInfo = "AssetImageDetails";
@@ -351,6 +352,7 @@ public class DataMembers {
     public static final String tbl_DayClose_cols = "status,TimeOut";
 
     private static final String tbl_NonProductiveTable_cols = "UID,retailerid,RouteID,Date,ReasonID,ReasonTypes,DistributorID,ImagePath,remarks";
+    private static final String tbl_NonProductiveModuleTable_cols = "Tid,RetailerID,ModuleCode,ReasonID,ImagePath";
     private static final String tbl_SalesReturnHeader_cols = "uid,date,RetailerID,ReturnValue,Lpc,remark,latitude,longitude,credit_flag,unload,IsCreditNoteApplicable,ReplacedValue,Distributorid,DistParentID,SignaturePath,imgName,RefModule,RefModuleTId,IFlag,invoiceid";
     private static final String tbl_SalesReturnDetails_cols = "uid,outerQty,dOuomQty,dOuomid,Cqty,duomQty,duomid,Pqty,batchid,Condition,mfgdate,expdate,oldmrp,ProductID,invoiceno,srpedited,totalQty,reason_type,LotNumber,piece_uomid,HsnCode";
     private static final String tbl_AnswerHeader_cols = "surveyid,retailerid,uid,date,ModuleID,SupervisiorId,Remark,achScore,tgtScore,AchBonusPoint,MaxBonusPoint,type,counterid,refid,DistributorID,userid";
@@ -623,6 +625,7 @@ public class DataMembers {
         uploadColumn.put(tbl_DayClose, tbl_DayClose_cols);
         uploadColumn.put(tbl_Photocaptureupload, tbl_Photocaptureupload_cols);
         uploadColumn.put(tbl_NonProductiveTable, tbl_NonProductiveTable_cols);
+        uploadColumn.put(tbl_NonProductiveModuleTable, tbl_NonProductiveModuleTable_cols);
         uploadColumn.put(tbl_DailyTargetPlanned, tbl_DailyTargetPlanned_cols);
         uploadColumn.put(tbl_Payment, tbl_PaymentUpload_cols);
         uploadColumn.put(tbl_CollectionDocument, tbl_CollectionDocument_cols);
@@ -790,7 +793,8 @@ public class DataMembers {
                 tbl_Photocaptureupload_cols);
         uploadColumnWithRetailer.put(tbl_NonProductiveTable,
                 tbl_NonProductiveTable_cols);
-
+        uploadColumnWithRetailer.put(tbl_NonProductiveModuleTable,
+                tbl_NonProductiveModuleTable_cols);
         uploadColumnWithRetailer.put(tbl_Payment, tbl_PaymentUpload_cols);
         uploadColumnWithRetailer.put(tbl_CollectionDocument, tbl_CollectionDocument_cols);
         uploadColumnWithRetailer.put(tbl_SalesReturnHeader,

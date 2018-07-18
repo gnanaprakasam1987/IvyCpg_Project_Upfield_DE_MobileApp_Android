@@ -68,6 +68,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
     MyPagerAdapter adapterViewPager;
     HorizontalScrollView scr_View;
     private DashBoardHelper dashBoardHelper;
+    private String dashCode;
 
     @Nullable
     @Override
@@ -84,6 +85,7 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         Intent i = getActivity().getIntent();
         flex1 = i.getIntExtra("flex1", 0);
         isFromDash = i.getExtras().getBoolean("isFromDash");
+        dashCode = i.getExtras().getString("dashCode", "");
 
         setHasOptionsMenu(true);
 
@@ -235,8 +237,18 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         @Override
         public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.row_sellerskuwisetgt, parent, false);
+            View v;
+            if (bmodel.configurationMasterHelper.IS_SWITCH_WITH_OUT_SKU_WISE_TGT
+                    && dashCode.length() > 0
+                    && (bmodel.configurationMasterHelper.SELLER_SKU_WISE_KPI_CODES.contains(dashCode)
+                    || items.get(viewType).getTarget() == 0)) {
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.row_sellerskuwise_without_tgt, parent, false);
+            } else {
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.row_sellerskuwisetgt, parent, false);
+            }
+
             return new MyAdapter.ViewHolder(v);
         }
 

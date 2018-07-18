@@ -2279,8 +2279,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         bmodel.saveModuleCompletion(OrderedFlag);
                         bmodel.outletTimeStampHelper
                                 .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
-                        startActivity(new Intent(OrderNewOutlet.this,
-                                HomeScreenTwo.class));
+                        /*startActivity(new Intent(OrderNewOutlet.this,
+                                HomeScreenTwo.class));*/
                         finish();
                     }
                 }

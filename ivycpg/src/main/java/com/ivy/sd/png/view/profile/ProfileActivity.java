@@ -64,8 +64,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
-import com.ivy.cpg.view.order.scheme.RetailerInfo;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
+import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.order.scheme.RetailerInfo;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -82,7 +84,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UserDialogInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -97,7 +98,6 @@ import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
-import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.sd.png.view.TaskListFragment;
 import com.ivy.sd.png.view.UserDialogue;
 
@@ -2020,6 +2020,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                     if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                         bmodel.getRetailerWiseSellerType();
+                        bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
                     }
 
 
@@ -2093,6 +2094,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
                 i.putExtra("isLocDialog", true);
+                i.putExtra("isMandatoryDialog", true);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
                 finish();

@@ -1129,7 +1129,7 @@ public class OrderHelper {
         sb.append(productBo.getCaseUomId() + ","
                 + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) + ","
                 + productBo.getMSQty() + ",");
-        sb.append(line_total_price + ","
+        sb.append(SDUtil.getWithoutExponential(line_total_price) + ","
                 + DatabaseUtils.sqlEscapeString(productBo.getProductName()) + ","
                 + DatabaseUtils.sqlEscapeString(productBo.getProductShortName()) + ",");
         sb.append(DatabaseUtils.sqlEscapeString(productBo.getProductCode())
@@ -1146,7 +1146,7 @@ public class OrderHelper {
         sb.append("," + productBo.getWeight());
         sb.append("," + reasonId);
         sb.append("," + businessModel.QT(productBo.getHsnCode()));
-        sb.append("," + totalValue);
+        sb.append("," + SDUtil.getWithoutExponential(totalValue));
         sb.append("," + productBo.getMRP());
 
         return sb;
@@ -1817,7 +1817,7 @@ public class OrderHelper {
             else
                 sb.append(0);
             sb.append("," + businessModel.getOrderHeaderBO().getLinesPerCall() + "," + 0);
-            sb.append("," + businessModel.getOrderHeaderBO().getTotalWeight());
+            sb.append("," + businessModel.QT(SDUtil.getWithoutExponential(SDUtil.convertToDouble(businessModel.getOrderHeaderBO().getTotalWeight() + ""))));
             sb.append("," + businessModel.QT(businessModel.retailerMasterBO.getOrderTypeId()));
 
 
@@ -2160,7 +2160,7 @@ public class OrderHelper {
             sb.append(product.getD1() + "," + product.getD2());
             sb.append("," + product.getD3() + ",");
             sb.append(product.getDA() + ",");
-            sb.append(line_total_price);
+            sb.append(SDUtil.getWithoutExponential(line_total_price));
             sb.append("," + orderedOuterQty + ",");
             sb.append(product.getOutersize() + ",");
             sb.append(product.getOuUomid() + "," + batchId);
@@ -2174,7 +2174,7 @@ public class OrderHelper {
             sb.append("," + schemeDisc + "," + prodDisc);
             sb.append("," + taxAmount);
             sb.append("," + businessModel.QT(product.getHsnCode()));
-            sb.append("," + totalValue);
+            sb.append("," + SDUtil.getWithoutExponential(totalValue));
 
             return sb;
         } catch (Exception e) {

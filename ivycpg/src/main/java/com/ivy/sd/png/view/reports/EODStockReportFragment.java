@@ -25,6 +25,7 @@ import com.ivy.sd.print.EODStockReportPreviewScreen;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class EODStockReportFragment extends Fragment {
     private BusinessModel bmodel;
 

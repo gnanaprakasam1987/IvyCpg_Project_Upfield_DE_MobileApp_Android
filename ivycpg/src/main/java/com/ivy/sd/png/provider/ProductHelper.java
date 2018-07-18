@@ -3400,8 +3400,8 @@ public class ProductHelper {
                 sb.append(bomReturnBo.getpSrp() + ","
                         + bomReturnBo.getPieceUomId() + ","
                         + bomReturnBo.getTypeId() + ",");
-                sb.append((bomReturnBo.getLiableQty() - bomReturnBo
-                        .getReturnQty()) * bomReturnBo.getpSrp() + ",");
+                sb.append(QT(SDUtil.getWithoutExponential((bomReturnBo.getLiableQty() - bomReturnBo
+                        .getReturnQty()) * (double) bomReturnBo.getpSrp())) + ",");
                 sb.append(QT(bmodel.getRetailerMasterBO().getRetailerID()));
 
                 db.insertSQL(tableName, returncolumns, sb.toString());
