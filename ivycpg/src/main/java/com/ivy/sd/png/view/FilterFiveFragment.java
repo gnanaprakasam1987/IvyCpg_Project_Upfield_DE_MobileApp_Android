@@ -61,7 +61,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     private String isFrom;
 
     private boolean isAttributeFilter = true;
-    SalesFundamentalHelper mSFHelper;
+    private SalesFundamentalHelper mSFHelper;
     private boolean isTagged = false;
 
     @SuppressWarnings("unchecked")
