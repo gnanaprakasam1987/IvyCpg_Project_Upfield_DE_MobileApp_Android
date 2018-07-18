@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -135,6 +136,76 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void setLayoutDirection(int direction) {
+
+    }
+
+    @Override
+    public void handleLayoutDirection(String language) {
+
+    }
+
+    @Override
+    public void setBlueTheme() {
+
+    }
+
+    @Override
+    public void setRedTheme() {
+
+    }
+
+    @Override
+    public void setOrangeTheme() {
+
+    }
+
+    @Override
+    public void setGreenTheme() {
+
+    }
+
+    @Override
+    public void setPinkTheme() {
+
+    }
+
+    @Override
+    public void setNavyBlueTheme() {
+
+    }
+
+    @Override
+    public void setFontSize(String fontSize) {
+
+    }
+
+    @Override
+    public void showAlert(String title, String msg) {
+
+    }
+
+    @Override
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener) {
+
+    }
+
+    @Override
+    public void createNFCManager() {
+
+    }
+
+    @Override
+    public void resumeNFCManager() {
+
+    }
+
+    @Override
+    public void pauseNFCManager() {
 
     }
 

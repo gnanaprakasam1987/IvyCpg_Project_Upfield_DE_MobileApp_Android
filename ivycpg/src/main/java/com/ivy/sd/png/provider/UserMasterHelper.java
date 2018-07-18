@@ -23,7 +23,7 @@ public class UserMasterHelper {
     private UserMasterBO userMasterBO;
     private ArrayList<UserMasterBO> backupSellerList;
 
-    private UserMasterHelper(Context context) {
+    public UserMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
         userMasterBO = new UserMasterBO();

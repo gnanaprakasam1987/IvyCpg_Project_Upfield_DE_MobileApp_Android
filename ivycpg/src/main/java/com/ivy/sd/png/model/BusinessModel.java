@@ -58,9 +58,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.appmodule.AppComponent;
-import com.ivy.appmodule.AppModule;
-import com.ivy.appmodule.DaggerAppComponent;
-import com.ivy.core.CodeCleanUpUtil;
+
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.db.DBHelperImpl;
@@ -153,7 +151,7 @@ import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
-import com.ivy.sd.png.provider.StockReportMasterHelper;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaskHelper;
@@ -277,7 +275,7 @@ public class BusinessModel extends Application {
     public ReportHelper reportHelper;
     public LoadManagementHelper vanmodulehelper;
     public StockProposalModuleHelper stockProposalModuleHelper;
-    public StockReportMasterHelper stockreportmasterhelper;
+    public VanLoadStockApplyHelper stockreportmasterhelper;
     public LabelsMasterHelper labelsMasterHelper;
     public LocationUtil locationUtil;
     public OutletTimeStampHelper outletTimeStampHelper;
@@ -414,6 +412,7 @@ public class BusinessModel extends Application {
     private String dashboardUserFilterString;
 
 
+
     private final String mFocusBrand = "Filt11";
     private final String mFocusBrand2 = "Filt12";
     private final String mFocusBrand3 = "Filt20";
@@ -441,7 +440,7 @@ public class BusinessModel extends Application {
         reportHelper = ReportHelper.getInstance(this);
         vanmodulehelper = LoadManagementHelper.getInstance(this);
         stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
-        stockreportmasterhelper = StockReportMasterHelper.getInstance(this);
+        stockreportmasterhelper = VanLoadStockApplyHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
         locationUtil = LocationUtil.getInstance(this);
         outletTimeStampHelper = OutletTimeStampHelper.getInstance(this);
@@ -749,8 +748,8 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
-            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-            appComponent.inject(this);
+           // appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+           // appComponent.inject(this);
 
             mApplicationComponent = DaggerIvyAppComponent.builder()
                     .ivyAppModule(new IvyAppModule(this))

@@ -40,10 +40,17 @@ public class IvyAppModule {
     private Context mContext;
 
 
+    @Provides
+    @Singleton
+    BusinessModel provideApplication() {
+        return (BusinessModel) mContext;
+    }
+
     @Inject
     public IvyAppModule(Context context) {
         mContext = context;
     }
+
 
     @Provides
     @ApplicationContext
