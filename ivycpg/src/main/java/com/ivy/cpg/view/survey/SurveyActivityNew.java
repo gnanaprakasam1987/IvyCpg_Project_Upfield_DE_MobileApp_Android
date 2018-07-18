@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class SurveyActivityNew extends IvyBaseActivityNoActionBar implements BrandDialogInterface {
+public class SurveyActivityNew extends IvyBaseActivityNoActionBar implements BrandDialogInterface, FiveLevelFilterCallBack {
 
     BusinessModel bmodel;
     private Toolbar toolbar;
@@ -98,7 +99,27 @@ public class SurveyActivityNew extends IvyBaseActivityNoActionBar implements Bra
     }
 
     @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        SurveyActivityNewFragment asf = (SurveyActivityNewFragment) fm
+                .findFragmentById(R.id.survey_fragment);
+//		asf.updateFromFiveLevelFilter(parentidList);
+        asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+    }
+
+    @Override
     public void loadStartVisit() {
+
+    }
+
+    //dummy
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+
+    }
+    //dummy
+    @Override
+    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
     }
 
@@ -113,22 +134,5 @@ public class SurveyActivityNew extends IvyBaseActivityNoActionBar implements Bra
 
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        SurveyActivityNewFragment asf = (SurveyActivityNewFragment) fm
-                .findFragmentById(R.id.survey_fragment);
-        asf.updateFromFiveLevelFilter(mParentIdList);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        SurveyActivityNewFragment asf = (SurveyActivityNewFragment) fm
-                .findFragmentById(R.id.survey_fragment);
-//		asf.updateFromFiveLevelFilter(parentidList);
-        asf.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
-    }
 
 }

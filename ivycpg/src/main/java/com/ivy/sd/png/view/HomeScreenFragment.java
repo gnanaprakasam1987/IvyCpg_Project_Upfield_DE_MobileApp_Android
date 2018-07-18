@@ -1159,8 +1159,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
 
 
-                        bmodel.productHelper
-                                .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);
+                      /*  bmodel.productHelper
+                                .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);*/
+
+                        bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel(MENU_SURVEY_SW));
+                        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SURVEY_SW,
+                                bmodel.productHelper.getRetailerModuleSequenceValues()));
 
                     }
 
@@ -1214,8 +1218,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 surveyHelperNew.downloadQuestionDetails("MENU_SURVEY01_SW");
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
-                    bmodel.productHelper
-                            .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");
+                   /* bmodel.productHelper
+                            .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");*/
+                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel("MENU_SURVEY01_SW"));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_SURVEY01_SW",
+                            bmodel.productHelper.getRetailerModuleSequenceValues()));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1267,8 +1274,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
 
-                    bmodel.productHelper
-                            .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);
+                    /*bmodel.productHelper
+                            .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);*/
+                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel(MENU_SURVEY_BA_CS));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SURVEY_BA_CS,
+                            bmodel.productHelper.getRetailerModuleSequenceValues()));
                 }
 
                 if (surveyHelperNew.getSurvey() != null

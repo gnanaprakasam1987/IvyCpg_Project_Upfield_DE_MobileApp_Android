@@ -4841,8 +4841,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
     //used for filter method loading non products content module
     private void chooseFilterType(String menuCode) {
-        bmodel.productHelper
-                .downloadFiveLevelFilterNonProducts(menuCode);
+      /*  bmodel.productHelper
+                .downloadFiveLevelFilterNonProducts(menuCode);*/
+        bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel(menuCode));
+        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts(menuCode,
+                bmodel.productHelper.getRetailerModuleSequenceValues()));
     }
 
 

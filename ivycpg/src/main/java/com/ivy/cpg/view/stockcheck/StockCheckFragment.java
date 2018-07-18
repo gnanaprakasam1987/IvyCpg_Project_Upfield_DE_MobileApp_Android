@@ -75,6 +75,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -97,7 +98,7 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class StockCheckFragment extends IvyBaseFragment implements
         BrandDialogInterface, OnClickListener, OnEditorActionListener,
-        CompetitorFilterInterface, StockCheckContractor.StockCheckView {
+        CompetitorFilterInterface, FiveLevelFilterCallBack,StockCheckContractor.StockCheckView {
 
 
     private static final String BRAND = "Brand";
@@ -1973,10 +1974,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
-
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        stockCheckPresenter.getFilteredList(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+
+    }
+    @Override
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        stockCheckPresenter.getFilteredList(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
     @Override

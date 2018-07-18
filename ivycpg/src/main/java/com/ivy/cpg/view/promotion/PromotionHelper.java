@@ -55,7 +55,10 @@ public class PromotionHelper {
             businessModel.productHelper.downloadInStoreLocations();
         }
 
-            businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+        /*businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);*/
+        businessModel.productHelper.setFilterProductLevelsRex(businessModel.productHelper.downloadFiveFilterLevel(mMenuCode));
+        businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFiveFilterLevelProducts(mMenuCode,
+                businessModel.productHelper.getRetailerModuleSequenceValues()));
 
         downloadPromotionMaster(mContext);
         loadPromoEntered(mContext);
@@ -233,7 +236,6 @@ public class PromotionHelper {
             sbuffer.append(QT(businessModel.getNote()));
             sbuffer.append(",");
             sbuffer.append(businessModel.getRetailerMasterBO().getDistributorId());
-
 
 
             db.insertSQL("PromotionHeader", headerColumns, sbuffer.toString());

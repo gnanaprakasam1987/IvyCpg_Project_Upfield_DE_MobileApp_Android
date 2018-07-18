@@ -5418,8 +5418,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 backButtonClick();
             return true;
         } else if (i == R.id.menu_survey) {
-            bmodel.productHelper
-                    .downloadFiveLevelFilterNonProducts("MENU_SURVEY");
+            /*bmodel.productHelper
+                    .downloadFiveLevelFilterNonProducts("MENU_SURVEY");*/
+            bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel("MENU_SURVEY"));
+            bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_SURVEY",
+                    bmodel.productHelper.getRetailerModuleSequenceValues()));
             bmodel.mSelectedActivityName = "Survey";
             startActivity(new Intent(this, SurveyActivityNew.class));
             return true;

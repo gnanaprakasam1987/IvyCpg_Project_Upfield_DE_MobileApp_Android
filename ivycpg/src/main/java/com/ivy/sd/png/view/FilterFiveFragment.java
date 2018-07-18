@@ -47,7 +47,6 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     private BusinessModel bmodel;
     private Button cancelButton;
     private Button btnOK;
-    private BrandDialogInterface brandInterface;
     private FiveLevelFilterCallBack fiveLevelFilterCallBack;
     private FilterGridAdapter gridadapter;
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
@@ -143,7 +142,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                         }
                     }
                     fiveLevelFilterCallBack.updateFromFiveLevelFilter(filteredProductId, mSelectedIdByLevelId, null, filterText);
-                    brandInterface.updateCancel();
+                    fiveLevelFilterCallBack.updateCancel();
                 } catch (Exception ex) {
                     Commons.printException(ex);
                 }
@@ -209,7 +208,7 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                         sequence.addAll(bmodel.reportHelper.getSequencevalues());
                         break;
                     default:
-                        loadedFilterValues.putAll(bmodel.productHelper.getRetailerModuleFilerContentBySequenct());
+                        loadedFilterValues.putAll(bmodel.productHelper.getRetailerModuleFilterProductsByLevelId());
                         sequence.addAll(bmodel.productHelper.getRetailerModuleSequenceValues());
                         break;
                 }
@@ -311,21 +310,16 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-        if (brandInterface == null) {
-            if (activity instanceof BrandDialogInterface) {
-                this.brandInterface = (BrandDialogInterface) activity;
-            }
-        }
+
         if (fiveLevelFilterCallBack == null) {
             if (activity instanceof BrandDialogInterface) {
                 this.fiveLevelFilterCallBack = (FiveLevelFilterCallBack) activity;
             }
         }
-
     }
 
     public void setBrandDialogInterface(SalesVolumeReportFragment sellerOrderReportFragment) {
-        this.brandInterface = sellerOrderReportFragment;
+        this.fiveLevelFilterCallBack = sellerOrderReportFragment;
     }
 
     public class FilterAdapter extends BaseAdapter {
@@ -479,36 +473,29 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
             Vector<LevelBO> finalValuelist = new Vector<>();
 
             if (isFilterContentSelected(pos) && pos != 0) {
-
-                int selectedGridLevelID = 0;
-                String parentIdList = "";
-
-                for (int i = 0; i <= pos; i++) {
-                    LevelBO levelBO = sequence.get(i);
-
-                    if (i != 0) {
-
-                        parentIdList = parentIdList + getParentHierarchy(selectedGridLevelID, parentIdList, levelBO);
-
-                    }
-                    selectedGridLevelID = mSelectedIdByLevelId.get(levelBO.getProductID());
-
-                    if (i == pos) {
-
-                        Vector<LevelBO> gridViewlist = loadedFilterValues
-                                .get(levelBO.getProductID());
-                        finalValuelist = new Vector<>();
-                        if (parentIdList.length() > 0) {
-                            for (LevelBO gridViewBO : gridViewlist) {
-                                if (parentIdList.contains("/" + gridViewBO.getProductID() + "/")) {
-                                    finalValuelist.add(gridViewBO);
-                                }
-
+                int size = sequence.size();
+                int selectedPid = 0;
+                for (int i = size - 1; i >= 0; i--) {
+                    if (mSelectedIdByLevelId.get(sequence.get(i).getProductID()) != null && mSelectedIdByLevelId.get(sequence.get(i).getProductID()) > 0) {
+                        for (LevelBO bo : loadedFilterValues.get(sequence.get(i).getProductID())) {
+                            if (bo.getProductID() == mSelectedIdByLevelId.get(sequence.get(i).getProductID())) {
+                                selectedPid = bo.getProductID();
+                                i = -1;
+                                break;
                             }
                         }
                     }
+                }
+                LevelBO levelBO = sequence.get(pos);
+                Vector<LevelBO> gridViewlist = loadedFilterValues
+                        .get(levelBO.getProductID());
+                for (LevelBO gridViewBO : gridViewlist) {
+                    if (gridViewBO.getParentHierarchy().contains("/" + selectedPid + "/")) {
+                        finalValuelist.add(gridViewBO);
+                    }
 
                 }
+
 
             } else {
 
@@ -750,36 +737,9 @@ public class FilterFiveFragment<E> extends Fragment implements OnClickListener,
                     }
                 }
             }
-
         }
 
         return parentIdList;
-    }
-
-    private String getParentHierarchy(int selectedGridLevelID, String parentIds, LevelBO levelBO) {
-        String parentHierarchy = "";
-        Vector<LevelBO> filterProductList = loadedFilterValues.get(levelBO
-                .getProductID());
-        if (selectedGridLevelID != 0) {
-            if (filterProductList != null) {
-                for (LevelBO gridlevelBO : filterProductList) {
-                    if (gridlevelBO.getParentHierarchy().contains("/" + selectedGridLevelID + "/")) {
-                        parentHierarchy = parentHierarchy + gridlevelBO.getParentHierarchy();
-                    }
-
-                }
-            }
-
-        } else {
-            if (filterProductList != null && parentIds != null && parentIds.length() > 0) {
-                for (LevelBO gridlevelBO : filterProductList) {
-                    if (parentIds.contains("/" + gridlevelBO.getProductID() + "/")) {
-                        parentHierarchy = parentHierarchy + gridlevelBO.getParentHierarchy();
-                    }
-                }
-            }
-        }
-        return parentHierarchy;
     }
 
     //Compute Filter's based on Tagged Products Parent Hierarchy

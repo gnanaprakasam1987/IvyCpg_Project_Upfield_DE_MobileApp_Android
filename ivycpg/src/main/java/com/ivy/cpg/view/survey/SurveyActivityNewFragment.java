@@ -72,6 +72,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -94,7 +95,7 @@ import java.util.regex.Pattern;
 /**
  * IsExclude score will not work/applicable for multi select questions.
  */
-public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLayout.OnTabSelectedListener, BrandDialogInterface, OnClickListener {
+public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLayout.OnTabSelectedListener, BrandDialogInterface, OnClickListener, FiveLevelFilterCallBack {
     private BusinessModel bmodel;
     private int tabPos;
     private int tabCount;
@@ -126,7 +127,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private int index;
     private int top;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private Vector<LevelBO> mFinalParentIdList;
+    private int mFilteredProductId;
     private boolean isViewMode;
     private TabLayout tabLayout;
     private Button saveButton;
@@ -528,8 +529,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 surveyBO = sBO;
             }
         }
-        if (mFinalParentIdList != null)
-            loadQuestionFromFiveLevelFilter(surveyHelperNew.mSelectedSurvey, mFinalParentIdList);
+        if (mFilteredProductId != 0)
+            loadQuestionFromFiveLevelFilter(surveyHelperNew.mSelectedSurvey, mFilteredProductId);
 
         /* Show or hide footer which display survey score and overall score*/
         if (surveyHelperNew.SHOW_TOTAL_SCORE_IN_SURVEY) {
@@ -2144,6 +2145,16 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         mDrawerLayout.closeDrawers();
     }
 
+    @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        loadQuestionFromFiveLevelFilter(
+                surveyHelperNew.mSelectedSurvey,
+                mProductId);
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        this.mFilteredProductId = mProductId;
+        mDrawerLayout.closeDrawers();
+    }
+
     private class SaveSurveyTask extends AsyncTask<String, Integer, Boolean> {
         @Override
         protected Boolean doInBackground(String... arg0) {
@@ -2289,34 +2300,17 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         // TODO Auto-generated method stub
     }
 
-    /* @Override
-     public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
-         // TODO Auto-generated method stub
-     }
-     @Override
-     public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
-         // TODO Auto-generated method stub
-     }*/
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        loadQuestionFromFiveLevelFilter(
-                surveyHelperNew.mSelectedSurvey,
-                mParentIdList);
-        mDrawerLayout.closeDrawers();
+
     }
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        loadQuestionFromFiveLevelFilter(
-                surveyHelperNew.mSelectedSurvey,
-                mParentIdList);
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        this.mFinalParentIdList = mParentIdList;
-        mDrawerLayout.closeDrawers();
+
     }
 
-    private void loadQuestionFromFiveLevelFilter(int surveyId, Vector<LevelBO>
-            finalSelectionList) {
+    private void loadQuestionFromFiveLevelFilter(int surveyId, int filteredProductId) {
         ArrayList<QuestionBO> items = new ArrayList<>();
         for (SurveyBO surBO : surveyHelperNew.getSurvey()) {
             if (surBO.getSurveyID() == surveyHelperNew.mSelectedSurvey)
@@ -2325,28 +2319,16 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (items == null || items.isEmpty())
             return;
         mQuestions = new ArrayList<>();
-        for (LevelBO levelBo : finalSelectionList) {
-            for (QuestionBO question : items) {
-                if (question.getSurveyid() == surveyId || surveyId == -1) {
-                    if (question.getBrandID() == levelBo.getProductID()
-                            || levelBo.getProductID() == -1 && question.getIsSubQuestion() == 0) {
-                        mQuestions.add(question);
-                    }
+        for (QuestionBO question : items) {
+            if (question.getSurveyid() == surveyId || surveyId == -1) {
+                if (question.getParentHierarchy().contains("/" + filteredProductId + "/")
+                        || filteredProductId == -1 && question.getIsSubQuestion() == 0) {
+                    mQuestions.add(question);
                 }
             }
         }
         SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
         surveyHelperNew.setmQuestionData(mQuestions);
-        /*questionsListView.setOnTouchListener(new OnSwipeTouchListener() {
-            public void onSwipeRight() {
-                if ((tabPos - 1) >= 0 && tabLayout != null)
-                    tabLayout.getTabAt(tabPos - 1).select();
-            }
-            public void onSwipeLeft() {
-                if ((tabPos + 1) <= tabCount && tabLayout != null)
-                    tabLayout.getTabAt(tabPos + 1).select();
-            }
-        });*/
         rvAdapter = new QuestionAdapter();
         questionsRv.setAdapter(rvAdapter);
     }

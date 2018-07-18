@@ -270,7 +270,15 @@ public class ProductHelper {
         this.filterProductLevels = filterProductLevels;
     }
 
-    public HashMap<Integer, Vector<LevelBO>> getRetailerModuleFilerContentBySequenct() {
+    public void setFilterProductLevelsRex(Vector<LevelBO> filterProductLevelsRex) {
+        this.filterProductLevelsRex = filterProductLevelsRex;
+    }
+
+    public void setFilterProductsByLevelIdRex(HashMap<Integer, Vector<LevelBO>> filterProductsByLevelIdRex) {
+        this.filterProductsByLevelIdRex = filterProductsByLevelIdRex;
+    }
+
+    public HashMap<Integer, Vector<LevelBO>> getRetailerModuleFilterProductsByLevelId() {
         return filterProductsByLevelIdRex;
     }
 

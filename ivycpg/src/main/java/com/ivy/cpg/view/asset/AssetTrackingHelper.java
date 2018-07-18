@@ -143,7 +143,11 @@ public class AssetTrackingHelper {
             surveyHelperNew.downloadModuleId("STANDARD");
             surveyHelperNew.downloadQuestionDetails(mMenuCode);
             surveyHelperNew.loadSurveyAnswers(0);
-            mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+           // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+            mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFiveFilterLevel(mMenuCode));
+            mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFiveFilterLevelProducts(mMenuCode,
+                    mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
+
         }
 
         //update configurations
@@ -156,7 +160,10 @@ public class AssetTrackingHelper {
         mBusinessModel.productHelper.downloadInStoreLocations();
 
         //download filter levels
-        mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+       // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+        mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFiveFilterLevel(mMenuCode));
+        mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFiveFilterLevelProducts(mMenuCode,
+                mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
 
         // Load master records
         downloadAssetMaster(mContext, mMenuCode);

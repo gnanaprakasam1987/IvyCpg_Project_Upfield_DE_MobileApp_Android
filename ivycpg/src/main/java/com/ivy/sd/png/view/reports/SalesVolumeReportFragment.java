@@ -26,6 +26,7 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
@@ -37,7 +38,7 @@ import java.util.Vector;
 /**
  * Created by dharmapriya.k on 11/1/2017,3:18 PM.
  */
-public class SalesVolumeReportFragment extends Fragment implements BrandDialogInterface {
+public class SalesVolumeReportFragment extends Fragment implements BrandDialogInterface, FiveLevelFilterCallBack {
 
 
     private ListView lvwplist;
@@ -60,7 +61,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
         view = inflater.inflate(R.layout.fragment_sales_volume_report, container,
                 false);
 
-        FrameLayout drawer =view.findViewById(R.id.right_drawer);
+        FrameLayout drawer = view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
@@ -150,7 +151,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         menu.findItem(R.id.menu_filter).setVisible(!drawerOpen);
 
-        if(mylist==null||mylist.size()==0){
+        if (mylist == null || mylist.size() == 0) {
             menu.findItem(R.id.menu_filter).setVisible(false);
         }
     }
@@ -330,7 +331,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
         if (id != -1) {
             if (mylist != null && mylist.size() > 0) {
                 for (int i = 0; i < mylist.size(); i++) {
-                    if (mylist.get(i).getParentid() == id) {
+                    if (mylist.get(i).getParentHierarchy().contains("/"+id+"/")) {
                         productMasterBOs.add(mylist.get(i));
                     }
                 }
@@ -354,6 +355,17 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
     }
 
     @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        if (bmodel.isMapEmpty(mSelectedIdByLevelId)) {
+            updateList(-1);
+        } else
+            updateList(mProductId);
+
+        mDrawerLayout.closeDrawers();
+    }
+
+    @Override
     public void loadStartVisit() {
 
     }
@@ -365,14 +377,9 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
     @Override
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        if (bmodel.isMapEmpty(mSelectedIdByLevelId)) {
-            updateList(-1);
-        } else if (mParentIdList != null && mParentIdList.size() > 0) {
-            updateList(mParentIdList.get(0).getProductID());
-        }
-        mDrawerLayout.closeDrawers();
+
     }
+
 
 }
 
