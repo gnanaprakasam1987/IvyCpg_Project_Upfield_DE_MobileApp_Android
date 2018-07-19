@@ -246,15 +246,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 } else
                     showToast();
                 break;
-            case StandardListMasterConstants.MENU_CLOSING_STK_RPT:
 
-                bmodel.reportHelper.downloadClosingStockRetailers();
-
-                if (bmodel.reportHelper.getRetailerMaster().size() > 0)
-                    gotoReportActivity(config);
-                else
-                    showToast();
-                break;
             default:
                 gotoReportActivity(config);
                 break;

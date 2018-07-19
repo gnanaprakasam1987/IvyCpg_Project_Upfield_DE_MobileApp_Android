@@ -557,7 +557,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void prepareScreen() {
         try {
             if ("FromSummary".equals(OrderedFlag)) {
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.SHOW_SPL_FLIER_NOT_NEEDED) {
+                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.SHOW_SPL_FLIER_NOT_NEEDED
+                        && !bmodel.configurationMasterHelper.IS_SHOW_ALL_SKU_ON_EDIT) {
 
                     getMandatoryFilters();
                     mSelectedFilterMap.put("General", mOrdered);

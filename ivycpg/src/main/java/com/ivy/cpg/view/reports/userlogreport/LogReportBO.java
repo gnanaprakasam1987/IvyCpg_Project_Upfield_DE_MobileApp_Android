@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.reports.userlogreport;
 
 public class LogReportBO {
 

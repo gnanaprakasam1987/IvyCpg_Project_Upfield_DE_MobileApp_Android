@@ -168,4 +168,5 @@
     <string name="please_complete">Please Complete</string>
     <string name="actual_value_exceeds_total">Actual Value Exceeds Total Value</string>
     <string name="total_value_lesser_actual">Total Value is lesser than Actual Value</string>
+    <string name="enter_receipt_no">Enter Receipt Number</string>
 </resources>
