@@ -24,7 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.sd.png.asean.view.R;
 
@@ -89,7 +89,7 @@ public class LayoutAdapter extends RecyclerView.Adapter<LayoutAdapter.SimpleView
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, SellerMapViewActivity.class);
+                Intent intent = new Intent(mContext, SellerDetailMapActivity.class);
                 intent.putExtra("SellerId", "1695");
                 intent.putExtra("screentitle", "Seller");
                 intent.putExtra("TrackingType", 1);

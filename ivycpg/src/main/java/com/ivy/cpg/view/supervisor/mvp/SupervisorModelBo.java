@@ -1,14 +1,7 @@
 package com.ivy.cpg.view.supervisor.mvp;
 
-import android.annotation.SuppressLint;
-import android.util.SparseArray;
-
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SupervisorModelBo {
 
@@ -19,10 +12,9 @@ public class SupervisorModelBo {
     private Long orderValue,timeIn,timeOut,time;
     private MarkerOptions markerOptions;
     private Marker marker;
-    private int sellerListPos,sequence;
+    private int firestoreSequence, masterSequence;
 
-    private SparseArray<ArrayList<SupervisorModelBo>> sellerDetailsList = new SparseArray<>();
-    private ArrayList<SupervisorModelBo> sellerDetailArrayList = new ArrayList<>();
+
 
     public Marker getMarker() {
         return marker;
@@ -160,35 +152,35 @@ public class SupervisorModelBo {
         this.covered = covered;
     }
 
-    public boolean isMockLocationEnabled() {
+    public boolean setIsMockLocationEnabled() {
         return isMockLocationEnabled;
     }
 
-    public void setMockLocationEnabled(boolean mockLocationEnabled) {
+    public void setIsMockLocationEnabled(boolean mockLocationEnabled) {
         isMockLocationEnabled = mockLocationEnabled;
     }
 
-    public boolean isGpsEnabled() {
+    public boolean setIsGpsEnabled() {
         return isGpsEnabled;
     }
 
-    public void setGpsEnabled(boolean gpsEnabled) {
+    public void setIsGpsEnabled(boolean gpsEnabled) {
         isGpsEnabled = gpsEnabled;
     }
 
-    public boolean isDeviated() {
+    public boolean setIsDeviated() {
         return isDeviated;
     }
 
-    public void setDeviated(boolean deviated) {
+    public void setIsDeviated(boolean deviated) {
         isDeviated = deviated;
     }
 
-    public boolean isOrdered() {
+    public boolean getIsOrdered() {
         return isOrdered;
     }
 
-    public void setOrdered(boolean ordered) {
+    public void setIsOrdered(boolean ordered) {
         isOrdered = ordered;
     }
 
@@ -208,35 +200,19 @@ public class SupervisorModelBo {
         this.target = target;
     }
 
-    public int getSellerListPos() {
-        return sellerListPos;
+    public int getFirestoreSequence() {
+        return firestoreSequence;
     }
 
-    public void setSellerListPos(int sellerListPos) {
-        this.sellerListPos = sellerListPos;
+    public void setFirestoreSequence(int firestoreSequence) {
+        this.firestoreSequence = firestoreSequence;
     }
 
-    public SparseArray<ArrayList<SupervisorModelBo>> getSellerDetailsList() {
-        return sellerDetailsList;
+    public int getMasterSequence() {
+        return masterSequence;
     }
 
-    public void setSellerDetailsList(SparseArray<ArrayList<SupervisorModelBo>> sellerDetailsList) {
-        this.sellerDetailsList = sellerDetailsList;
-    }
-
-    public int getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(int sequence) {
-        this.sequence = sequence;
-    }
-
-    public ArrayList<SupervisorModelBo> getSellerDetailArrayList() {
-        return sellerDetailArrayList;
-    }
-
-    public void setSellerDetailArrayList(ArrayList<SupervisorModelBo> sellerDetailArrayList) {
-        this.sellerDetailArrayList = sellerDetailArrayList;
+    public void setMasterSequence(int masterSequence) {
+        this.masterSequence = masterSequence;
     }
 }

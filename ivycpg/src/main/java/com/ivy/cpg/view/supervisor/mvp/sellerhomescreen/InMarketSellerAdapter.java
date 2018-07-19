@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.mvp.supervisorhomepage;
+package com.ivy.cpg.view.supervisor.mvp.sellerhomescreen;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
-import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
 
 import java.text.Format;
@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfoHorizontalAdapter.MyViewHolder> {
+public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAdapter.MyViewHolder> {
 
     private Context context;
     private ArrayList<SupervisorModelBo> sellerArrayList = new ArrayList<>();
 
-    SellerInfoHorizontalAdapter(Context context, ArrayList<SupervisorModelBo> sellerArrayList){
+    InMarketSellerAdapter(Context context, ArrayList<SupervisorModelBo> sellerArrayList){
         this.context = context;
         this.sellerArrayList = sellerArrayList;
     }
@@ -69,7 +69,7 @@ public class SellerInfoHorizontalAdapter extends RecyclerView.Adapter<SellerInfo
         holder.routeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, SellerMapViewActivity.class);
+                Intent intent = new Intent(context, SellerDetailMapActivity.class);
                 intent.putExtra("SellerId", sellerArrayList.get(position).getUserId());
                 intent.putExtra("screentitle", sellerArrayList.get(position).getUserName());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -62,7 +62,7 @@
 
 
             <TextView
-                android:id="@+id/tv_vivit_time"
+                android:id="@+id/tv_visit_time"
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_15sdp"

@@ -39,7 +39,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
-import com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
 import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
@@ -774,7 +774,7 @@ public class SupervisorMapFragment extends IvyBaseFragment implements
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), SellerMapViewActivity.class);
+                        Intent intent = new Intent(getContext(), SellerDetailMapActivity.class);
                         intent.putExtra("SellerId", "1695");
                         intent.putExtra("screentitle", "Seller");
                         intent.putExtra("TrackingType", 1);

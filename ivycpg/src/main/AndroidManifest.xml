@@ -793,7 +793,7 @@
         <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity" />
         <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity" />
         <activity
-            android:name="com.ivy.cpg.view.supervisor.mvp.sellermapview.SellerMapViewActivity"
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity"

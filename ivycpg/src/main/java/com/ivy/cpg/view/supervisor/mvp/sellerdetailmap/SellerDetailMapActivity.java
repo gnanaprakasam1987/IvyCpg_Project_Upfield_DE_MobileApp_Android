@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.mvp.sellermapview;
+package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -6,7 +6,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -32,59 +31,45 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.ivy.cpg.view.supervisor.customviews.DataParser;
 import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
-import com.ivy.cpg.view.supervisor.helper.DetailsBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
 
-public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements SellerMapViewContractor.SellerMapView,
+public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implements SellerDetailMapContractor.SellerDetailMapView,
         OnMapReadyCallback,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener  {
 
     private GoogleMap mMap;
-    private LinkedHashMap<String,DetailsBo> sellerDetailHashmap = new LinkedHashMap<>();
     private int userId;
-    private int sellerDetailPos = 0;
-    ArrayList<LatLng> latLngArrayList = new ArrayList<>();
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
-    private TextView tvMapInfoUserName,tvSellerName,tvSellerStartTime,tvSellerLastVisit,tvSellerPerformanceBtn,tvTarget,tvCovered;
-    private ImageView imgMessage;
+    private TextView tvMapInfoUserName;
+    private TextView tvInfoVisitTime;
+    private TextView tvSellerName;
+    private TextView tvSellerStartTime;
+    private TextView tvSellerLastVisit;
+    private TextView tvTarget;
+    private TextView tvCovered;
     private BottomSheetBehavior bottomSheetBehavior;
 
-    private SellerMapViewPresenter sellerMapViewPresenter;
+    private SellerDetailMapPresenter sellerMapViewPresenter;
     private OutletListAdapter outletListAdapter;
     private ArrayList<SupervisorModelBo> outletListBos = new ArrayList<>();
+
+    private Polyline mapPolyLine = null;
+    private PolylineOptions lineOptions = null;
 
 
     @Override
@@ -119,8 +104,8 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             Commons.printException(e);
         }
 
-        sellerMapViewPresenter = new SellerMapViewPresenter();
-        sellerMapViewPresenter.setView(this,SellerMapViewActivity.this);
+        sellerMapViewPresenter = new SellerDetailMapPresenter();
+        sellerMapViewPresenter.setView(this,SellerDetailMapActivity.this);
 
         initViews();
         setViewValues();
@@ -131,15 +116,16 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_outlet_info_window, null);
 
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
+        tvInfoVisitTime = mymarkerview.findViewById(R.id.tv_visit_time);
 
         tvSellerName = findViewById(R.id.tv_user_name);
         tvSellerStartTime = findViewById(R.id.tv_start_time);
         tvSellerLastVisit = findViewById(R.id.tv_address);
-        tvSellerPerformanceBtn = findViewById(R.id.seller_performance_btn);
+        TextView tvSellerPerformanceBtn = findViewById(R.id.seller_performance_btn);
         tvTarget = findViewById(R.id.tv_target_outlet);
         tvCovered = findViewById(R.id.tv_outlet_covered);
 
-        imgMessage = findViewById(R.id.message_img);
+        ImageView imgMessage = findViewById(R.id.message_img);
 
         tvSellerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
         tvSellerStartTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
@@ -174,7 +160,7 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         tvSellerPerformanceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SellerMapViewActivity.this,SellerPerformanceListActivity.class);
+                Intent intent = new Intent(SellerDetailMapActivity.this,SellerPerformanceListActivity.class);
                 startActivity(intent);
             }
         });
@@ -237,8 +223,6 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             @Override
             public void onMapClick(LatLng latLng) {
 
-
-
             }
         });
 
@@ -263,23 +247,12 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
 
         marker.showInfoWindow();
-//        showInfoWindow(marker);
-
-//        if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
-//            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         return true;
     }
 
     @Override
-    public void displaySellerList() {
-
-    }
-
-    @Override
-    public void setRetailerMarker(SupervisorModelBo retailerMarker) {
-        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_grey);
-//        BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+    public void setRetailerMarker(SupervisorModelBo retailerMarker,BitmapDescriptor icon) {
         Marker marker = mMap.addMarker(retailerMarker.getMarkerOptions());
         marker.setIcon(icon);
         retailerMarker.setMarker(marker);
@@ -297,9 +270,9 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void setOutletListAdapter(SupervisorModelBo supervisorModelBo) {
+    public void setOutletListAdapter(ArrayList<SupervisorModelBo> retailerMasterList) {
         outletListBos.clear();
-        outletListBos.addAll(supervisorModelBo.getSellerDetailArrayList());
+        outletListBos.addAll(retailerMasterList);
         outletListAdapter.notifyDataSetChanged();
     }
 
@@ -307,12 +280,34 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateSellerInfo(SupervisorModelBo supervisorModelBo) {
         tvSellerName.setText(supervisorModelBo.getUserName());
-        tvSellerStartTime.setText(getResources().getString(R.string.visit_time)+" "+convertTime(supervisorModelBo.getTimeIn()));
+        tvSellerStartTime.setText(getResources().getString(R.string.visit_time)+" "+sellerMapViewPresenter.convertMillisToTime(supervisorModelBo.getTimeIn()));
         tvSellerLastVisit.setText(getResources().getString(R.string.last_vist)+" "+supervisorModelBo.getRetailerName());
         tvTarget.setText(getResources().getString(R.string.targeted)+" "+supervisorModelBo.getTarget());
         tvCovered.setText(getResources().getString(R.string.covered)+" "+supervisorModelBo.getCovered());
     }
 
+    @Override
+    public void drawRoute(ArrayList<LatLng> points) {
+
+        int colorNormalId = R.color.map_poly_line;
+
+        if (lineOptions == null) {
+
+            lineOptions = new PolylineOptions();
+
+            lineOptions.addAll(points);
+            lineOptions.width(8);
+            lineOptions.color(getResources().getColor(colorNormalId));
+            lineOptions.zIndex(10000000);
+            lineOptions.geodesic(true);
+
+            mapPolyLine = mMap.addPolyline(lineOptions);
+            mapPolyLine.setClickable(true);
+
+        } else {
+            mapPolyLine.setPoints(points);
+        }
+    }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
@@ -321,10 +316,20 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             return null;
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         public View getInfoWindow(final Marker marker) {
 
-            tvMapInfoUserName.setText(marker.getTitle());
+            String[] stringSplit = marker.getTitle().split("//");
+
+            if(stringSplit.length > 1){
+                tvMapInfoUserName.setText(stringSplit[0]);
+                tvInfoVisitTime.setText(getResources().getString(R.string.visit_time)+" "+
+                        sellerMapViewPresenter.convertMillisToTime(Long.valueOf(stringSplit[1])));
+            }else {
+                tvMapInfoUserName.setText(stringSplit[0]);
+                tvInfoVisitTime.setText(getResources().getString(R.string.visit_time));
+            }
 
             mapWrapperLayout.setMarkerWithInfoWindow(marker, mymarkerview);
 
@@ -382,6 +387,7 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             else{
                 finish();
+                sellerMapViewPresenter.removeFirestoreListener();
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
 
@@ -391,184 +397,6 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
 //            moveMarkerInPath();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void drawRoute(){
-        if(sellerDetailPos < sellerDetailHashmap.size()-1){
-            DetailsBo startLocDetailBo= (new ArrayList<>(sellerDetailHashmap.values())).get(sellerDetailPos);
-            DetailsBo endLocDetailBo= (new ArrayList<>(sellerDetailHashmap.values())).get(sellerDetailPos+1);
-            String url = getUrl(startLocDetailBo.getMarker().getPosition(),endLocDetailBo.getMarker().getPosition());
-            Commons.print("drawRoute "+ url);
-            FetchUrl fetchUrl = new FetchUrl(this);
-            fetchUrl.execute(url);
-        }
-    }
-
-    private String getUrl(LatLng origin, LatLng dest) {
-
-        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-//        String sensor = "sensor=false&units=metric";
-        String alternatives = "alternatives=false&mode=driving";
-        String mapKey = "key="+getString(R.string.google_maps_api_key);
-        String parameters = str_origin + "&" + str_dest + "&" + alternatives+"&"+mapKey;
-        String output = "json";
-
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
-    }
-
-    private class FetchUrl extends AsyncTask<String, Void, String> {
-        Context context;
-
-        private FetchUrl (Context context){
-            this.context = context;
-        }
-
-        @Override
-        protected String doInBackground(String... url) {
-
-            String data = "";
-
-            try {
-
-                data = downloadUrl(url[0]);
-                Commons.print("Background Task data"+ data);
-            } catch (Exception e) {
-                Commons.print("Background Task"+ e.toString());
-            }
-            return data;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            ParserTask parserTask = new ParserTask();
-            parserTask.execute(result);
-        }
-    }
-
-    private String downloadUrl(String strUrl) throws IOException {
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(strUrl);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.connect();
-            iStream = urlConnection.getInputStream();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
-            StringBuilder sb = new StringBuilder();
-
-            String line ;
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-
-            data = sb.toString();
-            Commons.print("downloadUrl"+ data);
-            br.close();
-
-        } catch (Exception e) {
-            Commons.print("Exception"+ e.toString());
-        } finally {
-            if(iStream!=null)
-                iStream.close();
-            if(urlConnection!=null)
-                urlConnection.disconnect();
-        }
-        return data;
-    }
-
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-
-        // Parsing the data in non-ui thread
-        @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
-
-            JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
-
-            try {
-                jObject = new JSONObject(jsonData[0]);
-                Commons.print("ParserTask"+ jsonData[0]);
-
-                DataParser parser = new DataParser();
-                Commons.print("ParserTask"+parser.toString());
-
-                routes = parser.parse(jObject);
-                Commons.print("ParserTask"+ "Executing routes");
-                Commons.print("ParserTask"+ routes.toString());
-
-            } catch (Exception e) {
-                Commons.print("ParserTask"+e.toString());
-                e.printStackTrace();
-            }
-
-            return routes;
-        }
-
-        @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
-            List<HashMap<String, String>> path;
-            PolylineOptions lineOptions = null;
-            Polyline mapPolyLine = null;
-            ArrayList<LatLng> points;
-
-            if (routes != null) {
-
-                for (int i = routes.size() - 1; i >= 0; i--) {
-
-                    points = new ArrayList<>();
-
-                    path = routes.get(i);
-
-                    for (int j = 0; j < path.size(); j++) {
-
-                        HashMap<String, String> point = path.get(j);
-
-                        double lat = SDUtil.convertToDouble(point.get("lat"));
-                        double lng = SDUtil.convertToDouble(point.get("lng"));
-                        LatLng position = new LatLng(lat, lng);
-
-                        points.add(position);
-
-                        latLngArrayList.add(position);
-
-//                        MarkerOptions markerOptions = new MarkerOptions();
-//                        markerOptions.position(position);
-//                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.location_icon));
-                    }
-
-                    int colorNormalId = R.color.Black;
-
-                    if (lineOptions == null) {
-
-                        lineOptions = new PolylineOptions();
-
-                        lineOptions.addAll(points);
-                        lineOptions.width(10);
-                        lineOptions.color(getResources().getColor(colorNormalId));
-                        lineOptions.zIndex(10000000);
-                        lineOptions.geodesic(true);
-
-                        mapPolyLine = mMap.addPolyline(lineOptions);
-                        mapPolyLine.setClickable(true);
-
-                    } else {
-                        mapPolyLine.setPoints(points);
-                    }
-                }
-            }
-
-//            latLngArrayList.add(points);
-
-            sellerDetailPos = sellerDetailPos+1;
-            drawRoute();
-
-        }
     }
 
     private int getPixelsFromDp(Context context, float dp) {
@@ -624,17 +452,20 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
             else
                 holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.outlet_item_bg));
 
-            holder.tvSerialNumber.setText(String.valueOf(outletListBos.get(position).getSequence()));
+            holder.tvSerialNumber.setText(String.valueOf(outletListBos.get(position).getMasterSequence()));
             holder.tvStoreName.setText(outletListBos.get(position).getRetailerName());
-            holder.tvTimeIn.setText(convertTime(outletListBos.get(position).getTimeIn()));
-            holder.tvTimeOut.setText(convertTime(outletListBos.get(position).getTimeOut()));
+            holder.tvTimeIn.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeIn()));
+            holder.tvTimeOut.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeOut()));
 
-            if(convertTime(outletListBos.get(position).getTimeIn()).isEmpty()){
+            if(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeIn()).isEmpty()){
                 holder.tvTimeIn.setVisibility(View.GONE);
                 holder.tvTimeOut.setVisibility(View.GONE);
                 holder.tvSkipped.setVisibility(View.VISIBLE);
-            }else
+            }else {
+                holder.tvTimeIn.setVisibility(View.VISIBLE);
+                holder.tvTimeOut.setVisibility(View.VISIBLE);
                 holder.tvSkipped.setVisibility(View.GONE);
+            }
 
         }
 
@@ -644,14 +475,9 @@ public class SellerMapViewActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    private String convertTime(Long time){
-
-        if(time != null && time != 0) {
-            Date date = new Date(time);
-            Format format = new SimpleDateFormat("hh:mm a", Locale.US);
-            return format.format(date);
-        }else
-            return "";
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sellerMapViewPresenter.removeFirestoreListener();
     }
-
 }

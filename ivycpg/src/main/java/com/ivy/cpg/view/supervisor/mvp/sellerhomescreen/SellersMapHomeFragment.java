@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.mvp.supervisorhomepage;
+package com.ivy.cpg.view.supervisor.mvp.sellerhomescreen;
 
 
 import android.Manifest;
@@ -37,7 +37,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
-import com.ivy.cpg.view.supervisor.helper.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
@@ -51,9 +50,9 @@ import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
-public class SupervisorHomeFragment extends IvyBaseFragment implements
+public class SellersMapHomeFragment extends IvyBaseFragment implements
         OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnInfoWindowClickListener,SupervisorHomeContract.SupervisorHomeView{
+        GoogleMap.OnInfoWindowClickListener,SellerMapHomeContract.SellerMapHomeView {
 
     private GoogleMap mMap;
     private BottomSheetBehavior bottomSheetBehavior;
@@ -62,11 +61,11 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName;
-    private RecyclerViewPager mRecyclerView;
-    private SupervisorHomePresenter supervisorHomePresenter;
-    private SellerInfoHorizontalAdapter sellerInfoHorizontalAdapter;
+    private RecyclerViewPager sellerListRecyclerView;
+    private SellerMapHomePresenter sellerMapHomePresenter;
+    private InMarketSellerAdapter inMarketSellerAdapter;
 
-    private ArrayList<SupervisorModelBo> sellerArrayList = new ArrayList<>();
+    private ArrayList<SupervisorModelBo> inMarketSellerArrayList = new ArrayList<>();
 
 
     @Override
@@ -105,10 +104,10 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
         initViews(view);
         initViewPager(view);
 
-        supervisorHomePresenter = new SupervisorHomePresenter();
-        supervisorHomePresenter.setView(this,getContext());
+        sellerMapHomePresenter = new SellerMapHomePresenter();
+        sellerMapHomePresenter.setView(this,getContext());
 
-//        supervisorHomePresenter.getSellerListAWS();
+//        sellerMapHomePresenter.getSellerListAWS();
 
         return view;
     }
@@ -165,7 +164,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        if(mRecyclerView.getVisibility() == View.VISIBLE) {
+                        if(sellerListRecyclerView.getVisibility() == View.VISIBLE) {
                             bottomSheetBehavior.setHideable(true);
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                         }
@@ -244,18 +243,18 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     }
 
     private void initViewPager(final View view) {
-        mRecyclerView = view.findViewById(R.id.viewpager);
-        mRecyclerView.setVisibility(View.GONE);
+        sellerListRecyclerView = view.findViewById(R.id.viewpager);
+        sellerListRecyclerView.setVisibility(View.GONE);
         LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL,
                 false);
-        mRecyclerView.setLayoutManager(layout);
+        sellerListRecyclerView.setLayoutManager(layout);
 
-        sellerInfoHorizontalAdapter = new SellerInfoHorizontalAdapter(getContext().getApplicationContext(),sellerArrayList);
-        mRecyclerView.setAdapter(sellerInfoHorizontalAdapter);
+        inMarketSellerAdapter = new InMarketSellerAdapter(getContext().getApplicationContext(), inMarketSellerArrayList);
+        sellerListRecyclerView.setAdapter(inMarketSellerAdapter);
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLongClickable(true);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        sellerListRecyclerView.setHasFixedSize(true);
+        sellerListRecyclerView.setLongClickable(true);
+        sellerListRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
 //                updateState(scrollState);
@@ -263,9 +262,9 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int i, int i2) {
-                int childCount = mRecyclerView.getChildCount();
-                int width = mRecyclerView.getChildAt(0).getWidth();
-                int padding = (mRecyclerView.getWidth() - width) / 2;
+                int childCount = sellerListRecyclerView.getChildCount();
+                int width = sellerListRecyclerView.getChildAt(0).getWidth();
+                int padding = (sellerListRecyclerView.getWidth() - width) / 2;
 
                 for (int j = 0; j < childCount; j++) {
                     View v = recyclerView.getChildAt(j);
@@ -290,45 +289,45 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
             }
         });
 
-        mRecyclerView.addOnPageChangedListener(new RecyclerViewPager.OnPageChangedListener() {
+        sellerListRecyclerView.addOnPageChangedListener(new RecyclerViewPager.OnPageChangedListener() {
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
 
                 double angle = 130.0;
                 double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.supervisor_home_map_info_x);
                 double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.supervisor_home_map_info_y));
-                sellerArrayList.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
+                inMarketSellerArrayList.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(sellerArrayList.get(newPosition).getMarker().getPosition()));
-                sellerArrayList.get(newPosition).getMarker().showInfoWindow();
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(inMarketSellerArrayList.get(newPosition).getMarker().getPosition()));
+                inMarketSellerArrayList.get(newPosition).getMarker().showInfoWindow();
 
 
             }
         });
 
-        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+        sellerListRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (mRecyclerView.getChildCount() < 3) {
-                    if (mRecyclerView.getChildAt(1) != null) {
-                        if (mRecyclerView.getCurrentPosition() == 0) {
-                            View v1 = mRecyclerView.getChildAt(1);
+                if (sellerListRecyclerView.getChildCount() < 3) {
+                    if (sellerListRecyclerView.getChildAt(1) != null) {
+                        if (sellerListRecyclerView.getCurrentPosition() == 0) {
+                            View v1 = sellerListRecyclerView.getChildAt(1);
                             v1.setScaleY(0.9f);
                             v1.setScaleX(0.9f);
                         } else {
-                            View v1 = mRecyclerView.getChildAt(0);
+                            View v1 = sellerListRecyclerView.getChildAt(0);
                             v1.setScaleY(0.9f);
                             v1.setScaleX(0.9f);
                         }
                     }
                 } else {
-                    if (mRecyclerView.getChildAt(0) != null) {
-                        View v0 = mRecyclerView.getChildAt(0);
+                    if (sellerListRecyclerView.getChildAt(0) != null) {
+                        View v0 = sellerListRecyclerView.getChildAt(0);
                         v0.setScaleY(0.9f);
                         v0.setScaleX(0.9f);
                     }
-                    if (mRecyclerView.getChildAt(2) != null) {
-                        View v2 = mRecyclerView.getChildAt(2);
+                    if (sellerListRecyclerView.getChildAt(2) != null) {
+                        View v2 = sellerListRecyclerView.getChildAt(2);
                         v2.setScaleY(0.9f);
                         v2.setScaleX(0.9f);
                     }
@@ -374,7 +373,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
                     bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             else {
-                if(mRecyclerView.getVisibility() == View.GONE)
+                if(sellerListRecyclerView.getVisibility() == View.GONE)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 else{
                     bottomSheetBehavior.setHideable(true);
@@ -404,13 +403,13 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
 
-        supervisorHomePresenter.getSellerMarkerInfo(marker.getSnippet());
+        sellerMapHomePresenter.getSellerMarkerInfo(marker.getSnippet());
 
-        mRecyclerView.setVisibility(View.VISIBLE);
+        sellerListRecyclerView.setVisibility(View.VISIBLE);
 
         int pagerPos = 0;
         int count=0;
-        for(SupervisorModelBo detailsBo : sellerArrayList){
+        for(SupervisorModelBo detailsBo : inMarketSellerArrayList){
             if(detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())){
                 pagerPos = count;
                 break;
@@ -418,7 +417,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
             count = count+1;
         }
 
-        mRecyclerView.scrollToPosition(pagerPos);
+        sellerListRecyclerView.scrollToPosition(pagerPos);
 
         return true;
     }
@@ -448,7 +447,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
             @Override
             public void onMapClick(LatLng latLng) {
 
-                mRecyclerView.setVisibility(View.GONE);
+                sellerListRecyclerView.setVisibility(View.GONE);
 
                 if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -462,31 +461,16 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
             }
         });
 
-        supervisorHomePresenter.getSellerListAWS();
-        supervisorHomePresenter.getSellerWiseRetailerAWS();
-        supervisorHomePresenter.isRealtimeLocation();
+        sellerMapHomePresenter.getSellerListAWS();
+        sellerMapHomePresenter.getSellerWiseRetailerAWS();
+        sellerMapHomePresenter.isRealtimeLocation();
 
-        supervisorHomePresenter.loginToFirebase(getContext().getApplicationContext());
+        sellerMapHomePresenter.loginToFirebase(getContext().getApplicationContext(),4);
     }
 
     @Override
     public void firebaseLoginFailure() {
         Toast.makeText(getContext().getApplicationContext(), "Firebase Login Failed", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void updateSellerCount() {
-
-    }
-
-    @Override
-    public void updateSellerMarkerInfo(SupervisorModelBo supervisorModelBo) {
-
-    }
-
-    @Override
-    public void updateSellerFirebaseInfo(SupervisorModelBo supervisorModelBo) {
-
     }
 
     @Override
@@ -505,7 +489,7 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
 
         LatLng destLatLng = new LatLng(supervisorModelBo.getLatitude(), supervisorModelBo.getLongitude());
 
-        SupervisorActivityHelper.getInstance().animateMarkerNew(destLatLng,supervisorModelBo.getMarker(),mMap);
+        sellerMapHomePresenter.animateSellerMarker(destLatLng,supervisorModelBo.getMarker());
     }
 
     @Override
@@ -516,9 +500,9 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
 
     @Override
     public void setSellerListAdapter(ArrayList<SupervisorModelBo> modelBoArrayList) {
-        sellerArrayList.clear();
-        sellerArrayList.addAll(modelBoArrayList);
-        sellerInfoHorizontalAdapter.notifyDataSetChanged();
+        inMarketSellerArrayList.clear();
+        inMarketSellerArrayList.addAll(modelBoArrayList);
+        inMarketSellerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -586,6 +570,6 @@ public class SupervisorHomeFragment extends IvyBaseFragment implements
     @Override
     public void onDetach() {
         super.onDetach();
-        supervisorHomePresenter.removeFirestoreListener();
+        sellerMapHomePresenter.removeFirestoreListener();
     }
 }

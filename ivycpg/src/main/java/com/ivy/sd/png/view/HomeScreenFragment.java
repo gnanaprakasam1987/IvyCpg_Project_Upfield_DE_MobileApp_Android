@@ -56,7 +56,7 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.supervisor.fragments.SupervisorMapFragment;
-import com.ivy.cpg.view.supervisor.mvp.supervisorhomepage.SupervisorHomeFragment;
+import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
@@ -1599,7 +1599,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         SupervisorMapFragment supervisorMapRFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_REALTIME);
         SupervisorMapFragment supervisorMapMFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_MOVEMENT);
-        SupervisorHomeFragment supervisorMapCFragment = (SupervisorHomeFragment) fm.findFragmentByTag(MENU_SUPERVISOR_CALLANALYSIS);
+        SellersMapHomeFragment supervisorMapCFragment = (SellersMapHomeFragment) fm.findFragmentByTag(MENU_SUPERVISOR_CALLANALYSIS);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -2132,7 +2132,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("TrackingType", 2);
-                fragment = new SupervisorHomeFragment();
+                fragment = new SellersMapHomeFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_SUPERVISOR_CALLANALYSIS);

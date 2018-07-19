@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
-import com.ivy.cpg.view.supervisor.mvp.supervisorhomepage.SupervisorHomePresenter;
+import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellerMapHomePresenter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
@@ -51,7 +51,9 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        sellersList = new ArrayList<>(SupervisorHomePresenter.sellerInfoHasMap.values());
+        for(int i = 0; i <SellerMapHomePresenter.sellerInfoHasMap.size(); i++){
+            sellersList.add(SellerMapHomePresenter.sellerInfoHasMap.get(SellerMapHomePresenter.sellerInfoHasMap.keyAt(i)));
+        }
 
         for (SupervisorModelBo supervisorModelBo : sellersList)
             if(supervisorModelBo.isAttendanceDone())

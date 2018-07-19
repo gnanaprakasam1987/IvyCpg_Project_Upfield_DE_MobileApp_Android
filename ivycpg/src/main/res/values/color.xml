@@ -309,4 +309,6 @@
     <color name="tootl_tip_bg">#6d6d6d</color>
     <color name="white_trans">#4DFFFFFF</color>
 
+    <color name="map_poly_line">#5c000000</color>
+
 </resources>

@@ -1,20 +1,18 @@
-package com.ivy.cpg.view.supervisor.mvp.supervisorhomepage;
+package com.ivy.cpg.view.supervisor.mvp.sellerhomescreen;
 
 import android.content.Context;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.ivy.cpg.view.supervisor.helper.DetailsBo;
+import com.google.android.gms.maps.model.Marker;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 
 import java.util.ArrayList;
 
-public interface SupervisorHomeContract {
+public interface SellerMapHomeContract {
 
-    interface SupervisorHomeView{
+    interface SellerMapHomeView {
         void firebaseLoginFailure();
-        void updateSellerCount();
-        void updateSellerMarkerInfo(SupervisorModelBo supervisorModelBo);
-        void updateSellerFirebaseInfo(SupervisorModelBo supervisorModelBo);
         void createMarker(SupervisorModelBo supervisorModelBo);
         void updateMaker(SupervisorModelBo supervisorModelBo);
         void focusMarker(LatLngBounds.Builder builder);
@@ -29,20 +27,20 @@ public interface SupervisorHomeContract {
 
     }
 
-    interface SupervisorHomePresenter{
-        void loginToFirebase(Context context);
+    interface SellerMapHomePresenter {
+        void loginToFirebase(Context context,int userId);
         void getSellerMarkerInfo(String userId);
-        void getSellerCount(Context context);
-        void getSellerActivityInfoListener();
+        void getSellerActivityInfoListener(int userId);
         void getMarkerForFocus();
-        void setView(SupervisorHomeView supervisorHomeView,Context context);
+        void setView(SellerMapHomeView supervisorHomeView, Context context);
         void computeSellerInfo();
         void removeFirestoreListener();
-        void realtimeLocationInfoListener();
-        void getSellerAttendanceInfoListener();
+        void realtimeLocationInfoListener(int userId);
+        void getSellerAttendanceInfoListener(int userId);
         void getSellerListAWS();
         void getSellerWiseRetailerAWS();
         void isRealtimeLocation();
+        void animateSellerMarker(final LatLng destination, final Marker marker);
     }
 
 }
