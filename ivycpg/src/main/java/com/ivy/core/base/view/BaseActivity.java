@@ -525,7 +525,9 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         dialog.show();
     }
 
-
+    @Override
+    public void onBackPressed() {
+    }
 }
 
 

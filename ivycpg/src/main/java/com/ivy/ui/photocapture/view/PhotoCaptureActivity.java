@@ -440,7 +440,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     @OnItemSelected(R.id.spin_parentlevel)
     public void onProductSpinnerSelected(Spinner spinner, int position) {
-        if (totalImgList.get(totalImgList.size() - 1).contains(photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_" + mSelectedProductId)) {
+
+        if (totalImgList.size() > 0 && totalImgList.get(totalImgList.size() - 1).contains(photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_" + mSelectedProductId)) {
             tempProdPosition = selectedProduct;
         }
 
@@ -453,7 +454,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     @OnItemSelected(R.id.phototype)
     public void onPhotoTypeSpinnerSelected(Spinner spinner, int position) {
 
-        if (totalImgList.get(totalImgList.size() - 1).contains(photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_" + mSelectedProductId)) {
+        if (totalImgList.size() > 0 && totalImgList.get(totalImgList.size() - 1).contains(photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_" + mSelectedProductId)) {
             if (isPLType) {
                 if (!validatePLType()) return;
             } else
@@ -762,7 +763,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
                                 photoCapturePresenter.updateModuleTime();
 
-                                if (totalImgList != null) {
+                                if (totalImgList.size() > 0) {
                                     for (String image : totalImgList)
                                         AppUtils.deleteFiles(folderPath, image);
                                 }
