@@ -8,7 +8,7 @@ public interface OutletTimeStampDataManager {
 
     Single<Boolean> isVisited(String retailerId);
 
-    Completable updateTimeStampModuleWise(String timeOut);
+    Single<Boolean> updateTimeStampModuleWise(String timeOut);
 
     Completable saveTimeStampModuleWise(String date, String timeIn, String moduleCode);
 

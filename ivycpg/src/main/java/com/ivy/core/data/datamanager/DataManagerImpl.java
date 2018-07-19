@@ -6,6 +6,7 @@ import android.os.Environment;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.db.DbHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
+import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -29,7 +30,7 @@ public class DataManagerImpl implements DataManager {
     private Context mContext;
 
     @Inject
-    public DataManagerImpl(Context context, SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper) {
+    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper) {
         this.mSharedPreferenceHelper = sharedPreferenceHelper;
         this.dbHelper = dbHelper;
         this.appDataProvider = appDataProvider;
@@ -90,6 +91,11 @@ public class DataManagerImpl implements DataManager {
     @Override
     public Single<Double> getOrderValue() {
         return dbHelper.getOrderValue();
+    }
+
+    @Override
+    public Single<Boolean> updateModuleTime(String moduleName) {
+        return dbHelper.updateModuleTime(moduleName);
     }
 
     @Override

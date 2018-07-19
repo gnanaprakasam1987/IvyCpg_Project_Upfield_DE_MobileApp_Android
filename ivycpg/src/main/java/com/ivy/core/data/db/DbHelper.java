@@ -9,4 +9,6 @@ public interface DbHelper {
     public Single<String> getFontSize();
 
     Single<Double> getOrderValue();
+
+    Single<Boolean> updateModuleTime(String moduleName);
 }

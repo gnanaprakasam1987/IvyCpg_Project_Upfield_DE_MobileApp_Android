@@ -14,12 +14,14 @@ import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.core.di.scope.ActivityContext;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.UserInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.LabelsMasterHelper;
 
 import javax.inject.Singleton;
 
@@ -36,6 +38,9 @@ public interface IvyAppComponent {
     DataManager dataManager();
 
     ConfigurationMasterHelper configurationMasterHelper();
+
+    @LabelMasterInfo
+    LabelsMasterHelper labelsMasterHelper();
 
     @DataBaseInfo
     DBUtil dbUtil();

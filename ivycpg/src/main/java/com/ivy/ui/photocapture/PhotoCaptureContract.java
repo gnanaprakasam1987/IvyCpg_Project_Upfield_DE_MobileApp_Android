@@ -17,6 +17,14 @@ public interface PhotoCaptureContract {
         void setProductListData(ArrayList<PhotoCaptureProductBO> productListData);
 
         void setPhotoTypeData(ArrayList<PhotoTypeMasterBO> photoTypeData);
+
+        void setLocationData(ArrayList<PhotoCaptureLocationBO> locationBOS);
+
+        String getFromDate();
+
+        String getToDate();
+
+        void showUpdatedDialog();
     }
 
 
@@ -41,7 +49,25 @@ public interface PhotoCaptureContract {
 
         HashMap<String,PhotoCaptureLocationBO> getEditedPhotoListData();
 
-        int getGlobalLocationId();
+        ArrayList<PhotoCaptureLocationBO> getLocationBOS();
+
+        int getGlobalLocationIndex();
+
+        String getTitleLabel();
+
+        void updateModuleTime();
+
+        String getRetailerId();
+
+        boolean isImagePathChanged();
+
+        void updateLocalData(int productId, int typeId, int locationId, String imageName, String feedback);
+
+        void updateLocalData(int productId, int typeId, int locationId, String imageName, String feedback, String prodName, String abv, String lotNumber, String seqNumber);
+
+        void onSaveButtonClick();
+
+        boolean shouldNavigateToNextActivity();
     }
 
 }

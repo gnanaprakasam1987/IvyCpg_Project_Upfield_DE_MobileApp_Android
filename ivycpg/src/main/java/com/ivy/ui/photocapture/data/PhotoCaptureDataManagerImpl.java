@@ -1,33 +1,47 @@
 package com.ivy.ui.photocapture.data;
 
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
+
+import static com.ivy.utils.AppUtils.QT;
 
 public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
 
     private DBUtil mDbUtil;
 
+    private AppDataProvider appDataProvider;
+
     @Inject
-    public PhotoCaptureDataManagerImpl(@DataBaseInfo DBUtil dbUtil) {
+    public PhotoCaptureDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider) {
         mDbUtil = dbUtil;
+        this.appDataProvider = appDataProvider;
     }
 
     @Override
@@ -98,7 +112,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                             lbo.setFeedback(cursor.getString(10));
                             lbo.setImageName(cursor.getString(11));
 
-
+                            photoCaptureLocationBOS.add(lbo);
                         }
                         return photoCaptureLocationBOS;
                     }
@@ -152,6 +166,8 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
                 } catch (Exception ignored) {
 
+                } finally {
+                    mDbUtil.closeDB();
                 }
 
                 return new ArrayList<>();
@@ -190,12 +206,119 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                     return photoTypeMasterBOS;
                 } catch (Exception ignored) {
 
+                } finally {
+                    mDbUtil.closeDB();
                 }
 
                 return new ArrayList<>();
             }
         });
 
+    }
+
+    @Override
+    public Single<Boolean> updatePhotoCaptureDetails(final HashMap<String, PhotoCaptureLocationBO> updatedData) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+                    Cursor cursor = mDbUtil.selectSQL("SELECT Uid FROM "
+                            + DataMembers.actPhotocapture + " WHERE RetailerId = "
+                            + appDataProvider.getRetailMaster().getRetailerID()
+                            + " AND DistributorID="
+                            + appDataProvider.getRetailMaster().getDistributorId()
+                            + " AND Date = "
+                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+
+                    if (cursor.getCount() > 0) {
+                        cursor.moveToNext();
+                        mDbUtil.deleteSQL(DataMembers.actPhotocapture,
+                                "Uid=" + QT(cursor.getString(0)), false);
+                        cursor.close();
+                    }
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+
+                        String columns = "uid,date,phototypeid,pid,imagepath,retailerid,RetailerName,ImageCount4Retailer,FromDate,ToDate,LocId," +
+                                "sku_name,abv,lot_code,seq_num,DistributorID,feedback,imgName";
+
+                        String uid = QT(appDataProvider.getUser()
+                                .getDistributorid()
+                                + ""
+                                + appDataProvider.getUser().getUserid()
+                                + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
+
+                        try {
+                            for (Map.Entry<String, PhotoCaptureLocationBO> entry : updatedData.entrySet()) {
+                                System.out.println(entry.getKey() + "/" + entry.getValue());
+                                PhotoCaptureLocationBO photoCaptureLocationBO = entry.getValue();
+
+                                String sBuffer = uid +
+                                        "," +
+                                        QT(SDUtil.now(SDUtil.DATE_GLOBAL)) +
+                                        "," +
+                                        photoCaptureLocationBO.getPhotoTypeId() +
+                                        "," +
+                                        photoCaptureLocationBO.getProductID() +
+                                        "," +
+                                        QT(photoCaptureLocationBO.getImagePath()) +
+                                        "," +
+                                        appDataProvider.getRetailMaster().getRetailerID() +
+                                        "," +
+                                        DatabaseUtils
+                                                .sqlEscapeString(appDataProvider.getRetailMaster()
+                                                        .getRetailerName()) +
+                                        "," +
+                                        "1" +
+                                        "," +
+                                        QT(photoCaptureLocationBO.getFromDate()) +
+                                        "," +
+                                        QT(photoCaptureLocationBO.getToDate()) +
+                                        "," +
+                                        photoCaptureLocationBO.getLocationId() +
+                                        "," +
+                                        QT(photoCaptureLocationBO.getSKUName()) +
+                                        "," +
+                                        QT(photoCaptureLocationBO.getAbv()) +
+                                        "," +
+                                        QT(photoCaptureLocationBO.getLotCode()) +
+                                        "," +
+                                        QT(photoCaptureLocationBO.getSequenceNO()) +
+                                        "," +
+                                        appDataProvider.getRetailMaster()
+                                                .getDistributorId() +
+                                        "," +
+                                        QT(photoCaptureLocationBO.getFeedback()) +
+                                        "," +
+                                        QT(photoCaptureLocationBO.getImageName());
+
+                                mDbUtil.insertSQL(DataMembers.actPhotocapture, columns,
+                                        sBuffer);
+
+                            }
+
+                            return true;
+                        } catch (Exception ignored) {
+                            return false;
+                        } finally {
+                            if (mDbUtil != null)
+                                mDbUtil.closeDB();
+                        }
+                    }
+                });
+            }
+        });
     }
 
 

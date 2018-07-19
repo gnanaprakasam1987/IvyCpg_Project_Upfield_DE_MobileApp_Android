@@ -1,27 +1,48 @@
 package com.ivy.ui.photocapture.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
+import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.di.DaggerPhotoCaptureComponent;
 import com.ivy.ui.photocapture.di.PhotoCaptureModule;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +57,7 @@ import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
 import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
+import static com.ivy.utils.AppUtils.isNullOrEmpty;
 
 public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureContract.PhotoCaptureView, DataPickerDialogFragment.UpdateDateInterface {
 
@@ -43,50 +65,79 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     private static final String TAG_DATE_PICKER_FROM = "date_picker_from";
     private static final String TAG_DATE_PICKER_TO = "date_picker_to";
 
+    private static final int CAMERA_REQUEST_CODE = 1;
+
+    private static String folderPath;
+
     @Inject
     PhotoCaptureContract.PhotoCapturePresenter<PhotoCaptureContract.PhotoCaptureView> photoCapturePresenter;
 
     private boolean isFromMenuClick;
 
     @BindView(R.id.spin_parentlevel)
-    private Spinner productSpinner;
+    Spinner productSpinner;
 
     @BindView(R.id.phototype)
-    private Spinner photoTypeSpinner;
+    Spinner photoTypeSpinner;
 
     @BindView(R.id.btn_fromdate)
-    private Button fromDateBtn;
+    Button fromDateBtn;
 
     @BindView(R.id.btn_todate)
-    private Button toDateBtn;
-
-    @BindView(R.id.img_show_image)
-    private ImageView showImgView;
+    Button toDateBtn;
 
     @BindView(R.id.etSkuName)
-    private EditText skuNameEditText;
+    EditText skuNameEditText;
 
     @BindView(R.id.etABV)
-    private EditText abvEditText;
+    EditText abvEditText;
 
     @BindView(R.id.etLotCode)
-    private EditText lotCodeEditText;
+    EditText lotCodeEditText;
 
     @BindView(R.id.etSeqNum)
-    private EditText seqNumberEditText;
+    EditText seqNumberEditText;
 
     @BindView(R.id.etFeedback)
-    private EditText feedbackEditText;
+    EditText feedbackEditText;
 
     @BindView(R.id.productDetailsCard)
-    private CardView productDetailsCardView;
+    CardView productDetailsCardView;
 
+    @BindView(R.id.img_show_image)
+    ImageView imgViewImage;
+
+    @BindView(R.id.capture_img)
+    ImageView imageView_capture;
+
+    @BindView(R.id.retake_img)
+    ImageView imageView_reTake;
+
+    @BindView(R.id.dummy_capture_img)
+    ImageView imageView_dummyCapture;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.tv_toolbar_title)
+    TextView toolBarTitleTxt;
+
+    @BindView(R.id.save_btn)
+    Button saveBtn;
 
     private ArrayAdapter<PhotoCaptureProductBO> productSelectionAdapter;
 
     private ArrayAdapter<PhotoTypeMasterBO> photoTypeAdapter;
 
-    private int mSelectedProductId = 0, mSelectedTypeId = 0, mSelectedLocationId = 0;
+    private ArrayAdapter<PhotoCaptureLocationBO> locationAdapter;
+
+    private int mSelectedProductId = 0, mSelectedTypeId = 0, mSelectedLocationId = 0, selectedType, selectedProduct;
+
+    private boolean isFromChild, isPLType;
+
+    private String title, imageName;
+
+    private ArrayList<String> totalImgList = new ArrayList<>();
 
     @Override
     public int getLayoutId() {
@@ -96,8 +147,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     @Override
     protected void initVariables() {
 
-
-
+        folderPath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                + DataMembers.photoFolderName;
     }
 
     @Override
@@ -116,6 +167,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     protected void getMessageFromAliens() {
         if (getIntent().getExtras() != null) {
             isFromMenuClick = getIntent().getExtras().getBoolean("isFromMenuClick", false);
+            isFromChild = getIntent().getBooleanExtra("isFromChild", false);
+            title = getIntent().getExtras().getString("screen_title", "");
         }
 
     }
@@ -128,9 +181,43 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
         handleDateButton(photoCapturePresenter.isDateEnabled());
 
+        setUpToolBar();
+
         setProductAdapter();
 
         setPhotoTypeAdapter();
+
+        handleSaveButton();
+
+    }
+
+    private void handleSaveButton() {
+        if (photoCapturePresenter.isMaxPhotoLimitReached())
+            saveBtn.setVisibility(View.GONE);
+        else
+            saveBtn.setVisibility(View.VISIBLE);
+
+        saveBtn.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
+
+    }
+
+    private void setUpToolBar() {
+        setSupportActionBar(toolbar);
+        toolBarTitleTxt.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
+
+        if (isNullOrEmpty(title)) {
+            toolBarTitleTxt.setText(getIntent().getExtras().getString("screen_title", ""));
+        } else
+            toolBarTitleTxt.setText(photoCapturePresenter.getTitleLabel());
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // Used to remove the appLogo action bar icon and set title as home
+        // (title support click)
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        // Used to hide the appLogo icon from action bar
+
+        getSupportActionBar().setIcon(null);
+
     }
 
     private void setPhotoTypeAdapter() {
@@ -152,6 +239,11 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         productSpinner.setAdapter(productSelectionAdapter);
     }
 
+    private void setLocationAdapter() {
+        locationAdapter = new ArrayAdapter<>(this,
+                android.R.layout.select_dialog_singlechoice);
+    }
+
     private void handleDateButton(boolean isEnabled) {
         if (isEnabled) {
             fromDateBtn.setVisibility(View.VISIBLE);
@@ -165,6 +257,24 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST_CODE) {
+
+            if (resultCode == 1) {
+
+                totalImgList.add(imageName);
+
+                if (!isPLType)
+                    photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString());
+                else
+                    photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName
+                            , feedbackEditText.getText().toString(), skuNameEditText.getText().toString(), abvEditText.getText().toString(),
+                            lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString());
+
+                handleNoImage();
+
+                setImageToView(imageName);
+            }
+        }
     }
 
     @Override
@@ -191,13 +301,124 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         photoTypeAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void setLocationData(ArrayList<PhotoCaptureLocationBO> locationBOS) {
+
+        if (photoCapturePresenter.isGlobalLocation()) {
+            mSelectedLocationId = locationBOS.get(photoCapturePresenter.getGlobalLocationIndex()).getLocationId();
+        } else if (!locationBOS.isEmpty()) {
+            if (locationBOS.size() > 2) {
+                locationAdapter.clear();
+                for (PhotoCaptureLocationBO bo : locationBOS) {
+                    locationAdapter.add(bo);
+                }
+            }
+            mSelectedLocationId = locationBOS.get(0).getLocationId();
+        }
+
+    }
+
+    @Override
+    public String getFromDate() {
+        return fromDateBtn.getText().toString();
+    }
+
+    @Override
+    public String getToDate() {
+        return toDateBtn.getText().toString();
+    }
+
+    @Override
+    public void showUpdatedDialog() {
+        new CommonDialog(getApplicationContext(), PhotoCaptureActivity.this,
+                "", getResources().getString(R.string.saved_successfully),
+                false, getResources().getString(R.string.ok),
+                null, new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                if (!isFromMenuClick) {
+                    finish();
+                } else {
+                    Intent intent = new Intent(PhotoCaptureActivity.this,
+                            HomeScreenTwo.class);
+
+                    Bundle extras = getIntent().getExtras();
+                    if (extras != null) {
+                        intent.putExtra("IsMoveNextActivity", photoCapturePresenter.shouldNavigateToNextActivity());
+                        intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                    }
+
+                    startActivity(intent);
+                    finish();
+                }
+
+            }
+        }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+            }
+        }).show();
+    }
+
     @OnClick(R.id.capture_img)
     public void onCaptureImageClick() {
+        if (!AppUtils.isExternalStorageAvailable())
+            showMessage(R.string.please_select_atleast_one_type);
+        else if (mSelectedProductId == 0)
+            showMessage(R.string.select_prod);
+        else if (mSelectedTypeId == 0)
+            showMessage(R.string.please_select_atleast_one_type);
+        else
+            preparePhotoCapture();
 
+    }
+
+    private void preparePhotoCapture() {
+
+        imageName = photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_"
+                + mSelectedProductId + "_" + mSelectedLocationId + "_" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
+                + ".jpg";
+
+
+        String mFirstNameStarts = photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_"
+                + mSelectedProductId + "_" + mSelectedLocationId + "_"
+                + Commons.now(Commons.DATE);
+
+        boolean mIsFileAvailable = AppUtils
+                .checkForNFilesInFolder(
+                        folderPath, 1,
+                        mFirstNameStarts);
+
+        if (mIsFileAvailable)
+            showFileDeleteAlert(mFirstNameStarts);
+        else
+            navigateToCameraActivity();
+
+
+    }
+
+    private void navigateToCameraActivity() {
+        Intent intent = new Intent(
+                PhotoCaptureActivity.this,
+                CameraActivity.class);
+        String _path = HomeScreenFragment.folder.getPath()
+                + "/" + imageName;
+        //  intent.putExtra("quality", 40);
+        intent.putExtra("path", _path);
+        startActivityForResult(intent,
+                CAMERA_REQUEST_CODE);
     }
 
     @OnClick(R.id.save_btn)
     public void onSaveClicked() {
+        if (totalImgList.size() == 0) {
+            showAlert("", getString(R.string.take_photos_to_save));
+        } else {
+            if (isPLType && totalImgList.get(totalImgList.size() - 1).contains(mSelectedTypeId + "_" + mSelectedProductId) && !validatePLType())
+                return;
+
+            photoCapturePresenter.onSaveButtonClick();
+        }
 
     }
 
@@ -214,33 +435,200 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         newFragment.show(getSupportFragmentManager(), TAG_DATE_PICKER_TO);
     }
 
+
+    private int tempProdPosition;
+
+    @OnItemSelected(R.id.spin_parentlevel)
+    public void onProductSpinnerSelected(Spinner spinner, int position) {
+        if (totalImgList.get(totalImgList.size() - 1).contains(photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_" + mSelectedProductId)) {
+            tempProdPosition = selectedProduct;
+        }
+
+        selectedProduct = position;
+        photoTypeSpinner.setSelection(0);
+        mSelectedProductId = productSelectionAdapter.getItem(position).getProductID();
+    }
+
+
     @OnItemSelected(R.id.phototype)
     public void onPhotoTypeSpinnerSelected(Spinner spinner, int position) {
+
+        if (totalImgList.get(totalImgList.size() - 1).contains(photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_" + mSelectedProductId)) {
+            if (isPLType) {
+                if (!validatePLType()) return;
+            } else
+                photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString());
+
+
+        }
+
+        tempProdPosition = selectedProduct;
+
         mSelectedTypeId = photoTypeAdapter.getItem(position).getPhotoTypeId();
+        selectedType = position;
         if (position != 0) {
-            if (photoTypeAdapter.getItem(position).getPhotoTypeCode().equals("PT"))
+            if (photoTypeAdapter.getItem(position).getPhotoTypeCode().equals("PT")) {
+                isPLType = true;
                 productDetailsCardView.setVisibility(View.VISIBLE);
+            } else {
+                isPLType = false;
+                productDetailsCardView.setVisibility(View.GONE);
+            }
 
             loadLocalData();
         }
 
     }
 
+    private boolean validatePLType() {
+        if (skuNameEditText.getText().length() == 0) {
+            showMessage("Enter Product Name");
+            photoTypeSpinner.setSelection(selectedType);
+            productSpinner.setSelection(tempProdPosition);
+            return false;
+        } else if (abvEditText.getText().length() == 0) {
+            showMessage("Enter ABU Value");
+            photoTypeSpinner.setSelection(selectedType);
+            productSpinner.setSelection(tempProdPosition);
+            return false;
+        } else if (lotCodeEditText.getText().length() == 0) {
+            showMessage("Enter Lot Number");
+            photoTypeSpinner.setSelection(selectedType);
+            productSpinner.setSelection(tempProdPosition);
+            return false;
+        } else if (seqNumberEditText.getText().length() == 0) {
+            showMessage("Enter Sequence Number");
+            photoTypeSpinner.setSelection(selectedType);
+            productSpinner.setSelection(tempProdPosition);
+            return false;
+        }
+        photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName
+                , feedbackEditText.getText().toString(), skuNameEditText.getText().toString(), abvEditText.getText().toString(),
+                lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString());
+        return true;
+    }
+
     private void loadLocalData() {
+        if (mSelectedProductId != 0 && mSelectedTypeId != 0) {
+            String key = mSelectedProductId + "_" + mSelectedTypeId + "_" + mSelectedLocationId;
+            if (photoCapturePresenter.getEditedPhotoListData().containsKey(key)) {
+                feedbackEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getFeedback());
+                if (isNullOrEmpty(photoCapturePresenter.getEditedPhotoListData().get(key).getImageName())) {
+                    handleNoImage();
+                } else {
+                    setImageToView(photoCapturePresenter.getEditedPhotoListData().get(key).getImageName());
+                }
+            } else {
+                clearViews();
+            }
+        }
+    }
+
+    private void clearViews() {
+        handleNoImage();
+        feedbackEditText.setText("");
+        skuNameEditText.setText("");
+        abvEditText.setText("");
+        lotCodeEditText.setText("");
+        seqNumberEditText.setText("");
 
     }
 
+    private void setImageToView(String imageName) {
+        String path = folderPath + "/" + imageName;
 
-    @OnItemSelected(R.id.spin_parentlevel)
-    public void onProductSpinnerSelected(Spinner spinner, int position) {
+        if (AppUtils.isFileExisting(path)) {
+            Uri uri = AppUtils
+                    .getUriFromFile(getApplicationContext(), path);
+            imgViewImage.setImageURI(uri);
+
+            setImage(path);
+
+        }
+    }
+
+    private void handleNoImage() {
+        imgViewImage
+                .setImageResource(R.drawable.no_image_available);
+        imageView_capture.setImageResource(android.R.color.transparent);
+        imageView_reTake.setVisibility(View.GONE);
+        imageView_dummyCapture.setVisibility(View.VISIBLE);
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+
+    }
+
+    /**
+     * Location filter
+     */
+    private void showLocationAlertDialog() {
+        AlertDialog.Builder builder;
+
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle(null);
+        builder.setSingleChoiceItems(locationAdapter, 0,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        PhotoCaptureLocationBO selectedId = locationAdapter
+                                .getItem(item);
+                        resetData();
+                        if (selectedId != null) {
+                            mSelectedLocationId = selectedId.getLocationId();
+                        }
+                        dialog.dismiss();
+
+                    }
+                });
+
+        AppUtils.applyAlertDialogTheme(this, builder);
+    }
+
+    private void resetData() {
+        productSpinner.setSelection(0);
         photoTypeSpinner.setSelection(0);
-        mSelectedProductId = productSelectionAdapter.getItem(position).getProductID();
+        handleNoImage();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.photo_capture_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        try {
+            if (photoCapturePresenter.isGlobalLocation() || photoCapturePresenter.getLocationBOS().size() < 2)
+                menu.findItem(R.id.menu_location_filter).setVisible(false);
+            else
+                setLocationAdapter();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int i = item.getItemId();
+        if (i == R.id.menu_location_filter) {
+            showLocationAlertDialog();
+            return true;
+        } else if (i == R.id.menu_capture) {
+            preparePhotoCapture();
+        } else if (i == R.id.menu_save) {
+            onSaveClicked();
+        }
+        if (i == android.R.id.home) {
+            backButtonAlertDialog();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -256,15 +644,152 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
         if (tag.equals(TAG_DATE_PICKER_FROM)) {
             if (selectedDate.after(Calendar.getInstance()))
-                Toast.makeText(this,
-                        R.string.future_date_not_allowed,
-                        Toast.LENGTH_SHORT).show();
+                showMessage(R.string.future_date_not_allowed);
             else {
                 fromDateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), DEFAULT_DATE_FORMAT));
             }
         } else if (tag.equals(TAG_DATE_PICKER_TO)) {
+            if (fromDateBtn.getText().equals(getString(R.string.fromdate))) {
+                Toast.makeText(this, R.string.competitor_date,
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Date dateMfg = DateUtil.convertStringToDateObject(
+                        fromDateBtn.getText().toString(), DEFAULT_DATE_FORMAT);
+
+                if (dateMfg.after(selectedDate.getTime())) {
+                    showMessage(R.string.competitor_date);
+                } else {
+                    toDateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                            selectedDate.getTime(), DEFAULT_DATE_FORMAT));
+                }
+
+            }
 
         }
     }
+
+    /**
+     * Alert dialog for deleting image
+     *
+     * @param imageNameStarts
+     */
+    private void showFileDeleteAlert(final String imageNameStarts) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                PhotoCaptureActivity.this);
+        builder.setTitle("");
+        builder.setMessage(getResources().getString(
+                R.string.word_photocaptured_delete_retake));
+
+        builder.setPositiveButton(getResources().getString(R.string.ok),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        AppUtils.deleteFiles(folderPath,
+                                imageNameStarts);
+                        dialog.dismiss();
+                        navigateToCameraActivity();
+
+                    }
+                });
+
+        builder.setNegativeButton(getResources().getString(R.string.cancel),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.setCancelable(false);
+        AppUtils.applyAlertDialogTheme(this, builder);
+    }
+
+
+    /**
+     * Set captured image in view
+     *
+     * @param path
+     */
+    private void setImage(String path) {
+        // Get the dimensions of the View
+        int targetW = imageView_capture.getWidth();
+        int targetH = imageView_capture.getHeight();
+
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        //BitmapFactory.decode
+        BitmapFactory.decodeFile(path, bmOptions);
+
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
+        imageView_capture.setImageBitmap(bitmap);
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.photocapture_toolbar_bg));
+
+        imageView_reTake.setVisibility(View.VISIBLE);
+        imageView_dummyCapture.setVisibility(View.GONE);
+    }
+
+
+    /**
+     * Alert dialog while moving back
+     */
+    public void backButtonAlertDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        alertDialogBuilder
+                .setIcon(null)
+                .setCancelable(false)
+                .setTitle(
+                        getResources().getString(
+                                R.string.photo_capture_not_saved_go_back))
+                .setPositiveButton(getResources().getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+
+                                photoCapturePresenter.updateModuleTime();
+
+                                if (totalImgList != null) {
+                                    for (String image : totalImgList)
+                                        AppUtils.deleteFiles(folderPath, image);
+                                }
+
+                                if (!isFromMenuClick) {
+                                    finish();
+                                } else {
+
+                                    Intent mIntent = new Intent(
+                                            PhotoCaptureActivity.this,
+                                            HomeScreenTwo.class);
+                                    if (isFromChild)
+                                        mIntent.putExtra("isStoreMenu", true);
+                                    startActivity(mIntent);
+                                    finish();
+                                }
+                                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                            }
+                        });
+
+        AppUtils.applyAlertDialogTheme(this, alertDialogBuilder);
+    }
+
 }

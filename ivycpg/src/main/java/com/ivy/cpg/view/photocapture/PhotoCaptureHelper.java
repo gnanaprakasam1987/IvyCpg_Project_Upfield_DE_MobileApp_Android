@@ -435,10 +435,11 @@ public class PhotoCaptureHelper {
     }
 
     /**
-     * To check file availability
-     *
      * @param path File path
      * @return Availability
+     * @See {@link com.ivy.utils.AppUtils#isFileExisting(String)}
+     * To check file availability
+     * @deprecated
      */
     public boolean isImagePresent(String path) {
         File f = new File(path);
@@ -446,6 +447,8 @@ public class PhotoCaptureHelper {
     }
 
     /**
+     * @deprecated
+     * @See {@link com.ivy.utils.AppUtils#getUriFromFile(Context, String)}
      * Getting file URI
      *
      * @param path File path

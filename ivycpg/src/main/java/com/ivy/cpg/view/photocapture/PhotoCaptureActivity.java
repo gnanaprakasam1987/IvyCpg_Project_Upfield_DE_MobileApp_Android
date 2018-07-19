@@ -431,54 +431,35 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 break;
                             }
                         } else {
-                            imgViewImage
-                                    .setImageResource(R.drawable.no_image_available);
-
-
-                            imageView_capture.setImageResource(android.R.color.transparent);
-                            imageView_reTake.setVisibility(View.GONE);
-                            imageView_dummyCapture.setVisibility(View.VISIBLE);
-                            toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                            handleNoImage();
 
                         }
                     } else if (productID == 0) {
-                        imgViewImage
-                                .setImageResource(R.drawable.no_image_available);
-
-
-                        imageView_capture.setImageResource(android.R.color.transparent);
-                        imageView_reTake.setVisibility(View.GONE);
-                        imageView_dummyCapture.setVisibility(View.VISIBLE);
-                        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                        handleNoImage();
 
                     } else {
-                        imgViewImage
-                                .setImageResource(R.drawable.no_image_available);
-
-
-//                        imageView_capture.setVisibility(View.INVISIBLE);
-                        imageView_capture.setImageResource(android.R.color.transparent);
-                        imageView_reTake.setVisibility(View.GONE);
-                        imageView_dummyCapture.setVisibility(View.VISIBLE);
-                        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                        handleNoImage();
 
                     }
                 }
                 break;
             } else {
-                imgViewImage
-                        .setImageResource(R.drawable.no_image_available);
-
-
-//                imageView_capture.setVisibility(View.INVISIBLE);
-                imageView_capture.setImageResource(android.R.color.transparent);
-                imageView_reTake.setVisibility(View.GONE);
-                imageView_dummyCapture.setVisibility(View.VISIBLE);
-                toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                handleNoImage();
 
             }
         }
 
+    }
+
+    private void handleNoImage() {
+        imgViewImage
+                .setImageResource(R.drawable.no_image_available);
+
+
+        imageView_capture.setImageResource(android.R.color.transparent);
+        imageView_reTake.setVisibility(View.GONE);
+        imageView_dummyCapture.setVisibility(View.VISIBLE);
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
     }
 
     @Override
@@ -836,13 +817,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                         mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFromDate("");
                         mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setToDate("");
                         mProductID = 0;
-                        imgViewImage
-                                .setImageResource(R.drawable.no_image_available);
-
-                        imageView_capture.setImageResource(android.R.color.transparent);
-                        imageView_reTake.setVisibility(View.GONE);
-                        imageView_dummyCapture.setVisibility(View.VISIBLE);
-                        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                        handleNoImage();
 
                     }
                 }
@@ -886,13 +861,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     public void ClearAll() {
         mImageName = "";
         mImagePath = "";
-        imgViewImage.setImageResource(R.drawable.no_image_available);
-
-
-        imageView_capture.setImageResource(android.R.color.transparent);
-        imageView_reTake.setVisibility(View.GONE);
-        imageView_dummyCapture.setVisibility(View.VISIBLE);
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+        handleNoImage();
 
         photoTypeAdapter.notifyDataSetChanged();
         productSelectionAdapter.notifyDataSetChanged();

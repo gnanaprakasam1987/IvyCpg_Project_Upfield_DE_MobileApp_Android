@@ -188,6 +188,7 @@ import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
+import com.ivy.utils.AppUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -411,7 +412,6 @@ public class BusinessModel extends Application {
     private String availablilityShare;
     private int printSequenceLevelID;
     private String dashboardUserFilterString;
-
 
 
     private final String mFocusBrand = "Filt11";
@@ -749,8 +749,8 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
-           // appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-           // appComponent.inject(this);
+            // appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+            // appComponent.inject(this);
 
             mApplicationComponent = DaggerIvyAppComponent.builder()
                     .ivyAppModule(new IvyAppModule(this))
@@ -758,7 +758,7 @@ public class BusinessModel extends Application {
 
             mApplicationComponent.inject(this);
 
-            codeCleanUpUtil = CodeCleanUpUtil.getInstance(this,appDataProvider);
+            codeCleanUpUtil = CodeCleanUpUtil.getInstance(this, appDataProvider);
 
 
         } catch (Exception ex) {
@@ -6026,6 +6026,11 @@ public class BusinessModel extends Application {
         }
     }
 
+    /**
+     * @return <code>true<code/> if external storage available else <code>false<code/>
+     * @See {{@link AppUtils#isExternalStorageAvailable()}}
+     * @deprecated
+     */
     public boolean isExternalStorageAvailable() {
 
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory()
@@ -6062,12 +6067,20 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * It returns true if the folder contains the n or more than n files
+     * which starts name fnameStarts otherwiese returns false;
+     *
+     * @param folderPath
+     * @param n
+     * @param fNameStarts
+     * @return
+     * @See {@link AppUtils#checkForNFilesInFolder(String, int, String)}
+     * @deprecated
+     */
     public boolean checkForNFilesInFolder(String folderPath, int n,
                                           String fNameStarts) {
-        /*
-         * It returns true if the folder contains the n or more than n files
-         * which starts name fnameStarts otherwiese returns false;
-         */
+
         if (n < 1)
             return true;
 
@@ -6107,6 +6120,12 @@ public class BusinessModel extends Application {
         return false;
     }
 
+    /**
+     * @param folderPath
+     * @param fnamesStarts
+     * @See {@link AppUtils#deleteFiles(String, String)}
+     * @deprecated
+     */
     public void deleteFiles(String folderPath, String fnamesStarts) {
         File folder = new File(folderPath);
 

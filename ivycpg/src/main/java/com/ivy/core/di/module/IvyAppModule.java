@@ -20,6 +20,7 @@ import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
 import com.ivy.core.di.scope.RetailerInfo;
@@ -29,6 +30,7 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 
 import javax.inject.Inject;
@@ -101,6 +103,12 @@ public class IvyAppModule {
     @Provides
     protected ConfigurationMasterHelper providesConfigurationHelper() {
         return ((BusinessModel) mContext).configurationMasterHelper;
+    }
+
+    @Provides
+    @LabelMasterInfo
+    protected LabelsMasterHelper providesLabelMaster() {
+        return ((BusinessModel) mContext).labelsMasterHelper;
     }
 
 

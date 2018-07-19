@@ -120,5 +120,41 @@ public class DBHelperImpl implements DbHelper {
         });
     }
 
+    @Override
+    public Single<Boolean> updateModuleTime(final String moduleName) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    mDbUtil.createDataBase();
+                    mDbUtil.openDataBase();
+
+                    Cursor c = mDbUtil
+                            .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
+                                    + appDataProvider.getRetailMaster().getRetailerID() + " AND MENU_CODE = " + QT(moduleName));
+
+                    if (c.getCount() == 0) {
+                        String columns = "Retailerid,MENU_CODE";
+
+                        String values = appDataProvider.getRetailMaster().getRetailerID() + ","
+                                + QT(moduleName);
+
+                        mDbUtil.insertSQL("ModuleCompletionReport", columns, values);
+
+                    }
+                    c.close();
+
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                } finally {
+                    mDbUtil.closeDB();
+                }
+
+                return false;
+            }
+        });
+    }
+
 
 }

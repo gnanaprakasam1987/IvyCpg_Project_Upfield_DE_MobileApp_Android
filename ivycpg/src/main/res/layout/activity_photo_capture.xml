@@ -294,7 +294,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/card_rel_margin"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="fill_parent"

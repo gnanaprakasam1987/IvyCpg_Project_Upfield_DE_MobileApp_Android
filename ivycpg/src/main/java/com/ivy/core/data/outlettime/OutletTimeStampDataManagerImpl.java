@@ -64,10 +64,10 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
      * @param timeOut module exit time
      */
     @Override
-    public Completable updateTimeStampModuleWise(final String timeOut) {
-        return Completable.fromCallable(new Callable() {
+    public Single<Boolean> updateTimeStampModuleWise(final String timeOut) {
+        return Single.fromCallable(new Callable() {
             @Override
-            public Void call() {
+            public Boolean call() {
                 try {
                     mDbUtil.createDataBase();
                     mDbUtil.openDataBase();
@@ -79,13 +79,15 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
                             + "' AND TimeIn = " + mDataManager.getModuleIntime() + " AND UID = " + mDataManager.getUniqueId();
                     mDbUtil.updateSQL(query);
 
-                } catch (Exception e) {
+                    return true;
+
+                } catch (Exception ignored) {
                 } finally {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
                 }
 
-                return null;
+                return false;
             }
         });
     }
