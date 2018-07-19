@@ -378,39 +378,18 @@ public class VanUnloadActivity extends ToolBarwithFilter {
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-        filterlist = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (LoadManagementBO productBO : vanunloadlist) {
-                if (levelBO.getProductID() == productBO.getParentid()) {
-                    filterlist.add(productBO);
-                }
-            }
-        }
-
-        mSchedule = new MyAdapter(filterlist);
-        lvwplist.setAdapter(mSchedule);
-
-        mDrawerLayout.closeDrawers();
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         filterlist = new ArrayList<>();
         if (mAttributeProducts != null) {
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
+            if (mFilteredPid!=0) {
                     for (LoadManagementBO productBO : vanunloadlist) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                             if (mAttributeProducts.contains(productBO.getProductid())) {
                                 filterlist.add(productBO);
                             }
                         }
-                    }
                 }
             } else {
                 for (int pid : mAttributeProducts) {
@@ -422,13 +401,11 @@ public class VanUnloadActivity extends ToolBarwithFilter {
                 }
             }
         } else {
-            if (mParentIdList.size() > 0 && !mFilterText.equalsIgnoreCase("")) {
-                for (LevelBO levelBO : mParentIdList) {
+            if (mFilteredPid!=0 && !mFilterText.equalsIgnoreCase("")) {
                     for (LoadManagementBO productBO : vanunloadlist) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                             filterlist.add(productBO);
                         }
-                    }
                 }
             } else {
                 int bid = -1;

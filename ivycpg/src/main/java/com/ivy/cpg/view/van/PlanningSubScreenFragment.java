@@ -429,7 +429,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                 bmodel.productHelper
                         .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
 
-                bmodel.productHelper.loadProductsWithFiveLevel(
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
             } catch (Exception e) {
@@ -514,7 +514,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                 bmodel.productHelper
                         .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
 
-                bmodel.productHelper.loadProductsWithFiveLevel(
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         MENU_LOAD_MANAGEMENT, menuManualVanload);
 
 

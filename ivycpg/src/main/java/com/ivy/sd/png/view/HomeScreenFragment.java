@@ -56,7 +56,6 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
-import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.SupervisorMapFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
@@ -2634,7 +2633,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.productHelper.loadProductsWithFiveLevel(
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get("MENU_STOCK_PROPOSAL"), 2);

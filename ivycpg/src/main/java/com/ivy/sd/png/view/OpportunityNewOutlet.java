@@ -71,6 +71,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -84,7 +85,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener {
+        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -2339,12 +2340,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         String filtertext = getResources().getString(R.string.product_name);
         if (!mFilterText.equals(""))
             filtertext = mFilterText;
@@ -2357,32 +2353,30 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         Vector<ProductMasterBO> items = getTaggedProducts();
         if (mAttributeProducts != null) {
             count = 0;
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    count++;
-                    for (ProductMasterBO productBO : items) {
-                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                                && productBO.getSIH() > 0)
-                                || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
-                                (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
+            if (mFilteredPid != 0) {
+                count++;
+                for (ProductMasterBO productBO : items) {
+                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                            && productBO.getSIH() > 0)
+                            || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
+                            (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
 
-                            if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
+                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
-                                if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
-                                    // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                    if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                            if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
+                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                                if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
 
-                                        if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
-                                            continue;
-                                        mylist.add(productBO);
-                                        fiveFilter_productIDs.add(productBO.getProductID());
-                                    }
+                                    if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                        continue;
+                                    mylist.add(productBO);
+                                    fiveFilter_productIDs.add(productBO.getProductID());
                                 }
                             }
                         }
-
                     }
+
                 }
             } else {
                 for (int pid : mAttributeProducts) {
@@ -2407,7 +2401,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
                 count++;
                 for (ProductMasterBO productBO : items) {
 
@@ -2425,7 +2418,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                                 || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                 && productBO.getIndicativeOrder_oc() > 0)) {
                             if (productBO.getIsSaleable() == 1) {
-                                if (levelBO.getProductID() == productBO.getParentid()) {
+                                if (productBO.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
                                     //  filtertext = levelBO.getLevelName();
                                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                         continue;
@@ -2436,7 +2429,6 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                         }
                     }
                 }
-            }
         }
 
 //        Applying special filter in product filtered list(mylist)

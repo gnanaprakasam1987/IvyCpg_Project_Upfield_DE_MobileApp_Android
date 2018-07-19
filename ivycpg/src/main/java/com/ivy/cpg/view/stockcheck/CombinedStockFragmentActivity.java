@@ -14,6 +14,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class CombinedStockFragmentActivity extends IvyBaseActivityNoActionBar implements
-        BrandDialogInterface,CompetitorFilterInterface {
+        BrandDialogInterface,CompetitorFilterInterface,FiveLevelFilterCallBack {
     BusinessModel bmodel;
     private Toolbar toolbar;
 
@@ -110,6 +111,14 @@ public class CombinedStockFragmentActivity extends IvyBaseActivityNoActionBar im
     }
 
     @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        CombinedStockFragment asf = (CombinedStockFragment) fm
+                .findFragmentById(R.id.combined_stock_fragment);
+        asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+    }
+
+    @Override
     public void loadStartVisit() {
 
     }
@@ -123,23 +132,6 @@ public class CombinedStockFragmentActivity extends IvyBaseActivityNoActionBar im
     public void updateMultiSelectionBrand(List<String> mFilterName,
                                           List<Integer> mFilterId) {
 
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        CombinedStockFragment asf = (CombinedStockFragment) fm
-                .findFragmentById(R.id.combined_stock_fragment);
-        asf.updateFromFiveLevelFilter(mParentIdList);
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        CombinedStockFragment asf = (CombinedStockFragment) fm
-                .findFragmentById(R.id.combined_stock_fragment);
-        asf.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
     @Override
     public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {

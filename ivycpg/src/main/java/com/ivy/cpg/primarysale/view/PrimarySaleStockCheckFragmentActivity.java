@@ -11,6 +11,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ import java.util.Vector;
 /**
  * Created by vinodh.r on 21-09-2015.
  */
-public class PrimarySaleStockCheckFragmentActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface {
+public class PrimarySaleStockCheckFragmentActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,FiveLevelFilterCallBack {
     BusinessModel bmodel;
     private Toolbar toolbar;
 
@@ -117,15 +118,10 @@ public class PrimarySaleStockCheckFragmentActivity extends IvyBaseActivityNoActi
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PrimarySaleStockCheckFragment asf = (PrimarySaleStockCheckFragment) fm
                 .findFragmentById(R.id.distributor_stock_check_fragment);
-        asf.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+        asf.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 }

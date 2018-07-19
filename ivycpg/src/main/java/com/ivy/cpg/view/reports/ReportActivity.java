@@ -32,6 +32,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.TaxGstHelper;
 import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -73,7 +74,7 @@ import java.util.Locale;
 import java.util.Vector;
 
 public class ReportActivity extends BaseActivity implements
-        BrandDialogInterface, SellerListFragment.SellerSelectionInterface {
+        BrandDialogInterface, SellerListFragment.SellerSelectionInterface,FiveLevelFilterCallBack {
 
     private BusinessModel bmodel;
     private String fromMenu;
@@ -371,8 +372,7 @@ public class ReportActivity extends BaseActivity implements
             bmodel.productHelper
                     .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
 
-
-            bmodel.productHelper.loadProductsWithFiveLevel(
+            bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                     "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
 
@@ -617,21 +617,12 @@ public class ReportActivity extends BaseActivity implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         CurrentStockBatchViewFragment currentStockBatchViewFragment = (CurrentStockBatchViewFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
         if (currentStockBatchViewFragment != null)
-            currentStockBatchViewFragment.updateFromFiveLevelFilter(mParentIdList);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        CurrentStockBatchViewFragment currentStockBatchViewFragment = (CurrentStockBatchViewFragment) fm
-                .findFragmentByTag(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
-        if (currentStockBatchViewFragment != null)
-            currentStockBatchViewFragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+            currentStockBatchViewFragment.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
 

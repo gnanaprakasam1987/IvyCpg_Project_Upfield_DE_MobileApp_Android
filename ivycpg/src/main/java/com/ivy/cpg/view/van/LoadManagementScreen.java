@@ -228,7 +228,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                 stockProposalIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 stockProposalIntent.putExtra("screentitle", menuItem.getMenuName());
 
-                mBModel.productHelper.loadProductsWithFiveLevel(
+                mBModel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
 
 
@@ -275,7 +275,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
                 break;
             case MENU_VAN_UNLOAD:
-                mBModel.productHelper.loadProductsWithFiveLevel(
+                mBModel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
 
                 mBModel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
@@ -617,7 +617,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                     mBModel.vanmodulehelper.downloadSubDepots();
                 }
 
-                mBModel.productHelper.loadProductsWithFiveLevel(
+                mBModel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_MANUAL_VAN_LOAD");
 
 
@@ -764,7 +764,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                         .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
 
 
-                mBModel.productHelper.loadProductsWithFiveLevel(
+                mBModel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_STOCK_VIEW");
 
 
@@ -810,7 +810,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                         .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
 
 
-                mBModel.productHelper.loadProductsWithFiveLevel(
+                mBModel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
             } catch (Exception e) {

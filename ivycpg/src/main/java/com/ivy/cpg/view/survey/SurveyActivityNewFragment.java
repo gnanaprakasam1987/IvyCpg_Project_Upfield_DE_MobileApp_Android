@@ -2300,16 +2300,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         // TODO Auto-generated method stub
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-
-    }
-
     private void loadQuestionFromFiveLevelFilter(int surveyId, int filteredProductId) {
         ArrayList<QuestionBO> items = new ArrayList<>();
         for (SurveyBO surBO : surveyHelperNew.getSurvey()) {

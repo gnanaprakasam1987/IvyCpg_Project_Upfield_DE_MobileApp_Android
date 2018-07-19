@@ -249,7 +249,7 @@
     <string name="no_visit_Planning">التخطيط </string>
     <string name="order_gcas">الكود GCAS</string>
     <string name="choose_date">اختيار التاريخ </string>
-    <string name="exceed">لقد تجاوزت المخصص. والباقي فقط % 1SD"</string>
+    <string name="exceed">لقد تجاوزت المخصص. والباقي فقط "%1$d"</string>
     <string name="d1">D1</string>
     <string name="dist_inv">فاتورة عن بُعد </string>
     <string name="pre_post">قبل / بعد </string>

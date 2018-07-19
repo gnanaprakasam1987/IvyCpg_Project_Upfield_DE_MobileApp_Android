@@ -112,17 +112,6 @@ public class SurveyActivityNew extends IvyBaseActivityNoActionBar implements Bra
 
     }
 
-    //dummy
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-    //dummy
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-
-    }
-
     @Override
     public void updateMultiSelectionCategory(List<Integer> mCategory) {
 

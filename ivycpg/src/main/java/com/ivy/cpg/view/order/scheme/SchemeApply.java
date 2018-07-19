@@ -46,7 +46,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CatalogOrder;
-import com.ivy.sd.png.view.CrownReturnActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
@@ -254,14 +253,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
             if (action == 1) {
                 isClick = true;
-                if ((bModel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bModel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
-                        && bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    Intent intent = new Intent(SchemeApply.this,
-                            CrownReturnActivity.class);
-                    intent.putExtra("OrderFlag", "Nothing");
-                    intent.putExtra("ScreenCode", screenCode);
-                    startActivity(intent);
-                } else if (bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                if (bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     Intent intent = new Intent(SchemeApply.this,
                             BatchAllocation.class);
                     intent.putExtra("OrderFlag", "Nothing");
@@ -557,8 +549,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                 if (isChecked) {
 
                                     holder.text_stock_availability.setVisibility(View.GONE);
-                                    if(bModel.configurationMasterHelper.IS_SIH_VALIDATION
-                                            &&!holder.schemeBO.isSihAvailableForFreeProducts()){
+                                    if (bModel.configurationMasterHelper.IS_SIH_VALIDATION
+                                            && !holder.schemeBO.isSihAvailableForFreeProducts()) {
                                         holder.text_stock_availability.setVisibility(View.VISIBLE);
                                         holder.quantityCB.setChecked(false);
                                         holder.showFreeBTN.setEnabled(false);
@@ -1318,8 +1310,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.percentET.setEnabled(true);
             }
 
-            if(bModel.configurationMasterHelper.IS_SIH_VALIDATION
-                    &&!holder.schemeBO.isSihAvailableForFreeProducts()){
+            if (bModel.configurationMasterHelper.IS_SIH_VALIDATION
+                    && !holder.schemeBO.isSihAvailableForFreeProducts()) {
                 holder.quantityCB.setChecked(false);
                 holder.schemeBO
                         .setQuantityTypeSelected(false);
@@ -1355,7 +1347,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         ;
         // Range
         private TextView quantityRangeTV, percentRangeTV;
-        private TextView priceRangeTV, amountRangeTV,text_stock_availability;
+        private TextView priceRangeTV, amountRangeTV, text_stock_availability;
         // Entry
         private EditText priceET, amountET, percentET;
         // CheckBox

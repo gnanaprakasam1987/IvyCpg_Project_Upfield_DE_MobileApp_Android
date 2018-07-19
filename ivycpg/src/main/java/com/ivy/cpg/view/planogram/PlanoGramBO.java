@@ -104,4 +104,14 @@ public class PlanoGramBO {
 	public void setImageId(int imageId) {
 		this.imageId = imageId;
 	}
+
+	private String parentHierarchy;
+
+	public String getParentHierarchy() {
+		return parentHierarchy;
+	}
+
+	public void setParentHierarchy(String parentHierarchy) {
+		this.parentHierarchy = parentHierarchy;
+	}
 }

@@ -38,6 +38,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -52,7 +53,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class NearExpiryTrackingFragment extends IvyBaseFragment implements
-        BrandDialogInterface {
+        BrandDialogInterface, FiveLevelFilterCallBack {
 
 
     private static final String BRAND = "Brand";
@@ -358,7 +359,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
         mBModel.applyAlertDialogTheme(builder);
     }
-
 
 
     class ViewHolder {
@@ -758,7 +758,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         }
     }
 
-    private void updatebrandtext(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts) {
+    private void updatebrandtext(int productId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts) {
         try {
             Vector<ProductMasterBO> items = mBModel.productHelper
                     .getProductMaster();
@@ -772,15 +772,13 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             myList = new Vector<>();
             // Add the products into list
             if (mAttributeProducts != null) {
-                if (!parentidList.isEmpty()) {
-                    for (LevelBO levelBO : parentidList) {
-                        for (ProductMasterBO productBO : items) {
-                            if (productBO.getIsSaleable() == 1
-                                    && levelBO.getProductID() == productBO.getParentid()
-                                    && mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                myList.add(productBO);
-                            }
+                if (productId != 0) {
+                    for (ProductMasterBO productBO : items) {
+                        if (productBO.getIsSaleable() == 1
+                                && productBO.getParentHierarchy().contains("/" + productId + "/")
+                                && mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                            myList.add(productBO);
                         }
                     }
                 } else {
@@ -793,17 +791,15 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     }
                 }
             } else {
-                for (LevelBO levelBO : parentidList) {
-                    for (ProductMasterBO ret : items) {
+                for (ProductMasterBO ret : items) {
 
-                        if (ret.getBarCode().equals(strBarCodeSearch)
-                                || ret.getCasebarcode().equals(strBarCodeSearch)
-                                || ret.getOuterbarcode().equals(strBarCodeSearch)
-                                || "ALL".equals(strBarCodeSearch)
-                                && (levelBO.getProductID() == ret.getParentid())
-                                && ret.getIsSaleable() == 1) {
-                            myList.add(ret);
-                        }
+                    if (ret.getBarCode().equals(strBarCodeSearch)
+                            || ret.getCasebarcode().equals(strBarCodeSearch)
+                            || ret.getOuterbarcode().equals(strBarCodeSearch)
+                            || "ALL".equals(strBarCodeSearch)
+                            && (ret.getParentHierarchy().contains("/" + productId + "/"))
+                            && ret.getIsSaleable() == 1) {
+                        myList.add(ret);
                     }
                 }
             }
@@ -875,13 +871,9 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int productId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mDrawerLayout.closeDrawers();
-        updatebrandtext(mParentIdList, mSelectedIdByLevelId, mAttributeProducts);
+        updatebrandtext(productId, mSelectedIdByLevelId, mAttributeProducts);
     }
 
 

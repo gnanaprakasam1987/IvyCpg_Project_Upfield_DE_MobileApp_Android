@@ -316,7 +316,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         StockProposalScreen.class);
                 stockpropintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 stockpropintent.putExtra("screentitle", menuItem.getMenuName());
-                bmodel.productHelper.loadProductsWithFiveLevel(
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STOCK_PROPOSAL), 2);
@@ -367,7 +367,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 break;
             case MENU_VAN_UNLOAD:
-                bmodel.productHelper.loadProductsWithFiveLevel(
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
@@ -690,7 +690,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     bmodel.vanmodulehelper.downloadSubDepots();
                 }
 
-                bmodel.productHelper.loadProductsWithFiveLevel(
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_MANUAL_VAN_LOAD");
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_MANUAL_VAN_LOAD), 2);
@@ -835,7 +835,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 bmodel.productHelper
                         .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
 
-                bmodel.productHelper.loadProductsWithFiveLevel(
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
 
@@ -880,7 +880,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 bmodel.productHelper
                         .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
 
-                bmodel.productHelper.loadProductsWithFiveLevel(
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
             } catch (Exception e) {

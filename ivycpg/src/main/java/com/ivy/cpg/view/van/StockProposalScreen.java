@@ -78,7 +78,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
         super.onCreate(savedInstanceState);
 
         intent = getIntent();
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ListHeader);
+        LinearLayout ll = findViewById(R.id.ListHeader);
         LayoutInflater layoutInflater = (LayoutInflater) StockProposalScreen.this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ll.addView(layoutInflater.inflate(
@@ -370,22 +370,19 @@ public class StockProposalScreen extends ToolBarwithFilter implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        Commons.print("selected filter " + mParentIdList + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        Commons.print("selected filter " + mFilteredPid + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
 
         mylist = new ArrayList<>();
         if (mAttributeProducts != null) {
 
-            if (mParentIdList.size() > 0) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : stockPropVector) {
-                        if (productBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                if (mAttributeProducts.contains(productBO.getProductid())) {
-                                    mylist.add(productBO);
-                                }
+            if (mFilteredPid != 0) {
+                for (LoadManagementBO productBO : stockPropVector) {
+                    if (productBO.getIssalable() == 1) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                            if (mAttributeProducts.contains(productBO.getProductid())) {
+                                mylist.add(productBO);
                             }
                         }
                     }
@@ -402,17 +399,14 @@ public class StockProposalScreen extends ToolBarwithFilter implements
                 }
             }
         } else {
-            if (mParentIdList.size() > 0 && !mFilterText.equalsIgnoreCase("")) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : stockPropVector) {
-                        Commons.print("pdt id " + levelBO.getProductID() + ", " + productBO.getParentid());
-                        if (productBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-                                mylist.add(productBO);
-                            }
+            if (mFilteredPid != 0 && !mFilterText.equalsIgnoreCase("")) {
+                for (LoadManagementBO productBO : stockPropVector) {
+                    if (productBO.getIssalable() == 1) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                            mylist.add(productBO);
                         }
-
                     }
+
                 }
 
             } else {

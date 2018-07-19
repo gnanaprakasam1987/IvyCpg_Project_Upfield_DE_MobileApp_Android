@@ -52,6 +52,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -69,7 +70,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SalesReturnFragment extends IvyBaseFragment implements
-        BrandDialogInterface, OnClickListener, OnEditorActionListener {
+        BrandDialogInterface, OnClickListener, OnEditorActionListener, FiveLevelFilterCallBack {
 
     private static final int SALES_RET_SUMMARY = 1;
     private static final int SALES_ENTRY = 2;
@@ -610,7 +611,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                         BusinessModel.loadActivity(
                                 getActivity(),
                                 DataMembers.actHomeScreenTwo);
-                                    /* User clicked OK so do some stuff */
+                        /* User clicked OK so do some stuff */
                     }
                 }, new CommonDialog.negativeOnClickListener() {
                     @Override
@@ -723,8 +724,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
 
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
-            menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
+        menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
 
         menu.findItem(R.id.menu_barcode).setVisible(!drawerOpen);
 
@@ -955,11 +956,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
     private void showCustomDialog() {
 
         new CommonDialog(getActivity().getApplicationContext(), getActivity(), "", getResources().getString(
@@ -981,20 +977,18 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mylist = new ArrayList<>();
         fiveFilter_productIDs = new ArrayList<>();
         brandbutton = mFilterText;
         if (mAttributeProducts != null) {
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (ProductMasterBO productBO : items) {
-                        if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
-                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                mylist.add(productBO);
-                                fiveFilter_productIDs.add(productBO.getProductID());
-                            }
+            if (mFilteredPid != 0) {
+                for (ProductMasterBO productBO : items) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/") && productBO.getIsSaleable() == 1) {
+                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                        if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                            mylist.add(productBO);
+                            fiveFilter_productIDs.add(productBO.getProductID());
                         }
                     }
                 }
@@ -1010,14 +1004,12 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             }
         } else {
             if (!mFilterText.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
                     for (ProductMasterBO productBO : items) {
-                        if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/") && productBO.getIsSaleable() == 1) {
                             mylist.add(productBO);
                             fiveFilter_productIDs.add(productBO.getProductID());
                         }
 
-                    }
                 }
             } else {
                 updateBrandText(BRAND, -1);

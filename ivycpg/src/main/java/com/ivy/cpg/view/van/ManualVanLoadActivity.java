@@ -49,6 +49,7 @@ import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -61,7 +62,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
-        BrandDialogInterface, OnClickListener, OnEditorActionListener {
+        BrandDialogInterface, OnClickListener, OnEditorActionListener,FiveLevelFilterCallBack {
 
     private static final String BRAND = "Brand";
     private static final String GENERAL = "General";
@@ -517,6 +518,60 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        filterlist = new ArrayList<>();
+        if (mAttributeProducts != null) {
+            if (mFilteredPid!=0) {
+                    for (LoadManagementBO productBO : vanlist) {
+                        if (productBO.getIssalable() == 1) {
+                            if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                                if (mAttributeProducts.contains(productBO.getProductid())) {
+                                    filterlist.add(productBO);
+                                }
+                            }
+                        }
+                    }
+            } else {
+                for (int pid : mAttributeProducts) {
+                    for (LoadManagementBO productBO : vanlist) {
+                        if (productBO.getIssalable() == 1) {
+                            if (pid == productBO.getProductid()) {
+                                filterlist.add(productBO);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if (mFilteredPid!=0 && !mFilterText.isEmpty()) {
+                    for (LoadManagementBO loadMgtBO : vanlist) {
+                        if (loadMgtBO.getIssalable() == 1) {
+                            if (loadMgtBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                                filterlist.add(loadMgtBO);
+                            }
+                        }
+                }
+            } else {
+                for (LoadManagementBO loadMgtBO : vanlist) {
+                    if (loadMgtBO.getIssalable() == 1) {
+                        filterlist.add(loadMgtBO);
+
+                    }
+                }
+            }
+        }
+        if (filterlist != null && filterlist.size() > 0) {
+            mSchedule = new MyAdapter(filterlist);
+            lvwplist.setAdapter(mSchedule);
+        }
+
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+
+        mDrawerLayout.closeDrawers();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vanload, menu);
         return super.onCreateOptionsMenu(menu);
@@ -926,29 +981,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-        filterlist = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (LoadManagementBO loadMgtBO : vanlist) {
-                if (loadMgtBO.getIssalable() == 1) {
-                    if (levelBO.getProductID() == loadMgtBO.getParentid()) {
-                        filterlist.add(loadMgtBO);
-                    }
-                }
-            }
-        }
-        if (filterlist != null && filterlist.size() > 0) {
-            mSchedule = new MyAdapter(filterlist);
-            lvwplist.setAdapter(mSchedule);
-        }
-
-        mDrawerLayout.closeDrawers();
-        // TO DO Auto-generated method stub
-
-    }
-
     public void numberPressed(View vw) {
         if (returnProductDialog != null) {
             if (returnProductDialog.isShowing()) {
@@ -990,64 +1022,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             quantity.setText(qty);
         } else
             quantity.setText(append);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        filterlist = new ArrayList<>();
-        if (mAttributeProducts != null) {
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : vanlist) {
-                        if (productBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                if (mAttributeProducts.contains(productBO.getProductid())) {
-                                    filterlist.add(productBO);
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                for (int pid : mAttributeProducts) {
-                    for (LoadManagementBO productBO : vanlist) {
-                        if (productBO.getIssalable() == 1) {
-                            if (pid == productBO.getProductid()) {
-                                filterlist.add(productBO);
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            if (mParentIdList.size() > 0 && !mFilterText.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO loadMgtBO : vanlist) {
-                        if (loadMgtBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == loadMgtBO.getParentid()) {
-                                filterlist.add(loadMgtBO);
-                            }
-                        }
-                    }
-                }
-            } else {
-                for (LoadManagementBO loadMgtBO : vanlist) {
-                    if (loadMgtBO.getIssalable() == 1) {
-                        filterlist.add(loadMgtBO);
-
-                    }
-                }
-            }
-        }
-        if (filterlist != null && filterlist.size() > 0) {
-            mSchedule = new MyAdapter(filterlist);
-            lvwplist.setAdapter(mSchedule);
-        }
-
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-
-        mDrawerLayout.closeDrawers();
     }
 
     class MyAdapter extends ArrayAdapter<LoadManagementBO> {

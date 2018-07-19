@@ -143,7 +143,7 @@ public class AssetTrackingHelper {
             surveyHelperNew.downloadModuleId("STANDARD");
             surveyHelperNew.downloadQuestionDetails(mMenuCode);
             surveyHelperNew.loadSurveyAnswers(0);
-           // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+            // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
             mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFiveFilterLevel(mMenuCode));
             mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFiveFilterLevelProducts(mMenuCode,
                     mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
@@ -160,7 +160,7 @@ public class AssetTrackingHelper {
         mBusinessModel.productHelper.downloadInStoreLocations();
 
         //download filter levels
-       // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+        // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
         mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFiveFilterLevel(mMenuCode));
         mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFiveFilterLevelProducts(mMenuCode,
                 mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
@@ -432,10 +432,11 @@ public class AssetTrackingHelper {
             db.openDataBase();
 
             mBusinessModel.productHelper.getRetailerlevel(moduleName);
-            sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId,SBD.StoreLocId,SDM.listname as locname from PosmMaster P  ");
+            sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId,SBD.StoreLocId,SDM.listname as locname,PM.ParentHierarchy as ParentHierarchy from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
             sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and SLM.ListType='POSM_GROUP_TYPE' ");
             sb.append("left join Standardlistmaster SDM on SDM.listid=SBD.StoreLocId and SDM.ListType='PL' ");
+            sb.append("left join ProductMaster PM on PM.PID=SBD.Productid ");
             sb.append("where  SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
             sb.append(mBusinessModel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
@@ -491,6 +492,7 @@ public class AssetTrackingHelper {
                     assetTrackingBO.setNFCTagId(c.getString(c.getColumnIndex("NfcTagId")));
                     assetTrackingBO.setTargetLocId(c.getInt(c.getColumnIndex("StoreLocId")));
                     assetTrackingBO.setLocationName(c.getString(c.getColumnIndex("locname")));
+                    assetTrackingBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
 
                     mAssetTrackingList.add(assetTrackingBO);
 
@@ -549,6 +551,7 @@ public class AssetTrackingHelper {
                     }
 
                     assetTrackingBO.setNFCTagId(c1.getString(c1.getColumnIndex("NfcTagId")));
+                    assetTrackingBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
 
                     mAllAssetTrackingList.add(assetTrackingBO);
 
@@ -1922,7 +1925,7 @@ public class AssetTrackingHelper {
         return imageList;
     }
 
-    public void deleteImageProof(Context mContext,String ImageName) {
+    public void deleteImageProof(Context mContext, String ImageName) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

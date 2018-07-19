@@ -201,35 +201,15 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-        ArrayList<LoadManagementBO> filterlist = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (LoadManagementBO loadMgtBO : mylist) {
-                if (levelBO.getProductID() == loadMgtBO.getParentid()) {
-                    filterlist.add(loadMgtBO);
-                }
-            }
-        }
-
-        MyAdapter mSchedule = new MyAdapter(filterlist);
-        lvwplist.setAdapter(mSchedule);
-        mDrawerLayout.closeDrawers();
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         ArrayList<LoadManagementBO> filterlist = new ArrayList<>();
         if (mAttributeProducts != null) {
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : mylist) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
-                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(productBO.getProductid())) {
-                                mylist.add(productBO);
-                            }
+            if (mFilteredPid != 0) {
+                for (LoadManagementBO productBO : mylist) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                        if (mAttributeProducts.contains(productBO.getProductid())) {
+                            mylist.add(productBO);
                         }
                     }
                 }
@@ -243,11 +223,9 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                for (LoadManagementBO loadMgtBO : mylist) {
-                    if (levelBO.getProductID() == loadMgtBO.getParentid()) {
-                        filterlist.add(loadMgtBO);
-                    }
+            for (LoadManagementBO loadMgtBO : mylist) {
+                if (loadMgtBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                    filterlist.add(loadMgtBO);
                 }
             }
         }

@@ -28,6 +28,7 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
@@ -39,7 +40,7 @@ import java.util.Vector;
 /**
  * Created by rajesh.k on 07-09-2015.
  */
-public class CurrentStockBatchViewFragment extends IvyBaseFragment implements BrandDialogInterface {
+public class CurrentStockBatchViewFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack {
     private BusinessModel bmodel;
     private PriceTrackingHelper priceTrackingHelper;
     // Drawer Implimentation
@@ -426,21 +427,19 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         ArrayList<LoadManagementBO> filterlist = new ArrayList<LoadManagementBO>();
 
         if (mAttributeProducts != null) {
-            if (mParentIdList.size() > 0) {
-                for (LevelBO levelBO : mParentIdList) {
+            if (mFilteredPid!=0) {
                     for (LoadManagementBO productBO : mylist) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                             if (mAttributeProducts.contains(productBO.getProductid())) {
                                 mylist.add(productBO);
                             }
                         }
                     }
-                }
             } else {
                 for (int pid : mAttributeProducts) {
                     for (LoadManagementBO loadMgtBO : mylist) {
@@ -453,12 +452,10 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
             }
         } else {
 
-            for (LevelBO levelBO : mParentIdList) {
                 for (LoadManagementBO loadMgtBO : mylist) {
-                    if (levelBO.getProductID() == loadMgtBO.getParentid()) {
+                    if (loadMgtBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                         filterlist.add(loadMgtBO);
                     }
-                }
             }
         }
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;

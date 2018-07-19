@@ -427,7 +427,7 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
                 bmodel.productHelper
                         .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
 
-                bmodel.productHelper.loadProductsWithFiveLevel(
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         MENU_LOAD_MANAGEMENT, menuManualVanload);
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {

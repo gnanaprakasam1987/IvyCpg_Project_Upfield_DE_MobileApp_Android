@@ -52,6 +52,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
@@ -63,7 +64,7 @@ import java.util.Vector;
 
 
 public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
-        View.OnClickListener, BrandDialogInterface, TextView.OnEditorActionListener {
+        View.OnClickListener, BrandDialogInterface, TextView.OnEditorActionListener, FiveLevelFilterCallBack {
 
     public static final String BRAND = "Brand";
     public static final String GENERAL = "General";
@@ -1227,42 +1228,20 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        mylist = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (ProductMasterBO productBO : items) {
-                if (productBO.getIsSaleable() == 1) {
-                    if (levelBO.getProductID() == productBO.getParentid()) {
-                        mylist.add(productBO);
-                    }
-                }
-            }
-        }
-        mDrawerLayout.closeDrawers();
-
-        refreshList();
-
-        updateValue();
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mylist = new ArrayList<>();
         fiveFilter_productIDs = new ArrayList<>();
         brandbutton = mFilterText;
         if (mAttributeProducts != null) {
 
-            if (mParentIdList.size() > 0) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (ProductMasterBO productBO : items) {
-                        if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+            if (mFilteredPid != 0) {
+                for (ProductMasterBO productBO : items) {
+                    if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
 
-                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                mylist.add(productBO);
-                                fiveFilter_productIDs.add(productBO.getProductID());
-                            }
+                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                        if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                            mylist.add(productBO);
+                            fiveFilter_productIDs.add(productBO.getProductID());
                         }
                     }
                 }
@@ -1278,13 +1257,11 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                for (ProductMasterBO productBO : items) {
-                    if (productBO.getIsSaleable() == 1) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
-                            mylist.add(productBO);
-                            fiveFilter_productIDs.add(productBO.getProductID());
-                        }
+            for (ProductMasterBO productBO : items) {
+                if (productBO.getIsSaleable() == 1) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        mylist.add(productBO);
+                        fiveFilter_productIDs.add(productBO.getProductID());
                     }
                 }
             }

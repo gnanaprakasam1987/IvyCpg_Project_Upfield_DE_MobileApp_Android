@@ -10,6 +10,7 @@ public class LoadManagementBO {
 	private String batchNo;
 	private Vector<LoadManagementBO> batchnolist;
 	private Vector<LoadManagementBO> batchlist;
+	private String parentHierarchy;
 
 	public Vector<LoadManagementBO> getBatchlist() {
 		return batchlist;
@@ -54,6 +55,7 @@ public class LoadManagementBO {
 		this.mfgDate = item.mfgDate;
 		this.expDate = item.expDate;
 		this.batchlist = item.batchlist;
+		this.batchnolist = item.batchnolist;
 		this.batchnolist = item.batchnolist;
 	}
 
@@ -569,5 +571,13 @@ public class LoadManagementBO {
 
 	public void setCaseMapped(boolean aCase) {
 		isCase = aCase;
+	}
+
+	public String getParentHierarchy() {
+		return parentHierarchy;
+	}
+
+	public void setParentHierarchy(String parentHierarchy) {
+		this.parentHierarchy = parentHierarchy;
 	}
 }

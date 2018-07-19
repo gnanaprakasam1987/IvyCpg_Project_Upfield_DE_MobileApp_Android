@@ -54,6 +54,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -74,7 +75,7 @@ import static com.ivy.sd.png.asean.view.R.id.sihTitle;
  */
 
 public class StockProposalFragment extends IvyBaseFragment implements
-        View.OnClickListener, BrandDialogInterface, TextView.OnEditorActionListener {
+        View.OnClickListener, BrandDialogInterface, TextView.OnEditorActionListener,FiveLevelFilterCallBack {
 
 
     public static final String BRAND = "Brand";
@@ -441,8 +442,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 onNextButtonClick();
             }
         });
-
-
 
 
         mSearchTypeArray = new ArrayList<>();
@@ -1544,7 +1543,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
     }
 
 
-
     /**
      * add items for SpecialFilter
      *
@@ -2615,27 +2613,19 @@ public class StockProposalFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        Commons.print("selected filter " + mParentIdList + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        Commons.print("selected filter " + mFilteredPid + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
 
         loadloadMylist = new ArrayList<>();
         if (mAttributeProducts != null) {
 
-            if (mParentIdList.size() > 0) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : stockPropVector) {
-                        if (productBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                if (mAttributeProducts.contains(productBO.getProductid())) {
-                                    loadloadMylist.add(productBO);
-                                }
+            if (mFilteredPid != 0) {
+                for (LoadManagementBO productBO : stockPropVector) {
+                    if (productBO.getIssalable() == 1) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                            if (mAttributeProducts.contains(productBO.getProductid())) {
+                                loadloadMylist.add(productBO);
                             }
                         }
                     }
@@ -2652,15 +2642,11 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                for (LoadManagementBO productBO : stockPropVector) {
-                    Commons.print("pdt id " + levelBO.getProductID() + ", " + productBO.getParentid());
-                    if (productBO.getIssalable() == 1) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
-                            loadloadMylist.add(productBO);
-                        }
+            for (LoadManagementBO productBO : stockPropVector) {
+                if (productBO.getIssalable() == 1) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        loadloadMylist.add(productBO);
                     }
-
                 }
             }
         }

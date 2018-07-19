@@ -252,7 +252,7 @@
     <string name="no_visit_Planning">Perencanaan</string>
     <string name="order_gcas">Kode Gcas</string>
     <string name="choose_date">Pilih Tanggal</string>
-    <string name="exceed">Anda Sudah Melebihi Alokasi Yang Tersedia. Tersisa “%1$D” Lagi</string>
+    <string name="exceed">Anda Sudah Melebihi Alokasi Yang Tersedia. Tersisa “%1$d” Lagi</string>
     <string name="d1">D1</string>
     <string name="dist_inv">Inventori Distributor</string>
     <string name="pre_post">Sebelum/Sesudah</string>

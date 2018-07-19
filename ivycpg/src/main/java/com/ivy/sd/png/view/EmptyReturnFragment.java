@@ -35,6 +35,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogInterface {
+public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack {
 
     private BusinessModel bmodel;
     private DrawerLayout mDrawerLayout;
@@ -472,11 +473,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer>mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer>mAttributeProducts, String mFilterText) {
 
     }
 }

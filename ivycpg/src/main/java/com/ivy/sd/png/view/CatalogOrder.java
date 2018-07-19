@@ -72,6 +72,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CatalogOrderValueUpdate;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
@@ -93,7 +94,7 @@ import java.util.Vector;
 /**
  * Created by dharmapriya.k on 10/14/2016,11:34 AM.
  */
-public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, MOQHighlightDialog.savePcsValue, TextView.OnEditorActionListener {
+public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, MOQHighlightDialog.savePcsValue, TextView.OnEditorActionListener, FiveLevelFilterCallBack {
     private static final String BRAND = "Brand";
     public static final String GENERAL = "General";
     private final String mCommon = "Filt01";
@@ -948,31 +949,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> parentIdList) {
-        mylist = new Vector<>();
-
-        Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
-        if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
-            setTaggingDetails(items);
-        }
-        for (LevelBO levelBO : parentIdList) {
-            for (ProductMasterBO productBO : items) {
-                if (productBO.getIsSaleable() == 1) {
-                    if (levelBO.getProductID() == SDUtil.convertToInt(productBO.getProductID())) {
-                        //  filtertext = levelBO.getLevelName();
-                        mylist.add(productBO);
-                    }
-                }
-            }
-        }
-
-        adapter = new RecyclerViewAdapter(mylist);
-        pdt_recycler_view.setAdapter(adapter);
-        strBarCodeSearch = "ALL";
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
         //String filtertext = getResources().getString(R.string.product_name);
         /*if (!filter.equals(""))
             filtertext = filter;*/
@@ -989,25 +966,23 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         }
         if (mAttributeProducts != null) {
             count = 0;
-            if (parentidList.size() > 0) {
-                for (LevelBO levelBO : parentidList) {
-                    count++;
-                    for (ProductMasterBO productBO : items) {
-                        if (loadStockedProduct == -1
-                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
+            if (mFilteredPid != 0) {
+                count++;
+                for (ProductMasterBO productBO : items) {
+                    if (loadStockedProduct == -1
+                            || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
 
-                            if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                    //filtertext = levelBO.getLevelName();
-                                    mylist.add(productBO);
-                                    fiveFilter_productIDs.add(productBO.getProductID());
-                                }
+                        if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                            if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                                //filtertext = levelBO.getLevelName();
+                                mylist.add(productBO);
+                                fiveFilter_productIDs.add(productBO.getProductID());
                             }
                         }
-
                     }
+
                 }
             } else {
                 for (int pid : mAttributeProducts) {
@@ -1027,16 +1002,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             if (filtertext.length() > 0) {
                 for (ProductMasterBO productBO : items) {
-                    for (LevelBO levelBO : parentidList) {
-                        if (loadStockedProduct == -1
-                                || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
+                    if (loadStockedProduct == -1
+                            || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
-                            if (productBO.getIsSaleable() == 1) {
-                                if (levelBO.getProductID() == productBO.getParentid()) {
-                                    //  filtertext = levelBO.getLevelName();
-                                    mylist.add(productBO);
-                                    fiveFilter_productIDs.add(productBO.getProductID());
-                                }
+                        if (productBO.getIsSaleable() == 1) {
+                            if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                                //  filtertext = levelBO.getLevelName();
+                                mylist.add(productBO);
+                                fiveFilter_productIDs.add(productBO.getProductID());
                             }
                         }
                     }
@@ -1596,15 +1569,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         Toast.LENGTH_SHORT).show();
             }
 
-        } else if ((bmodel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bmodel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
-                && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-
-            Intent intent = new Intent(CatalogOrder.this,
-                    CrownReturnActivity.class);
-            intent.putExtra("OrderFlag", "Nothing");
-            intent.putExtra("ScreenCode", screenCode);
-            startActivity(intent);
-            finish();
         } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(CatalogOrder.this, SchemeApply.class);

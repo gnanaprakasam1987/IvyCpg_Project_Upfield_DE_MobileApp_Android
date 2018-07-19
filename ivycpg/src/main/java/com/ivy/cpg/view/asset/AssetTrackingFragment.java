@@ -42,6 +42,7 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -59,7 +60,7 @@ import java.util.Vector;
 
 public class
 AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener, BrandDialogInterface,
-        DataPickerDialogFragment.UpdateDateInterface,AssetContractor.AssetView{
+        DataPickerDialogFragment.UpdateDateInterface,AssetContractor.AssetView,FiveLevelFilterCallBack{
 
     private DrawerLayout mDrawerLayout;
     private AlertDialog alertDialog;
@@ -622,6 +623,13 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     }
 
     @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        assetPresenter.updateFiveFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts,mFilterText);
+
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+    }
+
+    @Override
     public void updateMultiSelectionBrand(List<String> mFilterName,
                                           List<Integer> mFilterId) {
     }
@@ -638,21 +646,6 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
 
     @Override
     public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId
-            , ArrayList<Integer> mAttributeProducts, String mFilterText) {
-
-       assetPresenter.updateFiveFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts,mFilterText);
-
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
     }
 

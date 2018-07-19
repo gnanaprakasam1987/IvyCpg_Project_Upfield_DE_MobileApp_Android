@@ -1121,8 +1121,8 @@ public class ProductHelper {
     }
 
     /**
-     *
      * Download filter product levels mapped for a particular module.
+     *
      * @param moduleName
      * @return Vector of Type LevelBO
      */
@@ -1268,10 +1268,6 @@ public class ProductHelper {
 
             db.openDataBase();
 
-            int mChildLevel = 0;
-            int mFiltrtLevel = 0;
-            int mContentLevel = 0;
-
             String str = "F.srp1,G.srp1";
             String csrp = "F.csrp1,G.csrp1";
             String osrp = "F.osrp1,G.osrp1";
@@ -1367,14 +1363,8 @@ public class ProductHelper {
             Commons.print("filter" + filter);
             String sql = "";
 
-      /*      if (filterProductLevels != null) {
-                if (filterProductLevels.size() > 0) {
-                    mChildLevel = filterProductLevels.size();
-                }
-            }*/
-
-
             int mContentLevelId = 0;
+            int mContentLevel = 0;
             Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF " +
                     "INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = " + bmodel.QT(moduleCode));
 
@@ -3719,29 +3709,17 @@ public class ProductHelper {
 
     private Vector<LoadManagementBO> productlist;
 
-    public Vector<LoadManagementBO> loadProductsWithFiveLevel(
+    public Vector<LoadManagementBO> downloadLoadMgmtProductsWithFiveLevel(
             String moduleCode, String batchmenucode) {
         mLoadManagementBOByProductId = new SparseArray<>();
         String sql = "", sql1 = "", sql2 = "", sql3 = "";
         productlist = new Vector<>();
         LoadManagementBO bo;
-        Vector<LoadManagementBO> batchno;
         Vector<LoadManagementBO> list;
         LoadManagementBO batchnobo;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();
-
-        int mChildLevel = 0;
-        int mContentLevel = 0;
-        int mFilterLevel = 0;
-
-        if (filterProductLevels != null) {
-            if (filterProductLevels.size() > 0) {
-                mChildLevel = filterProductLevels.size();
-            }
-        }
-
 
         if (batchmenucode.equals("MENU_MANUAL_VAN_LOAD")
                 || batchmenucode.equals("MENU_VAN_UNLOAD")
@@ -3761,131 +3739,27 @@ public class ProductHelper {
             sql2 = "";
             sql3 = "";
         }
-        String query = "";
-        if (mChildLevel == 0) {
-            query = "SELECT PM.ParentId, PM.PID, PM.PName,"
-                    + " (select qty from StockProposalNorm PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs,"
-                    + " PM.psname, PM.dUomQty,"
-                    + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
-                    + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
-                    + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" // + ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse"
-                    + sql3
-                    + sql1
-                    + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
-                    + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
-                    + " FROM ProductMaster PM"
-                    + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                    + sql2
-                    + sql
-                    + " WHERE PM.PLid IN"
-                    + " (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
-                    + bmodel.QT(moduleCode) + ")";
-        } else {
-            Cursor filterCur = db
-                    .selectSQL("SELECT IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0)"
-                            + " FROM ConfigActivityFilter CF"
-                            + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter"
-                            + mChildLevel
-                            + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
-                            + " WHERE CF.ActivityCode = " + bmodel.QT(moduleCode));
-
-            if (filterCur != null) {
-                if (filterCur.moveToNext()) {
-                    mFilterLevel = filterCur.getInt(0);
-                    mContentLevel = filterCur.getInt(1);
-                }
-                filterCur.close();
-            }
-            int loopEnd = mContentLevel - mFilterLevel + 1;
-            query = "select PM1.PID, PM"
-                    + loopEnd
-                    + ".PID, PM"
-                    + loopEnd
-                    + ".PName, (select qty from StockProposalNorm PSQ where uomid =PM"
-                    + loopEnd
-                    + ".piece_uomid and PSQ.PID =PM"
-                    + loopEnd
-                    + ".PID) as"
-                    + " sugpcs, PM"
-                    + loopEnd
-                    + ".psname, PM"
-                    + loopEnd
-                    + ".dUomQty, PM"
-                    + loopEnd
-                    + ".sih, PWHS.Qty,PM"
-                    + loopEnd
-                    + ".IsAlloc, PM"
-                    + loopEnd
-                    + ".mrp, PM"
-                    + loopEnd
-                    + ".barcode, PM"
-                    + loopEnd
-                    + ".RField1,"
-                    + " PM"
-                    + loopEnd
-                    + ".dOuomQty, PM"
-                    + loopEnd
-                    + ".isMust, PM"
-                    + loopEnd
-                    + ".maxQty,(select qty from ProductStandardStockMaster PSM where uomid =PM"
-                    + loopEnd
-                    + ".piece_uomid and PSM.PID =PM"
-                    + loopEnd
-                    + ".PID) as"
-                    + " stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM"
-                    + loopEnd
-                    + ".dUomId and PSM.PID =PM"
-                    + loopEnd
-                    + ".PID) as"
-                    + " stdcase, (select qty from ProductStandardStockMaster PSM where uomid =PM"
-                    + loopEnd + ".dOuomid and PSM.PID =PM"
-                    + loopEnd
-                    + ".PID) as stdouter, PM" + loopEnd
-                    + ".dUomId, PM" + loopEnd + ".dOuomid," + " PM" + loopEnd
-                    + ".baseprice, PM" + loopEnd + ".piece_uomid, PM" + loopEnd
-                    + ".PLid, PM" + loopEnd + ".pCode," + " PM" + loopEnd
-                    + ".msqQty, PM" + loopEnd + ".issalable" + sql3 + sql1
-                    + " ,PM"
-                    + loopEnd
-                    + ".PName, (select qty from StockProposalNorm PSQ where uomid =PM"
-                    + loopEnd
-                    + ".dUomId and PSQ.PID =PM"
-                    + loopEnd
-                    + ".PID) as"
-                    + " sugcs,PM"
-                    + loopEnd
-                    + ".PName, (select qty from StockProposalNorm PSQ where uomid =PM"
-                    + loopEnd
-                    + ".dOuomid and PSQ.PID =PM"
-                    + loopEnd
-                    + ".PID) as"
-                    + " sugou "
-                    + " FROM ProductMaster PM1";
-            for (int i = 2; i <= loopEnd; i++)
-                query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
-                        + i + ".ParentId = PM" + (i - 1) + ".PID";
-            query = query + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM" + loopEnd + ".pid and PWHS.UomID=PM" + loopEnd + ".piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)";
-            sql = " LEFT JOIN StockInHandMaster SIH ON SIH.pid = PM" + loopEnd
-                    + ".PID"
-                    + " LEFT JOIN BatchMaster BM ON (SIH.batchid = BM.batchid  AND BM.pid="
-                    + "PM"
-                    + loopEnd
-                    + ".PID)";
-            sql2 = " LEFT JOIN StockProposalMaster A ON A.pid = PM" + loopEnd
-                    + ".PID";
-
-
-            query = query
-                    + sql2
-                    + sql
-                    + " WHERE PM1.PLid IN (SELECT ProductFilter" + mChildLevel + " FROM ConfigActivityFilter"
-                    + " WHERE ActivityCode = " + bmodel.QT(moduleCode) + ")"
-                    + " ORDER BY PM" + loopEnd + ".rowid";
-        }
+        String query = "SELECT PM.ParentId, PM.PID, PM.PName,"
+                + " (select qty from StockProposalNorm PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs,"
+                + " PM.psname, PM.dUomQty,"
+                + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
+                + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
+                + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable" // + ",(CASE WHEN PWHS.PID=PM.PID then 'true' else 'false' end) as IsAvailWareHouse"
+                + sql3
+                + sql1
+                + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
+                + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou, "
+                + "  PM.ParentHierarchy as ParentHierarchy "
+                + " FROM ProductMaster PM"
+                + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
+                + sql2
+                + sql
+                + " WHERE PM.PLid IN"
+                + " (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
+                + bmodel.QT(moduleCode) + ")";
         Cursor c = db.selectSQL(query);
         if (c != null) {
             while (c.moveToNext()) {
-                batchno = new Vector<LoadManagementBO>();
                 bo = new LoadManagementBO();
                 bo.setParentid(c.getInt(0));
                 bo.setProductid(c.getInt(1));
@@ -3915,6 +3789,7 @@ public class ProductHelper {
                 bo.setpCode(c.getString(23));
                 bo.setMsqQty(c.getInt(24));
                 bo.setIssalable(c.getInt(25));
+                bo.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
                 if (batchmenucode.equals("MENU_STOCK_PROPOSAL")) {
                     bo.setStkprototalQty(c.getInt(c.getColumnIndex("qty")));
                     bo.setStkpropcsqty(c.getInt(c.getColumnIndex("pcsQty")));
@@ -3932,7 +3807,7 @@ public class ProductHelper {
                     bo.setBatchId(c.getString(c.getColumnIndex("batchid")));
                 }
 
-                list = new Vector<LoadManagementBO>();
+                list = new Vector<>();
                 LoadManagementBO ret;
 
                 for (int i = 0; i < 3; ++i) {

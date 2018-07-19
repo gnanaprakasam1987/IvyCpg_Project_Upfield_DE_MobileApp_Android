@@ -39,15 +39,14 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CatalogOrder;
-import com.ivy.sd.png.view.CrownReturnActivity;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
@@ -64,7 +63,7 @@ import java.util.Vector;
  * Digital content module fragment
  * This Fragment is used for both seller and retailer wise digital content module.
  */
-public class DigitalContentFragment extends IvyBaseFragment implements BrandDialogInterface {
+public class DigitalContentFragment extends IvyBaseFragment implements BrandDialogInterface, FiveLevelFilterCallBack {
 
     private BusinessModel mBModel;
     DigitalContentHelper mDigitalContentHelper;
@@ -342,6 +341,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             Commons.print("" + e);
         }
     }
+
     /**
      * Click action
      *
@@ -385,14 +385,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                             startActivity(init);
                             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                             getActivity().finish();
-                        } else if ((mBModel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || mBModel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
-                                && mBModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            Intent intent = new Intent(getActivity(),
-                                    CrownReturnActivity.class);
-                            intent.putExtra("OrderFlag", "Nothing");
-                            intent.putExtra("ScreenCode", screenCode);
-                            startActivity(intent);
-                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                         } else {
                             mBModel.outletTimeStampHelper
                                     .updateTimeStampModuleWise(SDUtil
@@ -477,25 +469,16 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     public void loadStartVisit() {
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
     public HashMap<Integer, Integer> mSelectedIdByLevelId;
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
         mDrawerLayout.closeDrawers();
 
-        if (mParentIdList != null && !mFilterText.equalsIgnoreCase("")) {
-            if (mParentIdList.size() > 0) {
-                new LoadAsyncTask(mParentIdList).execute();
-            } else {
-                new LoadAsyncTask(-1).execute();
-            }
+        if (mFilteredPid != 0 && !mFilterText.equalsIgnoreCase("")) {
+            new LoadAsyncTask(mFilteredPid).execute();
         } else {
             new LoadAsyncTask(-1).execute();
         }
@@ -509,7 +492,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     class LoadAsyncTask extends AsyncTask<String, Integer, Boolean> {
         private ProgressDialog progressDialogue;
         private int pid;
-        Vector<LevelBO> mParentIdList;
         Vector<DigitalContentBO> items;
         int size;
         ArrayList<DigitalContentBO> mImageList;
@@ -519,10 +501,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             this.pid = pid;
         }
 
-        private LoadAsyncTask(Vector<LevelBO> mParentIdList) {
-            super();
-            this.mParentIdList = new Vector<>(mParentIdList);
-        }
 
         @Override
         protected Boolean doInBackground(String... arg0) {
@@ -541,21 +519,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 }
                 size = items.size();
 
-		/*
-          add extension of image types in mImageList
-		  other types in mDigitalContentList
-		*/
-                if (mParentIdList != null && mParentIdList.size() > 0) {
-                    for (int k = 0; k < mParentIdList.size(); k++) {
-                        pid = mParentIdList.get(k).getParentID();
-                        loadDigitalContentByType(pid);
-                    }
-                } else {
-                    loadDigitalContentByType(-1);
-                }
 
-
-
+                loadDigitalContentByType(pid);
                 /*
                  * loop through the mImageList size
                  * check the loop count is less than mDigitalContentList size
@@ -688,7 +653,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         private void loadDigitalContentByType(int pid) {
             for (int i = 0; i < size; ++i) {
                 DigitalContentBO ret = items.elementAt(i);
-                if (ret.getProductID() == pid || pid == -1) {
+                if (ret.getParentHierarchy().contains("/" + pid + "/") || pid == -1) {
                     if ((ret.getFileName().endsWith(".png") || ret.getFileName().endsWith(".jpeg")
                             || ret.getFileName().endsWith(".jpg") || ret.getFileName().endsWith(".JPG")
                             || ret.getFileName().endsWith(".PNG"))) {
@@ -761,7 +726,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         public int getCount() {
             return mFragmentList.size();
         }
-
 
     }
 
