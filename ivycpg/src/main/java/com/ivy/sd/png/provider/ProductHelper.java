@@ -1120,6 +1120,12 @@ public class ProductHelper {
         }
     }
 
+    /**
+     *
+     * Download filter product levels mapped for a particular module.
+     * @param moduleName
+     * @return Vector of Type LevelBO
+     */
     public Vector<LevelBO> downloadFiveFilterLevel(String moduleName) {
         Vector<LevelBO> filterLevel = new Vector<>();
         try {
@@ -1165,30 +1171,33 @@ public class ProductHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            int contentlevelId = 0;
+            int contentLevelId = 0;
 
             Cursor seqCur = db
                     .selectSQL("SELECT IFNULL(PL.LevelId,0) "
                             + "FROM ConfigActivityFilter CF "
+                            // Left join is to ensure configured level id is valid.
                             + "LEFT JOIN ProductLevel PL ON PL.LevelId = CF.ProductContent "
                             + "WHERE  CF.ActivityCode= '" + moduleName + "'");
             if (seqCur.moveToNext()) {
-                contentlevelId = seqCur.getInt(0);
+                contentLevelId = seqCur.getInt(0);
             }
 
             if (filterProductLevels != null) {
-                String pLIds = "";
-                for (LevelBO levelBO : filterProductLevels) {
-                    pLIds = pLIds + levelBO.getProductID();
-                    if (pLIds.length() > 0)
-                        pLIds = pLIds + ",";
-                }
-                if (pLIds.endsWith(","))
-                    pLIds = pLIds.substring(0, pLIds.length() - 1);
 
+                StringBuilder pLIds = new StringBuilder();
+                for (LevelBO levelBO : filterProductLevels) {
+
+                    if (pLIds.length() > 0)
+                        pLIds.append(",");
+
+                    pLIds.append(levelBO.getProductID());
+
+                }
 
                 String query = "SELECT DISTINCT PM.PID, PM.PName,PM.ParentHierarchy,PM.PLid,PM.ParentId FROM ProductMaster PM "
-                        + " INNER JOIN ProductMaster prdm on prdm.ParentHierarchy LIKE '%/' || PM.PID || '/%' and prdm.PLid =" + contentlevelId
+                        // Inner join is ensure filtered category or brand has at least one child sku
+                        + " INNER JOIN ProductMaster prdm on prdm.ParentHierarchy LIKE '%/' || PM.PID || '/%' and prdm.PLid =" + contentLevelId
                         + " WHERE PM.PLid in (" + pLIds + ") Order By PM.RowId";
 
                 seqCur = db.selectSQL(query);
@@ -1205,9 +1214,9 @@ public class ProductHelper {
                         if (filterLevelPrdByLevelId.get(seqCur.getInt(3)) != null) {
                             filterLevelPrdByLevelId.get(seqCur.getInt(3)).add(mLevelBO);
                         } else {
-                            Vector<LevelBO> pfilterlevel = new Vector<>();
-                            pfilterlevel.add(mLevelBO);
-                            filterLevelPrdByLevelId.put(seqCur.getInt(3), pfilterlevel);
+                            Vector<LevelBO> filterProducts = new Vector<>();
+                            filterProducts.add(mLevelBO);
+                            filterLevelPrdByLevelId.put(seqCur.getInt(3), filterProducts);
                         }
 
                     }
@@ -1280,6 +1289,7 @@ public class ProductHelper {
             } catch (Exception e) {
                 Commons.printException(e);
             }
+
             Vector<ConfigureBO> filterBO = bmodel.configurationMasterHelper.downloadFilterList();
             boolean filter10 = false; //Must Sell
             boolean filter11 = false; // Focus Brand
