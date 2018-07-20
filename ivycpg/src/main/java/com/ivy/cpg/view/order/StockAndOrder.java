@@ -1160,6 +1160,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 holder.psname = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_productname);
+                holder.tvProductCode = (TextView) row
+                        .findViewById(R.id.stock_and_order_listview_productcode);
                 holder.mrp = (TextView) row
                         .findViewById(R.id.stock_and_order_listview_mrp);
                 holder.ppq = (TextView) row
@@ -1249,6 +1251,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 //setting typefaces
                 holder.tvbarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                holder.tvProductCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.msq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1776,6 +1779,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e);
                     }
                 }
+
+                if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.tvProductCode.setVisibility(View.GONE);
 
                 holder.tv_uo_names.setOnClickListener(new OnClickListener() {
                     @Override
@@ -3252,6 +3258,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.psname.setText(holder.productObj.getProductShortName());
             holder.pname = holder.productObj.getProductName();
 
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code) + ": " +
+                        holder.productObj.getProductCode() + " ";
+                holder.tvProductCode.setText(prodCode);
+            }
+
+
             if (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP) {
                 String strMrp = getResources().getString(R.string.mrp)
                         + ": " + bmodel.formatValue(holder.productObj.getMRP());
@@ -3684,7 +3697,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private String pname;
         private ProductMasterBO productObj;
         private TextView tvbarcode;
-        private TextView psname;
+        private TextView psname, tvProductCode;
         private TextView so;
         private TextView sih;
         private TextView ppq;

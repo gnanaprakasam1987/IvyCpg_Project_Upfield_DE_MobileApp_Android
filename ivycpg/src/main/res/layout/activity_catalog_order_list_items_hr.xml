@@ -65,6 +65,20 @@
                             tools:text="seg rstfsdrfdgf bfdg fdg d rsdg dfg dg \n fghfdkl ghdfkgdklfgdkflgdfkgkdflg kdfgk " />
 
                         <TextView
+                            android:id="@+id/catalog_order_listview_pCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="1dp"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
+                            android:paddingTop="1dp"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/text_sz_small"
+                            tools:text="@string/prod_code" />
+
+                        <TextView
                             android:id="@+id/catalog_order_listview_ppq"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

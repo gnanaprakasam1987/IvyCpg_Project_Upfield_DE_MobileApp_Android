@@ -1003,6 +1003,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "CSSTK07";
     public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
 
+    //To show Product Code
+    private static final String CODE_SHOW_SKU_CODE = "FUN06";
+    public boolean IS_SHOW_SKU_CODE;
+
 
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
@@ -1197,7 +1201,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PARTIAL_CREDIT_NOTE_ALLOW;
 
     private static final String CODE_PAYMENT_RECEIPT_NO = "COLL14";
-    public boolean IS_PAYMENT_RECEIPTNO_GET = true;
+    public boolean IS_PAYMENT_RECEIPTNO_GET;
 
     public boolean COLL_CHEQUE_MODE;
     private static final String CODE_COLL_CHEQUE_MODE = "COLL15";
@@ -2578,6 +2582,8 @@ public class ConfigurationMasterHelper {
         //CODE_SHOW_ALL_SKU_ON_EDIT
         this.IS_SHOW_ALL_SKU_ON_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_ALL_SKU_ON_EDIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ALL_SKU_ON_EDIT) : false;
         this.IS_KPI_CALENDAR = hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) != null ? hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) : false;
+
+        this.IS_SHOW_SKU_CODE = hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) : false;
     }
 
     private boolean isInOutModule() {

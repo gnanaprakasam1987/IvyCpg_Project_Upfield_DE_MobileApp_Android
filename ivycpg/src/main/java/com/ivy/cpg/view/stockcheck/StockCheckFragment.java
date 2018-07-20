@@ -510,6 +510,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             .findViewById(R.id.stock_and_order_listview_productname);
                     holder.psname.setTypeface(businessModel.configurationMasterHelper.getProductNameFont());
                     holder.psname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+                    holder.productCode = (TextView) row
+                            .findViewById(R.id.stock_and_order_listview_produtCode);
+                    holder.productCode.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.ppq = (TextView) row
                             .findViewById(R.id.stock_and_order_listview_ppq);
                     holder.ppq.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -577,6 +580,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         row.findViewById(R.id.layout_shelf).setVisibility(View.GONE);
 
                     }
+
+                    if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                        holder.productCode.setVisibility(View.GONE);
 
                     holder.audit.setOnClickListener(new OnClickListener() {
 
@@ -1238,7 +1244,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                 holder.pname = holder.productObj.getProductName();
 
+
                 holder.psname.setText(holder.productObj.getProductShortName());
+                if (businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                    String prodCode = getResources().getString(R.string.prod_code) + ": " +
+                            holder.productObj.getProductCode() + " ";
+                    holder.productCode.setText(prodCode);
+                }
+
                 String strPPQ = getResources().getString(R.string.ppq) + ": "
                         + holder.productObj.getRetailerWiseProductWiseP4Qty() + "";
                 holder.ppq.setText(strPPQ);
@@ -1362,7 +1375,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         private EditText facingQty;
 
 
-        private TextView total;
+        private TextView total, productCode;
 
 
         private LinearLayout ll_stkCB;

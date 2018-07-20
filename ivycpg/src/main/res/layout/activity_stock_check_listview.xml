@@ -41,12 +41,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
                 android:gravity="start|center"
                 android:maxLines="1"
                 android:text="@string/product_name" />
 
             <TextView
-                android:id="@+id/stock_and_order_listview_mrp"
+                android:id="@+id/stock_and_order_listview_produtCode"
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -54,8 +55,24 @@
                 android:layout_below="@+id/stock_and_order_listview_productname"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:maxLines="1"
-                android:text="@string/mrp"
-                android:visibility="gone" />
+                android:text="@string/prod_code"
+                android:visibility="visible"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="@dimen/dimens_4dp" />
+
+            <TextView
+                android:id="@+id/stock_and_order_listview_productbarcode"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/stock_and_order_listview_produtCode"
+                android:layout_toEndOf="@+id/stock_and_order_listview_produtCode"
+                android:layout_below="@+id/stock_and_order_listview_productname"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:maxLines="1"
+                android:text="@string/barcode"
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimens_4dp" />
 
             <TextView
                 android:id="@+id/stock_and_order_listview_ppq"
@@ -64,10 +81,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
                 android:layout_marginEnd="@dimen/dimen_2dp"
-                android:layout_toEndOf="@+id/stock_and_order_listview_mrp"
+                android:layout_toEndOf="@+id/stock_and_order_listview_productbarcode"
                 android:maxLines="1"
                 android:text="@string/ou"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_toRightOf="@+id/stock_and_order_listview_productbarcode" />
 
 
             <TextView
@@ -79,7 +98,8 @@
                 android:layout_toEndOf="@+id/stock_and_order_listview_ppq"
                 android:maxLines="1"
                 android:text="@string/psq"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_toRightOf="@+id/stock_and_order_listview_ppq" />
         </RelativeLayout>
 
         <LinearLayout
@@ -118,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
-                 />
+                android:layout_marginRight="@dimen/dimen_2dp" />
 
             <EditText
                 android:id="@+id/stock_and_order_listview_shelfouter_qty"
@@ -126,7 +146,7 @@
                 android:layout_width="0dp"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
-                />
+                android:layout_marginRight="@dimen/dimen_2dp" />
 
             <EditText
                 android:id="@+id/stock_and_order_listview_sp_qty"
@@ -135,7 +155,7 @@
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="5"
-                />
+                android:layout_marginRight="@dimen/dimen_2dp" />
 
         </LinearLayout>
 
@@ -147,7 +167,7 @@
             android:layout_weight="1"
             android:maxLength="2"
             android:text="@string/zero"
-            />
+            android:layout_marginRight="@dimen/dimen_2dp" />
 
         <TextView
             android:id="@+id/stock_check_listview_total"

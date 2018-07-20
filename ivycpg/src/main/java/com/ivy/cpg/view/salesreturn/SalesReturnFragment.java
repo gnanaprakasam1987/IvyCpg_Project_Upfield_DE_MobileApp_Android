@@ -486,13 +486,17 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 holder = new ViewHolder();
 
                 holder.psname = (TextView) row.findViewById(R.id.productName);
+                holder.productCode = (TextView) row.findViewById(R.id.sales_return_barcode);
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.total = (TextView) row.findViewById(R.id.total);
 
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                holder.productCode.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
                 holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.total.setPaintFlags(holder.total.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
+                if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.productCode.setVisibility(View.GONE);
 
                 row.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
@@ -534,6 +538,11 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
             holder.pname = productMasterBO.getProductName();
             holder.psname.setText(productMasterBO.getProductShortName());
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code) + ": " +
+                        productMasterBO.getProductCode();
+                holder.productCode.setText(prodCode);
+            }
 
 
             int total = 0;
@@ -554,7 +563,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         private SalesReturnReasonBO reasonBO;
         private ProductMasterBO productBO;
         private String pname;
-        private TextView psname;
+        private TextView psname, productCode;
         private TextView total;
     }
 
