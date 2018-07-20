@@ -517,19 +517,22 @@ public class DashBoardHelper {
             db.openDataBase();
             getDashChartDataList().clear();
 
+            String monthText = "";
+            if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                monthText = "RK.IntervalDesc";
+            } else {
+                monthText = "IFNULL(strftime('%m', replace(fromdate,'/','-')),0)";
+            }
 
             String sql = "SELECT SLM.ListName,RKD.Target,RKD.Achievement,"
                     + " ROUND(CASE WHEN (100-((RKD.Achievement*100)/((RKD.Target)*1.0))) < 0"
                     + " THEN 100 ELSE ((RKD.Achievement*100)/((RKD.Target)*1.0)) END ,2) AS conv_ach_perc"
-                    + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,count(rkdd.KPIParamLovId),SLM.ListCode FROM RetailerKPI RK"
+                    + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,SLM.ListCode," + monthText + " FROM RetailerKPI RK"
                     + " inner join RetailerKPIDetail RKD on RKD.KPIID= RK.KPIID"
                     + " LEFT join RetailerKPIScore RKS on RKD.KPIID= RKS.KPIID and RKD.KPIParamLovId = RKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId"
-                    + " LEFT join RetailerKPISKUDetail rkdd on rkdd.KPIParamLovId =RKD.KPIParamLovId "
                     + " where retailerid =" + retailerID + " and interval= '" + interval + "' "
-                    + " AND "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + " between RK.fromdate and RK.todate group by SLM.Listid order by DisplaySeq asc";
+                    + " order by DisplaySeq asc";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -554,8 +557,15 @@ public class DashBoardHelper {
                     sbo.setKpiID(c.getInt(6));
                     sbo.setKpiTypeLovID(c.getInt(7));
                     sbo.setFlex1(c.getInt(8));
-                    sbo.setSubDataCount(c.getInt(9));
-                    sbo.setCode(c.getString(10));
+                    sbo.setSubDataCount(getRetailerSubDataCount(sbo.getKpiTypeLovID()));
+                    sbo.setCode(c.getString(9));
+                    if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                        sbo.setMonthName(c.getString(10));
+                    } else {
+                        int value = SDUtil.convertToInt(c.getString(10));
+                        if (value > 0 && value <= 12)
+                            sbo.setMonthName(MONTH_NAME[value - 1]);
+                    }
 
                     getDashChartDataList().add(sbo);
                 }
@@ -1437,6 +1447,34 @@ public class DashBoardHelper {
             db.openDataBase();
 
             String sql = "select count(*) from SellerKPISKUDetail where KPIParamLovId = " + KPIParamLovId;
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    count = c.getInt(0);
+
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return 0;
+        }
+
+        return count;
+    }
+
+    private int getRetailerSubDataCount(int KPIParamLovId) {
+        int count = 0;
+        try {
+            showDayAndP3MSpinner = 0;
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql = "select count(*) from RetailerKPISKUDetail where KPIParamLovId = " + KPIParamLovId;
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {

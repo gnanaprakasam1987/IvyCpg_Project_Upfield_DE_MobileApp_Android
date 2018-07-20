@@ -330,10 +330,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         // Following lines will call method to load products with appropriate filters.
         try {
-            if (OrderedFlag.equals("FromSummary") && bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
+            if (OrderedFlag.equals("FromSummary") && bmodel.configurationMasterHelper.SHOW_SPL_FILTER
+                    && !bmodel.configurationMasterHelper.IS_SHOW_ALL_SKU_ON_EDIT) {
                 mSelectedFilterMap.put("General", mOrdered);
                 updateGeneralText(mOrdered);
-            } else if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
+            } else if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER
+                    && !OrderedFlag.equals("FromSummary")) {
                 String defaultFilter = bmodel.configurationMasterHelper.getDefaultFilter();
                 mSelectedFilterMap.put("General", defaultFilter);
                 updateGeneralText(defaultFilter);
@@ -2208,7 +2210,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 if (!bmodel.configurationMasterHelper.IS_MOQ_ENABLED)
                     moq.setVisibility(View.GONE);
 
-                if(!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                     productCode.setVisibility(View.GONE);
 
                 pdt_details_layout.setOnClickListener(new View.OnClickListener() {

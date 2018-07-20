@@ -1004,7 +1004,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
 
     //To show Product Code
-    private static final String CODE_SHOW_SKU_CODE = "CODE7";
+    private static final String CODE_SHOW_SKU_CODE = "FUN06";
     public boolean IS_SHOW_SKU_CODE;
 
 
