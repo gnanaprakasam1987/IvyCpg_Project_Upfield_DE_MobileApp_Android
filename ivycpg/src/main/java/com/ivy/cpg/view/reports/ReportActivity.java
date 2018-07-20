@@ -22,12 +22,13 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportFragment;
 import com.ivy.cpg.view.reports.retailerProperty.RetailerPropertyReportFragment;
 import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
-import com.ivy.cpg.view.reports.beginstockreport.BeginningStockFragment;
+
 import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
-import com.ivy.cpg.view.reports.currentreport.CurrentReportViewFragment;
+
 import com.ivy.cpg.view.reports.dayreport.DayReportFragment;
 import com.ivy.cpg.view.reports.eodstockreport.EODStockReportFragmentRe;
 import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
@@ -74,6 +75,8 @@ import com.ivy.sd.png.view.reports.SellerPerformanceReportFragment;
 import com.ivy.sd.png.view.reports.TaskExecutionReportFragment;
 import com.ivy.sd.png.view.reports.TimeAndTravelReport;
 import com.ivy.sd.png.view.reports.WebViewArchivalReportFragment;
+import com.ivy.ui.reports.beginstockreport.view.BeginningStockFragment;
+import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -83,17 +86,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
-public class ReportActivity extends IvyBaseActivityNoActionBar implements
+public class ReportActivity extends BaseActivity implements
         BrandDialogInterface, SellerListFragment.SellerSelectionInterface {
 
     private BusinessModel bmodel;
     private String fromMenu;
 
-    @SuppressLint("NewApi")
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.report_menu_fragment_activity_layout);
+    public int getLayoutId() {
+        return R.layout.report_menu_fragment_activity_layout;
+    }
+
+    @Override
+    protected void initVariables() {
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
@@ -166,6 +171,19 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
         else
             bmodel.productHelper.taxHelper = TaxHelper.getInstance(this);
     }
+
+    @Override
+    public void initializeDi() {
+
+    }
+
+    /*@SuppressLint("NewApi")
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.report_menu_fragment_activity_layout);
+
+    }*/
 
     private void setLanguage() {
         SharedPreferences sharedPrefs = PreferenceManager.
@@ -338,7 +356,7 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
                 StandardListMasterConstants.MENU_BEGINNING_STOCK_REPORT)) {
 
 //            BeginningStockFragment stockreportfragmentnew = new BeginningStockFragment();
-            com.ivy.cpg.view.reports.beginstockreport.BeginningStockFragment stockreportfragmentnew
+            BeginningStockFragment stockreportfragmentnew
                     = new BeginningStockFragment();
             stockreportfragmentnew.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, stockreportfragmentnew);
@@ -739,5 +757,15 @@ public class ReportActivity extends IvyBaseActivityNoActionBar implements
     protected void onDestroy() {
         super.onDestroy();
         bmodel = null;
+    }
+
+    @Override
+    protected void getMessageFromAliens() {
+
+    }
+
+    @Override
+    protected void setUpViews() {
+
     }
 }

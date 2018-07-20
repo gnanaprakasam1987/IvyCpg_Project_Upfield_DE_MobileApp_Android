@@ -138,12 +138,13 @@ android {
     android {
         sourceSets {
             main {
-               // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
-               //res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
-                res.srcDirs = [
+
+
+                res.srcDirs =  [
                         'src/main/res/layouts/layouts_activation',
                         'src/main/res/layouts',
-                        'src/main/res']
+                        'src/main/res'
+                ]
             }
         }
     }
@@ -156,6 +157,9 @@ static def getLayoutList(path) {
 
     def throwAway = file.path.split("/")[0]
     // throwAway = 'app'
+
+    //println throwaway
+    println "${throwAway}"
 
     def newPath = file.path.substring(throwAway.length() + 1) // +1 is for '/'
     // newPath = src/main/res/layouts/
