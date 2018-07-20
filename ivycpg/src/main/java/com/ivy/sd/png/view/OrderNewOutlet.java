@@ -303,8 +303,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         }
 
 
-
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -1091,7 +1090,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         bmodel = (BusinessModel) getApplicationContext();
                         bmodel.setContext(OrderNewOutlet.this);
 
-                        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+                        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
                         if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
                             if (schemeHelper
                                     .getSchemeList() == null
@@ -1110,7 +1109,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
                             Intent intent = new Intent(OrderNewOutlet.this, ProductSchemeDetailsActivity.class);
-                            intent.putExtra("productId",holder.productId);
+                            intent.putExtra("productId", holder.productId);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
 
@@ -2268,12 +2267,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
             return true;
         } else if (i == R.id.menu_spl_filter) {
 
-            // Get the Special Filter Type 1- Single Selection, 2- Multi
-            // Selection
-            if (ConfigurationMasterHelper.GET_GENERALFILTET_TYPE == 2)
-                generalFilterClickedFragment();
-            else
-                generalFilterClickedFragment();
+            generalFilterClickedFragment();
             item.setVisible(false);
             supportInvalidateOptionsMenu();
             return true;
