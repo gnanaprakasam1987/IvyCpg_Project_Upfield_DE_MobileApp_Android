@@ -31,13 +31,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
-import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
+import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
@@ -53,23 +55,19 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
     private GoogleMap mMap;
     private int userId;
+    private String userName;
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
-    private TextView tvMapInfoUserName;
-    private TextView tvInfoVisitTime;
-    private TextView tvSellerName;
-    private TextView tvSellerStartTime;
-    private TextView tvSellerLastVisit;
-    private TextView tvTarget;
-    private TextView tvCovered;
+    private TextView tvMapInfoUserName, tvInfoVisitTime, tvSellerName, tvSellerStartTime, tvSellerLastVisit, tvTarget, tvCovered;
     private BottomSheetBehavior bottomSheetBehavior;
 
     private SellerDetailMapPresenter sellerMapViewPresenter;
     private OutletListAdapter outletListAdapter;
-    private ArrayList<SupervisorModelBo> outletListBos = new ArrayList<>();
+    private ArrayList<RetailerBo> outletListBos = new ArrayList<>();
 
     private Polyline mapPolyLine = null;
     private PolylineOptions lineOptions = null;
+    private Marker sellerMarker;
 
 
     @Override
@@ -97,7 +95,8 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 setScreenTitle("Seller");
             else {
                 userId = extras.getInt("SellerId");
-                setScreenTitle(extras.getString("screentitle"));
+                userName = extras.getString("screentitle");
+                setScreenTitle(userName);
             }
         } catch (Exception e) {
             setScreenTitle("Seller");
@@ -202,13 +201,6 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMaxZoomPreference(24);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this.getApplicationContext(), "Enable location permission from App Settings", Toast.LENGTH_SHORT).show();
-
-        }else{
-            mMap.setMyLocationEnabled(true);
-        }
 
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
@@ -226,11 +218,20 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             }
         });
 
-        sellerMapViewPresenter.getSellerInfoAWS(userId);
+        //Download retailers from Master Seller wise
+        //Plot pins base on retailer master location
+        sellerMapViewPresenter.downloadSellerOutletAWS(userId);
+
         sellerMapViewPresenter.isRealtimeLocation();
 
-        sellerMapViewPresenter.getSellerActivityListener(userId);
-        sellerMapViewPresenter.getSellerActivityDetailListener(userId);
+        //Focus all the retailer location in map
+        sellerMapViewPresenter.getMarkerForFocus();
+
+        //Sellers last visit info listener
+        sellerMapViewPresenter.setSellerActivityListener(userId);
+
+        //Draw route based on sellers activity
+        sellerMapViewPresenter.setSellerActivityDetailListener(userId);
 
     }
 
@@ -238,6 +239,11 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     @Override
     public boolean onMarkerClick(Marker marker) {
         Commons.print("on Marker Click called");
+
+        if (marker.getTitle().equalsIgnoreCase("SELLER")) {
+            marker.hideInfoWindow();
+            return true;
+        }
 
         double angle = 130.0;
         double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
@@ -252,10 +258,10 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     }
 
     @Override
-    public void setRetailerMarker(SupervisorModelBo retailerMarker,BitmapDescriptor icon) {
-        Marker marker = mMap.addMarker(retailerMarker.getMarkerOptions());
-        marker.setIcon(icon);
-        retailerMarker.setMarker(marker);
+    public void setRetailerMarker(RetailerBo retailerBo,MarkerOptions markerOptions) {
+
+        Marker marker = mMap.addMarker(markerOptions);
+        retailerBo.setMarker(marker);
     }
 
     @Override
@@ -270,7 +276,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     }
 
     @Override
-    public void setOutletListAdapter(ArrayList<SupervisorModelBo> retailerMasterList) {
+    public void setOutletListAdapter(ArrayList<RetailerBo> retailerMasterList) {
         outletListBos.clear();
         outletListBos.addAll(retailerMasterList);
         outletListAdapter.notifyDataSetChanged();
@@ -278,12 +284,24 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void updateSellerInfo(SupervisorModelBo supervisorModelBo) {
-        tvSellerName.setText(supervisorModelBo.getUserName());
-        tvSellerStartTime.setText(getResources().getString(R.string.visit_time)+" "+sellerMapViewPresenter.convertMillisToTime(supervisorModelBo.getTimeIn()));
-        tvSellerLastVisit.setText(getResources().getString(R.string.last_vist)+" "+supervisorModelBo.getRetailerName());
-        tvTarget.setText(getResources().getString(R.string.targeted)+" "+supervisorModelBo.getTarget());
-        tvCovered.setText(getResources().getString(R.string.covered)+" "+supervisorModelBo.getCovered());
+    public void updateSellerInfo(String timeIn,String retailerName,String target,String covered,LatLng sellerLatLng ) {
+        tvSellerName.setText(userName);
+        tvSellerStartTime.setText(getResources().getString(R.string.visit_time)+" "+timeIn);
+        tvSellerLastVisit.setText(getResources().getString(R.string.last_vist)+" "+retailerName);
+        tvTarget.setText(getResources().getString(R.string.targeted)+" "+target);
+        tvCovered.setText(getResources().getString(R.string.covered)+" "+covered);
+
+        if(sellerLatLng != null) {
+            if (sellerMarker == null) {
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(sellerLatLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker))
+                        .title("SELLER");
+                sellerMarker = mMap.addMarker(markerOptions);
+            } else
+                sellerMarker.setPosition(sellerLatLng);
+        }
+
     }
 
     @Override
@@ -407,8 +425,8 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     public class OutletListAdapter extends RecyclerView.Adapter<OutletListAdapter.MyViewHolder> {
 
         private Context context;
-        private ArrayList<SupervisorModelBo> outletListBos;
-        OutletListAdapter(Context context,ArrayList<SupervisorModelBo> outletListBos){
+        private ArrayList<RetailerBo> outletListBos;
+        OutletListAdapter(Context context,ArrayList<RetailerBo> outletListBos){
             this.context = context;
             this.outletListBos = outletListBos;
         }

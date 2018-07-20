@@ -12,7 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
-import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.HideShowScrollListener;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class TabViewListFragment extends IvyBaseFragment{
     private RecyclerView recyclerView;
-    private ArrayList<SupervisorModelBo> sellerListBos = new ArrayList<>();
+    private ArrayList<SellerBo> sellerListBos = new ArrayList<>();
     private boolean showStatus;
 
     private Animation slide_down, slide_up;
@@ -30,7 +30,7 @@ public class TabViewListFragment extends IvyBaseFragment{
     public TabViewListFragment() {
     }
 
-    public static TabViewListFragment getInstance(int position, ArrayList<SupervisorModelBo> sellerListBos, boolean showStatus) {
+    public static TabViewListFragment getInstance(int position, ArrayList<SellerBo> sellerListBos, boolean showStatus) {
         TabViewListFragment tabViewListFragment = new TabViewListFragment();
         Bundle args = new Bundle();
         args.putSerializable("Sellers", sellerListBos);
@@ -105,7 +105,7 @@ public class TabViewListFragment extends IvyBaseFragment{
     @Override
     public void setArguments(Bundle args) {
         super.setArguments(args);
-        this.sellerListBos = (ArrayList<SupervisorModelBo>) args.getSerializable("Sellers");
+        this.sellerListBos = (ArrayList<SellerBo>) args.getSerializable("Sellers");
         this.showStatus = args.getBoolean("ShowStatus");
     }
 

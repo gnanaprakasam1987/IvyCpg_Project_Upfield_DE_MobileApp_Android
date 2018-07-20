@@ -1,7 +1,6 @@
 package com.ivy.cpg.view.supervisor.mvp;
 
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 
 public class SellerBo {
@@ -11,7 +10,6 @@ public class SellerBo {
     private boolean isAttendanceDone = false;
     private double latitude,longitude;
     private long orderValue,timeIn,timeOut;
-    private MarkerOptions markerOptions;
     private Marker marker;
 
     public int getUserId() {
@@ -108,14 +106,6 @@ public class SellerBo {
 
     public void setTimeOut(long timeOut) {
         this.timeOut = timeOut;
-    }
-
-    public MarkerOptions getMarkerOptions() {
-        return markerOptions;
-    }
-
-    public void setMarkerOptions(MarkerOptions markerOptions) {
-        this.markerOptions = markerOptions;
     }
 
     public Marker getMarker() {

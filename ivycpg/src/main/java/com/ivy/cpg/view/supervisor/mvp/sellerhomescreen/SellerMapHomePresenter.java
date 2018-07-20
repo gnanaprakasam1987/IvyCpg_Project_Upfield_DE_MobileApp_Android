@@ -1,6 +1,5 @@
 package com.ivy.cpg.view.supervisor.mvp.sellerhomescreen;
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -28,12 +27,13 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
-import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.annotation.Nullable;
 
@@ -41,20 +41,20 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public static SparseArray<SupervisorModelBo> sellerInfoHasMap = new SparseArray<>();
-    private SparseArray<MarkerOptions> sellerMarkerHasmap = new SparseArray<>();
-    private SellerMapHomeContract.SellerMapHomeView supervisorHomeView;
+    public static SparseArray<SellerBo> sellerInfoHasMap = new SparseArray<>();
+    private HashSet<Integer> sellerIdHashSet = new HashSet<>();
+    private SellerMapHomeContract.SellerMapHomeView sellerMapHomeView;
     private Context context;
     private ListenerRegistration registration ;
 
     private int inMarketSellerCount = 0;
     private boolean isRealTimeLocationOn = false;
-    private int sellerCount = 0;
+    private int sellerCountFirestore = 0;
     private boolean isZoomed = false;
 
     @Override
-    public void setView(SellerMapHomeContract.SellerMapHomeView supervisorHomeView, Context context) {
-        this.supervisorHomeView = supervisorHomeView;
+    public void setView(SellerMapHomeContract.SellerMapHomeView sellerMapHomeView, Context context) {
+        this.sellerMapHomeView = sellerMapHomeView;
         this.context = context;
     }
 
@@ -77,32 +77,28 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             if (c != null) {
                 while (c.moveToNext()) {
 
-                    SupervisorModelBo supervisorModelBo = new SupervisorModelBo();
+                    SellerBo sellerBo = new SellerBo();
 
-                    supervisorModelBo.setUserId(c.getInt(0));
-                    supervisorModelBo.setUserName(c.getString(1));
+                    sellerBo.setUserId(c.getInt(0));
+                    sellerBo.setUserName(c.getString(1));
 
-                    if (sellerInfoHasMap.get(supervisorModelBo.getUserId()) == null) {
-                        sellerInfoHasMap.put(supervisorModelBo.getUserId(), supervisorModelBo);
+                    if (sellerInfoHasMap.get(sellerBo.getUserId()) == null) {
+                        sellerInfoHasMap.put(sellerBo.getUserId(), sellerBo);
                     }
 
                     totalSellerCount = totalSellerCount + 1;
-
                 }
                 c.close();
             }
-
             db.closeDB();
-
         } catch (Exception e) {
             Commons.printException(e);
             if (db != null)
                 db.closeDB();
         }
 
-        supervisorHomeView.displayTotalSellerCount(totalSellerCount);
-        supervisorHomeView.updateSellerAttendance(totalSellerCount,0);
-
+        sellerMapHomeView.displayTotalSellerCount(totalSellerCount);
+        sellerMapHomeView.updateSellerAttendance(totalSellerCount,0);
     }
 
     @Override
@@ -142,7 +138,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                 db.closeDB();
         }
 
-        supervisorHomeView.displayTotalOutletCount(totalOutletCount);
+        sellerMapHomeView.displayTotalOutletCount(totalOutletCount);
 
     }
 
@@ -183,7 +179,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                         if (task.isSuccessful()) {
                             initiateAllMethods(userId);
                         } else {
-                            supervisorHomeView.firebaseLoginFailure();
+                            sellerMapHomeView.firebaseLoginFailure();
                         }
                     }
                 });
@@ -199,7 +195,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     @Override
-    public void getSellerActivityInfoListener(int userId) {
+    public void sellerActivityInfoListener(int userId) {
 
         CollectionReference queryRef = db
                 .collection("activity_tracking_v2")
@@ -215,7 +211,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                         if(queryDocumentSnapshots!=null) {
 
                             if (!isRealTimeLocationOn)
-                                sellerCount = queryDocumentSnapshots.size();
+                                sellerCountFirestore = queryDocumentSnapshots.size();
 
                             for (DocumentChange snapshot : queryDocumentSnapshots.getDocumentChanges()) {
 
@@ -249,9 +245,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
                         if (queryDocumentSnapshots != null) {
 
-                            sellerCount = queryDocumentSnapshots.size();
-
-                            System.out.println("updateRealtimeLocationInfoListener = " );
+                            sellerCountFirestore = queryDocumentSnapshots.size();
 
                             for (DocumentChange snapshot : queryDocumentSnapshots.getDocumentChanges()) {
 
@@ -271,7 +265,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     @Override
-    public void getSellerAttendanceInfoListener(int userId){
+    public void sellerAttendanceInfoListener(int userId){
 
         CollectionReference queryRef = db
                 .collection("activity_tracking_v2")
@@ -299,53 +293,57 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     @Override
-    public void getMarkerForFocus() {
+    public void getMarkerValuesToFocus() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        for(int i = 0; i < sellerInfoHasMap.size(); i++) {
-            MarkerOptions markerOptions = sellerInfoHasMap.get(sellerInfoHasMap.keyAt(i)).getMarkerOptions();
-            if(markerOptions != null && markerOptions.getPosition().latitude > 0 && markerOptions.getPosition().longitude > 0)
-                builder.include(markerOptions.getPosition());
+        for(Integer sellerId : sellerIdHashSet) {
+
+            if(sellerInfoHasMap.get(sellerId).getMarker() != null) {
+
+                LatLng builderLatLng = sellerInfoHasMap.get(sellerId).getMarker().getPosition();
+
+                if (builderLatLng != null && builderLatLng.latitude > 0 && builderLatLng.longitude > 0)
+                    builder.include(builderLatLng);
+            }
         }
 
-        supervisorHomeView.focusMarker(builder);
+        sellerMapHomeView.focusMarker(builder);
     }
 
     @Override
     public void computeSellerInfo() {
 
-        ArrayList<SupervisorModelBo> markerList = new ArrayList<>();
+        ArrayList<SellerBo> inMarketSellerList = new ArrayList<>();
 
         long totatlOrderValue = 0L;
         int coveredOutlet = 0;
         int billedOutlet = 0;
 
         for(int i = 0; i < sellerInfoHasMap.size(); i++){
-            SupervisorModelBo supervisorModelBo = sellerInfoHasMap.get(sellerInfoHasMap.keyAt(i));
+            SellerBo sellerBo = sellerInfoHasMap.get(sellerInfoHasMap.keyAt(i));
 
-            if(supervisorModelBo.getOrderValue() !=null )
-                totatlOrderValue = totatlOrderValue + supervisorModelBo.getOrderValue();
+            totatlOrderValue = totatlOrderValue + sellerBo.getOrderValue();
 
-            coveredOutlet = coveredOutlet + supervisorModelBo.getCovered();
-            billedOutlet = billedOutlet + supervisorModelBo.getBilled();
+            coveredOutlet = coveredOutlet + sellerBo.getCovered();
+            billedOutlet = billedOutlet + sellerBo.getBilled();
 
-            if(sellerMarkerHasmap.get(supervisorModelBo.getUserId()) != null)
-                markerList.add(supervisorModelBo);
+            if(sellerIdHashSet.contains(sellerBo.getUserId()))
+                inMarketSellerList.add(sellerBo);
         }
 
-        supervisorHomeView.updateOrderValue((int)totatlOrderValue);
-        supervisorHomeView.updateCoveredCount(coveredOutlet);
+        sellerMapHomeView.updateOrderValue((int)totatlOrderValue);
+        sellerMapHomeView.updateCoveredCount(coveredOutlet);
 
         int unBilledoutlet = coveredOutlet - billedOutlet;
-        supervisorHomeView.updateUnbilledCount(unBilledoutlet);
+        sellerMapHomeView.updateUnbilledCount(unBilledoutlet);
 
         int sellerProductive = 0;
         if (coveredOutlet!=0) {
             sellerProductive = (int)((float)billedOutlet / (float)coveredOutlet * 100);
         }
-        supervisorHomeView.sellerProductivity(sellerProductive);
+        sellerMapHomeView.sellerProductivity(sellerProductive);
 
-        supervisorHomeView.setSellerListAdapter(markerList);
+        sellerMapHomeView.setSellerListAdapter(inMarketSellerList);
     }
 
     @Override
@@ -431,9 +429,9 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     private void initiateAllMethods(int userId){
 
-        getSellerAttendanceInfoListener(userId);
+        sellerAttendanceInfoListener(userId);
 
-        getSellerActivityInfoListener(userId);
+        sellerActivityInfoListener(userId);
 
         if (isRealTimeLocationOn)
             realtimeLocationInfoListener(userId);
@@ -448,7 +446,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
             Integer userId = (int) (long) documentSnapshot.getData().get("userId");
 
-            if (sellerInfoHasMap.get(userId) != null && !sellerInfoHasMap.get(userId).isAttendanceDone()) {
+            if (sellerInfoHasMap.get(userId) != null &&
+                    !sellerInfoHasMap.get(userId).isAttendanceDone()) {
                 computeSellerAttendance(userId);
             }
         }
@@ -466,47 +465,43 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
         absentSellerCount = totalSellerCount - inMarketSellerCount;
 
-        supervisorHomeView.updateSellerAttendance(absentSellerCount,inMarketSellerCount);
+        sellerMapHomeView.updateSellerAttendance(absentSellerCount,inMarketSellerCount);
     }
 
     private void setValues(DocumentSnapshot documentSnapshot){
 
-        SupervisorModelBo supervisorModelBo = documentSnapshot.toObject((SupervisorModelBo.class));
+        SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
 
         System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
-        if(supervisorModelBo != null && sellerInfoHasMap.get(supervisorModelBo.getUserId()) != null) {
+        if(sellerBoDocumentSnapshot != null && sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId()) != null) {
 
-            SupervisorModelBo supervisorModelObj = sellerInfoHasMap.get(supervisorModelBo.getUserId());
+            SellerBo sellerBoHashmap = sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId());
 
-            supervisorModelObj.setBilled(supervisorModelBo.getBilled());
-            supervisorModelObj.setCovered(supervisorModelBo.getCovered());
-            supervisorModelObj.setLatitude(supervisorModelBo.getLatitude());
-            supervisorModelObj.setLongitude(supervisorModelBo.getLongitude());
-            supervisorModelObj.setOrderValue(supervisorModelBo.getOrderValue()!=null?supervisorModelBo.getOrderValue():0);
-            supervisorModelObj.setIsOrdered(supervisorModelBo.getIsOrdered());
-            supervisorModelObj.setTimeIn(supervisorModelBo.getTimeIn()!=null?supervisorModelBo.getTimeIn():0);
-            supervisorModelObj.setTimeOut(supervisorModelBo.getTimeOut()!=null?supervisorModelBo.getTimeOut():0);
-            supervisorModelObj.setRetailerId(supervisorModelBo.getRetailerId());
-            supervisorModelObj.setRetailerName(supervisorModelBo.getRetailerName()!=null?supervisorModelBo.getRetailerName():"");
+            sellerBoHashmap.setBilled(sellerBoDocumentSnapshot.getBilled());
+            sellerBoHashmap.setCovered(sellerBoDocumentSnapshot.getCovered());
+            sellerBoHashmap.setLatitude(sellerBoDocumentSnapshot.getLatitude());
+            sellerBoHashmap.setLongitude(sellerBoDocumentSnapshot.getLongitude());
+            sellerBoHashmap.setOrderValue(sellerBoDocumentSnapshot.getOrderValue());
+            sellerBoHashmap.setTimeIn(sellerBoDocumentSnapshot.getTimeIn());
+            sellerBoHashmap.setTimeOut(sellerBoDocumentSnapshot.getTimeOut());
+            sellerBoHashmap.setRetailerName(sellerBoDocumentSnapshot.getRetailerName()!=null?sellerBoDocumentSnapshot.getRetailerName():"");
 
-            if (!supervisorModelObj.isAttendanceDone()) {
-                computeSellerAttendance(supervisorModelBo.getUserId());
+            if (!sellerBoHashmap.isAttendanceDone()) {
+                computeSellerAttendance(sellerBoDocumentSnapshot.getUserId());
             }
 
             if (!isRealTimeLocationOn) {
 
-                LatLng destLatLng = new LatLng(supervisorModelBo.getLatitude(), supervisorModelBo.getLongitude());
+                LatLng destLatLng = new LatLng(sellerBoDocumentSnapshot.getLatitude(), sellerBoDocumentSnapshot.getLongitude());
 
-                supervisorModelBo.setMarkerOptions(new MarkerOptions()
+                MarkerOptions markerOptions = new MarkerOptions()
                         .flat(true)
-                        .title(supervisorModelObj.getUserName())
+                        .title(sellerBoHashmap.getUserName())
                         .position(destLatLng)
-                        .snippet(String.valueOf(supervisorModelObj.getUserId())));
+                        .snippet(String.valueOf(sellerBoHashmap.getUserId()));
 
-                supervisorModelObj.setMarkerOptions(supervisorModelBo.getMarkerOptions());
-
-                setMarkerHasMap(supervisorModelObj);
+                setMarkerHasMap(sellerBoHashmap,markerOptions);
             }
 
             computeSellerInfo();
@@ -515,53 +510,47 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     private void setLocationValues(DocumentSnapshot documentSnapshot){
 
-        SupervisorModelBo supervisorModelBo = documentSnapshot.toObject((SupervisorModelBo.class));
+        SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
 
-        if (supervisorModelBo != null) {
+        if (sellerBoDocumentSnapshot != null) {
 
             System.out.println("setLocationValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
-            LatLng destLatLng = new LatLng(supervisorModelBo.getLatitude(), supervisorModelBo.getLongitude());
+            LatLng destLatLng = new LatLng(sellerBoDocumentSnapshot.getLatitude(), sellerBoDocumentSnapshot.getLongitude());
 
-            SupervisorModelBo sellerHasmapBo = sellerInfoHasMap.get(supervisorModelBo.getUserId());
+            SellerBo sellerHasmapBo = sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId());
 
-            sellerHasmapBo.setMarkerOptions(new MarkerOptions()
+            MarkerOptions markerOptions = new MarkerOptions()
                     .flat(true)
                     .title(sellerHasmapBo.getUserName())
                     .position(destLatLng)
-                    .snippet(String.valueOf(sellerHasmapBo.getUserId())));
+                    .snippet(String.valueOf(sellerHasmapBo.getUserId()));
 
-
-
-            sellerHasmapBo.setLatitude(supervisorModelBo.getLatitude());
-            sellerHasmapBo.setLongitude(supervisorModelBo.getLongitude());
+            sellerHasmapBo.setLatitude(sellerBoDocumentSnapshot.getLatitude());
+            sellerHasmapBo.setLongitude(sellerBoDocumentSnapshot.getLongitude());
 
             if (!sellerHasmapBo.isAttendanceDone()) {
                 computeSellerAttendance(sellerHasmapBo.getUserId());
             }
 
-            sellerHasmapBo.setMarkerOptions(sellerHasmapBo.getMarkerOptions());
-
-            setMarkerHasMap(sellerHasmapBo);
-
+            setMarkerHasMap(sellerHasmapBo,markerOptions);
         }
     }
 
-    private void setMarkerHasMap(SupervisorModelBo supervisorModelBo) {
-        if(sellerMarkerHasmap.get(supervisorModelBo.getUserId()) == null) {
-            supervisorHomeView.createMarker(sellerInfoHasMap.get(supervisorModelBo.getUserId()));
-            sellerMarkerHasmap.put(supervisorModelBo.getUserId(), supervisorModelBo.getMarkerOptions());
+    private void setMarkerHasMap(SellerBo sellerBo,MarkerOptions markerOptions) {
+        if(!sellerIdHashSet.contains(sellerBo.getUserId())) {
+            sellerMapHomeView.createMarker(sellerInfoHasMap.get(sellerBo.getUserId()),markerOptions);
+            sellerIdHashSet.add(sellerBo.getUserId());
 
             computeSellerInfo();
-
         }else{
-            sellerMarkerHasmap.put(supervisorModelBo.getUserId(), supervisorModelBo.getMarkerOptions());
-            supervisorHomeView.updateMaker(sellerInfoHasMap.get(supervisorModelBo.getUserId()));
+            LatLng destLatLng = new LatLng(sellerBo.getLatitude(), sellerBo.getLongitude());
+            sellerMapHomeView.updateMaker(destLatLng,sellerInfoHasMap.get(sellerBo.getUserId()).getMarker());
         }
 
-        if(sellerCount == sellerMarkerHasmap.size() && sellerMarkerHasmap.size() > 0 && !isZoomed){
+        if(sellerCountFirestore == sellerIdHashSet.size() && sellerIdHashSet.size() > 0 && !isZoomed){
             isZoomed = true;
-            getMarkerForFocus();
+            getMarkerValuesToFocus();
         }
     }
 

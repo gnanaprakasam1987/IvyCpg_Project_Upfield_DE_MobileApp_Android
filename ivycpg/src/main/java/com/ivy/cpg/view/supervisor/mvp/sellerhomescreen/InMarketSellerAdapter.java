@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
 
@@ -23,9 +23,9 @@ import java.util.Locale;
 public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAdapter.MyViewHolder> {
 
     private Context context;
-    private ArrayList<SupervisorModelBo> sellerArrayList = new ArrayList<>();
+    private ArrayList<SellerBo> sellerArrayList = new ArrayList<>();
 
-    InMarketSellerAdapter(Context context, ArrayList<SupervisorModelBo> sellerArrayList){
+    InMarketSellerAdapter(Context context, ArrayList<SellerBo> sellerArrayList){
         this.context = context;
         this.sellerArrayList = sellerArrayList;
     }
@@ -61,8 +61,7 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
 
         holder.userName.setText(sellerArrayList.get(position).getUserName());
         holder.retailerName.setText(context.getResources().getString(R.string.last_vist)+" "+sellerArrayList.get(position).getRetailerName());
-        if(sellerArrayList.get(position).getTimeIn() != null)
-            holder.retailerVisit.setText(context.getResources().getString(R.string.visit_time)+" "+convertTime(sellerArrayList.get(position).getTimeIn()));
+        holder.retailerVisit.setText(context.getResources().getString(R.string.visit_time)+" "+convertTime(sellerArrayList.get(position).getTimeIn()));
         holder.target.setText(context.getResources().getString(R.string.targeted)+" "+sellerArrayList.get(position).getTarget());
         holder.covered.setText(context.getResources().getString(R.string.covered)+" "+sellerArrayList.get(position).getCovered());
 

@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.customviews.tooltip.Tooltip;
-import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.utils.FontUtils;
 
@@ -30,9 +30,9 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
 
     private Context context;
     private boolean showStatus;
-    private ArrayList<SupervisorModelBo> sellerListBos = new ArrayList<>();
+    private ArrayList<SellerBo> sellerListBos = new ArrayList<>();
 
-    SellerListAdapter(Context context,boolean showStatus,ArrayList<SupervisorModelBo> sellerListBos){
+    SellerListAdapter(Context context,boolean showStatus,ArrayList<SellerBo> sellerListBos){
         this.context = context;
         this.showStatus = showStatus;
         this.sellerListBos = sellerListBos;

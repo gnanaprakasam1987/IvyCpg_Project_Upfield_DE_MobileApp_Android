@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellerMapHomePresenter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -31,9 +31,9 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
-    private ArrayList<SupervisorModelBo> sellersList = new ArrayList<>();
-    private ArrayList<SupervisorModelBo> sellersInMarketList = new ArrayList<>();
-    private ArrayList<SupervisorModelBo> sellersAbsentList = new ArrayList<>();
+    private ArrayList<SellerBo> sellersList = new ArrayList<>();
+    private ArrayList<SellerBo> sellersInMarketList = new ArrayList<>();
+    private ArrayList<SellerBo> sellersAbsentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +52,15 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         }
 
         for(int i = 0; i <SellerMapHomePresenter.sellerInfoHasMap.size(); i++){
-            sellersList.add(SellerMapHomePresenter.sellerInfoHasMap.get(SellerMapHomePresenter.sellerInfoHasMap.keyAt(i)));
+            SellerBo sellerBo = SellerMapHomePresenter.sellerInfoHasMap.get(SellerMapHomePresenter.sellerInfoHasMap.keyAt(i));
+            sellersList.add(sellerBo);
         }
 
-        for (SupervisorModelBo supervisorModelBo : sellersList)
-            if(supervisorModelBo.isAttendanceDone())
-                sellersInMarketList.add(supervisorModelBo);
+        for (SellerBo sellerBo : sellersList)
+            if(sellerBo.isAttendanceDone())
+                sellersInMarketList.add(sellerBo);
             else
-                sellersAbsentList.add(supervisorModelBo);
+                sellersAbsentList.add(sellerBo);
 
         viewPager = findViewById(R.id.viewPager);
 
@@ -156,7 +157,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void displaySearchItem(String searchText){
-        ArrayList<SupervisorModelBo> detailsBos = prepareListValues(tabLayout.getSelectedTabPosition());
+        ArrayList<SellerBo> detailsBos = prepareListValues(tabLayout.getSelectedTabPosition());
 
         for(int i = 0;i<detailsBos.size();i++){
             if (detailsBos.get(i).getUserName().toLowerCase()
@@ -191,9 +192,9 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
-    private ArrayList<SupervisorModelBo> prepareListValues(int position) {
+    private ArrayList<SellerBo> prepareListValues(int position) {
 
-        ArrayList<SupervisorModelBo> detailsBos = new ArrayList<>();
+        ArrayList<SellerBo> detailsBos = new ArrayList<>();
         switch (position) {
             case 0:
                 detailsBos = sellersList;

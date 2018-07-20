@@ -18,8 +18,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
+import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
@@ -29,6 +30,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
 import javax.annotation.Nullable;
@@ -41,12 +43,14 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     private Context context;
     private SellerDetailMapContractor.SellerDetailMapView sellerMapView;
 
-    private SparseArray<ArrayList<SupervisorModelBo>> retailerVisitDetailsByRId = new SparseArray<>();
-    private ArrayList<SupervisorModelBo> retailerMasterList = new ArrayList<>();
+    private SparseArray<ArrayList<RetailerBo>> retailerVisitDetailsByRId = new SparseArray<>();
+
+    private LinkedHashMap<Integer,RetailerBo> retailerMasterHashmap =  new LinkedHashMap<>();
 
     //Maintaining previous id not to draw route for same retailer continuously received
     private int previousRetailerId;
     private LatLng previousRetailerLatLng;
+    private String totalOutletCount ;
 
     @Override
     public void setView(SellerDetailMapContractor.SellerDetailMapView sellerMapView, Context context) {
@@ -55,63 +59,52 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
-    public void getSellerInfoAWS(int userId) {
+    public void downloadSellerOutletAWS(int userId) {
         DBUtil db = null;
-        SupervisorModelBo supervisorModelBo = new SupervisorModelBo();
-
         try {
-
             db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select UM.userId,UM.userName,SRM.retailerId,SRM.retailerName,SRM.sequence,SRM.latitude,SRM.longitude from " +
-                    "usermaster UM inner join SupRetailerMaster SRM on SRM.sellerId = UM.userid  where UM.isDeviceuser!=1 and UM.userid ='" + userId + "' order by SRM.sequence ASC";
+            String queryStr = "select retailerId,retailerName,sequence,latitude,longitude from " +
+                    "SupRetailerMaster where sellerId ='" + userId + "' order by sequence ASC";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {
                 while (c.moveToNext()) {
+                    RetailerBo retailerBo = new RetailerBo();
+                    retailerBo.setRetailerId(c.getInt(0));
+                    retailerBo.setRetailerName(c.getString(1));
+                    retailerBo.setMasterSequence(c.getInt(2));
+                    retailerBo.setMasterLatitude(c.getDouble(3));
+                    retailerBo.setMasterLongitude(c.getDouble(4));
 
-                    supervisorModelBo.setUserId(c.getInt(0));
-                    supervisorModelBo.setUserName(c.getString(1));
+                    if (retailerBo.getMasterLatitude() != 0 && retailerBo.getMasterLongitude() != 0) {
 
-                    SupervisorModelBo sellerDetailBo = new SupervisorModelBo();
-                    sellerDetailBo.setUserId(c.getInt(0));
-                    sellerDetailBo.setUserName(c.getString(1));
-                    sellerDetailBo.setRetailerId(c.getInt(2));
-                    sellerDetailBo.setRetailerName(c.getString(3));
-                    sellerDetailBo.setMasterSequence(c.getInt(4));
-                    sellerDetailBo.setLatitude(c.getDouble(5));
-                    sellerDetailBo.setLongitude(c.getDouble(6));
+                        LatLng destLatLng = new LatLng(retailerBo.getMasterLatitude(), retailerBo.getMasterLongitude());
 
-                    if (sellerDetailBo.getLatitude() != 0 && sellerDetailBo.getLongitude() != 0) {
-                        LatLng destLatLng = new LatLng(sellerDetailBo.getLatitude(), sellerDetailBo.getLongitude());
-
-                        sellerDetailBo.setMarkerOptions(new MarkerOptions()
+                        MarkerOptions markerOptions = new MarkerOptions()
                                 .flat(true)
-                                .title(sellerDetailBo.getRetailerName())
+                                .title(retailerBo.getRetailerName())
                                 .position(destLatLng)
-                                .snippet(String.valueOf(sellerDetailBo.getRetailerId())));
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey))
+                                .snippet(String.valueOf(retailerBo.getRetailerId()));
 
-                        sellerDetailBo.setMarkerOptions(sellerDetailBo.getMarkerOptions());
-
-                        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_grey);
-                        sellerMapView.setRetailerMarker(sellerDetailBo,icon);
+                        sellerMapView.setRetailerMarker(retailerBo,markerOptions);
                     }
 
-                    retailerMasterList.add(sellerDetailBo);
+                    retailerMasterHashmap.put(retailerBo.getRetailerId(),retailerBo);
                 }
                 c.close();
             }
 
             db.closeDB();
 
-            supervisorModelBo.setTarget(retailerMasterList.size());
-            sellerMapView.updateSellerInfo(supervisorModelBo);
-            sellerMapView.setOutletListAdapter(retailerMasterList);
+            totalOutletCount = String.valueOf(retailerMasterHashmap.size());
+            sellerMapView.updateSellerInfo("","",totalOutletCount,"0",null);
 
-            getMarkerForFocus();
+            sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -121,7 +114,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
-    public void getSellerActivityListener(int userId) {
+    public void setSellerActivityListener(int userId) {
 
         DocumentReference documentReference = db
                 .collection("activity_tracking_v2")
@@ -141,7 +134,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
-    public void getSellerActivityDetailListener(int userId) {
+    public void setSellerActivityDetailListener(int userId) {
 
         CollectionReference queryRef = db
                 .collection("activity_tracking_v2")
@@ -190,7 +183,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
-    public void realtimeLocationInfoListener(int userId) {
+    public void sellerRealtimeLocationListener(int userId) {
 
         CollectionReference queryRef = db
                 .collection("activity_tracking_v2")
@@ -211,10 +204,10 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
                                 switch (snapshot.getType()) {
                                     case ADDED:
-//                                        setLocationValues(snapshot.getDocument());
+                                        setRealtimeLocationValues(snapshot.getDocument());
                                         break;
                                     case MODIFIED:
-//                                        setLocationValues(snapshot.getDocument());
+                                        setRealtimeLocationValues(snapshot.getDocument());
                                         break;
                                 }
                             }
@@ -224,15 +217,18 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                 });
     }
 
+    private void setRealtimeLocationValues(QueryDocumentSnapshot document) {
+    }
+
     @Override
     public void getMarkerForFocus() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        for (int i = 0; i < retailerMasterList.size(); i++) {
-            if (retailerMasterList.get(i) != null
-                    && retailerMasterList.get(i).getMarkerOptions().getPosition().latitude > 0
-                    && retailerMasterList.get(i).getMarkerOptions().getPosition().longitude > 0)
-                builder.include(retailerMasterList.get(i).getMarkerOptions().getPosition());
+        for (RetailerBo retailerBo : retailerMasterHashmap.values()) {
+            if (retailerBo.getMasterLatitude() > 0 && retailerBo.getMasterLatitude() > 0) {
+                LatLng builderLatLng = new LatLng(retailerBo.getMasterLatitude(),retailerBo.getMasterLongitude());
+                builder.include(builderLatLng);
+            }
         }
 
         sellerMapView.focusMarker(builder);
@@ -262,94 +258,108 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     private void setSellerActivityValues(DocumentSnapshot document) {
 
-        SupervisorModelBo supervisorDocumentbo = new SupervisorModelBo();
-
         if (document.getData() != null) {
-            supervisorDocumentbo.setTimeIn((long)document.getData().get("timeIn"));
-            supervisorDocumentbo.setTimeOut((long)document.getData().get("timeOut"));
-            supervisorDocumentbo.setRetailerName((String)document.getData().get("retailerName"));
-            supervisorDocumentbo.setCovered((int)(long)document.getData().get("covered"));
-            sellerMapView.updateSellerInfo(supervisorDocumentbo);
-        }
+            String timeIn = convertMillisToTime((long)document.getData().get("timeIn"));
+            String retailerName = (String)document.getData().get("retailerName");
+            String covered = String.valueOf((long)document.getData().get("covered"));
 
+            double latitude = (double)document.getData().get("latitude");
+            double longitude = (double)document.getData().get("longitude");
+
+            LatLng sellerCurrentLocation = null;
+
+            if(isRealTimeLocationOn)
+                sellerCurrentLocation = new LatLng(latitude,longitude);
+
+            sellerMapView.updateSellerInfo(timeIn,retailerName,totalOutletCount,covered,sellerCurrentLocation);
+        }
     }
 
     private void setSellerDetailValues(DocumentSnapshot documentSnapshot) {
 
-        SupervisorModelBo documentSnapshotBo = documentSnapshot.toObject((SupervisorModelBo.class));
+        RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
 
         System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
         if (documentSnapshotBo != null) {
             LatLng destLatLng = new LatLng(documentSnapshotBo.getLatitude(), documentSnapshotBo.getLongitude());
-            for (SupervisorModelBo supervisorModelBo : retailerMasterList) {
 
-                if (supervisorModelBo.getRetailerId() == documentSnapshotBo.getRetailerId()) {
+            //Update retailer info in master list
 
-                    BitmapDescriptor icon;
-                    if(supervisorModelBo.getIsOrdered() || documentSnapshotBo.getIsOrdered()) {
-                        icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
-                        supervisorModelBo.setIsOrdered(true);
-                    }
-                    else {
-                        icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
-                        supervisorModelBo.setIsOrdered(documentSnapshotBo.getIsOrdered());
-                    }
+            RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
-                    supervisorModelBo.setOrderValue(documentSnapshotBo.getOrderValue() != null ? documentSnapshotBo.getOrderValue() : 0);
-                    supervisorModelBo.setTimeIn(documentSnapshotBo.getTimeIn() != null ? documentSnapshotBo.getTimeIn() : 0);
-                    supervisorModelBo.setTimeOut(documentSnapshotBo.getTimeOut() != null ? documentSnapshotBo.getTimeOut() : 0);
-
-                    if (supervisorModelBo.getLongitude() == 0 && supervisorModelBo.getLongitude() == 0) {
-
-                        supervisorModelBo.setMarkerOptions(new MarkerOptions()
-                                .flat(true)
-                                .title(supervisorModelBo.getRetailerName() + "//" + supervisorModelBo.getTimeIn())
-                                .position(destLatLng)
-                                .snippet(String.valueOf(supervisorModelBo.getRetailerId())));
-
-
-                        sellerMapView.setRetailerMarker(supervisorModelBo,icon);
-                    } else {
-
-                        String title = supervisorModelBo.getRetailerName() + "//" + supervisorModelBo.getTimeIn();
-
-                        MarkerOptions markerOptions = supervisorModelBo.getMarkerOptions();
-                        markerOptions.title(title);
-
-                        supervisorModelBo.getMarker().setTitle(title);
-                        supervisorModelBo.getMarker().setIcon(icon);
-
-                        destLatLng = markerOptions.getPosition();
-                    }
-
-                }
+            BitmapDescriptor icon;
+            if(retailerMasterBo.getIsOrdered() || documentSnapshotBo.getIsOrdered()) {
+                icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
+                retailerMasterBo.setIsOrdered(true);
+            }
+            else {
+                icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
+                retailerMasterBo.setIsOrdered(documentSnapshotBo.getIsOrdered());
             }
 
-            SupervisorModelBo supervisorModelObj = new SupervisorModelBo();
+            long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
+            retailerMasterBo.setTotalOrderValue(totalOrderValue);
 
-            supervisorModelObj.setBilled(documentSnapshotBo.getBilled());
-            supervisorModelObj.setCovered(documentSnapshotBo.getCovered());
-            supervisorModelObj.setLatitude(documentSnapshotBo.getLatitude());
-            supervisorModelObj.setLongitude(documentSnapshotBo.getLongitude());
-            supervisorModelObj.setOrderValue(documentSnapshotBo.getOrderValue() != null ? documentSnapshotBo.getOrderValue() : 0);
-            supervisorModelObj.setIsOrdered(documentSnapshotBo.getIsOrdered());
-            supervisorModelObj.setTimeIn(documentSnapshotBo.getTimeIn() != null ? documentSnapshotBo.getTimeIn() : 0);
-            supervisorModelObj.setTimeOut(documentSnapshotBo.getTimeOut() != null ? documentSnapshotBo.getTimeOut() : 0);
-            supervisorModelObj.setRetailerId(documentSnapshotBo.getRetailerId());
-            supervisorModelObj.setRetailerName(documentSnapshotBo.getRetailerName() != null ? documentSnapshotBo.getRetailerName() : "");
+            retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());
+            retailerMasterBo.setTimeIn(documentSnapshotBo.getTimeIn());
+            retailerMasterBo.setTimeOut(documentSnapshotBo.getTimeOut());
 
-            if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
+            if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0) {
 
-                retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(supervisorModelObj);
+                retailerMasterBo.setMasterLatitude(documentSnapshotBo.getLatitude());
+                retailerMasterBo.setMasterLongitude(documentSnapshotBo.getLongitude());
+
+                retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .flat(true)
+                        .title(retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getTimeIn())
+                        .position(destLatLng)
+                        .icon(icon)
+                        .snippet(String.valueOf(retailerMasterBo.getRetailerId()));
+
+                sellerMapView.setRetailerMarker(retailerMasterBo,markerOptions);
 
             } else {
-                ArrayList<SupervisorModelBo> supervisorModelBos = new ArrayList<>();
-                supervisorModelBos.add(supervisorModelObj);
-                retailerVisitDetailsByRId.put(documentSnapshotBo.getRetailerId(), supervisorModelBos);
+
+                String title = retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getTimeIn();
+
+                retailerMasterBo.getMarker().setTitle(title);
+                retailerMasterBo.getMarker().setIcon(icon);
+
+                retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+
+                destLatLng = retailerMasterBo.getMarker().getPosition();
             }
 
-            sellerMapView.setOutletListAdapter(retailerMasterList);
+
+            // Set Visited Retailer details in HashMap with retailer id as key
+
+            RetailerBo retailerBoObj = new RetailerBo();
+
+            retailerBoObj.setLatitude(documentSnapshotBo.getLatitude());
+            retailerBoObj.setLongitude(documentSnapshotBo.getLongitude());
+            retailerBoObj.setOrderValue(documentSnapshotBo.getOrderValue());
+            retailerBoObj.setIsOrdered(documentSnapshotBo.getIsOrdered());
+            retailerBoObj.setTimeIn(documentSnapshotBo.getTimeIn());
+            retailerBoObj.setTimeOut(documentSnapshotBo.getTimeOut());
+            retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
+            retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName() != null ? documentSnapshotBo.getRetailerName() : "");
+
+            if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
+                retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(retailerBoObj);
+            } else {
+                ArrayList<RetailerBo> visitedRetailerList = new ArrayList<>();
+                visitedRetailerList.add(retailerBoObj);
+                retailerVisitDetailsByRId.put(documentSnapshotBo.getRetailerId(), visitedRetailerList);
+            }
+
+            //ends
+
+            sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()));
 
             if (previousRetailerId != 0 && previousRetailerId != documentSnapshotBo.getRetailerId()){
                 fetchRouteUrl(previousRetailerLatLng,destLatLng);

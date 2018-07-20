@@ -36,7 +36,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
@@ -65,7 +68,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     private SellerMapHomePresenter sellerMapHomePresenter;
     private InMarketSellerAdapter inMarketSellerAdapter;
 
-    private ArrayList<SupervisorModelBo> inMarketSellerArrayList = new ArrayList<>();
+    private ArrayList<SellerBo> inMarketSellerArrayList = new ArrayList<>();
 
 
     @Override
@@ -409,7 +412,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
         int pagerPos = 0;
         int count=0;
-        for(SupervisorModelBo detailsBo : inMarketSellerArrayList){
+        for(SellerBo detailsBo : inMarketSellerArrayList){
             if(detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())){
                 pagerPos = count;
                 break;
@@ -474,22 +477,19 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void createMarker(SupervisorModelBo supervisorModelBo) {
+    public void createMarker(SellerBo sellerBo,MarkerOptions markerOptions) {
 
         BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
-//        BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
-        Marker marker = mMap.addMarker(supervisorModelBo.getMarkerOptions());
+        Marker marker = mMap.addMarker(markerOptions);
         marker.setIcon(icon);
-        supervisorModelBo.setMarker(marker);
 
+        sellerBo.setMarker(marker);
     }
 
     @Override
-    public void updateMaker(SupervisorModelBo supervisorModelBo) {
+    public void updateMaker(LatLng destinationLatLng, Marker marker) {
 
-        LatLng destLatLng = new LatLng(supervisorModelBo.getLatitude(), supervisorModelBo.getLongitude());
-
-        sellerMapHomePresenter.animateSellerMarker(destLatLng,supervisorModelBo.getMarker());
+        sellerMapHomePresenter.animateSellerMarker(destinationLatLng,marker);
     }
 
     @Override
@@ -499,7 +499,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void setSellerListAdapter(ArrayList<SupervisorModelBo> modelBoArrayList) {
+    public void setSellerListAdapter(ArrayList<SellerBo> modelBoArrayList) {
         inMarketSellerArrayList.clear();
         inMarketSellerArrayList.addAll(modelBoArrayList);
         inMarketSellerAdapter.notifyDataSetChanged();

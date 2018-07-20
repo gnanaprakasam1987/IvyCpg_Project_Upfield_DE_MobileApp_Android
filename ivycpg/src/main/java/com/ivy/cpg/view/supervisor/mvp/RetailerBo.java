@@ -1,13 +1,16 @@
 package com.ivy.cpg.view.supervisor.mvp;
 
 
+import com.google.android.gms.maps.model.Marker;
+
 public class RetailerBo {
 
     private int retailerId,userId,visitedSequence,masterSequence;
     private String retailerName;
     private double latitude,longitude,masterLatitude,masterLongitude;
     private boolean isDeviated,isOrdered;
-    private long orderValue,timeIn,timeOut;
+    private long totalOrderValue,orderValue,timeIn,timeOut;
+    private Marker marker;
 
     public int getRetailerId() {
         return retailerId;
@@ -119,5 +122,21 @@ public class RetailerBo {
 
     public void setMasterSequence(int masterSequence) {
         this.masterSequence = masterSequence;
+    }
+
+    public long getTotalOrderValue() {
+        return totalOrderValue;
+    }
+
+    public void setTotalOrderValue(long totalOrderValue) {
+        this.totalOrderValue = totalOrderValue;
+    }
+
+    public Marker getMarker() {
+        return marker;
+    }
+
+    public void setMarker(Marker marker) {
+        this.marker = marker;
     }
 }
