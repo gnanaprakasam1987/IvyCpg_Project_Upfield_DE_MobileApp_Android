@@ -439,10 +439,10 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_NEW_RETAILER);
-                    bmodel.productHelper
-                            .downloadProductsNewOutlet(MENU_NEW_RETAILER);
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_NEW_RETAILER,
+                            bmodel.productHelper.getFilterProductLevels()));
+                    bmodel.productHelper.downloadProductsWithFiveLevelFilter(MENU_NEW_RETAILER);
 
                     if (mParam.equals("1"))
                         bmodel.productHelper.updateOutletOrderedProducts(selectedRetId);

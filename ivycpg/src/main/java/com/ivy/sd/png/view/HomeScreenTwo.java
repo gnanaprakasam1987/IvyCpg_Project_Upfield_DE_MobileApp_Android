@@ -1524,10 +1524,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || menu.getConfigCode().equals(MENU_DGT)
                     && hasLink == 1) {
                 if (bmodel.productHelper.getmLoadedGlobalProductId() != bmodel.productHelper.getmSelectedGlobalProductId()) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_STK_ORD);
-                    bmodel.productHelper
-                            .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_STK_ORD));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_STK_ORD,
+                            bmodel.productHelper.getFilterProductLevels()));
+                    bmodel.productHelper.downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
                 }
 
             }
@@ -3193,7 +3193,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mShelfShareHelper.setLocations(mSFHelper.cloneLocationList(mSFHelper.getLocationList()));
 
                 //Load filter
-                mSFHelper.downloadSFFiveLevelFilter(MENU_SOS);
+                //mSFHelper.downloadSFFiveLevelFilter(MENU_SOS);
+                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFiveFilterLevel(MENU_SOS));
+                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SOS,
+                        mSFHelper.getSequenceValues()));
 
                 //load content data
                 mSFHelper.loadData(MENU_SOS);
@@ -3276,7 +3279,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mShelfShareHelper.setLocations(mSFHelper.cloneLocationList(mSFHelper.getLocationList()));
 
                 //Load filter
-                mSFHelper.downloadSFFiveLevelFilter(MENU_SOD);
+                //mSFHelper.downloadSFFiveLevelFilter(MENU_SOD);
+                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFiveFilterLevel(MENU_SOD));
+                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SOD,
+                        mSFHelper.getSequenceValues()));
 
 
                 mSFHelper.loadData(MENU_SOD);
@@ -3320,12 +3326,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
                 SODAssetHelper mSODAssetHelper = SODAssetHelper.getInstance(this);
+                SalesFundamentalHelper mSFHelper = SalesFundamentalHelper.getInstance(this);
 
                 mSODAssetHelper.downloadLocations();
                 assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_ASSET);
 
                 //Load filter
-                mSODAssetHelper.downloadSFFiveLevelFilter(MENU_SOD_ASSET);
+                //mSODAssetHelper.downloadSFFiveLevelFilter(MENU_SOD_ASSET);
+                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFiveFilterLevel(MENU_SOD_ASSET));
+                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SOD_ASSET,
+                        mSFHelper.getSequenceValues()));
 
                 mSODAssetHelper.loadSODAssetData(MENU_SOD_ASSET);
 
@@ -3372,7 +3382,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 mSFHelper.updateSalesFundamentalConfigurations();
 
-                mSFHelper.downloadSFFiveLevelFilter(MENU_SOSKU);
+                //mSFHelper.downloadSFFiveLevelFilter(MENU_SOSKU);
+                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFiveFilterLevel(MENU_SOSKU));
+                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SOSKU,
+                        mSFHelper.getSequenceValues()));
 
                 mSFHelper.loadData(MENU_SOSKU);
 

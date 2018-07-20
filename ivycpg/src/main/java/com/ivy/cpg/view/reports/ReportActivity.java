@@ -368,10 +368,9 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT)) {
 
-
-            bmodel.productHelper
-                    .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-
+            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
+            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                    bmodel.productHelper.getFilterProductLevels()));
             bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                     "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 

@@ -172,8 +172,9 @@ public class LoadManagementFragment extends IvyBaseFragment {
             Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
                     .downloadLoadManagementMenu();
 
-            bmodel.productHelper
-                    .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
+            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
+            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                    bmodel.productHelper.getFilterProductLevels()));
 
             ListView listView = (ListView) view.findViewById(R.id.listView1);
             listView.setCacheColorHint(0);
@@ -832,9 +833,9 @@ public class LoadManagementFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                bmodel.productHelper
-                        .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                        bmodel.productHelper.getFilterProductLevels()));
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
@@ -877,9 +878,9 @@ public class LoadManagementFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                bmodel.productHelper
-                        .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                        bmodel.productHelper.getFilterProductLevels()));
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 

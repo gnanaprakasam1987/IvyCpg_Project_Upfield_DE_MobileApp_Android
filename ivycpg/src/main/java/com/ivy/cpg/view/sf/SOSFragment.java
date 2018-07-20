@@ -59,6 +59,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
@@ -77,7 +78,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SOSFragment extends IvyBaseFragment implements
-        BrandDialogInterface {
+        BrandDialogInterface,FiveLevelFilterCallBack {
 
 
     private static final String BRAND = "Brand";
@@ -382,6 +383,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     imgList);
         }
     }
+
     /**
      * Five filter call
      */
@@ -415,12 +417,12 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mDrawerLayout.closeDrawers();
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
-        updateFiveFilterSelection(mParentIdList, mSelectedIdByLevelId, mFilterText);
+        updateFiveFilterSelection(mFilteredPid, mSelectedIdByLevelId, mFilterText);
     }
 
     @Override
@@ -509,7 +511,7 @@ public class SOSFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_next) {
             saveSOS();
             return true;
-        }else if (i == R.id.menu_fivefilter) {
+        } else if (i == R.id.menu_fivefilter) {
             FiveFilterFragment();
             return true;
         } else if (i == R.id.menu_remarks) {
@@ -566,10 +568,10 @@ public class SOSFragment extends IvyBaseFragment implements
     /**
      * update list based on filter selection
      *
-     * @param mParentIdList        Parent Id List
+     * @param mFilteredPid         Filtred Least Level Product ID
      * @param mSelectedIdByLevelId Selected product Id's by level ID
      */
-    private void updateFiveFilterSelection(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String mFilterText) {
+    private void updateFiveFilterSelection(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, String mFilterText) {
         ArrayList<SOSBO> items = mSFHelper.getSOSList();
         if (items == null) {
             mBModel.showAlert(
@@ -580,11 +582,9 @@ public class SOSFragment extends IvyBaseFragment implements
 
         List<SOSBO> myList = new ArrayList<>();
         if (mFilterText.length() > 0) {
-            for (LevelBO levelBO : mParentIdList) {
-                for (SOSBO temp : items) {
-                    if (temp.getParentID() == levelBO.getProductID() && temp.getIsOwn() == 1) {
-                        myList.add(temp);
-                    }
+            for (SOSBO temp : items) {
+                if (temp.getParentHierarchy().contains("/"+mFilteredPid+"/") && temp.getIsOwn() == 1) {
+                    myList.add(temp);
                 }
             }
         } else {
@@ -1006,11 +1006,6 @@ public class SOSFragment extends IvyBaseFragment implements
     @Override
     public void updateMultiSelectionBrand(List<String> mFilterName,
                                           List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
 
     }
 
@@ -1717,7 +1712,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                 if (!holder.etTotal.getText().toString().isEmpty())
                                     tot = SDUtil.convertToFloat((holder.sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal()));
                                 if (tot >= SDUtil.convertToFloat(s.toString()))
-                                holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
+                                    holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
                                 else {
                                     mBModel.showAlert(getResources().
                                             getString(R.string.actual_value_exceeds_total), 0);

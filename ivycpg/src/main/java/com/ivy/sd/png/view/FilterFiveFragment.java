@@ -70,7 +70,6 @@ public class FilterFiveFragment<E> extends Fragment {
     private SalesFundamentalHelper mSFHelper;
 
 
-
     @SuppressWarnings("unchecked")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -203,8 +202,11 @@ public class FilterFiveFragment<E> extends Fragment {
             if (fromScreen != null) {
                 switch (fromScreen) {
                     case "STK":
-                        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER)
-                            bmodel.productHelper.downloadFiveFilterLevels("MENU_STK_ORD");
+                        if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
+                            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_STK_ORD"));
+                            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_STK_ORD",
+                                    bmodel.productHelper.getFilterProductLevels()));
+                        }
                         filterProductsByLevelId.putAll(bmodel.productHelper.getFilterProductsByLevelId());
                         filterProductLevels.addAll(bmodel.productHelper.getFilterProductLevels());
                         break;

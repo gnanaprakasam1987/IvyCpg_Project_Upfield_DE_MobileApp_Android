@@ -121,8 +121,8 @@ public class SubDFragment extends IvyBaseFragment {
                 convertView = inflater.inflate(R.layout.row_subdid_layout, parent, false);
                 holder = new RetailerSelectionAdapter.ViewHolder();
 
-                holder.retailertNameTextView =  convertView.findViewById(R.id.retailer_name_subdid);
-                holder.cardViewItem =  convertView.findViewById(R.id.cardview);
+                holder.retailertNameTextView = convertView.findViewById(R.id.retailer_name_subdid);
+                holder.cardViewItem = convertView.findViewById(R.id.cardview);
                 holder.retailertNameTextView.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 convertView.setTag(holder);
@@ -180,8 +180,10 @@ public class SubDFragment extends IvyBaseFragment {
             try {
                 if (!isCancelled()) {
                     if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                        bmodel.productHelper
-                                .downloadFiveFilterLevels(MENU_STK_ORD);
+                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_STK_ORD));
+                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_STK_ORD,
+                                bmodel.productHelper.getFilterProductLevels()));
+
                         bmodel.productHelper
                                 .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
                     } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {

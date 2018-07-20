@@ -1845,10 +1845,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_NEW_RETAILER);
-                    bmodel.productHelper
-                            .downloadProductsNewOutlet(MENU_NEW_RETAILER);
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_NEW_RETAILER,
+                            bmodel.productHelper.getFilterProductLevels()));
+                    bmodel.productHelper.downloadProductsWithFiveLevelFilter(MENU_NEW_RETAILER);
                 }
 
                 bndl = new Bundle();

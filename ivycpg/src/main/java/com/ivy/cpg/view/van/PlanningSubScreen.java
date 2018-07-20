@@ -424,9 +424,9 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
                     bmodel.vanmodulehelper.downloadSubDepots();
                 }
 
-                bmodel.productHelper
-                        .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
-
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_LOAD_MANAGEMENT));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_LOAD_MANAGEMENT,
+                        bmodel.productHelper.getFilterProductLevels()));
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         MENU_LOAD_MANAGEMENT, menuManualVanload);
 
@@ -477,11 +477,11 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                bmodel.productHelper
-                        .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_LOAD_MANAGEMENT));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_LOAD_MANAGEMENT,
+                        bmodel.productHelper.getFilterProductLevels()));
 
-
-                bmodel.productHelper.loadProducts(MENU_LOAD_MANAGEMENT, "");
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(MENU_LOAD_MANAGEMENT, "");
             } catch (Exception e) {
                 Commons.printException(" + e");
                 return Boolean.FALSE;

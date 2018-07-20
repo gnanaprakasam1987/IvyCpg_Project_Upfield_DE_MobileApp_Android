@@ -358,9 +358,11 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-
-                bmodel.productHelper
-                        .downloadFiveFilterLevels(menuName);
+                //Download Filter Levels and Products
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(menuName));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(menuName,
+                        bmodel.productHelper.getFilterProductLevels()));
+                // Download Products
                 bmodel.productHelper
                         .downloadDistributorProductsWithFiveLevelFilter(menuName);
 
@@ -429,8 +431,11 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
             try {
 
 
-                bmodel.productHelper
-                        .downloadFiveFilterLevels(menuName);
+                //Download Filter Levels and Products
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(menuName));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(menuName,
+                        bmodel.productHelper.getFilterProductLevels()));
+                // Download Products
                 bmodel.productHelper
                         .downloadDistributorProductsWithFiveLevelFilter(menuName);
 

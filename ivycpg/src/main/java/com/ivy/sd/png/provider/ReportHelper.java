@@ -1912,7 +1912,7 @@ public class ReportHelper {
     public Vector<StockReportBO> downloadCurrentStockReport() {
 
         try {
-            Vector<LoadManagementBO> item = bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT", "");
+            Vector<LoadManagementBO> item = bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel("MENU_LOAD_MANAGEMENT", "");
             if (item != null) {
                 currentStock = new Vector<>();
                 for (LoadManagementBO load : item) {

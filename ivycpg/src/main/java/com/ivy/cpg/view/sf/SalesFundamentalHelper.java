@@ -37,7 +37,7 @@ public class SalesFundamentalHelper {
     private ArrayList<SFLocationBO> mLocationList;
     private Vector<LevelBO> mSFModuleSequence;
     private Vector<LevelBO> mFilterLevel;
-    private HashMap<Integer, Vector<LevelBO>> mFilterLevelBo;
+    private HashMap<Integer, Vector<LevelBO>> mFilterProductsByLevelId;
 
 
     private String moduleSOS = "MENU_SOS";
@@ -154,173 +154,19 @@ public class SalesFundamentalHelper {
     }
 
     public HashMap<Integer, Vector<LevelBO>> getFiveLevelFilters() {
-        return mFilterLevelBo;
+        return mFilterProductsByLevelId;
     }
 
     public Vector<LevelBO> getSequenceValues() {
         return mSFModuleSequence;
     }
 
-    /**
-     * Download filter levels
-     *
-     * @param moduleName
-     */
-    public void downloadSFFiveLevelFilter(String moduleName) {
-
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        Cursor listCursor = db
-                .selectSQL(" SELECT distinct PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
-                        + " INNER JOIN ConfigActivityFilter CA  ON "
-                        + " PL.LevelID =CA.ProductFilter1 OR  "
-                        + " PL.LevelID =CA.ProductFilter2 OR  "
-                        + " PL.LevelID =CA.ProductFilter3 OR  "
-                        + " PL.LevelID =CA.ProductFilter4 OR  "
-                        + " PL.LevelID =CA.ProductFilter5  "
-                        + " WHERE  CA.ActivityCode='" + moduleName + "'");
-
-        LevelBO mLevelBO;
-        mSFModuleSequence = new Vector<>();
-        while (listCursor.moveToNext()) {
-
-            mLevelBO = new LevelBO();
-            mLevelBO.setProductID(listCursor.getInt(0));
-            mLevelBO.setLevelName(listCursor.getString(1));
-            mLevelBO.setSequence(listCursor.getInt(2));
-
-            mSFModuleSequence.add(mLevelBO);
-        }
-
-        listCursor.close();
-
-        mFilterLevelBo = new HashMap<>();
-        try {
-
-            if (mSFModuleSequence.size() > 0) {
-                loadParentFilter(mSFModuleSequence.get(0).getProductID());
-                for (int i = 1; i < mSFModuleSequence.size(); i++) {
-                    loadChildFilter(mSFModuleSequence.get(i).getSequence(),
-                            mSFModuleSequence.get(i - 1).getSequence(),
-                            mSFModuleSequence.get(i).getProductID(),
-                            mSFModuleSequence.get(i - 1).getProductID());
-                }
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
+    public void setmSFModuleSequence(Vector<LevelBO> mSFModuleSequence) {
+        this.mSFModuleSequence = mSFModuleSequence;
     }
 
-    /**
-     * Load parent filter
-     *
-     * @param mProductLevelId Parent Level ID
-     */
-    private void loadParentFilter(int mProductLevelId) {
-
-        String query;
-        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-            int filterGap = mProductLevelId - mBModel.productHelper.getmSelectedGLobalLevelID() + 1;
-
-            query = "SELECT DISTINCT PM" + filterGap + ".PID, PM" + filterGap + ".PName FROM ProductMaster PM1 ";
-
-            for (int i = 2; i <= filterGap; i++)
-                query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
-                        + ".ParentId = PM" + (i - 1) + ".PID";
-
-            query = query + " WHERE PM1.PLid = " + mBModel.productHelper.getmSelectedGLobalLevelID() + " and PM1.PID =" + mBModel.productHelper.getmSelectedGlobalProductId();
-
-        } else {
-            query = "SELECT DISTINCT PM1.PID, PM1.PName FROM ProductMaster PM1"
-                    + " WHERE PM1.PLid = " + mProductLevelId + " Order By PM1.RowId";
-        }
-
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-
-        Cursor c = db.selectSQL(query);
-
-        if (c != null) {
-            mFilterLevel = new Vector<>();
-            while (c.moveToNext()) {
-                LevelBO mLevelBO = new LevelBO();
-                mLevelBO.setProductID(c.getInt(0));
-                mLevelBO.setLevelName(c.getString(1));
-                mFilterLevel.add(mLevelBO);
-            }
-
-            mFilterLevelBo.put(mProductLevelId, mFilterLevel);
-
-            c.close();
-            db.close();
-        }
-    }
-
-    /**
-     * Load all child levels
-     *
-     * @param mChildLevel     Child Level Id
-     * @param mParentLevel    Parent level Id
-     * @param mProductLevelId Product Id
-     * @param mParentLevelId  Parent product Id
-     */
-    private void loadChildFilter(int mChildLevel, int mParentLevel,
-                                 int mProductLevelId, int mParentLevelId) {
-
-        String query;
-        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-            int filterGap = mChildLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
-            int PM1Level = mParentLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
-
-            query = "SELECT DISTINCT PM" + PM1Level + ".PID, PM" + filterGap + ".PID,  PM"
-                    + filterGap + ".PName FROM ProductMaster PM1 ";
-
-            for (int i = 2; i <= filterGap; i++)
-                query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
-                        + ".ParentId = PM" + (i - 1) + ".PID";
-
-            query = query + " WHERE PM1.PLid = " + mBModel.productHelper.getmSelectedGLobalLevelID() + " AND PM1.PID = " + mBModel.productHelper.getmSelectedGlobalProductId();
-
-        } else {
-
-            int filterGap = mChildLevel - mParentLevel + 1;
-
-            query = "SELECT DISTINCT PM1.PID, PM" + filterGap + ".PID,  PM"
-                    + filterGap + ".PName FROM ProductMaster PM1 ";
-
-            for (int i = 2; i <= filterGap; i++)
-                query = query + " INNER JOIN ProductMaster PM" + i + " ON PM" + i
-                        + ".ParentId = PM" + (i - 1) + ".PID";
-
-            query = query + " WHERE PM1.PLid = " + mParentLevelId;
-        }
-
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-
-        db.openDataBase();
-
-        Cursor c = db.selectSQL(query);
-
-        if (c != null) {
-            mFilterLevel = new Vector<>();
-            while (c.moveToNext()) {
-                LevelBO mLevelBO = new LevelBO();
-                mLevelBO.setParentID(c.getInt(0));
-                mLevelBO.setProductID(c.getInt(1));
-                mLevelBO.setLevelName(c.getString(2));
-                mFilterLevel.add(mLevelBO);
-            }
-
-            mFilterLevelBo.put(mProductLevelId, mFilterLevel);
-
-            c.close();
-            db.close();
-        }
+    public void setmFilterProductsByLevelId(HashMap<Integer, Vector<LevelBO>> mFilterProductsByLevelId) {
+        this.mFilterProductsByLevelId = mFilterProductsByLevelId;
     }
 
     /**
@@ -339,73 +185,37 @@ public class SalesFundamentalHelper {
             Cursor cursor;
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            int mParentLevel = 0;
-            int mChildLevel = 0;
-            int mContentLevel = 0;
-            int mParentLevelId = 0, mChildLevelId = 0;
-            int mFirstLevel;
-            int loopEnd;
-            String query = "";
-
-
-            if (mSFModuleSequence != null) {
-                if (mSFModuleSequence.size() > 0) {
-                    mChildLevel = mSFModuleSequence.size();
-                }
-            }
-
-            if (mChildLevel == 0)
-                mChildLevel = 1;
+            int mContentLevelId = 0;
 
             Cursor filterCur = db
-                    .selectSQL("SELECT IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0)"
-                            + " FROM ConfigActivityFilter CF"
-                            + " LEFT JOIN ProductLevel PL2 ON PL2.LevelId = CF.ProductFilter"
-                            + mChildLevel
-                            + " LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent"
+                    .selectSQL("SELECT IFNULL(PL.LevelId,0) "
+                            + "FROM ConfigActivityFilter CF "
+                            // Left join is to ensure configured level id is valid.
+                            + "LEFT JOIN ProductLevel PL ON PL.LevelId = CF.ProductContent "
                             + " WHERE CF.ActivityCode = "
                             + mBModel.QT(moduleName));
 
+
             if (filterCur != null) {
                 if (filterCur.moveToNext()) {
-                    mParentLevel = filterCur.getInt(0);
-                    mContentLevel = filterCur.getInt(1);
+                    mContentLevelId = filterCur.getInt(0);
                 }
                 filterCur.close();
             }
 
-            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                loopEnd = mContentLevel - mBModel.configurationMasterHelper.globalSeqId + 1;
-            else
-                loopEnd = mContentLevel - mParentLevel + 1;
-
-            if (!mSFModuleSequence.isEmpty())
-                mFirstLevel = mSFModuleSequence.get(mSFModuleSequence.size() - 1).getProductID();
-            else
-                mFirstLevel = mContentLevel;
-            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                mFirstLevel = mBModel.configurationMasterHelper.globalSeqId;
-
 
             StringBuffer sBuffer = new StringBuffer();
-            sBuffer.append("SELECT DISTINCT A1.Pid,A" + loopEnd + ".pid,");
-            sBuffer.append("A" + loopEnd + ".pname ,1 isOwn,");
-            sBuffer.append("IFNULL(SFN.Norm,0) as Norm,SFN.MappingId FROM ProductMaster A1");
+            sBuffer.append("SELECT DISTINCT A.ParentId,A.pid,");
+            sBuffer.append("A.pname ,1 isOwn,");
+            sBuffer.append("IFNULL(SFN.Norm,0) as Norm,SFN.MappingId,A.ParentHierarchy FROM ProductMaster A");
 
-            for (int i = 2; i <= loopEnd; i++) {
-
-                query = query + " INNER JOIN ProductMaster A" + i + " ON A" + i
-                        + ".ParentId = A" + (i - 1) + ".PID";
-            }
-            sBuffer.append(query);
 
             if (mBModel.configurationMasterHelper.IS_SF_NORM_CHECK) {
                 sBuffer.append(" INNER JOIN ");
             } else {
                 sBuffer.append(" LEFT JOIN ");
             }
-            sBuffer.append(moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A" + loopEnd
-                    + ".pid = SFN.pid  ");
+            sBuffer.append(moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A.pid = SFN.pid  ");
 
             if (IsRetailer) {
                 sBuffer.append("and SFN.RetailerId =");
@@ -426,9 +236,9 @@ public class SalesFundamentalHelper {
             sBuffer.append(" LEFT JOIN " + moduleName.replace("MENU_", "") + "_NormMaster   SF ON SF.HId = SFN.HId");
             sBuffer.append(" AND " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " BETWEEN SF.StartDate AND SF.EndDate");
-            sBuffer.append(" WHERE A1.PLID IN (" + mFirstLevel + ")");
+            sBuffer.append(" WHERE A.PLID IN (" + mContentLevelId + ")");
             if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                sBuffer.append(" and A1.PID =" + mBModel.productHelper.getmSelectedGlobalProductId());
+                sBuffer.append(" and A.ParentHierarchy LIKE '%/' ||" + mBModel.productHelper.getmSelectedGlobalProductId() + " || '/%'");
 
             if (moduleName.equals(moduleSOS)) {
                 SOSBO mSOS;
@@ -443,6 +253,7 @@ public class SalesFundamentalHelper {
                         mSOS.setIsOwn(cursor.getInt(3));
                         mSOS.setNorm(cursor.getFloat(4));
                         mSOS.setMappingId(cursor.getInt(5));
+                        mSOS.setParentHierarchy(cursor.getString(6));
                         mSOS.setLocations(cloneLocationList(getLocationList()));
                         getSOSList().add(mSOS);
                     }
@@ -462,6 +273,7 @@ public class SalesFundamentalHelper {
                         mSOD.setIsOwn(cursor.getInt(3));
                         mSOD.setNorm(cursor.getFloat(4));
                         mSOD.setMappingId(cursor.getInt(5));
+                        mSOD.setParentHierarchy(cursor.getString(6));
                         mSOD.setLocations(cloneLocationList(getLocationList()));
                         getSODList().add(mSOD);
                     }
@@ -481,6 +293,7 @@ public class SalesFundamentalHelper {
                         mSOSKU.setIsOwn(cursor.getInt(3));
                         mSOSKU.setNorm(cursor.getFloat(4));
                         mSOSKU.setMappingId(cursor.getInt(5));
+                        mSOSKU.setParentHierarchy(cursor.getString(6));
                         getSOSKUList().add(mSOSKU);
                     }
                     cursor.close();
@@ -509,7 +322,7 @@ public class SalesFundamentalHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sBuffer = new StringBuffer();
-            sBuffer.append("SELECT DISTINCT PM.pid ,CP.CPID, CP.CPName,0,0 FROM CompetitorProductMaster CP");
+            sBuffer.append("SELECT DISTINCT PM.pid ,CP.CPID, CP.CPName,0,0,PM.ParentHierarchy FROM CompetitorProductMaster CP");
             sBuffer.append(" INNER JOIN CompetitorMappingMaster CM ON CM.CPid = CP.CPId");
             sBuffer.append(" INNER JOIN ProductMaster PM ON PM.PID = CM.PID");
             sBuffer.append(" WHERE  CP.Plid IN (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
@@ -533,6 +346,7 @@ public class SalesFundamentalHelper {
                                     comLevel.setIsOwn(cursor.getInt(3));
                                     comLevel.setNorm(cursor.getInt(4));
                                     comLevel.setLocations(cloneLocationList(getLocationList()));
+                                    comLevel.setParentHierarchy(cursor.getString(5));
                                     lstCompetitiorPids.add(cursor.getInt(1));
                                     getSOSList().add(comLevel);
                                     break;
@@ -554,14 +368,14 @@ public class SalesFundamentalHelper {
 
                             if (prodBO.getProductID() == cursor.getInt(0)) {
 
-                                SOSBO comLevel = new SOSBO();
+                                SODBO comLevel = new SODBO();
                                 comLevel.setParentID(prodBO.getParentID());
                                 comLevel.setProductID(cursor.getInt(1));
                                 comLevel.setProductName(cursor.getString(2));
                                 comLevel.setIsOwn(cursor.getInt(3));
                                 comLevel.setNorm(cursor.getInt(4));
-
-                                getSOSList().add(comLevel);
+                                comLevel.setParentHierarchy(cursor.getString(5));
+                                getSODList().add(comLevel);
                                 break;
                             }
 
@@ -578,14 +392,14 @@ public class SalesFundamentalHelper {
 
                             if (prodBO.getProductID() == cursor.getInt(0)) {
 
-                                SOSBO comLevel = new SOSBO();
+                                SOSKUBO comLevel = new SOSKUBO();
                                 comLevel.setParentID(prodBO.getParentID());
                                 comLevel.setProductID(cursor.getInt(1));
                                 comLevel.setProductName(cursor.getString(2));
                                 comLevel.setIsOwn(cursor.getInt(3));
                                 comLevel.setNorm(cursor.getInt(4));
-
-                                getSOSList().add(comLevel);
+                                comLevel.setParentHierarchy(cursor.getString(5));
+                                getSOSKUList().add(comLevel);
                                 break;
                             }
 
@@ -1971,6 +1785,8 @@ public class SalesFundamentalHelper {
     }
 
     public ArrayList<SOSBO> getSOSList() {
+        if (mSOSList == null)
+            return new ArrayList<>();
         return mSOSList;
     }
 

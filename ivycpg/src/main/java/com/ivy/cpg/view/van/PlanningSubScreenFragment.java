@@ -426,8 +426,9 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.productHelper
-                        .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_LOAD_MANAGEMENT));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_LOAD_MANAGEMENT,
+                        bmodel.productHelper.getFilterProductLevels()));
 
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
@@ -511,8 +512,9 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                     bmodel.vanmodulehelper.downloadSubDepots();
                 }
 
-                bmodel.productHelper
-                        .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_LOAD_MANAGEMENT));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_LOAD_MANAGEMENT,
+                        bmodel.productHelper.getFilterProductLevels()));
 
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         MENU_LOAD_MANAGEMENT, menuManualVanload);
