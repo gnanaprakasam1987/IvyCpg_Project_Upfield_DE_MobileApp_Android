@@ -21,10 +21,11 @@ public class JointCallFragmentDialog extends DialogFragment {
 
     private BusinessModel bmodel;
     private JoinDialogInterface mJoinDialogInterface;
-    private EditText mPasswordET,mRemarksET;
+    private EditText mPasswordET, mRemarksET;
     private UserMasterBO mJoinUserBo;
+    private String remarksLabels;
 
-    public JointCallFragmentDialog(){
+    public JointCallFragmentDialog() {
         //no operation
     }
 
@@ -47,8 +48,26 @@ public class JointCallFragmentDialog extends DialogFragment {
         mPasswordET.requestFocus();
         mRemarksET = (EditText) view.findViewById(R.id.edit_remarks);
 
-        if(!bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS)
+        remarksLabels = context.getResources().getString(R.string.enter_remarks);
+
+        if (!bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS) {
             mRemarksET.setVisibility(View.GONE);
+        } else {
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                        R.id.edit_remarks).getTag()) != null) {
+                    ((EditText) view.findViewById(R.id.edit_remarks))
+                            .setHint(bmodel.labelsMasterHelper
+                                    .applyLabels(view.findViewById(R.id.edit_remarks)
+                                            .getTag()));
+                    remarksLabels = context.getResources().getString(R.string.please_enter) + bmodel.labelsMasterHelper
+                            .applyLabels(view.findViewById(R.id.edit_remarks)
+                                    .getTag());
+                }
+            } catch (Exception e) {
+
+            }
+        }
 
         mUserNameET.setText(mJoinUserBo.getUserName());
         Button mDoneBTN = (Button) view.findViewById(R.id.btn_done);
@@ -67,18 +86,18 @@ public class JointCallFragmentDialog extends DialogFragment {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 if (mPasswordET.getText().toString().equals("")) {
-                    Toast.makeText(getActivity(), "Please enter password", Toast.LENGTH_SHORT).show();
-                } else if(bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS && mRemarksET.getText().toString().equals("")) {
-                    Toast.makeText(getActivity(), "Please enter remarks", Toast.LENGTH_SHORT).show();
-                }else {
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.enter_password), Toast.LENGTH_SHORT).show();
+                } else if (bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS && mRemarksET.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), remarksLabels, Toast.LENGTH_SHORT).show();
+                } else {
                     if (isJointUserLoginValidation()) {
                         mJoinUserBo.setIsJointCall(1);
                         mJoinDialogInterface.updateJoinList();
-                        if(bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS)
+                        if (bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS)
                             mJoinDialogInterface.insertJointCallDetails(mRemarksET.getText().toString());
                         dismiss();
                     } else {
-                        Toast.makeText(getActivity(),  getResources().getString(R.string.enter_valid_password), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.enter_valid_password), Toast.LENGTH_SHORT).show();
                     }
                 }
             }

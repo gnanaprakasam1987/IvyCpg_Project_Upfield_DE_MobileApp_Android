@@ -45,7 +45,7 @@ public class VanLoadStockApplyHelper {
             db.openDataBase();
             String query = "select A.pid,sum(A.caseQty),SUM(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,"
                     + " A.uid,A.outerQty,B.dOuomQty,A.BatchId,o.isstarted,C.batchId,C.batchNum, B.baseprice,"
-                    + " A.Flag,IFNULL(A.LoadNo,A.uid),A.date,A.pCode from VanLoad A inner join productmaster B on A.pid=B.pid"
+                    + " A.Flag,IFNULL(A.LoadNo,A.uid),A.date,B.pCode from VanLoad A inner join productmaster B on A.pid=B.pid"
                     + " LEFT JOIN BatchMaster C on A.BatchId=C.batchid  AND C.Pid = B.pid"
                     + " left join Odameter o"
                     + " where B.IsSalable=1 OR B.IsSalable=0 GROUP BY A.uid,A.pid,C.batchid ORDER BY B.rowid";
@@ -82,7 +82,7 @@ public class VanLoadStockApplyHelper {
                 c.close();
             }
             Cursor c1 = db
-                    .selectSQL("select A.pid,sum(A.caseQty),sum(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,A.uid,sum(A.outerQty),B.dOuomQty,A.BatchId,C.batchNum, B.baseprice,A.Flag,IFNULL(A.LoadNo,A.uid),A.date,A.pCode from VanLoad A inner join productmaster B on A.pid=B.pid LEFT JOIN BatchMaster C on A.BatchId=C.batchid and A.pid=C.pid  group by A.pid,C.batchid ORDER BY B.rowid");
+                    .selectSQL("select A.pid,sum(A.caseQty),sum(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,A.uid,sum(A.outerQty),B.dOuomQty,A.BatchId,C.batchNum, B.baseprice,A.Flag,IFNULL(A.LoadNo,A.uid),A.date,B.pCode from VanLoad A inner join productmaster B on A.pid=B.pid LEFT JOIN BatchMaster C on A.BatchId=C.batchid and A.pid=C.pid  group by A.pid,C.batchid ORDER BY B.rowid");
             if (c1 != null) {
                 StockReportMasterAll = new Vector<VanLoadStockApplyBO>();
                 while (c1.moveToNext()) {

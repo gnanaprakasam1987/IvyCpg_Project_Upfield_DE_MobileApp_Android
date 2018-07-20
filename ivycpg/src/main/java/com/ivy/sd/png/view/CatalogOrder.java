@@ -1935,6 +1935,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         public void onBindViewHolder(MyViewHolder holder, int position) {
             holder.productObj = productList.get(position);
             holder.catalog_order_listview_productname.setText(holder.productObj.getProductShortName());
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code)
+                        + ": " + holder.productObj.getProductCode() + " ";
+                holder.productCode.setText(prodCode);
+            }
             if (holder.ppq != null) {
                 String strPPQ = "";
                 if (bmodel.labelsMasterHelper
@@ -2112,7 +2117,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             private ImageView pdt_image;
             private TextView catalog_order_listview_productname, ppq, ssrp,
-                    mrp, total, sih, wsih, moq, allocation;
+                    mrp, total, sih, wsih, moq, allocation, productCode;
             private Button list_view_order_btn, list_view_stock_btn, list_view_sales_return_qty;
             private LinearLayout pdt_details_layout;
             private ProductMasterBO productObj;
@@ -2123,6 +2128,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 super(v);
                 pdt_image = (ImageView) v.findViewById(R.id.pdt_image);
                 catalog_order_listview_productname = (TextView) v.findViewById(R.id.catalog_order_listview_productname);
+                productCode = (TextView) v.findViewById(R.id.catalog_order_listview_pCode);
                 ppq = (TextView) v.findViewById(R.id.catalog_order_listview_ppq);
                 moq = (TextView) v.findViewById(R.id.catalog_order_listview_moq);
                 ssrp = (TextView) v.findViewById(R.id.catalog_order_listview_srp);
@@ -2139,6 +2145,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 allocation = (TextView) v.findViewById(R.id.catalog_order_listview_allocation);
 
                 catalog_order_listview_productname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                productCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2205,6 +2212,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                 if (!bmodel.configurationMasterHelper.IS_MOQ_ENABLED)
                     moq.setVisibility(View.GONE);
+
+                if(!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    productCode.setVisibility(View.GONE);
 
                 pdt_details_layout.setOnClickListener(new View.OnClickListener() {
                     @Override

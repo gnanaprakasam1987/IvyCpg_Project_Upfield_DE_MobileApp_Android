@@ -395,9 +395,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     || !bmodel.configurationMasterHelper.SHOW_INCENTIVE_DASH) {
                 holder.incentive.setVisibility(View.GONE);
                 holder.incentiveTitle.setVisibility(View.GONE);
-            } else {
-                holder.incentive.setVisibility(View.VISIBLE);
-                holder.incentiveTitle.setVisibility(View.VISIBLE);
             }
 
             holder.dashboardDataObj = dashboardData;
@@ -468,8 +465,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             });
 
             if (dashboardData.getSubDataCount() > 0) {
-                holder.tvSkuWise.setVisibility(View.VISIBLE);
-                //  holder.verticalSkuWise.setVisibility(View.VISIBLE);
                 SpannableString str = new SpannableString(holder.tvSkuWise
                         .getText().toString());
                 str.setSpan(new UnderlineSpan(), 0, str.length(),
