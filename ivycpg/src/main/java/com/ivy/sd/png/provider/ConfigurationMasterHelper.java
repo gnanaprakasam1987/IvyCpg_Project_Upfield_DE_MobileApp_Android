@@ -1201,7 +1201,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PARTIAL_CREDIT_NOTE_ALLOW;
 
     private static final String CODE_PAYMENT_RECEIPT_NO = "COLL14";
-    public boolean IS_PAYMENT_RECEIPTNO_GET = true;
+    public boolean IS_PAYMENT_RECEIPTNO_GET;
 
     public boolean COLL_CHEQUE_MODE;
     private static final String CODE_COLL_CHEQUE_MODE = "COLL15";
