@@ -2,7 +2,6 @@ package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.SparseArray;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -18,7 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.lib.existing.DBUtil;
@@ -31,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 
 import javax.annotation.Nullable;
@@ -43,9 +42,11 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     private Context context;
     private SellerDetailMapContractor.SellerDetailMapView sellerMapView;
 
-    private SparseArray<ArrayList<RetailerBo>> retailerVisitDetailsByRId = new SparseArray<>();
+    private LinkedHashMap<Integer,ArrayList<RetailerBo>> retailerVisitDetailsByRId = new LinkedHashMap<>();
 
     private LinkedHashMap<Integer,RetailerBo> retailerMasterHashmap =  new LinkedHashMap<>();
+
+    private LinkedHashSet<Integer> retailerVisitedOrder = new LinkedHashSet<>();
 
     //Maintaining previous id not to draw route for same retailer continuously received
     private int previousRetailerId;
@@ -180,44 +181,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         } catch (Exception e) {
             Commons.printException("" + e);
         }
-    }
-
-    @Override
-    public void sellerRealtimeLocationListener(int userId) {
-
-        CollectionReference queryRef = db
-                .collection("activity_tracking_v2")
-                .document("movement_tracking")
-                .collection("07102018");
-
-        registration = queryRef
-                .whereEqualTo(userId+"", true)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-
-                        if (queryDocumentSnapshots != null) {
-
-                            System.out.println("updateRealtimeLocationInfoListener = ");
-
-                            for (DocumentChange snapshot : queryDocumentSnapshots.getDocumentChanges()) {
-
-                                switch (snapshot.getType()) {
-                                    case ADDED:
-                                        setRealtimeLocationValues(snapshot.getDocument());
-                                        break;
-                                    case MODIFIED:
-                                        setRealtimeLocationValues(snapshot.getDocument());
-                                        break;
-                                }
-                            }
-                        }
-
-                    }
-                });
-    }
-
-    private void setRealtimeLocationValues(QueryDocumentSnapshot document) {
     }
 
     @Override
@@ -389,5 +352,23 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         String output = "json";
 
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+    }
+
+    public ArrayList<ArrayList<RetailerBo>> getVisitedRetailerList(){
+        return new ArrayList<>(retailerVisitDetailsByRId.values());
+    }
+
+    public ArrayList<RetailerBo> getVisitedRetailers(){
+
+        ArrayList<RetailerBo> retailerBos = new ArrayList<>();
+
+        for(Integer id : retailerVisitDetailsByRId.keySet())
+            retailerBos.add(retailerMasterHashmap.get(id));
+
+        return retailerBos;
+    }
+
+    public ArrayList<RetailerBo> getRetailerVisitDetailsByRId(int userId) {
+        return retailerVisitDetailsByRId.get(userId);
     }
 }

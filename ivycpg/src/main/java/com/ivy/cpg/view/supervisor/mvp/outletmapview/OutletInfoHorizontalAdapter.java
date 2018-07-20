@@ -51,10 +51,10 @@ public class OutletInfoHorizontalAdapter extends RecyclerView.Adapter<OutletInfo
 
                 FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
 
-                OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
-                outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
-                outletPagerDialogFragment.setCancelable(false);
-                outletPagerDialogFragment.show(fm,"OutletPager");
+//                OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
+//                outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+//                outletPagerDialogFragment.setCancelable(false);
+//                outletPagerDialogFragment.show(fm,"OutletPager");
             }
         });
 

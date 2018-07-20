@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.supervisor.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.Marker;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.customviews.scrollingpagerindicator.ScrollingPagerIndicator;
 import com.ivy.lib.DialogFragment;
@@ -23,15 +25,19 @@ import java.util.List;
 
 import me.relex.circleindicator.CircleIndicator;
 
+@SuppressLint("ValidFragment")
 public class OutletPagerDialogFragment extends DialogFragment {
 
     private View rootView;
-    private ViewPager viewPager;
-    private ViewPagerAdapter viewPagerAdapter;
-    private CircleIndicator circleIndicator;
     private TextView tvStoreCount;
     private RecyclerViewPager mRecyclerView;
     private MyAdapter myAdapter;
+
+
+
+    public OutletPagerDialogFragment(Marker marker){
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +48,6 @@ public class OutletPagerDialogFragment extends DialogFragment {
         rootView = inflater.inflate(R.layout.outlet_pager_dialog_fragment, container, false);
 
         initViews(rootView);
-
 
         rootView.findViewById(R.id.close_img).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,15 +71,6 @@ public class OutletPagerDialogFragment extends DialogFragment {
         tvStoreCount = rootView.findViewById(R.id.tv_store_count);
 
         tvStoreCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext().getApplicationContext()));
-
-        viewPager = rootView.findViewById(R.id.outlet_view_pager);
-        viewPagerAdapter = new ViewPagerAdapter(getContext(), new ArrayList<String>());
-        viewPager.setAdapter(viewPagerAdapter);
-        viewPagerAdapter.notifyDataSetChanged();
-
-        circleIndicator = rootView.findViewById(R.id.indicator);
-        circleIndicator.setViewPager(viewPager);
-
 
         mRecyclerView = rootView.findViewById(R.id.viewpager);
 //        mRecyclerView.setVisibility(View.GONE);

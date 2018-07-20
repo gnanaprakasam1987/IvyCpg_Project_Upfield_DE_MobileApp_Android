@@ -51,10 +51,8 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        for(int i = 0; i <SellerMapHomePresenter.sellerInfoHasMap.size(); i++){
-            SellerBo sellerBo = SellerMapHomePresenter.sellerInfoHasMap.get(SellerMapHomePresenter.sellerInfoHasMap.keyAt(i));
-            sellersList.add(sellerBo);
-        }
+        Bundle getValue = getIntent().getBundleExtra("SellerInfo");
+        sellersList = getValue.getParcelableArrayList("SellerList");
 
         for (SellerBo sellerBo : sellersList)
             if(sellerBo.isAttendanceDone())

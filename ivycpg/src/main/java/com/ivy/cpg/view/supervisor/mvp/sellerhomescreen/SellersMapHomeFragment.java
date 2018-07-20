@@ -104,11 +104,12 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             Commons.printException(e);
         }
 
-        initViews(view);
-        initViewPager(view);
 
         sellerMapHomePresenter = new SellerMapHomePresenter();
         sellerMapHomePresenter.setView(this,getContext());
+
+        initViews(view);
+        initViewPager(view);
 
 //        sellerMapHomePresenter.getSellerListAWS();
 
@@ -194,8 +195,14 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), SellerListActivity.class);
-                intent.putExtra("TabPos", 0);
-                intent.putExtra("Screen", "Seller");
+
+                Bundle values = new Bundle();
+                values.putInt("TabPos", 0);
+                values.putString("Screen", "Seller");
+                values.putParcelableArrayList("SellerList",sellerMapHomePresenter.getAllSellerList());
+
+                intent.putExtra("SellerInfo",values);
+
                 startActivity(intent);
             }
         });
@@ -206,6 +213,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
                 intent.putExtra("TabPos", 0);
                 intent.putExtra("Screen", "Outlet");
+
                 startActivity(intent);
             }
         });

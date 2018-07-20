@@ -34,6 +34,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 
 import javax.annotation.Nullable;
 
@@ -41,7 +42,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public static SparseArray<SellerBo> sellerInfoHasMap = new SparseArray<>();
+    public LinkedHashMap<Integer,SellerBo> sellerInfoHasMap = new LinkedHashMap<>();
     private HashSet<Integer> sellerIdHashSet = new HashSet<>();
     private SellerMapHomeContract.SellerMapHomeView sellerMapHomeView;
     private Context context;
@@ -319,8 +320,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         int coveredOutlet = 0;
         int billedOutlet = 0;
 
-        for(int i = 0; i < sellerInfoHasMap.size(); i++){
-            SellerBo sellerBo = sellerInfoHasMap.get(sellerInfoHasMap.keyAt(i));
+        for(Integer userId : sellerIdHashSet){
+            SellerBo sellerBo = sellerInfoHasMap.get(userId);
 
             totatlOrderValue = totatlOrderValue + sellerBo.getOrderValue();
 
@@ -552,6 +553,10 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             isZoomed = true;
             getMarkerValuesToFocus();
         }
+    }
+
+    public ArrayList<SellerBo> getAllSellerList(){
+        return new ArrayList<>(sellerInfoHasMap.values());
     }
 
 }

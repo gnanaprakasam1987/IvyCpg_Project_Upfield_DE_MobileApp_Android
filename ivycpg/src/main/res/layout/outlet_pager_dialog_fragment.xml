@@ -47,26 +47,6 @@
             app:spi_dotColor="@color/new_grey"
             app:spi_visibleDotCount="9"/>
 
-
-        <com.ivy.cpg.view.supervisor.customviews.EnhancedWrapContentViewPager
-            android:id="@+id/outlet_view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:visibility="gone"/>
-
-        <me.relex.circleindicator.CircleIndicator
-            android:id="@+id/indicator"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_20dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dimens_60dp"
-            android:layout_below="@+id/outlet_view_pager"
-            app:ci_drawable="@drawable/dot_circle_green"
-            app:ci_gravity="center"
-            android:visibility="gone"
-            app:ci_drawable_unselected="@drawable/dot_circle_white" />
-
     </RelativeLayout>
 
     <ImageView

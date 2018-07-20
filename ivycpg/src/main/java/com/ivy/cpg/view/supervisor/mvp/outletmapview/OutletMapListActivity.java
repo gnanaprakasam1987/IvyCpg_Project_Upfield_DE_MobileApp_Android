@@ -260,10 +260,10 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
-        outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
-        outletPagerDialogFragment.setCancelable(false);
-        outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+//        OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
+//        outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+//        outletPagerDialogFragment.setCancelable(false);
+//        outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
     }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {

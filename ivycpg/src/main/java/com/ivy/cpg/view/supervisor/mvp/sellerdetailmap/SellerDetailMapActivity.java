@@ -38,7 +38,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
 import com.ivy.lib.DialogFragment;
@@ -209,7 +208,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         mMap.setOnMarkerClickListener(this);
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
-//        mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
@@ -255,6 +254,21 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         marker.showInfoWindow();
 
         return true;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+        if(sellerMapViewPresenter.getRetailerVisitDetailsByRId(Integer.valueOf(marker.getSnippet())) == null){
+            Toast.makeText(this, "No visited details found for this retailer", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment(marker,sellerMapViewPresenter);
+        outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+        outletPagerDialogFragment.setCancelable(false);
+        outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+
     }
 
     @Override
@@ -353,16 +367,6 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
             return mymarkerview;
         }
-    }
-
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-
-        OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
-        outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
-        outletPagerDialogFragment.setCancelable(false);
-        outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
-
     }
 
     @Override

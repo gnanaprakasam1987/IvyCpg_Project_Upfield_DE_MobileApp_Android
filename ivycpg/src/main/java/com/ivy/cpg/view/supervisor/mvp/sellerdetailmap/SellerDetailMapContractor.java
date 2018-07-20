@@ -36,8 +36,6 @@ public interface SellerDetailMapContractor {
 
         void setSellerActivityDetailListener(int userId);
 
-        void sellerRealtimeLocationListener(int userId);
-
         void getMarkerForFocus();
 
         String convertMillisToTime(Long millis);

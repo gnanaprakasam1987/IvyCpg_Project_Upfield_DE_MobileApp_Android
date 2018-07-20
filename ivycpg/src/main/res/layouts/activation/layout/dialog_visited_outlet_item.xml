@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/shop_name_layout"
+    android:layout_marginTop="@dimen/_3sdp"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/_10sdp"
+    android:paddingRight="@dimen/_10sdp"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/tv_in_time_val"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_weight="0.22"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="10:45 PM"
+        android:textColor="#8b000000"
+        android:textSize="@dimen/_12sdp" />
+
+    <TextView
+        android:id="@+id/tv_out_time_val"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_weight="0.22"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="10:45 PM"
+        android:textColor="#8b000000"
+        android:textSize="@dimen/_12sdp" />
+
+    <TextView
+        android:id="@+id/tv_duration_val"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_weight="0.22"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="11h 40m"
+        android:textColor="#8b000000"
+        android:textSize="@dimen/_12sdp" />
+
+    <TextView
+        android:id="@+id/tv_order_value"
+        style="?attr/customListItemPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_2sdp"
+        android:layout_weight="0.34"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="123.12"
+        android:textColor="#d0021b"
+        android:textSize="@dimen/_12sdp" />
+
+</LinearLayout>

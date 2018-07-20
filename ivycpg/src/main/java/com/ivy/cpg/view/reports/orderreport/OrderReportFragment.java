@@ -381,7 +381,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                     businessModel.configurationMasterHelper.VALUE_COMMA_COUNT, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
         // Load ListView
-        //  com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter mSchedule = new com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter(list);
+        //  com.ivy.cpg.view.reports.OrderReportFragment.OutletListAdapter mSchedule = new com.ivy.cpg.view.reports.OrderReportFragment.OutletListAdapter(list);
         OrderReportAdapter mSchedule = new OrderReportAdapter(list, getActivity(), businessModel, iOrderReportImageView);
         listView.setAdapter(mSchedule);
 

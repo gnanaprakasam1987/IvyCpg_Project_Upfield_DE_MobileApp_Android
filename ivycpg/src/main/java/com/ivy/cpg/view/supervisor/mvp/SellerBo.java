@@ -1,9 +1,12 @@
 package com.ivy.cpg.view.supervisor.mvp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.Marker;
 
 
-public class SellerBo {
+public class SellerBo implements Parcelable {
 
     private int userId,billed,covered,target;
     private String userName,retailerName;
@@ -11,6 +14,37 @@ public class SellerBo {
     private double latitude,longitude;
     private long orderValue,timeIn,timeOut;
     private Marker marker;
+
+    public SellerBo(){
+
+    }
+
+    private SellerBo(Parcel in) {
+        userId = in.readInt();
+        billed = in.readInt();
+        covered = in.readInt();
+        target = in.readInt();
+        userName = in.readString();
+        retailerName = in.readString();
+        isAttendanceDone = in.readByte() != 0;
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+        orderValue = in.readLong();
+        timeIn = in.readLong();
+        timeOut = in.readLong();
+    }
+
+    public static final Creator<SellerBo> CREATOR = new Creator<SellerBo>() {
+        @Override
+        public SellerBo createFromParcel(Parcel in) {
+            return new SellerBo(in);
+        }
+
+        @Override
+        public SellerBo[] newArray(int size) {
+            return new SellerBo[size];
+        }
+    };
 
     public int getUserId() {
         return userId;
@@ -114,5 +148,26 @@ public class SellerBo {
 
     public void setMarker(Marker marker) {
         this.marker = marker;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(userId);
+        dest.writeInt(billed);
+        dest.writeInt(covered);
+        dest.writeInt(target);
+        dest.writeString(userName);
+        dest.writeString(retailerName);
+        dest.writeByte((byte) (isAttendanceDone ? 1 : 0));
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeLong(orderValue);
+        dest.writeLong(timeIn);
+        dest.writeLong(timeOut);
     }
 }

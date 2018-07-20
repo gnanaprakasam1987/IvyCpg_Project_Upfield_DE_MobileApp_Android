@@ -65,10 +65,10 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         findViewById(R.id.bottom_outlet_btn_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
-                outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
-                outletPagerDialogFragment.setCancelable(false);
-                outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+//                OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
+//                outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+//                outletPagerDialogFragment.setCancelable(false);
+//                outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
             }
         });
     }
