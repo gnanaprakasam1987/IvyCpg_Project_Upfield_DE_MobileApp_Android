@@ -35,6 +35,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -556,7 +557,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void prepareScreen() {
         try {
             if ("FromSummary".equals(OrderedFlag)) {
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.SHOW_SPL_FLIER_NOT_NEEDED) {
+                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.SHOW_SPL_FLIER_NOT_NEEDED
+                        && !bmodel.configurationMasterHelper.IS_SHOW_ALL_SKU_ON_EDIT) {
 
                     getMandatoryFilters();
                     mSelectedFilterMap.put("General", mOrdered);
@@ -1531,6 +1533,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 else {
                     try {
+                        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
+                            holder.caseQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
+
                         ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null) {
@@ -1552,6 +1557,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                 else {
                     try {
+                        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
+                            holder.pcsQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
+
                         ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
@@ -1584,6 +1592,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
+                        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
+                            holder.outerQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
+
                         ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)

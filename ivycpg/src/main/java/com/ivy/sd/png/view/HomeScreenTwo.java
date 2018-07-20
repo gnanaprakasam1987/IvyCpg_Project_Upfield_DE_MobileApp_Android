@@ -472,10 +472,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             showLocation();
         }
 
-        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                && bmodel.getRetailerMasterBO().getIsVansales() == 0) {
-            bmodel.configurationMasterHelper.downloadSwitchConfig();
-        }
+
     }
 
     private int getCategoryIndex() {
@@ -2257,6 +2254,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 Task.class);
                         intent.putExtra("CurrentActivityCode", menu.getConfigCode());
                         intent.putExtra("IsRetailerwisetask", true);
+                        intent.putExtra("screentitle", menu.getMenuName());
 
                         startActivity(intent);
                         isCreated = false;
@@ -4078,13 +4076,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                         int which) {
                                         String selectedType = mSalesTypeArray[which];
                                         if (selectedType.equals(VAN_SALES)) {
-                                            updateConfigurationSelectedSellerType(false);
+                                            bmodel.configurationMasterHelper.
+                                                    updateConfigurationSelectedSellerType(false);
                                             updateRetailerwiseSellertype(1); // Vansales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(1);
 
                                         } else {
-                                            updateConfigurationSelectedSellerType(true);
+                                            bmodel.configurationMasterHelper.
+                                                    updateConfigurationSelectedSellerType(true);
                                             updateRetailerwiseSellertype(0); // Presales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(0);
@@ -4357,30 +4357,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 0);
     }
 
-    /**
-     * Method to use change some specify configuration flag depends on selected
-     * seller type
-     *
-     * @param switchToPreSeller
-     */
-    private void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
-        if (switchToPreSeller) {
-            bmodel.configurationMasterHelper.downloadSwitchConfig();
-        } else {
-            bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
-            bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
-            schemeHelper.IS_SCHEME_ON = schemeHelper.IS_SCHEME_ON_MASTER;
-            schemeHelper.IS_SCHEME_SHOW_SCREEN = schemeHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
-            bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
-            bmodel.configurationMasterHelper.IS_GST = bmodel.configurationMasterHelper.IS_GST_MASTER;
-            bmodel.configurationMasterHelper.IS_GST_HSN = bmodel.configurationMasterHelper.IS_GST_HSN_MASTER;
-            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
-            bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
-            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
-            bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
-        }
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

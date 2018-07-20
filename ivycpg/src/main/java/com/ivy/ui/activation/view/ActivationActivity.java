@@ -119,7 +119,6 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     @Override
     public void showActivationEmptyError() {
         showAlert("", getResources().getString(R.string.enter_activation_id));
-
     }
 
     @Override
@@ -128,22 +127,9 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
     @Override
-    public void navigateToLoginScreen() {
-        startActivity(new Intent(ActivationActivity.this, LoginScreen.class));
-        finish();
-    }
-
-
-    @Override
-    public void showActivationError(String activationError) {
-        showMessage(activationError);
-    }
-
-    @Override
     public void showAppUrlIsEmptyError() {
         showMessage(R.string.app_url_is_empty);
     }
-
 
     @Override
     public void showServerError() {
@@ -153,14 +139,6 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     @Override
     public void showPreviousActivationError() {
         showMessage(getResources().getString(R.string.previous_activation_not_done_for_this_device));
-    }
-
-    @Override
-    public void showActivationDialog() {
-        activation = new ActivationDialog(
-                this, activationDialogDismissListener, mActivationPresenter.getAppUrls());
-        activation.setCancelable(false);
-        activation.show();
     }
 
     @Override
@@ -174,16 +152,6 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
     @Override
-    public void showSuccessfullyActivatedAlert() {
-        showAlert("", getString(R.string.successfully_activated), new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                navigateToLoginScreen();
-            }
-        });
-    }
-
-    @Override
     public void showConfigureUrlMessage() {
         showMessage(getResources().getString(R.string.please_check_app_url_configured));
     }
@@ -194,12 +162,43 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
     }
 
     @Override
+    public void showActivationError(String activationError) {
+        showMessage(activationError);
+    }
+
+
+    @Override
+    public void showSuccessfullyActivatedAlert() {
+        showAlert("", getString(R.string.successfully_activated), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                navigateToLoginScreen();
+            }
+        });
+    }
+
+
+    @Override
+    public void showActivationDialog() {
+        activation = new ActivationDialog(
+                this, activationDialogDismissListener, mActivationPresenter.getAppUrls());
+        activation.setCancelable(false);
+        activation.show();
+    }
+
+    @Override
     public void doValidationSuccess() {
         mActivationPresenter.doActivation(mActivationKeyEdt.getText().toString(),
                 DeviceUtils.getIMEINumber(this),
                 AppUtils.getApplicationVersionName(this),
                 AppUtils.getApplicationVersionNumber(this));
 
+    }
+
+    @Override
+    public void navigateToLoginScreen() {
+        startActivity(new Intent(ActivationActivity.this, LoginScreen.class));
+        finish();
     }
 
 

@@ -1060,7 +1060,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     try{
                         if(!isDelete) {
                             File imgFile = new File(path);
-                            openImage(imgFile.getAbsolutePath());
+                            if (imgFile.exists())
+                                openImage(imgFile.getAbsolutePath());
+                            else
+                                Toast.makeText(getActivity(),
+                                        getResources().getString(R.string.unloadimage),
+                                        Toast.LENGTH_SHORT).show();
                         }else{
                             showFileDeleteAlert(path,holder.planoObj.getPlanoGramCameraImgList());
                         }

@@ -354,4 +354,15 @@ public class SDUtil {
         return roundOff;
     }
 
+    /**
+     * This method will convert exponential value into String Using
+     * BigDecimal or Format
+     */
+    static DecimalFormat df = new DecimalFormat("###.000");
+
+    public static String getWithoutExponential(Double value) {
+        return ((value + "").contains("E")
+                ? df.format(new BigDecimal(value)) : (format(value, 2, 0)));
+    }
+
 }

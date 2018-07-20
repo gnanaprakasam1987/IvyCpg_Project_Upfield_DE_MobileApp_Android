@@ -154,4 +154,8 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
     public CompositeDisposable getCompositeDisposable() {
         return mCompositeDisposable;
     }
+
+    public ConfigurationMasterHelper getConfigurationMasterHelper() {
+        return mConfigurationMasterHelper;
+    }
 }

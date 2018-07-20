@@ -77,7 +77,7 @@ public class DataMembers {
     public static final String FIT_ASSET = "FIT_ASSET";
     public static final String FIT_POSM = "FIT_POSM";
 
-    public static final String MODULE_STOCK = "Stock & Order";
+    public static final String MODULE_STOCK = "Stock Check";
     public static final String MODULE_PRICE = "Price Check";
     public static final String MODULE_ASSET = "Asset Tracking";
     public static final String MODULE_POSM = "POSM Tracking";

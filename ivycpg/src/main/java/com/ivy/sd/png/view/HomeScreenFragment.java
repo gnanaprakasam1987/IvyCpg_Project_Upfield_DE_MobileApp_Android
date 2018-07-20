@@ -146,6 +146,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_SUPERVISOR_REALTIME = "MENU_SUPERVISOR_REALTIME";
     private static final String MENU_SUPERVISOR_MOVEMENT = "MENU_SUPERVISOR_MOVEMENT";
     private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_ACTIVITY";
+    private static final String MENU_ROUTE_KPI = "MENU_ROUTE_KPI";
+//    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
+
+    //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
     private static final String MENU_NON_FIELD = "MENU_NON_FIELD";
     private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET"; //Deleiver Management
@@ -267,7 +271,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_SUPERVISOR_REALTIME, R.drawable.ic_new_retailer_icon);
         menuIcons.put(MENU_SUPERVISOR_MOVEMENT, R.drawable.ic_new_retailer_icon);
         menuIcons.put(MENU_SUPERVISOR_CALLANALYSIS, R.drawable.ic_new_retailer_icon);
-
+        menuIcons.put(MENU_ROUTE_KPI, R.drawable.ic_vector_dashboard);
         // Load the HHTMenuTable
         bmodel.configurationMasterHelper.downloadMainMenu();
         if (getActivity().getIntent().getBooleanExtra("fromSettingScreen", false))
@@ -975,6 +979,30 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 switchFragment(MENU_DASH_KPI, menuItem.getMenuName());
             }
+        } else if (menuItem.getConfigCode().equals(MENU_ROUTE_KPI)) {
+            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    "yyyy/MM/dd") > 0)
+                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (isLeave_today) {
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.mark_attendance),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.leaveToday),
+                            Toast.LENGTH_SHORT).show();
+            } else {
+                DashBoardHelper.getInstance(getActivity()).checkDayAndP3MSpinner(false);
+                bmodel.distributorMasterHelper.downloadDistributorsList();
+
+                switchFragment(MENU_ROUTE_KPI, menuItem.getMenuName());
+            }
         } else if (menuItem.getConfigCode().equals(MENU_DASH)) {
             if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
                             .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -1531,6 +1559,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         SellerDashboardFragment mSellerDashFragment = (SellerDashboardFragment) fm
                 .findFragmentByTag(MENU_DASH_KPI);
 
+        SellerDashboardFragment mRouteDashFragment = (SellerDashboardFragment) fm
+                .findFragmentByTag(MENU_ROUTE_KPI);
+
         DashboardFragment mDashFragment = (DashboardFragment) fm
                 .findFragmentByTag(MENU_DASH);
 
@@ -1622,6 +1653,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             return;
         } else if (mSellerDashFragment != null && (fragmentName.equals(MENU_DASH_KPI))
                 && mSellerDashFragment.isVisible()) {
+            return;
+        } else if (mRouteDashFragment != null && (fragmentName.equals(MENU_ROUTE_KPI))
+                && mRouteDashFragment.isVisible()) {
             return;
         } else if (mDashFragment != null && (fragmentName.equals(MENU_DASH))
                 && mDashFragment.isVisible()) {
@@ -1736,6 +1770,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(deliveryRetailersFragment);
         if (mSellerDashFragment != null)
             ft.remove(mSellerDashFragment);
+        if(mRouteDashFragment != null)
+            ft.remove(mRouteDashFragment);
         if (mDashFragment != null)
             ft.remove(mDashFragment);
         if (mDashDayFragment != null)
@@ -2137,6 +2173,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_SUPERVISOR_CALLANALYSIS);
                 break;
+            case MENU_ROUTE_KPI:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                bndl.putString("retid", "0");
+                bndl.putString("type", "ROUTE");
+                fragment = new SellerDashboardFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_ROUTE_KPI);
+                break;
         }
         ft.commit();
 
@@ -2173,6 +2219,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         SellerDashboardFragment mSellerDashFragment = (SellerDashboardFragment) fm
                 .findFragmentByTag(MENU_DASH_KPI);
+
+        SellerDashboardFragment mRouteDashFragment = (SellerDashboardFragment) fm.findFragmentByTag(MENU_ROUTE_KPI);
 
         DashboardFragment mDashFragment = (DashboardFragment) fm
                 .findFragmentByTag(MENU_DASH);
@@ -2223,6 +2271,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
         if (mSellerDashFragment != null) {
             ft.detach(mSellerDashFragment);
+        }
+        if(mRouteDashFragment != null) {
+            ft.detach(mRouteDashFragment);
         }
         if (mReportMenuFragment != null) {
             ft.detach(mReportMenuFragment);

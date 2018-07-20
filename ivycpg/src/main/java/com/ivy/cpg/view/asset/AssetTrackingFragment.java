@@ -519,6 +519,8 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                         Toast.makeText(getActivity(), getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
                     } else {
                         assetPresenter.setBarcode(result.getContents());
+                        assetPresenter.updateList();
+                        adapter.notifyDataSetChanged();
                     }
                 }
             }

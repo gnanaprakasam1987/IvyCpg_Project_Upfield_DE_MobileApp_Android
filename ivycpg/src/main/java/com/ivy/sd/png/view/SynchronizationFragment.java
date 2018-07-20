@@ -1687,6 +1687,12 @@ public class SynchronizationFragment extends IvyBaseFragment
             if (isDownloaded) {
                 ArrayList<String> urlList = bmodel.synchronizationHelper.getUrlList();
                 if (urlList != null && urlList.size() > 0) {
+                    SharedPreferences.Editor editor = PreferenceManager
+                            .getDefaultSharedPreferences(getActivity())
+                            .edit();
+                    editor.putInt("trade_coverage_validation",
+                            0);
+                    editor.commit();
                     bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
                 } else {
                     alertDialog.dismiss();

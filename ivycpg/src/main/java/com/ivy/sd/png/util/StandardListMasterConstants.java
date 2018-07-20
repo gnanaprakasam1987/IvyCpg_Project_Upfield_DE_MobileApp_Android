@@ -114,6 +114,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_OPPORTUNITIES_REPORT = "MENU_OPPORTUNITIES_REPORT";
 	public static final String MENU_TIMEANDTRAVEL_REPORT = "MENU_TIMEANDTRAVEL_REPORT";
 	public static final String MENU_PRODUCTIVITY_REPORT = "MENU_PRODUCTIVITY_REPORT";
+
 	public static final String FEEDBACK_TYPE="VFDK";
 	public static final String PRINT_FILE_INVOICE = "PF_INV_";
 	public static final String PRINT_FILE_COLLECTION = "PF_COL_";

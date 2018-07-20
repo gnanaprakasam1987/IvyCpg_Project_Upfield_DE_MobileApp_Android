@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.dashboard.sellerdashboard;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,7 +31,7 @@ public class KpiBarChartFragment extends IvyBaseFragment {
     ArrayList<DashBoardBO> dashBoardList;
     BarChart mbarChart;
     private BusinessModel bmodel;
-
+    private String selectedInterval;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +39,9 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_kpi_bar_chart, container, false);
 
+        if(this.getArguments() != null) {
+            selectedInterval = this.getArguments().getString("selectedInterval");
+        }
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
@@ -68,7 +72,13 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         set1.setColors(ColorTemplate.MATERIAL_COLORS);
         ArrayList<String> mStirngList = new ArrayList<>();
         for (int i = 0; i < dashBoardList.size(); i++) {
-            mStirngList.add(dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText());
+            String text = dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText();
+            if(selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))){
+                mStirngList.add((dashBoardList.get(i).getMonthName() != null && dashBoardList.get(i).getMonthName().length() == 0) ?
+                        text : "(" + dashBoardList.get(i).getMonthName() + ")" + text);
+            } else{
+                mStirngList.add(text);
+            }
         }
 
 
@@ -99,7 +109,7 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         yAxis.setAxisMinimum(0f);
 
         mbarChart.getLegend().setEnabled(false);
-        mbarChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+        mbarChart.animateY(500, Easing.EasingOption.EaseInOutQuad);
     }
 
 }
