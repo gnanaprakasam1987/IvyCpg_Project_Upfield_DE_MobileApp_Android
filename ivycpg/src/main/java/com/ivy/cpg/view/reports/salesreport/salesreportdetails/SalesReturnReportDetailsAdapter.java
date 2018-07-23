@@ -1,5 +1,4 @@
-package com.ivy.cpg.view.reports.salesreport;
-
+package com.ivy.cpg.view.reports.salesreport.salesreportdetails;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,14 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.reports.salesreport.ReCyclerViewItemClickListener;
+import com.ivy.cpg.view.reports.salesreport.SalesReturnReportBo;
 import com.ivy.sd.png.asean.view.R;
 
 import java.util.List;
 
-public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnReportAdapter.SalesReturnReportViewHolder> {
+
+public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesReturnReportDetailsAdapter.SalesReturnReportViewHolder> {
     private ReCyclerViewItemClickListener mreCyclerViewItemClickListener;
     private Context mContext;
-    List<SalesReturnReportBo> deviceList;
+    List<SalesReturnReportBo> salesReturnReportBosList;
 
     /**
      * Initialize the values
@@ -24,10 +26,10 @@ public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnRe
      * @param reCyclerViewItemClickListener : callBack Of ClickListener
      */
 
-    public SalesReturnReportAdapter(Context context, ReCyclerViewItemClickListener reCyclerViewItemClickListener, List<SalesReturnReportBo> devices) {
+    public SalesReturnReportDetailsAdapter(Context context, ReCyclerViewItemClickListener reCyclerViewItemClickListener, List<SalesReturnReportBo> devices) {
         this.mContext = context;
         this.mreCyclerViewItemClickListener = reCyclerViewItemClickListener;
-        this.deviceList = devices;
+        this.salesReturnReportBosList = devices;
     }
 
 
@@ -40,9 +42,9 @@ public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnRe
      * Create the each views and Hold for Reuse
      */
     @Override
-    public SalesReturnReportAdapter.SalesReturnReportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SalesReturnReportDetailsAdapter.SalesReturnReportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_salesreturn_report, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_orderdetail_report, parent, false);
         SalesReturnReportViewHolder myViewHolder = new SalesReturnReportViewHolder(view);
         return myViewHolder;
     }
@@ -53,16 +55,16 @@ public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnRe
      *                 set the values to the views
      */
     @Override
-    public void onBindViewHolder(SalesReturnReportAdapter.SalesReturnReportViewHolder holder, int position) {
-        // holder.deviceType.setText(deviceList.get(position).getDeviceType());
-        // holder.model.setText(deviceList.get(position).getModel());
-        // holder.name.setText(deviceList.get(position).getName());
+    public void onBindViewHolder(SalesReturnReportDetailsAdapter.SalesReturnReportViewHolder holder, int position) {
+        //  holder.deviceType.setText(salesReturnReportBosList.get(position).getDeviceType());
+        //  holder.model.setText(salesReturnReportBosList.get(position).getModel());
+        //  holder.name.setText(salesReturnReportBosList.get(position).getName());
 
     }
 
     @Override
     public int getItemCount() {
-        return deviceList.size();
+        return salesReturnReportBosList.size();
     }
 
 
@@ -78,8 +80,8 @@ public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnRe
         public SalesReturnReportViewHolder(View itemView) {
             super(itemView);
             //  deviceType = itemView.findViewById(R.id.txt_deviceType);
-            // model = itemView.findViewById(R.id.txt_model);
-            // name = itemView.findViewById(R.id.txt_name);
+            //   model = itemView.findViewById(R.id.txt_model);
+            //  name = itemView.findViewById(R.id.txt_name);
             itemView.setOnClickListener(this);
         }
 
@@ -90,6 +92,3 @@ public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnRe
         }
     }
 }
-
-
-
