@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.salesdeliveryreturn;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +12,7 @@ import android.view.View;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.List;
 
@@ -88,7 +90,9 @@ public class SalesReturnDeliveryActivity extends IvyBaseActivityNoActionBar {
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
             if (fragmentManager.getBackStackEntryCount() == 1) {
-                this.finish();
+                startActivity(new Intent(this, HomeScreenTwo.class));
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             } else {
                 fragmentManager.popBackStack();
                 break;
