@@ -3,24 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/txt_title_salesReturn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/padding_normal"
-        android:gravity="center_horizontal"
-        android:padding="@dimen/padding_normal"
-        android:text="Sales Return Delivery Details" />
 
     <LinearLayout
         android:id="@+id/container_titles"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@+id/txt_title_salesReturn"
-        android:background="@drawable/border"
+        android:layout_height="50dp"
+        android:background="?customLayoutBackground"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_normal"
         android:weightSum="6">
 
         <TextView
@@ -29,7 +18,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="2"
             android:gravity="center_horizontal|center_vertical"
-            android:text="@string/Product_details" />
+            android:text="ProductName/Reason"
+            android:textColor="@color/white" />
 
         <View
             android:layout_width="0.5dp"
@@ -38,11 +28,12 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
-            android:text="Return Case Quantity" />
+            android:text="Return Case Quantity"
+            android:textColor="@color/white" />
 
         <View
             android:layout_width="0.5dp"
@@ -51,11 +42,12 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
-            android:text="Return Piece Quantity" />
+            android:text="Return Piece Quantity"
+            android:textColor="@color/white" />
 
         <View
             android:layout_width="0.5dp"
@@ -64,11 +56,12 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
-            android:text="Actual Case Quantity" />
+            android:text="Actual Case Quantity"
+            android:textColor="@color/white" />
 
         <View
             android:layout_width="0.5dp"
@@ -77,20 +70,57 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
-            android:text="Actual Piece Quantity" />
+            android:text="Actual Piece Quantity"
+            android:textColor="@color/white" />
     </LinearLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/SalesReturn_Details"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/filter_level_height"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_keypad"
         android:layout_below="@+id/container_titles"
         android:layout_margin="@dimen/padding_normal">
 
     </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/ll_keypad"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footer"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/keypad"
+            layout="@layout/keypad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg"
+        android:orientation="horizontal"
+        android:padding="@dimen/footer_padding">
+
+        <Button
+            android:id="@+id/btn_save"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_width="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/save"
+            android:textAllCaps="false" />
+    </RelativeLayout>
 
 </RelativeLayout>

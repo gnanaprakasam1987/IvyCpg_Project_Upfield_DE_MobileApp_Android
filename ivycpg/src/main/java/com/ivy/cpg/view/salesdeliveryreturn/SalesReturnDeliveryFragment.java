@@ -3,14 +3,17 @@ package com.ivy.cpg.view.salesdeliveryreturn;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.ivy.core.base.view.BaseActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 
 import java.util.Vector;
 
@@ -32,7 +35,6 @@ public class SalesReturnDeliveryFragment extends Fragment implements RecyclerVie
     RecyclerView recyclerView;
 
     private CompositeDisposable compositeDisposable;
-    private Observer<? super Vector<SalesReturnDeliveryDataModel>> observer;
 
     @Nullable
     @Override
@@ -51,7 +53,7 @@ public class SalesReturnDeliveryFragment extends Fragment implements RecyclerVie
 
     private void getSalesReturnDelivery() {
         compositeDisposable = new CompositeDisposable();
-        compositeDisposable.add((Disposable) new SalesReturnDeliveryHelper().getSaleReturnDelivery(getActivity())
+        compositeDisposable.add((Disposable) SalesReturnDeliveryHelper.getInstance().getSaleReturnDelivery(getActivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getObserver()));
@@ -61,6 +63,7 @@ public class SalesReturnDeliveryFragment extends Fragment implements RecyclerVie
     @Override
     public void onDestroy() {
         super.onDestroy();
+        compositeDisposable.clear();
         unbinder.unbind();
     }
 
@@ -69,6 +72,7 @@ public class SalesReturnDeliveryFragment extends Fragment implements RecyclerVie
             @Override
             public void onNext(Vector<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModels) {
                 setUpSalesReturnDeliveryAdapter(salesReturnDeliveryDataModels);
+
             }
 
             @Override
@@ -81,15 +85,14 @@ public class SalesReturnDeliveryFragment extends Fragment implements RecyclerVie
         };
     }
 
-    /*
-    *
-    * @Param
-    *
-    * */
+    private Vector<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModelsList;
+
     private void setUpSalesReturnDeliveryAdapter(Vector<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModels) {
+        this.salesReturnDeliveryDataModelsList = salesReturnDeliveryDataModels;
+
         SalesReturnDeliveryAdapter salesReturnDeliveryAdapter =
-                new SalesReturnDeliveryAdapter(getActivity(), SalesReturnDeliveryFragment.this,
-                        salesReturnDeliveryDataModels);
+                new SalesReturnDeliveryAdapter(getActivity().getApplicationContext(), SalesReturnDeliveryFragment.this,
+                        salesReturnDeliveryDataModels, false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(salesReturnDeliveryAdapter);
 
@@ -97,7 +100,29 @@ public class SalesReturnDeliveryFragment extends Fragment implements RecyclerVie
 
     @Override
     public void onItemClickListener(View view, int adapterPosition) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString("UID", salesReturnDeliveryDataModelsList.get(adapterPosition).getUId());
+        bundle.putInt("LPC", salesReturnDeliveryDataModelsList.get(adapterPosition).getLpc());
+        bundle.putString("RETURN", salesReturnDeliveryDataModelsList.get(adapterPosition).getReturnValue());
         SalesReturnDeliveryDetailsFragment salesReturnDeliveryFragment = new SalesReturnDeliveryDetailsFragment();
-        ((BaseActivity) getActivity()).addFragment(R.id.container_salesReturn, salesReturnDeliveryFragment, true, true, 0);
+        salesReturnDeliveryFragment.setArguments(bundle);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+
+        transaction.replace(R.id.container_salesReturn, salesReturnDeliveryFragment, salesReturnDeliveryFragment.getClass().toString());
+        transaction.addToBackStack(null);
+        getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        transaction.commit();
+
+
+        // ((SalesReturnDeliveryActivity) getActivity()).addFragment( salesReturnDeliveryFragment, true, true);
+
+
+    }
+
+    public void numberPressed(View vw) {
+
     }
 }

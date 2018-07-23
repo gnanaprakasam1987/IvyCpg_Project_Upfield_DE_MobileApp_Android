@@ -2,13 +2,26 @@ package com.ivy.cpg.view.salesdeliveryreturn;
 
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.view.DeliveryManagementDetail;
 
 import java.util.List;
 import java.util.Vector;
@@ -17,7 +30,9 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
     private RecyclerViewItemClickListener recyclerViewItemClickListener;
     private List<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModelsList;
     private Context mContext;
+    private boolean isDetails;
 
+    private EditText QUANTITY;
     /**
      * Initialize the values
      *
@@ -27,10 +42,11 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
      */
 
     public SalesReturnDeliveryAdapter(Context context, RecyclerViewItemClickListener recyclerViewItemClickListener,
-                                      Vector<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModels) {
+                                      Vector<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModels, boolean isDetails) {
         this.recyclerViewItemClickListener = recyclerViewItemClickListener;
         mContext = context;
         this.salesReturnDeliveryDataModelsList = salesReturnDeliveryDataModels;
+        this.isDetails = isDetails;
     }
 
 
@@ -55,18 +71,43 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
      *                 set the values to the views
      */
     @Override
-    public void onBindViewHolder(SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder holder, int position) {
-        holder.uId.setText(("UId : ") + salesReturnDeliveryDataModelsList.get(position).getUId());
-        holder.returnValue.setText(("ReturnValue : "+salesReturnDeliveryDataModelsList.get(position).getReturnValue()));
-        holder.lpc.setText(("LPC : "+salesReturnDeliveryDataModelsList.get(position).getLpc()));
-        holder.dateReturn.setText("Date : " + salesReturnDeliveryDataModelsList.get(position).getDate());
-        holder.invoice.setText("InvoiceNumber : " + salesReturnDeliveryDataModelsList.get(position).getInvoiceId());
+    public void onBindViewHolder(final SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder holder, final int position) {
 
+
+        if (isDetails) {
+            holder.constraintLayout.setVisibility(View.VISIBLE);
+            holder.relativeLayout.setVisibility(View.GONE);
+            holder.productName.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(position).getProductName()));
+            holder.returnCaseQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(position).getReturnCaseQuantity()));
+            holder.returnPieceQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(position).getReturnPieceQuantity()));
+
+        } else {
+            holder.constraintLayout.setVisibility(View.GONE);
+            holder.relativeLayout.setVisibility(View.VISIBLE);
+            holder.uId.setText(("UId : ") + salesReturnDeliveryDataModelsList.get(position).getUId());
+            holder.returnValue.setText(("ReturnValue : " + salesReturnDeliveryDataModelsList.get(position).getReturnValue()));
+            holder.lpc.setText(("LPC : " + salesReturnDeliveryDataModelsList.get(position).getLpc()));
+            holder.dateReturn.setText("Date : " + salesReturnDeliveryDataModelsList.get(position).getDate());
+            holder.invoice.setText("InvoiceNumber : " + salesReturnDeliveryDataModelsList.get(position).getInvoiceId());
+
+            holder.uId.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.returnValue.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.lpc.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.dateReturn.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.invoice.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+
+        }
     }
 
     @Override
     public int getItemCount() {
         return salesReturnDeliveryDataModelsList.size();
+    }
+
+
+    public Vector<SalesReturnDeliveryDataModel> getListItem() {
+        return new Vector<>(salesReturnDeliveryDataModelsList);
     }
 
 
@@ -79,23 +120,40 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
     public class SalesReturnDeliveryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView uId, dateReturn, returnValue, lpc, invoice;
 
+        TextView productName, returnCaseQuantity, returnPieceQuantity;
+        EditText actualCaseQuantity, actualPieceQuantity;
+        ConstraintLayout constraintLayout;
+        RelativeLayout relativeLayout;
+
+
         private SalesReturnDeliveryViewHolder(View itemView) {
             super(itemView);
             uId = itemView.findViewById(R.id.txt_uid);
             dateReturn = itemView.findViewById(R.id.txt_dateReturn);
-
-
             returnValue = itemView.findViewById(R.id.txt_returnValue);
             lpc = itemView.findViewById(R.id.txt_lpc);
             invoice = itemView.findViewById(R.id.txt_invoice);
+            constraintLayout = itemView.findViewById(R.id.lyt_itemSalesReturn);
+            relativeLayout = itemView.findViewById(R.id.container_salesReturnItem);
+            if (isDetails) {
+
+                productName = itemView.findViewById(R.id.txt_productName);
+                returnCaseQuantity = itemView.findViewById(R.id.txt_returnCaseQuantity);
+                returnPieceQuantity = itemView.findViewById(R.id.txt_returnPieceQuantity);
+                actualCaseQuantity = itemView.findViewById(R.id.txt_actualCaseQuantity);
+                actualPieceQuantity = itemView.findViewById(R.id.txt_actualPieceQuantity);
+            }
             itemView.setOnClickListener(this);
         }
 
 
         @Override
         public void onClick(View view) {
-            recyclerViewItemClickListener.onItemClickListener(view, this.getAdapterPosition());
+            if (recyclerViewItemClickListener != null)
+                recyclerViewItemClickListener.onItemClickListener(view, this.getAdapterPosition());
         }
     }
+
+
 }
 

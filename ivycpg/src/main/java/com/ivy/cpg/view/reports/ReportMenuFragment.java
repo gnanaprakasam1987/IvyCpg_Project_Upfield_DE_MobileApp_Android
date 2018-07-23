@@ -272,7 +272,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
      *               start the Report Activity with corresponding Config object
      */
     private void gotoReportActivity(ConfigureBO config) {
-        Intent intent = new Intent(getActivity(), SalesReturnDeliveryActivity.class);
+        Intent intent = new Intent(getActivity(), ReportActivity.class);
         Bundle bun = new Bundle();
         bun.putSerializable("config", config);
         bun.putString("FROM", "REPORT");
