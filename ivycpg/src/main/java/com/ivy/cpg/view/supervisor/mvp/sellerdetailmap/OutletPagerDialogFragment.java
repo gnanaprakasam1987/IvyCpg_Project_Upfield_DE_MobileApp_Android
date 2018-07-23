@@ -2,7 +2,9 @@ package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -205,7 +207,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView tvStoreName,tvStoreAddress,tvVisitStatus,tvInTime,tvOutTime,tvDuration,tvOrderValue;
+            private TextView tvStoreName,tvStoreAddress,tvVisitStatus,tvOrderValue,tvOrderValueText;
             private RecyclerView retailerVisitedRVP;
             private View visitedStatusView;
 
@@ -216,6 +218,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 tvStoreAddress = view.findViewById(R.id.tv_address);
                 tvVisitStatus = view.findViewById(R.id.tv_status_text);
                 tvOrderValue = view.findViewById(R.id.tv_total_order_value);
+                tvOrderValueText = view.findViewById(R.id.tv_total_value_txt);
                 visitedStatusView = view.findViewById(R.id.status_color_view);
                 retailerVisitedRVP = view.findViewById(R.id.visited_retailer_items);
 
@@ -228,6 +231,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 tvStoreAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
                 tvVisitStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
                 tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
+                tvOrderValueText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
 
                 LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
                         false);
@@ -248,12 +252,19 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
             holder.tvStoreName.setText(visitedRetailers.get(position).getRetailerName());
             holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getTotalOrderValue()));
+            holder.tvStoreAddress.setText(visitedRetailers.get(position).getAddress());
 
             ArrayList<RetailerBo> retailerVisitedDetail = sellerMapViewPresenter.getRetailerVisitDetailsByRId(visitedRetailers.get(position).getRetailerId());
-            if(retailerVisitedDetail != null) {
+            if(retailerVisitedDetail != null && retailerVisitedDetail.size() > 0) {
                 VisitedOutletInfoAdapter visitedOutletInfoAdapter =
                         new VisitedOutletInfoAdapter(context, retailerVisitedDetail);
                 holder.retailerVisitedRVP.setAdapter(visitedOutletInfoAdapter);
+
+                holder.tvVisitStatus.setText("Covered");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                    holder.visitedStatusView.setBackground(ContextCompat.getDrawable(context,R.drawable.covered_green));
+                else
+                    holder.visitedStatusView.setBackgroundDrawable(ContextCompat.getDrawable(context,R.drawable.covered_green));
             }
         }
 

@@ -2,6 +2,7 @@ package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -46,12 +47,15 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     private LinkedHashMap<Integer,RetailerBo> retailerMasterHashmap =  new LinkedHashMap<>();
 
-    private LinkedHashSet<Integer> retailerVisitedOrder = new LinkedHashSet<>();
+    private ArrayList<Integer> retailerVisitedOrder = new ArrayList<>();
 
     //Maintaining previous id not to draw route for same retailer continuously received
     private int previousRetailerId;
     private LatLng previousRetailerLatLng;
     private String totalOutletCount ;
+
+    private int retailersVisitedSequence = 0;
+
 
     @Override
     public void setView(SellerDetailMapContractor.SellerDetailMapView sellerMapView, Context context) {
@@ -68,8 +72,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select retailerId,retailerName,sequence,latitude,longitude from " +
-                    "SupRetailerMaster where sellerId ='" + userId + "' order by sequence ASC";
+            String queryStr = "select retailerId,retailerName,sequence,latitude,longitude,address,img_path,date from " +
+                    "SupRetailerMaster where userId ='" + userId + "' order by sequence ASC";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {
@@ -80,6 +84,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                     retailerBo.setMasterSequence(c.getInt(2));
                     retailerBo.setMasterLatitude(c.getDouble(3));
                     retailerBo.setMasterLongitude(c.getDouble(4));
+                    retailerBo.setAddress(c.getString(5));
+                    retailerBo.setImgPath(c.getString(5));
+                    retailerBo.setDate(c.getString(5));
 
                     if (retailerBo.getMasterLatitude() != 0 && retailerBo.getMasterLongitude() != 0) {
 
@@ -105,7 +112,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             totalOutletCount = String.valueOf(retailerMasterHashmap.size());
             sellerMapView.updateSellerInfo("","",totalOutletCount,"0",null);
 
-            sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()));
+            sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()),0);
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -238,6 +245,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         }
     }
 
+    int lastVisited = 0;
     private void setSellerDetailValues(DocumentSnapshot documentSnapshot) {
 
         RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
@@ -245,6 +253,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
         if (documentSnapshotBo != null) {
+
+            retailerVisitedOrder.add(documentSnapshotBo.getRetailerId());
+
             LatLng destLatLng = new LatLng(documentSnapshotBo.getLatitude(), documentSnapshotBo.getLongitude());
 
             //Update retailer info in master list
@@ -261,12 +272,18 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                 retailerMasterBo.setIsOrdered(documentSnapshotBo.getIsOrdered());
             }
 
+            retailerMasterBo.setSkipped(false);
+            retailerMasterBo.setVisited(true);
+
             long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
             retailerMasterBo.setTotalOrderValue(totalOrderValue);
 
             retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());
             retailerMasterBo.setTimeIn(documentSnapshotBo.getTimeIn());
             retailerMasterBo.setTimeOut(documentSnapshotBo.getTimeOut());
+
+            if(lastVisited < retailerMasterBo.getMasterSequence())
+                lastVisited = retailerMasterBo.getMasterSequence();
 
             if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0) {
 
@@ -311,6 +328,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             retailerBoObj.setTimeOut(documentSnapshotBo.getTimeOut());
             retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
             retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName() != null ? documentSnapshotBo.getRetailerName() : "");
+            retailerBoObj.setVisitedSequence(retailersVisitedSequence + 1);
 
             if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
                 retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(retailerBoObj);
@@ -322,7 +340,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
             //ends
 
-            sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()));
+            sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()),lastVisited);
 
             if (previousRetailerId != 0 && previousRetailerId != documentSnapshotBo.getRetailerId()){
                 fetchRouteUrl(previousRetailerLatLng,destLatLng);
@@ -330,6 +348,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
             previousRetailerId = documentSnapshotBo.getRetailerId();
             previousRetailerLatLng = destLatLng;
+
+            new UpdateSkippedMarker().execute();
         }
     }
 
@@ -358,7 +378,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         return new ArrayList<>(retailerVisitDetailsByRId.values());
     }
 
-    public ArrayList<RetailerBo> getVisitedRetailers(){
+    ArrayList<RetailerBo> getVisitedRetailers(){
 
         ArrayList<RetailerBo> retailerBos = new ArrayList<>();
 
@@ -368,7 +388,38 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         return retailerBos;
     }
 
-    public ArrayList<RetailerBo> getRetailerVisitDetailsByRId(int userId) {
+    ArrayList<RetailerBo> getRetailerVisitDetailsByRId(int userId) {
         return retailerVisitDetailsByRId.get(userId);
     }
+
+    public int getLastVisited() {
+        return lastVisited;
+    }
+
+    class UpdateSkippedMarker extends AsyncTask<String, Void, ArrayList<Integer>> {
+
+        @Override
+        protected ArrayList<Integer> doInBackground(String... strings) {
+
+            ArrayList<Integer> retailerId = new ArrayList<>();
+
+            for(RetailerBo retailerBo : retailerMasterHashmap.values()){
+
+                if(getLastVisited() > retailerBo.getMasterSequence() && !retailerBo.isVisited())
+                    retailerId.add(retailerBo.getRetailerId());
+
+            }
+
+            return retailerId;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Integer> integers) {
+
+            for (int retailerId : integers )
+                retailerMasterHashmap.get(retailerId).getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_red));
+
+        }
+    }
+
 }

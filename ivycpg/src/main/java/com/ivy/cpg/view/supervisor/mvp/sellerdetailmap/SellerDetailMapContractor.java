@@ -17,7 +17,7 @@ public interface SellerDetailMapContractor {
 
         void focusMarker(LatLngBounds.Builder builder);
 
-        void setOutletListAdapter(ArrayList<RetailerBo> retailerMasterList);
+        void setOutletListAdapter(ArrayList<RetailerBo> retailerMasterList, int lastVisitRetailSeq);
 
         void updateSellerInfo(String timeIn,String retailerName,String target,String covered,LatLng sellerCurrentLocation);
 

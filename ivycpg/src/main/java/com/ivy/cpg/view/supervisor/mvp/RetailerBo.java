@@ -5,10 +5,10 @@ import com.google.android.gms.maps.model.Marker;
 
 public class RetailerBo {
 
-    private int retailerId,userId,visitedSequence,masterSequence;
-    private String retailerName;
+    private int retailerId,userId,visitedSequence,masterSequence,lastVisitedRetailer;
+    private String retailerName,date,address,imgPath;
     private double latitude,longitude,masterLatitude,masterLongitude;
-    private boolean isDeviated,isOrdered;
+    private boolean isDeviated,isOrdered,isSkipped = false,isVisited = false;
     private long totalOrderValue,orderValue,timeIn,timeOut;
     private Marker marker;
 
@@ -138,5 +138,53 @@ public class RetailerBo {
 
     public void setMarker(Marker marker) {
         this.marker = marker;
+    }
+
+    public boolean isSkipped() {
+        return isSkipped;
+    }
+
+    public void setSkipped(boolean skipped) {
+        isSkipped = skipped;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
+
+    public int getLastVisitedRetailer() {
+        return lastVisitedRetailer;
+    }
+
+    public void setLastVisitedRetailer(int lastVisitedRetailer) {
+        this.lastVisitedRetailer = lastVisitedRetailer;
+    }
+
+    public boolean isVisited() {
+        return isVisited;
+    }
+
+    public void setVisited(boolean visited) {
+        isVisited = visited;
     }
 }

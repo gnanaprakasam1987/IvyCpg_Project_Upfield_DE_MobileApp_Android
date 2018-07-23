@@ -115,7 +115,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select sellerId,count(sellerId) from SupRetailerMaster group by sellerId";
+            String queryStr = "select userId,count(sellerId) from SupRetailerMaster group by sellerId";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {

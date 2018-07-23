@@ -284,13 +284,13 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100));
             }
         });
     }
 
     @Override
-    public void setOutletListAdapter(ArrayList<RetailerBo> retailerMasterList) {
+    public void setOutletListAdapter(ArrayList<RetailerBo> retailerMasterList ,int lastVisitSeq) {
         outletListBos.clear();
         outletListBos.addAll(retailerMasterList);
         outletListAdapter.notifyDataSetChanged();
@@ -479,15 +479,23 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             holder.tvTimeIn.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeIn()));
             holder.tvTimeOut.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeOut()));
 
-            if(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeIn()).isEmpty()){
+            if(sellerMapViewPresenter.getLastVisited() != 0 && sellerMapViewPresenter.getLastVisited() > outletListBos.get(position).getMasterSequence()
+                    && !outletListBos.get(position).isVisited()){
                 holder.tvTimeIn.setVisibility(View.GONE);
                 holder.tvTimeOut.setVisibility(View.GONE);
                 holder.tvSkipped.setVisibility(View.VISIBLE);
-            }else {
+            }else{
                 holder.tvTimeIn.setVisibility(View.VISIBLE);
                 holder.tvTimeOut.setVisibility(View.VISIBLE);
                 holder.tvSkipped.setVisibility(View.GONE);
             }
+
+//            if(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeIn()).isEmpty()
+//                    && outletListBos.get(position).isSkipped()){
+//
+//            }else {
+//
+//            }
 
         }
 
