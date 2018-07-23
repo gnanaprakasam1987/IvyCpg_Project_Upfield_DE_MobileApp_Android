@@ -4553,7 +4553,7 @@ public class ProductHelper {
                     + sql3
                     + sql1
                     + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
-                    + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou "
+                    + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou,PM.pCode as ProCode "
                     + " FROM ProductMaster PM"
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + sql2
@@ -4640,7 +4640,9 @@ public class ProductHelper {
                     + ".dOuomid and PSQ.PID =PM"
                     + loopEnd
                     + ".PID) as"
-                    + " sugou "
+                    + " sugou,PM"
+                    + loopEnd
+                    + ".pCode as ProCode "
                     + " FROM ProductMaster PM1";
             for (int i = 2; i <= loopEnd; i++)
                 query = query + " INNER JOIN ProductMaster PM" + i + " ON PM"
@@ -4671,6 +4673,7 @@ public class ProductHelper {
                 bo.setParentid(c.getInt(0));
                 bo.setProductid(c.getInt(1));
                 bo.setProductname(c.getString(2));
+                bo.setProductCode(c.getString(c.getColumnIndex("ProCode")));
                 bo.setSuggestqty(c.getInt(c.getColumnIndex("sugpcs")) +
                         (c.getInt(c.getColumnIndex("sugcs")) * c.getInt(5)) +
                         (c.getInt(c.getColumnIndex("sugou")) * c.getInt(12)));

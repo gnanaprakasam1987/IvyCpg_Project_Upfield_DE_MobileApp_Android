@@ -53,7 +53,7 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
 
             holder.mPName = convertView.findViewById(R.id.pname);
             holder.mPName.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-
+            holder.mProductCode = convertView.findViewById(R.id.product_code);
             holder.mLoadStock = convertView.findViewById(R.id.loadstock);
             holder.mLoadStock_cs = convertView.findViewById(R.id.loadstock_cs);
             holder.mLoadStock_ou = convertView.findViewById(R.id.loadstock_ou);
@@ -124,6 +124,9 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
             else
                 holder.freeIssuedRL.setVisibility(View.GONE);
 
+            if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                holder.mProductCode.setVisibility(View.GONE);
+
             convertView.setTag(holder);
 
         } else {
@@ -134,6 +137,13 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
         holder.position = position;
 
         holder.mPName.setText(holder.mSKUBO.getProductName());
+
+        if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+            String prodCode = parent.getContext().getResources().getString(R.string.prod_code)
+                    + ": " + holder.mSKUBO.getProductCode() + " ";
+            holder.mProductCode.setText(prodCode);
+        }
+
         if (holder.mSKUBO.getBatchNo() != null) {
             holder.mBatchNum.setVisibility(View.VISIBLE);
             holder.mBatchNum.setText(holder.mSKUBO.getBatchNo());
@@ -292,7 +302,7 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
     class ViewHolder {
         StockReportBO mSKUBO;
         int position;
-        TextView mPName;
+        TextView mPName, mProductCode;
         TextView mLoadStock;
         TextView mSoldStock;
         TextView mFreeIssued;

@@ -9,31 +9,40 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/prdcode"
-        style="@style/TextViewListItemPrimary"
-        android:layout_width="@dimen/prodcode_width"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/sr_list_view_margin_left"
-        android:layout_weight="1"
-        android:text="@string/prod_code"
-        android:textStyle="bold"
-        android:visibility="gone"
-        android:layout_marginLeft="@dimen/sr_list_view_margin_left" />
 
-    <TextView
-        android:id="@+id/orderPRODNAME"
-        style="?attr/customListItemPrimary"
+    <RelativeLayout
         android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
-        android:layout_height="match_parent"
-        android:layout_gravity="start|center"
-        android:layout_marginStart="@dimen/skuwise_right_margin"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="start|center"
-        android:maxLines="1"
-        android:padding="3dp"
-        android:text="@string/product_name"
-        android:layout_marginLeft="@dimen/skuwise_right_margin" />
+        android:padding="3dp">
+
+        <TextView
+            android:id="@+id/orderPRODNAME"
+            style="?attr/customListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center"
+            android:layout_marginLeft="@dimen/skuwise_right_margin"
+            android:layout_marginStart="@dimen/skuwise_right_margin"
+            android:gravity="start|center"
+            android:maxLines="1"
+            android:text="@string/product_name" />
+
+        <TextView
+            android:id="@+id/prdcode"
+            style="?attr/customListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/orderPRODNAME"
+            android:layout_marginLeft="@dimen/skuwise_right_margin"
+            android:layout_marginStart="@dimen/skuwise_right_margin"
+            android:layout_weight="1"
+            android:gravity="start|center"
+            android:text="@string/prod_code"
+            android:textSize="@dimen/font_nano_small"
+            android:textStyle="bold"
+            android:visibility="visible" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/sih_case"

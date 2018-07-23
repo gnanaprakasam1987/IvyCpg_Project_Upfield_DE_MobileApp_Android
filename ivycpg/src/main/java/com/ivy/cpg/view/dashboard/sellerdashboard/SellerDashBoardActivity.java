@@ -42,11 +42,7 @@ public class SellerDashBoardActivity extends IvyBaseActivityNoActionBar {
             finish();
         }
 
-        Bundle bundle = new Bundle();
-        bundle.putString("retid", getIntent().getStringExtra("retid"));//retailer id is passed to load Retailer Dashboard by re-using DashboardFragment
-        bundle.putString("screentitle", getIntent().getStringExtra("screentitle"));
         fragmentObject = new SellerDashboardFragment();
-        fragmentObject.setArguments(bundle);
         if (fragmentObject != null) {
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction().add(R.id.content_fragemnt, fragmentObject).commit();

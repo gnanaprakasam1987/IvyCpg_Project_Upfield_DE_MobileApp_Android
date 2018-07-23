@@ -2492,16 +2492,13 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE)
                     if (bmodel.getRetailerMasterBO().getCredit_balance() != -1
                             && totalvalue > bmodel.getRetailerMasterBO()
-                            .getCredit_balance())
-                    {
+                            .getCredit_balance()) {
                         if (bmodel.configurationMasterHelper.IS_CREDIT_LIMIT_WITH_SOFT_ALERT) {
                             Toast.makeText(this, getResources().getString(R.string.order_exceeds_credit_balance), Toast.LENGTH_LONG).show();
                             nextBtnSubTask();
-                        }
-                        else
+                        } else
                             bmodel.showAlert(getResources().getString(R.string.order_exceeds_credit_balance), 0);
-                    }
-                    else
+                    } else
                         nextBtnSubTask();
                 else
                     nextBtnSubTask();
@@ -2523,7 +2520,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.productHelper.taxHelper.removeTaxFromPrice();
@@ -3539,13 +3536,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             }
             return true;
         } else if (i == R.id.menu_spl_filter) {
-
-            // Get the Special Filter Type 1- Single Selection, 2- Multi
-            // Selection
-            if (ConfigurationMasterHelper.GET_GENERALFILTET_TYPE == 2)
-                generalFilterClickedFragment();
-            else
-                generalFilterClickedFragment();
+            generalFilterClickedFragment();
             item.setVisible(false);
             supportInvalidateOptionsMenu();
             return true;

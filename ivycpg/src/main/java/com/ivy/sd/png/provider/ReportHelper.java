@@ -6,6 +6,7 @@ import android.database.SQLException;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
+import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -26,7 +27,6 @@ import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
 import com.ivy.sd.png.bo.SKUReportBO;
-import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
@@ -64,7 +64,6 @@ public class ReportHelper {
     private String webViewPlanUrl = "";
     private String webReportUrl = "";
     private ArrayList<CreditNoteListBO> creditNoteList;
-
 
 
     private ArrayList<SyncStatusBO> mSyncStatusBOList;
@@ -291,7 +290,7 @@ public class ReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,(OD.NetAmount) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
+                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,(OD.NetAmount) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty,PM.pcode "
                             + " from OrderDetail OD INNER JOIN  ProductMaster PM ON OD.ProductID = PM.PID LEFT JOIN BatchMaster BM ON OD.batchid =  BM.batchid  and BM.pid=OD.productid where OD.OrderID="
                             + bmodel.QT(orderID) + "and OD.OrderType = 0");
             if (c != null) {
@@ -309,6 +308,7 @@ public class ReportHelper {
                     orderdetreport.setBatchNo(c.getString(8));
                     orderdetreport.setWeight(c.getFloat(9));
                     orderdetreport.setTotalQty(c.getInt(10));
+                    orderdetreport.setProductCode(c.getString(11));
                     reportorddetbooking.add(orderdetreport);
                 }
                 c.close();
@@ -2624,8 +2624,6 @@ public class ReportHelper {
     }
 
 
-
-
     /**
      * Method to retrieve transaction invoice details from invoicedetails table
      *
@@ -2638,7 +2636,7 @@ public class ReportHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
-        sb.append("select psname,productid,pcsQty,caseqty,outerqty,NetAmount,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
+        sb.append("select psname,productid,pcsQty,caseqty,outerqty,NetAmount,BM.batchnum,ID.weight,qty,PM.pcode from InvoiceDetails ID ");
         sb.append("inner join productmaster PM on ID.productid=PM.pid ");
         sb.append("left join BatchMaster BM on  BM.pid=ID.productid and BM.batchid=ID.batchid ");
         sb.append(" where invoiceid=" + bmodel.QT(invoiceno));
@@ -2656,6 +2654,7 @@ public class ReportHelper {
                 productMasterBO.setBatchNo(c.getString(6));
                 productMasterBO.setWeight(c.getInt(7));
                 productMasterBO.setTotalQty(c.getInt(8));
+                productMasterBO.setProductCode(c.getString(9));
                 reportList.add(productMasterBO);
 
             }
@@ -2681,7 +2680,7 @@ public class ReportHelper {
         sb.append("select psname,freeproductid,freeqty,BM.batchnum,");
         sb.append("CASE WHEN uomid= PM.dUomid THEN " + bmodel.QT("CASE"));
         sb.append(" WHEN uomid=PM.dOUomid THEN " + bmodel.QT("OUTER") + " ELSE " + bmodel.QT("PIECE") + " END AS you ");
-        sb.append("from SchemeFreeProductDetail SFP ");
+        sb.append(",PM.pcode from SchemeFreeProductDetail SFP ");
         sb.append("inner join Productmaster PM on SFP.freeproductid=PM.pid ");
         sb.append("left join Batchmaster BM on SFP.freeproductid=BM.pid and SFP.batchid=BM.batchid ");
         if (isInvoice)
@@ -2698,6 +2697,7 @@ public class ReportHelper {
                 schemeProductBO.setQuantitySelected(c.getInt(2));
                 schemeProductBO.setBatchId(c.getString(3));
                 schemeProductBO.setUomDescription(c.getString(4));
+                schemeProductBO.setProductCode(c.getString(5));
                 freeProductList.add(schemeProductBO);
 
             }
@@ -3219,8 +3219,6 @@ public class ReportHelper {
             Commons.printException(e);
         }
     }
-
-
 
 
     public ArrayList<SyncStatusBO> getmSyncStatusBOList() {

@@ -2470,8 +2470,8 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
     };
 
     private void nextBtnSubTask() {
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
-        
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+
         if (bmodel.mSelectedModule != 3)
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
@@ -3534,12 +3534,8 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
             return true;
         } else if (i == R.id.menu_spl_filter) {
 
-            // Get the Special Filter Type 1- Single Selection, 2- Multi
-            // Selection
-            if (ConfigurationMasterHelper.GET_GENERALFILTET_TYPE == 2)
-                generalFilterClickedFragment();
-            else
-                generalFilterClickedFragment();
+
+            generalFilterClickedFragment();
             item.setVisible(false);
             supportInvalidateOptionsMenu();
             return true;
