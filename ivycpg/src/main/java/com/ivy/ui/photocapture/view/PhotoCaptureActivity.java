@@ -67,6 +67,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     private static final int CAMERA_REQUEST_CODE = 1;
 
+    private static final int GALLERY_REQUEST_CODE = 2;
+
     private static String folderPath;
 
     @Inject
@@ -274,6 +276,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
                 setImageToView(imageName);
             }
+        } else if (requestCode == GALLERY_REQUEST_CODE) {
+
         }
     }
 
@@ -330,10 +334,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     @Override
     public void showUpdatedDialog() {
-        new CommonDialog(getApplicationContext(), PhotoCaptureActivity.this,
-                "", getResources().getString(R.string.saved_successfully),
-                false, getResources().getString(R.string.ok),
-                null, new CommonDialog.PositiveClickListener() {
+
+        showAlert("", getResources().getString(R.string.saved_successfully), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 if (!isFromMenuClick) {
@@ -353,11 +355,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 }
 
             }
-        }, new CommonDialog.negativeOnClickListener() {
-            @Override
-            public void onNegativeButtonClick() {
-            }
-        }).show();
+        });
+
     }
 
     @OnClick(R.id.capture_img)
@@ -414,7 +413,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         if (totalImgList.size() == 0) {
             showAlert("", getString(R.string.take_photos_to_save));
         } else {
-            if (isPLType && totalImgList.get(totalImgList.size() - 1).contains(mSelectedTypeId + "_" + mSelectedProductId) && !validatePLType())
+            if (isPLType && totalImgList.get(totalImgList.size() - 1).contains(mSelectedTypeId + "_" + mSelectedProductId) && validatePLType())
                 return;
 
             photoCapturePresenter.onSaveButtonClick();
@@ -448,6 +447,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         selectedProduct = position;
         photoTypeSpinner.setSelection(0);
         mSelectedProductId = productSelectionAdapter.getItem(position).getProductID();
+
+        clearViews();
     }
 
 
@@ -456,7 +457,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
         if (totalImgList.size() > 0 && totalImgList.get(totalImgList.size() - 1).contains(photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_" + mSelectedProductId)) {
             if (isPLType) {
-                if (!validatePLType()) return;
+                if (validatePLType()) return;
             } else
                 photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString());
 
@@ -486,27 +487,27 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             showMessage("Enter Product Name");
             photoTypeSpinner.setSelection(selectedType);
             productSpinner.setSelection(tempProdPosition);
-            return false;
+            return true;
         } else if (abvEditText.getText().length() == 0) {
             showMessage("Enter ABU Value");
             photoTypeSpinner.setSelection(selectedType);
             productSpinner.setSelection(tempProdPosition);
-            return false;
+            return true;
         } else if (lotCodeEditText.getText().length() == 0) {
             showMessage("Enter Lot Number");
             photoTypeSpinner.setSelection(selectedType);
             productSpinner.setSelection(tempProdPosition);
-            return false;
+            return true;
         } else if (seqNumberEditText.getText().length() == 0) {
             showMessage("Enter Sequence Number");
             photoTypeSpinner.setSelection(selectedType);
             productSpinner.setSelection(tempProdPosition);
-            return false;
+            return true;
         }
         photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName
                 , feedbackEditText.getText().toString(), skuNameEditText.getText().toString(), abvEditText.getText().toString(),
                 lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString());
-        return true;
+        return false;
     }
 
     private void loadLocalData() {
@@ -527,6 +528,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     private void clearViews() {
         handleNoImage();
+        isPLType = false;
+        productDetailsCardView.setVisibility(View.GONE);
         feedbackEditText.setText("");
         skuNameEditText.setText("");
         abvEditText.setText("");
@@ -567,22 +570,24 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         builder = new AlertDialog.Builder(this);
         builder.setTitle(null);
         builder.setSingleChoiceItems(locationAdapter, 0,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        PhotoCaptureLocationBO selectedId = locationAdapter
-                                .getItem(item);
-                        resetData();
-                        if (selectedId != null) {
-                            mSelectedLocationId = selectedId.getLocationId();
-                        }
-                        dialog.dismiss();
-
-                    }
-                });
+                onLocationDialogClickListener);
 
         AppUtils.applyAlertDialogTheme(this, builder);
     }
+
+    private DialogInterface.OnClickListener onLocationDialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int item) {
+            PhotoCaptureLocationBO selectedId = locationAdapter
+                    .getItem(item);
+            resetData();
+            if (selectedId != null) {
+                mSelectedLocationId = selectedId.getLocationId();
+            }
+            dialog.dismiss();
+
+        }
+    };
 
     private void resetData() {
         productSpinner.setSelection(0);
@@ -623,10 +628,16 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             preparePhotoCapture();
         } else if (i == R.id.menu_save) {
             onSaveClicked();
-        }
-        if (i == android.R.id.home) {
+        } else if (i == android.R.id.home) {
             backButtonAlertDialog();
             return true;
+        } else if (i == R.id.menu_gallery) {
+            photoCapturePresenter.updateModuleTime();
+            Intent mIntent = new Intent(PhotoCaptureActivity.this,
+                    PhotoGalleryActivity.class);
+            mIntent.putExtra("isFromPhotoCapture", true);
+            mIntent.putExtra("data", photoCapturePresenter.getEditedPhotoListData());
+            startActivityForResult(mIntent, GALLERY_REQUEST_CODE);
         }
 
         return super.onOptionsItemSelected(item);

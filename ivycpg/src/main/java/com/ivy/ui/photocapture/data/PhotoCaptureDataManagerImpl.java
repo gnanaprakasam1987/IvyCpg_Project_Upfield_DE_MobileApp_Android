@@ -87,8 +87,11 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                     mDbUtil.createDataBase();
                     mDbUtil.openDataBase();
                     ArrayList<PhotoCaptureLocationBO> photoCaptureLocationBOS = new ArrayList<>();
-                    String sql1 = "SELECT phototypeid,pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName FROM Photocapture WHERE RetailerID="
-                            + retailerID + " And DistributorID=" + distributorId;
+                    String sql1 = "SELECT phototypeid,PC.pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName,SM.ListName,PM.PName,SML.ListName FROM Photocapture PC " +
+                            "LEFT JOIN StandardListMaster SM ON SM.ListId=phototypeid " +
+                            "LEFT JOIN ProductMaster PM ON PM.PID=PC.pid " +
+                            "LEFT JOIN StandardListMaster SML ON SML.ListId=LocId " +
+                            "WHERE RetailerID=" + retailerID + " And DistributorID=" + distributorId;
                     Cursor cursor = mDbUtil.selectSQL(sql1);
                     PhotoCaptureLocationBO lbo;
                     if (cursor != null) {
@@ -111,6 +114,9 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                             lbo.setSequenceNO(cursor.getString(9));
                             lbo.setFeedback(cursor.getString(10));
                             lbo.setImageName(cursor.getString(11));
+                            lbo.setmTypeName(cursor.getString(12));
+                            lbo.setProductName(cursor.getString(13));
+                            lbo.setLocationName(cursor.getString(14));
 
                             photoCaptureLocationBOS.add(lbo);
                         }

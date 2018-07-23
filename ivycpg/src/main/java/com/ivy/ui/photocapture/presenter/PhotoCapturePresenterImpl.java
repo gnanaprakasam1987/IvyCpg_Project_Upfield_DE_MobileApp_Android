@@ -9,10 +9,8 @@ import android.support.annotation.NonNull;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
-import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
-import com.ivy.core.di.scope.UserInfo;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
@@ -38,7 +36,6 @@ import io.reactivex.observers.DisposableObserver;
 
 public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptureView> extends BasePresenter<V> implements PhotoCaptureContract.PhotoCapturePresenter<V>, LifecycleObserver {
 
-    private UserDataManager mUserDataManager;
 
     private OutletTimeStampDataManager mOutletTimeStampDataManager;
 
@@ -59,12 +56,11 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
 
     @Inject
     public PhotoCapturePresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable,
-                                     ConfigurationMasterHelper configurationMasterHelper, V view, @UserInfo UserDataManager userDataManager,
+                                     ConfigurationMasterHelper configurationMasterHelper, V view,
                                      @OutletTimeStampInfo OutletTimeStampDataManager outletTimeStampDataManager,
                                      PhotoCaptureDataManager photoCaptureDataManager, @LabelMasterInfo LabelsMasterHelper labelsMasterHelper) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mOutletTimeStampDataManager = outletTimeStampDataManager;
-        this.mUserDataManager = userDataManager;
         this.photoCaptureDataManager = photoCaptureDataManager;
         this.mConfigurationMasterHelper = configurationMasterHelper;
         this.labelsMasterHelper = labelsMasterHelper;
@@ -155,7 +151,8 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     @Override
     public void updateModuleTime() {
 
-        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))
+        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(SDUtil
+                .now(SDUtil.TIME))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {

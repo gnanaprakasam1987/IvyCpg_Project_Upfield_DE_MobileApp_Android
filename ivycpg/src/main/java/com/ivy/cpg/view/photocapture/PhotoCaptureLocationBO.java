@@ -1,11 +1,13 @@
 package com.ivy.cpg.view.photocapture;
 
+import java.io.Serializable;
+
 /**
  * Created by Rajkumar.S on 27/11/17.
  * Photo capture screen specific BO
  */
 
-public class PhotoCaptureLocationBO {
+public class PhotoCaptureLocationBO implements Serializable{
 
 
     private String mImagePath = "";
@@ -18,9 +20,18 @@ public class PhotoCaptureLocationBO {
     private String mSequenceNO = "";
     private String feedback = "";
     private int productID;
+    private String mTypeName ="";
 
     //Refactor field introduced to remove cloning of lists
     private int photoTypeId;
+
+    public String getmTypeName() {
+        return mTypeName;
+    }
+
+    public void setmTypeName(String mTypeName) {
+        this.mTypeName = mTypeName;
+    }
 
     public int getPhotoTypeId() {
         return photoTypeId;
