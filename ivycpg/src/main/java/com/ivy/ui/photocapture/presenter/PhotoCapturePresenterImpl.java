@@ -133,6 +133,13 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     }
 
     @Override
+    public void setEditedPhotosListData(HashMap<String, PhotoCaptureLocationBO> editedPhotosListData) {
+        editedData.clear();
+        editedData.putAll(editedPhotosListData);
+        getIvyView().setSpinnerDefaults();
+    }
+
+    @Override
     public ArrayList<PhotoCaptureLocationBO> getLocationBOS() {
         return mLocationBOS;
     }
@@ -174,28 +181,12 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     }
 
     @Override
-    public void updateLocalData(int productId, int typeId, int locationId, String imageName, String feedback) {
-        String imagePath = getImagePath(imageName);
-
-        PhotoCaptureLocationBO photoCaptureLocationBO = new PhotoCaptureLocationBO();
-        photoCaptureLocationBO.setPhotoTypeId(typeId);
-        photoCaptureLocationBO.setProductID(productId);
-        photoCaptureLocationBO.setLocationId(locationId);
-        photoCaptureLocationBO.setImageName(imageName);
-        photoCaptureLocationBO.setImagePath(imagePath);
-        photoCaptureLocationBO.setFeedback(feedback);
-
-        if (isDateEnabled()) {
-            photoCaptureLocationBO.setFromDate(getIvyView().getFromDate());
-            photoCaptureLocationBO.setToDate(getIvyView().getToDate());
-        }
-
-        editedData.put(productId + "_" + typeId + "_" + locationId, photoCaptureLocationBO);
-
+    public void updateLocalData(int productId, int typeId, int locationId, String imageName, String feedback, String productName, String typeName, String locationName) {
+        updateLocalData(productId,typeId,locationId,imageName,feedback,"","","","",productName,typeName,locationName);
     }
 
     @Override
-    public void updateLocalData(int productId, int typeId, int locationId, String imageName, String feedback, String prodName, String abv, String lotNumber, String seqNumber) {
+    public void updateLocalData(int productId, int typeId, int locationId, String imageName, String feedback, String skuName, String abv, String lotNumber, String seqNumber, String productName, String typeName, String locationName) {
         String imagePath = getImagePath(imageName);
 
         PhotoCaptureLocationBO photoCaptureLocationBO = new PhotoCaptureLocationBO();
@@ -205,10 +196,13 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
         photoCaptureLocationBO.setImageName(imageName);
         photoCaptureLocationBO.setImagePath(imagePath);
         photoCaptureLocationBO.setFeedback(feedback);
-        photoCaptureLocationBO.setSKUName(prodName);
+        photoCaptureLocationBO.setSKUName(skuName);
         photoCaptureLocationBO.setAbv(abv);
         photoCaptureLocationBO.setLotCode(lotNumber);
         photoCaptureLocationBO.setSequenceNO(seqNumber);
+        photoCaptureLocationBO.setProductName(productName);
+        photoCaptureLocationBO.setmTypeName(typeName);
+        photoCaptureLocationBO.setLocationName(locationName);
 
         if (isDateEnabled()) {
             photoCaptureLocationBO.setFromDate(getIvyView().getFromDate());

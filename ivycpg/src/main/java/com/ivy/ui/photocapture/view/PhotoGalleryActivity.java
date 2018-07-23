@@ -1,6 +1,9 @@
 package com.ivy.ui.photocapture.view;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -16,12 +19,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.photocapture.adapter.PhotoGalleryAdapter;
 import com.ivy.ui.photocapture.adapter.PhotoGridAdapter;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -91,12 +97,86 @@ public class PhotoGalleryActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("edited_data",photoCaptureMap);
+            setResult(Activity.RESULT_OK, resultIntent);
             finish();
             return true;
         } else if (i == R.id.menu_gallery_share) {
-            shareImages();
+            if (selectedItemsList.size() > 0)
+                shareImages();
+            else
+                showAlertDialog();
+            return true;
+
+        } else if (i == R.id.menu_gallery_delete) {
+            if (selectedItemsList.size() > 0)
+                showDeleteAlertDialog();
+            else
+                showAlertDialog();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showDeleteAlertDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(
+                        getResources().getString(
+                                R.string.do_you_want_to_delete_the_image))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+
+                                for (String item : selectedItemsList) {
+
+                                    if(photoCaptureMap.containsKey(item)) {
+                                        AppUtils.deleteFiles(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                                                + DataMembers.photoFolderName, photoCaptureMap.get(item).getImageName());
+
+                                        photoCaptureMap.remove(item);
+                                    }
+
+
+                                }
+                                processData();
+                            }
+                        })
+                .setNegativeButton(
+                        getResources().getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                            }
+                        });
+        AppUtils.applyAlertDialogTheme(this, builder);
+    }
+
+
+    /**
+     * Alert dialog to select image
+     */
+    protected void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Please Select the Images and Try again!!!")
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setCancelable(false);
+        AppUtils.applyAlertDialogTheme(this, builder);
     }
 
     private void setUpToolbar() {
@@ -166,28 +246,26 @@ public class PhotoGalleryActivity extends BaseActivity {
 
 
     private void shareImages() {
-        if (selectedItemsList.size() > 0) {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Pictures");
-            intent.setType("image/*");
-            ArrayList<Uri> files = new ArrayList<>();
-            /* List of the files you want to send */
-            for (String path : selectedItemsList) {
-                File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
-                        + DataMembers.photoFolderName + photoCaptureMap.get(path).getImageName());
-                if (Build.VERSION.SDK_INT >= 24) {
-                    files.add(FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file));
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Pictures");
+        intent.setType("image/*");
+        ArrayList<Uri> files = new ArrayList<>();
+        /* List of the files you want to send */
+        for (String path : selectedItemsList) {
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                    + DataMembers.photoFolderName + photoCaptureMap.get(path).getImageName());
+            if (Build.VERSION.SDK_INT >= 24) {
+                files.add(FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file));
 
-                } else {
-                    files.add(Uri.fromFile(file));
-                }
-
+            } else {
+                files.add(Uri.fromFile(file));
             }
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-            startActivity(Intent.createChooser(intent, "Share Image"));
+
         }
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+        startActivity(Intent.createChooser(intent, "Share Image"));
     }
 }

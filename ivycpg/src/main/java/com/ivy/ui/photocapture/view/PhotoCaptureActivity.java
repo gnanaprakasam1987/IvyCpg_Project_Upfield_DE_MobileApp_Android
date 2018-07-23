@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -140,6 +141,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     private String title, imageName;
 
     private ArrayList<String> totalImgList = new ArrayList<>();
+
+    private String selectedProductName, selectedTypeName, selectedLocationName;
 
     @Override
     public int getLayoutId() {
@@ -266,17 +269,19 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 totalImgList.add(imageName);
 
                 if (!isPLType)
-                    photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString());
+                    photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString(), selectedProductName,selectedTypeName,selectedLocationName);
                 else
                     photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName
                             , feedbackEditText.getText().toString(), skuNameEditText.getText().toString(), abvEditText.getText().toString(),
-                            lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString());
+                            lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString(), selectedProductName,selectedTypeName,selectedLocationName);
 
                 handleNoImage();
 
                 setImageToView(imageName);
             }
         } else if (requestCode == GALLERY_REQUEST_CODE) {
+            if (data != null && data.getExtras().containsKey("edited_data"))
+                photoCapturePresenter.setEditedPhotosListData((HashMap<String, PhotoCaptureLocationBO>) data.getExtras().getSerializable("edited_data"));
 
         }
     }
@@ -310,6 +315,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
         if (photoCapturePresenter.isGlobalLocation()) {
             mSelectedLocationId = locationBOS.get(photoCapturePresenter.getGlobalLocationIndex()).getLocationId();
+            selectedLocationName = locationBOS.get(photoCapturePresenter.getGlobalLocationIndex()).getLocationName();
         } else if (!locationBOS.isEmpty()) {
             if (locationBOS.size() > 2) {
                 locationAdapter.clear();
@@ -318,6 +324,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 }
             }
             mSelectedLocationId = locationBOS.get(0).getLocationId();
+            selectedLocationName = locationBOS.get(0).getLocationName();
         }
 
     }
@@ -330,6 +337,11 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     @Override
     public String getToDate() {
         return toDateBtn.getText().toString();
+    }
+
+    @Override
+    public void setSpinnerDefaults() {
+        productSpinner.setSelection(0);
     }
 
     @Override
@@ -445,6 +457,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         }
 
         selectedProduct = position;
+        selectedProductName = productSelectionAdapter.getItem(position).getProductName();
         photoTypeSpinner.setSelection(0);
         mSelectedProductId = productSelectionAdapter.getItem(position).getProductID();
 
@@ -459,13 +472,14 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             if (isPLType) {
                 if (validatePLType()) return;
             } else
-                photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString());
+                photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString(), selectedProductName,selectedTypeName,selectedLocationName);
 
 
         }
 
         tempProdPosition = selectedProduct;
 
+        selectedTypeName = photoTypeAdapter.getItem(position).getPhotoTypeDesc();
         mSelectedTypeId = photoTypeAdapter.getItem(position).getPhotoTypeId();
         selectedType = position;
         if (position != 0) {
@@ -506,7 +520,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         }
         photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName
                 , feedbackEditText.getText().toString(), skuNameEditText.getText().toString(), abvEditText.getText().toString(),
-                lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString());
+                lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString(), selectedProductName,selectedTypeName,selectedLocationName);
         return false;
     }
 
@@ -583,6 +597,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             resetData();
             if (selectedId != null) {
                 mSelectedLocationId = selectedId.getLocationId();
+                selectedLocationName = selectedId.getLocationName();
             }
             dialog.dismiss();
 

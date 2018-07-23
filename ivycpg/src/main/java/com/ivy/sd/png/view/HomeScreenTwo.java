@@ -819,7 +819,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), MENU_PHOTO);
                     startActivity(new Intent(HomeScreenTwo.this,
-                            com.ivy.ui.photocapture.view.PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
+                            PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
                     finish();
 
                 } else if (count >= bmodel.configurationMasterHelper.photocount) {
@@ -837,7 +837,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), MENU_PHOTO);
                     startActivity(new Intent(HomeScreenTwo.this,
-                            com.ivy.ui.photocapture.view.PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
+                            PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
                     finish();
                 }
             }
