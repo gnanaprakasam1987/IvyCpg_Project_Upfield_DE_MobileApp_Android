@@ -148,7 +148,7 @@ public class SalesReturnDeliveryHelper {
                             salesReturnDeliveryDataModel.setPieceUomId(cursor.getInt(25));
 
                             salesReturnDeliveryDataModel.setStatus(cursor.getInt(26));
-                            salesReturnDeliveryDataModel.setHnsCode(cursor.getString(27)  != null ?cursor.getString(27) :"" );
+                            salesReturnDeliveryDataModel.setHnsCode(((cursor.getString(27)) != null) ? cursor.getString(27) : "");
 
                             if (cursor1 != null) {
                                 while (cursor1.moveToNext()) {
