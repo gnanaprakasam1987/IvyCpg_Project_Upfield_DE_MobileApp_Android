@@ -807,11 +807,13 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity android:name="com.ivy.ui.photocapture.view.PhotoGalleryActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name="com.ivy.ui.photocapture.view.PhotoCaptureActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name="com.ivy.ui.photocapture.view.PhotoGalleryActivity"
-            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

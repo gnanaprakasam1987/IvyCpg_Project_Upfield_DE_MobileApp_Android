@@ -100,7 +100,6 @@ public class AppUtils {
 
     public static AlertDialog applyAlertDialogTheme(Context context, AlertDialog.Builder builder) {
         TypedArray typearr = context.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-
         AlertDialog dialog = builder.show();
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 
@@ -108,7 +107,7 @@ public class AppUtils {
         dialog.getWindow().setLayout(screenWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         int alertTitleId = context.getResources().getIdentifier("alertTitle", "id", "android");
-        TextView alertTitle = (TextView) dialog.getWindow().getDecorView().findViewById(alertTitleId);
+        TextView alertTitle = dialog.getWindow().getDecorView().findViewById(alertTitleId);
         alertTitle.setTextColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0)); // change title text color
 
         Button negativeBtn = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
@@ -127,6 +126,7 @@ public class AppUtils {
 
         return dialog;
     }
+
 
     public static String convertToSting(Object object) {
         return new Gson().toJson(object);

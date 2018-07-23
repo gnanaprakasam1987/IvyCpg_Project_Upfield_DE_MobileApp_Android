@@ -19,15 +19,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ivy.core.base.view.BaseActivity;
-import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.photocapture.adapter.PhotoGalleryAdapter;
 import com.ivy.ui.photocapture.adapter.PhotoGridAdapter;
 import com.ivy.utils.AppUtils;
-import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -98,7 +97,7 @@ public class PhotoGalleryActivity extends BaseActivity {
         int i = item.getItemId();
         if (i == android.R.id.home) {
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("edited_data",photoCaptureMap);
+            resultIntent.putExtra("edited_data", photoCaptureMap);
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
             return true;
@@ -119,40 +118,67 @@ public class PhotoGalleryActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (selectedItemsList.size() <= 0) {
+            menu.findItem(R.id.menu_gallery_share).setVisible(false);
+            menu.findItem(R.id.menu_gallery_delete).setVisible(false);
+        } else {
+            menu.findItem(R.id.menu_gallery_share).setVisible(true);
+            menu.findItem(R.id.menu_gallery_delete).setVisible(true);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     private void showDeleteAlertDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle(
-                        getResources().getString(
-                                R.string.do_you_want_to_delete_the_image))
+        showAlert("", getString(R.string.do_you_want_to_delete_the_image), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                for (String item : selectedItemsList) {
+                    if (photoCaptureMap.containsKey(item)) {
+                        AppUtils.deleteFiles(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                                + DataMembers.photoFolderName, photoCaptureMap.get(item).getImageName());
+
+                        photoCaptureMap.remove(item);
+                    }
+                }
+                processData();
+            }
+        }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(PhotoGalleryActivity.this);
+
+        builder.setTitle(getString(R.string.do_you_want_to_delete_the_image))
                 .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.ok),
+                .setPositiveButton(getString(R.string.ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
-
                                 for (String item : selectedItemsList) {
-
-                                    if(photoCaptureMap.containsKey(item)) {
+                                    if (photoCaptureMap.containsKey(item)) {
                                         AppUtils.deleteFiles(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
                                                 + DataMembers.photoFolderName, photoCaptureMap.get(item).getImageName());
 
                                         photoCaptureMap.remove(item);
                                     }
-
-
                                 }
                                 processData();
                             }
                         })
-                .setNegativeButton(
-                        getResources().getString(R.string.cancel),
+                .setNegativeButton(getResources().getString(R.string.cancel),
                         new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
+                            public void onClick(DialogInterface dialog, int whichButton) {
                             }
                         });
-        AppUtils.applyAlertDialogTheme(this, builder);
+
+        AppUtils.applyAlertDialogTheme(this, builder);*/
     }
 
 
@@ -160,7 +186,10 @@ public class PhotoGalleryActivity extends BaseActivity {
      * Alert dialog to select image
      */
     protected void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(PhotoGalleryActivity.this)
                 .setTitle("Please Select the Images and Try again!!!")
                 .setCancelable(false)
                 .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
@@ -229,6 +258,7 @@ public class PhotoGalleryActivity extends BaseActivity {
                     selectedItemsList.add(selectedItem);
 
                 setSelectionScreenTitle(selectedItemsList.size());
+                invalidateOptionsMenu();
             }
 
             @Override
@@ -237,6 +267,7 @@ public class PhotoGalleryActivity extends BaseActivity {
                     selectedItemsList.remove(selectedItem);
 
                 setSelectionScreenTitle(selectedItemsList.size());
+                invalidateOptionsMenu();
             }
         });
         mRecyclerView.setAdapter(photoGalleryAdapter);

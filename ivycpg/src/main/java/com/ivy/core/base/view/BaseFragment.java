@@ -195,6 +195,11 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     }
 
     @Override
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, CommonDialog.negativeOnClickListener negativeOnClickListener) {
+
+    }
+
+    @Override
     public void createNFCManager() {
 
     }

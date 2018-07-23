@@ -210,10 +210,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         setSupportActionBar(toolbar);
         toolBarTitleTxt.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
 
-        if (isNullOrEmpty(title)) {
-            toolBarTitleTxt.setText(getIntent().getExtras().getString("screen_title", ""));
-        } else
-            toolBarTitleTxt.setText(photoCapturePresenter.getTitleLabel());
+        toolBarTitleTxt.setText(!isNullOrEmpty(title) ? title : photoCapturePresenter.getTitleLabel());
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Used to remove the appLogo action bar icon and set title as home
@@ -280,8 +277,11 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 setImageToView(imageName);
             }
         } else if (requestCode == GALLERY_REQUEST_CODE) {
-            if (data != null && data.getExtras().containsKey("edited_data"))
+            if (data != null && data.getExtras().containsKey("edited_data")) {
                 photoCapturePresenter.setEditedPhotosListData((HashMap<String, PhotoCaptureLocationBO>) data.getExtras().getSerializable("edited_data"));
+                handleSaveButton();
+            }
+
 
         }
     }
@@ -342,6 +342,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     @Override
     public void setSpinnerDefaults() {
         productSpinner.setSelection(0);
+        isPLType=false;
     }
 
     @Override
@@ -536,14 +537,13 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 }
             } else {
                 clearViews();
+
             }
         }
     }
 
     private void clearViews() {
         handleNoImage();
-        isPLType = false;
-        productDetailsCardView.setVisibility(View.GONE);
         feedbackEditText.setText("");
         skuNameEditText.setText("");
         abvEditText.setText("");
