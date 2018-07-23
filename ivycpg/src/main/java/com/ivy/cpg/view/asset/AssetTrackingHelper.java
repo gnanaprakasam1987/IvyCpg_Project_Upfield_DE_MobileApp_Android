@@ -144,8 +144,8 @@ public class AssetTrackingHelper {
             surveyHelperNew.downloadQuestionDetails(mMenuCode);
             surveyHelperNew.loadSurveyAnswers(0);
             // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
-            mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFiveFilterLevel(mMenuCode));
-            mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFiveFilterLevelProducts(mMenuCode,
+            mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
+            mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
                     mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
 
         }
@@ -161,8 +161,8 @@ public class AssetTrackingHelper {
 
         //download filter levels
         // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
-        mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFiveFilterLevel(mMenuCode));
-        mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFiveFilterLevelProducts(mMenuCode,
+        mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
+        mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
                 mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
 
         // Load master records

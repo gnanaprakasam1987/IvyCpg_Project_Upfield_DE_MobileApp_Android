@@ -17,7 +17,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
@@ -98,8 +97,8 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
         /** Load products from product master **/
         LoadManagementBO lbo;
         mylist = new Vector<>();
-        for (int j = 0; j < bmodel.productHelper.getProducts().size(); j++) {
-            lbo = bmodel.productHelper.getProducts().get(j);
+        for (int j = 0; j < bmodel.productHelper.getLoadMgmtProducts().size(); j++) {
+            lbo = bmodel.productHelper.getLoadMgmtProducts().get(j);
             if (lbo.getStocksih() > 0)
                 mylist.add(lbo);
         }

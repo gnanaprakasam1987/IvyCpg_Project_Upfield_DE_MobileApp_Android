@@ -72,10 +72,10 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.bo.asset.ProductMasterPair;
 import com.ivy.sd.png.commons.CustomMapFragment;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MapWrapperLayout;
@@ -1977,17 +1977,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             try {
                 if (!isCancelled()) {
                     if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                     /*   bmodel.productHelper
-                                .downloadFiveFilterLevels(MENU_STK_ORD);
-                        bmodel.productHelper
-                                .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);*/
 
-
-                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_STK_ORD));
-                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_STK_ORD,
+                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
                                 bmodel.productHelper.getFilterProductLevels()));
-                        bmodel.productHelper.downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
-
+                        ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                        if (productMasterPair != null) {
+                            bmodel.productHelper.setProductMaster(productMasterPair.productMaster);
+                            bmodel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                        }
 
                     } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                         //to reload product filter if diffrent retailer selected

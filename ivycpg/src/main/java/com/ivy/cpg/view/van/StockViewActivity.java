@@ -16,7 +16,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -204,14 +203,14 @@ public class StockViewActivity extends ToolBarwithFilter implements
         if (getSupportActionBar() != null) {
             getSupportActionBar().setIcon(null);
         }
-        mylist = new ArrayList<>(bmodel.productHelper.getProducts());
+        mylist = new ArrayList<>(bmodel.productHelper.getLoadMgmtProducts());
         Commons.print("stock view oncreate," + String.valueOf(mylist.size()));
 
         /** Load products from product master **/
 //        LoadManagementBO lbo;
 //        mylist2 = new Vector<>();
-//        for (int j = 0; j < bmodel.productHelper.getProducts().size(); j++) {
-//            lbo = bmodel.productHelper.getProducts().get(j);
+//        for (int j = 0; j < bmodel.productHelper.getLoadMgmtProducts().size(); j++) {
+//            lbo = bmodel.productHelper.getLoadMgmtProducts().get(j);
 //            if (lbo.getStocksih() > 0)
 //                mylist2.add(lbo);
 //        }

@@ -7,9 +7,11 @@ import android.database.DatabaseUtils;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.CreditNoteListBO;
+import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.TaxBO;
+import com.ivy.sd.png.bo.asset.ProductMasterPair;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -19,7 +21,9 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 public class SalesReturnHelper {
@@ -73,6 +77,11 @@ public class SalesReturnHelper {
     private String SignatureName;
 
     private String invoiceId;
+
+    private Vector<ProductMasterBO> mSalesReturnProducts = null;
+    private Map<String, ProductMasterBO> mSalesReturnProductById;
+    private Vector<LevelBO> filterProductLevels;
+    private HashMap<Integer, Vector<LevelBO>> filterProductsByLevelId;
 
     private SalesReturnHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
@@ -181,18 +190,28 @@ public class SalesReturnHelper {
         this.invoiceId = invoiceId;
     }
 
+
+    public Vector<LevelBO> getFilterProductLevels() {
+        return filterProductLevels;
+    }
+
+    public HashMap<Integer, Vector<LevelBO>> getFilterProductsByLevelId() {
+        return filterProductsByLevelId;
+    }
+
+
     /**
      * Check weather product Master has any salesreturn.
      *
      * @return - true or false
      */
     public boolean hasSalesReturn() {
-        int siz = bmodel.productHelper.getSalesReturnProducts().size();
+        int siz = getSalesReturnProducts().size();
         if (siz == 0)
             return false;
 
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper.getSalesReturnProducts().get(i);
+            ProductMasterBO product = getSalesReturnProducts().get(i);
             if (!product.getSalesReturnReasonList().isEmpty())
                 for (SalesReturnReasonBO bo : product
                         .getSalesReturnReasonList()) {
@@ -451,7 +470,7 @@ public class SalesReturnHelper {
             if (module.equals("ORDER"))
                 siz = bmodel.productHelper.getProductMaster().size();
             else
-                siz = bmodel.productHelper.getSalesReturnProducts().size();
+                siz = getSalesReturnProducts().size();
             int totalQty;
             double totalvalue = 0;
             for (int i = 0; i < siz; ++i) {
@@ -460,8 +479,7 @@ public class SalesReturnHelper {
                     product = bmodel.productHelper
                             .getProductMaster().elementAt(i);
                 else
-                    product = bmodel.productHelper
-                            .getSalesReturnProducts().elementAt(i);
+                    product = getSalesReturnProducts().elementAt(i);
 
                 for (SalesReturnReasonBO bo : product
                         .getSalesReturnReasonList()) {
@@ -588,8 +606,7 @@ public class SalesReturnHelper {
                     }
                 }
                 if (!module.equals("ORDER"))
-                    product.setSalesReturnReasonList(ProductHelper
-                            .cloneIsolateList(product));
+                    product.setSalesReturnReasonList(cloneIsolateList(product));
             }
 
             if (isData) {
@@ -894,7 +911,7 @@ public class SalesReturnHelper {
         if (module.equals("ORDER"))
             productBO = bmodel.productHelper.getProductMasterBOById(Integer.toString(pid));
         else
-            productBO = bmodel.productHelper.getSalesReturnProductBOById(Integer.toString(pid));
+            productBO = getSalesReturnProductBOById(Integer.toString(pid));
 
         if (productBO != null) {
             for (SalesReturnReasonBO bo : bmodel.reasonHelper.getReasonSalesReturnMaster()) {
@@ -934,7 +951,7 @@ public class SalesReturnHelper {
         if (isFromOrder)
             productMaster = bmodel.productHelper.getProductMaster();
         else
-            productMaster = bmodel.productHelper.getSalesReturnProducts();
+            productMaster = getSalesReturnProducts();
 
         int siz = productMaster.size();
         for (int i = 0; i < siz; ++i) {
@@ -972,7 +989,7 @@ public class SalesReturnHelper {
         if (isFromOrder)
             productMaster = bmodel.productHelper.getProductMaster();
         else
-            productMaster = bmodel.productHelper.getSalesReturnProducts();
+            productMaster = getSalesReturnProducts();
 
         int siz = productMaster.size();
         for (int i = 0; i < siz; ++i) {
@@ -1059,7 +1076,7 @@ public class SalesReturnHelper {
         if (module.equals("ORDER"))
             productMaster = bmodel.productHelper.getProductMaster();
         else
-            productMaster = bmodel.productHelper.getSalesReturnProducts();
+            productMaster = getSalesReturnProducts();
         StringBuffer sb;
         double totalReplacementValue = 0.0;
 
@@ -1359,7 +1376,7 @@ public class SalesReturnHelper {
                 if (module.equals("ORDER"))
                     productBO = bmodel.productHelper.getProductMasterBOById(pid);
                 else
-                    productBO = bmodel.productHelper.getSalesReturnProductBOById(pid);
+                    productBO = getSalesReturnProductBOById(pid);
                 if (productBO != null) {
                     int uomid = c.getInt(2);
                     if (uomid == productBO.getPcUomid()) {
@@ -1428,7 +1445,7 @@ public class SalesReturnHelper {
     }
 
     public List<ProductMasterBO> updateReplaceQtyWithOutTakingOrder(List<ProductMasterBO> orderList) {
-        final Vector<ProductMasterBO> productMasterList = bmodel.productHelper.getSalesReturnProducts();
+        final Vector<ProductMasterBO> productMasterList = getSalesReturnProducts();
         if (orderList != null && !orderList.isEmpty() && productMasterList != null) {
             for (ProductMasterBO productMasterBO : productMasterList) {
                 if (productMasterBO.getOrderedPcsQty() == 0 && productMasterBO.getOrderedCaseQty() == 0 && productMasterBO.getOrderedOuterQty() == 0) {
@@ -1495,5 +1512,147 @@ public class SalesReturnHelper {
         }
 
         return invoiceNoList;
+    }
+
+    /**
+     * get tagged products and update the productBO.
+     */
+    public void downloadSalesReturnProducts(Context mContext) {
+        try {
+
+            mSalesReturnProducts = new Vector<>();
+            mSalesReturnProductById = new HashMap<>();
+
+            if (bmodel.productHelper.isFilterAvaiable("MENU_SALES_RET") && isSameContentLevel(mContext) == 0) {
+                filterProductLevels = bmodel.productHelper.downloadFilterLevel("MENU_SALES_RET");
+                filterProductsByLevelId = bmodel.productHelper.downloadFilterLevelProducts("MENU_SALES_RET", filterProductLevels);
+                bmodel.productHelper.downloadProducts("MENU_SALES_RET");
+                ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts("MENU_SALES_RET");
+                if (productMasterPair != null) {
+                    mSalesReturnProducts = productMasterPair.productMaster;
+                    mSalesReturnProductById = productMasterPair.productMasterById;
+                }
+            } else {
+
+                for (ProductMasterBO sku : bmodel.productHelper.getProductMaster()) {
+                    mSalesReturnProducts.add(sku);
+                    mSalesReturnProductById.put(sku.getProductID(), sku);
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("downloadSalesReturnProducts", e);
+        }
+
+    }
+
+    public void downloadSalesReturnSKUs(Context mContext) {
+        //For counter sales
+
+        mSalesReturnProducts = new Vector<ProductMasterBO>();
+        mSalesReturnProductById = new HashMap<String, ProductMasterBO>();
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        Cursor c = db.selectSQL("select pid,pname,parentid,psname,srp,mrp,pcuomid from SalesReturnProductMaster");
+        if (c != null) {
+            if (c.getCount() > 0) {
+                ProductMasterBO productMasterBO;
+                while (c.moveToNext()) {
+                    productMasterBO = new ProductMasterBO();
+                    productMasterBO.setProductID(c.getString(0));
+                    productMasterBO.setProductName(c.getString(1));
+                    productMasterBO.setParentid(c.getInt(2));
+                    productMasterBO.setProductShortName(c.getString(3));
+                    productMasterBO.setSrp(c.getFloat(4));
+                    productMasterBO.setMRP(c.getFloat(5));
+                    productMasterBO.setPcUomid(c.getInt(6));
+                    productMasterBO.setCaseSize(0);
+                    productMasterBO.setOutersize(0);
+                    productMasterBO.setBarCode("");
+                    productMasterBO.setCasebarcode("");
+                    productMasterBO.setOuterbarcode("");
+                    productMasterBO.setIsSaleable(1);
+                    mSalesReturnProducts.add(productMasterBO);
+                    mSalesReturnProductById.put(productMasterBO.getProductID(), productMasterBO);
+
+                }
+            }
+        }
+    }
+
+    public ProductMasterBO getSalesReturnProductBOById(String productId) {
+        if (mSalesReturnProductById == null)
+            return null;
+        return mSalesReturnProductById.get(productId);
+    }
+
+    public Vector<ProductMasterBO> getSalesReturnProducts() {
+        if (mSalesReturnProducts == null)
+            return new Vector<>();
+        return mSalesReturnProducts;
+    }
+
+    public void cloneReasonMaster(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
+        try {
+            Vector<ProductMasterBO> productMasterBOs = null;
+            if (isFromOrder)
+                productMasterBOs = bmodel.productHelper.getProductMaster();
+            else
+                productMasterBOs = mSalesReturnProducts;
+
+            for (ProductMasterBO product : productMasterBOs) {
+                product.setSalesReturnReasonList(cloneIsolateList(product));
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+
+    private static List<SalesReturnReasonBO> cloneIsolateList(ProductMasterBO product) {
+        List<SalesReturnReasonBO> clone = null;
+        try {
+            clone = new ArrayList<>();
+            SalesReturnReasonBO item = new SalesReturnReasonBO();
+            item.setCaseSize(product.getCaseSize());
+            item.setOuterSize(product.getOutersize());
+            item.setProductShortName(product.getProductShortName());
+            item.setOldMrp(product.getMRP());
+            item.setSrpedit(product.getSrp());
+            clone.add(new SalesReturnReasonBO(item));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return clone;
+    }
+
+
+    private int isSameContentLevel(Context mContext) {
+        int count = 0;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sb = "Select count(*) from ConfigActivityFilter CF Inner Join ConfigActivityFilter CF1 on " +
+                    " CF1.ProductContent = CF.ProductContent and CF1.ActivityCode = 'MENU_SALES_RET' " +
+                    "Where CF.ActivityCode ='MENU_STK_ORD'";
+            Cursor c = db.selectSQL(sb);
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    count = c.getInt(0);
+                }
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+            count = 0;
+        }
+
+        return count;
     }
 }

@@ -90,6 +90,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
+import com.ivy.sd.png.bo.asset.ProductMasterPair;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -1524,10 +1525,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || menu.getConfigCode().equals(MENU_DGT)
                     && hasLink == 1) {
                 if (bmodel.productHelper.getmLoadedGlobalProductId() != bmodel.productHelper.getmSelectedGlobalProductId()) {
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_STK_ORD));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_STK_ORD,
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
                             bmodel.productHelper.getFilterProductLevels()));
-                    bmodel.productHelper.downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
+                    ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                    if (productMasterPair != null) {
+                        bmodel.productHelper.setProductMaster(productMasterPair.productMaster);
+                        bmodel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                    }
                 }
 
             }
@@ -1943,14 +1948,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
                     bmodel.reasonHelper.downloadSalesReturnReason();
                     if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
-                        bmodel.productHelper.cloneReasonMaster(true);
-//
-                        salesReturnHelper.getInstance(this).clearSalesReturnTable(true);
-//
-////                        if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                        salesReturnHelper.getInstance(this).removeSalesReturnTable(true);
-                        salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(), "ORDER");
-////                        }
+                        salesReturnHelper.cloneReasonMaster(true);//
+                        salesReturnHelper.clearSalesReturnTable(true);//
+                        salesReturnHelper.removeSalesReturnTable(true);
+                        salesReturnHelper.loadSalesReturnData(getApplicationContext(), "ORDER");
                     }
                 }
                 if (!isClick) {
@@ -2615,29 +2616,26 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                         if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
-                            bmodel.productHelper.downloadSalesReturnSKUs();
+                            salesReturnHelper.downloadSalesReturnSKUs(this);
 
                         else
-                            bmodel.productHelper.downloadSalesReturnProducts();
+                            salesReturnHelper.downloadSalesReturnProducts(this);
 
 
-                        bmodel.productHelper.cloneReasonMaster(false);
+                        salesReturnHelper.cloneReasonMaster(false);
 
-                        Commons.print("Sales Return Prod Size<><><><<>" + bmodel.productHelper.getSalesReturnProducts().size());
+                        Commons.print("Sales Return Prod Size<><><><<>" + salesReturnHelper.getSalesReturnProducts().size());
 
                         salesReturnHelper.getInstance(this).clearSalesReturnTable(false);
 
-//                    Commons.print("Sales Return Prod <><><><<>" + bmodel.productHelper.getSalesReturnProducts());
 
                         if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                             salesReturnHelper.getInstance(this).removeSalesReturnTable(false);
-//                        Commons.print("Sales Return Prod <><><><<>" + bmodel.productHelper.getSalesReturnProducts());
                             salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(), "");
                         }
 
                         bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);
 
-                        //bmodel.salesReturnHelper.setSalesEdit(false);
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
                                 SDUtil.now(SDUtil.TIME), menu.getConfigCode());
@@ -3194,8 +3192,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 //Load filter
                 //mSFHelper.downloadSFFiveLevelFilter(MENU_SOS);
-                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFiveFilterLevel(MENU_SOS));
-                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SOS,
+                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFilterLevel(MENU_SOS));
+                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_SOS,
                         mSFHelper.getSequenceValues()));
 
                 //load content data
@@ -3280,8 +3278,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 //Load filter
                 //mSFHelper.downloadSFFiveLevelFilter(MENU_SOD);
-                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFiveFilterLevel(MENU_SOD));
-                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SOD,
+                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFilterLevel(MENU_SOD));
+                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_SOD,
                         mSFHelper.getSequenceValues()));
 
 
@@ -3333,8 +3331,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 //Load filter
                 //mSODAssetHelper.downloadSFFiveLevelFilter(MENU_SOD_ASSET);
-                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFiveFilterLevel(MENU_SOD_ASSET));
-                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SOD_ASSET,
+                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFilterLevel(MENU_SOD_ASSET));
+                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_SOD_ASSET,
                         mSFHelper.getSequenceValues()));
 
                 mSODAssetHelper.loadSODAssetData(MENU_SOD_ASSET);
@@ -3383,8 +3381,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mSFHelper.updateSalesFundamentalConfigurations();
 
                 //mSFHelper.downloadSFFiveLevelFilter(MENU_SOSKU);
-                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFiveFilterLevel(MENU_SOSKU));
-                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SOSKU,
+                mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFilterLevel(MENU_SOSKU));
+                mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_SOSKU,
                         mSFHelper.getSequenceValues()));
 
                 mSFHelper.loadData(MENU_SOSKU);
@@ -4856,8 +4854,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private void chooseFilterType(String menuCode) {
       /*  bmodel.productHelper
                 .downloadFiveLevelFilterNonProducts(menuCode);*/
-        bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel(menuCode));
-        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts(menuCode,
+        bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(menuCode));
+        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(menuCode,
                 bmodel.productHelper.getRetailerModuleSequenceValues()));
     }
 

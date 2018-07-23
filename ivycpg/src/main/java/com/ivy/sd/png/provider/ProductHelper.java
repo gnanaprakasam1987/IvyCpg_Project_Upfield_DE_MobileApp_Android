@@ -32,6 +32,7 @@ import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
+import com.ivy.sd.png.bo.asset.ProductMasterPair;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -83,8 +84,6 @@ public class ProductHelper {
     private Vector<ProductMasterBO> mTaggedProducts = null;
     private Map<String, ProductMasterBO> mTaggedProductById;
 
-    private Vector<ProductMasterBO> mSalesReturnProducts = null;
-    private Map<String, ProductMasterBO> mSalesReturnProductById;
 
     private ArrayList<Integer> mIndicativeList;
 
@@ -214,8 +213,6 @@ public class ProductHelper {
         this.bmodel = (BusinessModel) context;
         productMaster = new Vector<ProductMasterBO>();
         mTaggedProducts = new Vector<ProductMasterBO>();
-        mSalesReturnProducts = new Vector<ProductMasterBO>();
-        // bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public void clearProductHelper() {
@@ -223,8 +220,6 @@ public class ProductHelper {
         mTaggedProducts = null;
         mTaggedProductById = null;
         productMasterById = null;
-        mSalesReturnProducts = null;
-        mSalesReturnProductById = null;
         System.gc();
     }
 
@@ -233,6 +228,14 @@ public class ProductHelper {
             instance = new ProductHelper(context);
         }
         return instance;
+    }
+
+    public void setProductMaster(Vector<ProductMasterBO> productMaster) {
+        this.productMaster = productMaster;
+    }
+
+    public void setProductMasterById(Map<String, ProductMasterBO> productMasterById) {
+        this.productMasterById = productMasterById;
     }
 
     public Vector<ProductMasterBO> getProductMaster() {
@@ -245,12 +248,6 @@ public class ProductHelper {
         if (mTaggedProducts == null)
             return new Vector<ProductMasterBO>();
         return mTaggedProducts;
-    }
-
-    public Vector<ProductMasterBO> getSalesReturnProducts() {
-        if (mSalesReturnProducts == null)
-            return new Vector<>();
-        return mSalesReturnProducts;
     }
 
     public HashMap<Integer, Vector<LevelBO>> getFilterProductsByLevelId() {
@@ -787,7 +784,7 @@ public class ProductHelper {
      * @param moduleName
      * @return Vector of Type LevelBO
      */
-    public Vector<LevelBO> downloadFiveFilterLevel(String moduleName) {
+    public Vector<LevelBO> downloadFilterLevel(String moduleName) {
         Vector<LevelBO> filterLevel = new Vector<>();
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -825,7 +822,7 @@ public class ProductHelper {
         return filterLevel;
     }
 
-    public HashMap<Integer, Vector<LevelBO>> downloadFiveFilterLevelProducts(String moduleName, Vector<LevelBO> filterProductLevels) {
+    public HashMap<Integer, Vector<LevelBO>> downloadFilterLevelProducts(String moduleName, Vector<LevelBO> filterProductLevels) {
         HashMap<Integer, Vector<LevelBO>> filterLevelPrdByLevelId = new HashMap<>();
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -899,27 +896,11 @@ public class ProductHelper {
         return filterLevelPrdByLevelId;
     }
 
+    public ProductMasterPair downloadProducts(String moduleCode) {
 
-    private boolean isRetailerModule(String moduleName) {
-        return moduleName.equals("MENU_SURVEY")
-                || moduleName.equals("MENU_NEAREXPIRY")
-                || moduleName.equals("MENU_PRICE")
-                || moduleName.equals("MENU_AVAILABILITY")
-                || moduleName.equals("MENU_SOS")
-                || moduleName.equals("MENU_SOD")
-                || moduleName.equals("MENU_SOSKU")
-                || moduleName.equals("MENU_PROMO")
-                || moduleName.equals("MENU_ASSET")
-                || moduleName.equals("MENU_POSM")
-                || moduleName.equals("MENU_PLANOGRAM")
-                || moduleName.equals("MENU_DGT")
-                || moduleName.equals("MENU_DGT_CS");
-
-    }
-
-    public void downloadProductsWithFiveLevelFilter(String moduleCode) {
-
-        productMasterById = new HashMap<>();
+        Map<String, ProductMasterBO> productMasterById = new HashMap<>();
+        Vector<ProductMasterBO> productMaster = new Vector<>();
+        ProductMasterPair productMasterPair = null;
 
         try {
 
@@ -1073,7 +1054,7 @@ public class ProductHelper {
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
                 //downloading product distribution and preparing query to get products mapped..
-                String pdQuery = downloadProductDistribution(mContentLevel);
+                String pdQuery = downloadProductDistribution(mContentLevelId, mContentLevel);
                 if (pdQuery.length() > 0) {
                     sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
                 }
@@ -1153,11 +1134,6 @@ public class ProductHelper {
                         product.getLocations().get(i)
                                 .setNearexpiryDate(cloneDateList(dateList));
                     }
-                    /*
-                     * product.setSalesReturnReasonList(cloneIsolateList(
-                     * bmodel.reasonHelper.getReasonSalesReturnMaster(),
-                     * product.getCaseSize(), product.getOutersize()));
-                     */
                     product.setIsNMustSell(c.getInt(c.getColumnIndex("IsNMustSell")));
                     product.setWeight(c.getFloat(c.getColumnIndex("weight")));
                     product.setIsDiscountable(c.getInt(c.getColumnIndex("IsDiscount")));
@@ -1192,6 +1168,7 @@ public class ProductHelper {
                     }
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
+                    productMasterPair = new ProductMasterPair(productMaster, productMasterById);
 
 
                 }
@@ -1214,7 +1191,7 @@ public class ProductHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
-
+        return productMasterPair;
     }
 
 
@@ -1224,7 +1201,7 @@ public class ProductHelper {
      * @param mContentLevel to identify given products level
      * @return Returns a query which gets products(content level) mapped to current distribution type
      */
-    private String downloadProductDistribution(int mContentLevel) {
+    private String downloadProductDistribution(int mContentLevelId, int mContentLevel) {
 
         String PRODUCT_DISTRIBUTION_TYPE_ROUTE = "ROUTE";
         String PRODUCT_DISTRIBUTION_TYPE_RETAILER = "RETAILER";
@@ -1284,12 +1261,11 @@ public class ProductHelper {
                     if (givenSequence != 0 && givenSequence != mContentLevel) {
 
 
-                        int loopEnd = mContentLevel - givenSequence + 1;
                         stringBuilder = new StringBuilder();
-                        stringBuilder.append("select P" + loopEnd + ".pid as productid from productmaster P1");
-                        for (int i = 2; i <= loopEnd; i++)
-                            stringBuilder.append(" INNER JOIN ProductMaster P" + i + " ON P" + i
-                                    + ".ParentId = P" + (i - 1) + ".PID");
+                        stringBuilder.append("select P1.pid as productid from productmaster P1");
+
+                        stringBuilder.append(" INNER JOIN ProductMaster PM ON PM.ParentHierarchy LIKE '%/' || P1.PID || '/%'"
+                                + " and PM.PLid =" + mContentLevelId);
 
                         stringBuilder.append(" WHERE P1.PLid=" + givenLevelId + " and P1.pid in(" + productIds + ")");
 
@@ -1469,46 +1445,6 @@ public class ProductHelper {
 
     }
 
-    public void downloadSalesReturnSKUs() {
-        //For counter sales
-
-        mSalesReturnProducts = new Vector<ProductMasterBO>();
-        mSalesReturnProductById = new HashMap<String, ProductMasterBO>();
-
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-        Cursor c = db.selectSQL("select pid,pname,parentid,psname,srp,mrp,pcuomid from SalesReturnProductMaster");
-        if (c != null) {
-            if (c.getCount() > 0) {
-                ProductMasterBO productMasterBO;
-                while (c.moveToNext()) {
-                    productMasterBO = new ProductMasterBO();
-                    productMasterBO.setProductID(c.getString(0));
-                    productMasterBO.setProductName(c.getString(1));
-                    productMasterBO.setParentid(c.getInt(2));
-                    productMasterBO.setProductShortName(c.getString(3));
-                    productMasterBO.setSrp(c.getFloat(4));
-                    productMasterBO.setMRP(c.getFloat(5));
-                    productMasterBO.setPcUomid(c.getInt(6));
-                    productMasterBO.setCaseSize(0);
-                    productMasterBO.setOutersize(0);
-                    productMasterBO.setBarCode("");
-                    productMasterBO.setCasebarcode("");
-                    productMasterBO.setOuterbarcode("");
-                    productMasterBO.setIsSaleable(1);
-                    mSalesReturnProducts.add(productMasterBO);
-                    mSalesReturnProductById.put(productMasterBO.getProductID(), productMasterBO);
-
-                }
-            }
-        }
-
-
-    }
-
-
     private StringBuffer downloadProductSequenceFromFilter() {
         StringBuffer filter = new StringBuffer();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1573,25 +1509,6 @@ public class ProductHelper {
 
     }
 
-    /**
-     * get tagged products and update the productBO.
-     */
-    public void downloadSalesReturnProducts() {
-        try {
-
-            mSalesReturnProducts = new Vector<ProductMasterBO>();
-            mSalesReturnProductById = new HashMap<String, ProductMasterBO>();
-
-            for (ProductMasterBO sku : getProductMaster()) {
-                mSalesReturnProducts.add(sku);
-                mSalesReturnProductById.put(sku.getProductID(), sku);
-            }
-
-        } catch (Exception e) {
-            Commons.printException("downloadSalesReturnProducts", e);
-        }
-
-    }
 
     /**
      * Method will return tagged products list as a string with comma separator.
@@ -1691,39 +1608,6 @@ public class ProductHelper {
         }
     }
 
-
-    public void cloneReasonMaster(boolean isFromOrder) { //true -> Stock and Order --- false -> SalesReturn
-        try {
-            Vector<ProductMasterBO> productMasterBOs = null;
-            if (isFromOrder)
-                productMasterBOs = productMaster;
-            else
-                productMasterBOs = mSalesReturnProducts;
-
-            for (ProductMasterBO product : productMasterBOs) {
-                product.setSalesReturnReasonList(cloneIsolateList(product));
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public static List<SalesReturnReasonBO> cloneIsolateList(ProductMasterBO product) {
-        List<SalesReturnReasonBO> clone = null;
-        try {
-            clone = new ArrayList<>();
-            SalesReturnReasonBO item = new SalesReturnReasonBO();
-            item.setCaseSize(product.getCaseSize());
-            item.setOuterSize(product.getOutersize());
-            item.setProductShortName(product.getProductShortName());
-            item.setOldMrp(product.getMRP());
-            item.setSrpedit(product.getSrp());
-            clone.add(new SalesReturnReasonBO(item));
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return clone;
-    }
 
     public int calculateSO(int ap3m, int closingStock, boolean isSBD,
                            int isInitiative, int sbdDropSize, int initiativeDropSize) {
@@ -1869,12 +1753,6 @@ public class ProductHelper {
         if (productMasterById == null)
             return null;
         return productMasterById.get(productId);
-    }
-
-    public ProductMasterBO getSalesReturnProductBOById(String productId) {
-        if (mSalesReturnProductById == null)
-            return null;
-        return mSalesReturnProductById.get(productId);
     }
 
 
@@ -3588,7 +3466,7 @@ public class ProductHelper {
         return totalVoume;
     }
 
-    public Vector<LoadManagementBO> getProducts() {
+    public Vector<LoadManagementBO> getLoadMgmtProducts() {
         return productlist;
     }
 
@@ -3912,7 +3790,7 @@ public class ProductHelper {
     }
 
 
-    public void downloadDistributorProductsWithFiveLevelFilter(String moduleCode) {
+    public void downloadDistributorProducts(String moduleCode) {
         productMasterById = new HashMap<>();
         downloadInStoreLocationsForStockCheck();
         try {

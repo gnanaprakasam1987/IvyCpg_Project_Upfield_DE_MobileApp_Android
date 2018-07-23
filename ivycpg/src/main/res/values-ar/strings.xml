@@ -910,7 +910,7 @@
     <string name="non_visit">لا توجد زيارة </string>
     <string name="are_you_sure_you_want_to_logout">هل أنت متأكد من أنك ترغب في الخروج ؟</string>
     <string name="vaload_heder_text">اختيار الجودة لكل تشغيلة.</string>
-    <string name="total_items">إجمالي البنود المرتجعة %1SD.</string>
+    <string name="total_items">إجمالي البنود المرتجعة “%1$d”. </string>
     <string name="srp_text">SRP</string>
     <string name="loading_no">رقم التحميل </string>
     <string name="dateend">تاريخ النهاية </string>

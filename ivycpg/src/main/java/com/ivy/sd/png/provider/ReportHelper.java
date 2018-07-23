@@ -6,7 +6,6 @@ import android.database.SQLException;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
-import com.ivy.cpg.view.reports.promotion.RetailerNamesBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -24,7 +23,6 @@ import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductivityReportBO;
-import com.ivy.cpg.view.reports.promotion.PromotionTrackingReportBO;
 import com.ivy.sd.png.bo.QuestionReportBO;
 import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -36,8 +34,6 @@ import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.SyncStatusBO;
 import com.ivy.sd.png.bo.TaskReportBo;
-import com.ivy.cpg.view.reports.asset.AssetTrackingBrandBO;
-import com.ivy.cpg.view.reports.asset.AssetTrackingReportBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -2471,7 +2467,7 @@ public class ReportHelper {
                 bo.setBaseUomPieceWise(false);
             }
         } else if (reportType == 3) {
-            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                 bo.setBaseUomCaseWise(false);
                 bo.setBaseUomOuterWise(false);
                 bo.setBaseUomPieceWise(false);
@@ -2493,7 +2489,7 @@ public class ReportHelper {
                 bo.setBaseUomPieceWise(true);
             }
         } else if (reportType == 3) {
-            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                 bo.setBaseUomCaseWise(true);
                 bo.setBaseUomOuterWise(true);
                 bo.setBaseUomPieceWise(true);
@@ -2533,7 +2529,7 @@ public class ReportHelper {
                         }
                     }
                 } else if (reportType == 3) {
-                    for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+                    for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                         if (productId.equals(bo.getProductid() + "")) {
                             if (bo.getPiece_uomid() == uomId)
                                 bo.setBaseUomPieceWise(true);
@@ -2592,7 +2588,7 @@ public class ReportHelper {
                                 }
                             }
                         } else if (reportType == 3) {
-                            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+                            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                                 if (c.getString(0).equals(bo.getProductid() + "")) {
                                     if (bo.getPiece_uomid() == uomId)
                                         bo.setBaseUomPieceWise(true);

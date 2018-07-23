@@ -352,7 +352,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             generalbutton = GENERAL;
         ProductMasterBO ret;
         if (mEdt_searchproductName.getText().length() >= 3) {
-            Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+            Vector<ProductMasterBO> items = salesReturnHelper.getSalesReturnProducts();
             if (items == null) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -414,7 +414,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
     private void loadProductList() {
         try {
-            Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+            Vector<ProductMasterBO> items = salesReturnHelper.getSalesReturnProducts();
 
             int siz = items.size();
             mylist = new ArrayList<>();
@@ -547,7 +547,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     private void updateValue() {
         totalvalue = 0;
         int lpccount = 0;
-        Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+        Vector<ProductMasterBO> items = salesReturnHelper.getSalesReturnProducts();
         if (items == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
@@ -665,7 +665,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     }
 
     private boolean isValidData() {
-        Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+        Vector<ProductMasterBO> items = salesReturnHelper.getSalesReturnProducts();
         int totalRetQty = 0;
         int totalRepQty;
         int siz = items.size();
@@ -692,12 +692,12 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     }
 
     private boolean isValidMRP() {
-        int siz = bmodel.productHelper.getSalesReturnProducts().size();
+        int siz = salesReturnHelper.getSalesReturnProducts().size();
         if (siz == 0)
             return true;
 
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper.getSalesReturnProducts().get(i);
+            ProductMasterBO product = salesReturnHelper.getSalesReturnProducts().get(i);
             if (product.getSalesReturnReasonList() == null || product.getSalesReturnReasonList().size() == 0)
                 return true;
             for (SalesReturnReasonBO bo : product
@@ -822,7 +822,10 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             Bundle bundle = new Bundle();
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
-            bundle.putString("isFrom", "STK");
+            if (salesReturnHelper.getFilterProductLevels() != null && salesReturnHelper.getFilterProductsByLevelId() != null)
+                bundle.putString("isFrom", "SR");
+            else
+                bundle.putString("isFrom", "STK");
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
 
             // set Fragmentclass Arguments
@@ -863,8 +866,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             productName.setText("");
 
             //items = getProducts();
-            items = bmodel.productHelper.getSalesReturnProducts();
-            Commons.print("AS<><><><" + bmodel.productHelper.getSalesReturnProducts().size());
+            items = salesReturnHelper.getSalesReturnProducts();
+            Commons.print("AS<><><><" + salesReturnHelper.getSalesReturnProducts().size());
             if (items == null) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -1004,11 +1007,11 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             }
         } else {
             if (!mFilterText.isEmpty()) {
-                    for (ProductMasterBO productBO : items) {
-                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/") && productBO.getIsSaleable() == 1) {
-                            mylist.add(productBO);
-                            fiveFilter_productIDs.add(productBO.getProductID());
-                        }
+                for (ProductMasterBO productBO : items) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/") && productBO.getIsSaleable() == 1) {
+                        mylist.add(productBO);
+                        fiveFilter_productIDs.add(productBO.getProductID());
+                    }
 
                 }
             } else {

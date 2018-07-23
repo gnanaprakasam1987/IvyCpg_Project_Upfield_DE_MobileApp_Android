@@ -161,8 +161,8 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
             Vector<ConfigureBO> menuDB = mBModel.configurationMasterHelper
                     .downloadLoadManagementMenu();
 
-            mBModel.productHelper.setFilterProductLevels(mBModel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
-            mBModel.productHelper.setFilterProductsByLevelId(mBModel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+            mBModel.productHelper.setFilterProductLevels(mBModel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+            mBModel.productHelper.setFilterProductsByLevelId(mBModel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
                     mBModel.productHelper.getFilterProductLevels()));
 
 
@@ -615,7 +615,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (mBModel.configurationMasterHelper.SHOW_SUBDEPOT) {
-                    mBModel.vanmodulehelper.downloadSubDepots();
+                    mBModel.loadManagementHelper.downloadSubDepots();
                 }
 
                 mBModel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
@@ -629,7 +629,7 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
                     mBModel.productHelper.downlaodReturnableProducts("MENU_LOAD_MANAGEMENT");
                     mBModel.productHelper.downloadBomMaster();
                     mBModel.productHelper.downloadGenericProductID();
-                    mBModel.vanmodulehelper.loadVanLoadReturnProductValidation();
+                    mBModel.loadManagementHelper.loadVanLoadReturnProductValidation();
 
                 }
 
@@ -760,8 +760,8 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                mBModel.productHelper.setFilterProductLevels(mBModel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
-                mBModel.productHelper.setFilterProductsByLevelId(mBModel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                mBModel.productHelper.setFilterProductLevels(mBModel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+                mBModel.productHelper.setFilterProductsByLevelId(mBModel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
                         mBModel.productHelper.getFilterProductLevels()));
                 mBModel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_STOCK_VIEW");
@@ -806,8 +806,8 @@ public class LoadManagementScreen extends IvyBaseActivityNoActionBar {
 
                 //mBModel.productHelper
                     //    .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-                mBModel.productHelper.setFilterProductLevels(mBModel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
-                mBModel.productHelper.setFilterProductsByLevelId(mBModel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                mBModel.productHelper.setFilterProductLevels(mBModel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+                mBModel.productHelper.setFilterProductsByLevelId(mBModel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
                         mBModel.productHelper.getFilterProductLevels()));
                 mBModel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");

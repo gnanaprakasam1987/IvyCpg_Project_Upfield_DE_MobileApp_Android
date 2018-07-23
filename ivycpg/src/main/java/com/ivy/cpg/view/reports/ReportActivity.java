@@ -28,7 +28,6 @@ import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
@@ -71,7 +70,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 public class ReportActivity extends BaseActivity implements
         BrandDialogInterface, SellerListFragment.SellerSelectionInterface,FiveLevelFilterCallBack {
@@ -368,8 +366,8 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT)) {
 
-            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
-            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
                     bmodel.productHelper.getFilterProductLevels()));
             bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                     "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");

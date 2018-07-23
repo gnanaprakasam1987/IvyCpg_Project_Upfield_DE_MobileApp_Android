@@ -34,7 +34,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -123,7 +122,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
         if (getSupportActionBar() != null) {
             getSupportActionBar().setIcon(null);
         }
-        stockPropVector = bmodel.productHelper.getProducts();
+        stockPropVector = bmodel.productHelper.getLoadMgmtProducts();
         bmodel.stockProposalModuleHelper.loadInitiative();
         bmodel.stockProposalModuleHelper.loadSBDData();
         bmodel.stockProposalModuleHelper.loadPurchased();
@@ -597,7 +596,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
         try {
             if (mEdt_searchproductName.getText().length() >= 3) {
                 Vector<LoadManagementBO> items = bmodel.productHelper
-                        .getProducts();
+                        .getLoadMgmtProducts();
 
                 if (items == null) {
                     bmodel.showAlert(

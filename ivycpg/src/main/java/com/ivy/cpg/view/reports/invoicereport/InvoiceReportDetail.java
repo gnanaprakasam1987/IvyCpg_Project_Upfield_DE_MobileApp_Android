@@ -701,7 +701,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         try {
             ZebraPrinter printer = connect();
             if (printer != null) {
-                businessModel.vanmodulehelper.downloadSubDepots();
+                businessModel.loadManagementHelper.downloadSubDepots();
                 printInvoice(printerName);
             } else {
                 businessModel.productHelper.clearOrderTable();

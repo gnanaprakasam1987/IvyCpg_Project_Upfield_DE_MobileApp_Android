@@ -63,7 +63,6 @@ import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -1834,8 +1833,8 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
         } else if (i == R.id.menu_survey) {
            /* bmodel.productHelper
                     .downloadFiveLevelFilterNonProducts("MENU_SURVEY");*/
-            bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel("MENU_SURVEY"));
-            bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_SURVEY",
+            bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY"));
+            bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts("MENU_SURVEY",
                     bmodel.productHelper.getRetailerModuleSequenceValues()));
             bmodel.mSelectedActivityName = "Survey";
             startActivity(new Intent(this, SurveyActivityNew.class));

@@ -172,8 +172,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
             Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
                     .downloadLoadManagementMenu();
 
-            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
-            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
                     bmodel.productHelper.getFilterProductLevels()));
 
             ListView listView = (ListView) view.findViewById(R.id.listView1);
@@ -688,7 +688,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
-                    bmodel.vanmodulehelper.downloadSubDepots();
+                    bmodel.loadManagementHelper.downloadSubDepots();
                 }
 
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
@@ -701,7 +701,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     bmodel.productHelper.downlaodReturnableProducts("MENU_LOAD_MANAGEMENT");
                     bmodel.productHelper.downloadBomMaster();
                     bmodel.productHelper.downloadGenericProductID();
-                    bmodel.vanmodulehelper.loadVanLoadReturnProductValidation();
+                    bmodel.loadManagementHelper.loadVanLoadReturnProductValidation();
 
                 }
 
@@ -833,8 +833,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
                         bmodel.productHelper.getFilterProductLevels()));
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
@@ -878,8 +878,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_LOAD_MANAGEMENT"));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
                         bmodel.productHelper.getFilterProductLevels()));
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");

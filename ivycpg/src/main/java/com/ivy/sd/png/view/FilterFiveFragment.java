@@ -10,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sf.SalesFundamentalHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -203,8 +202,8 @@ public class FilterFiveFragment<E> extends Fragment {
                 switch (fromScreen) {
                     case "STK":
                         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
-                            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel("MENU_STK_ORD"));
-                            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_STK_ORD",
+                            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_STK_ORD"));
+                            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_STK_ORD",
                                     bmodel.productHelper.getFilterProductLevels()));
                         }
                         filterProductsByLevelId.putAll(bmodel.productHelper.getFilterProductsByLevelId());
@@ -217,6 +216,10 @@ public class FilterFiveFragment<E> extends Fragment {
                     case "SVR":
                         filterProductsByLevelId.putAll(bmodel.reportHelper.getMfilterlevelBo());
                         filterProductLevels.addAll(bmodel.reportHelper.getSequencevalues());
+                    case "SR":
+                        filterProductsByLevelId.putAll(SalesReturnHelper.getInstance(getActivity()).getFilterProductsByLevelId());
+                        filterProductLevels.addAll(SalesReturnHelper.getInstance(getActivity()).getFilterProductLevels());
+
                         break;
                     default:
                         filterProductsByLevelId.putAll(bmodel.productHelper.getRetailerModuleFilterProductsByLevelId());

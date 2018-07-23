@@ -183,8 +183,8 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
         /** Load products from product master **/
         LoadManagementBO lbo;
         mylist = new Vector<LoadManagementBO>();
-        for (int j = 0; j < bmodel.productHelper.getProducts().size(); j++) {
-            lbo = bmodel.productHelper.getProducts().get(j);
+        for (int j = 0; j < bmodel.productHelper.getLoadMgmtProducts().size(); j++) {
+            lbo = bmodel.productHelper.getLoadMgmtProducts().get(j);
             if (lbo.getStocksih() > 0)
                 mylist.add(lbo);
         }

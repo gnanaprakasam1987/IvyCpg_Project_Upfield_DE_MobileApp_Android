@@ -56,8 +56,8 @@ public class PromotionHelper {
         }
 
         /*businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);*/
-        businessModel.productHelper.setFilterProductLevelsRex(businessModel.productHelper.downloadFiveFilterLevel(mMenuCode));
-        businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFiveFilterLevelProducts(mMenuCode,
+        businessModel.productHelper.setFilterProductLevelsRex(businessModel.productHelper.downloadFilterLevel(mMenuCode));
+        businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
                 businessModel.productHelper.getRetailerModuleSequenceValues()));
 
         downloadPromotionMaster(mContext);

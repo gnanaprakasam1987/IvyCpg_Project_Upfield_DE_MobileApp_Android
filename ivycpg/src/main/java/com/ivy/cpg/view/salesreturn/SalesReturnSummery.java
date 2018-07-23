@@ -132,7 +132,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
     private void refreshList() {
         ArrayList<SalesReturnReasonBO> list = new ArrayList<>();
 
-        for (ProductMasterBO product : bmodel.productHelper.getSalesReturnProducts()) {
+        for (ProductMasterBO product : salesReturnHelper.getSalesReturnProducts()) {
             for (SalesReturnReasonBO bo : product.getSalesReturnReasonList()) {
                 if ((bo.getPieceQty() + bo.getCaseQty() + bo
                         .getOuterQty()) > 0) {
@@ -739,7 +739,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
     private void updateCreditNoteprintList() {
         mPrintList = new Vector<>();
 
-        for (ProductMasterBO product : bmodel.productHelper.getSalesReturnProducts()) {
+        for (ProductMasterBO product : salesReturnHelper.getSalesReturnProducts()) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
 
             int totalSalesReturnQty = 0;

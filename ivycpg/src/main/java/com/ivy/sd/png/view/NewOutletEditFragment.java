@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.NewOutletBO;
+import com.ivy.sd.png.bo.asset.ProductMasterPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -439,10 +440,15 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_NEW_RETAILER,
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
                             bmodel.productHelper.getFilterProductLevels()));
-                    bmodel.productHelper.downloadProductsWithFiveLevelFilter(MENU_NEW_RETAILER);
+
+                    ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+                    if (productMasterPair != null) {
+                        bmodel.productHelper.setProductMaster(productMasterPair.productMaster);
+                        bmodel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                    }
 
                     if (mParam.equals("1"))
                         bmodel.productHelper.updateOutletOrderedProducts(selectedRetId);

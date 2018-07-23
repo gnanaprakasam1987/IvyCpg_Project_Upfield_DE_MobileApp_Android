@@ -44,9 +44,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -276,7 +274,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
         expandlvwplist = (ExpandableListView) view.findViewById(R.id.expand_lvwplist);
         expandlvwplist.setCacheColorHint(0);
 
-        stockPropVector = bmodel.productHelper.getProducts();
+        stockPropVector = bmodel.productHelper.getLoadMgmtProducts();
         bmodel.stockProposalModuleHelper.loadInitiative();
         bmodel.stockProposalModuleHelper.loadSBDData();
         bmodel.stockProposalModuleHelper.loadPurchased();
@@ -1611,7 +1609,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
     private void loadSearchedList() {
         try {
             Vector<LoadManagementBO> items = bmodel.productHelper
-                    .getProducts();
+                    .getLoadMgmtProducts();
 
             if (items == null) {
                 bmodel.showAlert(

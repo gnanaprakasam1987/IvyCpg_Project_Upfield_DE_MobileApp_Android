@@ -41,7 +41,6 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -53,7 +52,6 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
@@ -192,7 +190,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        vanlist = bmodel.productHelper.getProducts();
+        vanlist = bmodel.productHelper.getLoadMgmtProducts();
 
         updateBrandText("Brand", -1);
 
@@ -332,13 +330,13 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     subDepotAdapter = new ArrayAdapter<>(
                             ManualVanLoadActivity.this,
                             R.layout.spinner_blacktext_layout,
-                            bmodel.vanmodulehelper.getSubDepotList());
+                            bmodel.loadManagementHelper.getSubDepotList());
                 } else {
                     txtLbl.setText(R.string.distributor);
                     subDepotAdapter = new ArrayAdapter<>(
                             ManualVanLoadActivity.this,
                             android.R.layout.simple_spinner_item,
-                            bmodel.vanmodulehelper.getDistributorList());
+                            bmodel.loadManagementHelper.getDistributorList());
                 }
                 subDepotAdapter
                         .setDropDownViewResource(R.layout.spinner_blacktext_list_item);
@@ -435,7 +433,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
 
                 if (selectedSubDepotId != 0) {
-                    if (bmodel.vanmodulehelper.hasVanLoadDone()
+                    if (bmodel.loadManagementHelper.hasVanLoadDone()
                             && selectedSubDepotId != 0) {
                         if (bmodel.configurationMasterHelper.VANLOAD_TYPE == 0) {
                             new calculateLiability().execute();
@@ -459,7 +457,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
 
             } else {
-                if (bmodel.vanmodulehelper.hasVanLoadDone()) {
+                if (bmodel.loadManagementHelper.hasVanLoadDone()) {
                     showDialog(1);
                 } else {
                     bmodel.showAlert(
@@ -632,7 +630,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     public void onBackButtonClick() {
-        if (bmodel.vanmodulehelper.hasVanLoadDone()) {
+        if (bmodel.loadManagementHelper.hasVanLoadDone()) {
             showDialog(0);
         } else {
             loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
@@ -893,7 +891,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             public void afterTextChanged(Editable s) {
                 String qty = s.toString();
                 if (!"".equals(qty)) {
-                    bmodel.vanmodulehelper.setmVanLoadAmount(SDUtil
+                    bmodel.loadManagementHelper.setmVanLoadAmount(SDUtil
                             .convertToFloat(qty));
 
                 }
@@ -902,7 +900,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         });
 
         String tv = SDUtil.roundIt(
-                bmodel.vanmodulehelper.calculateVanLoadProductPrice(), 2)
+                bmodel.loadManagementHelper.calculateVanLoadProductPrice(), 2)
                 + "";
 
         tvProductPrice.setText(tv);
@@ -911,7 +909,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         tvReturnProductPrice.setText(tv);
 
         tv = SDUtil.roundIt(
-                bmodel.vanmodulehelper.calculateVanLoadProductPrice()
+                bmodel.loadManagementHelper.calculateVanLoadProductPrice()
                         + bmodel.getOrderHeaderBO().getRemainigValue(), 2)
                 + "";
         tvTotalPrice.setText(tv);
@@ -925,7 +923,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                 float totalPrice = SDUtil
                                         .convertToFloat(tvTotalPrice.getText()
                                                 .toString());
-                                if (bmodel.vanmodulehelper.getmVanLoadAmount() == totalPrice) {
+                                if (bmodel.loadManagementHelper.getmVanLoadAmount() == totalPrice) {
                                     new SaveVanLoad().execute();
 
                                 } else {
@@ -1377,10 +1375,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.vanmodulehelper.saveVanLoad(vanlist, selectedSubDepotId);
+                bmodel.loadManagementHelper.saveVanLoad(vanlist, selectedSubDepotId);
                 // Clear the Values from the Objects after save in DB
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
-                    bmodel.vanmodulehelper.clearBomReturnProductsTable();
+                    bmodel.loadManagementHelper.clearBomReturnProductsTable();
                 }
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -1436,7 +1434,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.vanmodulehelper.setReturnQty();
+                bmodel.loadManagementHelper.setReturnQty();
                 bmodel.productHelper.calculateOrderReturnValue();
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -1478,7 +1476,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.vanmodulehelper.setReturnQty();
+                bmodel.loadManagementHelper.setReturnQty();
                 bmodel.productHelper.calculateOrderReturnValue();
                 if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
                     bmodel.productHelper.setGroupWiseReturnQty();

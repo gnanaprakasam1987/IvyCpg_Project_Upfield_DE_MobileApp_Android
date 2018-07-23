@@ -28,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -137,7 +136,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
             getSupportActionBar().setIcon(null);
         }
         vanunloadlist = new Vector<>();
-        for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+        for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
             if (bo.getSih() > 0)
                 vanunloadlist.add(bo);
         }
@@ -294,7 +293,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
 
     public void loadSearchedList() {
         if (mEdt_searchproductName.getText().length() >= 3) {
-            Vector<LoadManagementBO> items = bmodel.productHelper.getProducts();
+            Vector<LoadManagementBO> items = bmodel.productHelper.getLoadMgmtProducts();
 
             if (items == null) {
                 bmodel.showAlert(

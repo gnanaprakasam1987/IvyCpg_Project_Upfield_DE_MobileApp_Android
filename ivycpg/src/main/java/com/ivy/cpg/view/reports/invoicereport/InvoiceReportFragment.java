@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceReportBO;
+import com.ivy.sd.png.bo.asset.ProductMasterPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -455,7 +456,12 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
                     businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
-                    businessModel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
+                    businessModel.productHelper.downloadProducts("MENU_STK_ORD");
+                    ProductMasterPair productMasterPair = businessModel.productHelper.downloadProducts("MENU_STK_ORD");
+                    if (productMasterPair != null) {
+                        businessModel.productHelper.setProductMaster(productMasterPair.productMaster);
+                        businessModel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                    }
 
                     SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getContext());
                     schemeHelper.initializeScheme(getActivity().getApplicationContext(), businessModel.userMasterHelper.getUserMasterBO().getUserid(), businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);

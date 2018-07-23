@@ -2,15 +2,10 @@ package com.ivy.sd.png.view;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,25 +15,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.ivy.cpg.nfc.NFCManager;
-import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.SupplierMasterBO;
-import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.bo.asset.ProductMasterPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.UserDialogInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.TimerCount;
-import com.ivy.sd.png.view.profile.ProfileActivity;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 
@@ -180,12 +166,16 @@ public class SubDFragment extends IvyBaseFragment {
             try {
                 if (!isCancelled()) {
                     if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_STK_ORD));
-                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_STK_ORD,
+                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
                                 bmodel.productHelper.getFilterProductLevels()));
 
-                        bmodel.productHelper
-                                .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
+                        ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                        if (productMasterPair != null) {
+                            bmodel.productHelper.setProductMaster(productMasterPair.productMaster);
+                            bmodel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                        }
+
                     } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                         //to reload product filter if diffrent retailer selected
                         bmodel.productHelper.setmLoadedGlobalProductId(0);

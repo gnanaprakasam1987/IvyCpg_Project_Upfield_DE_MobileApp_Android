@@ -426,8 +426,8 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_LOAD_MANAGEMENT));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_LOAD_MANAGEMENT,
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_LOAD_MANAGEMENT));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_LOAD_MANAGEMENT,
                         bmodel.productHelper.getFilterProductLevels()));
 
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
@@ -509,11 +509,11 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
-                    bmodel.vanmodulehelper.downloadSubDepots();
+                    bmodel.loadManagementHelper.downloadSubDepots();
                 }
 
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_LOAD_MANAGEMENT));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_LOAD_MANAGEMENT,
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_LOAD_MANAGEMENT));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_LOAD_MANAGEMENT,
                         bmodel.productHelper.getFilterProductLevels()));
 
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
@@ -525,7 +525,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                     bmodel.productHelper.downlaodReturnableProducts(MENU_LOAD_MANAGEMENT);
                     bmodel.productHelper.downloadBomMaster();
                     bmodel.productHelper.downloadGenericProductID();
-                    bmodel.vanmodulehelper.loadVanLoadReturnProductValidation();
+                    bmodel.loadManagementHelper.loadVanLoadReturnProductValidation();
 
                 }
 

@@ -359,12 +359,12 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Integer... params) {
             try {
                 //Download Filter Levels and Products
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(menuName));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(menuName,
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuName));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(menuName,
                         bmodel.productHelper.getFilterProductLevels()));
                 // Download Products
                 bmodel.productHelper
-                        .downloadDistributorProductsWithFiveLevelFilter(menuName);
+                        .downloadDistributorProducts(menuName);
 
                 bmodel.configurationMasterHelper.loadPrimarySaleStockCheckAndOrderConfiguration();
                 /** Load the stock check if opened in edit mode. **/
@@ -432,12 +432,12 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
 
 
                 //Download Filter Levels and Products
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(menuName));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(menuName,
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuName));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(menuName,
                         bmodel.productHelper.getFilterProductLevels()));
                 // Download Products
                 bmodel.productHelper
-                        .downloadDistributorProductsWithFiveLevelFilter(menuName);
+                        .downloadDistributorProducts(menuName);
 
                 bmodel.configurationMasterHelper.loadPrimarySaleStockCheckAndOrderConfiguration();
 

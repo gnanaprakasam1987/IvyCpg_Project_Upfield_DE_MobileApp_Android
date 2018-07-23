@@ -69,6 +69,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.asset.ProductMasterPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -1161,8 +1162,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                       /*  bmodel.productHelper
                                 .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);*/
 
-                        bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel(MENU_SURVEY_SW));
-                        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SURVEY_SW,
+                        bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_SW));
+                        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_SW,
                                 bmodel.productHelper.getRetailerModuleSequenceValues()));
 
                     }
@@ -1219,8 +1220,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
                    /* bmodel.productHelper
                             .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");*/
-                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel("MENU_SURVEY01_SW"));
-                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts("MENU_SURVEY01_SW",
+                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY01_SW"));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts("MENU_SURVEY01_SW",
                             bmodel.productHelper.getRetailerModuleSequenceValues()));
                 }
 
@@ -1275,8 +1276,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                     /*bmodel.productHelper
                             .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);*/
-                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFiveFilterLevel(MENU_SURVEY_BA_CS));
-                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_SURVEY_BA_CS,
+                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_BA_CS));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_BA_CS,
                             bmodel.productHelper.getRetailerModuleSequenceValues()));
                 }
 
@@ -1845,10 +1846,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFiveFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFiveFilterLevelProducts(MENU_NEW_RETAILER,
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
                             bmodel.productHelper.getFilterProductLevels()));
-                    bmodel.productHelper.downloadProductsWithFiveLevelFilter(MENU_NEW_RETAILER);
+                    ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+                    if (productMasterPair != null) {
+                        bmodel.productHelper.setProductMaster(productMasterPair.productMaster);
+                        bmodel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                    }
                 }
 
                 bndl = new Bundle();
