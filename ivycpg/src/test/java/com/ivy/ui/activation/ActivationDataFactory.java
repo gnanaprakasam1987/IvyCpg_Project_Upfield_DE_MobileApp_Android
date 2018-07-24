@@ -1,4 +1,4 @@
-package com.ivy;
+package com.ivy.ui.activation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * Created by velraj.p on 6/25/2018.
  */
 
-public abstract class TestDataFactory {
+public abstract class ActivationDataFactory {
 
     private static String VALID_ACTIVATION_RESPONSE = "{\"Table\":[{\"ActivationRefNo\":16047,\"ApplicationName\":\"P&G MALAYSIA\",\"SyncServiceURL\":\"https://test2.ivymobileapps.com/Idist_my_png_msync/MobileWebService.asmx\",\"OrganizationID\":55,\"ApplicationID\":56,\"OrganizationName\":\"P&G MY TEST\"}]}";
 

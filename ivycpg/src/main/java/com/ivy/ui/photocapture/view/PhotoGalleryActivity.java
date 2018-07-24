@@ -2,8 +2,6 @@ package com.ivy.ui.photocapture.view;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -153,32 +151,7 @@ public class PhotoGalleryActivity extends BaseActivity {
             }
         });
 
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(PhotoGalleryActivity.this);
 
-        builder.setTitle(getString(R.string.do_you_want_to_delete_the_image))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                                for (String item : selectedItemsList) {
-                                    if (photoCaptureMap.containsKey(item)) {
-                                        AppUtils.deleteFiles(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
-                                                + DataMembers.photoFolderName, photoCaptureMap.get(item).getImageName());
-
-                                        photoCaptureMap.remove(item);
-                                    }
-                                }
-                                processData();
-                            }
-                        })
-                .setNegativeButton(getResources().getString(R.string.cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
-                        });
-
-        AppUtils.applyAlertDialogTheme(this, builder);*/
     }
 
 
@@ -186,26 +159,8 @@ public class PhotoGalleryActivity extends BaseActivity {
      * Alert dialog to select image
      */
     protected void showAlertDialog() {
+        showAlert("", "Please Select the Images and Try again!!!");
 
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(PhotoGalleryActivity.this)
-                .setTitle("Please Select the Images and Try again!!!")
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setCancelable(false);
-        AppUtils.applyAlertDialogTheme(this, builder);
     }
 
     private void setUpToolbar() {

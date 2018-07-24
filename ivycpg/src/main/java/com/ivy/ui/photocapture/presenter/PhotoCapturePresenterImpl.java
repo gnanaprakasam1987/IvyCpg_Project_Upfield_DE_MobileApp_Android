@@ -52,7 +52,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     private ArrayList<PhotoCaptureLocationBO> mLocationBOS = new ArrayList<>();
 
 
-    private HashMap<String, PhotoCaptureLocationBO> editedData;
+    private HashMap<String, PhotoCaptureLocationBO> editedData = new HashMap<>();
 
     @Inject
     public PhotoCapturePresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable,
@@ -117,6 +117,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
 
                     @Override
                     public void onError(Throwable e) {
+                        getIvyView().onError("Something went wrong");
                         getIvyView().hideLoading();
                     }
 
@@ -266,11 +267,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
 
     @Override
     public boolean isMaxPhotoLimitReached() {
-        if (getDataManager().getSavedImageCount() >= mConfigurationMasterHelper.photocount) {
-            return true;
-        } else {
-            return false;
-        }
+        return getDataManager().getSavedImageCount() >= mConfigurationMasterHelper.photocount;
     }
 
     @Override

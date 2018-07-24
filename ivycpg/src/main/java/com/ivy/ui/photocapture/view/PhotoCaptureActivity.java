@@ -266,11 +266,11 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 totalImgList.add(imageName);
 
                 if (!isPLType)
-                    photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString(), selectedProductName,selectedTypeName,selectedLocationName);
+                    photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString(), selectedProductName, selectedTypeName, selectedLocationName);
                 else
                     photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName
                             , feedbackEditText.getText().toString(), skuNameEditText.getText().toString(), abvEditText.getText().toString(),
-                            lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString(), selectedProductName,selectedTypeName,selectedLocationName);
+                            lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString(), selectedProductName, selectedTypeName, selectedLocationName);
 
                 handleNoImage();
 
@@ -342,7 +342,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     @Override
     public void setSpinnerDefaults() {
         productSpinner.setSelection(0);
-        isPLType=false;
+        isPLType = false;
     }
 
     @Override
@@ -457,12 +457,15 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             tempProdPosition = selectedProduct;
         }
 
+        isPLType = false;
         selectedProduct = position;
         selectedProductName = productSelectionAdapter.getItem(position).getProductName();
         photoTypeSpinner.setSelection(0);
         mSelectedProductId = productSelectionAdapter.getItem(position).getProductID();
 
         clearViews();
+
+
     }
 
 
@@ -473,7 +476,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             if (isPLType) {
                 if (validatePLType()) return;
             } else
-                photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString(), selectedProductName,selectedTypeName,selectedLocationName);
+                photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString(), selectedProductName, selectedTypeName, selectedLocationName);
 
 
         }
@@ -493,6 +496,9 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             }
 
             loadLocalData();
+        } else {
+            isPLType = false;
+            productDetailsCardView.setVisibility(View.GONE);
         }
 
     }
@@ -521,7 +527,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         }
         photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName
                 , feedbackEditText.getText().toString(), skuNameEditText.getText().toString(), abvEditText.getText().toString(),
-                lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString(), selectedProductName,selectedTypeName,selectedLocationName);
+                lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString(), selectedProductName, selectedTypeName, selectedLocationName);
         return false;
     }
 
@@ -684,6 +690,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 Date dateMfg = DateUtil.convertStringToDateObject(
                         fromDateBtn.getText().toString(), DEFAULT_DATE_FORMAT);
 
+                assert dateMfg != null;
                 if (dateMfg.after(selectedDate.getTime())) {
                     showMessage(R.string.competitor_date);
                 } else {

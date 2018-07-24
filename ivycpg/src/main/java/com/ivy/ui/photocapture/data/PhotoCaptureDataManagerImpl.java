@@ -136,6 +136,8 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
     @Override
     public Observable<ArrayList<PhotoCaptureLocationBO>> fetchLocations() {
+
+
         return Observable.fromCallable(new Callable<ArrayList<PhotoCaptureLocationBO>>() {
             @Override
             public ArrayList<PhotoCaptureLocationBO> call() {
