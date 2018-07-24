@@ -34,6 +34,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.reports.soho.SalesReturnReportHelperSOHO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -234,7 +235,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
 
                 break;
             case StandardListMasterConstants.MENU_SALES_REPORT:
-                if (bmodel.reportHelper.getSalesReturnRetailerList().size() >= 1) {
+                if ((new SalesReturnReportHelperSOHO(getContext())).getSalesReturnRetailerList().size() >= 1) {
                     gotoReportActivity(config);
                 } else {
                     showToast();
