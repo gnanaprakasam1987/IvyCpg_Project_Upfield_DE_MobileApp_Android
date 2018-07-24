@@ -12,7 +12,6 @@ import android.util.SparseArray;
 
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.order.OrderHelper;
-import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -32,7 +31,7 @@ import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
-import com.ivy.sd.png.bo.asset.ProductMasterPair;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -896,11 +895,11 @@ public class ProductHelper {
         return filterLevelPrdByLevelId;
     }
 
-    public ProductMasterPair downloadProducts(String moduleCode) {
+    public GenericObjectPair downloadProducts(String moduleCode) {
 
         Map<String, ProductMasterBO> productMasterById = new HashMap<>();
         Vector<ProductMasterBO> productMaster = new Vector<>();
-        ProductMasterPair productMasterPair = null;
+        GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = null;
 
         try {
 
@@ -933,78 +932,6 @@ public class ProductHelper {
                 Commons.printException(e);
             }
 
-            Vector<ConfigureBO> filterBO = bmodel.configurationMasterHelper.downloadFilterList();
-            boolean filter10 = false; //Must Sell
-            boolean filter11 = false; // Focus Brand
-            boolean filter12 = false; // Focus Brand2
-            boolean filter16 = false; // NMust Sell
-            boolean filter20 = false; // Focus Brand 3
-            boolean filter21 = false; // Focus Brand 4
-            boolean filter22 = false; // Small Pack
-            boolean filter19 = false; // nearExpiry tagged
-            if (filterBO != null && filterBO.size() > 0) {
-                for (ConfigureBO bo : filterBO) {
-                    if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt10"))
-                        filter10 = true;
-                    if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt11"))
-                        filter11 = true;
-                    if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt12"))
-                        filter12 = true;
-                    if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt16"))
-                        filter16 = true;
-                    if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt20"))
-                        filter20 = true;
-                    if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt21"))
-                        filter21 = true;
-                    if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt22"))
-                        filter22 = true;
-                    if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt19"))
-                        filter19 = true;
-                }
-            }
-            // get tagging details
-            String MSLproductIds = "";
-            String NMSLproductIds = "";
-            String FCBNDproductIds = "";
-            String FCBND2productIds = "";
-            String FCBND3productIds = "";
-            String FCBND4productIds = "";
-            String SMPproductIds = "";
-            String nearExpiryTaggedProductIds = "";
-            String[] detail;
-
-            if (filter10) {
-                MSLproductIds = getTaggingDetails("MSL");
-
-            }
-            if (filter16) {
-                NMSLproductIds = getTaggingDetails("NMSL");
-
-            }
-            if (filter11) {
-                FCBNDproductIds = getTaggingDetails("FCBND");
-
-            }
-            if (filter12) {
-                FCBND2productIds = getTaggingDetails("FCBND2");
-
-            }
-            if (filter20) {
-                FCBND3productIds = getTaggingDetails("FCBND3");
-
-            }
-            if (filter21) {
-                FCBND4productIds = getTaggingDetails("FCBND4");
-
-            }
-            if (filter22) {
-                SMPproductIds = getTaggingDetails("SMP");
-
-            }
-            if (filter19) {
-                nearExpiryTaggedProductIds = getTaggingDetails("MENU_NEAREXPIRY");
-
-            }
 
             StringBuffer filter = downloadProductSequenceFromFilter();
             Commons.print("filter" + filter);
@@ -1023,33 +950,30 @@ public class ProductHelper {
                 cur.close();
             }
 
-            sql = "select A.pid, A.pcode,A.pname,A.parentid,A.sih, "
-                    + "A.psname,A.barcode,A.vat,A.isfocus, max(ifnull("
+            sql = "select A.pid as productId, A.pcode as pcode,A.pname as pname,A.parentid as parentId,A.sih as sih, "
+                    + "A.psname as psname,A.barcode as barcode,A.vat as vat ,A.isfocus as isfocus, max(ifnull("
                     + str
                     + ")) as srp , ifnull("
                     + csrp
                     + ") as csrp ,ifnull("
                     + osrp
-                    + ") as osrp ,A.msqqty,"
-                    + "A.dUomQty,A.duomid, u.ListCode,A.MRP,ifnull(sbd.DrpQty,0),ifnull(sbd.grpName,''),A.RField1,PWHS.qty,A.IsAlloc, "
-                    + ((filter10) ? "A.pid in(" + MSLproductIds + ") as IsMustSell, " : " 0 as IsMustSell, ")
-                    + ((filter11) ? "A.pid in(" + FCBNDproductIds + ") as IsFocusBrand," : " 0 as IsFocusBrand, ")
-                    + ((filter12) ? "A.pid in(" + FCBND2productIds + ") as IsFocusBrand2, " : " 0 as IsFocusBrand2, ")
-                    + "dOuomQty,dOuomid,caseBarcode,outerBarcode,count(A.pid),piece_uomid,A.mrp, A.mrp,"
-                    + " A.isSalable,A.isReturnable,A.isBom,A.TypeID,A.baseprice, '' as brandname,0"
-                    + ((filter16) ? ",A.pid IN(" + NMSLproductIds + ") as IsNMustSell" : ", 0 as IsNMustSell ") + ",A.weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount"
-                    + ",A.Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
-                    + ((filter20) ? "A.pid in(" + FCBND3productIds + ") as IsFocusBrand3, " : " 0 as IsFocusBrand3,")
-                    + ((filter21) ? "A.pid in(" + FCBND4productIds + ") as IsFocusBrand4, " : " 0 as IsFocusBrand4,")
-                    + ((filter22) ? "A.pid in(" + SMPproductIds + ") as IsSMP, " : " 0 as IsSMP,")
-                    + "A.tagDescription as tagDescription,"
-                    + "A.HSNId as HSNId,"
-                    + "HSN.HSNCode as HSNCode,"
-                    + "A.IsDrug as IsDrug,"
-                    + "A.ParentHierarchy as ParentHierarchy,"
-                    + ((filter19) ? "A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry " : " 0 as isNearExpiry,F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid ")
-                    + ",(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid"
-                    + ",(CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom"
+                    + ") as osrp ,A.msqqty as msqqty,"
+                    + "A.dUomQty as caseQty,A.duomid as caseUomId, u.ListCode as ListCode ,A.MRP as MRP,"
+                    + " ifnull(sbd.DrpQty,0) as DrpQty,ifnull(sbd.grpName,'') as grpName,A.RField1 as RField1 ,PWHS.qty as PWHSqty ,A.IsAlloc as IsAlloc, "
+                    + getSpecialFilterQuery()
+                    + "dOuomQty as outersize ,dOuomid as dOuomid,caseBarcode as caseBarcode,outerBarcode as outerBarcode,"
+                    + " piece_uomid as piece_uomid ,A.mrp as mrp,"
+                    + " A.isSalable as isSalable,A.isReturnable as isReturnable,A.TypeID as TypeID,A.baseprice as baseprice,"
+                    + " A.weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,"
+                    + " A.Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId()
+                    + " THEN F.scid ELSE 0 END) as groupid,"
+                    + " A.tagDescription as tagDescription,"
+                    + " A.HSNId as HSNId,"
+                    + " HSN.HSNCode as HSNCode,"
+                    + " A.IsDrug as IsDrug,A.ParentHierarchy as ParentHierarchy,"
+                    + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,"
+                    + " (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
+                    + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom"
                     + " from ProductMaster A";
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -1082,50 +1006,50 @@ public class ProductHelper {
                 productMaster = new Vector<>();
                 while (c.moveToNext()) {
                     product = new ProductMasterBO();
-                    product.setProductID(c.getString(0));
-                    product.setProductCode(c.getString(1));
-                    product.setProductName(c.getString(2));
-                    product.setParentid(c.getInt(3));
-                    product.setSIH(c.getInt(4));
-                    product.setDSIH(c.getInt(4));
-                    product.setProductShortName(c.getString(5));
-                    product.setBarCode(c.getString(6));
-                    product.setVat(c.getFloat(7));
-                    product.setSrp(c.getFloat(9));
-                    product.setPrevPrice_pc(c.getFloat(9) + "");
-                    product.setCsrp(c.getFloat(10));
-                    product.setPrevPrice_ca(c.getFloat(10) + "");
-                    product.setOsrp(c.getFloat(11));
-                    product.setPrevPrice_oo(c.getFloat(11) + "");
-                    product.setMSQty(c.getInt(12));
-                    product.setCaseSize(c.getInt(13));
-                    product.setCaseUomId(c.getInt(14)); // caseuomid
-                    product.setOU(c.getString(15));
-                    product.setMRP(c.getDouble(16));
-                    product.setDropQty(c.getInt(17));
-                    product.setSbdGroupName(c.getString(18));
-                    product.setRField1(c.getString(19));
-                    product.setWSIH(c.getInt(20));
-                    product.setAllocation(c.getInt(21));
-                    product.setIsMustSell(c.getInt(22));
-                    product.setIsFocusBrand(c.getInt(23));
-                    product.setIsFocusBrand2(c.getInt(24));
-                    product.setOutersize(c.getInt(25));
-                    product.setOuUomid(c.getInt(26)); // outerid
-                    product.setCasebarcode(c.getString(27));
-                    product.setOuterbarcode(c.getString(28));
-                    product.setPcUomid(c.getInt(30));// Pc Uomid
-                    product.setMinprice(c.getInt(31));
-                    product.setMaxPrice(c.getInt(32));
+                    product.setProductID(c.getString(c.getColumnIndex("productId")));
+                    product.setProductCode(c.getString(c.getColumnIndex("pcode")));
+                    product.setProductName(c.getString(c.getColumnIndex("pname")));
+                    product.setParentid(c.getInt(c.getColumnIndex("parentId")));
+                    product.setSIH(c.getInt(c.getColumnIndex("sih")));
+                    product.setDSIH(c.getInt(c.getColumnIndex("sih")));
+                    product.setProductShortName(c.getString(c.getColumnIndex("psname")));
+                    product.setBarCode(c.getString(c.getColumnIndex("barcode")));
+                    product.setVat(c.getFloat(c.getColumnIndex("vat")));
+                    product.setSrp(c.getFloat(c.getColumnIndex("srp")));
+                    product.setPrevPrice_pc(c.getFloat(c.getColumnIndex("srp")) + "");
+                    product.setCsrp(c.getFloat(c.getColumnIndex("csrp")));
+                    product.setPrevPrice_ca(c.getFloat(c.getColumnIndex("csrp")) + "");
+                    product.setOsrp(c.getFloat(c.getColumnIndex("osrp")));
+                    product.setPrevPrice_oo(c.getFloat(c.getColumnIndex("osrp")) + "");
+                    product.setMSQty(c.getInt(c.getColumnIndex("msqqty")));
+                    product.setCaseSize(c.getInt(c.getColumnIndex("caseQty")));
+                    product.setCaseUomId(c.getInt(c.getColumnIndex("caseUomId")));
+                    product.setOU(c.getString(c.getColumnIndex("ListCode")));
+                    product.setMRP(c.getDouble(c.getColumnIndex("MRP")));
+                    product.setDropQty(c.getInt(c.getColumnIndex("DrpQty")));
+                    product.setSbdGroupName(c.getString(c.getColumnIndex("grpName")));
+                    product.setRField1(c.getString(c.getColumnIndex("RField1")));
+                    product.setWSIH(c.getInt(c.getColumnIndex("PWHSqty")));
+                    product.setAllocation(c.getInt(c.getColumnIndex("IsAlloc")));
+                    product.setIsMustSell(c.getInt(c.getColumnIndex("IsMustSell")));
+                    product.setIsFocusBrand(c.getInt(c.getColumnIndex("IsFocusBrand")));
+                    product.setIsFocusBrand2(c.getInt(c.getColumnIndex("IsFocusBrand2")));
+                    product.setOutersize(c.getInt(c.getColumnIndex("outersize")));
+                    product.setOuUomid(c.getInt(c.getColumnIndex("dOuomid")));
+                    product.setCasebarcode(c.getString(c.getColumnIndex("caseBarcode")));
+                    product.setOuterbarcode(c.getString(c.getColumnIndex("outerBarcode")));
+                    product.setPcUomid(c.getInt(c.getColumnIndex("piece_uomid")));// Pc Uomid
+                    product.setMinprice(c.getInt(c.getColumnIndex("mrp")));
+                    product.setMaxPrice(c.getInt(c.getColumnIndex("mrp")));
                     if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
                         product.setBatchwiseProductCount(1);
                     product.setBatchwiseProductCount(0);
-                    product.setIsSaleable(c.getInt(33));
-                    product.setIsReturnable(c.getInt(34));
-                    product.setTypeID(c.getInt(36));
-                    product.setBaseprice(c.getFloat(37));
-                    product.setBrandname(c.getString(38));
-                    product.setcParentid(c.getInt(39));
+                    product.setIsSaleable(c.getInt(c.getColumnIndex("isSalable")));
+                    product.setIsReturnable(c.getInt(c.getColumnIndex("isReturnable")));
+                    product.setTypeID(c.getInt(c.getColumnIndex("TypeID")));
+                    product.setBaseprice(c.getFloat(c.getColumnIndex("baseprice")));
+                    product.setBrandname("");
+                    product.setcParentid(0);
 
                     product.setGroupid(c.getInt(c.getColumnIndex("groupid")));
                     product.setLocations(cloneInStoreLocationList(locations));
@@ -1168,7 +1092,7 @@ public class ProductHelper {
                     }
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
-                    productMasterPair = new ProductMasterPair(productMaster, productMasterById);
+                    genericObjectPair = new GenericObjectPair<>(productMaster, productMasterById);
 
 
                 }
@@ -1191,7 +1115,103 @@ public class ProductHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return productMasterPair;
+        return genericObjectPair;
+    }
+
+    private String getSpecialFilterQuery() {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        Vector<ConfigureBO> filterBO = bmodel.configurationMasterHelper.downloadFilterList();
+        boolean filter10 = false; //Must Sell
+        boolean filter11 = false; // Focus Brand
+        boolean filter12 = false; // Focus Brand2
+        boolean filter16 = false; // NMust Sell
+        boolean filter20 = false; // Focus Brand 3
+        boolean filter21 = false; // Focus Brand 4
+        boolean filter22 = false; // Small Pack
+        boolean filter19 = false; // nearExpiry tagged
+        if (filterBO != null && filterBO.size() > 0) {
+            for (ConfigureBO bo : filterBO) {
+                if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt10"))
+                    filter10 = true;
+                if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt11"))
+                    filter11 = true;
+                if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt12"))
+                    filter12 = true;
+                if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt16"))
+                    filter16 = true;
+                if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt20"))
+                    filter20 = true;
+                if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt21"))
+                    filter21 = true;
+                if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt22"))
+                    filter22 = true;
+                if (bo.getConfigCode() != null && bo.getConfigCode().equalsIgnoreCase("Filt19"))
+                    filter19 = true;
+            }
+        }
+        // get tagging details
+        String MSLproductIds = "";
+        String NMSLproductIds = "";
+        String FCBNDproductIds = "";
+        String FCBND2productIds = "";
+        String FCBND3productIds = "";
+        String FCBND4productIds = "";
+        String SMPproductIds = "";
+        String nearExpiryTaggedProductIds = "";
+
+        if (filter10) {
+            MSLproductIds = getTaggingDetails("MSL");
+            stringBuilder.append("A.pid in(" + MSLproductIds + ") as IsMustSell,");
+        } else {
+            stringBuilder.append("0 as IsMustSell,");
+        }
+        if (filter16) {
+            NMSLproductIds = getTaggingDetails("NMSL");
+            stringBuilder.append("A.pid in(" + NMSLproductIds + ") as IsNMustSell,");
+
+        } else {
+            stringBuilder.append("0 as IsNMustSell,");
+        }
+        if (filter11) {
+            FCBNDproductIds = getTaggingDetails("FCBND");
+            stringBuilder.append("A.pid in(" + FCBNDproductIds + ") as IsFocusBrand,");
+        } else {
+            stringBuilder.append("0 as IsFocusBrand,");
+        }
+        if (filter12) {
+            FCBND2productIds = getTaggingDetails("FCBND2");
+            stringBuilder.append("A.pid in(" + FCBND2productIds + ") as IsFocusBrand2,");
+        } else {
+            stringBuilder.append("0 as IsFocusBrand2,");
+        }
+        if (filter20) {
+            FCBND3productIds = getTaggingDetails("FCBND3");
+            stringBuilder.append("A.pid in(" + FCBND3productIds + ") as IsFocusBrand3,");
+        } else {
+            stringBuilder.append("0 as IsFocusBrand3,");
+        }
+        if (filter21) {
+            FCBND4productIds = getTaggingDetails("FCBND4");
+            stringBuilder.append("A.pid in(" + FCBND4productIds + ") as IsFocusBrand4,");
+        } else {
+            stringBuilder.append("0 as IsFocusBrand4,");
+        }
+        if (filter22) {
+            SMPproductIds = getTaggingDetails("SMP");
+            stringBuilder.append("A.pid in(" + SMPproductIds + ") as IsSMP,");
+        } else {
+            stringBuilder.append("0 as IsSMP,");
+        }
+        if (filter19) {
+            nearExpiryTaggedProductIds = getTaggingDetails("MENU_NEAREXPIRY");
+            stringBuilder.append("A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry,");
+        } else {
+            stringBuilder.append("0 as isNearExpiry,");
+        }
+
+        return stringBuilder.toString();
+
     }
 
 

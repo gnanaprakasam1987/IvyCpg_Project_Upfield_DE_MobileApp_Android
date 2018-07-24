@@ -28,7 +28,8 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.NewOutletBO;
-import com.ivy.sd.png.bo.asset.ProductMasterPair;
+import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -36,6 +37,8 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
@@ -444,10 +447,10 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                     bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
                             bmodel.productHelper.getFilterProductLevels()));
 
-                    ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
-                    if (productMasterPair != null) {
-                        bmodel.productHelper.setProductMaster(productMasterPair.productMaster);
-                        bmodel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                    GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+                    if (genericObjectPair != null) {
+                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
 
                     if (mParam.equals("1"))

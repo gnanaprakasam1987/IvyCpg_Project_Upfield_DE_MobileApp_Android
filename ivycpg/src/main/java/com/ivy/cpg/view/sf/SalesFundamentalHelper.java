@@ -1903,7 +1903,7 @@ public class SalesFundamentalHelper {
             str.append("select  DISTINCT SD.SOSgroupid,groupName,SD.pid,SD.plid,isown,inTarget," +
                     "Case  IFNULL(SAM.groupid,-1) when -1  then '0' else '1' END as flag ,SM.groupid,SAM.sosNormid,SM.target,PM.pname");
             str.append(" from  SOS_GroupHeader_Proj SH inner join SOS_GroupDetail_Proj SD ON SH.SOSgroupid=SD.SOSgroupid" +
-                    " left join productMaster PM on PM.pid=SD.pid" +
+                    " left join object1 PM on PM.pid=SD.pid" +
                     " inner join SOS_NormMapping_Proj SM ON SM.SOSgroupid==SD.SOSgroupid" +
                     " LEFT JOIN SOS_NormAttributeMapping_Proj SAM on SAM .GroupId= SM.GroupID and SAM.SOSNormID=SM.SOSNormID");
             str.append(" where SM.accid in(0," + mBModel.getRetailerMasterBO().getAccountid() + ")" +

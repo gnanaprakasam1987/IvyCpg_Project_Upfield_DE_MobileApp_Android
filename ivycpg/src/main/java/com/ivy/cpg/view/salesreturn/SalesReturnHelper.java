@@ -11,11 +11,10 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.TaxBO;
-import com.ivy.sd.png.bo.asset.ProductMasterPair;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -1500,7 +1499,7 @@ public class SalesReturnHelper {
                     bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID());
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
-                if (c.moveToFirst()) {
+                while (c.moveToNext()) {
                     invoiceNoList.add(c.getString(0));
                 }
             }
@@ -1526,11 +1525,10 @@ public class SalesReturnHelper {
             if (bmodel.productHelper.isFilterAvaiable("MENU_SALES_RET") && isSameContentLevel(mContext) == 0) {
                 filterProductLevels = bmodel.productHelper.downloadFilterLevel("MENU_SALES_RET");
                 filterProductsByLevelId = bmodel.productHelper.downloadFilterLevelProducts("MENU_SALES_RET", filterProductLevels);
-                bmodel.productHelper.downloadProducts("MENU_SALES_RET");
-                ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts("MENU_SALES_RET");
-                if (productMasterPair != null) {
-                    mSalesReturnProducts = productMasterPair.productMaster;
-                    mSalesReturnProductById = productMasterPair.productMasterById;
+                GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts("MENU_SALES_RET");
+                if (genericObjectPair != null) {
+                    mSalesReturnProducts = genericObjectPair.object1;
+                    mSalesReturnProductById = genericObjectPair.object2;
                 }
             } else {
 

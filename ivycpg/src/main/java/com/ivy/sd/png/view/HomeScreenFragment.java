@@ -68,8 +68,9 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.asset.ProductMasterPair;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -86,6 +87,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener, PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
@@ -1849,10 +1851,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
                     bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
                             bmodel.productHelper.getFilterProductLevels()));
-                    ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
-                    if (productMasterPair != null) {
-                        bmodel.productHelper.setProductMaster(productMasterPair.productMaster);
-                        bmodel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                    GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+                    if (genericObjectPair != null) {
+                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
                 }
 

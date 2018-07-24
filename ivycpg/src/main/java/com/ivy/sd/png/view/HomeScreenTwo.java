@@ -87,10 +87,11 @@ import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
-import com.ivy.sd.png.bo.asset.ProductMasterPair;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -107,6 +108,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 
@@ -1528,10 +1530,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
                     bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
                             bmodel.productHelper.getFilterProductLevels()));
-                    ProductMasterPair productMasterPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
-                    if (productMasterPair != null) {
-                        bmodel.productHelper.setProductMaster(productMasterPair.productMaster);
-                        bmodel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                    GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                    if (genericObjectPair != null) {
+                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
                 }
 

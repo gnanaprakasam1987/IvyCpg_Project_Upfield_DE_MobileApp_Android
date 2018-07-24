@@ -24,7 +24,8 @@ import android.widget.Toast;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceReportBO;
-import com.ivy.sd.png.bo.asset.ProductMasterPair;
+import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -33,6 +34,7 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -457,10 +459,10 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 } else {
                     businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
                     businessModel.productHelper.downloadProducts("MENU_STK_ORD");
-                    ProductMasterPair productMasterPair = businessModel.productHelper.downloadProducts("MENU_STK_ORD");
-                    if (productMasterPair != null) {
-                        businessModel.productHelper.setProductMaster(productMasterPair.productMaster);
-                        businessModel.productHelper.setProductMasterById(productMasterPair.productMasterById);
+                    GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = businessModel.productHelper.downloadProducts("MENU_STK_ORD");
+                    if (genericObjectPair != null) {
+                        businessModel.productHelper.setProductMaster(genericObjectPair.object1);
+                        businessModel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
 
                     SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getContext());

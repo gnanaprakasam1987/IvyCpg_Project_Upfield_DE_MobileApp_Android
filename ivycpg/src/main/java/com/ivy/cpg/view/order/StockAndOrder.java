@@ -6239,20 +6239,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
     }
 
-    class LoadAsyncTask extends AsyncTask<String, Integer, Boolean> {
-        @Override
-        protected Boolean doInBackground(String... arg0) {
-            try {
-
-
-                return Boolean.TRUE;
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-        }
-    }
-
 
     private void updateData(ProductMasterBO productBO) {
         int qty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
