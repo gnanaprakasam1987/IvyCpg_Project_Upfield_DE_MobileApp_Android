@@ -2500,6 +2500,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
                     bmodel.collectionHelper.loadPaymentMode();
+
                     if (bmodel.getInvoiceHeaderBO() != null
                             && bmodel.getInvoiceHeaderBO().size() > 0) {
 
@@ -2539,6 +2540,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (!menuCode.equals(menu.getConfigCode()))
                             menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
                     }
+
 
 
                 } else {

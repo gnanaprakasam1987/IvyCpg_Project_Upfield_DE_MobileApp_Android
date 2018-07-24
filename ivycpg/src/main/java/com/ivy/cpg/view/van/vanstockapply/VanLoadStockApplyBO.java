@@ -15,6 +15,7 @@ public class VanLoadStockApplyBO {
     private String loadNO;
     private String date;
     private int isManualVanload;
+    private String ProductCode;
 
     public int getBatchId() {
         return BatchId;
@@ -168,4 +169,11 @@ public class VanLoadStockApplyBO {
 
     };
 
+    public void setProductCode(String productCode) {
+        ProductCode = productCode;
+    }
+
+    public String getProductCode() {
+        return ProductCode;
+    }
 }

@@ -4902,9 +4902,13 @@ public class BusinessModel extends Application {
         return false;
     }
 
-    public boolean hasStockCheck() {
+    public boolean hasStockCheck(boolean flag) {
 
-        int siz = productHelper.getTaggedProducts().size();
+        int siz;
+        if (!flag)
+            siz = productHelper.getTaggedProducts().size();
+        else
+            siz = productHelper.getProductMaster().size();
         if (siz == 0)
             return false;
         for (int i = 0; i < siz; ++i) {

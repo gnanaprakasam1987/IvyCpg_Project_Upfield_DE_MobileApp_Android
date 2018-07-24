@@ -40,20 +40,20 @@ import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.SellerListFragment;
 import com.ivy.cpg.view.reports.asset.AssetTrackingReportFragment;
-import com.ivy.sd.png.view.reports.ClosingStockReportFragment;
+import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportFragment;
 import com.ivy.sd.png.view.reports.CreditNoteReportFragment;
 import com.ivy.sd.png.view.reports.DeliveryStockReport;
 import com.ivy.sd.png.view.reports.DistOrderReportFragment;
 import com.ivy.sd.png.view.reports.DynamicReportFragment;
-import com.ivy.sd.png.view.reports.InventoryReportFragment;
-import com.ivy.sd.png.view.reports.LogReportFragment;
+import com.ivy.cpg.view.reports.inventoryreport.InventoryReportFragment;
+import com.ivy.cpg.view.reports.userlogreport.LogReportFragment;
 import com.ivy.sd.png.view.reports.OutletPerformanceReportFragmnet;
 import com.ivy.sd.png.view.reports.PndInvoiceReportFragment;
 import com.ivy.cpg.view.reports.promotion.PromotionTrackingReport;
 import com.ivy.sd.png.view.reports.QuestionReportFragment;
 import com.ivy.sd.png.view.reports.SOreportFragment;
 import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
-import com.ivy.sd.png.view.reports.SalesReturnReportFragment;
+import com.ivy.sd.png.view.reports.soho.SalesReturnReportFragmentSOHO;
 import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 import com.ivy.sd.png.view.reports.SellerMapViewReportFragment;
 import com.ivy.sd.png.view.reports.SellerPerformanceReportFragment;
@@ -527,7 +527,7 @@ public class ReportActivity extends BaseActivity implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SALES_REPORT)) {
 
-            SalesReturnReportFragment salesReturnReport = new SalesReturnReportFragment();
+            SalesReturnReportFragmentSOHO salesReturnReport = new SalesReturnReportFragmentSOHO();
             salesReturnReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, salesReturnReport);
 

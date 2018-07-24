@@ -44,7 +44,7 @@ public class EodReportHelper {
             StringBuffer sb = new StringBuffer();
 
             sb.append("SELECT PM.PID, PM.PName");
-            sb.append(",PM.duomqty,PM.dOuomQty,PM.piece_uomid,PM.duomid,PM.dOuomid  FROM ProductMaster PM");
+            sb.append(",PM.duomqty,PM.dOuomQty,PM.piece_uomid,PM.duomid,PM.dOuomid,PM.pcode  FROM ProductMaster PM");
             sb.append(" Where PM.TypeId NOT IN (SELECT ListID FROM StandardListMaster WHERE  ListCode ='GENERIC') ORDER BY PM.PID");
 
             Cursor c = db.selectSQL(sb.toString());
@@ -59,6 +59,7 @@ public class EodReportHelper {
                     stockReportBO.setPiece_uomid(c.getInt(4));
                     stockReportBO.setdUomid(c.getInt(5));
                     stockReportBO.setdOuomid(c.getInt(6));
+                    stockReportBO.setProductCode(c.getString(7));
 
 
                     tempStockReport.add(stockReportBO);

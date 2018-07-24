@@ -1,7 +1,6 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports.closingstockreport;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +11,28 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportsHelper;
+import com.ivy.cpg.view.reports.promotion.RetailerNamesBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.HashMap;
 
-public class ClosingStockReportFragment extends Fragment {
+public class ClosingStockReportFragment extends IvyBaseFragment {
 
-    BusinessModel bmodel;
-    ListView lvwplist;
-    LinearLayout linearLayout;
+    private BusinessModel bmodel;
+    private ListView lvwplist;
+    private LinearLayout linearLayout;
+    ClosingStockReportsHelper closingStockReportsHelper;
+    HashMap<String, ArrayList<ProductMasterBO>> retailerWiseClosingStock;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,27 +42,64 @@ public class ClosingStockReportFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.closing_stk_report_fragment,
                 container, false);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        bmodel.reportHelper.downloadClosingStock();
+        closingStockReportsHelper = new ClosingStockReportsHelper(getContext());
+        ArrayList<RetailerNamesBO> items = closingStockReportsHelper.downloadClosingStockRetailers();
 
-        Vector<RetailerMasterBO> items = new Vector<>();
         int siz = 0;
         try {
-            items = bmodel.reportHelper.getRetailerMaster();
             siz = items.size();
-            if (siz == 0)
+            if (siz == 0) {
+                Toast.makeText(getActivity(), R.string.no_data_exists, Toast.LENGTH_LONG).show();
+                getActivity().finish();
                 return view;
+            }
         } catch (Exception e) {
             Commons.printException(e);
         }
 
-        Spinner spinnerbrand = (Spinner) view.findViewById(R.id.spn_retailer_closing_stk);
-        linearLayout = (LinearLayout) view.findViewById(R.id.orderScreenListRow);
-        lvwplist = (ListView) view.findViewById(R.id.lvwpList);
+        retailerWiseClosingStock = closingStockReportsHelper.downloadClosingStock();
+
+        Spinner spinnerbrand = view.findViewById(R.id.spn_retailer_closing_stk);
+
+        linearLayout = view.findViewById(R.id.orderScreenListRow);
+
+        lvwplist = view.findViewById(R.id.lvwpList);
         lvwplist.setCacheColorHint(0);
 
+        hideAndSeek(view);
+
+        setUpLabelConfig(view);
+
+
+        ArrayAdapter<RetailerNamesBO> retailerAdapter = new ArrayAdapter<>(
+                getActivity(), android.R.layout.simple_spinner_item);
+        retailerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        for (int i = 0; i < siz; ++i) {
+            retailerAdapter.add(items.get(i));
+        }
+        spinnerbrand.setAdapter(retailerAdapter);
+
+        spinnerbrand.setAdapter(retailerAdapter);
+        spinnerbrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                RetailerMasterBO reBo = (RetailerMasterBO) parent.getSelectedItem();
+                updateStockReportGrid(reBo.getTretailerId());
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        return view;
+    }
+
+    private void hideAndSeek(View view) {
         if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER
                 && !bmodel.configurationMasterHelper.SHOW_STOCK_SP
                 && !bmodel.configurationMasterHelper.SHOW_STOCK_SC) {
@@ -75,8 +117,9 @@ public class ClosingStockReportFragment extends Fragment {
 
         if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC)
             view.findViewById(R.id.case_qty).setVisibility(View.GONE);
+    }
 
-
+    private void setUpLabelConfig(View view) {
         try {
             ((TextView) view.findViewById(R.id.skucode)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.skucode).getTag()) != null)
@@ -102,37 +145,13 @@ public class ClosingStockReportFragment extends Fragment {
         } catch (Exception e) {
             Commons.printException(e + "");
         }
-
-
-        ArrayAdapter<RetailerMasterBO> retailerAdapter = new ArrayAdapter<>(
-                getActivity(), android.R.layout.simple_spinner_item);
-        retailerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        for (int i = 0; i < siz; ++i) {
-            retailerAdapter.add(items.elementAt(i));
-        }
-        spinnerbrand.setAdapter(retailerAdapter);
-
-        spinnerbrand.setAdapter(retailerAdapter);
-        spinnerbrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                RetailerMasterBO reBo = (RetailerMasterBO) parent.getSelectedItem();
-                updateStockReportGrid(reBo.getTretailerId());
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        return view;
     }
 
     private void updateStockReportGrid(int retailerId) {
 
         ArrayList<ProductMasterBO> closingStkList = new ArrayList<>();
         try {
-            closingStkList = bmodel.reportHelper.getClosingStkReport(retailerId + "");
+            closingStkList = retailerWiseClosingStock.get(retailerId+"");
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -170,11 +189,11 @@ public class ClosingStockReportFragment extends Fragment {
                         .inflate(R.layout.row_closing_stk_report, parent, false);
                 holder = new ViewHolder();
 
-                holder.pname = (TextView) row.findViewById(R.id.skuname);
-                holder.pieceQty = (TextView) row.findViewById(R.id.piece_qty);
-                holder.caseQty = (TextView) row.findViewById(R.id.case_qty);
-                holder.outerQty = (TextView) row.findViewById(R.id.outer_qty);
-                holder.prodcode = (TextView) row.findViewById(R.id.skucode);
+                holder.pname = row.findViewById(R.id.skuname);
+                holder.pieceQty = row.findViewById(R.id.piece_qty);
+                holder.caseQty = row.findViewById(R.id.case_qty);
+                holder.outerQty = row.findViewById(R.id.outer_qty);
+                holder.prodcode = row.findViewById(R.id.skucode);
 
                 if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER
                         && !bmodel.configurationMasterHelper.SHOW_STOCK_SP
@@ -207,10 +226,6 @@ public class ClosingStockReportFragment extends Fragment {
             holder.caseQty.setVisibility(View.GONE);
             holder.outerQty.setVisibility(View.GONE);
 
-
-//            holder.caseQty.setText(product.getCsCase()+"");
-//            holder.outerQty.setText(product.getCsOuter()+"");
-
             int total = 0;
             if (product.getCsPiece() > 0)
                 total = product.getCsPiece();
@@ -220,8 +235,6 @@ public class ClosingStockReportFragment extends Fragment {
                 total = total + (product.getCsOuter() * product.getOutersize());
 
             holder.pieceQty.setText(total + "");
-
-//            Commons.print(total+"");
 
             return (row);
         }

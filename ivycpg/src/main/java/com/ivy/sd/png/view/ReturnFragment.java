@@ -864,6 +864,7 @@ public class ReturnFragment extends IvyBaseFragment {
             holder.oldMrp.setText(strOldMrp);
             String strSrpEdit = holder.reasonBO.getSrpedit() + "";
             holder.srpedit.setText(strSrpEdit);
+            ((TextView)row.findViewById(R.id.text_srp)).setText(strSrpEdit);
 
             if (holder.reasonBO.getLotNumber() != null)
                 holder.lotNumber.setText(holder.reasonBO.getLotNumber());

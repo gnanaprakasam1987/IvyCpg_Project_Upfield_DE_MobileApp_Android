@@ -58,10 +58,10 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     }
 
     @Override
-    public void doActivation(String key, String applicationVersionName, String applicationVersionNumber, String imEiNumber) {
+    public void doActivation(String key, String imEiNumber, String applicationVersionName, String applicationVersionNumber) {
 
         getIvyView().showLoading(R.string.please_wait_some_time);
-        getCompositeDisposable().add((Disposable) activationDataManager.doActivationAtHttp(key, applicationVersionName, applicationVersionNumber, imEiNumber)
+        getCompositeDisposable().add((Disposable) activationDataManager.doActivationAtHttp(key, imEiNumber, applicationVersionName, applicationVersionNumber)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(getObserver()));

@@ -8,7 +8,7 @@ public interface ActivationDataManager {
 
     Single<Boolean> isServerOnline(String serverUrl);
 
-    Observable doActivationAtHttp(String key, String applicationVersionName, String applicationVersionNumber, String ieMiNumber);
+    Observable doActivationAtHttp(String key, String ieMiNumber, String applicationVersionName, String applicationVersionNumber);
 
     Observable doIMEIActivationAtHttp(String imEi, String versionName, String versionNumber);
 }

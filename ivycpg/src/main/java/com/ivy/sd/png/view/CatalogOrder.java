@@ -331,10 +331,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         // Following lines will call method to load products with appropriate filters.
         try {
-            if (OrderedFlag.equals("FromSummary") && bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
+            if (OrderedFlag.equals("FromSummary") && bmodel.configurationMasterHelper.SHOW_SPL_FILTER
+                    && !bmodel.configurationMasterHelper.IS_SHOW_ALL_SKU_ON_EDIT) {
                 mSelectedFilterMap.put("General", mOrdered);
                 updateGeneralText(mOrdered);
-            } else if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
+            } else if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER
+                    && !OrderedFlag.equals("FromSummary")) {
                 String defaultFilter = bmodel.configurationMasterHelper.getDefaultFilter();
                 mSelectedFilterMap.put("General", defaultFilter);
                 updateGeneralText(defaultFilter);
@@ -1163,12 +1165,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             return true;
         } else if (i == R.id.menu_spl_filter) {
 
-            // Get the Special Filter Type 1- Single Selection, 2- Multi
-            // Selection
-            if (ConfigurationMasterHelper.GET_GENERALFILTET_TYPE == 2)
-                generalFilterClickedFragment();
-            else
-                generalFilterClickedFragment();
+            generalFilterClickedFragment();
             item.setVisible(false);
             supportInvalidateOptionsMenu();
             return true;
@@ -1882,6 +1879,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         public void onBindViewHolder(MyViewHolder holder, int position) {
             holder.productObj = productList.get(position);
             holder.catalog_order_listview_productname.setText(holder.productObj.getProductShortName());
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code)
+                        + ": " + holder.productObj.getProductCode() + " ";
+                holder.productCode.setText(prodCode);
+            }
             if (holder.ppq != null) {
                 String strPPQ = "";
                 if (bmodel.labelsMasterHelper
@@ -2059,7 +2061,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             private ImageView pdt_image;
             private TextView catalog_order_listview_productname, ppq, ssrp,
-                    mrp, total, sih, wsih, moq, allocation;
+                    mrp, total, sih, wsih, moq, allocation, productCode;
             private Button list_view_order_btn, list_view_stock_btn, list_view_sales_return_qty;
             private LinearLayout pdt_details_layout;
             private ProductMasterBO productObj;
@@ -2070,6 +2072,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 super(v);
                 pdt_image = (ImageView) v.findViewById(R.id.pdt_image);
                 catalog_order_listview_productname = (TextView) v.findViewById(R.id.catalog_order_listview_productname);
+                productCode = (TextView) v.findViewById(R.id.catalog_order_listview_pCode);
                 ppq = (TextView) v.findViewById(R.id.catalog_order_listview_ppq);
                 moq = (TextView) v.findViewById(R.id.catalog_order_listview_moq);
                 ssrp = (TextView) v.findViewById(R.id.catalog_order_listview_srp);
@@ -2086,6 +2089,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 allocation = (TextView) v.findViewById(R.id.catalog_order_listview_allocation);
 
                 catalog_order_listview_productname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                productCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -2152,6 +2156,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                 if (!bmodel.configurationMasterHelper.IS_MOQ_ENABLED)
                     moq.setVisibility(View.GONE);
+
+                if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    productCode.setVisibility(View.GONE);
 
                 pdt_details_layout.setOnClickListener(new View.OnClickListener() {
                     @Override

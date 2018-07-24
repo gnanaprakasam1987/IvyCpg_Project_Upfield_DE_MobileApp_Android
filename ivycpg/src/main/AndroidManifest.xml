@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1310"
-    android:versionName="2.130.0.1676">
+    android:versionCode="1320"
+    android:versionName="2.132.0.2101">
 
     <supports-screens
         android:anyDensity="true"
@@ -759,7 +759,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.reports.SalesReturnValidationReport"
+            android:name="com.ivy.sd.png.view.reports.soho.SalesReturnValidationReportSOHO"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.SubDHomeActivity"

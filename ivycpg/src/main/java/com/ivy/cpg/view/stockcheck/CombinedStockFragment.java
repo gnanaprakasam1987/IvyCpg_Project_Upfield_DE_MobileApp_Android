@@ -321,7 +321,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bmodel.hasStockCheck()) {
+                if (bmodel.hasStockCheck(bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER)) {
                     onNextButtonClick();
                 }
             }
@@ -715,6 +715,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     holder = new ViewHolder();
                     holder.psname = (TextView) row
                             .findViewById(R.id.stock_and_order_listview_productname);
+                    holder.tvProductCode = (TextView) row
+                            .findViewById(R.id.tvProductCode);
                     holder.tvbarcode = (TextView) row
                             .findViewById(R.id.tvbarcode);
                     holder.ivAvailable = (ImageView) row
@@ -722,6 +724,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
                     holder.tvbarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
+                    if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                        holder.tvProductCode.setVisibility(View.GONE);
 
                     holder.psname.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
@@ -794,6 +798,13 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 holder.pname = holder.productObj.getProductName();
 
                 holder.psname.setText(holder.productObj.getProductShortName());
+
+                if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                    String prodCode = getResources().getString(R.string.prod_code) + ": " +
+                            holder.productObj.getProductCode() + " ";
+                    holder.tvProductCode.setText(prodCode);
+                }
+
                 holder.tvbarcode.setText(holder.productObj.getBarCode());
 
                 if ((holder.productObj.getLocations()
@@ -832,7 +843,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         private String productId;
         private String pname;
         private ProductMasterBO productObj;
-        private TextView psname, tvbarcode;
+        private TextView psname, tvbarcode, tvProductCode;
         ImageView ivAvailable;
     }
 
@@ -1136,7 +1147,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
 
     private void onNextButtonClick() {
-        if (bmodel.hasStockCheck()) {
+        if (bmodel.hasStockCheck(bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER)) {
             new SaveAsyncTask().execute();
         } else {
             mDialog1(1);

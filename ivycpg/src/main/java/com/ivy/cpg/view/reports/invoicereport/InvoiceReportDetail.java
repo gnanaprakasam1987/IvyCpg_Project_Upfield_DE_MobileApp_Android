@@ -813,7 +813,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 holder = new ViewHolder();
                 holder.productShortName = (TextView) row.findViewById(R.id.PRDNAME);
                 holder.productShortName.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-
+                holder.productCode = (TextView) row.findViewById(R.id.product_code);
                 holder.text_PcsQuantity = (TextView) row.findViewById(R.id.PRDPCSQTY);
                 holder.text_caseQuantity = (TextView) row.findViewById(R.id.PRDQTY);
                 holder.text_value = (TextView) row.findViewById(R.id.PRDVAL);
@@ -836,6 +836,8 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     holder.text_PcsQuantity.setVisibility(View.GONE);
                 if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
                     holder.outerQty.setVisibility(View.VISIBLE);
+                if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.productCode.setVisibility(View.GONE);
 
                 row.setTag(holder);
             } else {
@@ -846,6 +848,12 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     .getSchemeProducts().get(childPosition);
 
             holder.productShortName.setText(productBO.getProductName());
+
+            if (businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code)
+                        + ": " + productBO.getProductCode() + " ";
+                holder.productCode.setText(prodCode);
+            }
 
             holder.productName = productBO.getProductFullName();
             if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
@@ -941,6 +949,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                         parent, false);
                 holder = new ViewHolder();
                 holder.productShortName = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.productCode = (TextView) row.findViewById(R.id.product_code);
                 holder.productShortName.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.tvBatchNo = (TextView) row.findViewById(R.id.batch_no);
                 holder.text_PcsQuantity = (TextView) row.findViewById(R.id.PRDPCSQTY);
@@ -971,6 +980,9 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 if (!businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION)
                     holder.tvBatchNo.setVisibility(View.GONE);
 
+                if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.productCode.setVisibility(View.GONE);
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -985,7 +997,15 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             }
             holder.tvBatchNo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.productShortName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.productCode.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.productShortName.setText(holder.productBO.getProductShortName());
+
+            if (businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code)
+                        + ": " + holder.productBO.getProductCode() + " ";
+                holder.productCode.setText(prodCode);
+            }
+
             holder.productName = holder.productBO.getProductName();
             holder.text_PcsQuantity.setText(String.valueOf(holder.productBO.getOrderedPcsQty()));
             holder.text_caseQuantity.setText(String.valueOf(holder.productBO.getOrderedCaseQty()));
@@ -1015,7 +1035,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
     class ViewHolder {
         String productName;
-        TextView productShortName;
+        TextView productShortName, productCode;
         TextView tvBatchNo;
         TextView text_value, text_PcsQuantity, text_caseQuantity, outerQty;
         TextView tvWeight;

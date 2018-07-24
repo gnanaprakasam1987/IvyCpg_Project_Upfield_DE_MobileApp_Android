@@ -801,10 +801,10 @@ public class StockViewActivity extends ToolBarwithFilter implements
                 holder.sihOuter = (TextView) row.findViewById(R.id.sih_outer);
                 holder.sih = (TextView) row.findViewById(R.id.sih);
                 holder.prodcode = (TextView) row.findViewById(R.id.prdcode);
-                holder.prodcode.setVisibility(View.GONE);
 
 
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.prodcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.sihCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.sihOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -820,6 +820,9 @@ public class StockViewActivity extends ToolBarwithFilter implements
                     holder.sihCase.setVisibility(View.GONE);
                     holder.sihOuter.setVisibility(View.GONE);
                 }
+
+                if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.prodcode.setVisibility(View.GONE);
 
 
                 row.setOnClickListener(new View.OnClickListener() {
@@ -841,6 +844,12 @@ public class StockViewActivity extends ToolBarwithFilter implements
 
             holder.psname.setText(groupBoObj.getProductshortname());
             holder.pname = groupBoObj.getProductname();
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code) + ": " +
+                        groupBoObj.getProductCode() + " ";
+                holder.prodcode.setText(prodCode);
+            }
+
             if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
                     bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||
                     bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
