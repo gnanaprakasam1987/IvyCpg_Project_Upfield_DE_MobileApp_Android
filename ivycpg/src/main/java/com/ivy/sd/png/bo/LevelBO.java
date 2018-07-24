@@ -5,6 +5,7 @@ public class LevelBO {
 	private int  parentID = 0;
 	private int  productID = 0;
 	private String levelName;
+	private String parentHierarchy;
 	private int sequence ;
 
 	public LevelBO(){
@@ -47,6 +48,14 @@ public class LevelBO {
 
 	public void setLevelName(String levelName) {
 		this.levelName = levelName;
+	}
+
+	public String getParentHierarchy() {
+		return parentHierarchy;
+	}
+
+	public void setParentHierarchy(String parentHierarchy) {
+		this.parentHierarchy = parentHierarchy;
 	}
 
 	@Override

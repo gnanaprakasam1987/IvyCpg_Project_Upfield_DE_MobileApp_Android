@@ -49,7 +49,6 @@ public class ConfigurationMasterHelper {
     public static final String CODE_TAX_APPLY = "FUN19";
     public static final String CODE_DISCOUNT_APPLY = "FUN18";
     // Added for five level filter
-    public static final String CODE_IS_FIVE_LEVEL_FILTER = "FUN20";
     public static final String CODE_GLOBAL_LOCATION = "FUN23";
     public static final String CODE_GLOBAL_CATEGORY = "FUN24";
     public static final String CODE_SHOW_OUTLET_PLANNING_TAB = "PRO11";
@@ -909,7 +908,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MRP_LEVEL_TAX;
     public boolean SHOW_TAX;
     public boolean SHOW_DISCOUNT;
-    public boolean IS_FIVE_LEVEL_FILTER;
     public boolean IS_GLOBAL_LOCATION;
     public boolean IS_GLOBAL_CATEGORY;
     public boolean SHOW_OUTLET_PLANNING_TAB;
@@ -2120,8 +2118,6 @@ public class ConfigurationMasterHelper {
         this.IS_DIGITAL_CONTENT = hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) != null ? hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) : false;
         this.SHOW_NEW_OUTLET_UPLOAD = hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) : false;
         this.SHOW_DISCOUNT = hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) : false;
-        //this.IS_FIVE_LEVEL_FILTER = hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) : false;
-        this.IS_FIVE_LEVEL_FILTER = true;
         this.IS_GLOBAL_LOCATION = hashMapHHTModuleConfig.get(CODE_GLOBAL_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_LOCATION) : false;
         this.IS_GLOBAL_CATEGORY = hashMapHHTModuleConfig.get(CODE_GLOBAL_CATEGORY) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_CATEGORY) : false;
         this.SHOW_MRP_LEVEL_TAX = hashMapHHTModuleConfig.get(CODE_MRP_LEVEL_TAX) != null ? hashMapHHTModuleConfig.get(CODE_MRP_LEVEL_TAX) : false;

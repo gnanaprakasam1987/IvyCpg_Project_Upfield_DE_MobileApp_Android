@@ -211,7 +211,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         vannovalue.setText(" " + bmodel.userMasterHelper.getUserMasterBO().getVanno());
         findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
 
-        product = bmodel.vanmodulehelper.downloadOdameter();
+        product = bmodel.loadManagementHelper.downloadOdameter();
 
         if (product == null)
             product = new VanLoadMasterBO();

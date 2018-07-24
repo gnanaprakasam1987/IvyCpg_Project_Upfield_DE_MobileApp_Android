@@ -4,13 +4,14 @@ import java.util.Vector;
 
 public class LoadManagementBO {
 
-    private int parentid, productid, suggestqty, dUomQty, sih, wsih, isalloc,
-            dOuomQty, isMust, maxQty, stkprototalQty, stkpropcsqty,
-            stkprocaseqty, stkproouterqty, outerQty;
-    private String batchNo;
+	private int parentid, productid, suggestqty, dUomQty, sih, wsih, isalloc,
+			dOuomQty, isMust, maxQty, stkprototalQty, stkpropcsqty,
+			stkprocaseqty, stkproouterqty, outerQty;
+	private String batchNo;
+	private Vector<LoadManagementBO> batchnolist;
+	private Vector<LoadManagementBO> batchlist;
+	private String parentHierarchy;
     private String productCode = "";
-    private Vector<LoadManagementBO> batchnolist;
-    private Vector<LoadManagementBO> batchlist;
 
     public Vector<LoadManagementBO> getBatchlist() {
         return batchlist;
@@ -566,10 +567,17 @@ public class LoadManagementBO {
         return isCase;
     }
 
-    public void setCaseMapped(boolean aCase) {
-        isCase = aCase;
-    }
+	public void setCaseMapped(boolean aCase) {
+		isCase = aCase;
+	}
 
+	public String getParentHierarchy() {
+		return parentHierarchy;
+	}
+
+	public void setParentHierarchy(String parentHierarchy) {
+		this.parentHierarchy = parentHierarchy;
+	}
     /**
      * @return product Code
      */

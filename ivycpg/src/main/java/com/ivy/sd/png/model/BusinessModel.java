@@ -200,7 +200,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.math.BigDecimal;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -264,7 +263,7 @@ public class BusinessModel extends Application {
     public RoadActivityHelper mroadActivityHelper;
     public TaskHelper taskHelper;
     public ReportHelper reportHelper;
-    public LoadManagementHelper vanmodulehelper;
+    public LoadManagementHelper loadManagementHelper;
     public StockProposalModuleHelper stockProposalModuleHelper;
     public VanLoadStockApplyHelper stockreportmasterhelper;
     public LabelsMasterHelper labelsMasterHelper;
@@ -430,7 +429,7 @@ public class BusinessModel extends Application {
         synchronizationHelper = SynchronizationHelper.getInstance(this);
         taskHelper = TaskHelper.getInstance(this);
         reportHelper = ReportHelper.getInstance(this);
-        vanmodulehelper = LoadManagementHelper.getInstance(this);
+        loadManagementHelper = LoadManagementHelper.getInstance(this);
         stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
         stockreportmasterhelper = VanLoadStockApplyHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
@@ -7784,7 +7783,7 @@ public class BusinessModel extends Application {
                             mComputeID.append(appendZero(seqNo, "0000"));
                         }
                     } else if (!mRules.get(i).contains("{")) {
-                        mComputeID.append(mRules.get(i));
+                        mComputeID.append(mRules.get(i).replaceAll("\\[", "").replaceAll("\\]", ""));
                     } else if (mRules.get(i).contains("{SELLERCODE")) {
 
                         String userCode = userMasterHelper
@@ -8020,7 +8019,7 @@ public class BusinessModel extends Application {
                 bo.setPieceMapped(false);
             }
         } else if (type == 2) {
-            for (LoadManagementBO bo : productHelper.getProducts()) {
+            for (LoadManagementBO bo : productHelper.getLoadMgmtProducts()) {
                 bo.setOuterMapped(false);
                 bo.setCaseMapped(false);
                 bo.setPieceMapped(false);
@@ -8042,7 +8041,7 @@ public class BusinessModel extends Application {
                 bo.setPieceMapped(true);
             }
         } else if (type == 2) {
-            for (LoadManagementBO bo : productHelper.getProducts()) {
+            for (LoadManagementBO bo : productHelper.getLoadMgmtProducts()) {
                 bo.setOuterMapped(true);
                 bo.setCaseMapped(true);
                 bo.setPieceMapped(true);
@@ -9329,6 +9328,33 @@ public class BusinessModel extends Application {
         }
         return filtername;
     }
+
+
+    public double getRetailerInvoiceAmount() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
+                            + QT(retailerMasterBO.getRetailerID()));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    double i = c.getFloat(0);
+                    c.close();
+                    db.closeDB();
+                    return i;
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return 0;
+    }
+
 }
 
 

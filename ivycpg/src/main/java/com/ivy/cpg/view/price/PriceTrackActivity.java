@@ -10,13 +10,14 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,CompetitorFilterInterface {
+public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,CompetitorFilterInterface,FiveLevelFilterCallBack {
 
     private Toolbar toolbar;
 
@@ -85,27 +86,19 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
     }
 
     @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        PriceTrackFragment fragment = (PriceTrackFragment) fm
+                .findFragmentById(R.id.price_track_fragment);
+        fragment.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+    }
+
+    @Override
     public void loadStartVisit() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.loadStartVisit();
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PriceTrackFragment fragment = (PriceTrackFragment) fm
-                .findFragmentById(R.id.price_track_fragment);
-        fragment.updateFromFiveLevelFilter(mParentIdList);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PriceTrackFragment fragment = (PriceTrackFragment) fm
-                .findFragmentById(R.id.price_track_fragment);
-        fragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
     @Override

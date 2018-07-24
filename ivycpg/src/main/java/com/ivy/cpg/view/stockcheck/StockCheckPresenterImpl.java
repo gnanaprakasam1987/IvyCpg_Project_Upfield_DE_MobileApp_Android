@@ -37,7 +37,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     public String generalButton;
     private String brandButton;
     public HashMap<Integer, Integer> mCompetitorSelectedIdByLevelId;
-    private Vector<LevelBO> parentidList;
+    private int filteredPid;
     private String filtertext;
     public HashMap<Integer, Integer> mSelectedIdByLevelId;
     public ArrayList<String> mSearchTypeArray = new ArrayList<>();
@@ -200,12 +200,12 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         }
     }
 
-    public void getFilteredList(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId,
+    public void getFilteredList(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId,
                                 ArrayList<Integer> mAttributeProducts, String mFilterText) {
         Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
         fiveFilter_productIDs = new ArrayList<>();
         brandButton = filtertext;
-        this.parentidList = mParentIdList;
+        this.filteredPid = mFilteredPid;
         this.filtertext = mFilterText;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         if (items == null) {
@@ -218,10 +218,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         ArrayList<ProductMasterBO> stockList = new ArrayList<>();
         //
         if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {// Only own products
-            if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
-                for (LevelBO levelBO : parentidList) {
+            if (mAttributeProducts != null && mFilteredPid!=0) {//Both Product and attribute filter selected
                     for (ProductMasterBO sku : items) {
-                        if (levelBO.getProductID() == sku.getParentid()) {
+                        if (sku.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
                             if ((loadBothSalable
                                     ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
                                     : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
@@ -230,21 +229,18 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                                     fiveFilter_productIDs.add(sku.getProductID());
                                 }
                         }
-                    }
                 }
-            } else if (mAttributeProducts == null && !parentidList.isEmpty()) {// product filter alone selected
-                for (LevelBO levelBO : parentidList) {
+            } else if (mAttributeProducts == null && mFilteredPid!=0) {// product filter alone selected
                     for (ProductMasterBO sku : items) {
-                        if (levelBO.getProductID() == sku.getParentid()) {
+                        if (sku.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
                             if ((loadBothSalable
                                     ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
                                     : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
-                        }
                     }
                 }
-            } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
+            } else if (mAttributeProducts != null && mFilteredPid!=0) {// Attribute filter alone selected
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
@@ -266,10 +262,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 }
             }
         } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {// Only competitor products
-            if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
-                for (LevelBO levelBO : parentidList) {
+            if (mAttributeProducts != null && mFilteredPid!=0) {//Both Product and attribute filter selected
                     for (ProductMasterBO sku : items) {
-                        if (levelBO.getProductID() == sku.getParentid()) {
+                        if (sku.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
                             if ((loadBothSalable
                                     ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
                                     : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
@@ -278,21 +273,18 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                                     fiveFilter_productIDs.add(sku.getProductID());
                                 }
                         }
-                    }
                 }
-            } else if (mAttributeProducts == null && !parentidList.isEmpty()) {// product filter alone selected
-                for (LevelBO levelBO : parentidList) {
+            } else if (mAttributeProducts == null && mFilteredPid!=0) {// product filter alone selected
                     for (ProductMasterBO sku : items) {
-                        if (levelBO.getProductID() == sku.getParentid()) {
+                        if (sku.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
                             if ((loadBothSalable
                                     ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
                                     : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
                                 stockList.add(sku);
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
-                    }
                 }
-            } else if (mAttributeProducts != null && !parentidList.isEmpty()) {// Attribute filter alone selected
+            } else if (mAttributeProducts != null && mFilteredPid!=0) {// Attribute filter alone selected
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
@@ -314,10 +306,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 }
             }
         } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {//Both Own and Competitor products
-            if (mAttributeProducts != null && !parentidList.isEmpty()) {//Both Product and attribute filter selected
-                for (LevelBO levelBO : parentidList) {
+            if (mAttributeProducts != null && mFilteredPid!=0) {//Both Product and attribute filter selected
                     for (ProductMasterBO sku : items) {
-                        if (levelBO.getProductID() == sku.getParentid()) {
+                        if (sku.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
                             if (loadBothSalable
                                     ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
                                     : sku.getIsSaleable() == 1)
@@ -325,13 +316,11 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                                     stockList.add(sku);
                                     fiveFilter_productIDs.add(sku.getProductID());
                                 }
-                        }
                     }
                 }
-            } else if (mAttributeProducts == null && !parentidList.isEmpty()) {
-                for (LevelBO levelBO : parentidList) {// product filter alone selected
+            } else if (mAttributeProducts == null && mFilteredPid!=0) {
                     for (ProductMasterBO sku : items) {
-                        if (levelBO.getProductID() == sku.getParentid()) {
+                        if (sku.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
                             if (loadBothSalable
                                     ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
                                     : sku.getIsSaleable() == 1)
@@ -339,8 +328,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             fiveFilter_productIDs.add(sku.getProductID());
                         }
                     }
-                }
-            } else if (mAttributeProducts != null && !parentidList.isEmpty()) {
+            } else if (mAttributeProducts != null && mFilteredPid!=0) {
                 for (int pid : mAttributeProducts) {// Attribute filter alone selected
                     for (ProductMasterBO sku : items) {
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
@@ -448,8 +436,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 totalQty += (product.getLocations().get(i).getShelfOuter() * product
                         .getOutersize());
 /*
-            if (product.getLocations().get(i).getAvailability() > -1)
-                totalQty += product.getLocations().get(i).getAvailability();*/
+            if (product.downloadInStoreLocationsForStockCheck().get(i).getAvailability() > -1)
+                totalQty += product.downloadInStoreLocationsForStockCheck().get(i).getAvailability();*/
         }
         return totalQty;
 
@@ -682,23 +670,15 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
         if (!GENERAL.equals(generalButton)) {
             // both filter selected
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
-                        && isSpecialFilterAppliedProduct(generalButton, ret))
-                    return true;
-            } else {
-                if (isSpecialFilterAppliedProduct(generalButton, ret))
-                    return true;
-            }
+
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
+                    && isSpecialFilterAppliedProduct(generalButton, ret))
+                return true;
+
         } else if (GENERAL.equals(generalButton)) {
             // product filter alone selected
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
-                    return true;
-            } else {
-                if (isSpecialFilterAppliedProduct(generalButton, ret))
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
+                return true;
         }
         return false;
     }
@@ -740,8 +720,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     }
 
     /*
-    * Update competitor filtered products
-    * */
+     * Update competitor filtered products
+     * */
 
     public void updateCompetitorFilteredProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
         //  this.mCompetitorSelectedIdByLevelId=mSelectedIdByLevelId;

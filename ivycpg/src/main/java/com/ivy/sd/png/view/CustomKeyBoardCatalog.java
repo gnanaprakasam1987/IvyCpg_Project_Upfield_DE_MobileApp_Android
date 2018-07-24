@@ -92,7 +92,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         initializeViews();
         if (total_tv == null) {
             value_keyboard.setVisibility(View.GONE);
-            //setKeyboard(((pdtBO.getLocations().get(0).getShelfPiece() != -1) ? pdtBO.getLocations().get(0).getShelfPiece() : 0) + "");
+            //setKeyboard(((pdtBO.downloadInStoreLocationsForStockCheck().get(0).getShelfPiece() != -1) ? pdtBO.downloadInStoreLocationsForStockCheck().get(0).getShelfPiece() : 0) + "");
             setCaseKeyboard(((pdtBO.getLocations().get(0).getShelfCase() != -1) ? pdtBO.getLocations().get(0).getShelfCase() : 0) + "");
             setOuterKeyboard(((pdtBO.getLocations().get(0).getShelfOuter() != -1) ? pdtBO.getLocations().get(0).getShelfOuter() : 0) + "");
             setPcsKeyboard(((pdtBO.getLocations().get(0).getShelfPiece() != -1) ? pdtBO.getLocations().get(0).getShelfPiece() : 0) + "");

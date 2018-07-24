@@ -587,7 +587,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
     private void doConnection(String printername) {
         try {
-            bmodel.vanmodulehelper.downloadSubDepots();
+            bmodel.loadManagementHelper.downloadSubDepots();
             ZebraPrinter printer = connect();
             if (printer != null) {
                 // sendTestLabel();
@@ -741,7 +741,7 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
             //TODO:if the below condition is always true so remove the conditions
 
             if (PrinterLanguage.CPCL == printerLanguage) {
-                ArrayList<SubDepotBo> distributorList = bmodel.vanmodulehelper.getSubDepotList();
+                ArrayList<SubDepotBo> distributorList = bmodel.loadManagementHelper.getSubDepotList();
                 String distributorAddress1 = "";
                 String distributorAddress2 = "";
                 String distributorContactNo = "";

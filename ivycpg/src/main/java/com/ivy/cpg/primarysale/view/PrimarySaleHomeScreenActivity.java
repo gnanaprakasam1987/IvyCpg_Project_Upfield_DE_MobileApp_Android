@@ -358,11 +358,13 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-
+                //Download Filter Levels and Products
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuName));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(menuName,
+                        bmodel.productHelper.getFilterProductLevels()));
+                // Download Products
                 bmodel.productHelper
-                        .downloadFiveFilterLevels(menuName);
-                bmodel.productHelper
-                        .downloadDistributorProductsWithFiveLevelFilter(menuName);
+                        .downloadDistributorProducts(menuName);
 
                 bmodel.configurationMasterHelper.loadPrimarySaleStockCheckAndOrderConfiguration();
                 /** Load the stock check if opened in edit mode. **/
@@ -429,10 +431,13 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
             try {
 
 
+                //Download Filter Levels and Products
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuName));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(menuName,
+                        bmodel.productHelper.getFilterProductLevels()));
+                // Download Products
                 bmodel.productHelper
-                        .downloadFiveFilterLevels(menuName);
-                bmodel.productHelper
-                        .downloadDistributorProductsWithFiveLevelFilter(menuName);
+                        .downloadDistributorProducts(menuName);
 
                 bmodel.configurationMasterHelper.loadPrimarySaleStockCheckAndOrderConfiguration();
 

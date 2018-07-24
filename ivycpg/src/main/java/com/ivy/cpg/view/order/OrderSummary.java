@@ -3151,7 +3151,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             printer = InitializeZebraPrinter();
 
             if (printer != null) {
-                bModel.vanmodulehelper.downloadSubDepots();
+                bModel.loadManagementHelper.downloadSubDepots();
                 projectSpecificPrinterCall(printerName);
             } else {
                 bModel.productHelper.clearOrderTable();

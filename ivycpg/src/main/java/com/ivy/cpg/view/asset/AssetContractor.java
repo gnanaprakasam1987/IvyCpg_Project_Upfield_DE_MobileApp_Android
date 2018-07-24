@@ -22,7 +22,7 @@ public interface AssetContractor {
 
          void initialLoad();
          void updateList();
-         void updateFiveFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText);
+         void updateFiveFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText);
 
          void updateImageName();
          void removeExistingImage(String mAssetId, String imageNameStarts,String photoPath);
