@@ -4435,7 +4435,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private void backButtonClick() {
         try {
-            if (bmodel.hasOrder()) {
+            if (bmodel.hasOrder() || hasStockOnly()) {
                 showDialog(0);
             } else {
                 bmodel.productHelper.clearOrderTable();
