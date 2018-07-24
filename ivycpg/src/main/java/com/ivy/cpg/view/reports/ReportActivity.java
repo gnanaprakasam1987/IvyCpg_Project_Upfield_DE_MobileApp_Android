@@ -53,7 +53,7 @@ import com.ivy.cpg.view.reports.promotion.PromotionTrackingReport;
 import com.ivy.sd.png.view.reports.QuestionReportFragment;
 import com.ivy.sd.png.view.reports.SOreportFragment;
 import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
-import com.ivy.sd.png.view.reports.SalesReturnReportFragment;
+import com.ivy.sd.png.view.reports.soho.SalesReturnReportFragmentSOHO;
 import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 import com.ivy.sd.png.view.reports.SellerMapViewReportFragment;
 import com.ivy.sd.png.view.reports.SellerPerformanceReportFragment;
@@ -542,7 +542,7 @@ public class ReportActivity extends BaseActivity implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SALES_REPORT)) {
 
-            SalesReturnReportFragment salesReturnReport = new SalesReturnReportFragment();
+            SalesReturnReportFragmentSOHO salesReturnReport = new SalesReturnReportFragmentSOHO();
             salesReturnReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, salesReturnReport);
 

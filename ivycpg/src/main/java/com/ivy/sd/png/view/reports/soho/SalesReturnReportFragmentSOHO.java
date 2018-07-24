@@ -1,9 +1,8 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.sd.png.view.reports.soho;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +15,15 @@ import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 //import com.ivy.sd.png.bo.SalesReturnReasonBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
 
-public class SalesReturnReportFragment extends Fragment {
+public class SalesReturnReportFragmentSOHO extends IvyBaseFragment {
 
-    BusinessModel bmodel;
+    private BusinessModel bmodel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,8 +38,11 @@ public class SalesReturnReportFragment extends Fragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        ListView salesListView = (ListView) view.findViewById(R.id.lvwpList);
-        MyAdapter adapter = new MyAdapter(bmodel.reportHelper.getSalesReturnRetailerList());
+        ListView salesListView = view.findViewById(R.id.lvwpList);
+
+        SalesReturnReportHelperSOHO salesReturnReportHelperSOHO=new SalesReturnReportHelperSOHO(getContext());
+
+        MyAdapter adapter = new MyAdapter(salesReturnReportHelperSOHO.getSalesReturnRetailerList());
         salesListView.setAdapter(adapter);
 
         return view;
@@ -65,9 +68,9 @@ public class SalesReturnReportFragment extends Fragment {
                 row = inflater.inflate(R.layout.row_sales_return_retailer_report, parent, false);
 
                 holder = new ViewHolder();
-                holder.rlContent = (RelativeLayout) row.findViewById(R.id.rl_content);
-                holder.retailerName = (TextView) row.findViewById(R.id.retailerNameTv);
-                holder.productName = (TextView) row.findViewById(R.id.productName);
+                holder.rlContent = row.findViewById(R.id.rl_content);
+                holder.retailerName = row.findViewById(R.id.retailerNameTv);
+                holder.productName = row.findViewById(R.id.productName);
 
                 row.setTag(holder);
             } else {
@@ -85,7 +88,7 @@ public class SalesReturnReportFragment extends Fragment {
             holder.rlContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), SalesReturnValidationReport.class);
+                    Intent intent = new Intent(getActivity(), SalesReturnValidationReportSOHO.class);
                     intent.putExtra("RetailerId", salesReport.getRetailerId());
                     intent.putExtra("ProductId", salesReport.getProductId());
                     intent.putExtra("ProductCode", salesReport.getProductCode());
