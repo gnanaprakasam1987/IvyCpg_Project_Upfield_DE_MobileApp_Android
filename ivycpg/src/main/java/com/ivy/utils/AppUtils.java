@@ -259,9 +259,7 @@ public class AppUtils {
         File folder = new File(folderPath);
 
         File files[] = folder.listFiles();
-        if ((files == null) || (files.length < 1)) {
-            return;
-        } else {
+        if ((files != null) && (files.length >= 1)) {
 
             for (File tempFile : files) {
                 if (tempFile != null) {

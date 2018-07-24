@@ -6,8 +6,10 @@ import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.PhotoCaptureTestDataFactory;
 import com.ivy.ui.photocapture.data.PhotoCaptureDataManager;
@@ -17,18 +19,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.TestScheduler;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PhotoCapturePresenterTest {
@@ -172,7 +178,6 @@ public class PhotoCapturePresenterTest {
 
         mockConfigurationHelper.photocount = 5;
 
-
         assertEquals(mPresenter.isMaxPhotoLimitReached(), true);
     }
 
@@ -223,52 +228,52 @@ public class PhotoCapturePresenterTest {
     }
 
     @Test
-    public void testPhotoPathChanged(){
-        mockConfigurationHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE =true;
-        assertEquals(mPresenter.isImagePathChanged(),true);
+    public void testPhotoPathChanged() {
+        mockConfigurationHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE = true;
+        assertEquals(mPresenter.isImagePathChanged(), true);
     }
 
     @Test
-    public void testPhotoPathNotChanged(){
-        mockConfigurationHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE =false;
-        assertEquals(mPresenter.isImagePathChanged(),false);
+    public void testPhotoPathNotChanged() {
+        mockConfigurationHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE = false;
+        assertEquals(mPresenter.isImagePathChanged(), false);
     }
 
     @Test
-    public void testGetRetailerId(){
+    public void testGetRetailerId() {
 
         PhotoCaptureTestDataFactory.retailerMasterBO.setRetailerID("1");
 
         given(mDataManager.getRetailMaster()).willReturn(PhotoCaptureTestDataFactory.retailerMasterBO);
 
-        assertEquals(mPresenter.getRetailerId(),"1");
+        assertEquals(mPresenter.getRetailerId(), "1");
 
     }
 
     @Test
-    public void testGetTitleLabel(){
+    public void testGetTitleLabel() {
         given(labelsMasterHelper.applyLabels((Object) "menu_photo")).willReturn("Hello");
 
-        assertEquals(mPresenter.getTitleLabel(),"Hello");
+        assertEquals(mPresenter.getTitleLabel(), "Hello");
     }
 
     @Test
-    public void testUpdateLocalData(){
+    public void testUpdateLocalData() {
 
         mockConfigurationHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE = true;
 
-        UserMasterBO userMasterBO = new UserMasterBO(1,"");
+        UserMasterBO userMasterBO = new UserMasterBO(1, "");
         userMasterBO.setDownloadDate("abcd");
 
         given(mDataManager.getUser()).willReturn(userMasterBO);
 
-        mPresenter.updateLocalData(0,0,0,"","","","","","","","","");
+        mPresenter.updateLocalData(0, 0, 0, "", "", "", "", "", "", "", "", "");
 
         then(mView).shouldHaveZeroInteractions();
 
         mockConfigurationHelper.SHOW_DATE_BTN = true;
 
-        mPresenter.updateLocalData(0,0,0,"","","","","");
+        mPresenter.updateLocalData(0, 0, 0, "", "", "", "", "");
 
         then(mView).should().getFromDate();
 
@@ -277,7 +282,103 @@ public class PhotoCapturePresenterTest {
         then(mView).shouldHaveNoMoreInteractions();
     }
 
+    @Test
+    public void testSaveDataSuccess() {
 
+        HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
+        given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(true));
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(true));
+        given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(true));
+
+        mPresenter.onSaveButtonClick();
+        testScheduler.triggerActions();
+
+        then(mView).should().showLoading();
+        then(mView).should().showUpdatedDialog();
+        then(mView).should().hideLoading();
+
+    }
+
+
+    @Test
+    public void testSaveDataUpdateDataFail() {
+
+        HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
+        given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(false));
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(true));
+        given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(true));
+
+        mPresenter.onSaveButtonClick();
+        testScheduler.triggerActions();
+
+        then(mView).should().showLoading();
+        then(mView).should().hideLoading();
+        then(mView).shouldHaveNoMoreInteractions();
+
+    }
+
+
+    @Test
+    public void testSaveDataUpdateTimeStampFail() {
+
+        HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
+        given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(true));
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(false));
+        given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(true));
+
+        mPresenter.onSaveButtonClick();
+        testScheduler.triggerActions();
+
+        then(mView).should().showLoading();
+        then(mView).should().hideLoading();
+        then(mView).shouldHaveNoMoreInteractions();
+
+    }
+
+    @Test
+    public void testSaveDataUpdateModuleTimeFail() {
+
+        HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
+        given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(true));
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(true));
+        given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(false));
+
+        mPresenter.onSaveButtonClick();
+        testScheduler.triggerActions();
+
+        then(mView).should().showLoading();
+        then(mView).should().hideLoading();
+        then(mView).shouldHaveNoMoreInteractions();
+
+    }
+
+    @Test
+    public void testUpdateModuleTime() {
+
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(true));
+
+        mPresenter.updateModuleTime();
+        testScheduler.triggerActions();
+
+        then(mView).shouldHaveZeroInteractions();
+    }
+
+    @Test
+    public void testSetEditedPhotosListData() {
+
+        mPresenter.setEditedPhotosListData(new HashMap<String, PhotoCaptureLocationBO>());
+
+        then(mView).should().setSpinnerDefaults();
+
+    }
+
+    @Test
+    public void testGetGlobalLocationIndex() {
+        given(mDataManager.getGlobalLocationIndex()).willReturn(1);
+
+        assertEquals(mPresenter.getGlobalLocationIndex(),1);
+
+    }
 
 
 }

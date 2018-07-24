@@ -396,10 +396,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 + mSelectedProductId + "_" + mSelectedLocationId + "_"
                 + Commons.now(Commons.DATE);
 
-        boolean mIsFileAvailable = AppUtils
-                .checkForNFilesInFolder(
-                        folderPath, 1,
-                        mFirstNameStarts);
+        boolean mIsFileAvailable = AppUtils.checkForNFilesInFolder(folderPath, 1, mFirstNameStarts);
 
         if (mIsFileAvailable)
             showFileDeleteAlert(mFirstNameStarts);
@@ -413,8 +410,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         Intent intent = new Intent(
                 PhotoCaptureActivity.this,
                 CameraActivity.class);
-        String _path = HomeScreenFragment.folder.getPath()
-                + "/" + imageName;
+        String _path = HomeScreenFragment.folder.getPath() + "/" + imageName;
         //  intent.putExtra("quality", 40);
         intent.putExtra("path", _path);
         startActivityForResult(intent,
@@ -816,10 +812,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                             }
                         })
-                .setNegativeButton(getResources().getString(R.string.cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
                             }
                         });
 

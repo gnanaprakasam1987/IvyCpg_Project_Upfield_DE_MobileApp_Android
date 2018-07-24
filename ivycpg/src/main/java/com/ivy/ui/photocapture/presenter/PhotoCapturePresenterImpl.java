@@ -165,7 +165,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
+                    public void accept(Boolean aBoolean) {
 
                     }
                 }));
