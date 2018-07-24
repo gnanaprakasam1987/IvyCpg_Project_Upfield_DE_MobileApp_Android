@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -11,8 +11,117 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_salesReport"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tableLayoutGridView">
 
     </android.support.v7.widget.RecyclerView>
 
-</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tableLayoutGridView"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/resetbox_header_height"
+        android:layout_alignParentBottom="true"
+        android:background="?customLayoutBackground"
+        android:orientation="vertical"
+        android:stretchColumns="*">
+
+        <RelativeLayout
+            android:id="@+id/titleRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/store_margin_top"
+            android:layout_marginStart="@dimen/store_margin_top"
+            android:layout_marginTop="@dimen/store_margin_top"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/lbl_total_lines"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:text="@string/tot_line"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/text_sz_small"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txttotallines"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lbl_total_lines"
+                android:layout_weight="4"
+                android:text="@string/zero"
+                android:textColor="@color/white"
+                android:textSize="@dimen/login_edittext_text_size" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/ret_card_image"
+                android:layout_marginLeft="@dimen/margin_height"
+                android:layout_marginStart="@dimen/margin_height"
+                android:layout_marginTop="@dimen/icons_top_margin"
+                android:layout_toEndOf="@+id/lbl_total_lines"
+                android:layout_toRightOf="@+id/lbl_total_lines"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/label_totalValue"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/store_margin_top"
+                android:layout_marginStart="@dimen/store_margin_top"
+                android:layout_toEndOf="@+id/view1"
+                android:layout_toRightOf="@+id/view1"
+                android:adjustViewBounds="true"
+                android:text="@string/total_value"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/text_sz_small"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txttotal"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/label_totalValue"
+                android:layout_marginLeft="@dimen/store_margin_top"
+                android:layout_marginStart="@dimen/store_margin_top"
+                android:layout_span="1"
+                android:layout_toEndOf="@+id/view1"
+                android:layout_toRightOf="@+id/view1"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:text="@string/zero"
+                android:textColor="@color/white"
+                android:textSize="@dimen/login_edittext_text_size" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_span="1">
+
+            <TextView
+                android:id="@+id/productName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="3"
+                android:gravity="start"
+                android:padding="2dp"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/highlighter"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

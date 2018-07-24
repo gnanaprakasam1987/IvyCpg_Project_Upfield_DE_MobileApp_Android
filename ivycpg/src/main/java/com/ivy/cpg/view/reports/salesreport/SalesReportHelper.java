@@ -77,7 +77,7 @@ public class SalesReportHelper {
                     Cursor cursor = dbUtil
                             .selectSQL("SELECT  distinct PM.PName as ProductName,PM.PID as ProductID,srd.* ,SM.ListName as reasonDesc from SalesReturnDetails srd"
                                     + " LEFT JOIN ProductMaster PM ON srd.productID=PM.PID"
-                                    + " LEFT JOIN StandardListMaster SM on SM.ListId = srd.Condition"
+                                    + " LEFT JOIN StandardListMaster SM on SM.ListType = srd.Condition"
                                     + " AND srd.RetailerID=" + retailerId
                                     + " AND srd.uid=" + AppUtils.QT(uId));
 

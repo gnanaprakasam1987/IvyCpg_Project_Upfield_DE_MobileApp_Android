@@ -98,7 +98,7 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void setUpAdapter(Vector<SalesReturnDeliveryReportBo> reportBos) {
-        SalesReturnReportDetailsAdapter adapter = new SalesReturnReportDetailsAdapter(this, reportBos);
+        SalesReturnReportDetailsAdapter adapter = new SalesReturnReportDetailsAdapter(reportBos);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);

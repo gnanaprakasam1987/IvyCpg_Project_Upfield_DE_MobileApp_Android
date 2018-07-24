@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.ivy.cpg.view.reports.salesreport.salesreportdetails.SalesReturnDetailsActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -26,6 +27,13 @@ public class SalesReportFragment extends Fragment implements ReCyclerViewItemCli
 
     @BindView(R.id.recycler_salesReport)
     RecyclerView recyclerView;
+
+    @BindView(R.id.txttotal)
+    TextView text_totalOrderValue;
+
+    @BindView(R.id.txt_dist_pre_post)
+    TextView text_averagePreOrPost;
+
 
     private List<SalesReturnReportBo> list;
 
@@ -43,6 +51,12 @@ public class SalesReportFragment extends Fragment implements ReCyclerViewItemCli
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setUpAdapter();
+        setTotalValue();
+    }
+
+    private void setTotalValue() {
+
+
     }
 
     private void setUpAdapter() {
