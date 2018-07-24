@@ -7,14 +7,44 @@ public class SalesReturnReportBo {
     private String date;
 
     private int retailerId;
+
+    private String retailerName;
     private String retailerCode;
     private int userId;
 
     private String returnValue;
     private int lpc;
 
+    private String invoiceNumber;
+
     private String remarks;
     private String note;
+
+    private int distributorId;
+
+    public String getRetailerName() {
+        return retailerName;
+    }
+
+    public void setRetailerName(String retailerName) {
+        this.retailerName = retailerName;
+    }
+
+    public int getDistributorId() {
+        return distributorId;
+    }
+
+    public void setDistributorId(int distributorId) {
+        this.distributorId = distributorId;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
 
     public String getUId() {
         return uId;

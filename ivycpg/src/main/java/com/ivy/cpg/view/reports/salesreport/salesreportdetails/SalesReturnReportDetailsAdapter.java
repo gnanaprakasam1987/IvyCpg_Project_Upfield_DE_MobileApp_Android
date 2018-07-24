@@ -15,21 +15,16 @@ import java.util.List;
 
 
 public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesReturnReportDetailsAdapter.SalesReturnReportViewHolder> {
-    private ReCyclerViewItemClickListener mreCyclerViewItemClickListener;
-    private Context mContext;
-    List<SalesReturnReportBo> salesReturnReportBosList;
+    List<SalesReturnDeliveryReportBo> salesReturnReportBosList;
 
     /**
      * Initialize the values
      *
-     * @param context                       : context reference
-     * @param reCyclerViewItemClickListener : callBack Of ClickListener
+     * @param salesReturnReportBosList : salesReturnReportBosList reference
      */
 
-    public SalesReturnReportDetailsAdapter(Context context, ReCyclerViewItemClickListener reCyclerViewItemClickListener, List<SalesReturnReportBo> devices) {
-        this.mContext = context;
-        this.mreCyclerViewItemClickListener = reCyclerViewItemClickListener;
-        this.salesReturnReportBosList = devices;
+    public SalesReturnReportDetailsAdapter(List<SalesReturnDeliveryReportBo> salesReturnReportBosList) {
+        this.salesReturnReportBosList = salesReturnReportBosList;
     }
 
 
@@ -44,7 +39,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
     @Override
     public SalesReturnReportDetailsAdapter.SalesReturnReportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_orderdetail_report, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_salesreturndetails_report, parent, false);
         SalesReturnReportViewHolder myViewHolder = new SalesReturnReportViewHolder(view);
         return myViewHolder;
     }
@@ -56,9 +51,11 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
      */
     @Override
     public void onBindViewHolder(SalesReturnReportDetailsAdapter.SalesReturnReportViewHolder holder, int position) {
-        //  holder.deviceType.setText(salesReturnReportBosList.get(position).getDeviceType());
-        //  holder.model.setText(salesReturnReportBosList.get(position).getModel());
-        //  holder.name.setText(salesReturnReportBosList.get(position).getName());
+        holder.productName.setText(salesReturnReportBosList.get(position).getProductName());
+        holder.caseQty.setText(String.valueOf(salesReturnReportBosList.get(position).getCaseQty()));
+        holder.pieceQty.setText(String.valueOf(salesReturnReportBosList.get(position).getPieceQty()));
+        holder.value.setText(String.valueOf(salesReturnReportBosList.get(position).getReturnValue()));
+        holder.reason.setText(salesReturnReportBosList.get(position).getReason());
 
     }
 
@@ -75,20 +72,23 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
      */
 
     public class SalesReturnReportViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView deviceType, model, name;
+        TextView productName, caseQty, pieceQty, outerQty, value, reason;
+
 
         public SalesReturnReportViewHolder(View itemView) {
             super(itemView);
-            //  deviceType = itemView.findViewById(R.id.txt_deviceType);
-            //   model = itemView.findViewById(R.id.txt_model);
-            //  name = itemView.findViewById(R.id.txt_name);
+            productName = itemView.findViewById(R.id.text_productName);
+            caseQty = itemView.findViewById(R.id.text_caseQty);
+            pieceQty = itemView.findViewById(R.id.text_pieceQty);
+            value = itemView.findViewById(R.id.text_value);
+            outerQty = itemView.findViewById(R.id.text_outerQty);
+            reason = itemView.findViewById(R.id.text_reason);
             itemView.setOnClickListener(this);
         }
 
 
         @Override
         public void onClick(View view) {
-            // mreCyclerViewItemClickListener.onItemClickListener(view, this.getAdapterPosition());
         }
     }
 }

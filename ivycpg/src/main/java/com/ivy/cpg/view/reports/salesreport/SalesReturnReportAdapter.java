@@ -14,20 +14,19 @@ import java.util.List;
 
 public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnReportAdapter.SalesReturnReportViewHolder> {
     private ReCyclerViewItemClickListener mreCyclerViewItemClickListener;
+    List<SalesReturnReportBo> returnReportBosList;
     private Context mContext;
-    List<SalesReturnReportBo> deviceList;
 
     /**
      * Initialize the values
      *
-     * @param context                       : context reference
      * @param reCyclerViewItemClickListener : callBack Of ClickListener
      */
 
-    public SalesReturnReportAdapter(Context context, ReCyclerViewItemClickListener reCyclerViewItemClickListener, List<SalesReturnReportBo> devices) {
-        this.mContext = context;
+    public SalesReturnReportAdapter(Context context, ReCyclerViewItemClickListener reCyclerViewItemClickListener, List<SalesReturnReportBo> SalesReturnReportBoList) {
         this.mreCyclerViewItemClickListener = reCyclerViewItemClickListener;
-        this.deviceList = devices;
+        this.returnReportBosList = SalesReturnReportBoList;
+        this.mContext = context;
     }
 
 
@@ -54,15 +53,17 @@ public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnRe
      */
     @Override
     public void onBindViewHolder(SalesReturnReportAdapter.SalesReturnReportViewHolder holder, int position) {
-        // holder.deviceType.setText(deviceList.get(position).getDeviceType());
-        // holder.model.setText(deviceList.get(position).getModel());
-        // holder.name.setText(deviceList.get(position).getName());
 
+        holder.uid.setText(String.valueOf(returnReportBosList.get(position).getUId()));
+        holder.retailerName.setText(String.valueOf(returnReportBosList.get(position).getRetailerName()));
+        holder.returnValue.setText(returnReportBosList.get(position).getReturnValue());
+        holder.lpc.setText(String.valueOf(returnReportBosList.get(position).getLpc()));
+        (holder.divider).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override
     public int getItemCount() {
-        return deviceList.size();
+        return returnReportBosList.size();
     }
 
 
@@ -73,20 +74,23 @@ public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnRe
      */
 
     public class SalesReturnReportViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView deviceType, model, name;
+        TextView returnValue, lpc, retailerName, uid;
+        View divider;
 
         public SalesReturnReportViewHolder(View itemView) {
             super(itemView);
-            //  deviceType = itemView.findViewById(R.id.txt_deviceType);
-            // model = itemView.findViewById(R.id.txt_model);
-            // name = itemView.findViewById(R.id.txt_name);
+            returnValue = itemView.findViewById(R.id.text_returnValue);
+            lpc = itemView.findViewById(R.id.text_lpc);
+            retailerName = itemView.findViewById(R.id.text_retailerName);
+            divider = itemView.findViewById(R.id.invoiceview_doted_line);
+            uid = itemView.findViewById(R.id.text_uid);
             itemView.setOnClickListener(this);
         }
 
 
         @Override
         public void onClick(View view) {
-            // mreCyclerViewItemClickListener.onItemClickListener(view, this.getAdapterPosition());
+            mreCyclerViewItemClickListener.onItemClickListener(view, this.getAdapterPosition());
         }
     }
 }
