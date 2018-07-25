@@ -31,6 +31,7 @@ public abstract class PhotoCaptureTestDataFactory {
 
     public static ArrayList<PhotoCaptureLocationBO> getPhotoCaptureLocationList() {
         ArrayList<PhotoCaptureLocationBO> photoCaptureLocationBOS = new ArrayList<>();
+        photoCaptureLocationBOS.add(new PhotoCaptureLocationBO());
         return photoCaptureLocationBOS;
     }
 

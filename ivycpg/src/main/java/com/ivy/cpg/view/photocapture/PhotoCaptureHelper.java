@@ -25,6 +25,10 @@ import java.util.ArrayList;
  * Photo capture screen specific helper
  */
 
+/**
+ * @See {@link com.ivy.ui.photocapture.presenter.PhotoCapturePresenterImpl},{@link com.ivy.ui.photocapture.data.PhotoCaptureDataManagerImpl}
+ * @deprecated
+ */
 public class PhotoCaptureHelper {
 
     private final BusinessModel mBModel;
@@ -447,12 +451,11 @@ public class PhotoCaptureHelper {
     }
 
     /**
-     * @deprecated
-     * @See {@link com.ivy.utils.AppUtils#getUriFromFile(Context, String)}
-     * Getting file URI
-     *
      * @param path File path
      * @return URI
+     * @See {@link com.ivy.utils.AppUtils#getUriFromFile(Context, String)}
+     * Getting file URI
+     * @deprecated
      */
     public Uri getUriFromFile(Context mContext, String path) {
         File f = new File(path);

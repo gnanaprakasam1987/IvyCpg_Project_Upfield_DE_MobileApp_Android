@@ -54,6 +54,11 @@ import static com.ivy.cpg.view.photocapture.Gallery.isPhotoDelete;
  * Filter 2 based on ConfigActivityTable (filter is based on ProductContent
  * level in the Table)
  */
+
+/**
+ * @See {@link com.ivy.ui.photocapture.view.PhotoCaptureActivity}
+ * @deprecated
+ */
 public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         OnClickListener, DataPickerDialogFragment.UpdateDateInterface {
 
@@ -136,8 +141,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         }
 
         if (isFromMenuClick) {
-            mBModel.productHelper.downloadInStoreLocationsForStockCheck();
-            mBModel.productHelper.getInStoreLocation();
+            // mBModel.productHelper.downloadInStoreLocationsForStockCheck();
+            // mBModel.productHelper.getInStoreLocation();
             mPhotoCaptureHelper.downloadLocations(getApplicationContext());
             mPhotoCaptureHelper.downloadPhotoCaptureProducts(getApplicationContext());
             mPhotoCaptureHelper.downloadPhotoTypeMaster(getApplicationContext());

@@ -62,6 +62,7 @@ import com.ivy.appmodule.AppComponent;
 import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.db.DBHelperImpl;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
@@ -1031,6 +1032,12 @@ public class BusinessModel extends Application {
      * value will not be considered.
      */
 
+    /**
+     * @deprecated
+     * @See {@link AppUtils#QT(String)}
+     * @param data
+     * @return
+     */
     public String QT(String data) {
         return "'" + data + "'";
     }
@@ -3934,10 +3941,20 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * @deprecated
+     * @See {@link AppDataProviderImpl#getRetailMaster()}
+     * @return
+     */
     public RetailerMasterBO getRetailerMasterBO() {
         return retailerMasterBO;
     }
 
+    /**
+     * @deprecated
+     * @See {@link AppDataProviderImpl#setRetailerMaster(RetailerMasterBO)}
+     * @return
+     */
     public void setRetailerMasterBO(RetailerMasterBO retailerMasterBO) {
         // Until all the code is refactored, Retail master is updated in the Appdataprovider and business model
         appDataProvider.setRetailerMaster(retailerMasterBO);

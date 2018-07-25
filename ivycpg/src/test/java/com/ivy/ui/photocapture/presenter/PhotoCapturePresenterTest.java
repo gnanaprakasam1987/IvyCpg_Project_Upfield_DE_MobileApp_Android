@@ -5,6 +5,7 @@ import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -32,6 +33,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.TestScheduler;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -77,9 +79,7 @@ public class PhotoCapturePresenterTest {
     @Test
     public void testFetchData() {
 
-        PhotoCaptureTestDataFactory.retailerMasterBO.setDistributorId(1);
-
-        given(mDataManager.getRetailMaster()).willReturn(PhotoCaptureTestDataFactory.retailerMasterBO);
+        given(mDataManager.getRetailMaster()).willReturn(mock(RetailerMasterBO.class));
 
         given(photoCaptureDataManager.fetchEditedLocations(mDataManager.getRetailMaster().getRetailerID(), mDataManager.getRetailMaster().getDistributorId())).willReturn(Observable.fromCallable(new Callable<ArrayList<PhotoCaptureLocationBO>>() {
             @Override
@@ -128,9 +128,8 @@ public class PhotoCapturePresenterTest {
     @Test
     public void testFetchDataProductFail() {
 
-        PhotoCaptureTestDataFactory.retailerMasterBO.setDistributorId(1);
 
-        given(mDataManager.getRetailMaster()).willReturn(PhotoCaptureTestDataFactory.retailerMasterBO);
+        given(mDataManager.getRetailMaster()).willReturn(mock(RetailerMasterBO.class));
 
         given(photoCaptureDataManager.fetchEditedLocations(mDataManager.getRetailMaster().getRetailerID(), mDataManager.getRetailMaster().getDistributorId())).willReturn(Observable.fromCallable(new Callable<ArrayList<PhotoCaptureLocationBO>>() {
             @Override
@@ -376,7 +375,7 @@ public class PhotoCapturePresenterTest {
     public void testGetGlobalLocationIndex() {
         given(mDataManager.getGlobalLocationIndex()).willReturn(1);
 
-        assertEquals(mPresenter.getGlobalLocationIndex(),1);
+        assertEquals(mPresenter.getGlobalLocationIndex(), 1);
 
     }
 

@@ -20,6 +20,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -5561,6 +5562,12 @@ public class ConfigurationMasterHelper {
 
     private Typeface mFontBaloobhaiRegular;
 
+    /**
+     * @deprecated
+     * @See {@link com.ivy.utils.FontUtils#getFontBalooHai(Context, FontUtils.FontType)}
+     * @param mFontType
+     * @return
+     */
     public Typeface getFontBaloobhai(FontType mFontType) {
         if (mFontType == FontType.REGULAR) {
             if (mFontBaloobhaiRegular == null)
@@ -5576,6 +5583,12 @@ public class ConfigurationMasterHelper {
     private Typeface mFontRobotoMedium;
     private Typeface mFontRobotoThin;
 
+    /**
+     * @deprecated
+     * @See {@link FontUtils#getFontRoboto(FontUtils.FontType, Context)}
+     * @param mFontType
+     * @return
+     */
     public Typeface getFontRoboto(FontType mFontType) {
         if (mFontType == FontType.LIGHT) {
             if (mFontRobotoLight == null)

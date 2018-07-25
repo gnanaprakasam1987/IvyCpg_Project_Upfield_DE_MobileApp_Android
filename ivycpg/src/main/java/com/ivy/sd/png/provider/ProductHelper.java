@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
@@ -155,10 +156,20 @@ public class ProductHelper {
         this.mSelectedLocationIndex = mSelectedLocationIndex;
     }
 
+    /**
+     * @deprecated
+     * @See {@link AppDataProvider#getGlobalLocationIndex()}
+     * @return
+     */
     public int getmSelectedGLobalLocationIndex() {
         return mSelectedGLobalLocationIndex;
     }
 
+    /**
+     * @deprecated
+     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
+     * @param mSelectedGLobalLocationIndex
+     */
     public void setmSelectedGLobalLocationIndex(int mSelectedGLobalLocationIndex) {
         this.mSelectedGLobalLocationIndex = mSelectedGLobalLocationIndex;
         bmodel.codeCleanUpUtil.setGlobalLocationId(mSelectedGLobalLocationIndex);
