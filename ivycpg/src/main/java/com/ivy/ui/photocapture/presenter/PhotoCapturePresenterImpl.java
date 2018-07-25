@@ -87,22 +87,11 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
                         mProductBOS.clear();
                         mProductBOS.addAll(photoCaptureProductBOS);
 
-                        if (photoCaptureProductBOS.size() != 0)
-                            getIvyView().setProductListData(photoCaptureProductBOS);
-
-
                         mTypeMasterBOS.clear();
                         mTypeMasterBOS.addAll(photoTypeMasterBOS);
 
-                        if (photoTypeMasterBOS.size() != 0) {
-                            getIvyView().setPhotoTypeData(photoTypeMasterBOS);
-                        }
-
                         mLocationBOS.clear();
                         mLocationBOS.addAll(photoCaptureLocationBOS);
-                        if (photoCaptureLocationBOS.size() != 0) {
-                            getIvyView().setLocationData(photoCaptureLocationBOS);
-                        }
 
 
                         return true;
@@ -112,6 +101,18 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
                 .subscribeWith(new DisposableObserver<Object>() {
                     @Override
                     public void onNext(Object o) {
+                        if (mProductBOS.size() != 0)
+                            getIvyView().setProductListData(mProductBOS);
+
+                        if (mTypeMasterBOS.size() != 0) {
+                            getIvyView().setPhotoTypeData(mTypeMasterBOS);
+                        }
+
+                        if (mLocationBOS.size() != 0) {
+                            getIvyView().setLocationData(mLocationBOS);
+                        }
+
+
                         getIvyView().hideLoading();
                     }
 

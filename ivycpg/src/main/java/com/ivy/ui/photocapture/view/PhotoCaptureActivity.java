@@ -777,47 +777,37 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
      * Alert dialog while moving back
      */
     public void backButtonAlertDialog() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
-        alertDialogBuilder
-                .setIcon(null)
-                .setCancelable(false)
-                .setTitle(
-                        getResources().getString(
-                                R.string.photo_capture_not_saved_go_back))
-                .setPositiveButton(getResources().getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
+        showAlert("", getString(R.string.photo_capture_not_saved_go_back), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                photoCapturePresenter.updateModuleTime();
 
-                                photoCapturePresenter.updateModuleTime();
+                if (totalImgList.size() > 0) {
+                    for (String image : totalImgList)
+                        AppUtils.deleteFiles(folderPath, image);
+                }
 
-                                if (totalImgList.size() > 0) {
-                                    for (String image : totalImgList)
-                                        AppUtils.deleteFiles(folderPath, image);
-                                }
+                if (!isFromMenuClick) {
+                    finish();
+                } else {
 
-                                if (!isFromMenuClick) {
-                                    finish();
-                                } else {
+                    Intent mIntent = new Intent(
+                            PhotoCaptureActivity.this,
+                            HomeScreenTwo.class);
+                    if (isFromChild)
+                        mIntent.putExtra("isStoreMenu", true);
+                    startActivity(mIntent);
+                    finish();
+                }
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
+        }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
 
-                                    Intent mIntent = new Intent(
-                                            PhotoCaptureActivity.this,
-                                            HomeScreenTwo.class);
-                                    if (isFromChild)
-                                        mIntent.putExtra("isStoreMenu", true);
-                                    startActivity(mIntent);
-                                    finish();
-                                }
-                                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                            }
-                        })
-                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
-                        });
-
-        AppUtils.applyAlertDialogTheme(this, alertDialogBuilder);
+            }
+        });
     }
 
 }

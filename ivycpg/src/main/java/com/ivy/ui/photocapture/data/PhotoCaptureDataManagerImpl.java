@@ -2,6 +2,7 @@ package com.ivy.ui.photocapture.data;
 
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.util.Log;
 
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
@@ -68,6 +69,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
                     return photoCaptureProductBOS;
                 } catch (Exception ignored) {
+                    Log.d("Test","Exception");
                 } finally {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
@@ -123,6 +125,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                         return photoCaptureLocationBOS;
                     }
                 } catch (Exception ignored) {
+                    Log.d("Test","Exception");
                 } finally {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
@@ -173,7 +176,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                     }
 
                 } catch (Exception ignored) {
-
+                    Log.d("Test","Exception");
                 } finally {
                     mDbUtil.closeDB();
                 }
