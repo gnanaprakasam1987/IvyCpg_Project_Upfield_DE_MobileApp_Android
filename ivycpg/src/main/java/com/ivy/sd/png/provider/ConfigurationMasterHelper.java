@@ -268,6 +268,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_JOINT_CALL_LEVELS = "JOINTCALL03";
     private static final String CODE_SIH_VALIDATION = "ORDB42";
     private static final String CODE_SHOW_SELLER_DIALOG = "PREVAN01";
+    private static final String CODE_CHNAGE_SELLER_CONFIG_LEVEL = "PREVAN02";
     private static final String CODE_SHOW_VALIDATE_CREDIT_DAYS = "CREDITDAY01";
     private static final String CODE_SHOW_LINK_DASH_SKUTGT = "DASH03";
     private static final String CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST = "RTRDASH";
@@ -779,6 +780,8 @@ public class ConfigurationMasterHelper {
     public boolean IS_ALLOW_SURVEY_WITHOUT_JOINTCALL; // JOINTCALL02
     public boolean IS_SIH_VALIDATION = false; // ORDB42
     public boolean IS_SHOW_SELLER_DIALOG;// PREVAN01
+    public boolean IS_SWITCH_SELLER_CONFIG_LEVEL;// PREVAN02
+    public int switchConfigLevel = 0;
     public boolean IS_VALIDATE_CREDIT_DAYS;// CREDITDAY01
     public boolean SHOW_LINK_DASH_SKUTGT;// DASH03
     public boolean HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST; // RTRDASH
@@ -2078,6 +2081,13 @@ public class ConfigurationMasterHelper {
         this.SHOW_PRODUCTRETURN = hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_RETRUN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_RETRUN) : false;
         this.SHOW_GROUPPRODUCTRETURN = hashMapHHTModuleConfig.get(CODE_SHOW_GROUPPRODUCT_RETRUN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_GROUPPRODUCT_RETRUN) : false;
         this.IS_SHOW_SELLER_DIALOG = hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) : false;
+
+        this.IS_SWITCH_SELLER_CONFIG_LEVEL = hashMapHHTModuleConfig.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL) : false;
+        if (IS_SWITCH_SELLER_CONFIG_LEVEL) {
+            if (hashMapHHTModuleOrder.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL) != null)
+                this.switchConfigLevel = hashMapHHTModuleOrder.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL);
+        }
+
         this.IS_VALIDATE_CREDIT_DAYS = hashMapHHTModuleConfig.get(CODE_SHOW_VALIDATE_CREDIT_DAYS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_VALIDATE_CREDIT_DAYS) : false;
         this.SHOW_UNIT_PRICE = hashMapHHTModuleConfig.get(CODE_SHOW_UNIT_PRICE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_UNIT_PRICE) : false;
 
