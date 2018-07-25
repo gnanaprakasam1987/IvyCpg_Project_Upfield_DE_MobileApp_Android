@@ -1,15 +1,21 @@
 package com.ivy.cpg.view.reports.salesreport.salesreportdetails;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.ivy.cpg.view.reports.salesreport.SalesReportHelper;
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.Vector;
 
@@ -30,6 +36,12 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
     @BindView(R.id.recyclerView_salesReport)
     RecyclerView recyclerView;
 
+
+    @BindView(R.id.txttotal)
+    TextView totalQty;
+
+    @BindView(R.id.txttotallines)
+    TextView totalLines;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,13 +77,15 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         int retailerId = 0;
         if (getIntent() != null) {
             uId = getIntent().getStringExtra("UID");
-            retailerId = getIntent().getIntExtra("RETAILERID",0);
+            retailerId = getIntent().getIntExtra("RETAILERID", 0);
         }
+
+        totalValue(uId);
 
         SalesReportHelper salesReportHelper = new SalesReportHelper();
         mCompositeDisposable = new CompositeDisposable();
 
-        mCompositeDisposable.add((Disposable) salesReportHelper.getSaleReturnDeliveryDetails(this, uId,retailerId)
+        mCompositeDisposable.add((Disposable) salesReportHelper.getSaleReturnDeliveryDetails(this, uId, retailerId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getObserver()));
@@ -127,5 +141,33 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
+    private void totalValue(String uId) {
+
+        try {
+            DBUtil dbUtil = new DBUtil(this, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            dbUtil.openDataBase();
+            Cursor cursor = dbUtil
+                    .selectSQL("SELECT totalQty,srpedited from SalesReturnDetails "
+                            + "where uid=" + AppUtils.QT(uId));
+            int total = 0;
+
+            int totalLine = 0;
+            if (cursor != null) {
+
+
+                while (cursor.moveToNext()) {
+                    total = total + (cursor.getInt(0) * cursor.getInt(1));
+                    totalLine = totalLine+1;
+                }
+            }
+
+            totalQty.setText(String.valueOf(total));
+            totalLines.setText(String.valueOf(totalLine));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 }

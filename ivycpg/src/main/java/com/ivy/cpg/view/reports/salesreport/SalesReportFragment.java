@@ -2,6 +2,7 @@ package com.ivy.cpg.view.reports.salesreport;
 
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,10 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.reports.salesreport.salesreportdetails.SalesReturnDetailsActivity;
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.List;
 
@@ -34,6 +40,8 @@ public class SalesReportFragment extends Fragment implements ReCyclerViewItemCli
     @BindView(R.id.txt_dist_pre_post)
     TextView text_averagePreOrPost;
 
+    @BindView(R.id.reportheader)
+    View view;
 
     private List<SalesReturnReportBo> list;
 
@@ -55,6 +63,31 @@ public class SalesReportFragment extends Fragment implements ReCyclerViewItemCli
     }
 
     private void setTotalValue() {
+        DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        Cursor c = db.selectSQL("select sum (ReturnValue) from SalesReturnHeader where date=" + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        int totalVal = 0;
+        if (c != null) {
+            if (c.moveToNext()) {
+                totalVal = c.getInt(0);
+
+            }
+            c.close();
+        }
+        text_totalOrderValue.setText(String.valueOf(totalVal));
+        hideViews();
+        //  linearLayout.setVisibility(View.GONE);
+    }
+
+    private void hideViews() {
+
+        view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
+        view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
+        view.findViewById(R.id.btn_export).setVisibility(View.GONE);
+        view.findViewById(R.id.view1).setVisibility(View.GONE);
+
+
 
 
     }
@@ -63,7 +96,7 @@ public class SalesReportFragment extends Fragment implements ReCyclerViewItemCli
         SalesReportHelper salesReportHelper = new SalesReportHelper();
         list = salesReportHelper.getSalesReturnHeaderValue(getActivity());
         SalesReturnReportAdapter salesReturnReportAdapter =
-                new SalesReturnReportAdapter(getActivity(),SalesReportFragment.this, list);
+                new SalesReturnReportAdapter(getActivity(), SalesReportFragment.this, list);
 
         recyclerView.setAdapter(salesReturnReportAdapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
@@ -84,7 +117,7 @@ public class SalesReportFragment extends Fragment implements ReCyclerViewItemCli
         list.get(pos).getUId();
         Intent intent = new Intent(getActivity(), SalesReturnDetailsActivity.class);
         intent.putExtra("UID", list.get(pos).getUId());
-        intent.putExtra("RETAILERID",list.get(pos).getRetailerId());
+        intent.putExtra("RETAILERID", list.get(pos).getRetailerId());
         startActivity(intent);
 
     }
