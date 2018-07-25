@@ -797,13 +797,18 @@ public class ProfileHelper {
         }
     }
 
+
+    /**
+     * @See {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#checkProfileImagePath}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public boolean hasProfileImagePath(RetailerMasterBO ret) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" + ret.getRetailerID());
+            Cursor c = db.selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" + ret.getRetailerID());
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {
@@ -820,12 +825,23 @@ public class ProfileHelper {
             return false;
         }
     }
-
+    /**
+     * @See {@link  com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public boolean isImagePresent(String path) {
         File f = new File(path);
         return f.exists();
     }
 
+    /**
+     * @See {@link  com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public Uri getUriFromFile(String path) {
         File f = new File(path);
         if (Build.VERSION.SDK_INT >= 24) {

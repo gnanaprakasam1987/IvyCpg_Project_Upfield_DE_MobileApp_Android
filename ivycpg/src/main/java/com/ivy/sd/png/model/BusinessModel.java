@@ -390,8 +390,16 @@ public class BusinessModel extends Application {
     public double mSelectedRetailerLongitude;
     public ProductMasterBO selectedPdt;
     private ArrayList<NewOutletAttributeBO> attributeList;
+
+    /**
+     * @See {@link  com.ivy.utils.AppUtils;}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#latlongImageFileName}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     @NonNls
     public String latlongImageFileName;
+
     ArrayList<String> orderIdList = new ArrayList<>();
 
     // used for ProductiveCall
@@ -6006,6 +6014,12 @@ public class BusinessModel extends Application {
         }
     }
 
+    /**
+     * @See {@link  com.ivy.utils.AppUtils;}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#isExternalStorageAvailable}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public boolean isExternalStorageAvailable() {
 
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory()
@@ -8614,6 +8628,12 @@ public class BusinessModel extends Application {
     /**
      * DecodeFile is convert the large size image to fixed size which mentioned
      * above
+     */
+    /**
+     * @See {@link com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
      */
     public Bitmap decodeFile(File f) {
         int IMAGE_MAX_SIZE = 500;

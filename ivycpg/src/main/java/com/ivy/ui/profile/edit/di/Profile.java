@@ -1,8 +1,11 @@
 package com.ivy.ui.profile.edit.di;
 
-/**
- * Created by murugan.s on 7/18/2018.
- */
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
+import javax.inject.Qualifier;
+
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Profile {
 }

@@ -24,6 +24,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import org.jetbrains.annotations.NonNls;
 
@@ -98,10 +99,22 @@ public class NewOutletHelper {
         return retailerTypeList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<NewOutletBO> getContactTitleList() {
         return contactTitleList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<NewOutletBO> getContractStatusList() {
         return contractStatusList;
     }
@@ -210,6 +223,12 @@ public class NewOutletHelper {
         }
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void loadContactTitle() {
         NewOutletBO contactTitle;
         contactTitleList = new ArrayList<>();
@@ -233,7 +252,12 @@ public class NewOutletHelper {
             Commons.printException("" + e);
         }
     }
-
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void loadContactStatus() {
         NewOutletBO contactStatus;
         contractStatusList = new ArrayList<>();
@@ -344,7 +368,6 @@ public class NewOutletHelper {
                             isData = true;
                         }
                     }
-
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE04") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
@@ -1258,12 +1281,24 @@ public class NewOutletHelper {
         return tempList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public HashMap<String, String> getmPreviousProfileChangesList() {
         return mPreviousProfileChangesList;
     }
 
     private HashMap<String, String> mPreviousProfileChangesList;
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void getPreviousProfileChanges(String retailerid) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1279,11 +1314,8 @@ public class NewOutletHelper {
             headerCursor = db
                     .selectSQL("SELECT Tid FROM RetailerEditHeader"
                             + " WHERE RetailerId = "
-                            + bmodel.getRetailerMasterBO().getRetailerID()
-                            + " AND Date = "
-                            + bmodel.QT(currentDate)
-                            + " AND Upload = "
-                            + bmodel.QT("N"));
+                            + bmodel.getRetailerMasterBO().getRetailerID() + " AND Date = "
+                            + bmodel.QT(currentDate) + " AND Upload = " + bmodel.QT("N"));
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
@@ -1291,7 +1323,6 @@ public class NewOutletHelper {
                 headerCursor.close();
 
             }
-
 
             c = db.selectSQL("select code, value from RetailerEditDetail RED INNER JOIN RetailerEditHeader REH ON REH.tid=RED.tid where REH.retailerid=" + retailerid + " and REH.tid=" + bmodel.QT(tid));
             if (c != null) {
@@ -1640,6 +1671,12 @@ public class NewOutletHelper {
      * @author rajesh.k
      * Method to use download location for new retailer creation
      */
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void downloadLocationMaster() {
 
         mLocationListByLevelId = new LinkedHashMap<>();
@@ -1667,8 +1704,7 @@ public class NewOutletHelper {
 
                         if (levelId != c.getInt(4)) {
                             if (levelId != 0) {
-                                mLocationListByLevelId.put(levelId,
-                                        locationList);
+                                mLocationListByLevelId.put(levelId, locationList);
                                 locationList = new ArrayList<>();
                                 locationList.add(locationBo);
                                 levelId = c.getInt(4);
@@ -1696,8 +1732,12 @@ public class NewOutletHelper {
         }
 
     }
-
-
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public LinkedHashMap<Integer, ArrayList<LocationBO>> getLocationListByLevId() {
         return mLocationListByLevelId;
     }
@@ -2312,23 +2352,31 @@ public class NewOutletHelper {
 
     private String retailerId_edit;
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadLinkRetailer()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void downloadLinkRetailer() {
         try {
             mLinkRetailerList = new Vector<>();
             mLinkRetailerListByDistributorId = new SparseArray<>();
+
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             String sb = "select Distributorid ,retailerid,name,latitude,longitude,pincode from linkretailermaster " +
                     "order by Distributorid ";
             Cursor c = db.selectSQL(sb);
+
             Vector<RetailerMasterBO> linkRetailerList = new Vector<>();
             int distributorId = 0;
             RetailerMasterBO linkRetailerBO;
+
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     linkRetailerBO = new RetailerMasterBO();
-
                     linkRetailerBO.setDistributorId(c.getInt(0));
                     linkRetailerBO.setRetailerID(c.getString(1));
                     linkRetailerBO.setRetailerName(c.getString(2));
@@ -2336,6 +2384,7 @@ public class NewOutletHelper {
                     linkRetailerBO.setLongitude(c.getDouble(4));
                     linkRetailerBO.setPincode(c.getString(5));
                     mLinkRetailerList.add(linkRetailerBO);
+
                     if (distributorId != linkRetailerBO.getDistributorId()) {
                         if (distributorId != 0) {
                             mLinkRetailerListByDistributorId.put(distributorId, linkRetailerList);
@@ -2350,9 +2399,9 @@ public class NewOutletHelper {
                     } else {
                         linkRetailerList.add(linkRetailerBO);
                     }
-
-
                 }
+
+
                 if (linkRetailerList.size() > 0) {
                     mLinkRetailerListByDistributorId.put(distributorId, linkRetailerList);
                 }
@@ -2367,11 +2416,22 @@ public class NewOutletHelper {
 
 
     }
-
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadLinkRetailer()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public SparseArray<Vector<RetailerMasterBO>> getLinkRetailerListByDistributorId() {
         return mLinkRetailerListByDistributorId;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadLinkRetailer()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public Vector<RetailerMasterBO> getLinkRetailerList() {
         return mLinkRetailerList;
     }
@@ -2490,6 +2550,12 @@ public class NewOutletHelper {
         return lst;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadRetailerFlexValues}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<RetailerFlexBO> downloadRetailerFlexValues(@NonNls String type) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);

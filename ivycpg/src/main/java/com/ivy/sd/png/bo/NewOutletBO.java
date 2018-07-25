@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class NewOutletBO {
+public class NewOutletBO extends ArrayList<NewOutletBO> {
     private int mSelectedImageIndex = 0;
     private double NewOutletlattitude, NewOutletLongitude;
     private String visitDays;

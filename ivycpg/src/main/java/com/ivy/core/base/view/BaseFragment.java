@@ -1,15 +1,20 @@
 package com.ivy.core.base.view;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.sd.png.util.DataMembers;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -18,7 +23,8 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
 
     private Unbinder mUnBinder;
-
+    private Dialog dialog;
+    private TextView progressMsgTxt;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,7 +37,6 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
         super.onViewCreated(view, savedInstanceState);
         mUnBinder = ButterKnife.bind(this, view);
         initVariables(view);
-
 
         initializeDi();
 
@@ -78,12 +83,42 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void showLoading() {
+        if(getActivity() instanceof BaseActivity)
         ((BaseActivity) getActivity()).showLoading();
+        else
+            showDialog(getString(R.string.loading));
+
+    }
+
+    public void showDialog(String msg) {
+
+        if (dialog == null) {
+            dialog = new Dialog(getActivity());
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.custom_alert_dialog);
+
+            TextView title = dialog.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            progressMsgTxt = dialog.findViewById(R.id.text);
+        }
+        progressMsgTxt.setText(msg);
+
+        dialog.show();
+
+    }
+
+    public void hideLoadingCustom() {
+        if (dialog != null)
+            dialog.dismiss();
     }
 
     @Override
     public void hideLoading() {
+        if(getActivity() instanceof BaseActivity)
         ((BaseActivity) getActivity()).hideLoading();
+        else
+            hideLoadingCustom();
     }
 
     @Override

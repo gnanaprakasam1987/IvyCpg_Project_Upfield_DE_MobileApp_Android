@@ -681,8 +681,7 @@ public class ProfileFragment extends IvyBaseFragment {
             case "PROFILE06": {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
-                outletBO.setValueText(bmodel.channelMasterHelper
-                        .getChannelName(retailerObj.getChannelID() + ""));
+                outletBO.setValueText(bmodel.channelMasterHelper.getChannelName(retailerObj.getChannelID() + ""));
                 finalProfileList.add(outletBO);
                 break;
             }

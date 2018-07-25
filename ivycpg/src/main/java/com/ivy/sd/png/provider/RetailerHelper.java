@@ -54,6 +54,7 @@ public class RetailerHelper {
         return instance;
     }
 
+
     public String getContractType() {
         return contractType;
     }
@@ -69,6 +70,7 @@ public class RetailerHelper {
     public String getContractStartDate() {
         return contractStartDate;
     }
+
 
     public void loadContractData() {
         try {

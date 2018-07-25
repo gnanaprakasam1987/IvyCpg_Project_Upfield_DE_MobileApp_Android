@@ -13,6 +13,7 @@ import com.ivy.sd.png.view.NearByRetailerDialog;
 import java.util.Vector;
 
 public class ProfileEditActivity extends IvyBaseActivityNoActionBar implements NearByRetailerDialog.NearByRetailerInterface {
+
     private BusinessModel bmodel;
     private Toolbar toolbar;
 
@@ -20,7 +21,6 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar implements N
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
-
 
         bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
@@ -52,12 +52,12 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar implements N
 
     @Override
     public void updateNearByRetailer(Vector<RetailerMasterBO> list) {
-        ProfileEditFragment mProfileEditFragment;
+       /* ProfileEditFragment mProfileEditFragment;
         if (getSupportFragmentManager().findFragmentById(R.id.activity_profile_edit) instanceof ProfileEditFragment) {
             mProfileEditFragment = (ProfileEditFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.activity_profile_edit);
             mProfileEditFragment.updateNearByRetailer(list);
-        }
+        }*/
     }
 
 

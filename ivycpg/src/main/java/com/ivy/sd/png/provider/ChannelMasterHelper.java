@@ -10,6 +10,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import java.util.Vector;
 
@@ -42,14 +43,10 @@ public class ChannelMasterHelper {
         this.retailerMaster = retailerMaster;
     }
 
-
     public void setChannelMaster(Vector<ChannelBO> channelMaster) {
         this.channelMaster = channelMaster;
     }
 
-    public Vector<ChannelBO> getChannelMaster() {
-        return channelMaster;
-    }
 
     public String getChannelName(String channelID) {
 
@@ -67,7 +64,12 @@ public class ChannelMasterHelper {
         return "";
     }
 
-    // Download Channel details
+
+    public Vector<ChannelBO> getChannelMaster() {
+        return channelMaster;
+    }
+
+
     public void downloadChannel() {
         try {
             ChannelBO temp;
@@ -81,10 +83,7 @@ public class ChannelMasterHelper {
                     leveid = c.getInt(0);
                 }
             }
-
-
-            c = db
-                    .selectSQL("SELECT chid, chName FROM ChannelHierarchy where levelid=" + leveid);
+            c = db.selectSQL("SELECT chid, chName FROM ChannelHierarchy where levelid=" + leveid);
             if (c != null) {
                 channelMaster = new Vector<ChannelBO>();
                 while (c.moveToNext()) {
@@ -97,7 +96,6 @@ public class ChannelMasterHelper {
             }
             db.closeDB();
         } catch (Exception e) {
-
             Commons.printException(e);
         }
     }

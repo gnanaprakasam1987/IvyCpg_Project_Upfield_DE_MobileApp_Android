@@ -105,7 +105,9 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     public static final String TAG = ProfileEditFragment.class.getSimpleName();
 
-    /*Configuration Profile id's List */
+    /*Configuration Profile id's List
+    * ROFILE09, PROFILE10, PROFILE11, PROFILE12, PROFILE41, PROFILE42*/
+    private static final String PROFILE_60 = "PROFILE60";//Retailer Image :Note:-Only Profile Config,Has Edit=0
     private static final String PROFILE_02 = "PROFILE02";//STORENAME,length validation=Y,Has Edit=0,RetailerMaster
     private static final String PROFILE_03 = "PROFILE03";//ADDRESS1,length validation=Y,Has Edit=1,RetailerMaster
     private static final String PROFILE_04 = "PROFILE04";//ADDRESS2,length validation=Y,Has Edit=1,RetailerMaster
@@ -113,10 +115,14 @@ public class ProfileEditFragment extends IvyBaseFragment
     private static final String PROFILE_06 = "PROFILE06";//CHANNEL,length validation=Y,Has Edit=1,RetailerMaster
     private static final String PROFILE_07 = "PROFILE07";//SUBCHANNEL,length validation=Y,Has Edit=1,RetailerMaster
     private static final String PROFILE_08 = "PROFILE08";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerAddress
+
     private static final String PROFILE_09 = "PROFILE09";//CONTACTPERSON1,length validation=Y,Has Edit=0,RetailerContact
     private static final String PROFILE_10 = "PROFILE10";//PHNO1,length validation=Y,input validation=NUMBER,Has Edit=0,RetailerContact
     private static final String PROFILE_11 = "PROFILE11";//CONTACTPERSON2,length validation=Y,Has Edit=0,RetailerContact
     private static final String PROFILE_12 = "PROFILE12";//PHNO2,length validation=Y,input validation=NUMBER,Has Edit=0,RetailerContact
+    private static final String PROFILE_41 = "PROFILE41";//CONTACTTITLE 1 ,length validation=Y,Has Edit=1,,RetailerContact
+    private static final String PROFILE_42 = "PROFILE42";//CONTACTTITLE 2,length validation=Y,Has Edit=1,RetailerContact
+
     private static final String PROFILE_13 = "PROFILE13";//LOCATION01 One level up,length validation=Y,Has Edit=0,RetailerMaster
     private static final String PROFILE_14 = "PROFILE14";//LOCATION02 two level up,length validation=Y,Has Edit=0,RetailerMaster
     private static final String PROFILE_15 = "PROFILE15";//LOCATION Least level,length validation=Y,Has Edit=0,RetailerMaster
@@ -132,8 +138,7 @@ public class ProfileEditFragment extends IvyBaseFragment
     private static final String PROFILE_38 = "PROFILE38";//PINCODE,length validation=Y,Has Edit=0, RetailerAddress
     private static final String PROFILE_39 = "PROFILE39";//RetailerAddressCity :Note:-Only Profile Config,Has Edit=1
     private static final String PROFILE_40 = "PROFILE40";//STATE ,length validation=Y,Has Edit=0, RetailerAddress
-    private static final String PROFILE_41 = "PROFILE41";//CONTACTTITLE 1 ,length validation=Y,Has Edit=1,,RetailerContact
-    private static final String PROFILE_42 = "PROFILE42";//CONTACTTITLE 2,length validation=Y,Has Edit=1,RetailerContact
+
     private static final String PROFILE_43 = "PROFILE43";//CONTRACT->contract status id,length validation=Y,Has Edit=0, ,RetailerMaster
     private static final String PROFILE_47 = "PROFILE47";//outstanding :Note:-Only Profile Config,Has Edit=0
     private static final String PROFILE_48 = "PROFILE48";//Return Credit Limit :Note:-Only Profile Config,Has Edit=0
@@ -145,7 +150,6 @@ public class ProfileEditFragment extends IvyBaseFragment
     private static final String PROFILE_55 = "PROFILE55";//RFIELD7-->RetailerMaster
     private static final String PROFILE_57 = "PROFILE57";//PRIORITYPRODUCT -->From  PriorityProducts Table
     private static final String PROFILE_58 = "PROFILE58";//ATTRIBUTE -->From RetailerAttribute Table
-    private static final String PROFILE_60 = "PROFILE60";//Retailer Image :Note:-Only Profile Config,Has Edit=0
     private static final String PROFILE_61 = "PROFILE61";//GSTN Number,length validation=Y,Has Edit=1,RetailerMaster;
     private static final String PROFILE_62 = "PROFILE62";//INSEZ,length validation=Y,Has Edit=0, ,RetailerMaster
     private static final String PROFILE_63 = "PROFILE63";//Photo Capture , lat and Long, Note:-Only Profile Config,Has Edit=0
@@ -177,15 +181,15 @@ public class ProfileEditFragment extends IvyBaseFragment
     private static final int LATLONG_CAMERA_REQUEST_CODE = 2;
 
     private ScrollView mProfielEditScrollView;
-    private TextInputLayout editTextInputLayout1,editTextInputLayout2,editTextInputLayout3,editTextInputLayout4;
-    private TextView latlongtextview, priorityproducttextview,nearbyTextView;
+    private TextInputLayout editTextInputLayout1, editTextInputLayout2, editTextInputLayout3, editTextInputLayout4;
+    private TextView latlongtextview, priorityproducttextview, nearbyTextView;
     private Button mButtonSave;
-    private ImageView imageView,latlongCameraBtn;
+    private ImageView imageView, latlongCameraBtn;
     private AppCompatCheckBox inSEZcheckBox = null;
     private AlertDialog alertDialog;
 
     @SuppressLint("StaticFieldLeak")
-    static TextView dlExpDateTextView = null,flExpDateTextView = null;
+    static TextView dlExpDateTextView = null, flExpDateTextView = null;
 
     private LinearLayout.LayoutParams params3, params4, params5;
     private LinearLayout.LayoutParams weight1, weight2, weight3;
@@ -194,20 +198,21 @@ public class ProfileEditFragment extends IvyBaseFragment
     private BusinessModel bmodel = null;
     private RetailerMasterBO retailerObj = null;
 
-    private ArrayAdapter<LocationBO> locationAdapter1 = null,locationAdapter2 = null;
+    private ArrayAdapter<LocationBO> locationAdapter1 = null, locationAdapter2 = null;
     private ArrayAdapter<NewOutletBO> contactTitleAdapter = null;
 
     private TextView textview[] = new TextView[150];
     private AppCompatEditText editText[] = new AppCompatEditText[150];
 
-    private ArrayList<NewOutletBO> mcontactTitleList = null,mcontractStatusList = null;
-    private ArrayList<NewOutletAttributeBO> attributeList = null,attributeHeaderList = null;
-    private ArrayList<StandardListBO> mPriorityProductList = null,selectedPriorityProductList = null;
-    private ArrayList<LocationBO> mLocationMasterList1 = null,mLocationMasterList2 = null,mLocationMasterList3 = null;
+    private ArrayList<NewOutletBO> mcontactTitleList = null, mcontractStatusList = null;
+    private ArrayList<NewOutletAttributeBO> attributeList = null, attributeHeaderList = null;
+    private ArrayList<StandardListBO> mPriorityProductList = null, selectedPriorityProductList = null;
     private ArrayList<Integer> attributeIndexList = null;
-    private ArrayList<InputFilter> inputFilters =null;
+    private ArrayList<InputFilter> inputFilters = null;
 
+    private ArrayList<LocationBO> mLocationMasterList1 = null, mLocationMasterList2 = null, mLocationMasterList3 = null;
     private Vector<ChannelBO> channelMaster = null;
+
     private Vector<ConfigureBO> profileConfig = null;
     private Vector<RetailerMasterBO> mNearbyRetIds = null;
     private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
@@ -215,18 +220,18 @@ public class ProfileEditFragment extends IvyBaseFragment
     private HashMap<String, ArrayList<Integer>> attributeIndexMap = null;
     private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap = null;
     // HashMap to retreive selected level of Attribute
-    private HashMap<Integer,NewOutletAttributeBO> selectedAttribList = null;
+    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList = null;
     private HashMap<String, MaterialSpinner> spinnerHashMap = null;
     private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
     private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap = null;
-    private HashMap<Integer,ArrayList<Integer>> mAttributeListByChannelId;
+    private HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelId;
 
 
     private int other1_editText_index, other2_editText_index, lName1_editText_index, lName2_editText_index;
-    private int locid = 0, loc2id = 0,check = 0,spinnerCount = 0,subChannelSpinnerCount = 0;
+    private int locid = 0, loc2id = 0, check = 0, spinnerCount = 0, subChannelSpinnerCount = 0;
 
-    static  String lat = "",longitude = "";
-    private String selectedProductID = "",cameraFilePath = "",imageFileName;
+    static String lat = "", longitude = "";
+    private String selectedProductID = "", cameraFilePath = "", imageFileName;
     private String mcontact_title1_lovId = "", mcontact_title2_lovId = "",
             mcontact_title1_text = "0", mcontact_title2_text = "0";
 
@@ -256,7 +261,6 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         return view;
     }
-
 
     @Override
     public void onResume() {
@@ -337,8 +341,9 @@ public class ProfileEditFragment extends IvyBaseFragment
     private View createTabViewForProfileForEdit() {
 
         profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
-        other1_editText_index = profileConfig.size() + 50;
-        other2_editText_index = profileConfig.size() + 51;
+
+        other1_editText_index = profileConfig.size() + 50; //Title edittext one
+        other2_editText_index = profileConfig.size() + 51; //Title edittext two
         lName1_editText_index = profileConfig.size() + 25;
         lName2_editText_index = profileConfig.size() + 26;
 
@@ -382,22 +387,15 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }*/
 
             if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_58) && configureBO.isFlag() == 1) {
-
-
                 ArrayList<NewOutletAttributeBO> tempList = bmodel.newOutletHelper.updateRetailerMasterAttribute(
                         bmodel.newOutletAttributeHelper.getEditAttributeList(retailerObj.getRetailerID()));
-
                 bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
                 mAttributeListByChannelId = bmodel.newOutletAttributeHelper.downloadChannelWiseAttributeList();
-
                 //Load Retailer Based Attribute list and store in retailer master bo
                 bmodel.getAttributeListForRetailer();
-
                 //Load Attribute List which
                 attributeList = bmodel.newOutletHelper.updateRetailerMasterAttribute(retailerObj.getAttributeBOArrayList());
-
                 attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
-
                 try {
                     if (!tempList.isEmpty()) {
 
@@ -457,7 +455,6 @@ public class ProfileEditFragment extends IvyBaseFragment
         LinearLayout.LayoutParams commonsparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commonsparams.setMargins(10, 15, 10, 0);
 
-
         params3 = new LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
         params3.weight = 1;
         params3.setMargins(0, (int) getResources().getDimension(R.dimen.profile_spinner_top_margin), 0, 0);
@@ -468,8 +465,6 @@ public class ProfileEditFragment extends IvyBaseFragment
         params5 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params5.setMargins(0, 0, 20, 0);
         params5.gravity = Gravity.CENTER;
-
-
 
         weight1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         weight1.weight = 1;
@@ -497,7 +492,6 @@ public class ProfileEditFragment extends IvyBaseFragment
         weight4.gravity = Gravity.CENTER;
         weight4.setMargins(30, 0, 0, 0);
 
-
         LinearLayout.LayoutParams params8 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params8.gravity = Gravity.CENTER;
         params8.setMargins(0, 0, 0, 0);
@@ -512,10 +506,10 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         int size = profileConfig.size();
         try {
-            if(size!=0){  /* Set profile Edit Image start  */
+            if (size != 0) {  /* Set profile Edit Image start  */
                 if (profileConfig.get(0).getConfigCode().equals(PROFILE_60) &&
                         (profileConfig.get(0).isFlag() == 1) &&
-                        (profileConfig.get(0).getModule_Order()== 1)) {
+                        (profileConfig.get(0).getModule_Order() == 1)) {
                     totalView.addView(getImageView());
                 }
             } /* Set profile Edit Image End  */
@@ -531,9 +525,11 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (retailerObj.getRetailerName() == null || retailerObj.getRetailerName().equals("null"))
                         retailerObj.setRetailerName("");
                     String text = retailerObj.getRetailerName() + "";
+
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
+
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
                         totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME), commonsparams);
                     else
@@ -575,33 +571,21 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 commonsparams);
 
 
-                } else if (configCode.equals(PROFILE_05) && flag == 1 && Order== 1) {
-                    if (retailerObj.getAddress3() == null
-                            || retailerObj.getAddress3().equals(
-                            "null")) {
+                } else if (configCode.equals(PROFILE_05) && flag == 1 && Order == 1) {
+                    if (retailerObj.getAddress3() == null || retailerObj.getAddress3().equals("null")) {
                         retailerObj.setAddress3("");
                     }
-
                     String text = retailerObj.getAddress3() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-
-
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                                commonsparams);
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME), commonsparams);
                     else
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
-                                commonsparams);
-
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS), commonsparams);
 
                 } else if (configCode.equals(PROFILE_39) && flag == 1 && Order == 1) {
-                    if (retailerObj.getCity() == null
-                            || retailerObj.getCity().equals("null")) {
+                    if (retailerObj.getCity() == null || retailerObj.getCity().equals("null")) {
                         retailerObj.setCity("");
                     }
 
@@ -621,34 +605,18 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
-
                 } else if (configCode.equals(PROFILE_40) && flag == 1 && Order == 1) {
-                    if (retailerObj.getState() == null
-                            || retailerObj.getState().equals(
-                            "null")) {
-                        retailerObj.setState("");
+                    if (retailerObj.getState() == null || retailerObj.getState().equals("null")) {retailerObj.setState("");
                     }
-
                     String text = retailerObj.getState() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-
                     Commons.print(PROFILE_40 + "" + profileConfig.get(i).getModule_Order());
-
-
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                                commonsparams);
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME), commonsparams);
                     else
-
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
-                                commonsparams);
-
-
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS), commonsparams);
                 } else if (configCode.equals(PROFILE_38) && flag == 1 && Order == 1) {
                     if (retailerObj.getPincode() == null
                             || retailerObj.getPincode().equals("null")) {
@@ -678,14 +646,15 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals(PROFILE_06) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_06) && flag == 1 && Order == 1) {
                     int id = retailerObj.getChannelID();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
                             id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
-
                     totalView.addView(getSpinnerView(mNumber, mName, configCode, id), commonsparams);
-                } else if (configCode.equals(PROFILE_07) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_07) && flag == 1 && Order == 1) {
                     int id = retailerObj.getSubchannelid();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
@@ -694,22 +663,21 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getSpinnerView(mNumber, mName, configCode, id
                             ), commonsparams);
-                } else if (configCode.equals(PROFILE_43) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_43) && flag == 1 && Order == 1) {
                     int id = retailerObj.getContractLovid();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
                             id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
-                    totalView.addView(
-                            getSpinnerView(mNumber, mName, configCode, id
-                            ), commonsparams);
-                } else if (configCode.equals(PROFILE_08) && flag == 1 && Order == 1) {
+                    totalView.addView(getSpinnerView(mNumber, mName, configCode, id), commonsparams);
+                }
+                else if (configCode.equals(PROFILE_08) && flag == 1 && Order == 1) {
                     String textLat = retailerObj.getLatitude() + "";
                     @NonNls String MenuName = "LatLong";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(textLat))
                             textLat = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
-
                     for (int j = 0; j < size; j++) {
                         if (profileConfig.get(j).getConfigCode().equals(PROFILE_31)
                                 && flag == 1 && profileConfig.get(i).getModule_Order() == 1) {
@@ -719,43 +687,31 @@ public class ProfileEditFragment extends IvyBaseFragment
                                     textLong = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(profileConfig.get(j).getConfigCode());
 
                             String text = textLat + ", " + textLong;
-
-                            totalView.addView(
-                                    getLatlongTextView(mNumber, MenuName, text),
-                                    commonsparams);
+                            totalView.addView(getLatlongTextView(mNumber, MenuName, text), commonsparams);
                         }
-
                     }
-                } else if (configCode.equals(PROFILE_63) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_63) && flag == 1 && Order == 1) {
                     isLatLongCameravailable = true;
-                } else if (configCode.equals(PROFILE_09) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_09) && flag == 1 && Order == 1) {
 
-                    if (retailerObj.getContactname() == null
-                            || retailerObj.getContactname().equals(
-                            "null")) {
+                    if (retailerObj.getContactname() == null || retailerObj.getContactname().equals("null")) {
                         retailerObj.setContactname("");
                     }
 
                     String text = "";
-                    text = retailerObj
-                            .getContactname();
+                    text = retailerObj.getContactname();
 
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
+
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
-
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                                commonsparams);
-
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME), commonsparams);
                     else
-
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
-                                commonsparams);
-
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS), commonsparams);
 
                 } else if (configCode.equals(PROFILE_10) && flag == 1 && Order == 1) {
                     if (retailerObj.getContactnumber1() == null
@@ -1425,30 +1381,31 @@ public class ProfileEditFragment extends IvyBaseFragment
         return null;
     }
 
+
     /*This method is used to create a new LinearLayout with attributes */
-    private LinearLayout createLinearLayout(int oriendation, int resourcesId ){
+    private LinearLayout createLinearLayout(int oriendation, int resourcesId) {
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(oriendation);
-        if(resourcesId!=0) linearlayout.setBackgroundColor(resourcesId);
+        if (resourcesId != 0) linearlayout.setBackgroundColor(resourcesId);
         return linearlayout;
     }
 
     /*This method is used to create a new LinearLayout with attributes */
-    private LinearLayout createLinearLayout(int oriendation, int resourcesId, float weightSum ){
+    private LinearLayout createLinearLayout(int oriendation, int resourcesId, float weightSum) {
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(oriendation);
         linearlayout.setWeightSum(weightSum);
-        if(resourcesId!=0) linearlayout.setBackgroundColor(resourcesId);
+        if (resourcesId != 0) linearlayout.setBackgroundColor(resourcesId);
         return linearlayout;
     }
 
     /*This method is used to create a new LinearLayout with attributes */
-    private LinearLayout createLinearLayout(){
+    private LinearLayout createLinearLayout() {
         return new LinearLayout(getActivity());
     }
 
     /*This method is used to create a new LinearLayout with attributes */
-    private TextView getSingleTextView(int positionNumber,String menuName){
+    private TextView getSingleTextView(int positionNumber, String menuName) {
         textview[positionNumber] = new TextView(getActivity());
         textview[positionNumber].setText(menuName);
         textview[positionNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1458,7 +1415,7 @@ public class ProfileEditFragment extends IvyBaseFragment
     }
 
     /*Get the EditTextView*/
-    private  AppCompatEditText getSingleEditTextView(int positionNumber,String configCode,String menuName,String values ){
+    private AppCompatEditText getSingleEditTextView(int positionNumber, String configCode, String menuName, String values) {
 
         editText[positionNumber] = new AppCompatEditText(getActivity());
         editText[positionNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
@@ -1467,7 +1424,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         editText[positionNumber].setText(values);
         editText[positionNumber].setHint(menuName);
 
-        if (!comparConfigerCode(configCode, PROFILE_78)) {    //if not Email   //cmd for not apply inputfilter value for email id
+        if (!comparConfigerCode(configCode, PROFILE_78)) { //if not Email   //cmd for not apply inputfilter value for email id
             getInputFilter(positionNumber);
         }
 
@@ -1482,7 +1439,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             editText[positionNumber].setInputType(InputType.TYPE_CLASS_PHONE);
         }
 
-        if (comparConfigerCode(configCode, PROFILE_25)){
+        if (comparConfigerCode(configCode, PROFILE_25)) {
             editText[positionNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
             if (values.equals("0") || values.equals("-1"))
                 editText[positionNumber].setText("");
@@ -1495,7 +1452,7 @@ public class ProfileEditFragment extends IvyBaseFragment
     }
 
     //InputFilder
-    private void getInputFilter(int positionNumber ){
+    private void getInputFilter(int positionNumber) {
         if (inputFilters != null && inputFilters.size() > 0) {
             InputFilter[] stockArr = new InputFilter[inputFilters.size()];
             stockArr = inputFilters.toArray(stockArr);
@@ -1508,7 +1465,8 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     private LinearLayout getEditTextView(final int mNumber, String MName, String textValue, int editStyle) {
 
-        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
+                getActivity().getResources().getColor(R.color.white_box_start));
 
         LinearLayout secondlayout = createLinearLayout();
 
@@ -1547,15 +1505,19 @@ public class ProfileEditFragment extends IvyBaseFragment
                 comparConfigerCode(mConfigCode, PROFILE_61) || comparConfigerCode(mConfigCode, PROFILE_81) ||
                 comparConfigerCode(mConfigCode, PROFILE_82) || comparConfigerCode(mConfigCode, PROFILE_84) ||
                 comparConfigerCode(mConfigCode, PROFILE_78) || comparConfigerCode(mConfigCode, PROFILE_87) ||
-                comparConfigerCode(mConfigCode, PROFILE_88) )  {
+                comparConfigerCode(mConfigCode, PROFILE_88)) {
 
             editTextInputLayout = new TextInputLayout(getActivity());
-            editTextInputLayout.addView(getSingleEditTextView(mNumber,mConfigCode,MName,textValue));
+            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, MName, textValue));
             editText[mNumber].addTextChangedListener(new TextWatcher() {
                 @Override
-                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                }
+
                 @Override
-                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                }
+
                 @Override
                 public void afterTextChanged(Editable et) {
                     String s = et.toString();
@@ -1571,7 +1533,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             //if  Email
             if (comparConfigerCode(mConfigCode, PROFILE_78) && profileConfig.get(mNumber).getMandatory() == 1) {
 
-                LinearLayout emailLayout= createLinearLayout(LinearLayout.HORIZONTAL,0,10) ;
+                LinearLayout emailLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
 
                 LinearLayout.LayoutParams emailParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
                 emailParam.weight = 7;
@@ -1611,12 +1573,12 @@ public class ProfileEditFragment extends IvyBaseFragment
                 comparConfigerCode(mConfigCode, PROFILE_86)) {
 
             editTextInputLayout = new TextInputLayout(getActivity());
-            editTextInputLayout.addView(getSingleEditTextView(mNumber,mConfigCode,MName,textValue));
+            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, MName, textValue));
 
 
             if (comparConfigerCode(mConfigCode, PROFILE_79) && profileConfig.get(mNumber).getMandatory() == 1)  /*MOBILE*/ {
 
-                LinearLayout mobileLayout= createLinearLayout(LinearLayout.HORIZONTAL,0,10);
+                LinearLayout mobileLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
 
                 LinearLayout.LayoutParams mobileParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
                 mobileParam.weight = 7;
@@ -1651,12 +1613,16 @@ public class ProfileEditFragment extends IvyBaseFragment
         //CREDITPERIOD
         if (comparConfigerCode(mConfigCode, PROFILE_25)) {
             editTextInputLayout = new TextInputLayout(getActivity());
-            editTextInputLayout.addView(getSingleEditTextView(mNumber,mConfigCode,MName,textValue));
+            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, MName, textValue));
             editText[mNumber].addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
                 @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
@@ -1674,19 +1640,23 @@ public class ProfileEditFragment extends IvyBaseFragment
             linearlayout.addView(editTextInputLayout, weight1);
         }
 
+
         if (comparConfigerCode(mConfigCode, PROFILE_09) || comparConfigerCode(mConfigCode, PROFILE_11)) {
 
             LinearLayout firstlayout = createLinearLayout();
             linearlayout.setOrientation(LinearLayout.VERTICAL);
-            firstlayout.addView(getSingleTextView(mNumber,MName), weight1); //TextView Title
+            firstlayout.addView(getSingleTextView(mNumber, MName), weight1); //TextView Title
             editTextInputLayout = new TextInputLayout(getActivity());  //Contact 1 First Name
-            editTextInputLayout.addView(getSingleEditTextView(mNumber,mConfigCode,getResources().getString(R.string.contact_person_first_name),textValue));
+            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, getResources().getString(R.string.contact_person_first_name), textValue));
             editText[mNumber].addTextChangedListener(new TextWatcher() {
                 @Override
-                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                }
 
                 @Override
-                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                }
+
                 @Override
                 public void afterTextChanged(Editable et) {
                     String s = et.toString();
@@ -1710,12 +1680,16 @@ public class ProfileEditFragment extends IvyBaseFragment
                         text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME);
 
                 editTextInputLayout1 = new TextInputLayout(getActivity());
-                editTextInputLayout1.addView(getSingleEditTextView(lName1_editText_index,mConfigCode,getResources().getString(R.string.contact_person_last_name),text));
+                editTextInputLayout1.addView(getSingleEditTextView(lName1_editText_index, mConfigCode, getResources().getString(R.string.contact_person_last_name), text));
                 editText[lName1_editText_index].addTextChangedListener(new TextWatcher() {
                     @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    }
+
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    }
+
                     @Override
                     public void afterTextChanged(Editable et) {
                         String s = et.toString();
@@ -1740,13 +1714,15 @@ public class ProfileEditFragment extends IvyBaseFragment
                         text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(LNAME_2);
 
                 editTextInputLayout2 = new TextInputLayout(getActivity());
-                editTextInputLayout2.addView(getSingleEditTextView(lName2_editText_index,mConfigCode,getResources().getString(R.string.contact_person_last_name),text));
+                editTextInputLayout2.addView(getSingleEditTextView(lName2_editText_index, mConfigCode, getResources().getString(R.string.contact_person_last_name), text));
                 editText[lName2_editText_index].addTextChangedListener(new TextWatcher() {
                     @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    }
 
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    }
 
                     @Override
                     public void afterTextChanged(Editable et) {
@@ -1768,14 +1744,16 @@ public class ProfileEditFragment extends IvyBaseFragment
                 contactTitleSpinner1.setAdapter(contactTitleAdapter);
 
                 editTextInputLayout3 = new TextInputLayout(getActivity());
-                editTextInputLayout3.addView(getSingleEditTextView(other1_editText_index,mConfigCode,"Title",""));
+                editTextInputLayout3.addView(getSingleEditTextView(other1_editText_index, mConfigCode, "Title", ""));
                 editText[other1_editText_index].addTextChangedListener(new TextWatcher() {
 
                     @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    }
 
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    }
 
                     @Override
                     public void afterTextChanged(Editable et) {
@@ -1810,7 +1788,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         contactTitleSpinner1.setSelection(mcontactTitleList.size() - 1);
                         editTextInputLayout3.setVisibility(View.VISIBLE);
                         editText[other1_editText_index].setText(mcontact_title1_text);
-                    }else if (mcontact_title1_lovId.equals("0"))
+                    } else if (mcontact_title1_lovId.equals("0"))
                         contactTitleSpinner1.setSelection(0);
                     else {
                         int selected_pos = 0;
@@ -1838,7 +1816,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                             mcontact_title1_text = "0";
                         }
                     }
-                    public void onNothingSelected(AdapterView<?> arg0) {}
+
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                    }
 
                 });
 
@@ -1856,12 +1836,16 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                 //contact title other edit text
                 editTextInputLayout4 = new TextInputLayout(getActivity());
-                editTextInputLayout4.addView(getSingleEditTextView(other2_editText_index,mConfigCode,"Title",""));
+                editTextInputLayout4.addView(getSingleEditTextView(other2_editText_index, mConfigCode, "Title", ""));
                 editText[other2_editText_index].addTextChangedListener(new TextWatcher() {
                     @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    }
+
                     @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    }
+
                     @Override
                     public void afterTextChanged(Editable et) {
                         String s = et.toString();
@@ -1926,13 +1910,13 @@ public class ProfileEditFragment extends IvyBaseFragment
                         }
                     }
 
-                    public void onNothingSelected(AdapterView<?> arg0) {}
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                    }
 
                 });
                 secondlayout.addView(contactTitleSpinner2, params3);
                 secondlayout.addView(editTextInputLayout4, params4);
             }
-
 
             secondlayout.addView(editTextInputLayout, params4);
 
@@ -1980,7 +1964,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                 } else {
                     reg = regex;
                 }
-
                 //data.replaceAll("\\(.*?\\)", "()"); //if you want to keep the brackets
                 InputFilter filter = new InputFilter() {
                     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -1995,7 +1978,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 };
                 inputFilters.add(filter);
-
             }
         } catch (Exception ex) {
             Commons.printException("regex check", ex);
@@ -2004,7 +1986,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     private LinearLayout getSpinnerView(int mNumber, String MName, @NonNls String menuCode, int id) {
 
-        LinearLayout layout= createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout layout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
         LinearLayout.LayoutParams spinweight = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         spinweight.weight = 1;
         spinweight.gravity = Gravity.CENTER;
@@ -2059,8 +2041,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 mcontractStatusList.add(0, new NewOutletBO(0, getResources().getString(R.string.select_str) + " " + MName));
                 mcontractStatusList.addAll(bmodel.newOutletHelper.getContractStatusList());
                 ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontractStatusList);
-                contractStatusAdapter
-                        .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                contractStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 contractSpinner.setAdapter(contractStatusAdapter);
                 contractSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -2110,8 +2091,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                 String loc1id = "";
                 int pos = 0, setPos = 0;
-                String[] loc1 = bmodel.mRetailerHelper
-                        .getParentLevelName(locid, false);
+                String[] loc1 = bmodel.mRetailerHelper.getParentLevelName(locid, false);
 
                 if (loc1 != null) {
                     loc1id = loc1[0];
@@ -2246,8 +2226,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
             ArrayAdapter<RetailerFlexBO> rField5Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
-            rField5Adapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            rField5Adapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
             rField5Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                     .getString(R.string.select_str) + " " + MName));
 
@@ -2294,8 +2273,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                 if (id == Integer.valueOf(retBO.getId()))
                     selPos = i + 1;
             }
-
-
             rField6Spinner.setAdapter(rField6Adapter);
             rField6Spinner.setSelection(selPos);
             rField6Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -2309,7 +2286,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }
 
             });
-
             layout.addView(rField6Spinner, spinweight);
 
         } else if (menuCode.equalsIgnoreCase(PROFILE_55)) {
@@ -2376,9 +2352,11 @@ public class ProfileEditFragment extends IvyBaseFragment
             rField4Spinner.setSelection(selPos);
             rField4Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {}
+                                           int pos, long id) {
+                }
 
-                public void onNothingSelected(AdapterView<?> arg0) {}
+                public void onNothingSelected(AdapterView<?> arg0) {
+                }
 
             });
             layout.addView(rField4Spinner, spinweight);
@@ -2478,16 +2456,17 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     }
 
+
     private LinearLayout getLatlongTextView(final int mNumber, String MName, final String textvalue) {
 
-        LinearLayout linearlayout= createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
 
         LinearLayout firstlayout = createLinearLayout(); //TextView Title
         firstlayout.setPadding(0, 0, 0, 0);
-        firstlayout.addView(getSingleTextView(mNumber,MName));
+        firstlayout.addView(getSingleTextView(mNumber, MName));
 
 
-        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL,0,2f);
+        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 2f);
         secondlayout.setPadding(0, 0, 0, 0);
         secondlayout.setGravity(Gravity.CENTER_VERTICAL);
 
@@ -2531,13 +2510,13 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     private LinearLayout getPriorityProductView(final int mNumber, final String MName, final String textvalue, final String productID) {
 
-        LinearLayout linearlayout= createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
 
         LinearLayout firstlayout = createLinearLayout();
         firstlayout.setPadding(0, 0, 0, 12);
-        firstlayout.addView(getSingleTextView(mNumber,MName)); //TextView
+        firstlayout.addView(getSingleTextView(mNumber, MName)); //TextView
 
-        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL,0);
+        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL, 0);
         secondlayout.setPadding(0, 0, 0, 12);
 
         priorityproducttextview = new TextView(getActivity());
@@ -2562,7 +2541,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     dialogFragment.show(fm, "Sample Fragment");
                     dialogFragment.setCancelable(false);
                 } else {
-                  //  Toast.makeText(getActivity(), getResources().getString(R.string.priority_products_not_available), Toast.LENGTH_SHORT).show();
+                    //  Toast.makeText(getActivity(), getResources().getString(R.string.priority_products_not_available), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -2579,16 +2558,17 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     }
 
+
     private LinearLayout getNearByRetailerView(int mNumber, String MName, boolean isEditMode) {
         if (bmodel.getNearByRetailers() != null)
             bmodel.getNearByRetailers().clear();
-        LinearLayout  layout= createLinearLayout(LinearLayout.HORIZONTAL,getActivity().getResources().getColor(R.color.white_box_start));
+        LinearLayout layout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
 
         LinearLayout firstlayout = createLinearLayout();
-        firstlayout.addView(getSingleTextView(mNumber,MName),weight1);
+        firstlayout.addView(getSingleTextView(mNumber, MName), weight1);
         textview[mNumber].setTextColor(Color.BLACK);
 
-        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL,0);
+        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL, 0);
 
         Button retailerButton = new Button(getActivity());
         retailerButton.setText(R.string.edit);
@@ -3081,10 +3061,38 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     private View getImageView() {
         View v; // Creating an instance for View Object
-        LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         assert inflater != null;
         v = inflater.inflate(R.layout.profile_edit_image_view, null);
         imageView = (ImageView) v.findViewById(R.id.profile_edit_image);
+
+        if (bmodel.profilehelper.hasProfileImagePath(retailerObj) && retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
+            String[] imgPaths = retailerObj.getProfileImagePath().split("/");
+            String path = imgPaths[imgPaths.length - 1];
+            String filePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + path;
+            if (bmodel.profilehelper.isImagePresent(filePath)) {
+                setImageFromCamera(retailerObj);
+            } else {
+                imageView.setImageResource(R.drawable.face);
+            }
+        } else if (retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
+            String[] imgPaths = retailerObj.getProfileImagePath().split("/");
+            String path = imgPaths[imgPaths.length - 1];
+            File imgFile = new File(getActivity().getExternalFilesDir(
+                    Environment.DIRECTORY_DOWNLOADS)
+                    + "/"
+                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + DataMembers.DIGITAL_CONTENT
+                    + "/"
+                    + DataMembers.PROFILE + "/"
+                    + path);
+            if (imgFile.exists()) {
+                setProfileImage();
+            } else {
+                imageView.setImageResource(R.drawable.face);
+            }
+        }
+
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -3092,7 +3100,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                 //Generally check for location and show toast if no location found.
                 if (!isLatLong && bmodel.configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE
                         && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0)
-                        || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0 && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
+                        || (bmodel.configurationMasterHelper.retailerLocAccuracyLvl != 0
+                        && LocationUtil.accuracy > bmodel.configurationMasterHelper.retailerLocAccuracyLvl)) {
 
                     Toast.makeText(getActivity(), "Location not captured.", Toast.LENGTH_LONG).show();
                     return false;
@@ -3108,6 +3117,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (cameraFilePath != null && !"".equals(cameraFilePath)) {
                     if (new File(cameraFilePath).exists()) {
                         try {
@@ -3116,32 +3126,26 @@ public class ProfileEditFragment extends IvyBaseFragment
                             Commons.printException("" + e);
                         }
                     } else {
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.unloadimage),
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.unloadimage), Toast.LENGTH_SHORT).show();
                     }
-                } else if (bmodel.retailerMasterBO.getProfileImagePath() != null &&
-                        !"".equals(bmodel.retailerMasterBO.getProfileImagePath())) {
+                } else if (bmodel.retailerMasterBO.getProfileImagePath() != null
+                        && !"".equals(bmodel.retailerMasterBO.getProfileImagePath())) {
                     File filePath = null;
-                    if (bmodel.profilehelper.hasProfileImagePath(bmodel.retailerMasterBO) &&
-                            bmodel.retailerMasterBO.getProfileImagePath() != null && !"".equals(bmodel.retailerMasterBO.getProfileImagePath())) {
+                    if (bmodel.profilehelper.hasProfileImagePath(bmodel.retailerMasterBO)
+                            && bmodel.retailerMasterBO.getProfileImagePath() != null
+                            && !"".equals(bmodel.retailerMasterBO.getProfileImagePath())) {
                         String[] imgPaths = bmodel.retailerMasterBO.getProfileImagePath().split("/");
                         String path = imgPaths[imgPaths.length - 1];
-                        filePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
-                                + DataMembers.photoFolderName + "/" + path);
-                    } else if (bmodel.retailerMasterBO.getProfileImagePath() != null &&
-                            !"".equals(bmodel.retailerMasterBO.getProfileImagePath())) {
+                        filePath = new File(getActivity().getExternalFilesDir(
+                                Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + path);
+                    } else if (bmodel.retailerMasterBO.getProfileImagePath() != null && !"".equals(bmodel.retailerMasterBO.getProfileImagePath())) {
                         String[] imgPaths = bmodel.retailerMasterBO.getProfileImagePath().split("/");
                         String path = imgPaths[imgPaths.length - 1];
                         filePath = new File(getActivity().getExternalFilesDir(
                                 Environment.DIRECTORY_DOWNLOADS)
-                                + "/"
-                                + bmodel.userMasterHelper.getUserMasterBO()
-                                .getUserid()
+                                + "/" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                 + DataMembers.DIGITAL_CONTENT
-                                + "/"
-                                + DataMembers.PROFILE + "/"
-                                + path);
+                                + "/" + DataMembers.PROFILE + "/" + path);
                     }
 
                     if (filePath != null && filePath.exists()) {
@@ -3156,41 +3160,13 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
+
             }
         });
 
 
-        if (bmodel.profilehelper.hasProfileImagePath(retailerObj) &&
-                retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
-            String[] imgPaths = retailerObj.getProfileImagePath().split("/");
-            String path = imgPaths[imgPaths.length - 1];
-            String filePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
-                    + DataMembers.photoFolderName + "/" + path;
-            if (bmodel.profilehelper.isImagePresent(filePath)) {
-                setImageFromCamera(retailerObj);
-            } else {
-                imageView.setImageResource(R.drawable.face);
-            }
-        } else if (retailerObj.getProfileImagePath() != null && !"".equals(retailerObj.getProfileImagePath())) {
-            String[] imgPaths = retailerObj.getProfileImagePath().split("/");
-            String path = imgPaths[imgPaths.length - 1];
-            File imgFile = new File(getActivity().getExternalFilesDir(
-                    Environment.DIRECTORY_DOWNLOADS)
-                    + "/"
-                    + bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid()
-                    + DataMembers.DIGITAL_CONTENT
-                    + "/"
-                    + DataMembers.PROFILE + "/"
-                    + path);
-            if (imgFile.exists()) {
-                setProfileImage();
-            } else {
-                imageView.setImageResource(R.drawable.face);
-            }
-        }
         return v;
-      //  return parentLayout;
+        //  return parentLayout;
     }
 
     private int getLevel(int attrId) {
@@ -3322,7 +3298,6 @@ public class ProfileEditFragment extends IvyBaseFragment
         in.putExtra("lat", latdoub);
         in.putExtra("lon", longdoub);
         startActivityForResult(in, REQUEST_CODE);
-
     }
 
 
@@ -3349,8 +3324,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 }
 
-                Uri uri = bmodel.profilehelper
-                        .getUriFromFile(HomeScreenFragment.photoPath + "/" + imageFileName);
+                Uri uri = bmodel.profilehelper.getUriFromFile(HomeScreenFragment.photoPath + "/" + imageFileName);
                 cameraFilePath = HomeScreenFragment.photoPath + "/" + imageFileName;
                 imageView.setImageDrawable(null);
                 imageView.invalidate();
@@ -4190,7 +4164,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         verifyOtpAsyncTask(value, type);
                     else
                         //Toast.makeText(getActivity(), getResources().getString(R.string.invalid_mobile_number), Toast.LENGTH_LONG).show();
-                    break;
+                        break;
                 case "EMAIL":
                     if (isValidEmail(value))
                         verifyOtpAsyncTask(value, type);
@@ -4205,11 +4179,9 @@ public class ProfileEditFragment extends IvyBaseFragment
     private void takePhoto(RetailerMasterBO retailerMasterBO, boolean isForLatLong) {
         if (bmodel.isExternalStorageAvailable()) {
             if (!isForLatLong) {
-                imageFileName = "PRO_" + retailerMasterBO.getRetailerID() + "_"
-                        + Commons.now(Commons.DATE_TIME) + "_img.jpg";
+                imageFileName = "PRO_" + retailerMasterBO.getRetailerID() + "_" + Commons.now(Commons.DATE_TIME) + "_img.jpg";
             } else {
-                bmodel.latlongImageFileName = "LATLONG_" + retailerMasterBO.getRetailerID() + "_"
-                        + Commons.now(Commons.DATE_TIME) + "_img.jpg";
+                bmodel.latlongImageFileName = "LATLONG_" + retailerMasterBO.getRetailerID() + "_" + Commons.now(Commons.DATE_TIME) + "_img.jpg";
             }
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
@@ -4221,11 +4193,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                 Commons.printException("" + e);
             }
         } else {
-            Toast.makeText(
-                    getActivity(),
-                    getResources().getString(
-                            R.string.unable_to_access_the_sdcard),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getResources().getString(
+                            R.string.unable_to_access_the_sdcard), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -4233,10 +4202,8 @@ public class ProfileEditFragment extends IvyBaseFragment
         String[] imgPaths = retailerObj.getProfileImagePath().split("/");
         String path = imgPaths[imgPaths.length - 1];
         File imgFile = new File(getActivity().getExternalFilesDir(
-                Environment.DIRECTORY_DOWNLOADS)
-                + "/"
-                + bmodel.userMasterHelper.getUserMasterBO()
-                .getUserid()
+                Environment.DIRECTORY_DOWNLOADS) + "/"
+                + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                 + DataMembers.DIGITAL_CONTENT
                 + "/"
                 + DataMembers.PROFILE + "/"
@@ -4298,7 +4265,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         try {
             int size = profileConfig.size();
             for (int i = 0; i < size; i++) {
-               String configCode = profileConfig.get(i).getConfigCode();
+                String configCode = profileConfig.get(i).getConfigCode();
                 if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(PROFILE_06) && profileConfig.get(i).getModule_Order() == 1) {
 
                     try {

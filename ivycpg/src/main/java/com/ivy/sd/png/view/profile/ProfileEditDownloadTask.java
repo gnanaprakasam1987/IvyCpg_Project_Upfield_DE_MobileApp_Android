@@ -34,13 +34,11 @@ public class ProfileEditDownloadTask extends AsyncTask<Integer,Integer,Boolean> 
 
         bmodel.newOutletHelper.loadContactTitle();
         bmodel.newOutletHelper.loadContactStatus();
+        bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
         bmodel.newOutletHelper.downloadLinkRetailer();
         bmodel.newOutletHelper.downloadLocationMaster();
-        LinkedHashMap<Integer, ArrayList<LocationBO>> locationListByLevId = bmodel.newOutletHelper.getLocationListByLevId();
-        bmodel.newOutletHelper.getPreviousProfileChanges(bmodel.getRetailerMasterBO().getRetailerID());
-        bmodel.mRetailerHelper.loadContractData();
-        channelMaster = bmodel.channelMasterHelper.getChannelMaster();
 
+        LinkedHashMap<Integer, ArrayList<LocationBO>> locationListByLevId = bmodel.newOutletHelper.getLocationListByLevId();
         if (locationListByLevId != null) {
             int count = 0;
             for (Map.Entry<Integer, ArrayList<LocationBO>> entry : locationListByLevId.entrySet()) {
@@ -57,6 +55,10 @@ public class ProfileEditDownloadTask extends AsyncTask<Integer,Integer,Boolean> 
                 }
             }
         }
+
+        bmodel.mRetailerHelper.loadContractData();
+        channelMaster = bmodel.channelMasterHelper.getChannelMaster();
+
         return true;
     }
 
