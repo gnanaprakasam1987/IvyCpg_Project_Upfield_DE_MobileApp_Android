@@ -111,7 +111,9 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         initViews(view);
         initViewPager(view);
 
-//        sellerMapHomePresenter.getSellerListAWS();
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         return view;
     }
@@ -246,10 +248,6 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 startActivity(intent);
             }
         });
-
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
     }
 
@@ -474,9 +472,19 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
         sellerMapHomePresenter.getSellerListAWS();
         sellerMapHomePresenter.getSellerWiseRetailerAWS();
-        sellerMapHomePresenter.isRealtimeLocation();
 
         sellerMapHomePresenter.loginToFirebase(getContext().getApplicationContext(),4);
+    }
+
+    @Override
+    public void firebaseLoginSuccess() {
+
+        sellerMapHomePresenter.sellerAttendanceInfoListener(4,"07052018");
+
+        sellerMapHomePresenter.sellerActivityInfoListener(4,"07052018");
+
+        if (sellerMapHomePresenter.isRealtimeLocation())
+            sellerMapHomePresenter.realtimeLocationInfoListener(4,"07102018");
     }
 
     @Override

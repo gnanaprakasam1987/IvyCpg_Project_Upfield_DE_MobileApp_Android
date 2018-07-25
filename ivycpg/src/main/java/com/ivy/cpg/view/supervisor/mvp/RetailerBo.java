@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.Marker;
 public class RetailerBo {
 
     private int retailerId,userId,visitedSequence,masterSequence,lastVisitedRetailer;
-    private String retailerName,date,address,imgPath;
+    private String retailerName,date,address,imgPath,userName;
     private double latitude,longitude,masterLatitude,masterLongitude;
     private boolean isDeviated,isOrdered,isSkipped = false,isVisited = false;
     private long totalOrderValue,orderValue,timeIn,timeOut;
@@ -186,5 +186,13 @@ public class RetailerBo {
 
     public void setVisited(boolean visited) {
         isVisited = visited;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

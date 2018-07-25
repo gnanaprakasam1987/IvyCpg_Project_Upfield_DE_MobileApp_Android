@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
 import android.view.animation.LinearInterpolator;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -38,11 +37,16 @@ import java.util.LinkedHashMap;
 
 import javax.annotation.Nullable;
 
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
+
 public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHomePresenter {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public LinkedHashMap<Integer,SellerBo> sellerInfoHasMap = new LinkedHashMap<>();
+    private LinkedHashMap<Integer,SellerBo> sellerInfoHasMap = new LinkedHashMap<>();
     private HashSet<Integer> sellerIdHashSet = new HashSet<>();
     private SellerMapHomeContract.SellerMapHomeView sellerMapHomeView;
     private Context context;
@@ -115,7 +119,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select userId,count(sellerId) from SupRetailerMaster group by sellerId";
+            String queryStr = "select userId,count(userId) from SupRetailerMaster group by userId";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {
@@ -144,7 +148,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     @Override
-    public void isRealtimeLocation(){
+    public boolean isRealtimeLocation(){
 
         try {
             String sql = "select flag from "
@@ -162,6 +166,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+        return isRealTimeLocationOn;
     }
 
     @Override
@@ -178,7 +183,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            initiateAllMethods(userId);
+                            sellerMapHomeView.firebaseLoginSuccess();
                         } else {
                             sellerMapHomeView.firebaseLoginFailure();
                         }
@@ -186,7 +191,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                 });
             }
         }else{
-            initiateAllMethods(userId);
+            sellerMapHomeView.firebaseLoginSuccess();
         }
     }
 
@@ -196,12 +201,12 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     @Override
-    public void sellerActivityInfoListener(int userId) {
+    public void sellerActivityInfoListener(int userId,String date) {
 
         CollectionReference queryRef = db
-                .collection("activity_tracking_v2")
-                .document("retailer_time_stamp")
-                .collection("07052018");
+                .collection(FIRESTORE_BASE_PATH)
+                .document(TIME_STAMP_PATH)
+                .collection(date);
 
         registration = queryRef
                 .whereEqualTo(userId+"",true)
@@ -231,12 +236,12 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     @Override
-    public void realtimeLocationInfoListener(int userId){
+    public void realtimeLocationInfoListener(int userId,String date){
 
         CollectionReference queryRef = db
-                .collection("activity_tracking_v2")
-                .document("movement_tracking")
-                .collection("07102018");
+                .collection(FIRESTORE_BASE_PATH)
+                .document(REALTIME_LOCATION_PATH)
+                .collection(date);
 
         registration = queryRef
                 .whereEqualTo(userId+"",true)
@@ -266,12 +271,12 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     @Override
-    public void sellerAttendanceInfoListener(int userId){
+    public void sellerAttendanceInfoListener(int userId,String date){
 
         CollectionReference queryRef = db
-                .collection("activity_tracking_v2")
-                .document("Attendance")
-                .collection("07102018");
+                .collection(FIRESTORE_BASE_PATH)
+                .document(ATTENDANCE_PATH)
+                .collection(date);
 
         registration = queryRef
                 .whereEqualTo(userId+"",true)
@@ -428,17 +433,6 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     }
 
-    private void initiateAllMethods(int userId){
-
-        sellerAttendanceInfoListener(userId);
-
-        sellerActivityInfoListener(userId);
-
-        if (isRealTimeLocationOn)
-            realtimeLocationInfoListener(userId);
-
-    }
-
     private void setAttendanceValues(DocumentSnapshot documentSnapshot){
 
         if (documentSnapshot.getData() != null) {
@@ -555,7 +549,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         }
     }
 
-    public ArrayList<SellerBo> getAllSellerList(){
+    ArrayList<SellerBo> getAllSellerList(){
         return new ArrayList<>(sellerInfoHasMap.values());
     }
 

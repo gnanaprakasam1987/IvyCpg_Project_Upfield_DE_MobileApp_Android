@@ -15,6 +15,8 @@ public interface SellerMapHomeContract {
 
     interface SellerMapHomeView {
 
+        void firebaseLoginSuccess();
+
         void firebaseLoginFailure();
 
         void createMarker(SellerBo sellerBo,MarkerOptions markerOptions);
@@ -48,15 +50,15 @@ public interface SellerMapHomeContract {
 
         void getSellerWiseRetailerAWS();
 
-        void isRealtimeLocation();
+        boolean isRealtimeLocation();
 
         void loginToFirebase(Context context,int userId);
 
-        void sellerActivityInfoListener(int userId);
+        void sellerActivityInfoListener(int userId,String date);
 
-        void realtimeLocationInfoListener(int userId);
+        void realtimeLocationInfoListener(int userId,String date);
 
-        void sellerAttendanceInfoListener(int userId);
+        void sellerAttendanceInfoListener(int userId,String date);
 
         void getSellerMarkerInfo(String userId);
 

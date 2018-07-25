@@ -3,6 +3,7 @@ package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.text.format.DateUtils;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -35,6 +36,10 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
+
 public class SellerDetailMapPresenter implements SellerDetailMapContractor.SellerDetailMapPresenter {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -55,6 +60,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     private String totalOutletCount ;
 
     private int retailersVisitedSequence = 0;
+    private int lastVisited = 0;
 
 
     @Override
@@ -122,12 +128,12 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
-    public void setSellerActivityListener(int userId) {
+    public void setSellerActivityListener(int userId,String date) {
 
         DocumentReference documentReference = db
-                .collection("activity_tracking_v2")
-                .document("retailer_time_stamp")
-                .collection("07052018")
+                .collection(FIRESTORE_BASE_PATH)
+                .document(TIME_STAMP_PATH)
+                .collection(date)
                 .document(userId+"");
 
         registration = documentReference
@@ -142,14 +148,14 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
-    public void setSellerActivityDetailListener(int userId) {
+    public void setSellerActivityDetailListener(int userId,String date) {
 
         CollectionReference queryRef = db
-                .collection("activity_tracking_v2")
-                .document("retailer_time_stamp")
-                .collection("07052018")
+                .collection(FIRESTORE_BASE_PATH)
+                .document(TIME_STAMP_PATH)
+                .collection(date)
                 .document(userId + "")
-                .collection("details");
+                .collection(DETAIL_PATH);
 
         registration = queryRef
                 .orderBy("timeIn", Query.Direction.ASCENDING)
@@ -216,6 +222,16 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
+    public String calculateDuration(long startTime,long endTime){
+
+        String duratingStr = (String) DateUtils.getRelativeTimeSpanString(startTime, endTime, 0);
+
+        duratingStr = duratingStr.replace("ago","");
+
+        return duratingStr;
+    }
+
+    @Override
     public void drawRoute(ArrayList<LatLng> points) {
         sellerMapView.drawRoute(points);
     }
@@ -245,7 +261,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         }
     }
 
-    int lastVisited = 0;
     private void setSellerDetailValues(DocumentSnapshot documentSnapshot) {
 
         RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
@@ -349,7 +364,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             previousRetailerId = documentSnapshotBo.getRetailerId();
             previousRetailerLatLng = destLatLng;
 
-            new UpdateSkippedMarker().execute();
+//            new UpdateSkippedMarker().execute();
+
+            updateSkippedMarker();
         }
     }
 
@@ -392,32 +409,15 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         return retailerVisitDetailsByRId.get(userId);
     }
 
-    public int getLastVisited() {
+    int getLastVisited() {
         return lastVisited;
     }
 
-    class UpdateSkippedMarker extends AsyncTask<String, Void, ArrayList<Integer>> {
+    private void updateSkippedMarker(){
+        for(RetailerBo retailerBo : retailerMasterHashmap.values()){
 
-        @Override
-        protected ArrayList<Integer> doInBackground(String... strings) {
-
-            ArrayList<Integer> retailerId = new ArrayList<>();
-
-            for(RetailerBo retailerBo : retailerMasterHashmap.values()){
-
-                if(getLastVisited() > retailerBo.getMasterSequence() && !retailerBo.isVisited())
-                    retailerId.add(retailerBo.getRetailerId());
-
-            }
-
-            return retailerId;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Integer> integers) {
-
-            for (int retailerId : integers )
-                retailerMasterHashmap.get(retailerId).getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_red));
+            if(getLastVisited() > retailerBo.getMasterSequence() && !retailerBo.isVisited())
+                retailerMasterHashmap.get(retailerBo.getRetailerId()).getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_red));
 
         }
     }

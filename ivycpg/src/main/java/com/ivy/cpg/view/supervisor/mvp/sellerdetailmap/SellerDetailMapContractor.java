@@ -32,13 +32,15 @@ public interface SellerDetailMapContractor {
 
         void isRealtimeLocation();
 
-        void setSellerActivityListener(int userId);
+        void setSellerActivityListener(int userId,String date);
 
-        void setSellerActivityDetailListener(int userId);
+        void setSellerActivityDetailListener(int userId,String date);
 
         void getMarkerForFocus();
 
         String convertMillisToTime(Long millis);
+
+        String calculateDuration(long startTime,long endTime);
 
         void drawRoute(ArrayList<LatLng> points);
 

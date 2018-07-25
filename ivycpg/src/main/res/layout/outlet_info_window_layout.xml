@@ -42,7 +42,7 @@
                     android:layout_margin="@dimen/_2sdp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:text="Alagusamy Malligai"
+                    android:text=""
                     android:textColor="#de000000"
                     android:textSize="@dimen/_16sdp" />
 
@@ -54,7 +54,7 @@
                     android:layout_marginLeft="@dimen/_2sdp"
                     android:layout_marginTop="@dimen/_2sdp"
                     android:maxLines="1"
-                    android:text="103 Voc St Kb nagar"
+                    android:text=""
                     android:textColor="#64000000"
                     android:textSize="@dimen/_12sdp" />
             </LinearLayout>
@@ -75,7 +75,7 @@
                     android:layout_toLeftOf="@+id/status_color_view"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:text="Covered"
+                    android:text=""
                     android:textColor="#de000000"
                     android:textSize="@dimen/_12sdp" />
 
@@ -85,8 +85,7 @@
                     android:layout_height="@dimen/_12sdp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/_5sdp"
-                    android:background="@drawable/covered_green" />
+                    android:layout_marginLeft="@dimen/_5sdp" />
 
             </RelativeLayout>
 
@@ -126,7 +125,7 @@
                     android:layout_marginLeft="@dimen/_2sdp"
                     android:layout_marginTop="@dimen/_2sdp"
                     android:maxLines="1"
-                    android:text="Ravi Sastri"
+                    android:text=""
                     android:textColor="#4a90e2"
                     android:textSize="@dimen/_14sdp" />
             </LinearLayout>
@@ -159,7 +158,7 @@
                     android:layout_marginTop="@dimen/_2sdp"
                     android:maxLines="1"
                     android:gravity="center_vertical|right"
-                    android:text="121258.14"
+                    android:text=""
                     android:textColor="#d0021b"
                     android:textSize="@dimen/_16sdp" />
             </LinearLayout>

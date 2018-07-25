@@ -604,7 +604,7 @@
 	<dimen name="supervisor_home_map_info_x">3.2dp</dimen>
 	<dimen name="supervisor_home_map_info_y">0.7dp</dimen>
 
-	<dimen name="outlet_map_info_x">5.0dp</dimen>
-	<dimen name="outlet_map_info_y">1.25dp</dimen>
+	<dimen name="outlet_map_info_x">5.05dp</dimen>
+	<dimen name="outlet_map_info_y">1.23dp</dimen>
 
 </resources>

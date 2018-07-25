@@ -9,4 +9,11 @@ public class SupervisorModuleConstants {
 
     public static final String REALTIME_LOCATION_PATH ="movement_tracking";
     public static final String ATTENDANCE_PATH ="Attendance";
+    public static final String DETAIL_PATH ="details";
+    public static final String ORDER_INFO_PATH ="order_info";
+    public static final String TIME_STAMP_PATH ="retailer_time_stamp";
+
+
+
+
 }

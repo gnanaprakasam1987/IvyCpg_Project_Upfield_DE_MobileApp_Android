@@ -56,6 +56,7 @@
         android:src="@drawable/ic_close_icon_white"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:padding="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_40sdp"/>
 
 </RelativeLayout>

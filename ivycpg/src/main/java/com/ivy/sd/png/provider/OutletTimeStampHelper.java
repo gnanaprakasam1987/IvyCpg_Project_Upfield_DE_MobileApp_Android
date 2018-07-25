@@ -185,7 +185,9 @@ public class OutletTimeStampHelper {
 					+","+QT(LocationUtil.mProviderName)
 					+","+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
 					+","+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
-					+","+QT(String.valueOf(bmodel.getOrderValue()));
+					+","+QT(String.valueOf(bmodel.getOrderValue()))
+					+","+QT(String.valueOf(bmodel.retailerMasterBO.isOrdered()))
+					+","+QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
 
 			db.insertSQL("OutletTimestamp", columns, values);
 			

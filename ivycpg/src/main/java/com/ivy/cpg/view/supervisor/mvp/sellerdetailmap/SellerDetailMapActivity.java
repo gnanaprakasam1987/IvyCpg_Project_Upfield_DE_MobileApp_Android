@@ -132,6 +132,9 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         tvTarget.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
         tvCovered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
 
+        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+
         ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
         ((TextView)findViewById(R.id.store_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
         ((TextView)findViewById(R.id.time_in_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
@@ -227,10 +230,10 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         sellerMapViewPresenter.getMarkerForFocus();
 
         //Sellers last visit info listener
-        sellerMapViewPresenter.setSellerActivityListener(userId);
+        sellerMapViewPresenter.setSellerActivityListener(userId,"07052018");
 
         //Draw route based on sellers activity
-        sellerMapViewPresenter.setSellerActivityDetailListener(userId);
+        sellerMapViewPresenter.setSellerActivityDetailListener(userId,"07052018");
 
     }
 
@@ -284,7 +287,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
             }
         });
     }

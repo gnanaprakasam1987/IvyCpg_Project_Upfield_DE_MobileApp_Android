@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
+package com.ivy.cpg.view.supervisor.mvp.outletmapview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -30,15 +30,15 @@ public class OutletPagerDialogFragment extends DialogFragment {
     private RecyclerViewPager visitedRetailerRecycleView;
     private OutletListAdapter outletListAdapter;
 
-    private Marker marker;
-    private SellerDetailMapPresenter sellerMapViewPresenter;
+    private int retailerId;
+    private OutletMapViewPresenter outletMapViewPresenter;
 
     ArrayList<RetailerBo> visitedRetailers = new ArrayList<>();
 
 
-    public OutletPagerDialogFragment(Marker marker,SellerDetailMapPresenter sellerMapViewPresenter){
-        this.marker = marker;
-        this.sellerMapViewPresenter = sellerMapViewPresenter;
+    public OutletPagerDialogFragment(int retailerId, OutletMapViewPresenter outletMapViewPresenter){
+        this.retailerId = retailerId;
+        this.outletMapViewPresenter = outletMapViewPresenter;
     }
 
     @Override
@@ -51,10 +51,10 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
         initViews(rootView);
 
-        visitedRetailers.addAll(sellerMapViewPresenter.getVisitedRetailers());
+        visitedRetailers.addAll(outletMapViewPresenter.getVisitedRetailers());
         outletListAdapter.notifyDataSetChanged();
 
-        scrollToPosition(marker);
+        scrollToPosition(retailerId);
 
         tvStoreCount.setText("Total Stores "+visitedRetailers.size());
 
@@ -68,11 +68,11 @@ public class OutletPagerDialogFragment extends DialogFragment {
         return rootView;
     }
 
-    private void scrollToPosition(Marker marker){
+    private void scrollToPosition(int retailerId){
         int pagerPos = 0;
         int count=0;
         for(RetailerBo retailerBo : visitedRetailers){
-            if(retailerBo.getRetailerId() == Integer.valueOf(marker.getSnippet())){
+            if(retailerBo.getRetailerId() == retailerId){
                 pagerPos = count;
                 break;
             }
@@ -244,7 +244,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
             holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getTotalOrderValue()));
             holder.tvStoreAddress.setText(visitedRetailers.get(position).getAddress());
 
-            ArrayList<RetailerBo> retailerVisitedDetail = sellerMapViewPresenter.getRetailerVisitDetailsByRId(visitedRetailers.get(position).getRetailerId());
+            ArrayList<RetailerBo> retailerVisitedDetail = outletMapViewPresenter.getRetailerVisitDetailsByRId(visitedRetailers.get(position).getRetailerId());
             if(retailerVisitedDetail != null && retailerVisitedDetail.size() > 0) {
                 VisitedOutletInfoAdapter visitedOutletInfoAdapter =
                         new VisitedOutletInfoAdapter(context, retailerVisitedDetail);
@@ -319,11 +319,11 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-            holder.tvInTime.setText(sellerMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeIn()));
-            holder.tvOutTime.setText(sellerMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeOut()));
+            holder.tvInTime.setText(outletMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeIn()));
+            holder.tvOutTime.setText(outletMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeOut()));
             holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getOrderValue()));
             holder.tvDuration.setText(
-                    sellerMapViewPresenter.calculateDuration(visitedRetailers.get(position).getTimeIn(),
+                    outletMapViewPresenter.calculateDuration(visitedRetailers.get(position).getTimeIn(),
                             visitedRetailers.get(position).getTimeOut()));
 
         }
