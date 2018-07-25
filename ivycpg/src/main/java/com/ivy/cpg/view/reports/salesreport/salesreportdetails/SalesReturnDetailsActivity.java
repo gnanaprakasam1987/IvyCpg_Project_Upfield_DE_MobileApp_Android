@@ -61,10 +61,14 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         // getSupportActionBar().setDisplayShowHomeEnabled(true);
         // Used to hide the app logo icon from actionbar
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+        if (getSupportActionBar() != null)
+            setScreenTitle(getResources().getString(R.string.salesreport_details));
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
-            setScreenTitle(title);
+           // setScreenTitle(title);
         }
 
         getData();
@@ -77,6 +81,8 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         int retailerId = 0;
         if (getIntent() != null) {
             uId = getIntent().getStringExtra("UID");
+            if (getSupportActionBar() != null && !uId.isEmpty())
+                setScreenTitle(uId);
             retailerId = getIntent().getIntExtra("RETAILERID", 0);
         }
 

@@ -177,4 +177,6 @@
     <string name="case_qty">Case Quantity</string>
     <string name="piece_qty">Piece Quantity</string>
     <string name="outer_qty">Outer Quantity</string>
+
+    <string name="salesreport_details">SalesReturn Report Details</string>
 </resources>

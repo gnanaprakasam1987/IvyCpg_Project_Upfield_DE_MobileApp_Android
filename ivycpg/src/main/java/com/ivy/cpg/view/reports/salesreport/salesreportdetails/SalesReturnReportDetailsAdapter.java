@@ -56,6 +56,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
         holder.pieceQty.setText(String.valueOf(salesReturnReportBosList.get(position).getPieceQty()));
         holder.value.setText(String.valueOf(salesReturnReportBosList.get(position).getReturnValue()));
         holder.reason.setText(salesReturnReportBosList.get(position).getReason());
+        holder.reasonType.setText(salesReturnReportBosList.get(position).getReasonType());
 
     }
 
@@ -72,7 +73,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
      */
 
     public class SalesReturnReportViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView productName, caseQty, pieceQty, outerQty, value, reason;
+        TextView productName, caseQty, pieceQty, outerQty, value, reason,reasonType;
 
 
         public SalesReturnReportViewHolder(View itemView) {
@@ -83,6 +84,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
             value = itemView.findViewById(R.id.text_value);
             outerQty = itemView.findViewById(R.id.text_outerQty);
             reason = itemView.findViewById(R.id.text_reason);
+            reasonType = itemView.findViewById(R.id.text_reasonType);
             itemView.setOnClickListener(this);
         }
 

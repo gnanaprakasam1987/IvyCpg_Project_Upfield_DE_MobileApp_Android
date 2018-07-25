@@ -72,14 +72,13 @@ public class SalesReportHelper {
                     Vector<SalesReturnDeliveryReportBo> returnDeliveryDataModelVector = new Vector<>();
                     DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
                     dbUtil.openDataBase();
-                    BusinessModel businessModel = (BusinessModel) context.getApplicationContext();
 
                     Cursor cursor = dbUtil
-                            .selectSQL("SELECT  distinct PM.PName as ProductName,PM.PID as ProductID,srd.* ,SM.ListName as reasonDesc from SalesReturnDetails srd"
+                            .selectSQL("SELECT  distinct PM.PName as ProductName,PM.PID as ProductID,srd.* ,SM.ListName,SM.ListType from SalesReturnDetails srd"
                                     + " LEFT JOIN ProductMaster PM ON srd.productID=PM.PID"
-                                    + " LEFT JOIN StandardListMaster SM on SM.ListType = srd.Condition"
+                                    + " LEFT JOIN StandardListMaster SM on SM.ListId = srd.Condition"
                                     + " AND srd.RetailerID=" + retailerId
-                                    + " AND srd.uid=" + AppUtils.QT(uId));
+                                    + " WHERE srd.uid=" + AppUtils.QT(uId));
 
 
                     if (cursor != null) {
@@ -97,7 +96,8 @@ public class SalesReportHelper {
                                     (cursor.getInt(cursor.getColumnIndex("totalQty")));
 
                             salesReturnDeliveryDataModel.setReturnValue(value);
-                            salesReturnDeliveryDataModel.setReason(cursor.getString(cursor.getColumnIndex("reasonDesc")));
+                            salesReturnDeliveryDataModel.setReason(cursor.getString(cursor.getColumnIndex("ListName")));
+                            salesReturnDeliveryDataModel.setReasonType(cursor.getString(cursor.getColumnIndex("ListType")));
                             returnDeliveryDataModelVector.add(salesReturnDeliveryDataModel);
                         }
 

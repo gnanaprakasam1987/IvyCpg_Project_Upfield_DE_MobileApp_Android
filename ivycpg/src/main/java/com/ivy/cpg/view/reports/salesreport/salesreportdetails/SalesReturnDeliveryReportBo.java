@@ -13,6 +13,16 @@ public class SalesReturnDeliveryReportBo {
 
     private String reason;
 
+    private String ReasonType;
+
+
+    public String getReasonType() {
+        return ReasonType;
+    }
+
+    public void setReasonType(String reasonType) {
+        ReasonType = reasonType;
+    }
 
     public String getReason() {
         return reason;
