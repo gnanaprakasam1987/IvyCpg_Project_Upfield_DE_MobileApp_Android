@@ -1530,7 +1530,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
                     bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
                             bmodel.productHelper.getFilterProductLevels()));
-                    GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
@@ -1784,8 +1784,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         if (schemeHelper.IS_SCHEME_ON_MASTER)
                             schemeHelper.downloadSchemeHistoryDetails(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());
-
-
 
 
                         bmodel.productHelper.downloadInStoreLocations();
@@ -2538,7 +2536,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (!menuCode.equals(menu.getConfigCode()))
                             menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
                     }
-
 
 
                 } else {
@@ -4089,6 +4086,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             updateRetailerwiseSellertype(0); // Presales
                                             bmodel.getRetailerMasterBO()
                                                     .setIsVansales(0);
+                                        }
+                                        if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL) {
+                                            GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                                            if (genericObjectPair != null) {
+                                                bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                                                bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
+                                            }
                                         }
                                         dialog.dismiss();
 
