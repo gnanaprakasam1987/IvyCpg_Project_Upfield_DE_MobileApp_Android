@@ -253,7 +253,7 @@
     <string name="no_visit_Planning">计划</string>
     <string name="order_gcas">GCAS代码</string>
     <string name="choose_date">选择日期</string>
-    <string name="exceed">您已超出配额。只剩下“% 1 $ D”。</string>
+    <string name="exceed">您已超出配额。只剩下“%1$d”。</string>
     <string name="d1">D1</string>
     <string name="dist_inv">经销商收据</string>
     <string name="pre_post">前/后</string>

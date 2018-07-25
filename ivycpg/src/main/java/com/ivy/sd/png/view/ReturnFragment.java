@@ -121,7 +121,7 @@ public class ReturnFragment extends IvyBaseFragment {
             if (getArguments().getString("from").equals("ORDER"))
                 productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
             else
-                productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
+                productMasterBO = salesReturnHelper.getSalesReturnProductBOById(Pid);
         }
         if (productMasterBO != null && productMasterBO.getSalesReturnReasonList() != null) {
             //for pre saler
@@ -864,6 +864,7 @@ public class ReturnFragment extends IvyBaseFragment {
             holder.oldMrp.setText(strOldMrp);
             String strSrpEdit = holder.reasonBO.getSrpedit() + "";
             holder.srpedit.setText(strSrpEdit);
+            ((TextView)row.findViewById(R.id.text_srp)).setText(strSrpEdit);
 
             if (holder.reasonBO.getLotNumber() != null)
                 holder.lotNumber.setText(holder.reasonBO.getLotNumber());

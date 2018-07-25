@@ -6,6 +6,7 @@ import android.database.SQLException;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
+import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -26,7 +27,6 @@ import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
 import com.ivy.sd.png.bo.SKUReportBO;
-import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
@@ -64,7 +64,6 @@ public class ReportHelper {
     private String webViewPlanUrl = "";
     private String webReportUrl = "";
     private ArrayList<CreditNoteListBO> creditNoteList;
-
 
 
     private ArrayList<SyncStatusBO> mSyncStatusBOList;
@@ -291,7 +290,7 @@ public class ReportHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,(OD.NetAmount) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty "
+                    .selectSQL("select PM.Pname,PM.psname,OD.caseQty,OD.pieceqty,(OD.NetAmount) as value,OD.outerQty,PM.pid,OD.batchid,BM.batchNum,OD.weight,OD.qty,PM.pcode "
                             + " from OrderDetail OD INNER JOIN  ProductMaster PM ON OD.ProductID = PM.PID LEFT JOIN BatchMaster BM ON OD.batchid =  BM.batchid  and BM.pid=OD.productid where OD.OrderID="
                             + bmodel.QT(orderID) + "and OD.OrderType = 0");
             if (c != null) {
@@ -309,6 +308,7 @@ public class ReportHelper {
                     orderdetreport.setBatchNo(c.getString(8));
                     orderdetreport.setWeight(c.getFloat(9));
                     orderdetreport.setTotalQty(c.getInt(10));
+                    orderdetreport.setProductCode(c.getString(11));
                     reportorddetbooking.add(orderdetreport);
                 }
                 c.close();
@@ -797,9 +797,9 @@ public class ReportHelper {
             int mChildLevel = 0;
             int mContentLevel = 0;
 
-            if (bmodel.productHelper.getSequenceValues() != null) {
-                if (bmodel.productHelper.getSequenceValues().size() > 0) {
-                    mChildLevel = bmodel.productHelper.getSequenceValues().size();
+            if (bmodel.productHelper.getFilterProductLevels() != null) {
+                if (bmodel.productHelper.getFilterProductLevels().size() > 0) {
+                    mChildLevel = bmodel.productHelper.getFilterProductLevels().size();
                 }
             }
 
@@ -1131,70 +1131,9 @@ public class ReportHelper {
         return retailers;
     }
 
-    public ArrayList<SalesReturnReasonBO> getSalesReturnList(String productId, String retailerId) {
-        ArrayList<SalesReturnReasonBO> salesReturnReasonBOs = new ArrayList<>();
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT distinct A.ListName as reasonDesc,srd .* from SalesReturnDetails srd"
-                            + " inner join StandardListMaster A INNER JOIN StandardListMaster B ON"
-                            + " A.ParentId = B.ListId AND"
-                            + " ( B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_NONSALABLE_REASON_TYPE
-                            + "' OR B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_SALABLE_REASON_TYPE + "')"
-                            + " AND A.listId = srd.condition WHERE srd.upload!='X' and A.ListType = 'REASON' AND"
-                            + " srd.ProductId = " + bmodel.QT(productId) + " AND srd.RetailerId = " + bmodel.QT(retailerId)
-                            + " AND srd.status = 2");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    SalesReturnReasonBO reasonBO = new SalesReturnReasonBO();
-                    reasonBO.setInvoiceno(c.getString(c.getColumnIndex("invoiceno")));
-                    reasonBO.setLotNumber(c.getString(c.getColumnIndex("LotNumber")));
-                    reasonBO.setSrpedit(c.getFloat(c.getColumnIndex("srpedited")));
-                    reasonBO.setPieceQty(c.getInt(c.getColumnIndex("totalQty")));
-                    reasonBO.setOldMrp(c.getInt(c.getColumnIndex("oldmrp")));
-                    reasonBO.setReasonDesc(c.getString(c.getColumnIndex("reasonDesc")));
-                    salesReturnReasonBOs.add(reasonBO);
-                }
-                c.close();
-            }
-            db.closeDB();
 
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return salesReturnReasonBOs;
-    }
 
-    public ArrayList<SalesReturnReasonBO> getSalesReturnRetailerList() {
-        ArrayList<SalesReturnReasonBO> salesReturnReasonBOs = new ArrayList<>();
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select distinct srd.ProductId as ProductId,srd.retailerId as RetailerID," +
-                            "pm.pname as ProductName, pm.pcode as ProductCode from SalesReturnDetails srd inner join " +
-                            "ProductMaster pm ON srd.ProductID = pm.pid where sr.upload!='X' and srd.status = 2");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    SalesReturnReasonBO reasonBO = new SalesReturnReasonBO();
-                    reasonBO.setRetailerId(c.getString(c.getColumnIndex("RetailerID")));
-                    reasonBO.setProductId(c.getString(c.getColumnIndex("ProductId")));
-                    reasonBO.setProductName(c.getString(c.getColumnIndex("ProductName")));
-                    reasonBO.setProductCode(c.getString(c.getColumnIndex("ProductCode")));
-                    salesReturnReasonBOs.add(reasonBO);
-                }
-                c.close();
-            }
-            db.closeDB();
 
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return salesReturnReasonBOs;
-    }
 
     public ArrayList<String> getLstCollectionGroups() {
         return lstCollectionGroups;
@@ -1902,7 +1841,7 @@ public class ReportHelper {
     public Vector<StockReportBO> downloadCurrentStockReport() {
 
         try {
-            Vector<LoadManagementBO> item = bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT", "");
+            Vector<LoadManagementBO> item = bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel("MENU_LOAD_MANAGEMENT", "");
             if (item != null) {
                 currentStock = new Vector<>();
                 for (LoadManagementBO load : item) {
@@ -2367,7 +2306,7 @@ public class ReportHelper {
                 bo.setBaseUomPieceWise(false);
             }
         } else if (reportType == 3) {
-            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                 bo.setBaseUomCaseWise(false);
                 bo.setBaseUomOuterWise(false);
                 bo.setBaseUomPieceWise(false);
@@ -2389,7 +2328,7 @@ public class ReportHelper {
                 bo.setBaseUomPieceWise(true);
             }
         } else if (reportType == 3) {
-            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                 bo.setBaseUomCaseWise(true);
                 bo.setBaseUomOuterWise(true);
                 bo.setBaseUomPieceWise(true);
@@ -2429,7 +2368,7 @@ public class ReportHelper {
                         }
                     }
                 } else if (reportType == 3) {
-                    for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+                    for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                         if (productId.equals(bo.getProductid() + "")) {
                             if (bo.getPiece_uomid() == uomId)
                                 bo.setBaseUomPieceWise(true);
@@ -2488,7 +2427,7 @@ public class ReportHelper {
                                 }
                             }
                         } else if (reportType == 3) {
-                            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+                            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                                 if (c.getString(0).equals(bo.getProductid() + "")) {
                                     if (bo.getPiece_uomid() == uomId)
                                         bo.setBaseUomPieceWise(true);
@@ -2624,8 +2563,6 @@ public class ReportHelper {
     }
 
 
-
-
     /**
      * Method to retrieve transaction invoice details from invoicedetails table
      *
@@ -2638,7 +2575,7 @@ public class ReportHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
-        sb.append("select psname,productid,pcsQty,caseqty,outerqty,NetAmount,BM.batchnum,ID.weight,qty from InvoiceDetails ID ");
+        sb.append("select psname,productid,pcsQty,caseqty,outerqty,NetAmount,BM.batchnum,ID.weight,qty,PM.pcode from InvoiceDetails ID ");
         sb.append("inner join productmaster PM on ID.productid=PM.pid ");
         sb.append("left join BatchMaster BM on  BM.pid=ID.productid and BM.batchid=ID.batchid ");
         sb.append(" where invoiceid=" + bmodel.QT(invoiceno));
@@ -2656,6 +2593,7 @@ public class ReportHelper {
                 productMasterBO.setBatchNo(c.getString(6));
                 productMasterBO.setWeight(c.getInt(7));
                 productMasterBO.setTotalQty(c.getInt(8));
+                productMasterBO.setProductCode(c.getString(9));
                 reportList.add(productMasterBO);
 
             }
@@ -2681,7 +2619,7 @@ public class ReportHelper {
         sb.append("select psname,freeproductid,freeqty,BM.batchnum,");
         sb.append("CASE WHEN uomid= PM.dUomid THEN " + bmodel.QT("CASE"));
         sb.append(" WHEN uomid=PM.dOUomid THEN " + bmodel.QT("OUTER") + " ELSE " + bmodel.QT("PIECE") + " END AS you ");
-        sb.append("from SchemeFreeProductDetail SFP ");
+        sb.append(",PM.pcode from SchemeFreeProductDetail SFP ");
         sb.append("inner join Productmaster PM on SFP.freeproductid=PM.pid ");
         sb.append("left join Batchmaster BM on SFP.freeproductid=BM.pid and SFP.batchid=BM.batchid ");
         if (isInvoice)
@@ -2698,6 +2636,7 @@ public class ReportHelper {
                 schemeProductBO.setQuantitySelected(c.getInt(2));
                 schemeProductBO.setBatchId(c.getString(3));
                 schemeProductBO.setUomDescription(c.getString(4));
+                schemeProductBO.setProductCode(c.getString(5));
                 freeProductList.add(schemeProductBO);
 
             }
@@ -3219,8 +3158,6 @@ public class ReportHelper {
             Commons.printException(e);
         }
     }
-
-
 
 
     public ArrayList<SyncStatusBO> getmSyncStatusBOList() {

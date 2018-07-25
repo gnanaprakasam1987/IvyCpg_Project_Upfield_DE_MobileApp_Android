@@ -601,7 +601,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 is_contact_title2 = true;
 
             if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE47") && configureBO.isFlag() == 1)
-                outStanding = bmodel.getInvoiceAmount() - bmodel.getOutStandingInvoiceAmount();
+                outStanding = bmodel.getRetailerInvoiceAmount() - bmodel.getOutStandingInvoiceAmount();
 
             if (configureBO.getConfigCode().equalsIgnoreCase("PROFILE48") && configureBO.isFlag() == 1)
                 retailerCreditLimit = bmodel.getRetailerMasterBO().getProfile_creditLimit();

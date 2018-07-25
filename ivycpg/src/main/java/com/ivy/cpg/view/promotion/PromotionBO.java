@@ -18,6 +18,7 @@ public class PromotionBO {
     private String ratingDec;
     private int promoQty;
     private int MappingId;
+    private String parentHierarchy;
 
     PromotionBO() {
 
@@ -39,6 +40,7 @@ public class PromotionBO {
         this.pName = promotionBO.getpName();
         this.fromDate = promotionBO.getFromDate();
         this.toDate = promotionBO.getToDate();
+        this.parentHierarchy = promotionBO.getParentHierarchy();
     }
 
     public String getImagePath() {
@@ -195,5 +197,13 @@ public class PromotionBO {
 
     public void setpName(String pName) {
         this.pName = pName;
+    }
+
+    public String getParentHierarchy() {
+        return parentHierarchy;
+    }
+
+    public void setParentHierarchy(String parentHierarchy) {
+        this.parentHierarchy = parentHierarchy;
     }
 }

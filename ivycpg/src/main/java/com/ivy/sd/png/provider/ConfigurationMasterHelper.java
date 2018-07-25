@@ -37,7 +37,7 @@ public class ConfigurationMasterHelper {
     public static final String MENU_COUNTER = "MENU_COUNTER";
     public static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     public static final String MENU_STORECHECK = "MENU_STORECHECK";
-    public static int GET_GENERALFILTET_TYPE = 1;
+
     public static int COMPETITOR_FILTER_TYPE;
     public static int vanDistance = 0;
     public static String ACCESS_KEY_ID = "AKIAI5OG2UQYXDPYQNNQ";
@@ -49,7 +49,6 @@ public class ConfigurationMasterHelper {
     public static final String CODE_TAX_APPLY = "FUN19";
     public static final String CODE_DISCOUNT_APPLY = "FUN18";
     // Added for five level filter
-    public static final String CODE_IS_FIVE_LEVEL_FILTER = "FUN20";
     public static final String CODE_GLOBAL_LOCATION = "FUN23";
     public static final String CODE_GLOBAL_CATEGORY = "FUN24";
     public static final String CODE_SHOW_OUTLET_PLANNING_TAB = "PRO11";
@@ -909,7 +908,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MRP_LEVEL_TAX;
     public boolean SHOW_TAX;
     public boolean SHOW_DISCOUNT;
-    public boolean IS_FIVE_LEVEL_FILTER;
     public boolean IS_GLOBAL_LOCATION;
     public boolean IS_GLOBAL_CATEGORY;
     public boolean SHOW_OUTLET_PLANNING_TAB;
@@ -1002,6 +1000,10 @@ public class ConfigurationMasterHelper {
     //TO Show both salable and non salable products
     private static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "CSSTK07";
     public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
+
+    //To show Product Code
+    private static final String CODE_SHOW_SKU_CODE = "FUN06";
+    public boolean IS_SHOW_SKU_CODE;
 
 
     int ROUND_DECIMAL_COUNT = 0;
@@ -1197,7 +1199,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PARTIAL_CREDIT_NOTE_ALLOW;
 
     private static final String CODE_PAYMENT_RECEIPT_NO = "COLL14";
-    public boolean IS_PAYMENT_RECEIPTNO_GET = true;
+    public boolean IS_PAYMENT_RECEIPTNO_GET;
 
     public boolean COLL_CHEQUE_MODE;
     private static final String CODE_COLL_CHEQUE_MODE = "COLL15";
@@ -2116,8 +2118,6 @@ public class ConfigurationMasterHelper {
         this.IS_DIGITAL_CONTENT = hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) != null ? hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) : false;
         this.SHOW_NEW_OUTLET_UPLOAD = hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) : false;
         this.SHOW_DISCOUNT = hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) : false;
-        //this.IS_FIVE_LEVEL_FILTER = hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) : false;
-        this.IS_FIVE_LEVEL_FILTER = true;
         this.IS_GLOBAL_LOCATION = hashMapHHTModuleConfig.get(CODE_GLOBAL_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_LOCATION) : false;
         this.IS_GLOBAL_CATEGORY = hashMapHHTModuleConfig.get(CODE_GLOBAL_CATEGORY) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_CATEGORY) : false;
         this.SHOW_MRP_LEVEL_TAX = hashMapHHTModuleConfig.get(CODE_MRP_LEVEL_TAX) != null ? hashMapHHTModuleConfig.get(CODE_MRP_LEVEL_TAX) : false;
@@ -2265,7 +2265,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER = hashMapHHTModuleConfig.get(CODE_DISCOUNT_EDITVIEW) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_EDITVIEW) : false;
 
         this.SHOW_SPL_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) : false;
-        ConfigurationMasterHelper.GET_GENERALFILTET_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) : 1;
 
         this.SHOW_COMPETITOR_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) : false;
         if (SHOW_COMPETITOR_FILTER) {
@@ -2579,6 +2578,8 @@ public class ConfigurationMasterHelper {
         //CODE_SHOW_ALL_SKU_ON_EDIT
         this.IS_SHOW_ALL_SKU_ON_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_ALL_SKU_ON_EDIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ALL_SKU_ON_EDIT) : false;
         this.IS_KPI_CALENDAR = hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) != null ? hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) : false;
+
+        this.IS_SHOW_SKU_CODE = hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) : false;
     }
 
     private boolean isInOutModule() {

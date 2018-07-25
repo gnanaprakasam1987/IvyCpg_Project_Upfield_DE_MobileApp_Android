@@ -334,7 +334,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
             }
 
 
-            ArrayList<SubDepotBo> distributorList = bmodel.vanmodulehelper.getSubDepotList();
+            ArrayList<SubDepotBo> distributorList = bmodel.loadManagementHelper.getSubDepotList();
             String distributorAddress1 = "";
             String distributorAddress2 = "";
             String distributorContactNo = "";
@@ -834,7 +834,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 }
 
 
-                ArrayList<SubDepotBo> distributorList = bmodel.vanmodulehelper.getSubDepotList();
+                ArrayList<SubDepotBo> distributorList = bmodel.loadManagementHelper.getSubDepotList();
                 String distributorAddress1 = "";
                 String distributorAddress2 = "";
                 String distributorContactNo = "";

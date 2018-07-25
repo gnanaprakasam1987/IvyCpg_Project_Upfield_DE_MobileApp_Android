@@ -342,6 +342,17 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             userSpinner.setVisibility(View.GONE);
         }
 
+        if (type != null
+                && type.equals(ROUTE)) {
+            bmodel.beatMasterHealper.downloadBeats();
+            Vector<BeatMasterBO> monthNameList = bmodel.beatMasterHealper.getBeatMaster();
+            routeSpinner.setVisibility(View.VISIBLE);
+            ArrayAdapter<BeatMasterBO> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthNameList);
+            monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+            routeSpinner.setAdapter(monthdapter);
+            routeSpinner.setOnItemSelectedListener(this);
+        }
+
         if (!isFromHomeScreenTwo) {
             mSelectedUserId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
             dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), MONTH);
@@ -395,9 +406,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     || !bmodel.configurationMasterHelper.SHOW_INCENTIVE_DASH) {
                 holder.incentive.setVisibility(View.GONE);
                 holder.incentiveTitle.setVisibility(View.GONE);
-            } else {
-                holder.incentive.setVisibility(View.VISIBLE);
-                holder.incentiveTitle.setVisibility(View.VISIBLE);
             }
 
             holder.dashboardDataObj = dashboardData;
@@ -468,8 +476,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             });
 
             if (dashboardData.getSubDataCount() > 0) {
-                holder.tvSkuWise.setVisibility(View.VISIBLE);
-                //  holder.verticalSkuWise.setVisibility(View.VISIBLE);
                 SpannableString str = new SpannableString(holder.tvSkuWise
                         .getText().toString());
                 str.setSpan(new UnderlineSpan(), 0, str.length(),
@@ -933,10 +939,13 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId));
                     else if (selectedInterval.equals(WEEK))
                         dashBoardHelper.loadSellerDashBoardforWeek(Integer.toString(mSelectedUserId));
-                    else if (selectedInterval.equals(ROUTE))
-                        dashBoardHelper.loadRouteDashBoard(selectedInterval);
-                    else
-                        dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                    else {
+                        if (type.equals(ROUTE))
+                            dashBoardHelper.loadRouteDashBoard(selectedInterval);
+                        else
+                            dashBoardHelper.loadSellerDashBoard(Integer.toString(mSelectedUserId), selectedInterval);
+                    }
+
                 } else {
                     dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", selectedInterval);
                 }
@@ -971,14 +980,6 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         dashBoardHelper.loadSellerDashBoardforWeek(Integer.toString(mSelectedUserId));
                         updateWeek("");
                     }
-                } else if (selectedInterval.equals(ROUTE)) {
-                    bmodel.beatMasterHealper.downloadBeats();
-                    Vector<BeatMasterBO> monthNameList = bmodel.beatMasterHealper.getBeatMaster();
-                    routeSpinner.setVisibility(View.VISIBLE);
-                    ArrayAdapter<BeatMasterBO> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthNameList);
-                    monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
-                    routeSpinner.setAdapter(monthdapter);
-                    routeSpinner.setOnItemSelectedListener(this);
                 } else {
                     weekSpinner.setVisibility(View.GONE);
                     dashBoardListViewAdapter.notifyDataSetChanged();

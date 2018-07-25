@@ -434,8 +434,6 @@ public class SellerKpiSkuFragment extends IvyBaseFragment {
         menu.findItem(R.id.menu_remarks).setVisible(false);
         menu.findItem(R.id.menu_spl_filter).setVisible(false);
         menu.findItem(R.id.menu_next).setVisible(false);
-        if (isFromDash)
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
     }
 
     @Override

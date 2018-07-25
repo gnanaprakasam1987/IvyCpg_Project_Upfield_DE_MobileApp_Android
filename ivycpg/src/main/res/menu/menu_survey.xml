@@ -16,13 +16,6 @@
         android:title="Next"
         ivydist:showAsAction="always" />
     <item
-        android:id="@+id/menu_product_filter"
-        android:icon="@drawable/ic_action_filter"
-        android:orderInCategory="99"
-        android:title="P.F"
-        android:visible="false"
-        ivydist:showAsAction="always" />
-    <item
         android:id="@+id/menu_joint_call_survey"
         android:icon="@drawable/ic_action_circle_close"
         android:orderInCategory="99"

@@ -21,6 +21,7 @@ public class SOSKUBO {
 	private String imageName = "";
 	private float norm;
 	private int MappingId;
+	private String parentHierarchy;
 
 	public String getPercentage() {
 		return percentage;
@@ -134,5 +135,13 @@ public class SOSKUBO {
 	}
 
 	private String imgName = "";
+
+	public String getParentHierarchy() {
+		return parentHierarchy;
+	}
+
+	public void setParentHierarchy(String parentHierarchy) {
+		this.parentHierarchy = parentHierarchy;
+	}
 
 }

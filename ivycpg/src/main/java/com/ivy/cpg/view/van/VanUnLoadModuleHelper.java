@@ -226,7 +226,7 @@ public class VanUnLoadModuleHelper {
     }
 
     public boolean hasVanunload() {
-        for (LoadManagementBO vanunloadBO : bmodel.productHelper.getProducts()) {
+        for (LoadManagementBO vanunloadBO : bmodel.productHelper.getLoadMgmtProducts()) {
             if (vanunloadBO.getCaseqty() > 0 || vanunloadBO.getPieceqty() > 0
                     || vanunloadBO.getOuterQty() > 0) {
                 return true;

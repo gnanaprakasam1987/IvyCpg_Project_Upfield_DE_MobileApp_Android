@@ -52,6 +52,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
@@ -63,7 +64,7 @@ import java.util.Vector;
 
 
 public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
-        View.OnClickListener, BrandDialogInterface, TextView.OnEditorActionListener {
+        View.OnClickListener, BrandDialogInterface, TextView.OnEditorActionListener, FiveLevelFilterCallBack {
 
     public static final String BRAND = "Brand";
     public static final String GENERAL = "General";
@@ -134,6 +135,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     public HashMap<Integer, Integer> mSelectedIdByLevelId;
     ArrayList<String> fiveFilter_productIDs;
     int mSelectedBrandID = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,9 +196,9 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
                 mDrawerLayout, /* DrawerLayout object *//*
-                                                 * nav drawer image to replace
-												 * 'Up' caret
-												 */
+         * nav drawer image to replace
+         * 'Up' caret
+         */
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */
         ) {
@@ -249,25 +251,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
 
         expandlvwplist = (ExpandableListView) findViewById(R.id.expand_lvwplist);
         expandlvwplist.setCacheColorHint(0);
-
-
-        if (bmodel.productHelper.getChildLevelBo() != null) {
-            // Check weather Object are still exist or not.
-            int siz = 0;
-            try {
-                Vector<ChildLevelBo> items = bmodel.productHelper.getChildLevelBo();
-                siz = items.size();
-            } catch (Exception nulle) {
-                Commons.printException("" + nulle);
-                Toast.makeText(this, "Session out. Login again.",
-                        Toast.LENGTH_SHORT).show();
-                finish();
-            }
-
-
-            if (siz == 0)
-                return;
-        }
 
         mSearchTypeArray = new ArrayList<>();
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
@@ -956,11 +939,8 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         if (!generalbutton.equals(GENERAL))
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
-        if (!brandbutton.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -976,11 +956,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-
-        if (isProductFilter_enabled)
-            menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
-        else
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         if (isSpecialFilter_enabled)
             menu.findItem(R.id.menu_spl_filter).setVisible(!drawerOpen);
@@ -1024,12 +999,9 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
             menu.findItem(R.id.menu_sih_apply).setVisible(false);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
+        if (bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
-       /* else
-            menu.findItem(R.id.menu_product_filter).setVisible(true);*/
 
         if (expand_collapse_button_enable)
             menu.findItem(R.id.menu_expand).setVisible(true);
@@ -1057,13 +1029,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
             return true;
         } else if (i == R.id.menu_spl_filter) {// generalFilterClicked();
             generalFilterClickedFragment();
-            return true;
-        } else if (i == R.id.menu_product_filter) {// brandFilterClicked();
-            if (bmodel.configurationMasterHelper.IS_UNLINK_FILTERS) {
-                generalbutton = GENERAL;
-                mSelectedFilterMap.put("General", GENERAL);
-            }
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_loc_filter) {
             showLocation();
@@ -1188,60 +1153,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    public void productFilterClickedFragment() {
-        try {
-            QUANTITY = null;
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            // To hide Key Board
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(
-                    mEdt_searchproductName.getWindowToken(),
-                    InputMethodManager.RESULT_UNCHANGED_SHOWN);
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-
-            if (bmodel.productHelper.getChildLevelBo().size() > 0)
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getChildLevelBo().get(0).getProductLevel());
-            else
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-
-            if (bmodel.productHelper.getParentLevelBo() != null
-                    && bmodel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -1317,42 +1228,20 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        mylist = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (ProductMasterBO productBO : items) {
-                if (productBO.getIsSaleable() == 1) {
-                    if (levelBO.getProductID() == productBO.getParentid()) {
-                        mylist.add(productBO);
-                    }
-                }
-            }
-        }
-        mDrawerLayout.closeDrawers();
-
-        refreshList();
-
-        updateValue();
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mylist = new ArrayList<>();
         fiveFilter_productIDs = new ArrayList<>();
         brandbutton = mFilterText;
         if (mAttributeProducts != null) {
 
-            if (mParentIdList.size() > 0) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (ProductMasterBO productBO : items) {
-                        if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+            if (mFilteredPid != 0) {
+                for (ProductMasterBO productBO : items) {
+                    if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
 
-                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                mylist.add(productBO);
-                                fiveFilter_productIDs.add(productBO.getProductID());
-                            }
+                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                        if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                            mylist.add(productBO);
+                            fiveFilter_productIDs.add(productBO.getProductID());
                         }
                     }
                 }
@@ -1368,13 +1257,11 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                for (ProductMasterBO productBO : items) {
-                    if (productBO.getIsSaleable() == 1) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
-                            mylist.add(productBO);
-                            fiveFilter_productIDs.add(productBO.getProductID());
-                        }
+            for (ProductMasterBO productBO : items) {
+                if (productBO.getIsSaleable() == 1) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        mylist.add(productBO);
+                        fiveFilter_productIDs.add(productBO.getProductID());
                     }
                 }
             }
@@ -1389,27 +1276,17 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
         if (!GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // both filter selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
-                        && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
+                    && isSpecialFilterAppliedProduct(generalbutton, ret))
+                return true;
         } else if (!GENERAL.equals(generalbutton) && BRAND.equals(brandbutton)) {
             //special filter alone selected
             if (isSpecialFilterAppliedProduct(generalbutton, ret))
                 return true;
         } else if (GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // product filter alone selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID)
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
+                return true;
         }
         return false;
     }

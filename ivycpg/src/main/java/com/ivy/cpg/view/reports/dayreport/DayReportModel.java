@@ -484,7 +484,7 @@ public class DayReportModel implements IDayReportModelPresenter {
 
             //TODO:if the below condition is always true so remove the conditions
 
-            ArrayList<SubDepotBo> distributorList = mBusinessModel.vanmodulehelper.getSubDepotList();
+            ArrayList<SubDepotBo> distributorList = mBusinessModel.loadManagementHelper.getSubDepotList();
             String distributorAddress1 = "";
             String distributorAddress2 = "";
             String distributorContactNo = "";

@@ -69,7 +69,9 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -86,6 +88,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener, PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
@@ -420,7 +423,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         });
 
 
-       /* ConfigData.setPowerAccuracy(LocationRequest.PRIORITY_HIGH_ACCURACY);*/
+        /* ConfigData.setPowerAccuracy(LocationRequest.PRIORITY_HIGH_ACCURACY);*/
 
         // image path
         photoPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
@@ -1158,12 +1161,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                     if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
 
-                        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                            bmodel.productHelper
-                                    .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);
-                        else
-                            bmodel.productHelper
-                                    .downloadProductFilter(MENU_SURVEY_SW);
+
+                      /*  bmodel.productHelper
+                                .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);*/
+
+                        bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_SW));
+                        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_SW,
+                                bmodel.productHelper.getRetailerModuleSequenceValues()));
+
                     }
 
                     if (surveyHelperNew.getSurvey() != null
@@ -1216,12 +1221,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 surveyHelperNew.downloadQuestionDetails("MENU_SURVEY01_SW");
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
-                    if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                        bmodel.productHelper
-                                .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");
-                    else
-                        bmodel.productHelper
-                                .downloadProductFilter("MENU_SURVEY01_SW");
+                   /* bmodel.productHelper
+                            .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");*/
+                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY01_SW"));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts("MENU_SURVEY01_SW",
+                            bmodel.productHelper.getRetailerModuleSequenceValues()));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1273,12 +1277,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
 
-                    if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                        bmodel.productHelper
-                                .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);
-                    else
-                        bmodel.productHelper
-                                .downloadProductFilter(MENU_SURVEY_BA_CS);
+                    /*bmodel.productHelper
+                            .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);*/
+                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_BA_CS));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_BA_CS,
+                            bmodel.productHelper.getRetailerModuleSequenceValues()));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1728,7 +1731,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 (newOutletEditFragment != null && (fragmentName.equals(MENU_NEWRET_EDT))
                         && newOutletEditFragment.isVisible()) {
             return;
-        }  else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
+        } else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
                 && acknowledgementFragment.isVisible()) {
             return;
         } else if (planDeviationFragment != null && fragmentName.equals(MENU_NON_FIELD)
@@ -1846,10 +1849,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_NEW_RETAILER);
-                    bmodel.productHelper
-                            .downloadProductsNewOutlet(MENU_NEW_RETAILER);
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
+                            bmodel.productHelper.getFilterProductLevels()));
+                    GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+                    if (genericObjectPair != null) {
+                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
+                    }
                 }
 
                 bndl = new Bundle();
@@ -1880,7 +1887,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_PLANNING:
                 bndl = new Bundle();
                 bndl.putString("From", MENU_PLANNING_CONSTANT);
-                bndl.putBoolean("isPlanning",true);
+                bndl.putBoolean("isPlanning", true);
                 isVisit = false;
                 bndl.putString("Newplanningsub", "");
                 fragment = new VisitFragment();
@@ -2074,7 +2081,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 break;
 
             case MENU_REPORT:
-                bmodel.productHelper.downloadProductFilter("MENU_STK_ORD");
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 fragment = new ReportMenuFragment();
@@ -2635,12 +2641,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
-                else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                            "MENU_STOCK_PROPOSAL");
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
+                        "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get("MENU_STOCK_PROPOSAL"), 2);
             } catch (Exception e) {
