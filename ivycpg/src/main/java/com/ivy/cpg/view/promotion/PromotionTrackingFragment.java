@@ -54,6 +54,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -76,7 +77,7 @@ import java.util.Vector;
 
 
 public class PromotionTrackingFragment extends IvyBaseFragment implements BrandDialogInterface,
-        DataPickerDialogFragment.UpdateDateInterface {
+        DataPickerDialogFragment.UpdateDateInterface, FiveLevelFilterCallBack {
 
     private BusinessModel businessModel;
     private PromotionHelper promotionHelper;
@@ -95,7 +96,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     private String append = "";
     /* Five filter elements */
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private Vector<LevelBO> parent_id_List;
+    private int mFilteredPid;
     private ArrayList<Integer> mAttributeProducts;
     private String filter_text;
     private boolean isFilterAvailable;
@@ -212,13 +213,12 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
         }
 
-        if (parent_id_List != null || mSelectedIdByLevelId != null || mAttributeProducts != null) {
-            updateFromFiveLevelFilter(parent_id_List, mSelectedIdByLevelId, mAttributeProducts, filter_text);
+        if (mFilteredPid != 0 || mSelectedIdByLevelId != null || mAttributeProducts != null) {
+            updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, filter_text);
         } else {
             updateBrandText("Brand", -1);
         }
-        if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            FiveFilterFragment();
+        FiveFilterFragment();
 
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
@@ -416,7 +416,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_promo, menu);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_add).setVisible(false);
         menu.findItem(R.id.menu_next).setVisible(false);
     }
@@ -453,11 +452,11 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
 
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && isFilterAvailable) {
+            if (isFilterAvailable) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
 
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            if (mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -588,9 +587,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     }
 
     /* show alert before deleting the existing picture
-    * params
-    * promotionId - promotion io of the captured image
-    * imageNameStarts - starting name of the image*/
+     * params
+     * promotionId - promotion io of the captured image
+     * imageNameStarts - starting name of the image*/
     private void showFileDeleteAlert(final String promotionId,
                                      final String imageNameStarts) {
 
@@ -1197,37 +1196,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         try {
-            ArrayList<PromotionBO> items = mSelectedStandardListBO.getPromotionTrackingList();
-            if (items == null) {
-                businessModel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-            promoList = new ArrayList<>();
-
-            for (LevelBO levelBO : mParentIdList) {
-                for (PromotionBO promoBO : items) {
-                    if (levelBO.getProductID() == promoBO.getProductId()) {
-                        promoList.add(promoBO);
-                    }
-
-                }
-            }
-            // set the list values to the adapter
-            promotionAdapter = new MyAdapter(promoList);
-            listView.setAdapter(promotionAdapter);
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        try {
-            this.parent_id_List = mParentIdList;
+            this.mFilteredPid = mFilteredPid;
             this.mSelectedIdByLevelId = mSelectedIdByLevelId;
             this.mAttributeProducts = mAttributeProducts;
             this.filter_text = mFilterText;
@@ -1241,14 +1212,12 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             promoList = new ArrayList<>();
 
             if (mAttributeProducts != null) {
-                if (!mParentIdList.isEmpty()) {
-                    for (LevelBO levelBO : mParentIdList) {
-                        for (PromotionBO productBO : items) {
-                            if (levelBO.getProductID() == productBO.getProductId()
-                                    && mAttributeProducts.contains(productBO.getProductId())) {
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                promoList.add(productBO);
-                            }
+                if (mFilteredPid != 0) {
+                    for (PromotionBO productBO : items) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")
+                                && mAttributeProducts.contains(productBO.getProductId())) {
+                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                            promoList.add(productBO);
                         }
                     }
                 } else {
@@ -1266,13 +1235,11 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     promoList.addAll(items);
                 } else {
                     if (mFilterText.length() > 0) {
-                        for (LevelBO levelBO : mParentIdList) {
-                            for (PromotionBO promoBO : items) {
-                                if (levelBO.getProductID() == promoBO.getProductId()) {
-                                    promoList.add(promoBO);
-                                }
-
+                        for (PromotionBO promoBO : items) {
+                            if (promoBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                                promoList.add(promoBO);
                             }
+
                         }
                     } else {
                         for (PromotionBO promoBO : items) {

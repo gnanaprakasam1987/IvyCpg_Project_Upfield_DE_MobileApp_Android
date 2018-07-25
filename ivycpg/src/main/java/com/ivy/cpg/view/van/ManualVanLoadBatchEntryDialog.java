@@ -213,7 +213,7 @@ class ManualVanLoadBatchEntryDialog extends Dialog implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.vanmodulehelper.saveBatch(product);
+                bmodel.loadManagementHelper.saveBatch(product);
             } catch (Exception e) {
                 Commons.printException("" + e);
                 return Boolean.FALSE;

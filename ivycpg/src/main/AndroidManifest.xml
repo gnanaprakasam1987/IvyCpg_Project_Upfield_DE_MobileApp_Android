@@ -551,9 +551,6 @@
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CrownReturnActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.sd.png.view.EmptyReturnActivity"
             android:screenOrientation="portrait" />
         <activity

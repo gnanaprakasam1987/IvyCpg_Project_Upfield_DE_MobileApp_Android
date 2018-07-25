@@ -413,7 +413,7 @@ public class EodReportHelper {
                         }
                     }
                 } else if (reportType == 3) {
-                    for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+                    for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                         if (productId.equals(bo.getProductid() + "")) {
                             if (bo.getPiece_uomid() == uomId)
                                 bo.setBaseUomPieceWise(true);
@@ -472,7 +472,7 @@ public class EodReportHelper {
                                 }
                             }
                         } else if (reportType == 3) {
-                            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+                            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                                 if (c.getString(0).equals(bo.getProductid() + "")) {
                                     if (bo.getPiece_uomid() == uomId)
                                         bo.setBaseUomPieceWise(true);
@@ -512,7 +512,7 @@ public class EodReportHelper {
                 bo.setBaseUomPieceWise(true);
             }
         } else if (reportType == 3) {
-            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                 bo.setBaseUomCaseWise(true);
                 bo.setBaseUomOuterWise(true);
                 bo.setBaseUomPieceWise(true);
@@ -534,7 +534,7 @@ public class EodReportHelper {
                 bo.setBaseUomPieceWise(false);
             }
         } else if (reportType == 3) {
-            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                 bo.setBaseUomCaseWise(false);
                 bo.setBaseUomOuterWise(false);
                 bo.setBaseUomPieceWise(false);
@@ -553,37 +553,4 @@ public class EodReportHelper {
 
     private Vector<StockReportBO> currentStock;
 
-    public Vector<StockReportBO> downloadCurrentStockReport() {
-
-        try {
-            Vector<LoadManagementBO> item = bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT", "");
-            if (item != null) {
-                currentStock = new Vector<>();
-                for (LoadManagementBO load : item) {
-
-                    StockReportBO temp = new StockReportBO();
-                    temp.setProductName(load.getProductname());
-                    temp.setProductShortName(load.getProductshortname());
-                    temp.setProductCode(load.getpCode());
-                    temp.setProductID(load.getProductid() + "");
-                    temp.setSih(load.getSih());
-                    temp.setBrandId(load.getParentid());
-                    temp.setCategoryId(0);
-                    temp.setBarcode(load.getBarcode());
-                    temp.setRfield1(load.getRField1());
-                    temp.setCaseSize(load.getCaseSize());
-                    temp.setOuterSize(load.getOuterSize());
-                    temp.setPiece_uomid(load.getPiece_uomid());
-                    temp.setdUomid(load.getdUomid());
-                    temp.setdOuomid(load.getdOuonid());
-                    currentStock.add(temp);
-                }
-
-            }
-            return currentStock;
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return null;
-    }
 }

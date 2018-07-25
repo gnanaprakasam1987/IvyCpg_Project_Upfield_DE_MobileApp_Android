@@ -288,7 +288,7 @@ public class PlanoGramHelper {
 
 
             if ("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)) {
-                query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,STM.listid ,MP.StoreLocId, PM.PName,PI.ImgId"
+                query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,STM.listid ,MP.StoreLocId, PM.PName,PI.ImgId,PM.ParentHierarchy"
                         + " FROM PlanogramMapping MP"
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
@@ -298,7 +298,7 @@ public class PlanoGramHelper {
                         + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             } else {
-                query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,0,0, PM.PName,PI.ImgId"
+                query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,0,0, PM.PName,PI.ImgId,PM.ParentHierarchy"
                         + " FROM PlanogramMapping MP ON MP.PId = PM.Pid"
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
@@ -324,6 +324,7 @@ public class PlanoGramHelper {
                     planogram.setLocationID(c.getInt(4));
                     planogram.setProductName(c.getString(6));
                     planogram.setImageId(c.getInt(7));
+                    planogram.setParentHierarchy(c.getString(8));
                     getPlanogramMaster().add(planogram);
                 }
                 c.close();
@@ -598,7 +599,7 @@ public class PlanoGramHelper {
         this.mParentLevelBo = mParentLevelBo;
     }
 
-    Vector<ChildLevelBo> getmChildLevelBo() {
+    public Vector<ChildLevelBo> getmChildLevelBo() {
         return mChildLevelBo;
     }
 

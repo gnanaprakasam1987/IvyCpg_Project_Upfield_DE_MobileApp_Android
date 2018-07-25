@@ -121,7 +121,7 @@ public class ReturnFragment extends IvyBaseFragment {
             if (getArguments().getString("from").equals("ORDER"))
                 productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
             else
-                productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
+                productMasterBO = salesReturnHelper.getSalesReturnProductBOById(Pid);
         }
         if (productMasterBO != null && productMasterBO.getSalesReturnReasonList() != null) {
             //for pre saler

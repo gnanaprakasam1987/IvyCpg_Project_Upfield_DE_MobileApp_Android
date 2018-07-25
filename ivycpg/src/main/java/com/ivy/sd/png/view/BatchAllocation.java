@@ -378,12 +378,12 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
 
     }
 
-	/*
+    /*
      * public void onClick(View v) {
-	 *
-	 * dialog = new BatchAllocationDialog(this, mSelectedProductBO);
-	 * dialog.show(); }
-	 */
+     *
+     * dialog = new BatchAllocationDialog(this, mSelectedProductBO);
+     * dialog.show(); }
+     */
 
     public void numberPressed(View v) {
         Commons.print(TAG + ",Number Pressed call ");
@@ -423,7 +423,6 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
         finish();
 
 
-
     }
 
     /**
@@ -431,23 +430,13 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
      */
 
     private void nextButtonClick() {
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         if (mylist.size() == 0) {
             Toast.makeText(BatchAllocation.this, "please take order ",
                     Toast.LENGTH_SHORT).show();
         } else {
             bmodel.batchAllocationHelper.updateOrderedeBatchCount(mylist);
-
-            if ((bmodel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bmodel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
-                    && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-
-                Intent intent = new Intent(BatchAllocation.this,
-                        CrownReturnActivity.class);
-                intent.putExtra("OrderFlag", "Nothing");
-                intent.putExtra("ScreenCode", screenCode);
-                startActivity(intent);
-//                finish();
-            } else if (schemeHelper.IS_SCHEME_ON
+            if (schemeHelper.IS_SCHEME_ON
                     && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
                 Intent init = new Intent(BatchAllocation.this, SchemeApply.class);
                 init.putExtra("ScreenCode", screenCode);

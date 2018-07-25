@@ -112,7 +112,7 @@ public class ReplaceFragment extends IvyBaseFragment {
             if (getArguments().getString("from").equals("ORDER"))
                 productMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
             else
-                productMasterBO = bmodel.productHelper.getSalesReturnProductBOById(Pid);
+                productMasterBO = salesReturnHelper.getSalesReturnProductBOById(Pid);
         }
         if (productMasterBO != null) {
             int total = 0, caseSize = 0, outerSize = 0;

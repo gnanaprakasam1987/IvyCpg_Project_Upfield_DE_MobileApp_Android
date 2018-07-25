@@ -76,6 +76,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
@@ -92,7 +93,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener,
-        BrandDialogInterface, TextView.OnEditorActionListener {
+        BrandDialogInterface, TextView.OnEditorActionListener,FiveLevelFilterCallBack {
 
 
     private ListView lvwplist;
@@ -1164,10 +1165,9 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
 
         Commons.print("OnStart Called");
-        productFilterClickedFragment(); // Normal Filter Fragment
         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
-            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-            sequence = bmodel.productHelper.getSequenceValues();
+            loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
+            sequence = bmodel.productHelper.getFilterProductLevels();
 
             if (loadedFilterValues != null) {
                 if (loadedFilterValues.get(-1) == null) {
@@ -2544,15 +2544,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                         Toast.LENGTH_SHORT).show();
             }
 
-        } else if ((bmodel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bmodel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
-                && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-
-            Intent intent = new Intent(SubDStockOrderActivity.this,
-                    CrownReturnActivity.class);
-            intent.putExtra("OrderFlag", "Nothing");
-            intent.putExtra("ScreenCode", screenCode);
-            startActivity(intent);
-            finish();
         } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(SubDStockOrderActivity.this, SchemeApply.class);
@@ -2984,27 +2975,20 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
         if (!GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // both filter selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
-                        && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID && isSpecialFilterAppliedProduct(generalbutton, ret))
-                    return true;
-            }
+
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
+                    && isSpecialFilterAppliedProduct(generalbutton, ret))
+                return true;
+
         } else if (!GENERAL.equals(generalbutton) && BRAND.equals(brandbutton)) {
             //special filter alone selected
             if (isSpecialFilterAppliedProduct(generalbutton, ret))
                 return true;
         } else if (GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // product filter alone selected
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
-                    return true;
-            } else {
-                if (ret.getParentid() == mSelectedBrandID)
-                    return true;
-            }
+            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
+                return true;
+
         }
         return false;
     }
@@ -3341,8 +3325,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
-            loadedFilterValues = bmodel.productHelper.getFiveLevelFilters();
-            sequence = bmodel.productHelper.getSequenceValues();
+            loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
+            sequence = bmodel.productHelper.getFilterProductLevels();
 
             if (loadedFilterValues != null) {
                 if (loadedFilterValues.get(-1) == null) {
@@ -3417,17 +3401,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
 
-        if (!brandbutton.equals(BRAND)) {
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
-        }
 
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
-        menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_next).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_spl_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_remarks).setVisible(!drawerOpen);
@@ -3460,23 +3439,17 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         menu.findItem(R.id.menu_barcode).setVisible(bmodel.configurationMasterHelper.IS_BAR_CODE);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
+        if (bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
             if (isFilter) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
             if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER && sequence.size() == 1) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(false);
             }
-        }/* else {
-            if (isFilter) {
-                menu.findItem(R.id.menu_product_filter).setVisible(true);
-            }
-        }*/
+        }
 
-
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -3504,8 +3477,11 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 backButtonClick();
             return true;
         } else if (i == R.id.menu_survey) {
-            bmodel.productHelper
-                    .downloadFiveLevelFilterNonProducts("MENU_SURVEY");
+           /* bmodel.productHelper
+                    .downloadFiveLevelFilterNonProducts("MENU_SURVEY");*/
+            bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY"));
+            bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts("MENU_SURVEY",
+                    bmodel.productHelper.getRetailerModuleSequenceValues()));
             bmodel.mSelectedActivityName = "Survey";
             startActivity(new Intent(this, SurveyActivityNew.class));
             return true;
@@ -3543,15 +3519,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         } else if (i == R.id.menu_loc_filter) {
 
             showLocation();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-
-            if (bmodel.configurationMasterHelper.IS_UNLINK_FILTERS) {
-                generalbutton = GENERAL;
-                mSelectedFilterMap.put("General", GENERAL);
-            }
-
-            productFilterClickedFragment(); // Normal Filter Fragment
             return true;
         } else if (i == R.id.menu_remarks) {
 
@@ -3711,57 +3678,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             ft.commit();
         } catch (Exception e) {
             Commons.printException(e);
-        }
-    }
-
-    private void productFilterClickedFragment() {
-        try {
-            QUANTITY = null;
-
-            mDrawerLayout.openDrawer(GravityCompat.END);
-
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-
-            if (bmodel.productHelper.getChildLevelBo().size() > 0)
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getChildLevelBo().get(0).getProductLevel());
-            else
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-
-            if (bmodel.productHelper.getParentLevelBo() != null
-                    && bmodel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e + "");
         }
     }
 
@@ -4164,15 +4080,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         return totalQty;
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-
-    }
 
     @Override
     public void updateFromFiveLevelFilter
-            (Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String
+            (int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String
                     mFilterText) {
         // 22.11.2017 mansoor.k mFilterText length == 0 then no filter selected so no need to loop parent ids loop
         String filtertext = getResources().getString(R.string.product_name);
@@ -4190,9 +4101,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         Vector<ProductMasterBO> items = productList;
         if (mAttributeProducts != null) {
             count = 0;
-            if (!mParentIdList.isEmpty()) {
+            if (mFilteredPid!=0) {
                 if (mFilterText.length() > 0) {
-                    for (LevelBO levelBO : mParentIdList) {
                         count++;
                         for (ProductMasterBO productBO : items) {
                             if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
@@ -4203,7 +4113,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
                                 if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
-                                    if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+                                    if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
                                         // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                                         if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
 
@@ -4217,7 +4127,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             }
 
                         }
-                    }
                 } else {
                     for (ProductMasterBO productBO : items) {
                         if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
@@ -4267,7 +4176,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             }
         } else {
             if (mFilterText.length() > 0) {
-                for (LevelBO levelBO : mParentIdList) {
                     count++;
                     for (ProductMasterBO productBO : items) {
 
@@ -4284,7 +4192,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                     || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                     && productBO.getIndicativeOrder_oc() > 0)) {
-                                if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
+                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
                                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                         continue;
                                     mylist.add(productBO);
@@ -4292,7 +4200,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                                 }
                             }
                         }
-                    }
                 }
             } else {
                 for (ProductMasterBO productBO : items) {
@@ -4716,14 +4623,25 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
                     updateSelectedID();
 
-                    Vector<LevelBO> finalParentList = new Vector<>();
-
+                    int mFilteredPId =0;
+                    int size = sequence.size();
+                    for (int i = size - 1; i >= 0; i--) {
+                        if (mSelectedIdByLevelId.get(sequence.get(i).getProductID()) != null && mSelectedIdByLevelId.get(sequence.get(i).getProductID()) > 0) {
+                            for (LevelBO bo : loadedFilterValues.get(sequence.get(i).getProductID())) {
+                                if (bo.getProductID() == mSelectedIdByLevelId.get(sequence.get(i).getProductID())) {
+                                    mFilteredPId = bo.getProductID();
+                                    i = -1;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     if (bmodel.productHelper.getmAttributeTypes() != null && bmodel.productHelper.getmAttributeTypes().size() > 0) {
 
                         if (isAttributeFilterSelected()) {
                             //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
                             if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
-                                finalParentList = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
+                                //mFilteredPId = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
                             }
 
                             ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
@@ -4746,15 +4664,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                                     }
                                 }
                             }
-                            updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, lstFinalProductIds, levelBO.getLevelName());
+                            updateFromFiveLevelFilter(mFilteredPId, mSelectedIdByLevelId, lstFinalProductIds, levelBO.getLevelName());
                             return;
-                        } else
-                            finalParentList = updateProductLoad(sequence.size() - bmodel.productHelper.getmAttributeTypes().size());
+                        }
+                    }
 
-                    } else
-                        finalParentList = updateProductLoad(sequence.size());
-
-                    updateFromFiveLevelFilter(finalParentList, mSelectedIdByLevelId, null, levelBO.getLevelName());
+                    updateFromFiveLevelFilter(mFilteredPId, mSelectedIdByLevelId, null, levelBO.getLevelName());
                 }
             });
 

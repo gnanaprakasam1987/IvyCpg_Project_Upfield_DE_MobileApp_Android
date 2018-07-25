@@ -58,6 +58,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaxGstHelper;
@@ -77,7 +78,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
+public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
 
     private static final String CODE_PRODUCTIVE = "Filt_01";
     private static final String CODE_NON_PRODUCTIVE = "Filt_02";
@@ -1064,11 +1065,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             mRetTgtAchv.put(configObj.getCode(), configObj.getDesc());
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
     private void updateRetailerProperty() {
 
         mRetailerProp = new HashMap<>();
@@ -1164,7 +1160,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         // To Do updateFromFiveLevelFilter
 
     }

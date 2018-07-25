@@ -1128,7 +1128,7 @@ SynchronizationHelper {
             ArrayList<String> valuesList = new ArrayList<>();
 
             JSONArray first = jsonObject.getJSONArray(JSON_DATA_KEY);
-            ArrayList<VanLoadMasterBO> uidList = bmodel.vanmodulehelper.downloadExistingUid();
+            ArrayList<VanLoadMasterBO> uidList = bmodel.loadManagementHelper.downloadExistingUid();
 
             for (int j = 0; j < first.length(); j++) {
                 boolean flag = false;

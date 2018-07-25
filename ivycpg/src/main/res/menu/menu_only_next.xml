@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ivydist="http://schemas.android.com/apk/res-auto" >
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_counter_remark"
         android:icon="@drawable/ic_remark"
         android:orderInCategory="98"
         android:title="@string/remark"
-        ivydist:showAsAction="always"
-        android:visible="false"/>
-
-    <!-- Product Filter -->
-    <item
-        android:id="@+id/menu_product_filter"
-        android:icon="@drawable/ic_action_filter"
-        android:orderInCategory="99"
-        android:title="P.F"
         android:visible="false"
-        ivydist:showAsAction="always"/>
+        ivydist:showAsAction="always" />
 
     <item
         android:id="@+id/menu_fivefilter"
         android:icon="@drawable/icon_menu_filter"
-        android:orderInCategory="101"
+        android:orderInCategory="99"
         android:title="@string/fivefilter"
         ivydist:showAsAction="always" />
     <!-- Next Button -->
@@ -31,6 +22,6 @@
         android:icon="@drawable/ic_action_navigation_next_item"
         android:orderInCategory="101"
         android:title="Next"
-        ivydist:showAsAction="always"/>
+        ivydist:showAsAction="always" />
 
 </menu>

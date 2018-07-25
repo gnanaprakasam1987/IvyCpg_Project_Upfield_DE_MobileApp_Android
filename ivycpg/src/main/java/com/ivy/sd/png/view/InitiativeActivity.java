@@ -281,13 +281,6 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
                         SchemeApply.class);
                 intent.putExtra("ScreenCode", screenCode);
                 startActivity(intent);
-            } else if ((bmodel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bmodel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
-                    && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                Intent intent = new Intent(InitiativeActivity.this,
-                        CrownReturnActivity.class);
-                intent.putExtra("OrderFlag", "Nothing");
-                intent.putExtra("ScreenCode", screenCode);
-                startActivity(intent);
             } else if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                 Intent intent = new Intent(InitiativeActivity.this,
                         BatchAllocation.class);

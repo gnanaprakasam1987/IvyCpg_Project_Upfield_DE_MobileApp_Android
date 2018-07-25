@@ -58,6 +58,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
@@ -75,7 +76,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SODFragment extends IvyBaseFragment implements
-        BrandDialogInterface {
+        BrandDialogInterface,FiveLevelFilterCallBack {
 
     private SalesFundamentalHelper mSFHelper;
     private BusinessModel mBModel;
@@ -320,53 +321,6 @@ public class SODFragment extends IvyBaseFragment implements
     }
 
     /**
-     * Two level filter call
-     */
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("isFrom", "SOD");
-            bundle.putString("filterHeader", mBModel.productHelper
-                    .getRetailerModuleChildLevelBO().get(0).getProductLevel());
-            bundle.putSerializable("serilizeContent",
-                    mBModel.productHelper.getRetailerModuleChildLevelBO());
-
-            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && mBModel.productHelper.getRetailerModuleParentLeveBO().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", mBModel.productHelper
-                        .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
-
-                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
-                        .getRetailerModuleParentLeveBO());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-            }
-
-            // set Fragment class Arguments
-            HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-            FilterFragment mFragment = new FilterFragment(mSelectedFilterMap);
-            mFragment.setArguments(bundle);
-            ft.add(R.id.right_drawer, mFragment, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    /**
      * Five level filter call
      */
     private void FiveFilterFragment() {
@@ -399,12 +353,12 @@ public class SODFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mDrawerLayout.closeDrawers();
 
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
-        updateFiveFilterSelection(mParentIdList, mSelectedIdByLevelId, mFilterText);
+        updateFiveFilterSelection(mFilteredPid, mSelectedIdByLevelId, mFilterText);
     }
 
     @Override
@@ -421,11 +375,7 @@ public class SODFragment extends IvyBaseFragment implements
         super.onPrepareOptionsMenu(menu);
         // Change color if Filter is selected
         try {
-            if (!brandFilterText.equals(BRAND))
-                menu.findItem(R.id.menu_product_filter).setIcon(
-                        R.drawable.ic_action_filter_select);
-
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            if (mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -441,9 +391,8 @@ public class SODFragment extends IvyBaseFragment implements
                 menu.findItem(R.id.menu_remarks).setVisible(false);
             }
 
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOD))
+            if (mBModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOD))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
             // If the nav drawer is open, hide action items related to the
@@ -488,9 +437,6 @@ public class SODFragment extends IvyBaseFragment implements
             return true;
         } else if (i == R.id.menu_next) {
             saveSOS();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_fivefilter) {
             FiveFilterFragment();
@@ -549,10 +495,10 @@ public class SODFragment extends IvyBaseFragment implements
     /**
      * Load list based on five level filter selection
      *
-     * @param mParentIdList        Parent Id list
+     * @param mFilteredPid         FilteredPid Product ID
      * @param mSelectedIdByLevelId Selected product Id by level id
      */
-    private void updateFiveFilterSelection(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String mFilterText) {
+    private void updateFiveFilterSelection(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, String mFilterText) {
         ArrayList<SODBO> items = mSFHelper.getSODList();
         if (items == null) {
             mBModel.showAlert(
@@ -563,12 +509,10 @@ public class SODFragment extends IvyBaseFragment implements
 
         ArrayList<SODBO> myList = new ArrayList<>();
         if (mFilterText.length() > 0) {
-            for (LevelBO levelBO : mParentIdList) {
-                for (SODBO temp : items) {
-                    if (temp.getParentID() == levelBO.getProductID()) {
-                        if (temp.getIsOwn() == 1)
-                            myList.add(temp);
-                    }
+            for (SODBO temp : items) {
+                if (temp.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
+                    if (temp.getIsOwn() == 1)
+                        myList.add(temp);
                 }
             }
         } else {
@@ -791,11 +735,6 @@ public class SODFragment extends IvyBaseFragment implements
     @Override
     public void updateMultiSelectionBrand(List<String> mFilterName,
                                           List<Integer> mFilterId) {
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
     }
 
     /**

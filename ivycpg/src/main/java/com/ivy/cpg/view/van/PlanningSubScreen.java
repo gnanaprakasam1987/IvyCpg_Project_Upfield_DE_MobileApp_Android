@@ -421,30 +421,21 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
-                    bmodel.vanmodulehelper.downloadSubDepots();
+                    bmodel.loadManagementHelper.downloadSubDepots();
                 }
 
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
-                } else {
-                    bmodel.productHelper
-                            .downloadProductFilter(MENU_LOAD_MANAGEMENT);
-                }
-
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            MENU_LOAD_MANAGEMENT, menuManualVanload);
-                else
-                    bmodel.productHelper.loadProducts(MENU_LOAD_MANAGEMENT,
-                            menuManualVanload);
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_LOAD_MANAGEMENT));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_LOAD_MANAGEMENT,
+                        bmodel.productHelper.getFilterProductLevels()));
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
+                        MENU_LOAD_MANAGEMENT, menuManualVanload);
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
 
                     bmodel.productHelper.downlaodReturnableProducts(MENU_LOAD_MANAGEMENT);
                     bmodel.productHelper.downloadBomMaster();
                     bmodel.productHelper.downloadGenericProductID();
-                    bmodel.vanmodulehelper.loadVanLoadReturnProductValidation();
+                    bmodel.loadManagementHelper.loadVanLoadReturnProductValidation();
 
                 }
 
@@ -485,15 +476,12 @@ public class PlanningSubScreen extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_LOAD_MANAGEMENT);
-                } else {
-                    bmodel.productHelper
-                            .downloadProductFilter(MENU_LOAD_MANAGEMENT);
-                }
 
-                bmodel.productHelper.loadProducts(MENU_LOAD_MANAGEMENT, "");
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_LOAD_MANAGEMENT));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_LOAD_MANAGEMENT,
+                        bmodel.productHelper.getFilterProductLevels()));
+
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(MENU_LOAD_MANAGEMENT, "");
             } catch (Exception e) {
                 Commons.printException(" + e");
                 return Boolean.FALSE;
