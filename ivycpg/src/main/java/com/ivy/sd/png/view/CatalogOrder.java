@@ -1293,25 +1293,16 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     orderTimer.cancel();
 
                 bmodel.productHelper.clearOrderTable();
-                if (bmodel.mSelectedModule == 1) {
-                    startActivity(new Intent(CatalogOrder.this,
-                            HomeScreenActivity.class));
-                    finish();
-                } else if (bmodel.mSelectedModule == 2) {
-                    startActivity(new Intent(CatalogOrder.this,
-                            HomeScreenTwo.class));
-                    finish();
-                } else {
-                    bmodel.outletTimeStampHelper
-                            .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
-                    startActivity(new Intent(CatalogOrder.this,
-                            HomeScreenTwo.class));
-                    finish();
-                }
+
+                bmodel.outletTimeStampHelper
+                        .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                startActivity(new Intent(CatalogOrder.this,
+                        HomeScreenTwo.class));
+                finish();
+
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
         } catch (Exception e) {
-            // TODO: handle exception
             Commons.printException(e);
         }
     }
@@ -1345,21 +1336,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                             bmodel.productHelper
                                                     .clearBomReturnProductsTable();
 
-                                        // if User comes from Adhoc Screen it again
-                                        // redirect to the HomeScreenFragment
-                                        if (bmodel.mSelectedModule == 1) {
-                                            startActivity(new Intent(
-                                                    CatalogOrder.this,
-                                                    HomeScreenActivity.class));
-                                        } else if (bmodel.mSelectedModule == 2) {
-                                            startActivity(new Intent(
-                                                    CatalogOrder.this,
-                                                    HomeScreenTwo.class));
-                                        } else {
-                                            startActivity(new Intent(
-                                                    CatalogOrder.this,
-                                                    HomeScreenTwo.class));
-                                        }
+
+                                        startActivity(new Intent(
+                                                CatalogOrder.this,
+                                                HomeScreenTwo.class));
+
                                         finish();
                                         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                                     }
@@ -1544,9 +1525,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     public void nextBtnSubTask() {
-        if (bmodel.mSelectedModule != 3)
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                .now(SDUtil.TIME));
+
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (bmodel.productHelper.isSIHAvailable()) {

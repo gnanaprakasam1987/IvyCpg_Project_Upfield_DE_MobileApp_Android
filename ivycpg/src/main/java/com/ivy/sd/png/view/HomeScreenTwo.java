@@ -1786,9 +1786,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             schemeHelper.downloadSchemeHistoryDetails(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());
 
 
-                        // Reset the Configuration if Directly goes from
-                        // HomeScreenTwo
-                        bmodel.mSelectedModule = -1;
+
 
                         bmodel.productHelper.downloadInStoreLocations();
 
@@ -3871,9 +3869,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } catch (Exception e) {
             Commons.printException(e);
         }
-        // Reset the Configuration if Directly goes from
-        // HomeScreenTwo
-        bmodel.mSelectedModule = -1;
+
         OrderSummary.mCurrentActivityCode = configCode;
         bmodel.mSelectedActivityName = menuName;
     }

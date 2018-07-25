@@ -765,7 +765,7 @@ public class ConfigurationMasterHelper {
     public boolean SHEME_NOT_APPLY_DEVIATEDSTORE;
     // Added in 43 version
     public boolean SHOW_VANBARCODE_VALIDATION;
-    public boolean ISAMAZON_IMGUPLOAD = false;
+    public boolean ISAMAZON_IMGUPLOAD = true;
     // Added in 44 version
 
     public boolean SHOW_ADVANCE_PAYMENT;
