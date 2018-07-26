@@ -44,9 +44,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -54,6 +52,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -74,7 +73,7 @@ import static com.ivy.sd.png.asean.view.R.id.sihTitle;
  */
 
 public class StockProposalFragment extends IvyBaseFragment implements
-        View.OnClickListener, BrandDialogInterface, TextView.OnEditorActionListener {
+        View.OnClickListener, BrandDialogInterface, TextView.OnEditorActionListener,FiveLevelFilterCallBack {
 
 
     public static final String BRAND = "Brand";
@@ -275,7 +274,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
         expandlvwplist = (ExpandableListView) view.findViewById(R.id.expand_lvwplist);
         expandlvwplist.setCacheColorHint(0);
 
-        stockPropVector = bmodel.productHelper.getProducts();
+        stockPropVector = bmodel.productHelper.getLoadMgmtProducts();
         bmodel.stockProposalModuleHelper.loadInitiative();
         bmodel.stockProposalModuleHelper.loadSBDData();
         bmodel.stockProposalModuleHelper.loadPurchased();
@@ -441,9 +440,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 onNextButtonClick();
             }
         });
-
-
-        getChildLevelBo();
 
 
         mSearchTypeArray = new ArrayList<>();
@@ -1544,26 +1540,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
         }
     }
 
-    private void getChildLevelBo() {
-        if (bmodel.productHelper.getChildLevelBo() != null) {
-            // Check weather Object are still exist or not.
-            int siz = 0;
-            try {
-                Vector<ChildLevelBo> items = bmodel.productHelper.getChildLevelBo();
-                siz = items.size();
-            } catch (Exception nulle) {
-                Commons.printException("" + nulle);
-                Toast.makeText(getActivity(), "Session out. Login again.",
-                        Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-
-
-            if (siz == 0)
-                return;
-        }
-    }
-
 
     /**
      * add items for SpecialFilter
@@ -1633,7 +1609,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
     private void loadSearchedList() {
         try {
             Vector<LoadManagementBO> items = bmodel.productHelper
-                    .getProducts();
+                    .getLoadMgmtProducts();
 
             if (items == null) {
                 bmodel.showAlert(
@@ -2635,27 +2611,19 @@ public class StockProposalFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        Commons.print("selected filter " + mParentIdList + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        Commons.print("selected filter " + mFilteredPid + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
 
         loadloadMylist = new ArrayList<>();
         if (mAttributeProducts != null) {
 
-            if (mParentIdList.size() > 0) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : stockPropVector) {
-                        if (productBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                if (mAttributeProducts.contains(productBO.getProductid())) {
-                                    loadloadMylist.add(productBO);
-                                }
+            if (mFilteredPid != 0) {
+                for (LoadManagementBO productBO : stockPropVector) {
+                    if (productBO.getIssalable() == 1) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                            if (mAttributeProducts.contains(productBO.getProductid())) {
+                                loadloadMylist.add(productBO);
                             }
                         }
                     }
@@ -2672,15 +2640,11 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                for (LoadManagementBO productBO : stockPropVector) {
-                    Commons.print("pdt id " + levelBO.getProductID() + ", " + productBO.getParentid());
-                    if (productBO.getIssalable() == 1) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
-                            loadloadMylist.add(productBO);
-                        }
+            for (LoadManagementBO productBO : stockPropVector) {
+                if (productBO.getIssalable() == 1) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        loadloadMylist.add(productBO);
                     }
-
                 }
             }
         }
@@ -2730,17 +2694,8 @@ public class StockProposalFragment extends IvyBaseFragment implements
         if (!generalbutton.equals(GENERAL))
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
-        if (!brandbutton.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
-
 
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-
-        if (isProductFilter_enabled)
-            menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
-        else
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         if (isSpecialFilter_enabled)
             menu.findItem(R.id.menu_spl_filter).setVisible(!drawerOpen);
@@ -2784,12 +2739,8 @@ public class StockProposalFragment extends IvyBaseFragment implements
         menu.findItem(R.id.menu_sih_apply).setVisible(true);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        else
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
         menu.findItem(R.id.menu_expand).setVisible(false);
 
@@ -2808,9 +2759,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
             return true;
         } else if (i == R.id.menu_spl_filter) {
             generalFilterClickedFragment();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_apply_std_qty) {
             applyStdQty();
@@ -2914,60 +2862,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
             ft.commit();
         } catch (Exception e) {
             Log.i("e", e.getMessage());
-        }
-    }
-
-    public void productFilterClickedFragment() {
-        try {
-            QUANTITY = null;
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            // To hide Key Board
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(
-                    mEdt_searchproductName.getWindowToken(),
-                    InputMethodManager.RESULT_UNCHANGED_SHOWN);
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-
-            if (bmodel.productHelper.getChildLevelBo().size() > 0)
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getChildLevelBo().get(0).getProductLevel());
-            else
-                bundle.putString("filterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-
-            if (bmodel.productHelper.getParentLevelBo() != null
-                    && bmodel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
         }
     }
 

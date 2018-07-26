@@ -166,7 +166,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-medium"
                                 android:textColor="@color/Black"
-                                android:textSize="@dimen/font_small"
+                                android:textSize="@dimen/text_sz_small"
                                 tools:text="$150"
 
                                 />

@@ -252,7 +252,7 @@
     <string name="no_visit_Planning">Perencanaan</string>
     <string name="order_gcas">Kode Gcas</string>
     <string name="choose_date">Pilih Tanggal</string>
-    <string name="exceed">Anda Sudah Melebihi Alokasi Yang Tersedia. Tersisa “%1$D” Lagi</string>
+    <string name="exceed">Anda Sudah Melebihi Alokasi Yang Tersedia. Tersisa “%1$d” Lagi</string>
     <string name="d1">D1</string>
     <string name="dist_inv">Inventori Distributor</string>
     <string name="pre_post">Sebelum/Sesudah</string>
@@ -1033,7 +1033,7 @@
     <string name="non_visit">Tidak Ada Visit</string>
     <string name="are_you_sure_you_want_to_logout">Apakah Anda Yakin Ingin Keluar?</string>
     <string name="vaload_heder_text">Pilih Kualitas Dari Tiap Batch</string>
-    <string name="total_items">Total Barang Yang Kembali Adalah "%1$D".</string>
+    <string name="total_items">Total Barang Yang Kembali Adalah “%1$d”.</string>
     <string name="srp_text">Srp:</string>
     <string name="loading_no">No Loading</string>
     <string name="dateend">Tanggal Berakhir</string>

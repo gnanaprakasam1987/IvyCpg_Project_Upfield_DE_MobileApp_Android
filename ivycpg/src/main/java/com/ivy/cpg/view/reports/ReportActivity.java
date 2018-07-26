@@ -29,10 +29,10 @@ import com.ivy.cpg.view.reports.salesreport.SalesReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.TaxGstHelper;
 import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -54,7 +54,7 @@ import com.ivy.cpg.view.reports.promotion.PromotionTrackingReport;
 import com.ivy.sd.png.view.reports.QuestionReportFragment;
 import com.ivy.sd.png.view.reports.SOreportFragment;
 import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
-import com.ivy.sd.png.view.reports.SalesReturnReportFragment;
+import com.ivy.sd.png.view.reports.soho.SalesReturnReportFragmentSOHO;
 import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 import com.ivy.sd.png.view.reports.SellerMapViewReportFragment;
 import com.ivy.sd.png.view.reports.SellerPerformanceReportFragment;
@@ -71,10 +71,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 public class ReportActivity extends BaseActivity implements
-        BrandDialogInterface, SellerListFragment.SellerSelectionInterface {
+        BrandDialogInterface, SellerListFragment.SellerSelectionInterface,FiveLevelFilterCallBack {
 
     private BusinessModel bmodel;
     private String fromMenu;
@@ -89,7 +88,7 @@ public class ReportActivity extends BaseActivity implements
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        Toolbar  toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Set title to actionbar
@@ -158,7 +157,7 @@ public class ReportActivity extends BaseActivity implements
                     .findFragmentByTag(StandardListMasterConstants.MENU_SKU_REPORT);
             if (currentStockBatchViewFragment != null) {
                 currentStockBatchViewFragment.onBackButtonClick();
-            }else if(salesVolumeReportFragment!=null){
+            } else if (salesVolumeReportFragment != null) {
                 salesVolumeReportFragment.onBackButtonClick();
             } else {
                 if (fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
@@ -287,12 +286,6 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT)) {
-            bmodel.productHelper
-                    .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-
-
-            //CurrentStockView stockReportFragment = new CurrentStockView();
-
             CurrentReportViewFragment stockReportFragment = new CurrentReportViewFragment();
             stockReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, stockReportFragment);
@@ -374,20 +367,12 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT)) {
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                bmodel.productHelper
-                        .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-            } else {
-                bmodel.productHelper
-                        .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-            }
+            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                    bmodel.productHelper.getFilterProductLevels()));
+            bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
+                    "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                bmodel.productHelper.loadProductsWithFiveLevel(
-                        "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
-            else
-                bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                        "MENU_CUR_STK_BATCH");
 
             CurrentStockBatchViewFragment currentStockBatchViewFragment = new CurrentStockBatchViewFragment();
             transaction.replace(R.id.fragment_content, currentStockBatchViewFragment, StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
@@ -543,7 +528,7 @@ public class ReportActivity extends BaseActivity implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SALES_REPORT)) {
 
-            SalesReturnReportFragment salesReturnReport = new SalesReturnReportFragment();
+            SalesReturnReportFragmentSOHO salesReturnReport = new SalesReturnReportFragmentSOHO();
             salesReturnReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, salesReturnReport);
 
@@ -634,21 +619,12 @@ public class ReportActivity extends BaseActivity implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         CurrentStockBatchViewFragment currentStockBatchViewFragment = (CurrentStockBatchViewFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
         if (currentStockBatchViewFragment != null)
-            currentStockBatchViewFragment.updateFromFiveLevelFilter(mParentIdList);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        CurrentStockBatchViewFragment currentStockBatchViewFragment = (CurrentStockBatchViewFragment) fm
-                .findFragmentByTag(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
-        if (currentStockBatchViewFragment != null)
-            currentStockBatchViewFragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+            currentStockBatchViewFragment.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
 

@@ -215,17 +215,16 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
     }
 
     @Override
-    public void updateFiveFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFiveFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         try {
             mAssetList.clear();
             ArrayList<AssetTrackingBO> mAssetTrackingList = mBModel.productHelper.getInStoreLocation().get(mSelectedLocationIndex).getAssetTrackingList();
-        if (mAssetTrackingList != null
-                && mAssetTrackingList.size() > 0) {
-            if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
-                for (LevelBO levelBO : mParentIdList) {
+            if (mAssetTrackingList != null
+                    && mAssetTrackingList.size() > 0) {
+                if (mAttributeProducts != null && mProductId != 0) {//Both Product and attribute filter selected
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        if (levelBO.getProductID() == assetBO.getProductId()) {
+                        if (assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                             if (ALL.equals(mCapturedBarcode)) {
                                 if ("".equals(mCapturedNFCTag)) {
@@ -241,14 +240,12 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                             }
                         }
                     }
-                }
-            } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {// product filter alone selected
-                if (mSelectedIdByLevelId.size() == 0 || mBModel.isMapEmpty(mSelectedIdByLevelId)) {
-                    mAssetList.addAll(mAssetTrackingList);
-                } else {
-                    for (LevelBO levelBO : mParentIdList) {
+                } else if (mAttributeProducts == null && mProductId != 0) {// product filter alone selected
+                    if (mSelectedIdByLevelId.size() == 0 || mBModel.isMapEmpty(mSelectedIdByLevelId)) {
+                        mAssetList.addAll(mAssetTrackingList);
+                    } else {
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                            if (levelBO.getProductID() == assetBO.getProductId()) {
+                            if (assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                                 if (ALL.equals(mCapturedBarcode)) {
                                     if ("".equals(mCapturedNFCTag)) {
@@ -264,15 +261,32 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                             }
                         }
                     }
-                }
-            } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
-                for (int pid : mAttributeProducts) {
-                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        if (pid == assetBO.getProductId()) {
+                } else if (mAttributeProducts != null && mProductId != 0) {// Attribute filter alone selected
+                    for (int pid : mAttributeProducts) {
+                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                            if (pid == assetBO.getProductId()) {
 
+                                if (ALL.equals(mCapturedBarcode)) {
+                                    if ("".equals(mCapturedNFCTag)) {
+                                        mAssetList.add(assetBO);
+                                    } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
+                                        assetBO.setAvailQty(1);
+                                        mAssetList.add(assetBO);
+                                    }
+                                } else if (mCapturedBarcode.equals(assetBO.getSerialNo())) {
+                                    mAssetList.add(assetBO);
+                                }
+                            }
+                        }
+                    }
+                } else {
+
+                    if (mFilterText.equals("")) {
+                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
                             if (ALL.equals(mCapturedBarcode)) {
                                 if ("".equals(mCapturedNFCTag)) {
                                     mAssetList.add(assetBO);
+
                                 } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
                                     assetBO.setAvailQty(1);
                                     mAssetList.add(assetBO);
@@ -283,29 +297,10 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                         }
                     }
                 }
-            } else {
-
-                if (mFilterText.equals("")) {
-                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        if (ALL.equals(mCapturedBarcode)) {
-                            if ("".equals(mCapturedNFCTag)) {
-                                mAssetList.add(assetBO);
-
-                            } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
-                                assetBO.setAvailQty(1);
-                                mAssetList.add(assetBO);
-                            }
-                        } else if (mCapturedBarcode.equals(assetBO.getSerialNo())) {
-                            mAssetList.add(assetBO);
-                        }
-                    }
-                }
             }
-        }
 
             mAssetView.updateFiveFilteredList(mAssetList);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }

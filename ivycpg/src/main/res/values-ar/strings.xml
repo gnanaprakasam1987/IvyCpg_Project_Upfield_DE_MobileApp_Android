@@ -249,7 +249,7 @@
     <string name="no_visit_Planning">التخطيط </string>
     <string name="order_gcas">الكود GCAS</string>
     <string name="choose_date">اختيار التاريخ </string>
-    <string name="exceed">لقد تجاوزت المخصص. والباقي فقط % 1SD"</string>
+    <string name="exceed">لقد تجاوزت المخصص. والباقي فقط "%1$d"</string>
     <string name="d1">D1</string>
     <string name="dist_inv">فاتورة عن بُعد </string>
     <string name="pre_post">قبل / بعد </string>
@@ -910,7 +910,7 @@
     <string name="non_visit">لا توجد زيارة </string>
     <string name="are_you_sure_you_want_to_logout">هل أنت متأكد من أنك ترغب في الخروج ؟</string>
     <string name="vaload_heder_text">اختيار الجودة لكل تشغيلة.</string>
-    <string name="total_items">إجمالي البنود المرتجعة %1SD.</string>
+    <string name="total_items">إجمالي البنود المرتجعة “%1$d”. </string>
     <string name="srp_text">SRP</string>
     <string name="loading_no">رقم التحميل </string>
     <string name="dateend">تاريخ النهاية </string>

@@ -34,7 +34,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -78,7 +77,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
         super.onCreate(savedInstanceState);
 
         intent = getIntent();
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ListHeader);
+        LinearLayout ll = findViewById(R.id.ListHeader);
         LayoutInflater layoutInflater = (LayoutInflater) StockProposalScreen.this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ll.addView(layoutInflater.inflate(
@@ -123,7 +122,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
         if (getSupportActionBar() != null) {
             getSupportActionBar().setIcon(null);
         }
-        stockPropVector = bmodel.productHelper.getProducts();
+        stockPropVector = bmodel.productHelper.getLoadMgmtProducts();
         bmodel.stockProposalModuleHelper.loadInitiative();
         bmodel.stockProposalModuleHelper.loadSBDData();
         bmodel.stockProposalModuleHelper.loadPurchased();
@@ -370,22 +369,19 @@ public class StockProposalScreen extends ToolBarwithFilter implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        Commons.print("selected filter " + mParentIdList + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        Commons.print("selected filter " + mFilteredPid + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
 
         mylist = new ArrayList<>();
         if (mAttributeProducts != null) {
 
-            if (mParentIdList.size() > 0) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : stockPropVector) {
-                        if (productBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                if (mAttributeProducts.contains(productBO.getProductid())) {
-                                    mylist.add(productBO);
-                                }
+            if (mFilteredPid != 0) {
+                for (LoadManagementBO productBO : stockPropVector) {
+                    if (productBO.getIssalable() == 1) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                            if (mAttributeProducts.contains(productBO.getProductid())) {
+                                mylist.add(productBO);
                             }
                         }
                     }
@@ -402,17 +398,14 @@ public class StockProposalScreen extends ToolBarwithFilter implements
                 }
             }
         } else {
-            if (mParentIdList.size() > 0 && !mFilterText.equalsIgnoreCase("")) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : stockPropVector) {
-                        Commons.print("pdt id " + levelBO.getProductID() + ", " + productBO.getParentid());
-                        if (productBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-                                mylist.add(productBO);
-                            }
+            if (mFilteredPid != 0 && !mFilterText.equalsIgnoreCase("")) {
+                for (LoadManagementBO productBO : stockPropVector) {
+                    if (productBO.getIssalable() == 1) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                            mylist.add(productBO);
                         }
-
                     }
+
                 }
 
             } else {
@@ -603,7 +596,7 @@ public class StockProposalScreen extends ToolBarwithFilter implements
         try {
             if (mEdt_searchproductName.getText().length() >= 3) {
                 Vector<LoadManagementBO> items = bmodel.productHelper
-                        .getProducts();
+                        .getLoadMgmtProducts();
 
                 if (items == null) {
                     bmodel.showAlert(
@@ -710,9 +703,6 @@ public class StockProposalScreen extends ToolBarwithFilter implements
             return true;
         } else if (i == R.id.menu_spl_filter) {
             generalFilterClickedFragment();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         }
         return super.onOptionsItemSelected(item);

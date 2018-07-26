@@ -43,6 +43,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -56,7 +57,7 @@ import java.util.Vector;
 import me.relex.circleindicator.CircleIndicator;
 
 
-public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandDialogInterface {
+public class FitScoreDashboardFragment extends IvyBaseFragment {
     static BusinessModel bmodel;
     FragmentManager fm;
     private HashMap<String, String> mSelectedFilterMap = new HashMap<String, String>();
@@ -170,35 +171,6 @@ public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandD
         loadSKUandScore(DataMembers.MODULE_STOCK);
     }
 
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateBrandText(String mFilterText, int id) {
-    }
-
-    @Override
-    public void updateGeneralText(String mFilterText) {
-
-    }
-
-    @Override
-    public void updateCancel() {
-        //mDrawerLayout.closeDrawers();
-    }
-
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     static class ViewHolder {
         TextView sno, pName, target, acheived, weightage, score;
         Button btnPhoto;
@@ -255,17 +227,6 @@ public class FitScoreDashboardFragment extends IvyBaseFragment implements BrandD
                     getActivity().getBaseContext().getResources().getDisplayMetrics());
         }
     }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     }

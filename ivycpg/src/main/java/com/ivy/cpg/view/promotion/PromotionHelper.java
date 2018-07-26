@@ -55,8 +55,10 @@ public class PromotionHelper {
             businessModel.productHelper.downloadInStoreLocations();
         }
 
-        if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
+        /*businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);*/
+        businessModel.productHelper.setFilterProductLevelsRex(businessModel.productHelper.downloadFilterLevel(mMenuCode));
+        businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
+                businessModel.productHelper.getRetailerModuleSequenceValues()));
 
         downloadPromotionMaster(mContext);
         loadPromoEntered(mContext);
@@ -145,7 +147,7 @@ public class PromotionHelper {
             if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
                 query = query + "and PPM.PId = " + businessModel.productHelper.getmSelectedGlobalProductId();
 
-            c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname,P.PName,PMM.StartDate,PMM.EndDate"
+            c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname,P.PName,PMM.StartDate,PMM.EndDate,P.ParentHierarchy"
                     + "  from PromotionMapping PM"
                     + " inner join PromotionMaster PMM on PM.HId = PMM.HId and " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " between PMM.StartDate and PMM.EndDate inner join PromotionProductMapping PPM on PPM.PromoId=PM.PromoId"
@@ -166,6 +168,7 @@ public class PromotionHelper {
                     promotionMaster.setpName(c.getString(5));
                     promotionMaster.setFromDate(c.getString(6));
                     promotionMaster.setToDate(c.getString(7));
+                    promotionMaster.setParentHierarchy(c.getString(8));
                     getPromotionList().add(promotionMaster);
                 }
 
@@ -234,7 +237,6 @@ public class PromotionHelper {
             sbuffer.append(QT(businessModel.getNote()));
             sbuffer.append(",");
             sbuffer.append(businessModel.getRetailerMasterBO().getDistributorId());
-
 
 
             db.insertSQL("PromotionHeader", headerColumns, sbuffer.toString());
@@ -371,8 +373,9 @@ public class PromotionHelper {
                 }
             }
 
-            sql1 = "SELECT PD.PromotionId, PD.IsExecuted,pd.ImageName,PD.reasonid,PD.brandid,pm.PromoName,pd.ExecRatingLovId,PD.HasAnnouncer,PD.fromDate,PD.toDate FROM PromotionDetail pd"
+            sql1 = "SELECT PD.PromotionId, PD.IsExecuted,pd.ImageName,PD.reasonid,PD.brandid,pm.PromoName,pd.ExecRatingLovId,PD.HasAnnouncer,PD.fromDate,PD.toDate,P.ParentHierarchy FROM PromotionDetail pd"
                     + " inner join PromotionProductMapping  pm on pm.PromoId = pd.PromotionId"
+                    + " left join ProductMaster P on P.PID = PD.brandid"
                     + " WHERE Uid="
                     + QT(uid)
                     + " and Upload ='N' and Flag = 'I'";
@@ -397,6 +400,7 @@ public class PromotionHelper {
                     promotionMaster.setHasAnnouncer(orderDetailCursor.getInt(7));
                     promotionMaster.setFromDate(orderDetailCursor.getString(8));
                     promotionMaster.setToDate(orderDetailCursor.getString(9));
+                    promotionMaster.setParentHierarchy(orderDetailCursor.getString(10));
 
                     getPromotionList().add(promotionMaster);
 

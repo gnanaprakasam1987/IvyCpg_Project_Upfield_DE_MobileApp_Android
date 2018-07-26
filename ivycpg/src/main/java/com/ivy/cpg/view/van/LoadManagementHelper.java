@@ -153,12 +153,12 @@ public class LoadManagementHelper {
 
     public boolean hasVanLoadDone() {
 
-        int siz = bmodel.productHelper.getProducts().size();
+        int siz = bmodel.productHelper.getLoadMgmtProducts().size();
         if (siz == 0)
             return false;
         for (int i = 0; i < siz; ++i) {
             LoadManagementBO product = bmodel.productHelper
-                    .getProducts().get(i);
+                    .getLoadMgmtProducts().get(i);
             if (product.getPieceqty() > 0 || product.getCaseqty() > 0
                     || product.getOuterQty() > 0)
                 return true;
@@ -427,7 +427,7 @@ public class LoadManagementHelper {
             bom.setLiableQty(0);
         }
 
-        for (LoadManagementBO sku : bmodel.productHelper.getProducts()) {
+        for (LoadManagementBO sku : bmodel.productHelper.getLoadMgmtProducts()) {
             for (BomMasterBO bomMasterBo : bmodel.productHelper.getBomMaster()) {
 
                 int bomPid = SDUtil.convertToInt(bomMasterBo.getPid());
@@ -466,11 +466,11 @@ public class LoadManagementHelper {
     public double calculateVanLoadProductPrice() {
         double totalPrice = 0;
         try {
-            int siz = bmodel.productHelper.getProducts().size();
+            int siz = bmodel.productHelper.getLoadMgmtProducts().size();
             if (siz == 0)
                 return 0;
             for (int i = 0; i < siz; ++i) {
-                LoadManagementBO product = bmodel.productHelper.getProducts().get(i);
+                LoadManagementBO product = bmodel.productHelper.getLoadMgmtProducts().get(i);
                 if (product.getPieceqty() > 0 || product.getCaseqty() > 0
                         || product.getOuterQty() > 0)
                     totalPrice = totalPrice
