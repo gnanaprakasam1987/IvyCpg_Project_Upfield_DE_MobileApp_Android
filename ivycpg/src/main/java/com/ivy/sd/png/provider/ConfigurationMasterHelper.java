@@ -39,7 +39,7 @@ public class ConfigurationMasterHelper {
     public static final String MENU_COUNTER = "MENU_COUNTER";
     public static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     public static final String MENU_STORECHECK = "MENU_STORECHECK";
-    public static int GET_GENERALFILTET_TYPE = 1;
+
     public static int COMPETITOR_FILTER_TYPE;
     public static int vanDistance = 0;
     public static String ACCESS_KEY_ID = "AKIAI5OG2UQYXDPYQNNQ";
@@ -51,7 +51,6 @@ public class ConfigurationMasterHelper {
     public static final String CODE_TAX_APPLY = "FUN19";
     public static final String CODE_DISCOUNT_APPLY = "FUN18";
     // Added for five level filter
-    public static final String CODE_IS_FIVE_LEVEL_FILTER = "FUN20";
     public static final String CODE_GLOBAL_LOCATION = "FUN23";
     public static final String CODE_GLOBAL_CATEGORY = "FUN24";
     public static final String CODE_SHOW_OUTLET_PLANNING_TAB = "PRO11";
@@ -271,6 +270,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_JOINT_CALL_LEVELS = "JOINTCALL03";
     private static final String CODE_SIH_VALIDATION = "ORDB42";
     private static final String CODE_SHOW_SELLER_DIALOG = "PREVAN01";
+    private static final String CODE_CHNAGE_SELLER_CONFIG_LEVEL = "PREVAN02";
     private static final String CODE_SHOW_VALIDATE_CREDIT_DAYS = "CREDITDAY01";
     private static final String CODE_SHOW_LINK_DASH_SKUTGT = "DASH03";
     private static final String CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST = "RTRDASH";
@@ -519,6 +519,19 @@ public class ConfigurationMasterHelper {
     private static final String CODE_LICENSE_VALIDATION = "ORDB73";
     public boolean IS_ENABLE_LICENSE_VALIDATION;
     public boolean IS_SOFT_LICENSE_VALIDATION;
+
+    private static final String CODE_ORD_DIGIT = "ORDB74";
+    public boolean IS_ORD_DIGIT;
+    public int ORD_DIGIT;
+
+    private static final String CODE_SWITCH_WITH_OUT_TGT_SELLER_DASHBOARD = "DASH15";
+    public boolean IS_SWITCH_WITH_OUT_TGT;
+    public String SELLER_KPI_CODES;
+
+    private static final String CODE_SWITCH_WITH_OUT_TGT_SKU_WISE_DASHBOARD = "DASH16";
+    public boolean IS_SWITCH_WITH_OUT_SKU_WISE_TGT;
+    public String SELLER_SKU_WISE_KPI_CODES;
+
     /**
      * RoadActivity config *
      */
@@ -755,7 +768,7 @@ public class ConfigurationMasterHelper {
     public boolean SHEME_NOT_APPLY_DEVIATEDSTORE;
     // Added in 43 version
     public boolean SHOW_VANBARCODE_VALIDATION;
-    public boolean ISAMAZON_IMGUPLOAD = false;
+    public boolean ISAMAZON_IMGUPLOAD = true;
     // Added in 44 version
 
     public boolean SHOW_ADVANCE_PAYMENT;
@@ -769,6 +782,8 @@ public class ConfigurationMasterHelper {
     public boolean IS_ALLOW_SURVEY_WITHOUT_JOINTCALL; // JOINTCALL02
     public boolean IS_SIH_VALIDATION = false; // ORDB42
     public boolean IS_SHOW_SELLER_DIALOG;// PREVAN01
+    public boolean IS_SWITCH_SELLER_CONFIG_LEVEL;// PREVAN02
+    public int switchConfigLevel = 0;
     public boolean IS_VALIDATE_CREDIT_DAYS;// CREDITDAY01
     public boolean SHOW_LINK_DASH_SKUTGT;// DASH03
     public boolean HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST; // RTRDASH
@@ -898,7 +913,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MRP_LEVEL_TAX;
     public boolean SHOW_TAX;
     public boolean SHOW_DISCOUNT;
-    public boolean IS_FIVE_LEVEL_FILTER;
     public boolean IS_GLOBAL_LOCATION;
     public boolean IS_GLOBAL_CATEGORY;
     public boolean SHOW_OUTLET_PLANNING_TAB;
@@ -991,6 +1005,10 @@ public class ConfigurationMasterHelper {
     //TO Show both salable and non salable products
     private static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "CSSTK07";
     public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
+
+    //To show Product Code
+    private static final String CODE_SHOW_SKU_CODE = "FUN06";
+    public boolean IS_SHOW_SKU_CODE;
 
 
     int ROUND_DECIMAL_COUNT = 0;
@@ -1186,7 +1204,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PARTIAL_CREDIT_NOTE_ALLOW;
 
     private static final String CODE_PAYMENT_RECEIPT_NO = "COLL14";
-    public boolean IS_PAYMENT_RECEIPTNO_GET = true;
+    public boolean IS_PAYMENT_RECEIPTNO_GET;
 
     public boolean COLL_CHEQUE_MODE;
     private static final String CODE_COLL_CHEQUE_MODE = "COLL15";
@@ -1453,6 +1471,12 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
+
+    private static final String CODE_SHOW_ALL_SKU_ON_EDIT = "ORDB75";
+    public boolean IS_SHOW_ALL_SKU_ON_EDIT;
+
+    private static final String CODE_KPI_CALENDAR = "KPI_CALENDER";
+    public boolean IS_KPI_CALENDAR;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2065,6 +2089,13 @@ public class ConfigurationMasterHelper {
         this.SHOW_PRODUCTRETURN = hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_RETRUN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_RETRUN) : false;
         this.SHOW_GROUPPRODUCTRETURN = hashMapHHTModuleConfig.get(CODE_SHOW_GROUPPRODUCT_RETRUN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_GROUPPRODUCT_RETRUN) : false;
         this.IS_SHOW_SELLER_DIALOG = hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) : false;
+
+        this.IS_SWITCH_SELLER_CONFIG_LEVEL = hashMapHHTModuleConfig.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL) : false;
+        if (IS_SWITCH_SELLER_CONFIG_LEVEL) {
+            if (hashMapHHTModuleOrder.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL) != null)
+                this.switchConfigLevel = hashMapHHTModuleOrder.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL);
+        }
+
         this.IS_VALIDATE_CREDIT_DAYS = hashMapHHTModuleConfig.get(CODE_SHOW_VALIDATE_CREDIT_DAYS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_VALIDATE_CREDIT_DAYS) : false;
         this.SHOW_UNIT_PRICE = hashMapHHTModuleConfig.get(CODE_SHOW_UNIT_PRICE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_UNIT_PRICE) : false;
 
@@ -2105,8 +2136,6 @@ public class ConfigurationMasterHelper {
         this.IS_DIGITAL_CONTENT = hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) != null ? hashMapHHTModuleConfig.get(CODE_DIGITAL_CONTENT) : false;
         this.SHOW_NEW_OUTLET_UPLOAD = hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NEW_OUTLET_UPLOAD) : false;
         this.SHOW_DISCOUNT = hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_APPLY) : false;
-        //this.IS_FIVE_LEVEL_FILTER = hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_IS_FIVE_LEVEL_FILTER) : false;
-        this.IS_FIVE_LEVEL_FILTER = true;
         this.IS_GLOBAL_LOCATION = hashMapHHTModuleConfig.get(CODE_GLOBAL_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_LOCATION) : false;
         this.IS_GLOBAL_CATEGORY = hashMapHHTModuleConfig.get(CODE_GLOBAL_CATEGORY) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_CATEGORY) : false;
         this.SHOW_MRP_LEVEL_TAX = hashMapHHTModuleConfig.get(CODE_MRP_LEVEL_TAX) != null ? hashMapHHTModuleConfig.get(CODE_MRP_LEVEL_TAX) : false;
@@ -2254,7 +2283,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER = hashMapHHTModuleConfig.get(CODE_DISCOUNT_EDITVIEW) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_EDITVIEW) : false;
 
         this.SHOW_SPL_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) : false;
-        ConfigurationMasterHelper.GET_GENERALFILTET_TYPE = hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) : 1;
 
         this.SHOW_COMPETITOR_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COMPETITOR_FILTER) : false;
         if (SHOW_COMPETITOR_FILTER) {
@@ -2565,6 +2593,11 @@ public class ConfigurationMasterHelper {
         if (IS_ENABLE_LICENSE_VALIDATION) {
             loadLicenseValidationConfig();
         }
+        //CODE_SHOW_ALL_SKU_ON_EDIT
+        this.IS_SHOW_ALL_SKU_ON_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_ALL_SKU_ON_EDIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ALL_SKU_ON_EDIT) : false;
+        this.IS_KPI_CALENDAR = hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) != null ? hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) : false;
+
+        this.IS_SHOW_SKU_CODE = hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) : false;
     }
 
     private boolean isInOutModule() {
@@ -3757,6 +3790,12 @@ public class ConfigurationMasterHelper {
             IS_SHOW_DEFAULT_UOM = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
             IS_SHOW_ORDER_PHOTO_CAPTURE = false;
+            IS_ORD_DIGIT = false;
+            ORD_DIGIT = 0;
+            IS_SWITCH_WITH_OUT_TGT = false;
+            SELLER_KPI_CODES = "";
+            IS_SWITCH_WITH_OUT_SKU_WISE_TGT = false;
+            SELLER_SKU_WISE_KPI_CODES = "";
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -4406,6 +4445,46 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     IS_SHOW_ORDER_PHOTO_CAPTURE = true;
+                }
+                c.close();
+            }
+
+
+            //Order Digit config
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_ORD_DIGIT) + " and Flag=1 and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    ORD_DIGIT = (c.getInt(0) <= 5) ? 5 : c.getInt(0);
+                    IS_ORD_DIGIT = true;
+                }
+                c.close();
+            }
+
+
+            //Seller KPI Dashboard
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SWITCH_WITH_OUT_TGT_SELLER_DASHBOARD) + " and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()
+                        && c.getString(0).length() > 0) {
+                    IS_SWITCH_WITH_OUT_TGT = true;
+                    SELLER_KPI_CODES = c.getString(0);
+                }
+                c.close();
+            }
+
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SWITCH_WITH_OUT_TGT_SKU_WISE_DASHBOARD) + " and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()
+                        && c.getString(0).length() > 0) {
+                    IS_SWITCH_WITH_OUT_SKU_WISE_TGT = true;
+                    SELLER_SKU_WISE_KPI_CODES = c.getString(0);
                 }
                 c.close();
             }

@@ -29,13 +29,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.mapapi.BMapManager;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
 import com.ivy.sd.png.bo.PaymentBO;
-import com.ivy.sd.png.bo.RetailerWiseBankDetailsBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -146,7 +144,7 @@ public class CheckModeFragment extends IvyBaseFragment
         llAccountNo = (LinearLayout) rootView.findViewById(R.id.llAccountNo);
 
         if (mPaymentBO.getAmount() > 0) {
-            mCollectAmountET.setText(mPaymentBO.getAmount() + "");
+            mCollectAmountET.setText(SDUtil.getWithoutExponential(mPaymentBO.getAmount()));
             mCollectAmountET.setSelection(mCollectAmountET.getText().length());
         }
 
@@ -361,7 +359,7 @@ public class CheckModeFragment extends IvyBaseFragment
                         else
                             qty = "";
 
-                        mCollectAmountET.setText(qty);
+                        mCollectAmountET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(qty)));
                         Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                                 Toast.LENGTH_SHORT).show();
                     } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CHEQUE)) {
@@ -373,7 +371,7 @@ public class CheckModeFragment extends IvyBaseFragment
                         else
                             qty = "";
 
-                        mCollectAmountET.setText(qty);
+                        mCollectAmountET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(qty)));
                         Toast.makeText(
                                 getActivity(),
                                 getResources()
@@ -384,8 +382,9 @@ public class CheckModeFragment extends IvyBaseFragment
 
                     mCollectAmountET.setSelection(mCollectAmountET.getText().length());
                 } else {
-                    mCollectAmountET.setText(qty.length() > 1 ? qty
-                            .substring(0, qty.length() - 1) : "0");
+                    qty = qty.length() > 1 ? qty
+                            .substring(0, qty.length() - 1) : "0";
+                    mCollectAmountET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(qty)));
                 }
             }
         });
@@ -615,7 +614,7 @@ public class CheckModeFragment extends IvyBaseFragment
     public void updateView(PaymentBO paymentBO) {
         mPaymentBO = paymentBO;
         String strAmt = mPaymentBO.getAmount() + "";
-        mCollectAmountET.setText(strAmt);
+        mCollectAmountET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(strAmt)));
         mCollectAmountET.setSelection(mCollectAmountET.getText().length());
 
         mChequeDateBTN.setText(DateUtil.convertFromServerDateToRequestedFormat(
@@ -630,7 +629,7 @@ public class CheckModeFragment extends IvyBaseFragment
             case CQ:
                 mChequeNoTitleTV.setText(getResources().getString(R.string.cheque_no));
                 mChequeDateTitleTV.setText(getResources().getString(R.string.cheque_date));
-                if(bmodel.configurationMasterHelper.IS_ENABLE_ACC_NO_CHQ) {
+                if (bmodel.configurationMasterHelper.IS_ENABLE_ACC_NO_CHQ) {
                     llAccountNo.setVisibility(View.VISIBLE);
                 } else {
                     llAccountNo.setVisibility(View.GONE);
@@ -779,7 +778,7 @@ public class CheckModeFragment extends IvyBaseFragment
                     return false;
                 }
 
-                if(bmodel.configurationMasterHelper.IS_ENABLE_ACC_NO_CHQ) {
+                if (bmodel.configurationMasterHelper.IS_ENABLE_ACC_NO_CHQ) {
                     if (!(paymentBO.getAccountNumber().length() > 0)) {
                         mErrorMsg = getResources().getString(R.string.enter_account) + " in cheque";
                         return false;

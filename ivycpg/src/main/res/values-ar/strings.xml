@@ -249,7 +249,7 @@
     <string name="no_visit_Planning">التخطيط </string>
     <string name="order_gcas">الكود GCAS</string>
     <string name="choose_date">اختيار التاريخ </string>
-    <string name="exceed">لقد تجاوزت المخصص. والباقي فقط % 1SD"</string>
+    <string name="exceed">لقد تجاوزت المخصص. والباقي فقط "%1$d"</string>
     <string name="d1">D1</string>
     <string name="dist_inv">فاتورة عن بُعد </string>
     <string name="pre_post">قبل / بعد </string>
@@ -599,7 +599,7 @@
     <string name="enddate">تاريخ النهاية.</string>
     <string name="segment">القطاع </string>
     <string name="volume_cases">كميات الصناديق.</string>
-    <string name="You_have_already_taken_max_images">لقد وصلت بالفعل إلى الحد الأقصى للصور %1SD.</string>
+    <string name="You_have_already_taken_max_images">لقد وصلت بالفعل إلى الحد الأقصى للصور “%1$d”.</string>
     <string name="plannedoutlet_month">المنفذ حسب التخطيط (للشهر).</string>
     <string name="plannedoutlet_mtd">المنفذ حسب التخطيط (MTD).</string>
     <string name="visited_outlets">المنافذ التي تمت زيارتها.</string>
@@ -631,10 +631,10 @@
     <string name="distributor">الموزعين </string>
     <string name="select_delivery_date">اختيار تاريخ التسليم.</string>
     <string name="please_save_partial_details">نرجو حفظ تفاصيل الاستيفاء الجزئي.</string>
-    <string name="kindlyuploadorsync">نرجو التفضل بتحميل أو حذف بعض الصور قبل التقاط أخرى لأنك وصلت إلى الحد الأقصى للصور %1SD.</string>
+    <string name="kindlyuploadorsync">نرجو التفضل بتحميل أو حذف بعض الصور قبل التقاط أخرى لأنك وصلت إلى الحد الأقصى للصور “%1$d”.</string>
     <string name="data_not_mapped_correctly">البيانات لم يتم تخطيطها.</string>
     <string name="cant_save_inovice_zero_tax_applied">لا يمكن حفظ الفاتورة تطبيق الضريبة 0.</string>
-    <string name="you_reached_limit">لقد وصلت للحد الأقصى للصور %1SD.</string>
+    <string name="you_reached_limit">لقد وصلت للحد الأقصى للصور “%1$d”.</string>
     <string name="title_chage_password">تغيير كلمة السر.</string>
     <string name="password_expired">كلمة السر انتهى مفعولها.</string>
     <string name="priceoff">خارج السعر.</string>
@@ -718,9 +718,9 @@
     <string name="text_mdate">تاريخ التخطي.</string>
     <string name="menu_not_available">القوائم غير متوافرة. </string>
     <string name="download_url_empty">عنوان  URL للتنزيل فارغ.</string>
-    <string name="out_of">تنزيل الماستر خارج الحدود %1SD</string>
-    <string name="still_you_can">مازال بإمكانك التقاط المزيد من الصور %1SD هل ترغب في الاستمرار؟ </string>
-    <string name="table_downloaded">الجدول   %1SD تم تنزيله.</string>
+    <string name="out_of">تنزيل الماستر خارج الحدود “%1$d”</string>
+    <string name="still_you_can">مازال بإمكانك التقاط المزيد من الصور “%1$d” هل ترغب في الاستمرار؟ </string>
+    <string name="table_downloaded">الجدول   “%1$d” تم تنزيله.</string>
     <string name="error">خطأ : </string>
     <string name="data_not_downloaded">البيانات لم يتم تنزيلها </string>
     <string name="batch_created_successfully">Batch created successfully.</string>
@@ -910,7 +910,7 @@
     <string name="non_visit">لا توجد زيارة </string>
     <string name="are_you_sure_you_want_to_logout">هل أنت متأكد من أنك ترغب في الخروج ؟</string>
     <string name="vaload_heder_text">اختيار الجودة لكل تشغيلة.</string>
-    <string name="total_items">إجمالي البنود المرتجعة %1SD.</string>
+    <string name="total_items">إجمالي البنود المرتجعة “%1$d”. </string>
     <string name="srp_text">SRP</string>
     <string name="loading_no">رقم التحميل </string>
     <string name="dateend">تاريخ النهاية </string>

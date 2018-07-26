@@ -25,6 +25,7 @@ import com.ivy.sd.print.EODStockReportPreviewScreen;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class EODStockReportFragment extends Fragment {
     private BusinessModel bmodel;
 
@@ -312,7 +313,7 @@ public class EODStockReportFragment extends Fragment {
     class ViewHolder {
         StockReportBO mSKUBO;
         int position;
-        TextView mPName;
+        TextView mPName, mProductCode;
         TextView mLoadStock;
         TextView mSoldStock;
         TextView mFreeIssued;
@@ -375,7 +376,7 @@ public class EODStockReportFragment extends Fragment {
 
                 holder.mPName = convertView.findViewById(R.id.pname);
                 holder.mPName.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-
+                holder.mProductCode = convertView.findViewById(R.id.product_code);
                 holder.mLoadStock = convertView.findViewById(R.id.loadstock);
                 holder.mLoadStock_cs = convertView.findViewById(R.id.loadstock_cs);
                 holder.mLoadStock_ou = convertView.findViewById(R.id.loadstock_ou);
@@ -452,6 +453,9 @@ public class EODStockReportFragment extends Fragment {
                 else
                     holder.freeIssuedRL.setVisibility(View.GONE);
 
+                if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.mProductCode.setVisibility(View.GONE);
+
                 convertView.setTag(holder);
 
             } else {
@@ -462,9 +466,17 @@ public class EODStockReportFragment extends Fragment {
             holder.position = position;
 
             holder.mPName.setText(holder.mSKUBO.getProductName());
-            if (holder.mSKUBO.getBatchNo() != null) {
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code)
+                        + ": " + holder.mSKUBO.getProductCode() + " ";
+                holder.mProductCode.setText(prodCode);
+            }
+
+            if (!holder.mSKUBO.getBatchNo().isEmpty()) {
                 holder.mBatchNum.setVisibility(View.VISIBLE);
-                holder.mBatchNum.setText(holder.mSKUBO.getBatchNo());
+                String batchNo = getResources().getString(R.string.batch_no) + ": " +
+                        holder.mSKUBO.getBatchNo();
+                holder.mBatchNum.setText(batchNo);
             } else
                 holder.mBatchNum.setVisibility(View.GONE);
 
@@ -513,13 +525,13 @@ public class EODStockReportFragment extends Fragment {
                 } else //if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS) {
 
                     holder.mLoadStock.setText(String.valueOf(holder.mSKUBO.getVanLoadQty()));
-                    holder.mSoldStock.setText(String.valueOf(holder.mSKUBO.getSoldQty()));
-                    holder.mFreeIssued.setText(String.valueOf(holder.mSKUBO.getFreeIssuedQty()));
-                    holder.mSIH.setText(String.valueOf(holder.mSKUBO.getSih()));
-                    holder.mEmpty.setText(String.valueOf(holder.mSKUBO.getEmptyBottleQty()));
-                    holder.mReplacementTV.setText(String.valueOf(holder.mSKUBO.getReplacementQty()));
-                    holder.tv_return.setText(String.valueOf(holder.mSKUBO.getReturnQty()));
-               // }
+                holder.mSoldStock.setText(String.valueOf(holder.mSKUBO.getSoldQty()));
+                holder.mFreeIssued.setText(String.valueOf(holder.mSKUBO.getFreeIssuedQty()));
+                holder.mSIH.setText(String.valueOf(holder.mSKUBO.getSih()));
+                holder.mEmpty.setText(String.valueOf(holder.mSKUBO.getEmptyBottleQty()));
+                holder.mReplacementTV.setText(String.valueOf(holder.mSKUBO.getReplacementQty()));
+                holder.tv_return.setText(String.valueOf(holder.mSKUBO.getReturnQty()));
+                // }
             } else if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
 
                 holder.mSIH_cs.setText(String.valueOf(holder.mSKUBO.getSih_cs()));

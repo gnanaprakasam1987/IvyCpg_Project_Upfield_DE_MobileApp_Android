@@ -15,6 +15,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 
@@ -26,7 +27,7 @@ import java.util.Vector;
 
 public class
 AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
-        OnEditorActionListener, BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface {
+        OnEditorActionListener, BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface,FiveLevelFilterCallBack {
 
     private BusinessModel mBModel;
     private NFCManager nfcManager;
@@ -143,6 +144,13 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        AssetTrackingFragment asf = (AssetTrackingFragment) fm
+                .findFragmentById(R.id.asset_tracking_fragment);
+        asf.updateFromFiveLevelFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts, mFilterText);    }
+
+    @Override
     public void loadStartVisit() {
 
     }
@@ -161,22 +169,6 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
         return false;
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingFragment asf = (AssetTrackingFragment) fm
-                .findFragmentById(R.id.asset_tracking_fragment);
-        asf.updateFromFiveLevelFilter(mParentIdList);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingFragment asf = (AssetTrackingFragment) fm
-                .findFragmentById(R.id.asset_tracking_fragment);
-        asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
 
     @Override

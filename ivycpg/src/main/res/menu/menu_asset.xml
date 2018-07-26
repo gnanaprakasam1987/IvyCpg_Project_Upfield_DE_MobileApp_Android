@@ -10,13 +10,6 @@
         android:visible="false"
         ivydist:showAsAction="never" />
     <item
-        android:id="@+id/menu_product_filter"
-        android:icon="@drawable/ic_action_filter"
-        android:orderInCategory="99"
-        android:title="P.F"
-        ivydist:showAsAction="always" />
-
-    <item
         android:id="@+id/menu_remarks"
         android:icon="@drawable/ic_remark"
         android:orderInCategory="99"

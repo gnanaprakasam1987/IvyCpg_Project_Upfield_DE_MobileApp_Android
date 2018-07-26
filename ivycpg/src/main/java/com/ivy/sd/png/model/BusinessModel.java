@@ -1,8 +1,6 @@
 package com.ivy.sd.png.model;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
@@ -58,7 +56,6 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.appmodule.AppComponent;
-
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
@@ -79,8 +76,8 @@ import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.van.LoadManagementHelper;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
-import com.ivy.lib.base64.Base64;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
@@ -102,7 +99,6 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.bo.TempSchemeBO;
@@ -149,7 +145,6 @@ import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
-import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaskHelper;
@@ -175,7 +170,6 @@ import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
-import com.ivy.sd.png.view.Synchronization;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
@@ -201,7 +195,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.math.BigDecimal;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -219,35 +212,30 @@ import java.util.Vector;
 
 public class BusinessModel extends Application {
 
-    // to show the time taken on call analysis
 
     public static final String PREFS_NAME = "PRINT";
     public static String selectedDownloadRetailerID = "";
     public static int selectedDownloadUserID = 0;
-    //public static boolean dashHomeStatic;
+
     public final int CAMERA_REQUEST_CODE = 1;
     public TimerCount timer;
     private String remarkType = "0";
-    //public boolean filtershowall = false;
+
     public String userNameTemp, passwordTemp;
     public RetailerMasterBO retailerMasterBO;
-    public String deleteSpliteOrderID;
     public Vector<RetailerMasterBO> retailerMaster;
     public Vector<RetailerMasterBO> subDMaster;
     public ArrayList<RetailerMasterBO> visitretailerMaster;
-    private Vector<BankMasterBO> bankMaster;
-    private Vector<BranchMasterBO> bankBranch;
-    //public String mModuleName[];
+
     public HashMap<String, String> mModuleCompletionResult;
 
-    //public int weekSpinnerPositon = 0;
     public boolean startjourneyclicked;
     public boolean endjourneyclicked;
+
     public String mSelectedActivityName = new String();
     public String mSelectedActivityConfigCode = new String();
 
-    //public boolean fromNewTargetPlanActivity = false;
-    public int mSelectedModule = -1;
+
     public String regid;
 
     public static String photoPath;
@@ -256,7 +244,6 @@ public class BusinessModel extends Application {
     public BeatMasterHelper beatMasterHealper;
     public ChannelMasterHelper channelMasterHelper;
     public SubChannelMasterHelper subChannelMasterHelper;
-    @NonNls
     public ConfigurationMasterHelper configurationMasterHelper;
     public ProductHelper productHelper;
     public UserMasterHelper userMasterHelper;
@@ -266,7 +253,7 @@ public class BusinessModel extends Application {
     public RoadActivityHelper mroadActivityHelper;
     public TaskHelper taskHelper;
     public ReportHelper reportHelper;
-    public LoadManagementHelper vanmodulehelper;
+    public LoadManagementHelper loadManagementHelper;
     public StockProposalModuleHelper stockProposalModuleHelper;
     public VanLoadStockApplyHelper stockreportmasterhelper;
     public LabelsMasterHelper labelsMasterHelper;
@@ -277,14 +264,12 @@ public class BusinessModel extends Application {
     public BatchAllocationHelper batchAllocationHelper;
     public CollectionHelper collectionHelper;
     public NewOutletHelper newOutletHelper;
-    //public PromotionHelper promotionHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
     public AttendanceHelper mAttendanceHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
     public EmptyReconciliationHelper mEmptyReconciliationhelper;
     public EmptyReturnHelper mEmptyReturnHelper;
-    //public SurveyHelperNew mSurveyHelperNew;
     public RetailerHelper mRetailerHelper;
     public DistributorMasterHelper distributorMasterHelper;
     public DisInvoiceDetailsHelper disInvoiceDetailsHelper;
@@ -295,8 +280,6 @@ public class BusinessModel extends Application {
     public MVPHelper mvpHelper;
     public LeaveApprovalHelper leaveApprovalHelper;
     public ExpenseSheetHelper expenseSheetHelper;
-    //public LoginHelper mLoginHelper;
-    //public UserFeedBackHelper mUserFeedBackHelper;
     public JExcelHelper mJExcelHelper;
     public DeliveryManagementHelper deliveryManagementHelper;
     public CommonPrintHelper mCommonPrintHelper;
@@ -317,10 +300,8 @@ public class BusinessModel extends Application {
     public String invoiceDate;
     //
     public HashMap<String, PhotoCaptureProductBO> adhocGalleryDetails;
-    Vector<StandardListBO> slist;
-    List<IndicativeBO> indicativeRtrList = null;
-    //private String orderIDFormInvoice;
-    //private PaymentBO paymentBO;
+    private Vector<StandardListBO> slist;
+    private List<IndicativeBO> indicativeRtrList = null;
     private OrderHeader orderHeaderBO;
     private Activity ctx;
 
@@ -345,25 +326,16 @@ public class BusinessModel extends Application {
     private String assetRemark = "";
     private String note = "";
     private String orderSplitScreenTitle = null;
-    private StoreWiseDiscountBO discountlist;
+
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID = new HashMap<String, ArrayList<UserMasterBO>>();
-    private ArrayList<String> mRetailerIDList;
     private boolean isDoubleEdit_temp;
     private HashMap<String, String> digitalContentURLS;
-    private int responceMessage;
     private Handler handler;
-    private String tag = "Business Model";
     private Message mMessage;
     private File folder;
-    // private TransferManager tm;
     private AWSCredentials myCredentials;
-    private String downloadReponse = "";
     private String selectedDateFromDatePickerDialog = null;
-    //private String remarksForOrderSplit = null;
-    // String selectedRetailerId, selectedOrderId;
-    private boolean isAmazonUpload = false;
     private OrderFullfillmentBO orderfullfillmentbo;
-    private TextView messagetv;
     public int photocount = 0;
     public int mSelectedSubId = -1;
 
@@ -399,8 +371,7 @@ public class BusinessModel extends Application {
      */
     @NonNls
     public String latlongImageFileName;
-
-    ArrayList<String> orderIdList = new ArrayList<>();
+    private ArrayList<String> orderIdList = new ArrayList<>();
 
     // used for ProductiveCall
     public boolean PRD_FOR_ORDER = false;
@@ -441,7 +412,7 @@ public class BusinessModel extends Application {
         synchronizationHelper = SynchronizationHelper.getInstance(this);
         taskHelper = TaskHelper.getInstance(this);
         reportHelper = ReportHelper.getInstance(this);
-        vanmodulehelper = LoadManagementHelper.getInstance(this);
+        loadManagementHelper = LoadManagementHelper.getInstance(this);
         stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
         stockreportmasterhelper = VanLoadStockApplyHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
@@ -540,9 +511,6 @@ public class BusinessModel extends Application {
         } else if (act.equals(DataMembers.actCollection)) {
             myIntent = new Intent(ctxx, CollectionScreen.class);
             ctxx.startActivityForResult(myIntent, 0);
-        } else if (act.equals(DataMembers.actSynchronization)) {
-            myIntent = new Intent(ctxx, Synchronization.class);
-            ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actactivationscreen)) {
             myIntent = new Intent(ctxx, ActivationActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
@@ -556,18 +524,6 @@ public class BusinessModel extends Application {
             myIntent = new Intent(ctxx, AcknowledgementActivity.class);
             ctxx.startActivityForResult(myIntent, 0);
         }
-    }
-
-    public static boolean isMyServiceRunning(Context context,
-                                             String serviceClassName) {
-        ActivityManager manager = (ActivityManager) context
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        for (RunningServiceInfo service : manager
-                .getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClassName.equals(service.service.getClassName()))
-                return true;
-        }
-        return false;
     }
 
     public OrderFullfillmentBO getOrderfullfillmentbo() {
@@ -2074,7 +2030,6 @@ public class BusinessModel extends Application {
     }
 
     public void downloadRetailerwiseMerchandiser() {
-        mRetailerIDList = new ArrayList<String>();
         UserMasterBO userBo;
         ArrayList<UserMasterBO> userList;
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -2094,7 +2049,6 @@ public class BusinessModel extends Application {
 
                     if (!retailerID.equals(c.getString(0))) {
                         if (retailerID != "") {
-                            mRetailerIDList.add(retailerID);
                             mUserByRetailerID.put(retailerID,
                                     userList);
                             userList = new ArrayList<UserMasterBO>();
@@ -2112,7 +2066,6 @@ public class BusinessModel extends Application {
 
                 }
                 if (userList.size() > 0) {
-                    mRetailerIDList.add(retailerID);
                     mUserByRetailerID.put(retailerID, userList);
                 }
             }
@@ -3965,44 +3918,12 @@ public class BusinessModel extends Application {
         return versionNumber + "";
     }
 
-//    // *****************************************************
-//
-//    public String getApplicationSubVersionName() {
-//        String versionName = "";
-//        try {
-//            PackageInfo pinfo = getPackageManager().getPackageInfo(
-//                    getPackageName(), 0);
-//            String vernameNameArray[] = pinfo.versionName.split("\\.");
-//            versionName = vernameNameArray[vernameNameArray.length-1];
-//
-//        } catch (Exception e) {
-//            Commons.printException("" + e);
-//        }
-//        return versionName;
-//    }
-
-    private void deleteUploadedImage() {
-        try {
-            File f = new File(
-                    getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
-                            + DataMembers.photoFolderName + "/");
-            File[] files = f.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                File file = files[i];
-                file.delete();
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-    }
-
     /**
      * Get Digital Content URL and Count From PlanogramMaster
      */
     public void getimageDownloadURL() {
         try {
-            isAmazonUpload = false;
+            boolean isAmazonUpload = false;
 
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -4014,8 +3935,8 @@ public class BusinessModel extends Application {
                 while (c.moveToNext()) {
                     isAmazonUpload = true;
                 }
-            }
             c.close();
+            }
             c = null;
 
             if (!isAmazonUpload) {
@@ -4025,8 +3946,8 @@ public class BusinessModel extends Application {
                     while (c.moveToNext()) {
                         DataMembers.img_Down_URL = c.getString(0);
                     }
-                }
                 c.close();
+                }
             } else {
                 c = db
                         .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
@@ -4034,8 +3955,8 @@ public class BusinessModel extends Application {
                     while (c.moveToNext()) {
                         DataMembers.img_Down_URL = c.getString(0) + "/";
                     }
-                }
                 c.close();
+                }
             }
             db.closeDB();
 
@@ -4067,8 +3988,8 @@ public class BusinessModel extends Application {
                             DataMembers.PLANOGRAM);
 
                 }
-            }
             c.close();
+            }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL FROM DigitalContentMaster");
             if (c != null) {
@@ -4077,8 +3998,8 @@ public class BusinessModel extends Application {
                             DataMembers.img_Down_URL + "" + c.getString(0),
                             DataMembers.DIGITALCONTENT);
                 }
-            }
             c.close();
+            }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL FROM App_ImageInfo");
             if (c != null) {
@@ -4087,8 +4008,8 @@ public class BusinessModel extends Application {
                             DataMembers.img_Down_URL + "" + c.getString(0),
                             DataMembers.APP_DIGITAL_CONTENT);
                 }
-            }
             c.close();
+            }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL FROM MVPBadgeMaster");
             if (c != null) {
@@ -4097,8 +4018,8 @@ public class BusinessModel extends Application {
                             DataMembers.img_Down_URL + "" + c.getString(0),
                             DataMembers.MVP);
                 }
-            }
             c.close();
+            }
 
             c = db.selectSQL("SELECT DISTINCT ImagePath FROM LoyaltyBenefits");
             if (c != null) {
@@ -4914,9 +4835,13 @@ public class BusinessModel extends Application {
         return false;
     }
 
-    public boolean hasStockCheck() {
+    public boolean hasStockCheck(boolean flag) {
 
-        int siz = productHelper.getTaggedProducts().size();
+        int siz;
+        if (!flag)
+            siz = productHelper.getTaggedProducts().size();
+        else
+            siz = productHelper.getProductMaster().size();
         if (siz == 0)
             return false;
         for (int i = 0; i < siz; ++i) {
@@ -5344,153 +5269,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    void prepareUploadImageAtSOAP(Handler handler) {
-        StringBuilder data = null;
-        String imageName = "";
-        String folderName = "";
-
-        try {
-            folder = new File(
-                    ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                            + "/" + DataMembers.photoFolderName + "/");
-
-            File sfFiles[] = folder.listFiles();
-
-            int ss = sfFiles.length;
-            int successCount = 0;
-
-            Commons.print(tag + ",ss : " + ss);
-            String path = "/" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN) + "/"
-                    + userMasterHelper.getUserMasterBO().getUserid() + "/";
-
-            for (int i = 0; i < ss; i++) {
-                data = new StringBuilder();
-                imageName = sfFiles[i].getName();
-
-                if (imageName.startsWith("AT_")) {
-                    folderName = "Asset" + path;
-                } else if (imageName.startsWith("NO_")) {
-                    folderName = "RetailerImages" + path;
-                } else if (imageName.startsWith("SGN_")) {
-                    folderName = "Invoice" + "/" + path;
-                } else if (imageName.startsWith("INIT_")) {
-                    folderName = "Initiative" + path;
-                } else if (imageName.startsWith("PT_")) {
-                    folderName = "Promotion" + path;
-                } else if (imageName.startsWith("SOD_")) {
-                    folderName = "SOD" + path;
-                } else if (imageName.startsWith("SOS_")) {
-                    folderName = "SOS" + path;
-                } else if (imageName.startsWith("SOSKU_")) {
-                    folderName = "SOSKU" + path;
-                } else if (imageName.startsWith("PL_")) {
-                    folderName = "Planogram" + path;
-                } else if (imageName.startsWith("VPL_")) {
-                    folderName = "VanPlanogram" + path;
-                } else if (imageName.startsWith("CPL_")) {
-                    folderName = "CounterPlanogram" + path;
-                } else if (imageName.startsWith("CT_")) {
-                    folderName = "Competitor" + path;
-                } else if (imageName.startsWith("SVY_")) {
-                    folderName = "Survey" + path;
-                } else if (imageName.startsWith("RA_")) {
-                    folderName = "RoadActivity" + path;
-                } else if (imageName.startsWith("COL_")) {
-                    folderName = "Collection" + path;
-
-                } else if (imageName.startsWith("DV_")) {
-                    folderName = "Delivery" + path;
-                } else if (imageName.startsWith("PF")) {
-                    folderName = "PrintFile" + path;
-                } else if (imageName.startsWith("SR_SGN_")) {
-                    folderName = "SalesReturn" + "/" + path;
-                } else {
-                    folderName = userMasterHelper.getUserMasterBO()
-                            .getDistributorid()
-                            + "/"
-                            + userMasterHelper.getUserMasterBO().getUserid()
-                            + "/" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN) + "/";
-                }
-
-                File image = sfFiles[i].getAbsoluteFile();
-                InputStream is = new FileInputStream(image);
-
-                byte[] bytes = new byte[(int) image.length()];
-
-                // Read in the bytes
-                int offset = 0;
-                int numRead = 0;
-                if (image.length() > Integer.MAX_VALUE) {
-                    Commons.print("," + "Too Large");
-                }
-                try {
-                    while (offset < bytes.length
-                            && (numRead = is.read(bytes, offset, bytes.length
-                            - offset)) >= 0) {
-                        offset += numRead;
-
-                        // Ensure all the bytes have been read in
-                        if (offset < bytes.length) {
-                            throw new IOException(
-                                    "Could not completely read file "
-                                            + image.getName());
-                        }
-
-                        // Close the input stream and return bytes
-                        is.close();
-                    }
-                } catch (IOException e) {
-                    Commons.printException(e);
-                }
-                data.append(Base64.encode(bytes, 0, bytes.length));
-                int uploadState = uploadImageAtSOAP(folderName, imageName,
-                        data.toString());
-
-                if (uploadState == 1) {
-                    // success
-                    successCount = successCount + 1;
-
-                } else if (uploadState == 2) {
-                    // failed
-                    sentMessageToHandler(DataMembers.NOTIFY_WEB_UPLOAD_ERROR,
-                            "Image Upload Failed!", handler);
-                    return;
-                } else if (uploadState == 3) {
-                    // canceled
-                    sentMessageToHandler(DataMembers.NOTIFY_WEB_UPLOAD_ERROR,
-                            "Image Upload Canceled!", handler);
-                    return;
-                } else {
-                    // unexpected error
-                    sentMessageToHandler(
-                            DataMembers.NOTIFY_WEB_UPLOAD_ERROR,
-                            "Image Upload Failed due to some unexpected exception!",
-                            handler);
-                    return;
-                }
-            }
-
-            deleteUploadedImage();
-            sentMessageToHandler(DataMembers.NOTIFY_WEB_UPLOAD_SUCCESS,
-                    "Images uploaded Successfully", handler);
-        } catch (Exception e) {
-            data.append("" + DataMembers.CR1);
-            Commons.printInformation("prepareUploadImageAtSOAP" + e);
-        }
-
-    }
-
-    private int uploadImageAtSOAP(String folderName, String imageName,
-                                  String imageData) {
-        //default value
-        responceMessage = 0;
-        //inputs - userInfo , folderName, fileName, data;
-        //Success - responceMessage = 1;
-        //Failure - responceMessage = 0;
-        Commons.print("ImgUpload, Img Upload not implemented for on premise");
-        return responceMessage;
-    }
-
     // Amazon Image Upload
     void uploadImageToAmazonCloud(Handler handler) {
         try {
@@ -5513,6 +5291,7 @@ public class BusinessModel extends Application {
             successCount = 0;
             isErrorOccured = false;
 
+            String tag = "Business Model";
             Commons.print(tag + ",ss : " + uploadFileSize);
 
             for (int i = 0; i < uploadFileSize; i++) {
@@ -5913,6 +5692,7 @@ public class BusinessModel extends Application {
 
     public String checkOTP(String mRetailerId, String mOTP, String activityType) {
 
+        String downloadReponse = "";
         try {
             System.gc();
             downloadReponse = "0";
@@ -7185,38 +6965,6 @@ public class BusinessModel extends Application {
         }
     }
 
-
-    public void loadDiscountDetails() {
-        StoreWiseDiscountBO sbo = null;
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-
-        db.createDataBase();
-        db.openDataBase();
-
-        Cursor c = db
-                .selectSQL("select pid,Typeid,Value,Percentage,ApplyLevelid,DiscountId,isCompanyGiven from InvoiceDiscountDetail where OrderId="
-                        + this.getOrderid()
-                        + " and ApplyLevelid in (select ListId from StandardListMaster where ListCode='BILL')");
-        if (c != null) {
-            while (c.moveToNext()) {
-                sbo = new StoreWiseDiscountBO();
-                sbo.setProductId(c.getInt(0));
-                sbo.setType(c.getInt(1));
-                if (c.getInt(2) != 0)
-                    sbo.setDiscount(c.getDouble(2));
-                else
-                    sbo.setDiscount(c.getDouble(3));
-                sbo.setApplyLevel(c.getInt(4));
-                sbo.setDiscountId(c.getInt(5));
-                sbo.setIsCompanyGiven(c.getInt(6));
-            }
-        }
-        this.setDiscountlist(sbo);
-        c.close();
-
-        db.closeDB();
-    }
-
     public void downloadWeekDay() {
         slist = new Vector<StandardListBO>();
         StandardListBO slbo;
@@ -7797,7 +7545,7 @@ public class BusinessModel extends Application {
                             mComputeID.append(appendZero(seqNo, "0000"));
                         }
                     } else if (!mRules.get(i).contains("{")) {
-                        mComputeID.append(mRules.get(i));
+                        mComputeID.append(mRules.get(i).replaceAll("\\[", "").replaceAll("\\]", ""));
                     } else if (mRules.get(i).contains("{SELLERCODE")) {
 
                         String userCode = userMasterHelper
@@ -8033,7 +7781,7 @@ public class BusinessModel extends Application {
                 bo.setPieceMapped(false);
             }
         } else if (type == 2) {
-            for (LoadManagementBO bo : productHelper.getProducts()) {
+            for (LoadManagementBO bo : productHelper.getLoadMgmtProducts()) {
                 bo.setOuterMapped(false);
                 bo.setCaseMapped(false);
                 bo.setPieceMapped(false);
@@ -8055,7 +7803,7 @@ public class BusinessModel extends Application {
                 bo.setPieceMapped(true);
             }
         } else if (type == 2) {
-            for (LoadManagementBO bo : productHelper.getProducts()) {
+            for (LoadManagementBO bo : productHelper.getLoadMgmtProducts()) {
                 bo.setOuterMapped(true);
                 bo.setCaseMapped(true);
                 bo.setPieceMapped(true);
@@ -8222,7 +7970,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListName, ListId FROM StandardListMaster WHERE ListType = 'BANK_TYPE'");
             if (c != null) {
-                bankMaster = new Vector<BankMasterBO>();
+                Vector<BankMasterBO> bankMaster = new Vector<BankMasterBO>();
                 while (c.moveToNext()) {
                     inv = new BankMasterBO();
                     inv.setBankName(c.getString(0));
@@ -8243,7 +7991,7 @@ public class BusinessModel extends Application {
         db.openDataBase();
         Cursor c = db.selectSQL("SELECT ListId, Parentid, ListName, ListCode FROM StandardListMaster WHERE ListType = 'BANK_BRANCH_TYPE'");
         if (c != null) {
-            bankBranch = new Vector<BranchMasterBO>();
+            Vector<BranchMasterBO> bankBranch = new Vector<BranchMasterBO>();
             while (c.moveToNext()) {
                 inv = new BranchMasterBO();
                 inv.setBranchID(c.getString(0));
@@ -8845,14 +8593,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    DecimalFormat df = new DecimalFormat("###.00");
-
-    public String getWithoutExponential(Double value) {
-        return ((value + "").contains("E")
-                ? df.format(new BigDecimal(value)) : (SDUtil.format(value, 2, 0)));
-    }
-
-
     /**
      * This method will called to planeDeviateReason
      * reason.
@@ -9356,6 +9096,33 @@ public class BusinessModel extends Application {
         }
         return filtername;
     }
+
+
+    public double getRetailerInvoiceAmount() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
+                            + QT(retailerMasterBO.getRetailerID()));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    double i = c.getFloat(0);
+                    c.close();
+                    db.closeDB();
+                    return i;
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return 0;
+    }
+
 }
 
 

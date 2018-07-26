@@ -183,7 +183,7 @@ public class OrderDeliveryHelper {
 
                 orderDetailCursor.close();
 
-                loadSalesReturnData(orderId, db);
+                loadSalesReturnData(orderId, db,mContext);
             }
 
             db.closeDB();
@@ -227,10 +227,10 @@ public class OrderDeliveryHelper {
 
     }
 
-    private void loadSalesReturnData(String orderId, DBUtil db) {
+    private void loadSalesReturnData(String orderId, DBUtil db , Context mContext) {
         businessModel.reasonHelper.downloadSalesReturnReason();
         if (businessModel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
-            businessModel.productHelper.cloneReasonMaster(true);
+            SalesReturnHelper.getInstance(mContext).cloneReasonMaster(true);
         }
 
         try {

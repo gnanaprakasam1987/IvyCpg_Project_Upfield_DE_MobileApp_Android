@@ -54,6 +54,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -76,7 +77,7 @@ import java.util.Vector;
 import me.relex.circleindicator.CircleIndicator;
 
 public class PlanoGramFragment extends IvyBaseFragment implements
-        OnClickListener, BrandDialogInterface {
+        OnClickListener, BrandDialogInterface,FiveLevelFilterCallBack {
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final String BRAND = "Brand";
@@ -464,6 +465,75 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawers();
     }
 
+    @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        Vector<PlanoGramBO> items = mPlanoGramHelper.getPlanogramMaster();
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        mPlanoGramList = new Vector<>();
+        if (items == null) {
+            mBModel.showAlert(
+                    getResources().getString(R.string.no_products_exists), 0);
+            return;
+        }
+
+        if (mAttributeProducts != null && productId!=0) {//Both Product and attribute filter selected
+                for (PlanoGramBO planoGramBO : items) {
+                    if (planoGramBO.getParentHierarchy().contains("/"+productId+"/")) {
+                        if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
+                            if ((planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0)
+                                    && mAttributeProducts.contains(planoGramBO.getPid())) {
+                                mPlanoGramList.add(planoGramBO);
+                            }
+                        } else if ((planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1)
+                                && mAttributeProducts.contains(planoGramBO.getPid())) {
+                            mPlanoGramList.add(planoGramBO);
+                        }
+                    }
+            }
+        } else if (mAttributeProducts == null && productId!=0) {// product filter alone selected
+                for (PlanoGramBO planoGramBO : items) {
+                    if (planoGramBO.getParentHierarchy().contains("/"+productId+"/")) {
+                        if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
+                            if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0) {
+                                mPlanoGramList.add(planoGramBO);
+                            }
+                        } else if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1) {
+                            mPlanoGramList.add(planoGramBO);
+                        }
+                    }
+            }
+        } else if (mAttributeProducts != null && productId!=0) {// Attribute filter alone selected
+            for (int pid : mAttributeProducts) {
+                for (PlanoGramBO planoGramBO : items) {
+                    if (pid == planoGramBO.getPid()) {
+                        if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
+                            if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0) {
+                                mPlanoGramList.add(planoGramBO);
+                            }
+                        } else if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1) {
+                            mPlanoGramList.add(planoGramBO);
+                        }
+                    }
+                }
+            }
+        } else if (mAttributeProducts == null && productId!=0) {
+            for (PlanoGramBO planoGramBO : items) {
+                if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
+                    if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0) {
+                        mPlanoGramList.add(planoGramBO);
+                    }
+                } else if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1) {
+                    mPlanoGramList.add(planoGramBO);
+                }
+            }
+        }
+
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        mDrawerLayout.closeDrawers();
+
+        refreshList();
+    }
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_inventory, menu);
     }
@@ -488,14 +558,13 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             }
 
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && !menuCode.equals("MENU_PLANOGRAM_CS") && mBModel.productHelper.isFilterAvaiable(menuCode)) {
+            if (!menuCode.equals("MENU_PLANOGRAM_CS") && mBModel.productHelper.isFilterAvaiable(menuCode)) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
             }
 
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+            if (mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -594,55 +663,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         Toast.LENGTH_SHORT).show();
             }
 
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    @Deprecated
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-
-            if (frag != null)
-                ft.detach(frag);
-
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("filterHeader", mPlanoGramHelper
-                    .getmChildLevelBo().get(0).getProductLevel());
-            bundle.putBoolean("ishideAll", true);
-            bundle.putSerializable("serilizeContent",
-                    mPlanoGramHelper.getmChildLevelBo());
-
-            if (mPlanoGramHelper.getmParentLevelBo() != null
-                    && mPlanoGramHelper.getmParentLevelBo()
-                    .size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader",
-                        mPlanoGramHelper.getmParentLevelBo()
-                                .get(0).getPl_productLevel());
-
-                mBModel.productHelper
-                        .setPlevelMaster(mPlanoGramHelper
-                                .getmParentLevelBo());
-            } else
-                bundle.putBoolean("isFormBrand", false);
-
-            // set Fragment class Arguments
-            HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-            FilterFragment fragment = new FilterFragment(mSelectedFilterMap);
-            fragment.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragment, "filter");
-            ft.commit();
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -1220,102 +1240,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     private void refreshList() {
         planoAdapter = new PlanogramAdapter(mPlanoGramList);
         plano_recycler.setAdapter(planoAdapter);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        Vector<PlanoGramBO> items = mPlanoGramHelper.getPlanogramMaster();
-
-        mPlanoGramList = new Vector<>();
-
-        for (LevelBO levelBO : mParentIdList) {
-            for (PlanoGramBO planoGramBO : items) {
-                if (levelBO.getProductID() == planoGramBO.getPid()) {
-                    if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
-                        if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0) {
-                            mPlanoGramList.add(planoGramBO);
-                        }
-                    } else if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1) {
-                        mPlanoGramList.add(planoGramBO);
-                    }
-                }
-            }
-        }
-        mDrawerLayout.closeDrawers();
-        refreshList();
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        Vector<PlanoGramBO> items = mPlanoGramHelper.getPlanogramMaster();
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        mPlanoGramList = new Vector<>();
-        if (items == null) {
-            mBModel.showAlert(
-                    getResources().getString(R.string.no_products_exists), 0);
-            return;
-        }
-
-        if (mAttributeProducts != null && !mParentIdList.isEmpty()) {//Both Product and attribute filter selected
-            for (LevelBO levelBO : mParentIdList) {
-                for (PlanoGramBO planoGramBO : items) {
-                    if (levelBO.getProductID() == planoGramBO.getPid()) {
-                        if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
-                            if ((planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0)
-                                    && mAttributeProducts.contains(planoGramBO.getPid())) {
-                                mPlanoGramList.add(planoGramBO);
-                            }
-                        } else if ((planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1)
-                                && mAttributeProducts.contains(planoGramBO.getPid())) {
-                            mPlanoGramList.add(planoGramBO);
-                        }
-                    }
-                }
-            }
-        } else if (mAttributeProducts == null && !mParentIdList.isEmpty()) {// product filter alone selected
-            for (LevelBO levelBO : mParentIdList) {
-                for (PlanoGramBO planoGramBO : items) {
-                    if (levelBO.getProductID() == planoGramBO.getPid()) {
-                        if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
-                            if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0) {
-                                mPlanoGramList.add(planoGramBO);
-                            }
-                        } else if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1) {
-                            mPlanoGramList.add(planoGramBO);
-                        }
-                    }
-                }
-            }
-        } else if (mAttributeProducts != null && !mParentIdList.isEmpty()) {// Attribute filter alone selected
-            for (int pid : mAttributeProducts) {
-                for (PlanoGramBO planoGramBO : items) {
-                    if (pid == planoGramBO.getPid()) {
-                        if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
-                            if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0) {
-                                mPlanoGramList.add(planoGramBO);
-                            }
-                        } else if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1) {
-                            mPlanoGramList.add(planoGramBO);
-                        }
-                    }
-                }
-            }
-        } else if (mAttributeProducts == null && mParentIdList.isEmpty()) {
-            for (PlanoGramBO planoGramBO : items) {
-                if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
-                    if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0) {
-                        mPlanoGramList.add(planoGramBO);
-                    }
-                } else if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1) {
-                    mPlanoGramList.add(planoGramBO);
-                }
-            }
-        }
-
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        mDrawerLayout.closeDrawers();
-
-        refreshList();
     }
 
     private void FiveFilterFragment() {

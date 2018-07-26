@@ -10,25 +10,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
-import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
-import com.ivy.cpg.view.order.OrderSummary;
-import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.BatchAllocation;
-import com.ivy.sd.png.view.CrownReturnActivity;
-import com.ivy.sd.png.view.InitiativeActivity;
-import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
 
 import java.util.ArrayList;

@@ -115,7 +115,7 @@ public class OrderReportBO implements Parcelable {
 
         dest.writeInt(isCrown);
         dest.writeInt(isBottleReturn);
-
+        dest.writeString(productCode);
 
     }
 
@@ -134,6 +134,7 @@ public class OrderReportBO implements Parcelable {
 
         isCrown = source.readInt();
         isBottleReturn = source.readInt();
+        productCode = source.readString();
     }
 
     private String orderId;
@@ -158,7 +159,8 @@ public class OrderReportBO implements Parcelable {
     private int volumePcsQty;
     private int volumeCaseQty;
     private int volumeOuterQty;
-    private String orderedImage="";
+    private String orderedImage = "";
+    private String productCode = "";
 
     public int getVolumeOuterQty() {
         return volumeOuterQty;
@@ -318,7 +320,7 @@ public class OrderReportBO implements Parcelable {
         this.mMustSellCount = mMustSellCount;
     }
 
-    private int mFocusBrandCount,mMustSellCount;
+    private int mFocusBrandCount, mMustSellCount;
 
 
     private double taxValue;
@@ -347,6 +349,7 @@ public class OrderReportBO implements Parcelable {
     public void setDiscountValue(double discountValue) {
         this.discountValue = discountValue;
     }
+
     private List<SchemeProductBO> schemeProducts;
 
     public List<SchemeProductBO> getSchemeProducts() {
@@ -363,5 +366,14 @@ public class OrderReportBO implements Parcelable {
 
     public void setOrderedImage(String orderedImage) {
         this.orderedImage = orderedImage;
+    }
+
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
+    public String getProductCode() {
+        return productCode;
     }
 }

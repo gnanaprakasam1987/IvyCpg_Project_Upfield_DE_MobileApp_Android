@@ -21,6 +21,7 @@ public class SODBO {
 	private float norm;
 	private int MappingId;
     private ArrayList<SFLocationBO> locations;
+	private String parentHierarchy;
 
 	public int getParentID() {
 		return parentID;
@@ -93,4 +94,12 @@ public class SODBO {
     public void setLocations(ArrayList<SFLocationBO> locations) {
         this.locations = locations;
 	}
+	public String getParentHierarchy() {
+		return parentHierarchy;
+	}
+
+	public void setParentHierarchy(String parentHierarchy) {
+		this.parentHierarchy = parentHierarchy;
+	}
+
 }

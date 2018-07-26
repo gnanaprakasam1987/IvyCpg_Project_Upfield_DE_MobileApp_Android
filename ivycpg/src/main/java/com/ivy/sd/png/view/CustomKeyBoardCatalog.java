@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
@@ -91,7 +92,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         initializeViews();
         if (total_tv == null) {
             value_keyboard.setVisibility(View.GONE);
-            //setKeyboard(((pdtBO.getLocations().get(0).getShelfPiece() != -1) ? pdtBO.getLocations().get(0).getShelfPiece() : 0) + "");
+            //setKeyboard(((pdtBO.downloadInStoreLocationsForStockCheck().get(0).getShelfPiece() != -1) ? pdtBO.downloadInStoreLocationsForStockCheck().get(0).getShelfPiece() : 0) + "");
             setCaseKeyboard(((pdtBO.getLocations().get(0).getShelfCase() != -1) ? pdtBO.getLocations().get(0).getShelfCase() : 0) + "");
             setOuterKeyboard(((pdtBO.getLocations().get(0).getShelfOuter() != -1) ? pdtBO.getLocations().get(0).getShelfOuter() : 0) + "");
             setPcsKeyboard(((pdtBO.getLocations().get(0).getShelfPiece() != -1) ? pdtBO.getLocations().get(0).getShelfPiece() : 0) + "");
@@ -258,6 +259,13 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
     }
 
     private void setCaseKeyboard(String s) {
+
+        /**
+         * set max length digit based on IS_ORD_DIGIT config initially it will allow 4 digit only
+         */
+        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
+            case_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
+
         currentCsQty = pdtBO.getOrderedCaseQty();
 
         if (s.length() > 0)
@@ -361,6 +369,13 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
     }
 
     private void setOuterKeyboard(String s) {
+
+        /**
+         * set max length digit based on IS_ORD_DIGIT config initially it will allow 4 digit only
+         */
+        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
+            outer_case_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
+
         currentOuQty = pdtBO.getOrderedOuterQty();
         if (s.length() > 0)
             this.outervalue = s;
@@ -463,6 +478,13 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
     }
 
     private void setPcsKeyboard(String s) {
+
+        /**
+         * set max length digit based on IS_ORD_DIGIT config initially it will allow 4 digit only
+         */
+        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
+            pcs_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
+
         currentPsQty = pdtBO.getOrderedPcsQty();
         if (s.length() > 0)
             this.pcsvalue = s;

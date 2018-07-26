@@ -52,6 +52,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -69,7 +70,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SalesReturnFragment extends IvyBaseFragment implements
-        BrandDialogInterface, OnClickListener, OnEditorActionListener {
+        BrandDialogInterface, OnClickListener, OnEditorActionListener, FiveLevelFilterCallBack {
 
     private static final int SALES_RET_SUMMARY = 1;
     private static final int SALES_ENTRY = 2;
@@ -221,21 +222,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
         updateBrandText(BRAND_STRING, -1);
 
-        if (bmodel.productHelper.getChildLevelBo() != null) {
-            // Check weather Object are still exist or not.
-            int siz = 0;
-            try {
-                Vector<ChildLevelBo> items = bmodel.productHelper.getChildLevelBo();
-                siz = items.size();
-            } catch (Exception nulle) {
-                Toast.makeText(getActivity(), "Session out. Login again.",
-                        Toast.LENGTH_SHORT).show();
-                Commons.printException(nulle);
-            }
-            if (siz == 0)
-                return;
-        }
-
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
@@ -366,7 +352,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             generalbutton = GENERAL;
         ProductMasterBO ret;
         if (mEdt_searchproductName.getText().length() >= 3) {
-            Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+            Vector<ProductMasterBO> items = salesReturnHelper.getSalesReturnProducts();
             if (items == null) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -428,7 +414,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
     private void loadProductList() {
         try {
-            Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+            Vector<ProductMasterBO> items = salesReturnHelper.getSalesReturnProducts();
 
             int siz = items.size();
             mylist = new ArrayList<>();
@@ -486,13 +472,17 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 holder = new ViewHolder();
 
                 holder.psname = (TextView) row.findViewById(R.id.productName);
+                holder.productCode = (TextView) row.findViewById(R.id.sales_return_barcode);
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.total = (TextView) row.findViewById(R.id.total);
 
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                holder.productCode.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
                 holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.total.setPaintFlags(holder.total.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
+                if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.productCode.setVisibility(View.GONE);
 
                 row.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
@@ -534,6 +524,11 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
             holder.pname = productMasterBO.getProductName();
             holder.psname.setText(productMasterBO.getProductShortName());
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code) + ": " +
+                        productMasterBO.getProductCode();
+                holder.productCode.setText(prodCode);
+            }
 
 
             int total = 0;
@@ -554,14 +549,14 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         private SalesReturnReasonBO reasonBO;
         private ProductMasterBO productBO;
         private String pname;
-        private TextView psname;
+        private TextView psname, productCode;
         private TextView total;
     }
 
     private void updateValue() {
         totalvalue = 0;
         int lpccount = 0;
-        Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+        Vector<ProductMasterBO> items = salesReturnHelper.getSalesReturnProducts();
         if (items == null) {
             bmodel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
@@ -625,7 +620,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                         BusinessModel.loadActivity(
                                 getActivity(),
                                 DataMembers.actHomeScreenTwo);
-                                    /* User clicked OK so do some stuff */
+                        /* User clicked OK so do some stuff */
                     }
                 }, new CommonDialog.negativeOnClickListener() {
                     @Override
@@ -679,7 +674,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     }
 
     private boolean isValidData() {
-        Vector<ProductMasterBO> items = bmodel.productHelper.getSalesReturnProducts();
+        Vector<ProductMasterBO> items = salesReturnHelper.getSalesReturnProducts();
         int totalRetQty = 0;
         int totalRepQty;
         int siz = items.size();
@@ -706,12 +701,12 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     }
 
     private boolean isValidMRP() {
-        int siz = bmodel.productHelper.getSalesReturnProducts().size();
+        int siz = salesReturnHelper.getSalesReturnProducts().size();
         if (siz == 0)
             return true;
 
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper.getSalesReturnProducts().get(i);
+            ProductMasterBO product = salesReturnHelper.getSalesReturnProducts().get(i);
             if (product.getSalesReturnReasonList() == null || product.getSalesReturnReasonList().size() == 0)
                 return true;
             for (SalesReturnReasonBO bo : product
@@ -737,19 +732,16 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
-            menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
-        } else {
-            menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        }
+
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
+        menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
+
         menu.findItem(R.id.menu_barcode).setVisible(!drawerOpen);
 
         menu.findItem(R.id.menu_remarks).setVisible(false);
         menu.findItem(R.id.menu_scheme).setVisible(false);
         menu.findItem(R.id.menu_apply_so).setVisible(false);
         menu.findItem(R.id.menu_apply_std_qty).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_sih_apply).setVisible(false);
         menu.findItem(R.id.menu_next).setIcon(
                 R.drawable.ic_action_navigation_next_item);
@@ -758,7 +750,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
         menu.findItem(R.id.menu_barcode).setVisible(bmodel.configurationMasterHelper.IS_BAR_CODE);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -839,7 +831,10 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             Bundle bundle = new Bundle();
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
-            bundle.putString("isFrom", "STK");
+            if (salesReturnHelper.getFilterProductLevels() != null && salesReturnHelper.getFilterProductsByLevelId() != null)
+                bundle.putString("isFrom", "SR");
+            else
+                bundle.putString("isFrom", "STK");
             bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
 
             // set Fragmentclass Arguments
@@ -880,8 +875,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             productName.setText("");
 
             //items = getProducts();
-            items = bmodel.productHelper.getSalesReturnProducts();
-            Commons.print("AS<><><><" + bmodel.productHelper.getSalesReturnProducts().size());
+            items = salesReturnHelper.getSalesReturnProducts();
+            Commons.print("AS<><><><" + salesReturnHelper.getSalesReturnProducts().size());
             if (items == null) {
                 bmodel.showAlert(
                         getResources().getString(R.string.no_products_exists),
@@ -973,11 +968,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
     private void showCustomDialog() {
 
         new CommonDialog(getActivity().getApplicationContext(), getActivity(), "", getResources().getString(
@@ -999,20 +989,18 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mylist = new ArrayList<>();
         fiveFilter_productIDs = new ArrayList<>();
         brandbutton = mFilterText;
         if (mAttributeProducts != null) {
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (ProductMasterBO productBO : items) {
-                        if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
-                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                mylist.add(productBO);
-                                fiveFilter_productIDs.add(productBO.getProductID());
-                            }
+            if (mFilteredPid != 0) {
+                for (ProductMasterBO productBO : items) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/") && productBO.getIsSaleable() == 1) {
+                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                        if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                            mylist.add(productBO);
+                            fiveFilter_productIDs.add(productBO.getProductID());
                         }
                     }
                 }
@@ -1028,14 +1016,12 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             }
         } else {
             if (!mFilterText.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (ProductMasterBO productBO : items) {
-                        if (levelBO.getProductID() == productBO.getParentid() && productBO.getIsSaleable() == 1) {
-                            mylist.add(productBO);
-                            fiveFilter_productIDs.add(productBO.getProductID());
-                        }
-
+                for (ProductMasterBO productBO : items) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/") && productBO.getIsSaleable() == 1) {
+                        mylist.add(productBO);
+                        fiveFilter_productIDs.add(productBO.getProductID());
                     }
+
                 }
             } else {
                 updateBrandText(BRAND, -1);
