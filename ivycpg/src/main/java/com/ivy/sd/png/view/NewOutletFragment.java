@@ -2053,8 +2053,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         break;
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("GST_NO")
-                        && mandatory == 1) {
+                        .equalsIgnoreCase("GST_NO")) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if (editText[i].getText().toString().trim().length() == 0 ||
                             editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
@@ -2238,7 +2237,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
 
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
         return validate;
     }
