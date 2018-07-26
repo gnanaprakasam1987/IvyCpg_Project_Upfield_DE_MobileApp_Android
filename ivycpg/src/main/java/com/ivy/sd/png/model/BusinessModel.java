@@ -385,7 +385,7 @@ public class BusinessModel extends Application {
     private static final String PRD_ORD = "ORD";
     private static final String PRD_STK = "STK";
 
-    private String availablilityShare;
+    private String availablilityShare = "0.0";
     private int printSequenceLevelID;
     private String dashboardUserFilterString;
 
@@ -5065,12 +5065,7 @@ public class BusinessModel extends Application {
 
             // ClosingStock Header entry
             if (isData) {
-                columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID";
-
-
-                if (configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
-                    columns = columns + ",AvailabilityShare";
-                }
+                columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID,AvailabilityShare";
 
                 values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + ", " + QT(getRetailerMasterBO().getRetailerID()) + ", "
@@ -5078,11 +5073,14 @@ public class BusinessModel extends Application {
                         + QT(getStockCheckRemark()) + "," + getRetailerMasterBO().getDistributorId();
 
                 if (configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
-                    values = values + "," + QT(getAvailablilityShare());
+                    String availabilityShare = (getAvailablilityShare() == null ||
+                            getAvailablilityShare().trim().length() == 0) ? "0.0" : getAvailablilityShare();
+                    values = values + "," + QT(availabilityShare);
+                } else {
+                    values = values + "," + QT("0.0");
                 }
 
                 db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
-                setAvailablilityShare("");
 
                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                     calculateFitscoreandInsert(db, sum, DataMembers.FIT_STOCK);
