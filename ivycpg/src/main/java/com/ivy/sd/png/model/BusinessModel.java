@@ -1,8 +1,6 @@
 package com.ivy.sd.png.model;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
@@ -58,7 +56,6 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.appmodule.AppComponent;
-
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
@@ -79,8 +76,8 @@ import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.van.LoadManagementHelper;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
-import com.ivy.lib.base64.Base64;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
@@ -102,7 +99,6 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.bo.TempSchemeBO;
@@ -149,7 +145,6 @@ import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SBDMerchandisingHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
-import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaskHelper;
@@ -175,7 +170,6 @@ import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
-import com.ivy.sd.png.view.Synchronization;
 import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
@@ -377,7 +371,7 @@ public class BusinessModel extends Application {
     private static final String PRD_ORD = "ORD";
     private static final String PRD_STK = "STK";
 
-    private String availablilityShare;
+    private String availablilityShare = "0.0";
     private int printSequenceLevelID;
     private String dashboardUserFilterString;
 
@@ -507,9 +501,6 @@ public class BusinessModel extends Application {
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actCollection)) {
             myIntent = new Intent(ctxx, CollectionScreen.class);
-            ctxx.startActivityForResult(myIntent, 0);
-        } else if (act.equals(DataMembers.actSynchronization)) {
-            myIntent = new Intent(ctxx, Synchronization.class);
             ctxx.startActivityForResult(myIntent, 0);
         } else if (act.equals(DataMembers.actactivationscreen)) {
             myIntent = new Intent(ctxx, ActivationActivity.class);
@@ -5032,12 +5023,7 @@ public class BusinessModel extends Application {
 
             // ClosingStock Header entry
             if (isData) {
-                columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID";
-
-
-                if (configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
-                    columns = columns + ",AvailabilityShare";
-                }
+                columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID,AvailabilityShare";
 
                 values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + ", " + QT(getRetailerMasterBO().getRetailerID()) + ", "
@@ -5045,11 +5031,14 @@ public class BusinessModel extends Application {
                         + QT(getStockCheckRemark()) + "," + getRetailerMasterBO().getDistributorId();
 
                 if (configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
-                    values = values + "," + QT(getAvailablilityShare());
+                    String availabilityShare = (getAvailablilityShare() == null ||
+                            getAvailablilityShare().trim().length() == 0) ? "0.0" : getAvailablilityShare();
+                    values = values + "," + QT(availabilityShare);
+                } else {
+                    values = values + "," + QT("0.0");
                 }
 
                 db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
-                setAvailablilityShare("");
 
                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                     calculateFitscoreandInsert(db, sum, DataMembers.FIT_STOCK);
