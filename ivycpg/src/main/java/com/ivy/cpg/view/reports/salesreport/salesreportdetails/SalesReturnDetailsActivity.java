@@ -75,9 +75,10 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         }
 
         getData();
+        setLabelMaserValue();
+    }
 
-
-
+    private void setLabelMaserValue() {
 
         BusinessModel businessModel = (BusinessModel) getApplicationContext();
 
@@ -107,7 +108,6 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         }
 
 
-
         /*if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
             findViewById(R.id.cqty).setVisibility(View.GONE);
         if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
@@ -116,7 +116,7 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
             findViewById(R.id.outercqty).setVisibility(View.GONE);*/
     }
 
-    CompositeDisposable mCompositeDisposable;
+    private CompositeDisposable mCompositeDisposable;
 
     private void getData() {
         String uId = "";
@@ -160,7 +160,7 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void setUpAdapter(Vector<SalesReturnDeliveryReportBo> reportBos) {
-        SalesReturnReportDetailsAdapter adapter = new SalesReturnReportDetailsAdapter(this,reportBos);
+        SalesReturnReportDetailsAdapter adapter = new SalesReturnReportDetailsAdapter(this, reportBos);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
