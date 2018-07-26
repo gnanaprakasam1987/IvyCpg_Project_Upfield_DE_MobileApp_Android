@@ -201,7 +201,12 @@ public class DashBoardHelper {
 
     }
 
-    public ArrayList<String> getSellerKpiMonthNameList() {
+    /**
+     * @param isFromHomeScreenTwo
+     * @return isFromHomeScreenTwo - false  Load Month List for Seller P3M interval
+     * isFromHomeScreenTwo - true   Load Month List for Retailer P3M interval
+     */
+    public ArrayList<String> getKpiMonthNameList(boolean isFromHomeScreenTwo) {
         ArrayList<String> monthNoList = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -216,9 +221,17 @@ public class DashBoardHelper {
                 monthText = "strftime('%m', replace(fromdate,'/','-'))";
             }
 
-            String sb = "SELECT distinct " + monthText + " AS Month FROM sellerkpi " +
-                    "WHERE Interval=" + bmodel.QT(P3M) +
-                    " order by Month desc";
+            String sb;
+            if (!isFromHomeScreenTwo) {
+                sb = "SELECT distinct " + monthText + " AS Month FROM SellerKPI " +
+                        "WHERE Interval=" + bmodel.QT(P3M) +
+                        " order by Month desc";
+            } else {
+                sb = "SELECT distinct " + monthText + " AS Month FROM RetailerKPI " +
+                        "WHERE RetailerId= " + bmodel.getRetailerMasterBO().getRetailerID() + " AND Interval=" + bmodel.QT(P3M) +
+                        " order by Month desc";
+            }
+
             Cursor c = db.selectSQL(sb);
             int index = 0;
             if (c.getCount() > 0) {
