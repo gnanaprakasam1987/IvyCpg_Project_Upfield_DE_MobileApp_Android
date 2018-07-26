@@ -74,10 +74,10 @@ public class SalesReportHelper {
                     dbUtil.openDataBase();
 
                     Cursor cursor = dbUtil
-                            .selectSQL("SELECT  distinct PM.PName as ProductName,PM.PID as ProductID,srd.* ,SM.ListName,SM.ListType from SalesReturnDetails srd"
+                            .selectSQL("SELECT  distinct PM.PName as ProductName,PM.PID as ProductID,srd.* ,SM.ListName,SM.ListType,SMP.ListName as type from SalesReturnDetails srd"
                                     + " LEFT JOIN ProductMaster PM ON srd.productID=PM.PID"
                                     + " LEFT JOIN StandardListMaster SM on SM.ListId = srd.Condition"
-                                    + " AND srd.RetailerID=" + retailerId
+                                    + " LEFT JOIN StandardListMaster SMP on SMP.ListId = SM.Parentid"
                                     + " WHERE srd.uid=" + AppUtils.QT(uId));
 
 
@@ -91,13 +91,16 @@ public class SalesReportHelper {
 
                             salesReturnDeliveryDataModel.setCaseQty(cursor.getInt(cursor.getColumnIndex("Cqty")));
                             salesReturnDeliveryDataModel.setPieceQty(cursor.getInt(cursor.getColumnIndex("Pqty")));
+                            salesReturnDeliveryDataModel.setOuterQty(cursor.getInt(cursor.getColumnIndex("outerQty")));
+
+
 
                             int value = (cursor.getInt(cursor.getColumnIndex("srpedited"))) *
                                     (cursor.getInt(cursor.getColumnIndex("totalQty")));
 
                             salesReturnDeliveryDataModel.setReturnValue(value);
                             salesReturnDeliveryDataModel.setReason(cursor.getString(cursor.getColumnIndex("ListName")));
-                            salesReturnDeliveryDataModel.setReasonType(cursor.getString(cursor.getColumnIndex("ListType")));
+                            salesReturnDeliveryDataModel.setReasonType(cursor.getString(cursor.getColumnIndex("type")));
                             returnDeliveryDataModelVector.add(salesReturnDeliveryDataModel);
                         }
 

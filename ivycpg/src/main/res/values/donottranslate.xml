@@ -159,7 +159,6 @@
     <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
 
 
-
     <string name="drug_license_expired">Drug License Expired</string>
     <string name="uom_not_available">Uom Not Available</string>
     <string name="title_activity_posm_image_gallery">PosmImageGallery</string>
@@ -178,6 +177,7 @@
     <string name="case_qty">Case Quantity</string>
     <string name="piece_qty">Piece Quantity</string>
     <string name="outer_qty">Outer Quantity</string>
+    <string name="reason_type">Reason - ReasonType</string>
 
     <string name="salesreport_details">SalesReturn Report Details</string>
     <string name="last_download_on">Last Download: </string>

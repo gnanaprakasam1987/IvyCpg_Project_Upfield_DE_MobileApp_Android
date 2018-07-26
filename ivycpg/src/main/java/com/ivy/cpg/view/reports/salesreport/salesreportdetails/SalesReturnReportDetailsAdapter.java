@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.reports.salesreport.salesreportdetails;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesReturnReportDetailsAdapter.SalesReturnReportViewHolder> {
     List<SalesReturnDeliveryReportBo> salesReturnReportBosList;
+    private Context mContext;
 
     /**
      * Initialize the values
@@ -23,8 +25,9 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
      * @param salesReturnReportBosList : salesReturnReportBosList reference
      */
 
-    public SalesReturnReportDetailsAdapter(List<SalesReturnDeliveryReportBo> salesReturnReportBosList) {
+    public SalesReturnReportDetailsAdapter(Context context,List<SalesReturnDeliveryReportBo> salesReturnReportBosList) {
         this.salesReturnReportBosList = salesReturnReportBosList;
+        this.mContext = context;
     }
 
 
@@ -57,6 +60,12 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
         holder.value.setText(String.valueOf(salesReturnReportBosList.get(position).getReturnValue()));
         holder.reason.setText(salesReturnReportBosList.get(position).getReason());
         holder.reasonType.setText(salesReturnReportBosList.get(position).getReasonType());
+        holder.outerQty.setText(String.valueOf(salesReturnReportBosList.get(position).getOuterQty()));
+
+        if (position % 2 == 0)
+            holder.view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
+        else
+            holder.view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.history_list_bg));
 
     }
 
@@ -73,8 +82,8 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
      */
 
     public class SalesReturnReportViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView productName, caseQty, pieceQty, outerQty, value, reason,reasonType;
-
+        TextView productName, caseQty, pieceQty, outerQty, value, reason, reasonType;
+        View view;
 
         public SalesReturnReportViewHolder(View itemView) {
             super(itemView);
@@ -85,6 +94,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
             outerQty = itemView.findViewById(R.id.text_outerQty);
             reason = itemView.findViewById(R.id.text_reason);
             reasonType = itemView.findViewById(R.id.text_reasonType);
+            view = itemView;
             itemView.setOnClickListener(this);
         }
 

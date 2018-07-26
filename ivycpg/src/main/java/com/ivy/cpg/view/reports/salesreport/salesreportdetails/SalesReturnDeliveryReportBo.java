@@ -7,6 +7,7 @@ public class SalesReturnDeliveryReportBo {
     private String productName;
     private int cQty;
     private int pQty;
+    private int oQty;
     private int returnValue;
 
     private String productId;
@@ -15,6 +16,14 @@ public class SalesReturnDeliveryReportBo {
 
     private String ReasonType;
 
+
+    public int getOuterQty() {
+        return oQty;
+    }
+
+    public void setOuterQty(int oQty) {
+        this.oQty = oQty;
+    }
 
     public String getReasonType() {
         return ReasonType;

@@ -3,10 +3,12 @@ package com.ivy.cpg.view.reports.salesreport.salesreportdetails;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.reports.salesreport.SalesReportHelper;
@@ -14,6 +16,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 
@@ -68,10 +71,49 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
-           // setScreenTitle(title);
+            // setScreenTitle(title);
         }
 
         getData();
+
+
+
+
+        BusinessModel businessModel = (BusinessModel) getApplicationContext();
+
+
+        try {
+            if (businessModel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.cqty).getTag()) != null)
+                ((TextView) findViewById(R.id.cqty))
+                        .setText(businessModel.labelsMasterHelper
+                                .applyLabels(findViewById(R.id.cqty)
+                                        .getTag()));
+            if (businessModel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.piececqty).getTag()) != null)
+                ((TextView) findViewById(R.id.piececqty))
+                        .setText(businessModel.labelsMasterHelper
+                                .applyLabels(findViewById(R.id.piececqty)
+                                        .getTag()));
+
+            if (businessModel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.outercqty).getTag()) != null)
+                ((TextView) findViewById(R.id.outercqty))
+                        .setText(businessModel.labelsMasterHelper
+                                .applyLabels(findViewById(R.id.outercqty)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+
+
+        /*if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+            findViewById(R.id.cqty).setVisibility(View.GONE);
+        if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+            findViewById(R.id.piececqty).setVisibility(View.GONE);
+        if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
+            findViewById(R.id.outercqty).setVisibility(View.GONE);*/
     }
 
     CompositeDisposable mCompositeDisposable;
@@ -118,9 +160,12 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void setUpAdapter(Vector<SalesReturnDeliveryReportBo> reportBos) {
-        SalesReturnReportDetailsAdapter adapter = new SalesReturnReportDetailsAdapter(reportBos);
+        SalesReturnReportDetailsAdapter adapter = new SalesReturnReportDetailsAdapter(this,reportBos);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                mLayoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setLayoutManager(mLayoutManager);
     }
 
@@ -163,7 +208,7 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
 
                 while (cursor.moveToNext()) {
                     total = total + (cursor.getInt(0) * cursor.getInt(1));
-                    totalLine = totalLine+1;
+                    totalLine = totalLine + 1;
                 }
             }
 
