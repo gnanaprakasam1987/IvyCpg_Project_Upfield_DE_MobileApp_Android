@@ -1980,6 +1980,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (!isCancelled()) {
+
+                    if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                        bmodel.getRetailerWiseSellerType();
+                        bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
+                    }
+
                     if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
 
                         bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
@@ -2020,10 +2026,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                         }
                     }
 
-                    if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                        bmodel.getRetailerWiseSellerType();
-                        bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
-                    }
+
 
 
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE

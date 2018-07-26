@@ -4361,7 +4361,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void moveToNextScreen() {
 
 
-        if (bmodel.mSelectedModule != 3)
+
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
 
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());

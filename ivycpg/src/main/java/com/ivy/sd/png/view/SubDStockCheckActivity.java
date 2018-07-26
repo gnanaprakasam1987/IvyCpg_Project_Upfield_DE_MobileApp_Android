@@ -2472,9 +2472,8 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
     private void nextBtnSubTask() {
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
-        if (bmodel.mSelectedModule != 3)
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                .now(SDUtil.TIME));
 
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {

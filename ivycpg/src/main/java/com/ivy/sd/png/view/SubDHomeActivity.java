@@ -481,9 +481,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
         } catch (Exception e) {
             Commons.printException(e);
         }
-        // Reset the Configuration if Directly goes from
-        // HomeScreenTwo
-        bmodel.mSelectedModule = -1;
+
         OrderSummary.mCurrentActivityCode = configCode;
         bmodel.mSelectedActivityName = menuName;
     }
