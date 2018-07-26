@@ -2517,9 +2517,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     };
 
     private void nextBtnSubTask() {
-        if (bmodel.mSelectedModule != 3)
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                .now(SDUtil.TIME));
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {

@@ -367,9 +367,6 @@
             android:name="com.ivy.sd.png.view.TaskCreation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.Synchronization"
-            android:screenOrientation="sensorPortrait" />
-        <activity
             android:name="com.ivy.sd.png.view.CollectionScreen"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />

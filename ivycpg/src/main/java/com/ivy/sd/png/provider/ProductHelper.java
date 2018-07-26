@@ -951,15 +951,31 @@ public class ProductHelper {
 
             int mContentLevelId = 0;
             int mContentLevel = 0;
-            Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF " +
-                    "INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = " + bmodel.QT(moduleCode));
 
-            if (cur != null) {
-                if (cur.moveToNext()) {
-                    mContentLevelId = cur.getInt(0);
-                    mContentLevel = cur.getInt(1);
+            // for hybrid seeler if pre seller need to take order at different level
+            if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL && bmodel.getRetailerMasterBO().getIsVansales() == 0 &&
+                    bmodel.configurationMasterHelper.switchConfigLevel > 0 && moduleCode.equalsIgnoreCase("MENU_STK_ORD")) {
+                mContentLevelId = bmodel.configurationMasterHelper.switchConfigLevel;
+                Cursor cur = db.selectSQL("SELECT sequence FROM ProductLevel " +
+                        " WHERE LevelId = " + mContentLevelId);
+
+                if (cur != null) {
+                    if (cur.moveToNext()) {
+                        mContentLevel = cur.getInt(0);
+                    }
+                    cur.close();
                 }
-                cur.close();
+            } else {
+                Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF " +
+                        "INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = " + bmodel.QT(moduleCode));
+
+                if (cur != null) {
+                    if (cur.moveToNext()) {
+                        mContentLevelId = cur.getInt(0);
+                        mContentLevel = cur.getInt(1);
+                    }
+                    cur.close();
+                }
             }
 
             sql = "select A.pid as productId, A.pcode as pcode,A.pname as pname,A.parentid as parentId,A.sih as sih, "
