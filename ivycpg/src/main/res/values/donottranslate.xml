@@ -170,4 +170,6 @@
     <string name="total_value_lesser_actual">Total Value is lesser than Actual Value</string>
     <string name="enter_receipt_no">Enter Receipt Number</string>
     <string name="please_enter">Please Enter</string>
+    <string name="last_download_on">Last Download: </string>
+    <string name="last_upload_on">Last Upload: </string>
 </resources>

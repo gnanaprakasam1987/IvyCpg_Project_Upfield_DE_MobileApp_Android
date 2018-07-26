@@ -60,6 +60,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.sync.LastSyncTimeHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.UploadPresenterImpl;
@@ -100,56 +101,54 @@ import java.util.Vector;
 public class SynchronizationFragment extends IvyBaseFragment
         implements View.OnClickListener, SwitchUserDialog.onSwitchUser, SyncContractor.SyncView {
 
-    private AlertDialog.Builder builder;
-    private AlertDialog alertDialog;
+
+
     private static BusinessModel bmodel;
+    private static Button btn = null;
+
     private EditText txtUserName, txtPassword;
     private TextView tvwstatus;
     private CheckBox dayCloseCheckBox, withPhotosCheckBox, selectedRetailerDownloadCheckBox;
-    private static Button btn = null;
+    private Button sync, download, backDateSelection;
 
-    // instance variables
+
     private Thread downloaderThread;
     private ProgressDialog progressDialog;
-    private boolean isClicked = false;
-    private List<SyncRetailerBO> isVisitedRetailerList;
-    private boolean Checked = false;
-    private SyncronizationReceiver mSyncReceiver;
 
-    private static final int UPLOAD_ALL = 0;
-    private static final int RETAILER_WISE_UPLOAD = 1;
-    private static final int UPLOAD_WITH_IMAGES = 2;
-    private static final int UPLOAD_STOCK_IN_HAND = 3;
-    private static final int UPLOAD_STOCK_APPLY = 4;
-    private static final int UPLOAD_LOYALTY_POINTS = 6;
-    private static final int UPLOAD_CS_SIH = 7;
-    private static final int UPLOAD_CS_STOCK_APPLY = 8;
-    private static final int UPLOAD_CS_REJECTED_VARIANCE = 9;
-    SharedPreferences mLastSyncSharedPref;
-    SharedPreferences mLastUploadAndDownloadPref;
+    private SharedPreferences mLastSyncSharedPref;
+
+
     private NonVisitReasonDialog nvrd;
-    private VanUnLoadModuleHelper mVanUnloadHelper;
 
-    TransferUtility transferUtility;
-    AmazonS3Client s3;
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
+
+    private TransferUtility transferUtility;
+
     private View view;
     private DisplayMetrics displaymetrics;
-    private Button sync, download, backDateSelection;
-    private boolean isSwitchUser = false;
+
 
     //switchUser UserName and password
     private String userName, password;
+    private boolean isSwitchUser = false;
 
+    private boolean isClicked = false;
+
+    private SyncronizationReceiver mSyncReceiver;
     private UploadPresenterImpl presenter;
-    private UploadHelper mUploadHelper;
+    private LastSyncTimeHelper lastSyncTimeHelper;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(getActivity());
-        mUploadHelper = UploadHelper.getInstance(getActivity());
+
+        lastSyncTimeHelper = new LastSyncTimeHelper(getContext());
+        VanUnLoadModuleHelper mVanUnloadHelper = VanUnLoadModuleHelper.getInstance(getActivity());
+        UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
         presenter = new UploadPresenterImpl(context, bmodel, this, mUploadHelper, mVanUnloadHelper);
     }
 
@@ -167,10 +166,11 @@ public class SynchronizationFragment extends IvyBaseFragment
         downloaderThread = null;
         progressDialog = null;
 
-        mLastUploadAndDownloadPref = getActivity().getSharedPreferences("lastUploadAndDownload", Context.MODE_PRIVATE);
+
         initializeItem();
         mLastSyncSharedPref = getActivity().getSharedPreferences("lastSync", Context.MODE_PRIVATE);
         registerReceiver();
+
         displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
@@ -192,22 +192,26 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     private void initializeItem() {
 
-        TextView tvtitle = (TextView) view.findViewById(R.id.synctitle);
+        TextView tvtitle = view.findViewById(R.id.synctitle);
         tvtitle.setText(getArguments().getString("screentitle"));
-        CardView alert_card = (CardView) view.findViewById(R.id.alert_card);
+
+        CardView alert_card = view.findViewById(R.id.alert_card);
         if (!bmodel.labelsMasterHelper.getSyncContentHTML().equals("NULL") && !bmodel.labelsMasterHelper.getSyncContentHTML().equals("")) {
             alert_card.setVisibility(View.VISIBLE);
-            TextView alert_txt = (TextView) view.findViewById(R.id.alert_txt);
+            TextView alert_txt = view.findViewById(R.id.alert_txt);
             alert_txt.setText(Html.fromHtml(bmodel.labelsMasterHelper.getSyncContentHTML()));
         } else {
             alert_card.setVisibility(View.GONE);
         }
 
-        txtUserName = (EditText) view.findViewById(R.id.username);
-        txtPassword = (EditText) view.findViewById(R.id.password);
-        selectedRetailerDownloadCheckBox = (CheckBox) view.findViewById(R.id.download_retailer);
-        withPhotosCheckBox = (CheckBox) view.findViewById(R.id.withPhotos);
+        txtUserName = view.findViewById(R.id.username);
+        txtPassword = view.findViewById(R.id.password);
+
+        selectedRetailerDownloadCheckBox = view.findViewById(R.id.download_retailer);
+
+        withPhotosCheckBox = view.findViewById(R.id.withPhotos);
         withPhotosCheckBox.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
         selectedRetailerDownloadCheckBox.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         try {
@@ -231,7 +235,6 @@ public class SynchronizationFragment extends IvyBaseFragment
 
                 withPhotosCheckBox.setChecked(true);
                 presenter.updateIsWithImageStatus(true);
-                Checked = true;
             }
 
         }
@@ -252,14 +255,11 @@ public class SynchronizationFragment extends IvyBaseFragment
                                         0);
                                 withPhotosCheckBox.setChecked(true);
                                 presenter.updateIsWithImageStatus(true);
-                                Checked = true;
                             } else {
-                                Checked = false;
                                 presenter.updateIsWithImageStatus(false);
                             }
 
                         } else {
-                            Checked = true;
                             presenter.updateIsWithImageStatus(true);
 
                         }
@@ -268,12 +268,13 @@ public class SynchronizationFragment extends IvyBaseFragment
                     }
                 });
 
-        dayCloseCheckBox = (CheckBox) view.findViewById(R.id.dayClose);
+        dayCloseCheckBox = view.findViewById(R.id.dayClose);
+
         if (bmodel.configurationMasterHelper.SHOW_SYNC_DAYCLOSE) {
-            ((RelativeLayout) view.findViewById(R.id.dayclose_lty)).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.dayclose_lty).setVisibility(View.VISIBLE);
             dayCloseCheckBox.setVisibility(View.VISIBLE);
         } else {
-            ((RelativeLayout) view.findViewById(R.id.dayclose_lty)).setVisibility(View.GONE);
+            view.findViewById(R.id.dayclose_lty).setVisibility(View.GONE);
             dayCloseCheckBox.setVisibility(View.GONE);
         }
 
@@ -388,24 +389,25 @@ public class SynchronizationFragment extends IvyBaseFragment
                         syncStatus(1);
                     }
                 });
+
         if (bmodel.configurationMasterHelper.IS_RTR_WISE_DOWNLOAD) {
             selectedRetailerDownloadCheckBox.setVisibility(View.VISIBLE);
         }
 
 
-        tvwstatus = (TextView) view.findViewById(R.id.status);
+        tvwstatus = view.findViewById(R.id.status);
 
-        sync = (Button) view.findViewById(R.id.startsync);
+        sync = view.findViewById(R.id.startsync);
         sync.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         sync.setOnClickListener(this);
 
 
-        download = (Button) view.findViewById(R.id.download);
+        download = view.findViewById(R.id.download);
         download.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         download.setOnClickListener(this);
 
 
-        backDateSelection = (Button) view.findViewById(R.id.downloaddate);
+        backDateSelection = view.findViewById(R.id.downloaddate);
         if (bmodel.configurationMasterHelper.IS_ENABLE_BACKDATE_REPORTING) {
             backDateSelection.setVisibility(View.VISIBLE);
         }
@@ -427,7 +429,7 @@ public class SynchronizationFragment extends IvyBaseFragment
             }
         });
 
-        Button close = (Button) view.findViewById(R.id.syncButtonBack);
+        Button close = view.findViewById(R.id.syncButtonBack);
         close.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), HomeScreenActivity.class));
@@ -438,17 +440,17 @@ public class SynchronizationFragment extends IvyBaseFragment
         txtUserName.setText(bmodel.userMasterHelper.getUserMasterBO()
                 .getLoginName());
 
-        TextView closeDay_tv = (TextView) view.findViewById(R.id.close_day_tv);
+        TextView closeDay_tv = view.findViewById(R.id.close_day_tv);
         closeDay_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        TextView close_date = (TextView) view.findViewById(R.id.closingDay);
+        TextView close_date = view.findViewById(R.id.closingDay);
         close_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         close_date.setText(DateUtil
                 .convertFromServerDateToRequestedFormat(
                         bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                         ConfigurationMasterHelper.outDateFormat));//changed bcz close_date shows current date, replaced to show downloaded date
 
-        Button gprsAvailablityButton = (Button) view.findViewById(R.id.gprsAvailablityButton);
+        Button gprsAvailablityButton = view.findViewById(R.id.gprsAvailablityButton);
         if (isOnline())
             gprsAvailablityButton.setBackgroundDrawable(ContextCompat
                     .getDrawable(getActivity(), R.drawable.greenball));
@@ -517,9 +519,9 @@ public class SynchronizationFragment extends IvyBaseFragment
         int background_color = type_arr.getColor(R.styleable.MyTextView_buttonBackground, 0);
         if (txtPassword.getText().toString().length() > 0) {
             if (btn_count == 1) {
-                if (bmodel.synchronizationHelper.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
+                if ((bmodel.synchronizationHelper.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
                         && (bmodel.synchronizationHelper
-                        .countImageFiles() > 0) ? true : (dayCloseCheckBox.isChecked() ? true : false)) {
+                        .countImageFiles() > 0)) || (dayCloseCheckBox.isChecked())) {
                     sync.setBackgroundResource(R.drawable.round_light);
                     GradientDrawable drawable = (GradientDrawable) sync.getBackground();
                     drawable.setColor(background_color);
@@ -562,9 +564,12 @@ public class SynchronizationFragment extends IvyBaseFragment
     @Override
     public void onResume() {
         super.onResume();
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
         setDayCloseEnableDisable();
+
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -630,10 +635,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     private boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        return false;
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -831,7 +833,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                         alertDialog.show();
                         presenter.uploadImages();
 
-                        updateUploadedTime();
+                        lastSyncTimeHelper.updateUploadedTime();
+                        updateLastTransactionTimeInView();
 
 
                     } else {
@@ -845,7 +848,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                         sdsd = new SyncDownloadStatusDialog(getActivity(), getResources().getString(
                                 R.string.data_upload_completed_sucessfully), displaymetrics);
                         sdsd.show();
-                        updateUploadedTime();
+                        lastSyncTimeHelper.updateUploadedTime();
+                        updateLastTransactionTimeInView();
                     }
                     break;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
@@ -1002,7 +1006,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                     if (!isClicked) {
                                         isClicked = true;
                                         new CheckNewVersionTask()
-                                                .execute(new Integer[]{0});
+                                                .execute(0);
                                     }
 
                                 } else {
@@ -1498,7 +1502,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 if (!isClicked) {
                                     isClicked = true;
                                     new CheckNewVersionTask()
-                                            .execute(new Integer[]{0});
+                                            .execute(0);
                                 }
 
                             } else {
@@ -1559,7 +1563,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 ConfigurationMasterHelper.outDateFormat));
                         edt.putString("time", SDUtil.now(SDUtil.TIME));
                         edt.apply();
-                        updateDownloadTime();
+                        lastSyncTimeHelper.updateDownloadTime();
+                        updateLastTransactionTimeInView();
                     }
                 } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     //outelet Performac
@@ -1590,7 +1595,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 ConfigurationMasterHelper.outDateFormat));
                         edt.putString("time", SDUtil.now(SDUtil.TIME));
                         edt.apply();
-                        updateDownloadTime();
+                        lastSyncTimeHelper.updateDownloadTime();
+                        updateLastTransactionTimeInView();
                     }
                 } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     new UpdateDistributorFinish().execute();
@@ -1648,7 +1654,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                 ConfigurationMasterHelper.SECRET_KEY);
-        s3 = new AmazonS3Client(myCredentials);
+        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
         s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
         transferUtility = new TransferUtility(s3, getActivity());
     }
@@ -2093,7 +2099,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.custom_alert_dialog,
                 (ViewGroup) getActivity().findViewById(R.id.layout_root));
-        TextView messagetv = (TextView) layout.findViewById(R.id.text);
+        TextView messagetv = layout.findViewById(R.id.text);
         messagetv.setText(message);
         builder.setView(layout);
         builder.setCancelable(false);
@@ -2206,7 +2212,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 bmodel.userNameTemp = userName;
                 bmodel.passwordTemp = password;
                 new CheckNewVersionTask()
-                        .execute(new Integer[]{0});
+                        .execute(0);
             } else {
                 if (output.equals("E27")) {
                     showDialog();
@@ -2344,44 +2350,30 @@ public class SynchronizationFragment extends IvyBaseFragment
             withPhotosCheckBox.setChecked(false);
     }
 
-    private void updateUploadedTime() {
-        try {
-            SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
-            edt.putString("uploadDate",
-                    SDUtil.now(SDUtil.DATE_GLOBAL));
-            edt.putString("uploadTime", SDUtil.now(SDUtil.TIME));
-            edt.apply();
 
-            updateLastTransactionTimeInView();
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-    }
 
-    private void updateDownloadTime() {
-        try {
-            SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
-            edt.putString("downloadDate",
-                    SDUtil.now(SDUtil.DATE_GLOBAL));
-            edt.putString("downloadTime", SDUtil.now(SDUtil.TIME));
-            edt.apply();
-            updateLastTransactionTimeInView();
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-    }
-
+    /**
+     * Upload last download and upload time in UI
+     */
     private void updateLastTransactionTimeInView() {
         try {
             TextView textView = view.findViewById(R.id.text_last_sync);
             textView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            if (!mLastUploadAndDownloadPref.getString("downloadTime", "").equals("")) {
-                String download = "Last Download: " + DateUtil.convertFromServerDateToRequestedFormat(mLastUploadAndDownloadPref.getString("downloadDate", ""), ConfigurationMasterHelper.outDateFormat)
-                        + " " + mLastUploadAndDownloadPref.getString("downloadTime", "");
+
+            if (!lastSyncTimeHelper.getLastDownloadTime().equals("")) {
+
+                String download = getResources().getString(R.string.last_download_on) +
+                        DateUtil.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastDownloadDate(),
+                                ConfigurationMasterHelper.outDateFormat)
+                        + " " + lastSyncTimeHelper.getLastDownloadTime();
+
                 String upload = "";
-                if (!mLastUploadAndDownloadPref.getString("uploadTime", "").equals("")) {
-                    upload = "Last Upload: " + DateUtil.convertFromServerDateToRequestedFormat(mLastUploadAndDownloadPref.getString("uploadDate", ""), ConfigurationMasterHelper.outDateFormat)
-                            + " " + mLastUploadAndDownloadPref.getString("uploadTime", "");
+                if (!lastSyncTimeHelper.getLastUploadTime().equals("")) {
+                    upload = getResources().getString(R.string.last_upload_on) +
+                            DateUtil.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastUplaodDate(),
+                                    ConfigurationMasterHelper.outDateFormat)
+                            + " " + lastSyncTimeHelper.getLastUploadTime();
+
                 }
                 String value = download + (upload.equals("") ? "" : "\n" + upload);
                 textView.setText(value);

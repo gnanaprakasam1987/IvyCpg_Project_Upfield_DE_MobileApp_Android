@@ -44,9 +44,9 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             , UploadHelper mUploadHelper, VanUnLoadModuleHelper mVanUnloadHelper) {
         this.mBModel = mBModel;
         this.mUploadHelper = mUploadHelper;
-        this.mVanUnloadHelper=mVanUnloadHelper;
+        this.mVanUnloadHelper = mVanUnloadHelper;
         this.mContext = mContext;
-        this.view=view;
+        this.view = view;
 
     }
 
@@ -63,61 +63,54 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
 
     @Override
     public void updateDayCloseStatus(boolean isDayClosed) {
-        this.isDayClosed=isDayClosed;
+        this.isDayClosed = isDayClosed;
     }
 
     @Override
     public void updateIsWithImageStatus(boolean isWithImage) {
-        this.isWithImage=isWithImage;
+        this.isWithImage = isWithImage;
     }
 
     @Override
     public void validateAndUpload() {
 
-        if (mUploadHelper.isAttendanceCompleted(mContext.getApplicationContext())) {
-            if (mBModel.isOnline()) {
+        if (!mUploadHelper.isAttendanceCompleted(mContext.getApplicationContext())) {
+            view.showAttendanceNotCompletedToast();
+            return;
+        }
 
-                if (!mBModel.configurationMasterHelper.IS_INVOICE
-                        || !mBModel.isOrderExistToCreateInvoiceAll()) {
+        if (!mBModel.isOnline()) {
+            view.showNoInternetToast();
+            return;
+        }
 
-                    if (mBModel.synchronizationHelper.checkDataForSync() || mBModel.synchronizationHelper.checkSIHTable()
-                            || mBModel.synchronizationHelper.checkStockTable()) {
+        if (mBModel.configurationMasterHelper.IS_INVOICE
+                && mBModel.isOrderExistToCreateInvoiceAll()) {
+            view.showOrderExistWithoutInvoice();
+            return;
+        }
 
-                        if (mBModel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT) {
-                            new LoadRetailerIsVisited().execute();
-                        } else {
-                                int dbImageCount = mBModel.synchronizationHelper.countImageFiles();
-                                if (mBModel.configurationMasterHelper.photocount >= 10 && (((double) dbImageCount / mBModel.configurationMasterHelper.photocount) * 100) >= mBModel.configurationMasterHelper.photopercent) {
-                                    view.showAlertImageUploadRecommended();
+        if (mBModel.synchronizationHelper.checkDataForSync() || mBModel.synchronizationHelper.checkSIHTable()
+                || mBModel.synchronizationHelper.checkStockTable()) {
 
-                                }
-                                else {
-                                    upload();
-                                }
-                        }
-
-                    } else if ((isWithImage || !mBModel.configurationMasterHelper.IS_SYNC_WITH_IMAGES) && mBModel.synchronizationHelper.countImageFiles() > 0) {
-                        uploadImages();
-                    } else {
-                        view.showAlertNoUnSubmittedOrder();
-
-                    }
-
-
+            if (mBModel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT) {
+                new LoadRetailerIsVisited().execute();
+            } else {
+                int dbImageCount = mBModel.synchronizationHelper.countImageFiles();
+                if (mBModel.configurationMasterHelper.photocount >= 10 && (((double) dbImageCount / mBModel.configurationMasterHelper.photocount) * 100) >= mBModel.configurationMasterHelper.photopercent) {
+                    view.showAlertImageUploadRecommended();
 
                 } else {
-                    view.showOrderExistWithoutInvoice();
-
+                    upload();
                 }
-
-            } else {
-                view.showNoInternetToast();
-
             }
 
+        } else if ((isWithImage || !mBModel.configurationMasterHelper.IS_SYNC_WITH_IMAGES) && mBModel.synchronizationHelper.countImageFiles() > 0) {
+            // If user selected with images or if user section disabled
+            // And image count is > 0 then
+            uploadImages();
         } else {
-            view.showAttendanceNotCompletedToast();
-
+            view.showAlertNoUnSubmittedOrder();
         }
     }
 
@@ -138,7 +131,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
                 || (isWithImage && mBModel.synchronizationHelper
                 .countImageFiles() > 0)) {
 
-           upload();
+            upload();
 
 
         } else {
@@ -146,7 +139,6 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
 
         }
     }
-
 
 
     class LoadRetailerIsVisited extends AsyncTask<Integer, Integer, Boolean> {
@@ -180,9 +172,8 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
                     && !isDayClosed) {
                 view.showRetailerSelectionScreen(isVisitedRetailerList);
 
-            }
-            else {
-             upload();
+            } else {
+                upload();
             }
 
         }
@@ -201,10 +192,9 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
                 && !isDayClosed) {
             startSync(RETAILER_WISE_UPLOAD);
-        }
-        else if (mBModel.synchronizationHelper.checkDataForSync()) {
+        } else if (mBModel.synchronizationHelper.checkDataForSync()) {
             startSync(UPLOAD_ALL);
-        }else {
+        } else {
             view.showNoDataExist();
         }
     }
@@ -219,27 +209,27 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         if (mBModel.mAttendanceHelper.checkMenuInOut(mContext.getApplicationContext()))
             mBModel.mAttendanceHelper.updateAttendaceDetailInTime(mContext.getApplicationContext());
 
-       view.showProgressUploading();
+        view.showProgressUploading();
 
         if (callFlag == UPLOAD_ALL)
-            new MyThread((Activity)mContext, DataMembers.SYNCUPLOAD,isFromCallAnalysis).start();
+            new MyThread((Activity) mContext, DataMembers.SYNCUPLOAD, isFromCallAnalysis).start();
         else if (callFlag == RETAILER_WISE_UPLOAD)
-            new MyThread((Activity)mContext, DataMembers.SYNCUPLOADRETAILERWISE,isFromCallAnalysis).start();
+            new MyThread((Activity) mContext, DataMembers.SYNCUPLOADRETAILERWISE, isFromCallAnalysis).start();
         else if (callFlag == UPLOAD_WITH_IMAGES) {
             if (mBModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
-                new MyThread((Activity)mContext,
-                        DataMembers.AMAZONIMAGE_UPLOAD,isFromCallAnalysis).start();
+                new MyThread((Activity) mContext,
+                        DataMembers.AMAZONIMAGE_UPLOAD, isFromCallAnalysis).start();
             } else {
                 // Other uplaod is not supported.
             }
         } else if (callFlag == UPLOAD_STOCK_IN_HAND)
-            new MyThread((Activity)mContext, DataMembers.SYNCSIHUPLOAD,isFromCallAnalysis).start();
+            new MyThread((Activity) mContext, DataMembers.SYNCSIHUPLOAD, isFromCallAnalysis).start();
         else if (callFlag == UPLOAD_STOCK_APPLY)
-            new MyThread((Activity)mContext, DataMembers.SYNCSTKAPPLYUPLOAD,isFromCallAnalysis).start();
+            new MyThread((Activity) mContext, DataMembers.SYNCSTKAPPLYUPLOAD, isFromCallAnalysis).start();
         else if (callFlag == 5)
-            new MyThread((Activity)mContext, DataMembers.SYNC_EXPORT,isFromCallAnalysis).start();
+            new MyThread((Activity) mContext, DataMembers.SYNC_EXPORT, isFromCallAnalysis).start();
         else if (callFlag == UPLOAD_LOYALTY_POINTS)
-            new MyThread((Activity)mContext, DataMembers.SYNCLYTYPTUPLOAD,isFromCallAnalysis).start();
+            new MyThread((Activity) mContext, DataMembers.SYNCLYTYPTUPLOAD, isFromCallAnalysis).start();
 
     }
 
