@@ -5039,7 +5039,6 @@ public class BusinessModel extends Application {
                 }
 
                 db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
-                setAvailablilityShare("0.0");
 
                 if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
                     calculateFitscoreandInsert(db, sum, DataMembers.FIT_STOCK);
