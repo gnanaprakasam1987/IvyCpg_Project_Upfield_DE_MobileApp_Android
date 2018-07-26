@@ -690,8 +690,8 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
-           // appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-           // appComponent.inject(this);
+            // appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+            // appComponent.inject(this);
 
             mApplicationComponent = DaggerIvyAppComponent.builder()
                     .ivyAppModule(new IvyAppModule(this))
@@ -1419,7 +1419,7 @@ public class BusinessModel extends Application {
                             + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
-                            + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent"
+                            + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,SM.supplierTaxLocId as SupplierTaxLocId"
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
@@ -1606,6 +1606,8 @@ public class BusinessModel extends Application {
                     retailer.setRegion(c.getString(c.getColumnIndex("Region")));
                     retailer.setCountry(c.getString(c.getColumnIndex("Country")));
                     retailer.setSbdPercent(c.getFloat(c.getColumnIndex("sbdDistPercent"))); // updated sbd percentage from history and ordered details
+                    retailer.setRetailerTaxLocId(c.getInt(c.getColumnIndex("RetailerTaxLocId")));
+                    retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -6439,7 +6441,7 @@ public class BusinessModel extends Application {
                 sb.append("select did,dname,type,0,parentid from DistributorMaster ");
 
             } else {
-                sb.append("select sid,sname,stype,isPrimary,parentid,creditlimit from Suppliermaster ");
+                sb.append("select sid,sname,stype,isPrimary,parentid,creditlimit,supplierTaxLocId from Suppliermaster ");
                 sb.append("where rid=" + QT(retailerMasterBO.getRetailerID()));
                 sb.append(" or rid= 0 order by isPrimary desc");
             }
@@ -6459,6 +6461,8 @@ public class BusinessModel extends Application {
 
                     if (c.getColumnCount() == 6)
                         supplierMasterBO.setCreditLimit(c.getFloat(5));
+
+                    supplierMasterBO.setSupplierTaxLocId(c.getInt(6));
 
                     mSupplierList.add(supplierMasterBO);
                 }

@@ -917,6 +917,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         mSupplierList.get(mDefaultSupplierSelection));
                 bmodel.getRetailerMasterBO().setDistributorId(mSupplierList.get(mDefaultSupplierSelection).getSupplierID());
                 bmodel.getRetailerMasterBO().setDistParentId(mSupplierList.get(mDefaultSupplierSelection).getDistParentID());
+                bmodel.getRetailerMasterBO().setSupplierTaxLocId(mSupplierList.get(mDefaultSupplierSelection).getSupplierTaxLocId());
                 retailerCodeTxt.setText(mSupplierList.get(mDefaultSupplierSelection).getSupplierName());
             }
         } catch (Exception ex) {
@@ -4120,6 +4121,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                 supplierBo);
                                         bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                                         bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                        bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
                                         bmodel.updateRetailerWiseSupplierType(supplierBo
                                                 .getSupplierID());
                                         retailerCodeTxt.setText(supplierBo.getSupplierName());

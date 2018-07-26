@@ -1630,6 +1630,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                             .getItem(which);
                                     bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                                     bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                    bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
                                     bmodel.updateGroupIdForRetailer();
 
                                     dialog.dismiss();
