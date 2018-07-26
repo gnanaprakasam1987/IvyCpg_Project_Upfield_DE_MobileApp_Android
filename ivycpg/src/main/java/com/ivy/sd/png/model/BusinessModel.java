@@ -99,6 +99,7 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.bo.TempSchemeBO;
@@ -572,13 +573,13 @@ public class BusinessModel extends Application {
         return slist;
     }
 
-    public StoreWiseDiscountBO getDiscountlist() {
+   /* public StoreWiseDiscountBO getDiscountlist() {
         return discountlist;
     }
 
     public void setDiscountlist(StoreWiseDiscountBO discountlist) {
         this.discountlist = discountlist;
-    }
+    }*/
 
     public String getNote() {
         return note;

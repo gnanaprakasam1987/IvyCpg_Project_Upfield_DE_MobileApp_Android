@@ -103,7 +103,7 @@ public interface IProfileEditContract {
 
         void downloadRetailerFlexValues( String type);
 
-         boolean IS_BAIDU_MAP();
+        boolean IS_BAIDU_MAP();
 
     }
 }

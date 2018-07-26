@@ -775,14 +775,14 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals(PROFILE_13) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_13) && flag == 1 && Order == 1) {
                     try {
                         String title = "";
 
                         locid = retailerObj.getLocationId();
                         if (locid != 0) {
-                            String[] loc1 = bmodel.mRetailerHelper.getParentLevelName(
-                                    locid, false);
+                            String[] loc1 = bmodel.mRetailerHelper.getParentLevelName(locid, false);
                             title = loc1[2];
                         }
 
@@ -797,7 +797,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (configCode.equals(PROFILE_14) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_14) && flag == 1 && Order == 1) {
 
                     try {
                         String title = "";
