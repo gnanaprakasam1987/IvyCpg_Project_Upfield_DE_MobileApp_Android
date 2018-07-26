@@ -246,7 +246,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     }
 
     private void setLocationAdapter() {
-        locationAdapter = new ArrayAdapter<PhotoCaptureLocationBO>(this, android.R.layout.select_dialog_singlechoice,new ArrayList<PhotoCaptureLocationBO>()){
+        locationAdapter = new ArrayAdapter<PhotoCaptureLocationBO>(this, android.R.layout.select_dialog_singlechoice){
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -334,7 +334,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             mSelectedLocationId = locationBOS.get(photoCapturePresenter.getGlobalLocationIndex()).getLocationId();
             selectedLocationName = locationBOS.get(photoCapturePresenter.getGlobalLocationIndex()).getLocationName();
         } else if (!locationBOS.isEmpty()) {
-            if (locationBOS.size() > 2) {
+            if (locationBOS.size() >= 2) {
+                setLocationAdapter();
                 locationAdapter.clear();
                 for (PhotoCaptureLocationBO bo : locationBOS) {
                     locationAdapter.add(bo);
@@ -655,7 +656,6 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             else {
                 menu.findItem(R.id.menu_location_filter).setVisible(true);
-                setLocationAdapter();
             }
 
         } catch (Exception e) {

@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.DataMembers;
@@ -122,6 +123,7 @@ public class PhotoGridAdapter extends BaseAdapter {
         Glide.with(mContext).load(
                 mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
                         + DataMembers.photoFolderName + "/" + photoCaptureLocationBOS.get(position).getImageName())
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .centerCrop()
                 .error(R.drawable.no_image_available)
                 .override(width / 2, height / 4)
