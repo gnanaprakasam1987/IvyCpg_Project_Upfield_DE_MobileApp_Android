@@ -1477,7 +1477,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_KPI_CALENDAR;
 
     private static final String CODE_GST_TAX_LOCATION_TYPE = "TAX_LOCATION_TYPE";
-    public boolean IS_LOCATION_TAX_GST;
+    public boolean IS_TAX_LOC;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2806,7 +2806,7 @@ public class ConfigurationMasterHelper {
                 while (c.moveToNext()) {
                     String RField = c.getString(0);
                     if (RField.equals("TAX_LOC")) {
-                        IS_LOCATION_TAX_GST = true;
+                        IS_TAX_LOC = true;
                     }
                 }
             }

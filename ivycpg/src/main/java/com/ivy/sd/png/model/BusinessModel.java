@@ -1419,7 +1419,8 @@ public class BusinessModel extends Application {
                             + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
-                            + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,SM.supplierTaxLocId as SupplierTaxLocId"
+                            + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId" : "0 as SupplierTaxLocId")
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
@@ -3920,7 +3921,7 @@ public class BusinessModel extends Application {
                 while (c.moveToNext()) {
                     isAmazonUpload = true;
                 }
-            c.close();
+                c.close();
             }
             c = null;
 
@@ -3931,7 +3932,7 @@ public class BusinessModel extends Application {
                     while (c.moveToNext()) {
                         DataMembers.img_Down_URL = c.getString(0);
                     }
-                c.close();
+                    c.close();
                 }
             } else {
                 c = db
@@ -3940,7 +3941,7 @@ public class BusinessModel extends Application {
                     while (c.moveToNext()) {
                         DataMembers.img_Down_URL = c.getString(0) + "/";
                     }
-                c.close();
+                    c.close();
                 }
             }
             db.closeDB();
@@ -3973,7 +3974,7 @@ public class BusinessModel extends Application {
                             DataMembers.PLANOGRAM);
 
                 }
-            c.close();
+                c.close();
             }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL FROM DigitalContentMaster");
@@ -3983,7 +3984,7 @@ public class BusinessModel extends Application {
                             DataMembers.img_Down_URL + "" + c.getString(0),
                             DataMembers.DIGITALCONTENT);
                 }
-            c.close();
+                c.close();
             }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL FROM App_ImageInfo");
@@ -3993,7 +3994,7 @@ public class BusinessModel extends Application {
                             DataMembers.img_Down_URL + "" + c.getString(0),
                             DataMembers.APP_DIGITAL_CONTENT);
                 }
-            c.close();
+                c.close();
             }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL FROM MVPBadgeMaster");
@@ -4003,7 +4004,7 @@ public class BusinessModel extends Application {
                             DataMembers.img_Down_URL + "" + c.getString(0),
                             DataMembers.MVP);
                 }
-            c.close();
+                c.close();
             }
 
             c = db.selectSQL("SELECT DISTINCT ImagePath FROM LoyaltyBenefits");
