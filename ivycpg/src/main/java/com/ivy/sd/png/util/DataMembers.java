@@ -62,7 +62,7 @@ public class DataMembers {
     public static final String actPlanning = "Planning";
     public static final String actPhotocapture = "PhotoCapture";
     public static final String actHomeScreenTwo = "HomeScreenTwo";
-    public static final String actSynchronization = "Synchronization";
+    //public static final String actSynchronization = "Synchronization";
     public static final String actNewRetailer = "NewRetailer";
     public static final String actDigitalContent = "DigitalContent";
     public static final String actCollection = "CollectionScreen";
