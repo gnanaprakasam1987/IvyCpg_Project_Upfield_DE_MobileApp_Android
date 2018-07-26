@@ -172,4 +172,5 @@
     <string name="please_enter">Please Enter</string>
     <string name="last_download_on">Last Download: </string>
     <string name="last_upload_on">Last Upload: </string>
+    <string name="select_category">Select Category</string>
 </resources>

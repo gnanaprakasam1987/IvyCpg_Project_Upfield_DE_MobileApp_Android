@@ -469,6 +469,37 @@ public class ReasonHelper {
         return reasonSalesReturnMaster;
     }
 
+    public ArrayList<StandardListBO> getReasonSalesReturnCategory() {
+        ArrayList<StandardListBO> categoryList = new ArrayList<>();
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT A.ListId, A.ListName, A.ListCode FROM StandardListMaster A"
+                    + "  Where (A.ListCode = '" + StandardListMasterConstants.SALES_RETURN_NONSALABLE_REASON_TYPE
+                    + "' OR A.ListCode = '" + StandardListMasterConstants.SALES_RETURN_SALABLE_REASON_TYPE + "') and A.ListType = 'REASON_TYPE' ";
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                categoryList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    StandardListBO category = new StandardListBO();
+                    category.setListID(c.getString(0));
+                    category.setListName(c.getString(1));
+                    category.setListCode(c.getString(2));
+                    categoryList.add(new StandardListBO(category));
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+
+        return categoryList;
+    }
+
+
     public void downloadClosecallReasonList() {
         try {
             clcrReason = new ArrayList<>();
@@ -717,8 +748,8 @@ public class ReasonHelper {
 
 
     public ArrayList<ReasonMaster> getRemarksType() {
-        if(remarksType==null){
-            remarksType=new ArrayList<>();
+        if (remarksType == null) {
+            remarksType = new ArrayList<>();
         }
         return remarksType;
     }
@@ -748,8 +779,8 @@ public class ReasonHelper {
     }
 
     public ArrayList<ReasonMaster> getShipMentType() {
-        if(shipmentType==null){
-            shipmentType=new ArrayList<>();
+        if (shipmentType == null) {
+            shipmentType = new ArrayList<>();
         }
         return shipmentType;
     }
@@ -780,8 +811,8 @@ public class ReasonHelper {
 
 
     public ArrayList<ReasonMaster> getPayTermType() {
-        if(paymentType==null){
-            paymentType=new ArrayList<>();
+        if (paymentType == null) {
+            paymentType = new ArrayList<>();
         }
         return paymentType;
     }
@@ -811,8 +842,8 @@ public class ReasonHelper {
     }
 
     public ArrayList<ReasonMaster> getDistributionChannelType() {
-        if(distributionChannelType==null){
-            distributionChannelType=new ArrayList<>();
+        if (distributionChannelType == null) {
+            distributionChannelType = new ArrayList<>();
         }
         return distributionChannelType;
     }
