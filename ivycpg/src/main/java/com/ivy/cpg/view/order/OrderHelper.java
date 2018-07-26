@@ -545,6 +545,11 @@ public class OrderHelper {
                     }
                 }
 
+                // Deleting existing order
+                if (hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())) {
+                    uid = deleteOrderTransactions(db, isVanSales, uid, mContext);
+                }
+
                 String id = businessModel.userMasterHelper.getUserMasterBO().getUserid()
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS);
                 uid = businessModel.QT(id);
