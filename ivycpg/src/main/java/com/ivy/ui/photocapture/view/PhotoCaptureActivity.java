@@ -136,7 +136,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     private int mSelectedProductId = 0, mSelectedTypeId = 0, mSelectedLocationId = 0, selectedType, selectedProduct;
 
-    private boolean isFromChild, isPLType;
+    private boolean isFromChild, isPLType, isPhotoDeleted;
 
     private String title, imageName;
 
@@ -265,25 +265,30 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
                 totalImgList.add(imageName);
 
-                if (!isPLType)
-                    photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString(), selectedProductName, selectedTypeName, selectedLocationName);
-                else
-                    photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName
-                            , feedbackEditText.getText().toString(), skuNameEditText.getText().toString(), abvEditText.getText().toString(),
-                            lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString(), selectedProductName, selectedTypeName, selectedLocationName);
+                saveDataToLocal();
 
                 handleNoImage();
 
                 setImageToView(imageName);
             }
         } else if (requestCode == GALLERY_REQUEST_CODE) {
-            if (data != null && data.getExtras().containsKey("edited_data")) {
+            if (data != null && data.getExtras() != null && data.getExtras().containsKey("edited_data") && photoCapturePresenter.getEditedPhotoListData().size() != ((HashMap<String, PhotoCaptureLocationBO>) data.getExtras().getSerializable("edited_data")).size()) {
+                isPhotoDeleted = true;
                 photoCapturePresenter.setEditedPhotosListData((HashMap<String, PhotoCaptureLocationBO>) data.getExtras().getSerializable("edited_data"));
                 handleSaveButton();
             }
 
 
         }
+    }
+
+    private void saveDataToLocal() {
+        if (!isPLType)
+            photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName, feedbackEditText.getText().toString(), selectedProductName, selectedTypeName, selectedLocationName);
+        else
+            photoCapturePresenter.updateLocalData(mSelectedProductId, mSelectedTypeId, mSelectedLocationId, imageName
+                    , feedbackEditText.getText().toString(), skuNameEditText.getText().toString(), abvEditText.getText().toString(),
+                    lotCodeEditText.getText().toString(), seqNumberEditText.getText().toString(), selectedProductName, selectedTypeName, selectedLocationName);
     }
 
     @Override
@@ -419,12 +424,14 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     @OnClick(R.id.save_btn)
     public void onSaveClicked() {
-        if (totalImgList.size() == 0) {
+        if (totalImgList.size() == 0 && !isPhotoDeleted) {
             showAlert("", getString(R.string.take_photos_to_save));
         } else {
             if (isPLType && totalImgList.get(totalImgList.size() - 1).contains(mSelectedTypeId + "_" + mSelectedProductId) && validatePLType())
                 return;
 
+            if (mSelectedProductId != 0 && mSelectedTypeId != 0)
+                saveDataToLocal();
             photoCapturePresenter.onSaveButtonClick();
         }
 
@@ -532,6 +539,13 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             String key = mSelectedProductId + "_" + mSelectedTypeId + "_" + mSelectedLocationId;
             if (photoCapturePresenter.getEditedPhotoListData().containsKey(key)) {
                 feedbackEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getFeedback());
+                feedbackEditText.setSelection(feedbackEditText.getText().length());
+                if (isPLType) {
+                    skuNameEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getSKUName());
+                    seqNumberEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getSequenceNO());
+                    abvEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getAbv());
+                    lotCodeEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getLotCode());
+                }
                 if (isNullOrEmpty(photoCapturePresenter.getEditedPhotoListData().get(key).getImageName())) {
                     handleNoImage();
                 } else {

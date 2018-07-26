@@ -69,7 +69,6 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
                     return photoCaptureProductBOS;
                 } catch (Exception ignored) {
-                    Log.d("Test","Exception");
                 } finally {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
@@ -125,7 +124,6 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                         return photoCaptureLocationBOS;
                     }
                 } catch (Exception ignored) {
-                    Log.d("Test","Exception");
                 } finally {
                     if (mDbUtil != null)
                         mDbUtil.closeDB();
@@ -175,8 +173,8 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                         photoCaptureLocationBOS.add(locations);
                     }
 
+                    return photoCaptureLocationBOS;
                 } catch (Exception ignored) {
-                    Log.d("Test","Exception");
                 } finally {
                     mDbUtil.closeDB();
                 }

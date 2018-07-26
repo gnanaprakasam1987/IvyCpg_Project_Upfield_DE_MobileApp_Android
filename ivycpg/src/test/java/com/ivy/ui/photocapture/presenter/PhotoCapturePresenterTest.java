@@ -14,11 +14,13 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.PhotoCaptureTestDataFactory;
 import com.ivy.ui.photocapture.data.PhotoCaptureDataManager;
+import com.ivy.ui.photocapture.data.PhotoCaptureDataManagerImpl;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -36,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -78,6 +81,7 @@ public class PhotoCapturePresenterTest {
 
     @Test
     public void testFetchData() {
+
 
         given(mDataManager.getRetailMaster()).willReturn(mock(RetailerMasterBO.class));
 
