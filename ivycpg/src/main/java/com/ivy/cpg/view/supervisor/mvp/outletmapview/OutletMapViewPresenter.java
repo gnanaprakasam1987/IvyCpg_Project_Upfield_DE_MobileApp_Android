@@ -107,20 +107,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         retailerList.clear();
         for (RetailerBo retailerBo : retailerMasterHashmap.values()){
             retailerList.add(retailerBo);
-
-            if (retailerBo.getMasterLatitude() != 0 && retailerBo.getMasterLongitude() != 0) {
-
-                LatLng destLatLng = new LatLng(retailerBo.getMasterLatitude(), retailerBo.getMasterLongitude());
-
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .flat(true)
-                        .title(retailerBo.getRetailerName())
-                        .position(destLatLng)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey))
-                        .snippet(String.valueOf(retailerBo.getRetailerId()));
-
-                outletMapView.setRetailerMarker(retailerBo,markerOptions);
-            }
+            setMarker(retailerBo);
         }
         outletMapView.setOutletListAdapter(retailerList);
 
@@ -136,20 +123,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         for(RetailerBo retailerBo : retailerMasterHashmap.values()){
             if(retailerBo.getIsOrdered() || retailerBo.isVisited()) {
                 retailerList.add(retailerBo);
-
-                if (retailerBo.getMasterLatitude() != 0 && retailerBo.getMasterLongitude() != 0) {
-
-                    LatLng destLatLng = new LatLng(retailerBo.getMasterLatitude(), retailerBo.getMasterLongitude());
-
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .flat(true)
-                            .title(retailerBo.getRetailerName())
-                            .position(destLatLng)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey))
-                            .snippet(String.valueOf(retailerBo.getRetailerId()));
-
-                    outletMapView.setRetailerMarker(retailerBo, markerOptions);
-                }
+                setMarker(retailerBo);
             }
         }
 
@@ -165,22 +139,9 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         outletMapView.clearMap();
         retailerList.clear();
         for(RetailerBo retailerBo : retailerMasterHashmap.values()){
-            if(!retailerBo.getIsOrdered() || retailerBo.isVisited()) {
+            if(!retailerBo.getIsOrdered() && !retailerBo.isVisited()) {
                 retailerList.add(retailerBo);
-
-                if (retailerBo.getMasterLatitude() != 0 && retailerBo.getMasterLongitude() != 0) {
-
-                    LatLng destLatLng = new LatLng(retailerBo.getMasterLatitude(), retailerBo.getMasterLongitude());
-
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .flat(true)
-                            .title(retailerBo.getRetailerName())
-                            .position(destLatLng)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey))
-                            .snippet(String.valueOf(retailerBo.getRetailerId()));
-
-                    outletMapView.setRetailerMarker(retailerBo, markerOptions);
-                }
+                setMarker(retailerBo);
             }
         }
 
@@ -267,19 +228,14 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
         if (documentSnapshotBo != null) {
 
-            LatLng destLatLng = new LatLng(documentSnapshotBo.getLatitude(), documentSnapshotBo.getLongitude());
-
             //Update retailer info in master list
 
             RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
-            BitmapDescriptor icon;
             if(retailerMasterBo.getIsOrdered() || documentSnapshotBo.getIsOrdered()) {
-                icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
                 retailerMasterBo.setIsOrdered(true);
             }
             else {
-                icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
                 retailerMasterBo.setIsOrdered(documentSnapshotBo.getIsOrdered());
             }
 
@@ -301,21 +257,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
                 retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
                 retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
 
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .flat(true)
-                        .title(retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getTimeIn())
-                        .position(destLatLng)
-                        .icon(icon)
-                        .snippet(String.valueOf(retailerMasterBo.getRetailerId()));
-
-                outletMapView.setRetailerMarker(retailerMasterBo,markerOptions);
-
             } else {
-
-                String title = retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getTimeIn();
-
-                retailerMasterBo.getMarker().setTitle(title);
-                retailerMasterBo.getMarker().setIcon(icon);
 
                 retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
                 retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
@@ -366,15 +308,17 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         return retailerVisitDetailsByRId.get(userId);
     }
 
-    public int getTabPosition() {
+    private int getTabPosition() {
         return tabPosition;
     }
 
-    public void setTabPosition(int tabPosition) {
+    void setTabPosition(int tabPosition) {
         this.tabPosition = tabPosition;
+
+        setTabMapValues();
     }
 
-    public void setTabMapValues(){
+    private void setTabMapValues(){
 
         switch (getTabPosition()) {
             case 0:
@@ -386,6 +330,45 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
             case 2:
                 setUnbilledOutlet();
                 break;
+        }
+    }
+
+    private void setMarker(RetailerBo retailerBo){
+
+        String title = retailerBo.getRetailerName() + "//" + retailerBo.getTimeIn();
+
+        BitmapDescriptor icon;
+        if(retailerBo.getIsOrdered() && retailerBo.isVisited())
+            icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
+        else if(!retailerBo.getIsOrdered() && retailerBo.isVisited())
+            icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
+        else
+            icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_grey);
+
+        if (retailerBo.getMasterLatitude() != 0 && retailerBo.getMasterLongitude() != 0) {
+
+            LatLng destLatLng = new LatLng(retailerBo.getMasterLatitude(), retailerBo.getMasterLongitude());
+
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .flat(true)
+                    .title(title)
+                    .position(destLatLng)
+                    .icon(icon)
+                    .snippet(String.valueOf(retailerBo.getRetailerId()));
+
+            outletMapView.setRetailerMarker(retailerBo,markerOptions);
+        }
+        else if (retailerBo.getLatitude() != 0 && retailerBo.getLongitude() != 0){
+            LatLng destLatLng = new LatLng(retailerBo.getLatitude(), retailerBo.getLongitude());
+
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .flat(true)
+                    .title(title)
+                    .position(destLatLng)
+                    .icon(icon)
+                    .snippet(String.valueOf(retailerBo.getRetailerId()));
+
+            outletMapView.setRetailerMarker(retailerBo,markerOptions);
         }
 
     }

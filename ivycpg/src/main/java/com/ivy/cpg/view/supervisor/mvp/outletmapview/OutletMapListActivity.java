@@ -170,8 +170,6 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         outletMapViewPresenter.setTabPosition(tabPos);
 
-        outletMapViewPresenter.setTabMapValues();
-
     }
 
     @Override
