@@ -8,14 +8,18 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -134,7 +138,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     private ArrayAdapter<PhotoCaptureLocationBO> locationAdapter;
 
-    private int mSelectedProductId = 0, mSelectedTypeId = 0, mSelectedLocationId = 0, selectedType, selectedProduct;
+    private int mSelectedProductId = 0, mSelectedTypeId = 0, mSelectedLocationId = 0, selectedType, selectedProduct, selectedLocation;
 
     private boolean isFromChild, isPLType, isPhotoDeleted;
 
@@ -242,8 +246,16 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     }
 
     private void setLocationAdapter() {
-        locationAdapter = new ArrayAdapter<>(this,
-                android.R.layout.select_dialog_singlechoice);
+        locationAdapter = new ArrayAdapter<PhotoCaptureLocationBO>(this, android.R.layout.select_dialog_singlechoice,new ArrayList<PhotoCaptureLocationBO>()){
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                CheckedTextView view = (CheckedTextView) super.getView(position, convertView, parent);
+                // Replace text with my own
+                view.setText(getItem(position).getLocationName());
+                return view;
+            }
+        };
     }
 
     private void handleDateButton(boolean isEnabled) {
@@ -328,6 +340,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                     locationAdapter.add(bo);
                 }
             }
+            selectedLocation=0;
             mSelectedLocationId = locationBOS.get(0).getLocationId();
             selectedLocationName = locationBOS.get(0).getLocationName();
         }
@@ -599,7 +612,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
         builder = new AlertDialog.Builder(this);
         builder.setTitle(null);
-        builder.setSingleChoiceItems(locationAdapter, 0,
+        builder.setSingleChoiceItems(locationAdapter, selectedLocation,
                 onLocationDialogClickListener);
 
         AppUtils.applyAlertDialogTheme(this, builder);
@@ -611,6 +624,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             PhotoCaptureLocationBO selectedId = locationAdapter
                     .getItem(item);
             resetData();
+            selectedLocation =item;
             if (selectedId != null) {
                 mSelectedLocationId = selectedId.getLocationId();
                 selectedLocationName = selectedId.getLocationName();
@@ -639,8 +653,10 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         try {
             if (photoCapturePresenter.isGlobalLocation() || photoCapturePresenter.getLocationBOS().size() < 2)
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
-            else
+            else {
+                menu.findItem(R.id.menu_location_filter).setVisible(true);
                 setLocationAdapter();
+            }
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -790,7 +806,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     /**
      * Alert dialog while moving back
      */
-    public void backButtonAlertDialog() {
+    private void backButtonAlertDialog() {
 
         showAlert("", getString(R.string.photo_capture_not_saved_go_back), new CommonDialog.PositiveClickListener() {
             @Override
