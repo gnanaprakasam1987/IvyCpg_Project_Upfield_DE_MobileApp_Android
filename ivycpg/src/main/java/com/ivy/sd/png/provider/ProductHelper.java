@@ -1298,7 +1298,7 @@ public class ProductHelper {
 
 
                         stringBuilder = new StringBuilder();
-                        stringBuilder.append("select P1.pid as productid from productmaster P1");
+                        stringBuilder.append("select PM.pid as productid from productmaster P1");
 
                         stringBuilder.append(" INNER JOIN ProductMaster PM ON PM.ParentHierarchy LIKE '%/' || P1.PID || '/%'"
                                 + " and PM.PLid =" + mContentLevelId);
