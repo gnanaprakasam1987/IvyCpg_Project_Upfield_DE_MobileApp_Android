@@ -73,7 +73,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ReportActivity extends BaseActivity implements
-        BrandDialogInterface, SellerListFragment.SellerSelectionInterface,FiveLevelFilterCallBack {
+        BrandDialogInterface, SellerListFragment.SellerSelectionInterface, FiveLevelFilterCallBack {
 
     private BusinessModel bmodel;
     private String fromMenu;
@@ -249,6 +249,7 @@ public class ReportActivity extends BaseActivity implements
                 StandardListMasterConstants.MENU_DAY_REPORT)) {
 
             //DailyReportFragmentNew dayFragment = new DailyReportFragmentNew();
+
             DayReportFragment dayFragment = new DayReportFragment();
             dayFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, dayFragment);

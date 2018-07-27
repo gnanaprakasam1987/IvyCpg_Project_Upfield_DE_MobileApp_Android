@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class SalesReturnReportAdapter extends RecyclerView.Adapter<SalesReturnRe
 
         holder.uid.setText(String.valueOf(returnReportBosList.get(position).getUId()));
         holder.retailerName.setText(String.valueOf(returnReportBosList.get(position).getRetailerName()));
-        holder.returnValue.setText(returnReportBosList.get(position).getReturnValue());
+        holder.returnValue.setText(SDUtil.format(returnReportBosList.get(position).getReturnValue(),2,0)+"");
         holder.lpc.setText(String.valueOf(returnReportBosList.get(position).getLpc()));
         (holder.divider).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }

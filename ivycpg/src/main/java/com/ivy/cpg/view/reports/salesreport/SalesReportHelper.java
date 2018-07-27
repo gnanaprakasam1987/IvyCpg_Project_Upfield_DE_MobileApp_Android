@@ -7,10 +7,8 @@ import android.database.Cursor;
 import com.ivy.cpg.view.reports.salesreport.salesreportdetails.SalesReturnDeliveryReportBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class SalesReportHelper {
                     salesReturnReportBo.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
                     salesReturnReportBo.setUId(c.getString(c.getColumnIndex("uid")));
                     salesReturnReportBo.setDate(c.getString(c.getColumnIndex("date")));
-                    salesReturnReportBo.setReturnValue(c.getString(c.getColumnIndex("ReturnValue")));
+                    salesReturnReportBo.setReturnValue(c.getDouble(c.getColumnIndex("ReturnValue")));
                     salesReturnReportBo.setLpc(c.getInt(c.getColumnIndex("Lpc")));
                     salesReturnReportBo.setDistributorId(c.getInt(c.getColumnIndex("distributorid")));
                     salesReturnReportBo.setRetailerId(c.getInt(c.getColumnIndex("RetailerID")));
@@ -54,21 +52,24 @@ public class SalesReportHelper {
             }
             c.close();
             db.closeDB();
-            return salesReturnReportBoList;
         } catch (Exception e) {
             Commons.printException(e);
+            return new ArrayList<>();
+
         }
         return salesReturnReportBoList;
     }
 
 
-    public Observable<Vector<SalesReturnDeliveryReportBo>> getSaleReturnDeliveryDetails(final Context context, final String uId, final int retailerId) {
+    public Observable<Vector<SalesReturnDeliveryReportBo>> getSaleReturnDeliveryDetails(final Context context, final String uId) {
 
         return Observable.create(new ObservableOnSubscribe<Vector<SalesReturnDeliveryReportBo>>() {
             @Override
             public void subscribe(final ObservableEmitter<Vector<SalesReturnDeliveryReportBo>> subscriber) throws Exception {
 
                 try {
+
+
                     Vector<SalesReturnDeliveryReportBo> returnDeliveryDataModelVector = new Vector<>();
                     DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
                     dbUtil.openDataBase();
@@ -94,8 +95,7 @@ public class SalesReportHelper {
                             salesReturnDeliveryDataModel.setOuterQty(cursor.getInt(cursor.getColumnIndex("outerQty")));
 
 
-
-                            int value = (cursor.getInt(cursor.getColumnIndex("srpedited"))) *
+                            double value = (cursor.getInt(cursor.getColumnIndex("srpedited"))) *
                                     (cursor.getInt(cursor.getColumnIndex("totalQty")));
 
                             salesReturnDeliveryDataModel.setReturnValue(value);
@@ -114,5 +114,25 @@ public class SalesReportHelper {
                 }
             }
         });
+    }
+
+
+
+    public int getTotalReturnValueHeader(Context context){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        Cursor c = db.selectSQL("select sum (ReturnValue) from SalesReturnHeader where date=" + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        int totalVal = 0;
+        if (c != null) {
+            if (c.moveToNext()) {
+                totalVal = c.getInt(0);
+
+            }
+            c.close();
+        }
+
+        return totalVal;
     }
 }

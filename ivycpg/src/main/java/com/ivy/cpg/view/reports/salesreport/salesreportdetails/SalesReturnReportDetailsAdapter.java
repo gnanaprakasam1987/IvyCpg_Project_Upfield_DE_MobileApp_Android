@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.ivy.cpg.view.reports.salesreport.ReCyclerViewItemClickListener;
 import com.ivy.cpg.view.reports.salesreport.SalesReturnReportBo;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
         holder.productName.setText(salesReturnReportBosList.get(position).getProductName());
         holder.caseQty.setText(String.valueOf(salesReturnReportBosList.get(position).getCaseQty()));
         holder.pieceQty.setText(String.valueOf(salesReturnReportBosList.get(position).getPieceQty()));
-        holder.value.setText(String.valueOf(salesReturnReportBosList.get(position).getReturnValue()));
+        holder.value.setText(String.valueOf(SDUtil.format(salesReturnReportBosList.get(position).getReturnValue(),2,0)));
         holder.reason.setText(salesReturnReportBosList.get(position).getReason());
         holder.reasonType.setText(salesReturnReportBosList.get(position).getReasonType());
         holder.outerQty.setText(String.valueOf(salesReturnReportBosList.get(position).getOuterQty()));

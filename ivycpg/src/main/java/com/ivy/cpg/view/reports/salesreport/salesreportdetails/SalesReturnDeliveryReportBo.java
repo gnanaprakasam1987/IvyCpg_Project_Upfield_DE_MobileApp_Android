@@ -8,7 +8,7 @@ public class SalesReturnDeliveryReportBo {
     private int cQty;
     private int pQty;
     private int oQty;
-    private int returnValue;
+    private double returnValue;
 
     private String productId;
 
@@ -81,11 +81,11 @@ public class SalesReturnDeliveryReportBo {
         this.pQty = pQty;
     }
 
-    public int getReturnValue() {
+    public double getReturnValue() {
         return returnValue;
     }
 
-    public void setReturnValue(int returnValue) {
+    public void setReturnValue(double returnValue) {
         this.returnValue = returnValue;
     }
 }

@@ -12,7 +12,7 @@ public class SalesReturnReportBo {
     private String retailerCode;
     private int userId;
 
-    private String returnValue;
+    private double returnValue;
     private int lpc;
 
     private String invoiceNumber;
@@ -86,11 +86,11 @@ public class SalesReturnReportBo {
         this.userId = userId;
     }
 
-    public String getReturnValue() {
+    public double getReturnValue() {
         return returnValue;
     }
 
-    public void setReturnValue(String returnValue) {
+    public void setReturnValue(double returnValue) {
         this.returnValue = returnValue;
     }
 

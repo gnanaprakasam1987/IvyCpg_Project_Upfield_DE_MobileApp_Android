@@ -120,12 +120,10 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
 
     private void getData() {
         String uId = "";
-        int retailerId = 0;
         if (getIntent() != null) {
             uId = getIntent().getStringExtra("UID");
             if (getSupportActionBar() != null && !uId.isEmpty())
                 setScreenTitle(uId);
-            retailerId = getIntent().getIntExtra("RETAILERID", 0);
         }
 
         totalValue(uId);
@@ -133,7 +131,7 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         SalesReportHelper salesReportHelper = new SalesReportHelper();
         mCompositeDisposable = new CompositeDisposable();
 
-        mCompositeDisposable.add((Disposable) salesReportHelper.getSaleReturnDeliveryDetails(this, uId, retailerId)
+        mCompositeDisposable.add((Disposable) salesReportHelper.getSaleReturnDeliveryDetails(this, uId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getObserver()));
@@ -211,7 +209,7 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
                     totalLine = totalLine + 1;
                 }
             }
-
+            dbUtil.closeDB();
             totalQty.setText(String.valueOf(total));
             totalLines.setText(String.valueOf(totalLine));
         } catch (Exception e) {
