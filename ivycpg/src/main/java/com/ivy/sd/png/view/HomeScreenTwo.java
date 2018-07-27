@@ -2033,6 +2033,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                         }
                                     });
                                     obj.show();
+                                    obj.setCancelable(false);
                                 } else {
                                     //the methods that were called during normal stock and order loading in non edit mode are called here
                                     //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
