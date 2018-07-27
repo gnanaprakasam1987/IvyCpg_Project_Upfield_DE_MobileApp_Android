@@ -908,40 +908,24 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                             sbdStockAchieved.add(ret.getSbdGroupName());
                         }
 
-                        if (bmodel.configurationMasterHelper.SHOW_STK_ACHIEVED_WIHTOUT_HISTORY) {
-                            if (ret.getLocations().get(j).getWHCase() > 0
-                                    || ret.getLocations().get(j).getWHOuter() > 0
-                                    || ret.getLocations().get(j).getWHPiece() > 0
-                                    || ret.getLocations().get(j).getShelfCase() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfOuter() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfPiece() > -1
-                                    || ret.isSBDAcheivedLocal()) {
-                                sbdStkAndOrderAchieved.add(ret
-                                        .getSbdGroupName());
-                            }
-                            if (ret.isSBDAcheivedLocal()) {
-                                sbdAcheived.add(ret.getSbdGroupName());
-                            }
-                        } else {
-                            if (ret.getLocations().get(j).getWHCase() > 0
-                                    || ret.getLocations().get(j).getWHOuter() > 0
-                                    || ret.getLocations().get(j).getWHPiece() > 0
-                                    || ret.getLocations().get(j).getShelfCase() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfOuter() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfPiece() > -1
-                                    || ret.isSBDAcheived()
-                                    || ret.isSBDAcheivedLocal()) {
-                                sbdStkAndOrderAchieved.add(ret
-                                        .getSbdGroupName());
-                            }
-                            if (ret.isSBDAcheived() || ret.isSBDAcheivedLocal()) {
-                                sbdAcheived.add(ret.getSbdGroupName());
-                            }
+
+                        if (ret.getLocations().get(j).getWHCase() > 0
+                                || ret.getLocations().get(j).getWHOuter() > 0
+                                || ret.getLocations().get(j).getWHPiece() > 0
+                                || ret.getLocations().get(j).getShelfCase() > -1
+                                || ret.getLocations().get(j)
+                                .getShelfOuter() > -1
+                                || ret.getLocations().get(j)
+                                .getShelfPiece() > -1
+                                || ret.isSBDAcheived()
+                                || ret.isSBDAcheivedLocal()) {
+                            sbdStkAndOrderAchieved.add(ret
+                                    .getSbdGroupName());
                         }
+                        if (ret.isSBDAcheived() || ret.isSBDAcheivedLocal()) {
+                            sbdAcheived.add(ret.getSbdGroupName());
+                        }
+
                     }
                 }
             }
@@ -949,17 +933,12 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
             SbdDistPre = sbdStockAchieved.size();
 
-            if (bmodel.configurationMasterHelper.HAS_STOCK_IN_DIST_POST) {
-                per = (float) sbdStkAndOrderAchieved.size()
-                        / bmodel.getRetailerMasterBO()
-                        .getSbdDistributionTarget();
-                sbdDistAchieved = sbdStkAndOrderAchieved.size();
-            } else {
-                per = (float) sbdAcheived.size()
-                        / bmodel.getRetailerMasterBO()
-                        .getSbdDistributionTarget();
-                sbdDistAchieved = sbdAcheived.size();
-            }
+
+            per = (float) sbdAcheived.size()
+                    / bmodel.getRetailerMasterBO()
+                    .getSbdDistributionTarget();
+            sbdDistAchieved = sbdAcheived.size();
+
 
             String strLpcCouunt = lpccount + "";
             lpcText.setText(strLpcCouunt);
@@ -972,15 +951,11 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                 findViewById(R.id.ll_dist).setVisibility(View.GONE);
             } else {
                 if (bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
-                    if (bmodel.configurationMasterHelper.HAS_STOCK_IN_DIST_POST) {
-                        String strdistValue = sbdStockAchieved.size() + "/"
-                                + sbdStkAndOrderAchieved.size();
-                        distValue.setText(strdistValue);
-                    } else {
-                        String strDistValue = sbdStockAchieved.size() + "/"
-                                + sbdAcheived.size();
-                        distValue.setText(strDistValue);
-                    }
+
+                    String strDistValue = sbdStockAchieved.size() + "/"
+                            + sbdAcheived.size();
+                    distValue.setText(strDistValue);
+
                 } else {
                     String strDistValue = Math.round(per * 100) + "";
                     distValue.setText(strDistValue);
@@ -2358,7 +2333,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
-                            if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
+                            if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                                 // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                                 if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
 
@@ -2395,34 +2370,34 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                 }
             }
         } else {
-                count++;
-                for (ProductMasterBO productBO : items) {
+            count++;
+            for (ProductMasterBO productBO : items) {
 
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && productBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
-                            && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            && bmodel.configurationMasterHelper.IS_INVOICE
-                            && productBO.getSIH() > 0)) {
+                if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                        && bmodel.getRetailerMasterBO().getIsVansales() == 1
+                        && productBO.getSIH() > 0)
+                        || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                        && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
+                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
+                        && bmodel.configurationMasterHelper.IS_INVOICE
+                        && productBO.getSIH() > 0)) {
 
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
-                                || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
-                                && productBO.getIndicativeOrder_oc() > 0)) {
-                            if (productBO.getIsSaleable() == 1) {
-                                if (productBO.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
-                                    //  filtertext = levelBO.getLevelName();
-                                    if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
-                                        continue;
-                                    mylist.add(productBO);
-                                    fiveFilter_productIDs.add(productBO.getProductID());
-                                }
+                    if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                            || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
+                            && productBO.getIndicativeOrder_oc() > 0)) {
+                        if (productBO.getIsSaleable() == 1) {
+                            if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                                //  filtertext = levelBO.getLevelName();
+                                if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
+                                    continue;
+                                mylist.add(productBO);
+                                fiveFilter_productIDs.add(productBO.getProductID());
                             }
                         }
                     }
                 }
+            }
         }
 
 //        Applying special filter in product filtered list(mylist)

@@ -25,6 +25,7 @@ import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
 import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
 import com.ivy.cpg.view.reports.retailerProperty.RetailerPropertyReportFragment;
 import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
+import com.ivy.cpg.view.reports.salesreport.SalesReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -72,7 +73,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ReportActivity extends BaseActivity implements
-        BrandDialogInterface, SellerListFragment.SellerSelectionInterface,FiveLevelFilterCallBack {
+        BrandDialogInterface, SellerListFragment.SellerSelectionInterface, FiveLevelFilterCallBack {
 
     private BusinessModel bmodel;
     private String fromMenu;
@@ -248,6 +249,7 @@ public class ReportActivity extends BaseActivity implements
                 StandardListMasterConstants.MENU_DAY_REPORT)) {
 
             //DailyReportFragmentNew dayFragment = new DailyReportFragmentNew();
+
             DayReportFragment dayFragment = new DayReportFragment();
             dayFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, dayFragment);
@@ -567,9 +569,13 @@ public class ReportActivity extends BaseActivity implements
             OrderStatusReportFragment orderStatusReportFragment = OrderStatusReportFragment.newInstance(false);
             transaction.replace(R.id.fragment_content, orderStatusReportFragment);
             commitFragment(transaction, config);
+        } else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_INV_SALES_RETURN_REPORT)) {
+
+            SalesReportFragment salesReportFragment = new SalesReportFragment();
+            transaction.replace(R.id.fragment_content, salesReportFragment);
+            commitFragment(transaction, config);
         }
-
-
     }
 
     private void setSubTitle(FragmentTransaction transaction, ConfigureBO config) {
