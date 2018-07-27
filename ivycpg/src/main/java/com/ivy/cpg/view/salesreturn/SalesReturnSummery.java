@@ -344,7 +344,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                         Commons.printException(e);
                     }
                 }
-                if (!salesReturnHelper.SHOW_SRP_EDIT) {
+                if (!salesReturnHelper.SHOW_SRP_EDIT && !salesReturnHelper.SHOW_SAL_RET_SRP) {
                     ((LinearLayout) row.findViewById(R.id.ll_srpEdit)).setVisibility(View.GONE);
                 } else {
                     try {
