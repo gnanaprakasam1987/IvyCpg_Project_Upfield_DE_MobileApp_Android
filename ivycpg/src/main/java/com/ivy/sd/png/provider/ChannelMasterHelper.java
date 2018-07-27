@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.core.data.channel.ChannelDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -67,6 +68,10 @@ public class ChannelMasterHelper {
         return "";
     }
 
+    /**
+     * @See {@link ChannelDataManagerImpl#fetchChannels()}
+     * @deprecated
+     */
     // Download Channel details
     public void downloadChannel() {
         try {
