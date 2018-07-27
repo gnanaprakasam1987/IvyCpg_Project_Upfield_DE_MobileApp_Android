@@ -7,6 +7,7 @@ public class SupplierMasterBO {
     private int isPrimary;
     private int distParentID;
     private float creditLimit;
+    private int supplierTaxLocId;
 
     public SupplierMasterBO(){
 
@@ -67,5 +68,13 @@ public class SupplierMasterBO {
 
     public void setCreditLimit(float creditLimit) {
         this.creditLimit = creditLimit;
+    }
+
+    public int getSupplierTaxLocId() {
+        return supplierTaxLocId;
+    }
+
+    public void setSupplierTaxLocId(int supplierTaxLocId) {
+        this.supplierTaxLocId = supplierTaxLocId;
     }
 }
