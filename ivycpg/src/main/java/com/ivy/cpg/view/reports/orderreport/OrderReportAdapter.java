@@ -22,6 +22,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.FontUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -163,26 +164,26 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
 
         holder.text_retailerName.setText(reportBO.getRetailerName());
-        holder.text_retailerName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.text_orderValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_orderNumber.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tvOrderNo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.text_delivery_date.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tvMustSellCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tvVolumeValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        holder.text_retailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.text_orderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_orderNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvOrderNo.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.text_delivery_date.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvFocusBrandCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvMustSellCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvFocusBrandCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvVolumeValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
 
-        holder.label_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_weight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_PreORPost.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_focusBrand.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_MustSell.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.tv_tax_value.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tv_discount_amt.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.taxTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.discTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.tvVolumeLabel.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        holder.label_LPC.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_weight.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_PreORPost.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_focusBrand.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_MustSell.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.tv_tax_value.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tv_discount_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.taxTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.discTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.tvVolumeLabel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
 
         try {
             if (businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) != null) {
@@ -365,7 +366,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         TextView text_delivery_date, tv_tax_value, tv_discount_amt, taxTitle, discTitle;
         TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight,
                 label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel, tvVolumeLabel;
-       ImageView orderImage;
+        ImageView orderImage;
 
     }
 }

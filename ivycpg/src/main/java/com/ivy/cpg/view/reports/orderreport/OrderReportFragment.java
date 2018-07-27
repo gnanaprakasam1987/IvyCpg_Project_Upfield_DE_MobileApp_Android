@@ -297,14 +297,14 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
         }
 
         if (businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
-            showOrHideVolume();
+            showVolume();
         }
         System.out.println("Start"+System.currentTimeMillis());
         return view;
 
     }
 
-    private void showOrHideVolume() {
+    private void showVolume() {
         volumeContainer.setVisibility(View.VISIBLE);
         dividerVolume.setVisibility(View.VISIBLE);
     }
