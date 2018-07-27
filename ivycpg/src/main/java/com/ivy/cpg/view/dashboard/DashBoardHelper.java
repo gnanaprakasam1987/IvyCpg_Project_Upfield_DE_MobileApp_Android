@@ -2099,15 +2099,8 @@ public class DashBoardHelper {
                 dashbo = new DashBoardBO();
                 dashbo.setText(c.getString(0));
                 dashbo.setCode(c.getString(4));
-                if (bmodel.configurationMasterHelper.IS_PRODUCTIVE_CALLS_OBJ_PH) {
-                    if (dashbo.getCode() != null
-                            && dashbo.getCode().equalsIgnoreCase("DSR_PC")) {
-                        dashbo.setTarget((int) ((c.getDouble(2) * bmodel.configurationMasterHelper
-                                .getProductiveCallPercentage()) / 100));
-                    } else
-                        dashbo.setTarget(c.getDouble(2));
-                } else
-                    dashbo.setTarget(c.getDouble(2));
+
+                dashbo.setTarget(c.getDouble(2));
 
                 dashbo.setAp3m(c.getDouble(3));
 

@@ -189,22 +189,9 @@ public class DailyReportFragmentNew extends IvyBaseFragment {
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT04")) {
                 int productivecalls = bmodel.getProductiveCallsForTheDay();
-                if (bmodel.configurationMasterHelper.IS_PRODUCTIVE_CALLS_OBJ_PH) {
-                    float productiveCallsObj_PH = (float) totalcalls
-                            * bmodel.configurationMasterHelper
-                            .getProductiveCallPercentage() / 100;
 
-                    int productiveCallsObj_PH_round = Math
-                            .round(productiveCallsObj_PH);
-                    if (productiveCallsObj_PH > productiveCallsObj_PH_round) {
-                        productiveCallsObj_PH = productiveCallsObj_PH + 1;
-                    }
-                    con.setMenuNumber(productivecalls + "/"
-                            + (int) productiveCallsObj_PH);
-
-                } else {
                     con.setMenuNumber(productivecalls + "/" + visitedcalls);
-                }
+
 
             } /*else if (con.getConfigCode().equalsIgnoreCase("DAYRT05")) {
                 //con.setMenuNumber(bmodel.goldStoreValue());

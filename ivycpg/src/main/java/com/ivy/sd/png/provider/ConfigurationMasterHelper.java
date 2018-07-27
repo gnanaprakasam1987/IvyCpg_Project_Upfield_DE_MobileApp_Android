@@ -34,11 +34,9 @@ public class ConfigurationMasterHelper {
     public static final String MENU_STOCK = "MENU_STOCK";
     public static final String MENU_ACTIVITY = "ACT_MENU";
     public static final String MENU_SUBD = "SUBD_MENU";
-    public static final String MENU_COUNTER = "MENU_COUNTER";
     public static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     public static final String MENU_STORECHECK = "MENU_STORECHECK";
 
-    public static int COMPETITOR_FILTER_TYPE;
     public static int vanDistance = 0;
     public static String ACCESS_KEY_ID = "AKIAI5OG2UQYXDPYQNNQ";
     public static String SECRET_KEY = "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";
@@ -93,7 +91,7 @@ public class ConfigurationMasterHelper {
     // Added in 43 version
     // Image upload through Amazon or on Premises
     private static final String CODE_AMAZONIMGUPLOAD = "ISAMAZON_IMGUPLOAD";
-    private static final String CODE_HIDE_REVIEWPLAN_FIELD = "TGTPH01";
+
     // Show Tax in Invoice
     private static final String SHOW_TAX_INVOICE = "TAXINPRINT";
     //Is Survey Global Save
@@ -121,11 +119,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_VISITSCREEN_DEV_ALLOW = "RTRS02";
     private static final String CODE_DAY_MISMATCH = "RTRS03";
     private static final String CODE_INITIATIVE = "ORDB01";
-    private static final String CODE_CNT01 = "CNT01";
-    private static final String CODE_HST01 = "HST01";//history fragment
-    private static final String CODE_HST02 = "HST02";//history fragment
-    private static final String CODE_HST03 = "HST03";//history fragment
-    private static final String CODE_HST04 = "HST04";//history fragment
     private static final String CODE_PRASENTATION_INORDER = "ORDB02";
     private static final String CODE_SHOW_ALL_ROUTES = "RTRS07";
     private static final String CODE_RETAILER_VISIT_CONFIRMATION = "RTRS08";
@@ -142,9 +135,8 @@ public class ConfigurationMasterHelper {
     private static final String COBE_DB_BACKUP = "SQLBACKUP";// code for DB backup
     private static final String CODE_GPS_ENABLE = "GPSENABLE"; // Code for GPS enabled
     private static final String CODE_SHOW_LPC_ORDER = "ORDB11";
-    private static final String CODE_DIST_VALUE_PRE_POST_ORDER = "ORDB12";
-    private static final String CODE_SHOW_TARGET_SCREEN_PH = "RTRS18";
-    private static final String CODE_PRODUCTIVE_CALLS_OBJ = "RTRS19";
+
+
     private static final String CODE_SHOW_INIT_FOOTER = "ORDB13";
     private static final String CODE_SHOW_REVIEW_PO = "ORDB14";
     private static final String CODE_IS_WSIH = "ORDB16"; // ORDB16
@@ -155,7 +147,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_CREDIT_BALANCE = "PROFILE20";//
     private static final String CODE_SHOW_CREDIT_DAYS = "PROFILE21";//
     private static final String CODE_SHOW_MAX_OUTSTANDING = "PROFILE22";//
-    private static final String CODE_HAS_STOCK_IN_DIST_POST = "ORDB17";
+
     private static final String CODE_INITIATIVE_MERCHANDISING = "VLD02";
     private static final String CODE_SUGGESTED_ORDER_LOGIC = "ORDB18";
     // code added in v 35
@@ -219,7 +211,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ZEBRA_ATS = "PRINT04";
     private static final String CODE_INTERMEC_ATS = "PRINT05";
     private static final String CODE_ZEBRA_DIAGEO = "PRINT06";
-    private static final String CODE_BIXOLON_PGKENYA = "PRINT07";
     private static final String CODE_ZEBRA_GHANA = "PRINT08";
     private static final String CODE_ZEBRA_UNIPAL = "PRINT09";
     private static final String CODE_ZEBRA_TITAN = "PRINT10";
@@ -242,7 +233,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SO_SPLIT = "SOSPLIT";
     private static final String CODE_SO_COPY = "SOCOPY";
 
-    private static final String CODE_SHOW_MULTISELECTION = "ORDB33";
+
     // Added in V41
     private static final String CODE_SHOW_MULTIPAYMENT = "COLL06";
     private static final String CODE_PHOTO_CAPTURE_COUNT = "PHOTOCAP01";
@@ -271,7 +262,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CHNAGE_SELLER_CONFIG_LEVEL = "PREVAN02";
     private static final String CODE_SHOW_VALIDATE_CREDIT_DAYS = "CREDITDAY01";
     private static final String CODE_SHOW_LINK_DASH_SKUTGT = "DASH03";
-    private static final String CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST = "RTRDASH";
+
     private static final String CODE_ADD_NEW_BATCH = "NEWBATCH01";
     private static final String CODE_SHOW_PRODUCT_CODE = "PRDCODE"; // enable product
     private static final String CODE_HIDE_ORDER_DIST = "ORDB22";  // Hide Dist Value in StockAndOrder Screen
@@ -282,7 +273,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SALES_RETURN_IN_INVOICE = "SR04";
     private static final String CODE_VANBARCODE_VALIDATION = "VBARCODEVAL";
     private static final String CODE_CREDIT_INVOICE_COUNT = "PROFILE23";
-    private static final String CODE_STK_ACHIEVED_WITHOUT_HISTORY = "ORDB40";
+
     private static final String CODE_HIDE_STOCK_APPLY_BUTTON = "STKPRO17";
     private static final String CODE_SHOW_PRODUCT_RETRUN = "ORDB41";
     private static final String CODE_SHOW_GROUPPRODUCT_RETRUN = "ORDB43";
@@ -320,7 +311,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_STOCK_COMPETITOR = "STOCK_COMPETITOR";
 
     private static final String CODE_SIH_SPLIT = "SIHSPLIT";
-    private static final String CODE_HIDE_TARGET_PLAN = "TARGET_PLAN";
+
     private static final String CODE_SHOW_REJECT_BTN = "STK_REJECT";
     private static final String CODE_VALIDATE_NEGATIVE_INVOICE = "ORDB47";
     private static final String CODE_SHOW_GCM_NOTIFICATION = "FUN15";
@@ -613,8 +604,8 @@ public class ConfigurationMasterHelper {
     public boolean IS_DIST_PRE_POST_ORDER;
     public boolean IS_DB_BACKUP;
     public boolean SHOW_GPS_ENABLE_DIALOG;
-    public boolean IS_TARGET_SCREEN_PH;
-    public boolean IS_PRODUCTIVE_CALLS_OBJ_PH;
+
+
     public boolean SHOW_INIT_FOOTER;
     public boolean SHOW_REVIEW_AND_PO;
     // Order & stock flags
@@ -672,7 +663,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_BALANCE;//
     public boolean SHOW_CREDIT_DAYS;//
     public boolean SHOW_MAX_OUTSTANDING;//
-    public boolean HAS_STOCK_IN_DIST_POST;
+
     public boolean SHOW_INITIATIVE_MERCHANDISING;
     // Added in 35 version
     public boolean SHOW_CALC;
@@ -784,11 +775,11 @@ public class ConfigurationMasterHelper {
     public int switchConfigLevel = 0;
     public boolean IS_VALIDATE_CREDIT_DAYS;// CREDITDAY01
     public boolean SHOW_LINK_DASH_SKUTGT;// DASH03
-    public boolean HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST; // RTRDASH
+
     public boolean IS_ADD_NEW_BATCH;
     public boolean SHOW_PRODUCT_CODE;
     // Hide Review Plan Fields
-    public boolean HIDE_REVIEWPLAN_FIELD; //
+
     public boolean SHOW_ATTENDANCE;
     public boolean TAX_SHOW_INVOICE;
     //Is Hanging Order
@@ -874,7 +865,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_INVOICE_COUNT;
     public boolean SHOW_TOTAL_DISCOUNT_EDITTEXT;
     public boolean SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
-    public boolean SHOW_STK_ACHIEVED_WIHTOUT_HISTORY;
+
     public boolean HIDE_STOCK_APPLY_BUTTON;
     public boolean SHOW_UNIT_PRICE;
     // Added in 45 version
@@ -898,7 +889,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_LOAD_STOCK_COMPETITOR = false;
 
     public boolean SHOW_SIH_SPLIT;
-    public boolean IS_SHOW_TARGET_PLAN;
+
     public boolean IS_SHOW_REJECT_BTN;
     public boolean IS_VALIDATE_NEGATIVE_INVOICE;
     public boolean SHOW_GCM_NOTIFICATION;
@@ -1066,7 +1057,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_INDICATIVE_ORDER = true;
     public static final String CODE_SHOW_STK_ORD_MRP = "ORDB38";
     public boolean SHOW_STK_ORD_MRP;
-    public int dashboard = 0;
+
     public boolean IS_DEFAULT_PRESALE = false;
 
     private static final String CODE_ENABLE_GCM_REGISTRATION = "FUN21";
@@ -1998,15 +1989,12 @@ public class ConfigurationMasterHelper {
         this.SHOW_PROFILE_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) : false;
         this.IS_DB_BACKUP = hashMapHHTModuleConfig.get(COBE_DB_BACKUP) != null ? hashMapHHTModuleConfig.get(COBE_DB_BACKUP) : false;
         this.SHOW_LPC_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) : false;
-        this.IS_DIST_PRE_POST_ORDER = hashMapHHTModuleConfig.get(CODE_DIST_VALUE_PRE_POST_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_DIST_VALUE_PRE_POST_ORDER) : false;
-        this.IS_TARGET_SCREEN_PH = hashMapHHTModuleConfig.get(CODE_SHOW_TARGET_SCREEN_PH) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TARGET_SCREEN_PH) : false;
-        this.IS_PRODUCTIVE_CALLS_OBJ_PH = hashMapHHTModuleConfig.get(CODE_PRODUCTIVE_CALLS_OBJ) != null ? hashMapHHTModuleConfig.get(CODE_PRODUCTIVE_CALLS_OBJ) : false;
         this.SHOW_INIT_FOOTER = hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) : false;
         this.SHOW_REVIEW_AND_PO = hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) : false;
         this.SHOW_HIGHLIGHT_FOR_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) : false;
         this.IS_ENTRY_LEVEL_DISCOUNT = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) : false;
         this.SHOW_DISCOUNT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) : false;
-        this.HAS_STOCK_IN_DIST_POST = hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) : false;
+
         this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
         this.SHOW_CALC = hashMapHHTModuleConfig.get(CODE_CALCULATOR) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATOR) : false;
         this.IS_MUST_SELL = hashMapHHTModuleConfig.get(CODE_MUST_SELL) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL) : false;
@@ -2078,7 +2066,6 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_JOINT_CALL_LEVELS) != null) {
             getUserLevel(CODE_JOINT_CALL_LEVELS);
         }
-        this.SHOW_STK_ACHIEVED_WIHTOUT_HISTORY = hashMapHHTModuleConfig.get(CODE_STK_ACHIEVED_WITHOUT_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_STK_ACHIEVED_WITHOUT_HISTORY) : false;
         this.SHOW_ATTENDANCE = hashMapHHTModuleConfig.get(SHOW_ATTENDANCE_MOD) != null ? hashMapHHTModuleConfig.get(SHOW_ATTENDANCE_MOD) : false;
         this.TAX_SHOW_INVOICE = hashMapHHTModuleConfig.get(SHOW_TAX_INVOICE) != null ? hashMapHHTModuleConfig.get(SHOW_TAX_INVOICE) : false;
         this.IS_SURVEY_GLOBAL_SAVE = hashMapHHTModuleConfig.get(SURVEY_GLOBAL_SAVE) != null ? hashMapHHTModuleConfig.get(SURVEY_GLOBAL_SAVE) : false;
@@ -2105,7 +2092,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_BUTTON_PRINT01 = hashMapHHTModuleConfig.get(CODE_SHOW_PRINTRPT01) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRINTRPT01) : false;
         this.SHOW_SIH_SPLIT = hashMapHHTModuleConfig.get(CODE_SIH_SPLIT) != null ? hashMapHHTModuleConfig.get(CODE_SIH_SPLIT) : false;
         this.SHOW_GOLD_STORE_DISCOUNT = hashMapHHTModuleConfig.get(CODE_APPLY_GOLD_STORE_DISCOUNT) != null ? hashMapHHTModuleConfig.get(CODE_APPLY_GOLD_STORE_DISCOUNT) : false;
-        this.IS_SHOW_TARGET_PLAN = hashMapHHTModuleConfig.get(CODE_HIDE_TARGET_PLAN) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_TARGET_PLAN) : false;
+
         this.IS_SHOW_REJECT_BTN = hashMapHHTModuleConfig.get(CODE_SHOW_REJECT_BTN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REJECT_BTN) : false;
         this.CALCULATE_UNLOAD = hashMapHHTModuleConfig.get(CODE_CALCULATE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATE_UNLOAD) : false;
         this.SHOW_SUPPLIER_SELECTION = hashMapHHTModuleConfig.get(CODE_SHOW_SUPPLIER_SELECTION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SUPPLIER_SELECTION) : false;
@@ -2155,7 +2142,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_UPDATE_SIH = hashMapHHTModuleConfig.get(CODE_UPDATE_SIH) != null ? hashMapHHTModuleConfig.get(CODE_UPDATE_SIH) : false;
         this.SHOW_RETAILER_FREQUENCY = hashMapHHTModuleConfig.get(CODE_RETAILER_FREQUENCY) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_FREQUENCY) : false;
         this.IS_DAY_REPORT_PRINT = hashMapHHTModuleConfig.get(CODE_DAY_REPORT_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_DAY_REPORT_PRINT) : false;
-        this.HIDE_REVIEWPLAN_FIELD = hashMapHHTModuleConfig.get(CODE_HIDE_REVIEWPLAN_FIELD) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_REVIEWPLAN_FIELD) : false;
         this.IS_BATCHWISE_VANLOAD = hashMapHHTModuleConfig.get(CODE_IS_BATCHWISE_VANLOAD) != null ? hashMapHHTModuleConfig.get(CODE_IS_BATCHWISE_VANLOAD) : false;
         this.SHOW_VANLOAD_STOCK_PRINT = hashMapHHTModuleConfig.get(CODE_VANLOAD_STOCK_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_VANLOAD_STOCK_PRINT) : false;
         this.HIDE_ORDER_DIST = hashMapHHTModuleConfig.get(CODE_HIDE_ORDER_DIST) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_ORDER_DIST) : false;
@@ -2270,10 +2256,6 @@ public class ConfigurationMasterHelper {
             else
                 this.IS_EXCLUDE_TAX = true;
         }
-
-
-        this.HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST = hashMapHHTModuleConfig.get(CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST) : false;
-        this.dashboard = hashMapHHTModuleOrder.get(CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST) != null ? hashMapHHTModuleOrder.get(CODE_HAS_DASHBOARD_BUTTON_IN_RETAILER_LIST) : 0;
 
         this.discountType = hashMapHHTModuleOrder.get(CODE_DISCOUNT_EDITVIEW) != null ? hashMapHHTModuleOrder.get(CODE_DISCOUNT_EDITVIEW) : 0;
         this.SHOW_TOTAL_DISCOUNT_EDITTEXT = hashMapHHTModuleConfig.get(CODE_DISCOUNT_EDITVIEW) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_EDITVIEW) : false;
@@ -4681,24 +4663,7 @@ public class ConfigurationMasterHelper {
         return getGenFilter();
     }
 
-    public int getProductiveCallPercentage() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        String sql = "select Rfield from HhtModuleMaster where hhtCode="
-                + bmodel.QT(CODE_PRODUCTIVE_CALLS_OBJ) + "  and  ForSwitchSeller = 0";
 
-        Cursor c = db.selectSQL(sql);
-        if (c != null) {
-            if (c.moveToNext()) {
-                db.closeDB();
-                return c.getInt(0);
-            }
-            c.close();
-        }
-        db.closeDB();
-        return 0;
-    }
 
     public int getSbdDistTargetPCent() {
         int targetPercent = 0;
@@ -5201,13 +5166,9 @@ public class ConfigurationMasterHelper {
         int acheived = 0;
 
         String stockSql, sql;
-        if (bmodel.configurationMasterHelper.HAS_STOCK_IN_DIST_POST) {
-            stockSql = " union  select   distinct A.GrpName  from SbdDistributionMaster A inner join"
-                    + " ClosingStockDetail B on A.productid=B.productid where B.retailerid="
-                    + bmodel.getRetailerMasterBO().getRetailerID();
-        } else {
-            stockSql = "";
-        }
+
+        stockSql = "";
+
         sql = " union select gname from SbdDistributionAchievedMaster where rid="
                 + bmodel.getRetailerMasterBO().getRetailerID();
         if (bmodel.configurationMasterHelper.IS_INVOICE) {
