@@ -142,7 +142,7 @@ public class ConfigurationMasterHelper {
     private static final String COBE_DB_BACKUP = "SQLBACKUP";// code for DB backup
     private static final String CODE_GPS_ENABLE = "GPSENABLE"; // Code for GPS enabled
     private static final String CODE_SHOW_LPC_ORDER = "ORDB11";
-    private static final String CODE_DIST_VALUE_PRE_POST_ORDER = "ORDB12";
+
     private static final String CODE_SHOW_TARGET_SCREEN_PH = "RTRS18";
     private static final String CODE_PRODUCTIVE_CALLS_OBJ = "RTRS19";
     private static final String CODE_SHOW_INIT_FOOTER = "ORDB13";
@@ -155,7 +155,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_CREDIT_BALANCE = "PROFILE20";//
     private static final String CODE_SHOW_CREDIT_DAYS = "PROFILE21";//
     private static final String CODE_SHOW_MAX_OUTSTANDING = "PROFILE22";//
-    private static final String CODE_HAS_STOCK_IN_DIST_POST = "ORDB17";
+
     private static final String CODE_INITIATIVE_MERCHANDISING = "VLD02";
     private static final String CODE_SUGGESTED_ORDER_LOGIC = "ORDB18";
     // code added in v 35
@@ -282,7 +282,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SALES_RETURN_IN_INVOICE = "SR04";
     private static final String CODE_VANBARCODE_VALIDATION = "VBARCODEVAL";
     private static final String CODE_CREDIT_INVOICE_COUNT = "PROFILE23";
-    private static final String CODE_STK_ACHIEVED_WITHOUT_HISTORY = "ORDB40";
+
     private static final String CODE_HIDE_STOCK_APPLY_BUTTON = "STKPRO17";
     private static final String CODE_SHOW_PRODUCT_RETRUN = "ORDB41";
     private static final String CODE_SHOW_GROUPPRODUCT_RETRUN = "ORDB43";
@@ -672,7 +672,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_BALANCE;//
     public boolean SHOW_CREDIT_DAYS;//
     public boolean SHOW_MAX_OUTSTANDING;//
-    public boolean HAS_STOCK_IN_DIST_POST;
+
     public boolean SHOW_INITIATIVE_MERCHANDISING;
     // Added in 35 version
     public boolean SHOW_CALC;
@@ -874,7 +874,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_INVOICE_COUNT;
     public boolean SHOW_TOTAL_DISCOUNT_EDITTEXT;
     public boolean SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
-    public boolean SHOW_STK_ACHIEVED_WIHTOUT_HISTORY;
+
     public boolean HIDE_STOCK_APPLY_BUTTON;
     public boolean SHOW_UNIT_PRICE;
     // Added in 45 version
@@ -1993,7 +1993,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_PROFILE_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) : false;
         this.IS_DB_BACKUP = hashMapHHTModuleConfig.get(COBE_DB_BACKUP) != null ? hashMapHHTModuleConfig.get(COBE_DB_BACKUP) : false;
         this.SHOW_LPC_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LPC_ORDER) : false;
-        this.IS_DIST_PRE_POST_ORDER = hashMapHHTModuleConfig.get(CODE_DIST_VALUE_PRE_POST_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_DIST_VALUE_PRE_POST_ORDER) : false;
         this.IS_TARGET_SCREEN_PH = hashMapHHTModuleConfig.get(CODE_SHOW_TARGET_SCREEN_PH) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TARGET_SCREEN_PH) : false;
         this.IS_PRODUCTIVE_CALLS_OBJ_PH = hashMapHHTModuleConfig.get(CODE_PRODUCTIVE_CALLS_OBJ) != null ? hashMapHHTModuleConfig.get(CODE_PRODUCTIVE_CALLS_OBJ) : false;
         this.SHOW_INIT_FOOTER = hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) : false;
@@ -2001,7 +2000,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_HIGHLIGHT_FOR_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) : false;
         this.IS_ENTRY_LEVEL_DISCOUNT = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) : false;
         this.SHOW_DISCOUNT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) : false;
-        this.HAS_STOCK_IN_DIST_POST = hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_STOCK_IN_DIST_POST) : false;
+
         this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
         this.SHOW_CALC = hashMapHHTModuleConfig.get(CODE_CALCULATOR) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATOR) : false;
         this.IS_MUST_SELL = hashMapHHTModuleConfig.get(CODE_MUST_SELL) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL) : false;
@@ -2073,7 +2072,6 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_JOINT_CALL_LEVELS) != null) {
             getUserLevel(CODE_JOINT_CALL_LEVELS);
         }
-        this.SHOW_STK_ACHIEVED_WIHTOUT_HISTORY = hashMapHHTModuleConfig.get(CODE_STK_ACHIEVED_WITHOUT_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_STK_ACHIEVED_WITHOUT_HISTORY) : false;
         this.SHOW_ATTENDANCE = hashMapHHTModuleConfig.get(SHOW_ATTENDANCE_MOD) != null ? hashMapHHTModuleConfig.get(SHOW_ATTENDANCE_MOD) : false;
         this.TAX_SHOW_INVOICE = hashMapHHTModuleConfig.get(SHOW_TAX_INVOICE) != null ? hashMapHHTModuleConfig.get(SHOW_TAX_INVOICE) : false;
         this.IS_SURVEY_GLOBAL_SAVE = hashMapHHTModuleConfig.get(SURVEY_GLOBAL_SAVE) != null ? hashMapHHTModuleConfig.get(SURVEY_GLOBAL_SAVE) : false;
@@ -5194,13 +5192,9 @@ public class ConfigurationMasterHelper {
         int acheived = 0;
 
         String stockSql, sql;
-        if (bmodel.configurationMasterHelper.HAS_STOCK_IN_DIST_POST) {
-            stockSql = " union  select   distinct A.GrpName  from SbdDistributionMaster A inner join"
-                    + " ClosingStockDetail B on A.productid=B.productid where B.retailerid="
-                    + bmodel.getRetailerMasterBO().getRetailerID();
-        } else {
-            stockSql = "";
-        }
+
+        stockSql = "";
+
         sql = " union select gname from SbdDistributionAchievedMaster where rid="
                 + bmodel.getRetailerMasterBO().getRetailerID();
         if (bmodel.configurationMasterHelper.IS_INVOICE) {
