@@ -62,7 +62,7 @@ public class DataMembers {
     public static final String actPlanning = "Planning";
     public static final String actPhotocapture = "PhotoCapture";
     public static final String actHomeScreenTwo = "HomeScreenTwo";
-    public static final String actSynchronization = "Synchronization";
+    //public static final String actSynchronization = "Synchronization";
     public static final String actNewRetailer = "NewRetailer";
     public static final String actDigitalContent = "DigitalContent";
     public static final String actCollection = "CollectionScreen";
@@ -113,7 +113,7 @@ public class DataMembers {
     public static final int SYNC_REALLOC_UPLOAD = -36;
     public static final int SYNC_EXPORT = 218;
     public static final int AMAZONIMAGE_UPLOAD = 501;
-    public static final int SYNCUPLOAD_IMAGE = 5555;
+    //public static final int SYNCUPLOAD_IMAGE = 5555;
     public static final int NOTIFY_UPLOADED_IMAGE = 55551;
     public static final int NOTIFY_UPLOAD_ERROR_IMAGE = 55552;
     public static final int SAVECOLLECTION = 66;

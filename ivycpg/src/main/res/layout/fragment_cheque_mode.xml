@@ -81,7 +81,7 @@
                             android:id="@+id/edit_chequeno"
                             style="@style/EditTextGravity"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/cheque_no_height"
+                            android:layout_height="wrap_content"
                             android:digits="0123456789"
                             android:inputType="number"
                             android:maxLength="20" />
@@ -202,7 +202,7 @@
                         android:id="@+id/edit_accountno"
                         style="@style/EditTextGravity"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/cheque_no_height"
+                        android:layout_height="wrap_content"
                         android:digits="0123456789"
                         android:inputType="number"
                         android:maxLength="15" />
@@ -236,7 +236,7 @@
                             android:id="@+id/edit_bankname"
                             style="@style/EditTextGravity"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/cheque_no_height"
+                            android:layout_height="wrap_content"
                             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                             android:inputType="text"
                             android:maxLength="25" />
@@ -262,7 +262,7 @@
                             android:id="@+id/edit_branchname"
                             style="@style/EditTextGravity"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/cheque_no_height"
+                            android:layout_height="wrap_content"
                             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                             android:inputType="text"
                             android:maxLength="25" />
@@ -297,7 +297,7 @@
                             android:id="@+id/edit_collectamt"
                             style="@style/EditTextGravity"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/cheque_no_height"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="@dimen/dimens_2dp"

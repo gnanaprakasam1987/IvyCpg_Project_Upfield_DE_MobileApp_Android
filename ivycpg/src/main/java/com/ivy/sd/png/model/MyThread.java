@@ -142,23 +142,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
             bmodel.uploadImageToAmazonCloud(handler);
 
-        } else if (opt == DataMembers.SYNCUPLOAD_IMAGE) {
-            Handler handler;
-            if (isFromCallAnalysis) {
-                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
-                handler = fragment.getHandler();
-            } else {
-                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
-                handler = fragment.getHandler();
-            }
-
-            bmodel = (BusinessModel) ctx.getApplicationContext();
-            bmodel.setContext(ctx);
-            if (bmodel.synchronizationHelper.checkForImageToUpload()) {
-                bmodel.prepareUploadImageAtSOAP(handler);
-                // imageUploadStatus = bmodel.uploadImageAtSOAP(data);
-            }
-        } else if (opt == DataMembers.SYNCUPLOAD) {
+        }  else if (opt == DataMembers.SYNCUPLOAD) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
             Handler handler;

@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -246,7 +245,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 holder = new ViewHolder();
                 holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME1);
                 holder.tvwpsname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-
+                holder.tvProductCode = (TextView) row.findViewById(R.id.product_code);
                 holder.tvpcsqty = (TextView) row.findViewById(R.id.PRDQTY);
                 holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDCASEQTY);
                 holder.tvwval = (TextView) row.findViewById(R.id.PRDVAL);
@@ -256,7 +255,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 row.setOnClickListener(new OnClickListener() {
 
                     public void onClick(View v) {
-                       // productName.setText(holder.productName);
+                        // productName.setText(holder.productName);
                     }
                 });
 
@@ -277,6 +276,9 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP)
                     holder.tvwval.setVisibility(View.GONE);
 
+                if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.tvProductCode.setVisibility(View.GONE);
+
 
                 row.setTag(holder);
             } else {
@@ -292,6 +294,12 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
                 if (productBO.getBatchId() != null && !productBO.getBatchId().equals("null"))
                     holder.tvBatchNo.setText(productBO.getBatchId());
+            }
+
+            if (businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code)
+                        + ": " + productBO.getProductCode() + " ";
+                holder.tvProductCode.setText(prodCode);
             }
 
             if (productBO.getUomDescription().equals("CASE")) {
@@ -357,6 +365,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 holder = new ViewHolder();
                 holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME1);
                 holder.tvwpsname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+                holder.tvProductCode = (TextView) row.findViewById(R.id.product_code);
                 holder.tvBatchNo = (TextView) row.findViewById(R.id.prdbatchid);
                 holder.tvpcsqty = (TextView) row.findViewById(R.id.PRDQTY);
                 holder.tvcaseqty = (TextView) row.findViewById(R.id.PRDCASEQTY);
@@ -388,6 +397,9 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP)
                     holder.tvwval.setVisibility(View.GONE);
 
+                if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.tvProductCode.setVisibility(View.GONE);
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -400,14 +412,22 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             }
             holder.tvBatchNo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.tvwpsname.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvWeight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.tvProductCode.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.tvwpsname.setText(holder.productBO.getProductShortName());
+
+            if (businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code)
+                        + ": " + holder.productBO.getProductCode() + " ";
+                holder.tvProductCode.setText(prodCode);
+            }
+
             holder.productName = holder.productBO.getProductName();
             holder.tvpcsqty.setText(holder.productBO.getPQty() + "");
             holder.tvcaseqty.setText(holder.productBO.getCQty() + "");
             holder.outerQty.setText(holder.productBO.getOuterOrderedCaseQty() + "");
             int totalQty = holder.productBO.getTotalQty();
             holder.tvWeight.setText(" WGT : " + totalQty * holder.productBO.getWeight() + "");
-            holder.tvWeight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             /**
              * This line wise total may be wrong is amount discount appied via
              * scheme
@@ -436,7 +456,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         private OrderReportBO productBO;
         String ref;// product id
         String productName;
-        TextView tvwpsname;
+        TextView tvwpsname, tvProductCode;
         TextView tvBatchNo;
         TextView tvwval, tvpcsqty, tvcaseqty, outerQty;
         TextView tvWeight;

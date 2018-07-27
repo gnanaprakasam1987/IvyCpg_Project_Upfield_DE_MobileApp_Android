@@ -147,16 +147,16 @@ public class StockProposalModuleHelper {
 
 			db.closeDB();
 
-			for (int i = 0; i < bmodel.productHelper.getProducts().size(); i++) {
+			for (int i = 0; i < bmodel.productHelper.getLoadMgmtProducts().size(); i++) {
 				LoadManagementBO p = (LoadManagementBO) bmodel.productHelper
-						.getProducts().get(i);
+						.getLoadMgmtProducts().get(i);
 				if (sbdDist.contains(Integer.valueOf(p.getProductid()))) {
 					p.setSBDProduct(true);
-					bmodel.productHelper.getProducts().setElementAt(p, i);
+					bmodel.productHelper.getLoadMgmtProducts().setElementAt(p, i);
 				}
 				if (sbdDistAcheived.contains(Integer.valueOf(p.getProductid()))) {
 					p.setSBDAcheived(true);
-					bmodel.productHelper.getProducts().setElementAt(p, i);
+					bmodel.productHelper.getLoadMgmtProducts().setElementAt(p, i);
 				}
 
 			}
@@ -183,13 +183,13 @@ public class StockProposalModuleHelper {
 
 			c1.close();
 
-			for (int i = 0; i < bmodel.productHelper.getProducts().size(); i++) {
+			for (int i = 0; i < bmodel.productHelper.getLoadMgmtProducts().size(); i++) {
 				LoadManagementBO p = (LoadManagementBO) bmodel.productHelper
-						.getProducts().get(i);
+						.getLoadMgmtProducts().get(i);
 				Integer prodId = new Integer(p.getProductid());
 				if (init.contains(prodId)) {
 					p.setIsInitiativeProduct(1);
-					bmodel.productHelper.getProducts().setElementAt(p, i);
+					bmodel.productHelper.getLoadMgmtProducts().setElementAt(p, i);
 				}
 			}
 			db.closeDB();
@@ -216,7 +216,7 @@ public class StockProposalModuleHelper {
 			}
 			c.close();
 			db.closeDB();
-			for (LoadManagementBO p : bmodel.productHelper.getProducts()) {
+			for (LoadManagementBO p : bmodel.productHelper.getLoadMgmtProducts()) {
 				Integer value = hashMap.get(p.getProductid());
 				if (value != null) {
 					p.setIsPurchased(value);

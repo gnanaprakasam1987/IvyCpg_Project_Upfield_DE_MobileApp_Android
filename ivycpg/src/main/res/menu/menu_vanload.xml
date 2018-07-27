@@ -16,15 +16,9 @@
         android:visible="true"
         ivydist:showAsAction="always"/>
     <item
-        android:id="@+id/menu_product_filter"
-        android:icon="@drawable/icon_menu_filter"
-        android:orderInCategory="97"
-        android:title="@string/prd_filter"
-        ivydist:showAsAction="always"/>
-    <item
         android:id="@+id/menu_next"
         android:icon="@drawable/icon_save"
-        android:orderInCategory="98"
+        android:orderInCategory="97"
         android:title="@string/save"
         android:visible="false"
         ivydist:showAsAction="always"/>

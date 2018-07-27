@@ -38,8 +38,9 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
 
 
     @Override
-    public Observable<JSONObject> doActivationAtHttp(final String activationKey, final String imEiNumber,final String applicationVersionName,
-                                                     final String applicationVersionNumber ) {
+    public Observable<JSONObject> doActivationAtHttp(final String activationKey, final String imEiNumber,
+                                                     final String applicationVersionName,
+                                                     final String applicationVersionNumber) {
 
         return Observable.create(new ObservableOnSubscribe<JSONObject>() {
             @Override
@@ -97,7 +98,7 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
     @Override
     public Observable<JSONObject> doIMEIActivationAtHttp(final String imEi, final String versionName, final String versionNumber) {
 
-        return doActivationAtHttp(null,imEi, versionName, versionNumber);
+        return doActivationAtHttp(null, imEi, versionName, versionNumber);
     }
 
 

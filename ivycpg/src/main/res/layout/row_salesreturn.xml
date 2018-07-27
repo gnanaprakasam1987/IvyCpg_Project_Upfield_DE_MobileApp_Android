@@ -3,35 +3,51 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:weightSum="3"
     android:minHeight="@dimen/call_analysis_footer_min_height"
     android:orientation="horizontal">
 
-
+<LinearLayout
+    android:layout_width="@dimen/dimens_200dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dimens_4dp"
+    android:layout_weight="2">
     <TextView
         android:id="@+id/productName"
         style="?attr/customListItemPrimary"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/target_top_margin"
         android:layout_weight="2"
         android:gravity="start|center"
         android:maxLines="2"
-        android:padding="3dp"
         android:text="@string/product_name"
         android:layout_marginLeft="@dimen/target_top_margin" />
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sales_return_barcode"
+        android:gravity="start|center"
+        android:layout_weight="2"
+        android:text="@string/barcode"
+        android:textSize="@dimen/font_nano_small"
+        android:layout_marginStart="@dimen/target_top_margin"
+        android:layout_marginLeft="@dimen/target_top_margin" />
+</LinearLayout>
+<LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1">
     <TextView
         android:id="@+id/total"
         style="?attr/customListItemPrimary"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
         android:padding="3dp"
         android:text="@string/zero" />
-
-
-
+</LinearLayout>
 
 </LinearLayout>

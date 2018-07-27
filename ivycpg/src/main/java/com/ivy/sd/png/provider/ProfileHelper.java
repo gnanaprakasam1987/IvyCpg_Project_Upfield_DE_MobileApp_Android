@@ -232,7 +232,7 @@ public class ProfileHelper {
                             "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid," +
                             "IM .RField1,IM.RField2,IM.RField3,IM.RField4,IFNULL(POH.volume,''),(ordervalue-(ifnull(POH.PaidAmount,0))) as balAmount" +
                             " FROM P4OrderHistoryMaster POH left join P4OrderHistoryDetail POD ON POD.refid=POH.refid" +
-                            " left join productMaster PM ON PM.pid=POD.productid" +
+                            " left join object1 PM ON PM.pid=POD.productid" +
                             " left join StandardListMaster rm on POH.reasonid =  rm.ListId" +
                             " left join InvoiceMaster IM ON  POH.orderid =  IM.InvoiceNo where POH.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID());
             if (c != null) {
@@ -423,7 +423,7 @@ public class ProfileHelper {
                     .selectSQL("SELECT Distinct PIH.Retailerid,RetailerCode,PIH.refid,PIH.invoicedate,PIH.invoicevalue,lpc,Flag,PIH.PaidAmount," +
                             "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,PID.uomid, PID.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,PIH.invoiceid,IM .RField1,IM.RField2,IM.RField3,IM.RField4,PIH.orderNo" +
                             " FROM P4InvoiceHistoryMaster PIH left join P4InvoiceHistoryDetail PID ON PID.refid=PIH.refid" +
-                            " left join productMaster PM ON PM.pid=PID.productid" +
+                            " left join object1 PM ON PM.pid=PID.productid" +
                             " left join StandardListMaster rm on PIH.reasonid =  rm.ListId" +
                             " left join InvoiceMaster IM ON  PIH.invoiceid =  IM.InvoiceNo where PIH.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID());
             if (c != null) {
@@ -941,7 +941,7 @@ public class ProfileHelper {
     }
 
     private RetailerMasterBO getProductBrand(String parentId, String givenLevelId, RetailerMasterBO retailerMasterBO) {
-        String sql = "Select pid, pname, psname, plid, parentid from productMaster where pid=" + parentId;
+        String sql = "Select pid, pname, psname, plid, parentid from object1 where pid=" + parentId;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         db.openDataBase();

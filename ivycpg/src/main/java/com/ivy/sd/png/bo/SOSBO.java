@@ -19,6 +19,7 @@ public class SOSBO {
     private int availability;
     private int inTarget;
     private double groupTarget;
+    private String parentHierarchy;
 
     public int getParentID() {
         return parentID;
@@ -122,5 +123,13 @@ public class SOSBO {
 
     public void setGroupTarget(double groupTarget) {
         this.groupTarget = groupTarget;
+    }
+
+    public String getParentHierarchy() {
+        return parentHierarchy;
+    }
+
+    public void setParentHierarchy(String parentHierarchy) {
+        this.parentHierarchy = parentHierarchy;
     }
 }

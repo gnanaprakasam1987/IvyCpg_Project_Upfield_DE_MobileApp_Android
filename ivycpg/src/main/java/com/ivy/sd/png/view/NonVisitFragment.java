@@ -45,6 +45,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.profile.CommonReasonDialog;
@@ -58,7 +59,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class NonVisitFragment extends Fragment implements BrandDialogInterface,
-        SearchView.OnQueryTextListener {
+        SearchView.OnQueryTextListener,FiveLevelFilterCallBack {
 
     private final String MENU_PLANNING = "Day Planning";
     private final String MENU_VISIT = "Trade Coverage";
@@ -956,15 +957,9 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         return false;
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        // TO DO Auto-generated method stub
-
-    }
-
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         // TO DO Auto-generated method stub
     }

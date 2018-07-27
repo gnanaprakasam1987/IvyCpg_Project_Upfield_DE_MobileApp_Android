@@ -37,22 +37,13 @@ import java.util.Vector;
 
 
 public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener {
-    private Toolbar toolbar;
-    BusinessModel bmodel;
+    private BusinessModel bmodel;
     private Vector<VanLoadStockApplyBO> mylist;
-    private Vector<VanLoadStockApplyBO> mylist2;
     private Button applybtn, rejectbtn;
-    private TextView labelTxt1, labelTxt2, toolbarTxt;
     private String uid = null;
     Vector<String> SIHApplyById;
     private HashMap<String, Integer> mManuvalVanloadFlagByuid;
-    private TypedArray typearr;
-    private RecyclerView StockApplyListView;
-    private LinearLayout bottomLayout;
-    private StockApplyAdapter stockApplyAdapter;
     private String screenTitle = null;
-    private int proTotLine;
-    private Intent loadActivity;
     private boolean isFromPlanning = false;
 
     @Override
@@ -70,14 +61,14 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbarTxt = (TextView) findViewById(R.id.tv_toolbar_title);
-        labelTxt1 = (TextView) findViewById(R.id.tv_van_loadNo);
-        labelTxt2 = (TextView) findViewById(R.id.total_linesTitle);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView toolbarTxt = (TextView) findViewById(R.id.tv_toolbar_title);
+        TextView labelTxt1 = (TextView) findViewById(R.id.tv_van_loadNo);
+        TextView labelTxt2 = (TextView) findViewById(R.id.total_linesTitle);
         applybtn = (Button) findViewById(R.id.van_btn_accept);
         rejectbtn = (Button) findViewById(R.id.van_btn_reject);
-        StockApplyListView = (RecyclerView) findViewById(R.id.list);
-        bottomLayout = (LinearLayout) findViewById(R.id.bottom_layout);
+        RecyclerView stockApplyListView = (RecyclerView) findViewById(R.id.list);
+        LinearLayout bottomLayout = (LinearLayout) findViewById(R.id.bottom_layout);
 
         toolbarTxt.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         labelTxt1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -98,8 +89,8 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
         isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
         screenTitle = getIntent().getStringExtra("screentitle");
-        StockApplyListView.setHasFixedSize(true);
-        StockApplyListView.setLayoutManager(new LinearLayoutManager(this));
+        stockApplyListView.setHasFixedSize(true);
+        stockApplyListView.setLayoutManager(new LinearLayoutManager(this));
 
         SIHApplyById = bmodel.configurationMasterHelper.getSIHApplyById();
         applybtn.setOnClickListener(this);
@@ -124,7 +115,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
 
         try {
-            mylist2 = new Vector<>();
+            Vector<VanLoadStockApplyBO> mylist2 = new Vector<>();
             mManuvalVanloadFlagByuid = new HashMap<String, Integer>();
             for (int i = 0; i < mylist.size(); i++) {
                 mylist2.add(mylist.get(i));
@@ -143,8 +134,8 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                 }
             }
 
-            stockApplyAdapter = new StockApplyAdapter(mylist2);
-            StockApplyListView.setAdapter(stockApplyAdapter);
+            StockApplyAdapter stockApplyAdapter = new StockApplyAdapter(mylist2);
+            stockApplyListView.setAdapter(stockApplyAdapter);
 
         } catch (Resources.NotFoundException e) {
             Commons.printException("" + e);
@@ -250,7 +241,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                 holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.history_list_bg));
 
 
-            proTotLine = bmodel.stockreportmasterhelper.getNoProductsCount(projObj.getUid());
+            int proTotLine = bmodel.stockreportmasterhelper.getNoProductsCount(projObj.getUid());
             holder.vanLoadNoTxt.setText(projObj.getLoadNO());
             holder.vanLoadDateTxt.setText(projObj.getDate());
             holder.totalLineTxt.setText(proTotLine + "");
@@ -372,7 +363,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
         if (id == android.R.id.home) {
 
-            loadActivity = new Intent(VanLoadStockApplyActivity.this, HomeScreenActivity.class);
+            Intent loadActivity = new Intent(VanLoadStockApplyActivity.this, HomeScreenActivity.class);
             if (isFromPlanning)
                 loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
             else

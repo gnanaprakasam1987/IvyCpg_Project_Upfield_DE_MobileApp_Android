@@ -79,29 +79,25 @@ public class FilterFragment<E> extends Fragment implements OnClickListener,
         bmodel = (BusinessModel) context.getApplicationContext();
         typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         viewInitialization();
-        boolean isBrandFilter = false;
         try {
             buttonName = getArguments().getString("filterName");
-            isBrandFilter = getArguments().getBoolean("isFormBrand");
             parentTitle = getArguments().getString("pfilterHeader");
             childTitle = getArguments().getString("filterHeader");
             isFrom = getArguments().getString("isFrom");
             isFrom = isFrom != null ? isFrom : "STK";
             mHideAllButtton = getArguments().getBoolean("ishideAll");
 
-            if (!isBrandFilter) {
-                if (isFrom != null) {
-                    if ("stockproposal".equals(isFrom)) {
-                        itm = (Vector<?>) getArguments().get("filterContent");
-                    } else {
-                        itm = (Vector) getArguments().get("serilizeContent");
-                    }
+
+            if (isFrom != null) {
+                if ("stockproposal".equals(isFrom)) {
+                    itm = (Vector<?>) getArguments().get("filterContent");
                 } else {
-                    itm = bmodel.configurationMasterHelper.downloadFilterList();
+                    itm = (Vector) getArguments().get("serilizeContent");
                 }
             } else {
-                itm = (Vector) getArguments().get("serilizeContent");
+                itm = bmodel.configurationMasterHelper.downloadFilterList();
             }
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -141,11 +137,11 @@ public class FilterFragment<E> extends Fragment implements OnClickListener,
             cLevelFilterHeading.setText(getResources().getString(
                     R.string.choose));
 
-        if (!isBrandFilter) {
-            view.findViewById(R.id.chooseCategoryTitle)
-                    .setVisibility(View.GONE);
-            categoryGridView.setVisibility(View.GONE);
-        }
+
+        view.findViewById(R.id.chooseCategoryTitle)
+                .setVisibility(View.GONE);
+        categoryGridView.setVisibility(View.GONE);
+
 
         if (GENERAL.equals(buttonName)) {
             TextView tv = (TextView) view.findViewById(R.id.chooseBrandTitle);
@@ -187,25 +183,6 @@ public class FilterFragment<E> extends Fragment implements OnClickListener,
             }
         });
 
-        // Set Data to category Filter
-        if (isBrandFilter) {
-            if (isFrom != null) {
-                if ("STK".equals(isFrom)) {
-                    categoryAdapter = new CategoryGridAdapter(
-                            bmodel.productHelper.getParentLevelBo());
-                    categoryGridView.setAdapter(categoryAdapter);
-                } else {
-                    categoryAdapter = new CategoryGridAdapter(
-                            bmodel.productHelper.getPlevelMaster());
-                    categoryGridView.setAdapter(categoryAdapter);
-                }
-
-            } else {
-                categoryAdapter = new CategoryGridAdapter(
-                        bmodel.productHelper.getParentLevelBo());
-                categoryGridView.setAdapter(categoryAdapter);
-            }
-        }
 
         List<E> mylist = new ArrayList<>();
         for (int i = 0; i < itm.size(); i++) {
@@ -262,9 +239,9 @@ public class FilterFragment<E> extends Fragment implements OnClickListener,
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-            if (activity instanceof BrandDialogInterface) {
-                this.brandInterface = (BrandDialogInterface) activity;
-            }
+        if (activity instanceof BrandDialogInterface) {
+            this.brandInterface = (BrandDialogInterface) activity;
+        }
     }
 
     @SuppressWarnings("unchecked")
