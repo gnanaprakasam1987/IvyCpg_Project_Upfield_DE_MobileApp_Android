@@ -96,7 +96,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener,
-        BrandDialogInterface, TextView.OnEditorActionListener, MOQHighlightDialog.savePcsValue,FiveLevelFilterCallBack {
+        BrandDialogInterface, TextView.OnEditorActionListener, MOQHighlightDialog.savePcsValue, FiveLevelFilterCallBack {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -2208,42 +2208,25 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                             sbdStockAchieved.add(ret.getSbdGroupName());
                         }
 
-                        if (bmodel.configurationMasterHelper.SHOW_STK_ACHIEVED_WIHTOUT_HISTORY) {
-                            if (ret.getLocations().get(j).getWHCase() > 0
-                                    || ret.getLocations().get(j).getWHOuter() > 0
-                                    || ret.getLocations().get(j).getWHPiece() > 0
-                                    || ret.getLocations().get(j).getShelfCase() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfOuter() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfPiece() > -1
-                                    || ret.getLocations().get(j).getAvailability() > -1
-                                    || ret.isSBDAcheivedLocal()) {
-                                sbdStkAndOrderAchieved.add(ret
-                                        .getSbdGroupName());
-                            }
-                            if (ret.isSBDAcheivedLocal()) {
-                                sbdAcheived.add(ret.getSbdGroupName());
-                            }
-                        } else {
-                            if (ret.getLocations().get(j).getWHCase() > 0
-                                    || ret.getLocations().get(j).getWHOuter() > 0
-                                    || ret.getLocations().get(j).getWHPiece() > 0
-                                    || ret.getLocations().get(j).getShelfCase() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfOuter() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfPiece() > -1
-                                    || ret.getLocations().get(j).getAvailability() > -1
-                                    || ret.isSBDAcheived()
-                                    || ret.isSBDAcheivedLocal()) {
-                                sbdStkAndOrderAchieved.add(ret
-                                        .getSbdGroupName());
-                            }
-                            if (ret.isSBDAcheived() || ret.isSBDAcheivedLocal()) {
-                                sbdAcheived.add(ret.getSbdGroupName());
-                            }
+
+                        if (ret.getLocations().get(j).getWHCase() > 0
+                                || ret.getLocations().get(j).getWHOuter() > 0
+                                || ret.getLocations().get(j).getWHPiece() > 0
+                                || ret.getLocations().get(j).getShelfCase() > -1
+                                || ret.getLocations().get(j)
+                                .getShelfOuter() > -1
+                                || ret.getLocations().get(j)
+                                .getShelfPiece() > -1
+                                || ret.getLocations().get(j).getAvailability() > -1
+                                || ret.isSBDAcheived()
+                                || ret.isSBDAcheivedLocal()) {
+                            sbdStkAndOrderAchieved.add(ret
+                                    .getSbdGroupName());
                         }
+                        if (ret.isSBDAcheived() || ret.isSBDAcheivedLocal()) {
+                            sbdAcheived.add(ret.getSbdGroupName());
+                        }
+
                     }
                 }
             }
@@ -2251,17 +2234,12 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
 
             SbdDistPre = sbdStockAchieved.size();
 
-            if (bmodel.configurationMasterHelper.HAS_STOCK_IN_DIST_POST) {
-                per = (float) sbdStkAndOrderAchieved.size()
-                        / bmodel.getRetailerMasterBO()
-                        .getSbdDistributionTarget();
-                sbdDistAchieved = sbdStkAndOrderAchieved.size();
-            } else {
-                per = (float) sbdAcheived.size()
-                        / bmodel.getRetailerMasterBO()
-                        .getSbdDistributionTarget();
-                sbdDistAchieved = sbdAcheived.size();
-            }
+
+            per = (float) sbdAcheived.size()
+                    / bmodel.getRetailerMasterBO()
+                    .getSbdDistributionTarget();
+            sbdDistAchieved = sbdAcheived.size();
+
 
             String strLpcCouunt = lpccount + "";
             lpcText.setText(strLpcCouunt);
@@ -4107,7 +4085,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER) {
 
-                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
+                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                                     // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                                     if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
 

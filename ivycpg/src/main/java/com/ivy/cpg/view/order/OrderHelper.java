@@ -418,10 +418,9 @@ public class OrderHelper {
                 }
                 schemeHelper.insertAccumulationDetails(mContext, db, uid);
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 Commons.printException(e);
             }
-
 
 
             // insert item level discount in SQLite
@@ -567,6 +566,11 @@ public class OrderHelper {
                             flag = 1;
                         }
                     }
+                }
+
+                // Deleting existing order
+                if (hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())) {
+                    uid = deleteOrderTransactions(db, isVanSales, uid, mContext);
                 }
 
                 String id = businessModel.userMasterHelper.getUserMasterBO().getUserid()
@@ -1665,6 +1669,8 @@ public class OrderHelper {
                 product.setOrderPricePiece(pricePerPiece);
                 product.setSrp(srp);
                 product.setSoreasonId(skuResonId);
+                if (businessModel.configurationMasterHelper.IS_ORDER_SPLIT)
+                    product.setSeparateBill(false); // to clear spilit bills in Edit mode
                 if (!businessModel.configurationMasterHelper.SHOW_FOC)
                     product.setRemarks(remarks);
 

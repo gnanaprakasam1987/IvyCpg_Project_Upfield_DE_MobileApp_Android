@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1320"
-    android:versionName="2.132.0.2101">
+    android:versionName="2.132.0.2164">
 
     <supports-screens
         android:anyDensity="true"
@@ -809,13 +809,19 @@
         <activity
             android:name="com.ivy.cpg.view.asset.PosmGallery"
             android:screenOrientation="portrait" />
-            android:screenOrientation="portrait"/>
+        android:screenOrientation="portrait"/>
 
 
         <activity
             android:name="com.ivy.ui.activation.view.ActivationActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.cpg.view.reports.salesreport.salesreportdetails.SalesReturnDetailsActivity"
+            android:screenOrientation="portrait" />
+
+
     </application>
 
 </manifest>

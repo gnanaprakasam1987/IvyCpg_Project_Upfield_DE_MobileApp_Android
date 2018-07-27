@@ -53,7 +53,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private String address3;
 
     // Sales per category
-    private String  salesInvoiceId, salesInvoiceValue, salesLpc, salesQty, salesProductSName;
+    private String salesInvoiceId, salesInvoiceValue, salesLpc, salesQty, salesProductSName;
 
     public String getMovRetailerId() {
         return movRetailerId;
@@ -204,6 +204,8 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int kpiid_day;
     private int kpi_param_day;
     private int kpi_param_month;
+    private int retailerTaxLocId;
+    private int supplierTaxLocId;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -1566,4 +1568,19 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         this.kpi_param_day = kpi_param_day;
     }
 
+    public void setRetailerTaxLocId(int retailerTaxLocId) {
+        this.retailerTaxLocId = retailerTaxLocId;
+    }
+
+    public int getRetailerTaxLocId() {
+        return retailerTaxLocId;
+    }
+
+    public void setSupplierTaxLocId(int supplierTaxLocId) {
+        this.supplierTaxLocId = supplierTaxLocId;
+    }
+
+    public int getSupplierTaxLocId() {
+        return supplierTaxLocId;
+    }
 }

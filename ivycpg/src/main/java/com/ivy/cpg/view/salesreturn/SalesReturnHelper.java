@@ -65,6 +65,7 @@ public class SalesReturnHelper {
     public boolean IS_PRD_CNT_DIFF_SR;
     private static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "SR17";
     public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
+    public boolean SHOW_SR_CATEGORY;
 
 
     public static final String CREDIT_TYPE = "CREDIT";
@@ -267,6 +268,7 @@ public class SalesReturnHelper {
             SHOW_SALES_RET_PCS = false;
             SHOW_SALES_RET_OUTER_CASE = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
+            SHOW_SR_CATEGORY = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -314,6 +316,8 @@ public class SalesReturnHelper {
                         SHOW_SALES_RET_PCS = true;
                     else if ("OOC".equalsIgnoreCase(temp))
                         SHOW_SALES_RET_OUTER_CASE = true;
+                    else if ("SRCAT".equalsIgnoreCase(temp))
+                        SHOW_SR_CATEGORY = true;
                 }
                 c.close();
             }
@@ -1525,7 +1529,7 @@ public class SalesReturnHelper {
             if (bmodel.productHelper.isFilterAvaiable("MENU_SALES_RET") && isSameContentLevel(mContext) == 0) {
                 filterProductLevels = bmodel.productHelper.downloadFilterLevel("MENU_SALES_RET");
                 filterProductsByLevelId = bmodel.productHelper.downloadFilterLevelProducts("MENU_SALES_RET", filterProductLevels);
-                GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts("MENU_SALES_RET");
+                GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts("MENU_SALES_RET");
                 if (genericObjectPair != null) {
                     mSalesReturnProducts = genericObjectPair.object1;
                     mSalesReturnProductById = genericObjectPair.object2;

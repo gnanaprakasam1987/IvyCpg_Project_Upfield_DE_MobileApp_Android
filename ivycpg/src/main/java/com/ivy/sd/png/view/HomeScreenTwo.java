@@ -99,7 +99,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
@@ -119,7 +118,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private static final String MENU_ORDER = "MENU_ORDER";
     private static final String MENU_COLLECTION = "MENU_COLLECTION";
     private static final String MENU_COLLECTION_REF = "MENU_COLLECTION_REF";
-    private static final String MENU_WITS = "MENU_WITS";
     private static final String MENU_CALL_ANLYS = "MENU_CALL_ANLYS";
     private static final String MENU_INVOICE = "MENU_INVOICE";
     private static final String MENU_STK_ORD = "MENU_STK_ORD";
@@ -546,7 +544,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         menuIcons.put(MENU_SKUWISERTGT, R.drawable.activity_icon_stock_check);
         menuIcons.put(MENU_COLLECTION, R.drawable.activity_icon_stock_check);
         menuIcons.put(MENU_COLLECTION_REF, R.drawable.activity_icon_stock_check);
-        menuIcons.put(MENU_WITS, R.drawable.activity_icon_presentation);
         menuIcons.put(MENU_DGT, R.drawable.activity_icon_presentation);
         menuIcons.put(MENU_CLOSING, R.drawable.activity_icon_order_taking);
         menuIcons.put(MENU_REV, R.drawable.activity_icon_presentation);
@@ -849,8 +846,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             showDialog(2);
             return true;
         } else if (i1 == R.id.menu_supplier_selection) {
-
-            if (!bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE && mSupplierList.size() > 0 && mSupplierList.get(0).getIsPrimary() == 1) {// checking first position- because if primary available then there is a need to show seggregated view
+           // checking first position- because if primary available then there is a
+            // need to show seggregated view
+            if (!bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
+                    && mSupplierList.size() > 0 && mSupplierList.get(0).getIsPrimary() == 1) {
                 SupplierSelectionDialog dialog = new SupplierSelectionDialog();
                 dialog.show(getSupportFragmentManager(), "supplier");
                 //Bundle bndl=new Bundle();
@@ -917,6 +916,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         mSupplierList.get(mDefaultSupplierSelection));
                 bmodel.getRetailerMasterBO().setDistributorId(mSupplierList.get(mDefaultSupplierSelection).getSupplierID());
                 bmodel.getRetailerMasterBO().setDistParentId(mSupplierList.get(mDefaultSupplierSelection).getDistParentID());
+                bmodel.getRetailerMasterBO().setSupplierTaxLocId(mSupplierList.get(mDefaultSupplierSelection).getSupplierTaxLocId());
                 retailerCodeTxt.setText(mSupplierList.get(mDefaultSupplierSelection).getSupplierName());
             }
         } catch (Exception ex) {
@@ -1121,15 +1121,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 .equals("Y")
                                 || bmodel.getRetailerMasterBO()
                                 .getIsOrderMerch().equals("Y") || bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
-                            menuDB.get(i).setDone(true);
-                    } else {
-                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
-                            menuDB.get(i).setDone(true);
-                    }
-                } else if (menuDB.get(i).getConfigCode().equals(MENU_WITS)) {
-                    if (menuDB.get(i).getHasLink() == 1) {
-                        if (bmodel.getRetailerMasterBO()
-                                .getIsMerchandisingDone().equals("Y"))
                             menuDB.get(i).setDone(true);
                     } else {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
@@ -2033,6 +2024,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                         }
                                     });
                                     obj.show();
+                                    obj.setCancelable(false);
                                 } else {
                                     //the methods that were called during normal stock and order loading in non edit mode are called here
                                     //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
@@ -2669,36 +2661,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     isClick = false;
                 }
             }
-        } else if (menu.getConfigCode().equals(MENU_WITS) && hasLink == 1) {
-            if (isPreviousDone(menu)
-                    || bmodel.configurationMasterHelper.IS_JUMP
-                    ) {
-
-                if (bmodel.getRetailerMasterBO().getIsMerchandisingDone()
-                        .equals("Y")) {
-                    bmodel.mSelectedActivityName = menu.getMenuName();
-                    showDialog(0);
-                } else {
-                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                    Intent sbd = new Intent(HomeScreenTwo.this,
-                            MerchandisingActivity.class);
-                    Commons.print("menu name" + menu.getMenuName());
-                    sbd.putExtra("screentitle", menu.getMenuName());
-                    sbd.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(sbd);
-                    finish();
-                }
-            } else {
-                Toast.makeText(
-                        this,
-                        getResources().getString(
-                                R.string.please_complete_previous_activity),
-                        Toast.LENGTH_SHORT).show();
-                isCreated = false;
-            }
-
         } else if (menu.getConfigCode().equals(MENU_DGT) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
@@ -4013,36 +3975,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case 0:
-                AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenTwo.this)
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(
-                                getResources()
-                                        .getString(
-                                                R.string.wits_merchandising_already_done_Do_you_want_do_again))
-                        .setPositiveButton(getResources().getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        finish();
-                                        Intent sbd = new Intent(HomeScreenTwo.this,
-                                                MerchandisingActivity.class);
-                                        sbd.putExtra("screentitle", bmodel.mSelectedActivityName);
-                                        startActivity(sbd);
-                                        /* User clicked OK so do some stuff */
-                                    }
-                                })
-                        .setNegativeButton(
-                                getResources().getString(R.string.cancel),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        isCreated = false;
-                                        /* User clicked Cancel so do some stuff */
-                                    }
-                                });
-                bmodel.applyAlertDialogTheme(builder);
-
                 break;
             case 1:
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(HomeScreenTwo.this)
@@ -4120,6 +4052,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                 supplierBo);
                                         bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                                         bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                        bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
                                         bmodel.updateRetailerWiseSupplierType(supplierBo
                                                 .getSupplierID());
                                         retailerCodeTxt.setText(supplierBo.getSupplierName());
