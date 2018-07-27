@@ -1469,6 +1469,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_KPI_CALENDAR = "KPI_CALENDER";
     public boolean IS_KPI_CALENDAR;
 
+    private static final String CODE_GST_TAX_LOCATION_TYPE = "TAX_LOCATION_TYPE";
+    public boolean IS_TAX_LOC;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2574,6 +2577,11 @@ public class ConfigurationMasterHelper {
         this.IS_KPI_CALENDAR = hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) != null ? hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) : false;
 
         this.IS_SHOW_SKU_CODE = hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) : false;
+
+        if (hashMapHHTModuleConfig.get(CODE_GST_TAX_LOCATION_TYPE) != null) {
+            getLocationTaxGSTModel(CODE_GST_TAX_LOCATION_TYPE);
+        }
+
     }
 
     private boolean isInOutModule() {
@@ -2771,6 +2779,34 @@ public class ConfigurationMasterHelper {
         }
 
     }
+
+    /**
+     * @param hhtCode for general Location wise GST Tax Model
+     */
+    private void getLocationTaxGSTModel(String hhtCode) {
+
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            Cursor c = db.selectSQL("select RField from HhtModuleMaster where hhtCode='" + hhtCode + "' and  ForSwitchSeller = 0");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    String RField = c.getString(0);
+                    if (RField.equals("TAX_LOC")) {
+                        IS_TAX_LOC = true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+
+    }
+
 
 
 

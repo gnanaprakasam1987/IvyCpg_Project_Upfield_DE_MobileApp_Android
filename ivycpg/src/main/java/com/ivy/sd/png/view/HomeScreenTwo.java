@@ -849,8 +849,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             showDialog(2);
             return true;
         } else if (i1 == R.id.menu_supplier_selection) {
-
-            if (!bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE && mSupplierList.size() > 0 && mSupplierList.get(0).getIsPrimary() == 1) {// checking first position- because if primary available then there is a need to show seggregated view
+           // checking first position- because if primary available then there is a
+            // need to show seggregated view
+            if (!bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
+                    && mSupplierList.size() > 0 && mSupplierList.get(0).getIsPrimary() == 1) {
                 SupplierSelectionDialog dialog = new SupplierSelectionDialog();
                 dialog.show(getSupportFragmentManager(), "supplier");
                 //Bundle bndl=new Bundle();
@@ -917,6 +919,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         mSupplierList.get(mDefaultSupplierSelection));
                 bmodel.getRetailerMasterBO().setDistributorId(mSupplierList.get(mDefaultSupplierSelection).getSupplierID());
                 bmodel.getRetailerMasterBO().setDistParentId(mSupplierList.get(mDefaultSupplierSelection).getDistParentID());
+                bmodel.getRetailerMasterBO().setSupplierTaxLocId(mSupplierList.get(mDefaultSupplierSelection).getSupplierTaxLocId());
                 retailerCodeTxt.setText(mSupplierList.get(mDefaultSupplierSelection).getSupplierName());
             }
         } catch (Exception ex) {
@@ -2033,6 +2036,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                         }
                                     });
                                     obj.show();
+                                    obj.setCancelable(false);
                                 } else {
                                     //the methods that were called during normal stock and order loading in non edit mode are called here
                                     //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
@@ -4120,6 +4124,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                 supplierBo);
                                         bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                                         bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                        bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
                                         bmodel.updateRetailerWiseSupplierType(supplierBo
                                                 .getSupplierID());
                                         retailerCodeTxt.setText(supplierBo.getSupplierName());
