@@ -159,7 +159,6 @@
     <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
 
 
-
     <string name="drug_license_expired">Drug License Expired</string>
     <string name="uom_not_available">Uom Not Available</string>
     <string name="title_activity_posm_image_gallery">PosmImageGallery</string>
@@ -170,6 +169,18 @@
     <string name="total_value_lesser_actual">Total Value is lesser than Actual Value</string>
     <string name="enter_receipt_no">Enter Receipt Number</string>
     <string name="please_enter">Please Enter</string>
+
+    <string name="lpc">LPC</string>
+    <string name="return_value">Return Value</string>
+    <string name="replace_value">Replace Value</string>
+
+    <string name="case_qty">Case Quantity</string>
+    <string name="piece_qty">Piece Quantity</string>
+    <string name="outer_qty">Outer Quantity</string>
+    <string name="reason_type">Reason - ReasonType</string>
+
+    <string name="salesreport_details">SalesReturn Report Details</string>
     <string name="last_download_on">Last Download: </string>
     <string name="last_upload_on">Last Upload: </string>
+    <string name="select_category">Select Category</string>
 </resources>
