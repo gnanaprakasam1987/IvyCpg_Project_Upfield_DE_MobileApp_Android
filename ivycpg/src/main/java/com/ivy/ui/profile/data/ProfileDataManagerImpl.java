@@ -12,6 +12,7 @@ package com.ivy.ui.profile.data;
         import com.ivy.sd.png.bo.NewOutletBO;
         import com.ivy.sd.png.bo.RetailerFlexBO;
         import com.ivy.sd.png.bo.RetailerMasterBO;
+        import com.ivy.sd.png.bo.StandardListBO;
         import com.ivy.sd.png.commons.SDUtil;
         import com.ivy.sd.png.util.Commons;
         import com.ivy.sd.png.util.DataMembers;
@@ -26,7 +27,9 @@ package com.ivy.ui.profile.data;
         import javax.inject.Inject;
 
         import io.reactivex.Observable;
+        import io.reactivex.ObservableSource;
         import io.reactivex.Single;
+        import io.reactivex.functions.Function;
 
 public class ProfileDataManagerImpl implements IProfileDataManager {
 
@@ -357,6 +360,39 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     Commons.printException("" + e);
                 }
                 return lstEditRequests;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<StandardListBO>> downloadPriorityProducts() {
+        return null;
+    }
+
+    @Override
+    public Observable<ArrayList<String>> downloadPriorityProductsForRetailer(String retailerId) {
+        return Observable.fromCallable(new Callable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> call() throws Exception {
+                ArrayList<String> retilerProductList =null;
+                return retilerProductList;
+            }
+        }).flatMap(new Function<ArrayList<String>, ObservableSource<ArrayList<String>>>() {
+            @Override
+            public ObservableSource<ArrayList<String>> apply(final ArrayList<String> strings) throws Exception {
+                return Observable.fromCallable(new Callable<ArrayList<String>>() {
+                    @Override
+                    public ArrayList<String> call() throws Exception {
+
+                        if(strings==null) {
+                            ArrayList<String> retilerProductList = new ArrayList<>();
+
+
+                            return retilerProductList;
+                        }else
+                            return strings;
+                    }
+                });
             }
         });
     }

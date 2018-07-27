@@ -1795,7 +1795,7 @@ public class NewOutletHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailersEditRequest(int retailerId)}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailersEditRequest}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -1807,7 +1807,7 @@ public class NewOutletHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailersEditRequest(int retailerId)}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailersEditRequest}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */

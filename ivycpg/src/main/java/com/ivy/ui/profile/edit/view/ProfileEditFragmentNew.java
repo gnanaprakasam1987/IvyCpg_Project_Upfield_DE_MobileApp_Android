@@ -1,6 +1,7 @@
 package com.ivy.ui.profile.edit.view;
 
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -29,9 +31,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +55,7 @@ import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SpinnerBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
@@ -59,6 +66,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
+import com.ivy.sd.png.view.PrioritySelectionDialog;
 import com.ivy.sd.png.view.profile.ProfileEditFragment;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.edit.IProfileEditContract;
@@ -89,6 +97,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     Button mButtonSave;
 
     private LinearLayout mRootLinearLayout = null;
+    private LinearLayout.LayoutParams weight1, weight2, weight3;
+    private LinearLayout.LayoutParams mcommonsparams = null, params5;
 
     /*ProfileImageView */
     private ImageView mProfileImageView = null;
@@ -103,21 +113,20 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             contractSpinner, rField5Spinner, rField6Spinner, rField7Spinner, rField4Spinner;
 
     private ArrayList<InputFilter> inputFilters = null;
-
-    private LinearLayout.LayoutParams weight1,weight2,weight3;
-    private LinearLayout.LayoutParams mcommonsparams=null,params5;
-
     private Vector<ChannelBO> channelMaster = null;
-    private ArrayList<NewOutletBO>  mcontractStatusList = null;
+    private ArrayList<NewOutletBO> mcontractStatusList = null;
     private ArrayList<LocationBO> mLocationMasterList1 = null, mLocationMasterList2 = null, mLocationMasterList3 = null;
     private ArrayAdapter<LocationBO> locationAdapter1 = null, locationAdapter2 = null;
     private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
+    private ArrayList<StandardListBO> mPriorityProductList = null,selectedPriorityProductList = null;;
 
-    private int locid = 0,subChannelSpinnerCount = 0;
+    private int locid = 0;
+    private int subChannelSpinnerCount = 0;
     private String MName;
     private String menuCode;
     private int id;
-    static String lat = "", longitude = "";
+    private String selectedProductID = "";
+    static  String lat = "", longitude = "";
     private boolean isLatLongCameravailable = false;
 
     private TextView latlongtextview;
@@ -314,41 +323,41 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public void createEditTextView(int mNumber, String configCode, String menuName,
-                                   String values,boolean IS_UPPERCASE_LETTER,
-                                   int Mandatory,int MAX_CREDIT_DAYS) {
+                                   String values, boolean IS_UPPERCASE_LETTER,
+                                   int Mandatory, int MAX_CREDIT_DAYS) {
         getmRootLinearLayout().addView(getEditTextView(mNumber, configCode, menuName,
-                values,IS_UPPERCASE_LETTER,Mandatory,MAX_CREDIT_DAYS), getCommonsparams());
+                values, IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS), getCommonsparams());
 
     }
 
     @Override
-    public void createSpinnerView(Vector<ChannelBO> channelMaster,int mNumber, String MName, String menuCode, int id) {
+    public void createSpinnerView(Vector<ChannelBO> channelMaster, int mNumber, String MName, String menuCode, int id) {
         this.channelMaster = channelMaster;
-        getmRootLinearLayout().addView(getSpinnerView(mNumber,MName,menuCode,id), getCommonsparams());
+        getmRootLinearLayout().addView(getSpinnerView(mNumber, MName, menuCode, id), getCommonsparams());
     }
 
 
     @Override
     public void createSpinnerView(int mNumber, String MName, String menuCode, int id) {
-        getmRootLinearLayout().addView(getSpinnerView(mNumber,MName,menuCode,id), getCommonsparams());
+        getmRootLinearLayout().addView(getSpinnerView(mNumber, MName, menuCode, id), getCommonsparams());
     }
 
     @Override
-    public void createSpinnerView(int mNumber, String MName, String menuCode, int id,int locid) {
-        this.locid=locid;
-        getmRootLinearLayout().addView(getSpinnerView(mNumber,MName,menuCode,id), getCommonsparams());
+    public void createSpinnerView(int mNumber, String MName, String menuCode, int id, int locid) {
+        this.locid = locid;
+        getmRootLinearLayout().addView(getSpinnerView(mNumber, MName, menuCode, id), getCommonsparams());
     }
 
 
     @Override
-    public void createLatlongTextView(int mNumber, String MName,  String textvalue) {
-        getmRootLinearLayout().addView(getLatlongTextView(mNumber,MName,textvalue), getCommonsparams());
+    public void createLatlongTextView(int mNumber, String MName, String textvalue) {
+        getmRootLinearLayout().addView(getLatlongTextView(mNumber, MName, textvalue), getCommonsparams());
     }
 
     @Override
     public void createNearByRetailerView(int mNumber, String MName, boolean isEditMode) {
 
-        getmRootLinearLayout().addView(getNearByRetailerView(mNumber,MName,isEditMode), getCommonsparams());
+        getmRootLinearLayout().addView(getNearByRetailerView(mNumber, MName, isEditMode), getCommonsparams());
     }
 
     @Override
@@ -417,7 +426,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @Override
     public void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList) {
 
-        if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_53)){
+        if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_53)) {
             ArrayAdapter<RetailerFlexBO> rField5Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField5Adapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -435,10 +444,11 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
                 }
+
                 public void onNothingSelected(AdapterView<?> arg0) {
                 }
             });
-        }else if(menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_54)){
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_54)) {
             ArrayAdapter<RetailerFlexBO> rField6Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField6Adapter
@@ -460,11 +470,12 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                                            int pos, long id) {
 
                 }
+
                 public void onNothingSelected(AdapterView<?> arg0) {
 
                 }
             });
-        }else if(menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_55)){
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_55)) {
             ArrayAdapter<RetailerFlexBO> rField7Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField7Adapter
@@ -491,7 +502,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 }
 
             });
-        }else if(menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_28)){
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_28)) {
             ArrayAdapter<RetailerFlexBO> rField4Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField4Adapter
@@ -499,7 +510,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField4Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                     .getString(R.string.select_str) + " " + MName));
             int selPos = 0;
-            for (int i = 0; i <retailerFlexBOArrayList.size(); i++) {
+            for (int i = 0; i < retailerFlexBOArrayList.size(); i++) {
                 RetailerFlexBO retBO = retailerFlexBOArrayList.get(i);
                 rField4Adapter.add(retBO);
                 if (id == Integer.valueOf(retBO.getId()))
@@ -523,19 +534,19 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public void isLatLongCameravailable(boolean b) {
-        isLatLongCameravailable=b;
+        isLatLongCameravailable = b;
     }
 
 
     @Override
     public void getNearbyRetailerIds(Vector<RetailerMasterBO> retailerMasterBOVector) {
-        this.mSelectedIds=retailerMasterBOVector;
+        this.mSelectedIds = retailerMasterBOVector;
     }
 
     @Override
     public void getNearbyRetailersEditRequest(Vector<RetailerMasterBO> mSelectedIds) {
         this.mSelectedIds.clear();
-        this.mSelectedIds=mSelectedIds;
+        this.mSelectedIds = mSelectedIds;
     }
 
     @Override
@@ -608,13 +619,13 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
 
-    private LinearLayout.LayoutParams getCommonsparams(){
-        if(mcommonsparams ==null){
+    private LinearLayout.LayoutParams getCommonsparams() {
+        if (mcommonsparams == null) {
             mcommonsparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             mcommonsparams.setMargins(10, 15, 10, 0);
             return mcommonsparams;
         }
-       return mcommonsparams;
+        return mcommonsparams;
     }
 
 
@@ -663,7 +674,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
             Button verifyBtn = new Button(getActivity());
             verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-            verifyBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getActivity()));
+            verifyBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, getActivity()));
             verifyBtn.setText(getResources().getString(R.string.verify));
             verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
             verifyBtn.setOnClickListener(new View.OnClickListener() {
@@ -700,7 +711,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
                 Button verifyBtn = new Button(getActivity());
                 verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-                verifyBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getActivity()));
+                verifyBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, getActivity()));
                 verifyBtn.setText(getResources().getString(R.string.verify));
                 verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
                 verifyBtn.setOnClickListener(new View.OnClickListener() {
@@ -724,9 +735,13 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
             editText[mNumber].addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
                 @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
@@ -751,7 +766,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                                                     String menuName, String values, boolean IS_UPPERCASE_LETTER) {
         editText[positionNumber] = new AppCompatEditText(getActivity());
         editText[positionNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-        editText[positionNumber].setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        editText[positionNumber].setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         editText[positionNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
         editText[positionNumber].setText(values);
         editText[positionNumber].setHint(menuName);
@@ -785,12 +800,12 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     private LinearLayout getSpinnerView(int mNumber, String MName, @NonNls String menuCode, int id) {
 
-        this.menuCode=menuCode;
-        this.MName=MName;
-        this.id=id;
-        mLocationMasterList1=profileEditPresenter.getLocationMasterList1();
-        mLocationMasterList2=profileEditPresenter.getLocationMasterList2();
-        mLocationMasterList3=profileEditPresenter.getLocationMasterList3();
+        this.menuCode = menuCode;
+        this.MName = MName;
+        this.id = id;
+        mLocationMasterList1 = profileEditPresenter.getLocationMasterList1();
+        mLocationMasterList2 = profileEditPresenter.getLocationMasterList2();
+        mLocationMasterList3 = profileEditPresenter.getLocationMasterList3();
 
         LinearLayout layout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
         LinearLayout.LayoutParams spinweight = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -800,7 +815,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         if (menuCode.equals(ProfileConstant.PROFILE_06)) {
             channel = new MaterialSpinner(getActivity());
             channel.setId(mNumber);
-            channel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+            channel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             channel.setFloatingLabelText(MName);
             //channel.setGravity(Gravity.CENTER);
 
@@ -841,7 +856,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             try {
                 contractSpinner = new MaterialSpinner(getActivity());
                 contractSpinner.setId(mNumber);
-                contractSpinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                contractSpinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 contractSpinner.setFloatingLabelText(MName);
                 mcontractStatusList = new ArrayList<>();
                 mcontractStatusList.add(0, new NewOutletBO(0, getResources().getString(R.string.select_str) + " " + MName));
@@ -873,16 +888,15 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         if (menuCode.equals(ProfileConstant.PROFILE_07)) {
             subchannel = new MaterialSpinner(getActivity());
             subchannel.setId(mNumber);
-            subchannel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+            subchannel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             subchannel.setFloatingLabelText(MName);
             layout.addView(subchannel, spinweight);
 
-        }
-        else if (menuCode.equals(ProfileConstant.PROFILE_13)) {
+        } else if (menuCode.equals(ProfileConstant.PROFILE_13)) {
             try {
                 location1 = new MaterialSpinner(getActivity());
                 location1.setId(mNumber);
-                location1.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                location1.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 location1.setFloatingLabelText(MName);
                 if (mLocationMasterList1 == null) {
                     mLocationMasterList1 = new ArrayList<LocationBO>();
@@ -895,7 +909,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
                 String loc1id = "";
                 int pos = 0, setPos = 0;
-                String[] loc1 = profileEditPresenter.getParentLevelName(locid,false);
+                String[] loc1 = profileEditPresenter.getParentLevelName(locid, false);
 
                 if (loc1 != null) {
                     loc1id = loc1[0];
@@ -924,12 +938,11 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             } catch (Exception e) {
                 Commons.printException(e);
             }
-        }
-        else if (menuCode.equals(ProfileConstant.PROFILE_14)) {
+        } else if (menuCode.equals(ProfileConstant.PROFILE_14)) {
             try {
                 location2 = new MaterialSpinner(getActivity());
                 location2.setId(mNumber);
-                location2.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                location2.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 location2.setFloatingLabelText(MName);
                 //location2.setGravity(Gravity.CENTER);
                 if (mLocationMasterList2 == null) {
@@ -941,7 +954,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                         android.R.layout.simple_spinner_item, mLocationMasterList2);
                 String loc2id = "";
                 int pos = 0, setPos = 0;
-                String[] loc2 =profileEditPresenter.getParentLevelName(locid,true);
+                String[] loc2 = profileEditPresenter.getParentLevelName(locid, true);
 
                 if (loc2 != null) {
                     loc2id = loc2[0];
@@ -971,12 +984,11 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             } catch (Exception e) {
                 Commons.printException(e);
             }
-        }
-        else if (menuCode.equals(ProfileConstant.PROFILE_15)) {
+        } else if (menuCode.equals(ProfileConstant.PROFILE_15)) {
             try {
                 location3 = new MaterialSpinner(getActivity());
                 location3.setId(mNumber);
-                location3.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                location3.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 location3.setFloatingLabelText(MName);
                 //location3.setGravity(Gravity.CENTER);
                 if (mLocationMasterList3 == null) {
@@ -989,7 +1001,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                         android.R.layout.simple_spinner_item, mLocationMasterList3);
                 String locid = "";
                 int pos = 0, setPos = 0;
-                String[] loc3 =  profileEditPresenter.getParentLevelName(true);
+                String[] loc3 = profileEditPresenter.getParentLevelName(true);
                 if (loc3 != null) {
                     locid = loc3[0];
                 }
@@ -1018,37 +1030,33 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             } catch (Exception e) {
                 Commons.printException(e);
             }
-        }
-        else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_53)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_53)) {
             rField5Spinner = new MaterialSpinner(getActivity());
-            rField5Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+            rField5Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField5Spinner.setId(mNumber);
             rField5Spinner.setFloatingLabelText(MName);
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_5);
             layout.addView(rField5Spinner, spinweight);
 
-        }
-        else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_54)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_54)) {
             rField6Spinner = new MaterialSpinner(getActivity());
-            rField6Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+            rField6Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField6Spinner.setId(mNumber);
             rField6Spinner.setFloatingLabelText(MName);
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_6);
             layout.addView(rField6Spinner, spinweight);
 
-        }
-        else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_55)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_55)) {
             rField7Spinner = new MaterialSpinner(getActivity());
-            rField7Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+            rField7Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField7Spinner.setId(mNumber);
             rField7Spinner.setFloatingLabelText(MName);
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_7);
             layout.addView(rField7Spinner, spinweight);
 
-        }
-        else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_28)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_28)) {
             rField4Spinner = new MaterialSpinner(getActivity());
-            rField4Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+            rField4Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField4Spinner.setId(mNumber);
             rField4Spinner.setFloatingLabelText(MName);
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_4);
@@ -1062,7 +1070,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private TextView getSingleTextView(int positionNumber, String menuName) {
         textview[positionNumber] = new TextView(getActivity());
         textview[positionNumber].setText(menuName);
-        textview[positionNumber].setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        textview[positionNumber].setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         textview[positionNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
         textview[positionNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
         return textview[positionNumber];
@@ -1083,7 +1091,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
         latlongtextview = new TextView(getActivity());
         latlongtextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        latlongtextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        latlongtextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         latlongtextview.setText(textvalue);
         latlongtextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
 
@@ -1141,7 +1149,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         nearbyTextView = new TextView(getActivity());
         nearbyTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
         nearbyTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        nearbyTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        nearbyTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         nearbyTextView.setGravity(Gravity.CENTER);
 
         ScrollView scrl = new ScrollView(getActivity());
@@ -1157,8 +1165,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         if (!isEditMode) {
             retailerButton.setVisibility(View.GONE);
             profileEditPresenter.getNearbyRetailerIds();
-        }
-        else {
+        } else {
             profileEditPresenter.getNearbyRetailersEditRequest();
         }
         // showing nearby retailers
@@ -1168,6 +1175,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
         return layout;
     }
+
 
     private LinearLayout getPriorityProductView(final int mNumber, final String MName, final String textvalue, final String productID) {
 
@@ -1182,7 +1190,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
         priorityproducttextview = new TextView(getActivity());
         priorityproducttextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        priorityproducttextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        priorityproducttextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         priorityproducttextview.setText(textvalue);
 
 
@@ -1201,6 +1209,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                     dialogFragment.setArguments(bundle);
                     dialogFragment.show(fm, "Sample Fragment");
                     dialogFragment.setCancelable(false);
+
                 } else {
                     //  Toast.makeText(getActivity(), getResources().getString(R.string.priority_products_not_available), Toast.LENGTH_SHORT).show();
                 }
@@ -1212,9 +1221,164 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         linearlayout.addView(firstlayout, params5);
         linearlayout.addView(secondlayout, weight1);
 
-
         return linearlayout;
 
+    }
+
+    @SuppressLint("ValidFragment")
+    public class CustomFragment extends DialogFragment {
+
+        private TextView mTitleTV;
+        private Button mOkBtn, mDismisBtn;
+        private ListView mPriorityproductLV;
+
+        private String mTitle = "";
+        private String mMenuName = "";
+        private int hasLink = 0;
+        private int mSelectedpostion = -1;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            mTitle = getArguments().getString("title");
+            mMenuName = getArguments().getString("screentitle");
+            hasLink = getArguments().getInt("hasLink");
+
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+                savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.custom_dialog_fragment, container, false);
+
+            return rootView;
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            getDialog().setTitle(mTitle);
+            mTitleTV = (TextView) getView().findViewById(R.id.title);
+            mTitleTV.setVisibility(View.GONE);
+            mOkBtn = (Button) getView().findViewById(R.id.btn_ok);
+            if (hasLink == 0)
+                mOkBtn.setVisibility(View.GONE);
+
+            mDismisBtn = (Button) getView().findViewById(R.id.btn_dismiss);
+            mDismisBtn.setVisibility(View.GONE);
+            mPriorityproductLV = (ListView) getView().findViewById(R.id.lv_colletion_print);
+
+            if (hasLink == 0) {
+                for (int i = 0; i < mPriorityProductList.size(); i++) {
+                    if (mPriorityProductList.get(i).getListID().equals(selectedProductID))
+                        mSelectedpostion = i;
+                }
+                ArrayAdapter<StandardListBO> adapter = new ArrayAdapter<StandardListBO>(getActivity(), android.R.layout.simple_list_item_single_choice, mPriorityProductList);
+                mPriorityproductLV.setAdapter(adapter);
+                mPriorityproductLV.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                if (mSelectedpostion != -1)
+                    mPriorityproductLV.setItemChecked(mSelectedpostion, true);
+                mPriorityproductLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        selectedPriorityProductList = new ArrayList<StandardListBO>();
+                        StandardListBO standardListBO = mPriorityProductList.get(position);
+                        selectedProductID = standardListBO.getListID();
+                        selectedPriorityProductList.add(standardListBO);
+                        priorityproducttextview.setText(standardListBO.getListName());
+                        getDialog().dismiss();
+                    }
+                });
+            } else if (hasLink == 1) {
+                MyAdapter adapter = new MyAdapter();
+                mPriorityproductLV.setAdapter(adapter);
+            }
+
+            mOkBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    updatePriorityProducts();
+                    getDialog().dismiss();
+
+                }
+            });
+
+        }
+
+        class MyAdapter extends BaseAdapter {
+
+            @Override
+            public int getCount() {
+                return mPriorityProductList.size();
+            }
+
+            @Override
+            public Object getItem(int position) {
+                return null;
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                LayoutInflater inflater = (LayoutInflater) getActivity()
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final ViewHolder holder;
+                if (convertView == null) {
+                    holder = new ViewHolder();
+                    convertView = inflater.inflate(R.layout.list_priotityproduct,
+                            null);
+                    holder.productNameTV = (TextView) convertView.findViewById(R.id.tv_product_name);
+                    holder.productSelectCB = (CheckBox) convertView.findViewById(R.id.cb_productselect);
+                    holder.productSelectCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            holder.standardListBO.setChecked(isChecked);
+                        }
+                    });
+                    convertView.setTag(holder);
+
+                } else {
+                    holder = (ViewHolder) convertView.getTag();
+                }
+                holder.standardListBO = mPriorityProductList.get(position);
+                holder.productNameTV.setText(holder.standardListBO.getListName());
+                holder.productSelectCB.setChecked(holder.standardListBO.isChecked());
+                return convertView;
+            }
+        }
+
+        class ViewHolder {
+            StandardListBO standardListBO;
+            TextView productNameTV;
+            CheckBox productSelectCB;
+
+        }
+    }
+
+    private void updatePriorityProducts() {
+        selectedPriorityProductList = new ArrayList<>();
+        selectedPriorityProductList.clear();
+        StringBuffer sb = new StringBuffer();
+
+        for (StandardListBO standardListBO : mPriorityProductList) {
+            if (standardListBO.isChecked()) {
+                selectedPriorityProductList.add(standardListBO);
+                if (sb.length() > 0)
+                    sb.append(", ");
+                sb.append(standardListBO.getListName());
+            }
+            if (selectedPriorityProductList.size() > 0) {
+                priorityproducttextview.setText(sb.toString());
+
+            } else {
+                priorityproducttextview.setText("");
+            }
+        }
     }
 
 
@@ -1302,7 +1466,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
             int position = 0, setPos = 0;
             int subChannelID = getSubchannelid();
-            String mPreviousProfileChanges=profileEditPresenter.getPreviousProfileChangesList(ProfileConstant.PROFILE_07);
+            String mPreviousProfileChanges = profileEditPresenter.getPreviousProfileChangesList(ProfileConstant.PROFILE_07);
             if (!AppUtils.isEmptyString(mPreviousProfileChanges))
                 if (!mPreviousProfileChanges.equals(subChannelID + ""))
                     subChannelID = SDUtil.convertToInt(mPreviousProfileChanges);
@@ -1324,11 +1488,12 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             subchannel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     //SpinnerBO tempBo = (SpinnerBO) parent.getSelectedItem();
-                    if (++subChannelSpinnerCount > 1){
+                    if (++subChannelSpinnerCount > 1) {
                         // addAttributeView(1);
                     }
 
                 }
+
                 public void onNothingSelected(AdapterView<?> arg0) {
                 }
 
@@ -1342,7 +1507,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
 
-    public Vector<SubchannelBO> getSubChannelMaster( ) {
+    public Vector<SubchannelBO> getSubChannelMaster() {
         return profileEditPresenter.getSubChannelMaster();
     }
 
@@ -1395,5 +1560,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 editText[positionNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         }
     }
+
 
 }

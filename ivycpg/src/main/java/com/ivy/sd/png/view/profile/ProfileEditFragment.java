@@ -998,6 +998,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 }
                 else if (configCode.equals(PROFILE_57) && flag == 1 && Order == 1) {
+
                     mPriorityProductList = bmodel.newOutletHelper.downloadPriorityProducts();
                     String productID = "";
                     ArrayList<String> products;
@@ -1005,19 +1006,25 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (products == null) {
                         products = bmodel.newOutletHelper.downloadPriorityProductsForRetailer(retailerObj.getRetailerID());
                     }
-                    StringBuffer sb = new StringBuffer();
-                    if (products != null) {
-                        for (StandardListBO bo : mPriorityProductList) {
-                            if (products.contains(bo.getListID())) {
-                                bo.setChecked(true);
 
+                    StringBuffer sb = new StringBuffer();
+
+                    if (products != null) {
+
+                        for (StandardListBO bo : mPriorityProductList) {
+
+                            if (products.contains(bo.getListID())) {
+
+                                bo.setChecked(true);
                                 if (sb.length() > 0)
                                     sb.append(", ");
 
                                 sb.append(bo.getListName());
+
                                 selectedProductID = bo.getListID();
                             }
                         }
+
                     }
 
                     totalView.addView(getPriorityProductView(mNumber, mName, sb.toString(), productID), commonsparams);
@@ -1026,23 +1033,23 @@ public class ProfileEditFragment extends IvyBaseFragment
                     LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT);
                     LLParams.setMargins(10, 5, 10, 5);
-                    totalView.addView(
-                            addAttributeView(0), LLParams);
-                } else if (configCode.equals(PROFILE_61) && flag == 1 && Order == 1) {
+                    totalView.addView(addAttributeView(0), LLParams);
+                }
+                else if (configCode.equals(PROFILE_61) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getGSTNumber() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_TEXT),
-                            commonsparams);
-                } else if (configCode.equals(PROFILE_62) && flag == 1 && Order == 1) {
+                    totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_TEXT), commonsparams);
+                }
+                else if (configCode.equals(PROFILE_62) && flag == 1 && Order == 1) {
 
                     LinearLayout baselayout = new LinearLayout(getActivity());
                     baselayout.setOrientation(LinearLayout.VERTICAL);
-                    //
+
+
                     LinearLayout linearlayout = new LinearLayout(getActivity());
                     linearlayout.setOrientation(LinearLayout.VERTICAL);
 
@@ -1073,19 +1080,16 @@ public class ProfileEditFragment extends IvyBaseFragment
                         textLayout.addView(mn_textview, weight0);
                     }
 
-
                     TextView days = new TextView(getActivity());
                     days.setText(mName);
                     days.setTextColor(Color.BLACK);
                     days.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                     textLayout.addView(days, params8);
-                    //
-
-
                     baselayout.addView(textLayout);
                     baselayout.addView(linearlayout);
                     totalView.addView(baselayout, commonsparams);
-                } else if (configCode.equals(PROFILE_81) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_81) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getPanNumber() == null
                             || retailerObj.getPanNumber().equals(
@@ -1108,7 +1112,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
-                } else if (configCode.equals(PROFILE_82) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_82) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getFoodLicenceNo() == null
                             || retailerObj.getFoodLicenceNo().equals(
@@ -1132,7 +1137,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
-                } else if (configCode.equals(PROFILE_84) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_84) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getDLNo() == null
                             || retailerObj.getDLNo().equals(
@@ -1156,7 +1162,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
-                } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase(PROFILE_85)) {
+                }
+                else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase(PROFILE_85)) {
                     LinearLayout secondlayout = new LinearLayout(getActivity());
                     LinearLayout firstlayout = new LinearLayout(getActivity());
                     LinearLayout linearlayout = new LinearLayout(getActivity());
@@ -1215,7 +1222,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     });
 
 
-                } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase(PROFILE_83)) {
+                }
+                else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase(PROFILE_83)) {
                     LinearLayout secondlayout = new LinearLayout(getActivity());
                     LinearLayout firstlayout = new LinearLayout(getActivity());
                     LinearLayout linearlayout = new LinearLayout(getActivity());
@@ -1272,7 +1280,8 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                         }
                     });
-                } else if (configCode.equals(PROFILE_78) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_78) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getEmail() == null
                             || retailerObj.getEmail().equals(
@@ -1288,7 +1297,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS),
                             commonsparams);
-                } else if (configCode.equals("PROFILE79") && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals("PROFILE79") && flag == 1 && Order == 1) {
                     if (retailerObj.getMobile() == null
                             || retailerObj.getMobile().equals(
                             "null")) {
@@ -1301,7 +1311,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals(PROFILE_86) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_86) && flag == 1 && Order == 1) {
                     if (retailerObj.getFax() == null
                             || retailerObj.getFax().equals(
                             "null")) {
@@ -1314,7 +1325,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals(PROFILE_87) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_87) && flag == 1 && Order == 1) {
                     if (retailerObj.getRegion() == null
                             || retailerObj.getRegion().equals(
                             "null")) {
@@ -1335,7 +1347,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
-                } else if (configCode.equals(PROFILE_88) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_88) && flag == 1 && Order == 1) {
                     if (retailerObj.getCountry() == null
                             || retailerObj.getCountry().equals(
                             "null")) {
@@ -2519,6 +2532,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
             @Override
             public void onClick(View v) {
+
                 if (mPriorityProductList != null) {
                     FragmentManager fm = getActivity().getSupportFragmentManager();
                     @NonNls CustomFragment dialogFragment = new CustomFragment();

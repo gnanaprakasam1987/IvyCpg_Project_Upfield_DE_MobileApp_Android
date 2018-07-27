@@ -5,6 +5,7 @@ import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.StandardListBO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,5 +37,9 @@ public interface IProfileDataManager {
     Observable<ArrayList<String>> getNearbyRetailerIds(String RetailerID);
 
     Observable<HashMap<String, String>> getNearbyRetailersEditRequest(String retailerId);
+
+    Observable<ArrayList<StandardListBO>> downloadPriorityProducts();
+
+    Observable<ArrayList<String>> downloadPriorityProductsForRetailer(String retailerId);
 
 }

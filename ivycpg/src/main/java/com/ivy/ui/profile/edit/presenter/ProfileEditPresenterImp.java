@@ -798,8 +798,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                          LinkedHashMap<Integer, ArrayList<LocationBO>> LocationListByLevId,
                                          HashMap<String, String> PreviousProfileChanges,
                                          Vector<RetailerMasterBO> DownloadLinkRetailer,
-                                         Boolean aBoolean
-                    ) throws Exception {
+                                         Boolean aBoolean) throws Exception {
                         ProfileEditPresenterImp.this.mContactTitle = ContactTitle;
                         ProfileEditPresenterImp.this.mContactStatus = ContactStatus;
                         ProfileEditPresenterImp.this.mLocationListByLevId = LocationListByLevId;
