@@ -38,6 +38,14 @@ public class SubChannelMasterHelper {
         return subchannelMaster;
     }
 
+
+    /**
+     * @param subChannel
+     * @return
+     * @See {@link ChannelDataManagerImpl#fetchSubChannelName(String)}
+     * @deprecated
+     */
+    @Deprecated
     public String getSubChannelName(String subChannel) {
         SubchannelBO beat;
         int siz = getSubChannelMaster().size();

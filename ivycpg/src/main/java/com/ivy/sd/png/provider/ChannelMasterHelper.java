@@ -52,6 +52,13 @@ public class ChannelMasterHelper {
         return channelMaster;
     }
 
+    /**
+     * @deprecated
+     * @See {@link ChannelDataManagerImpl#fetchChannelName(String)}
+     * @param channelID
+     * @return
+     */
+    @Deprecated
     public String getChannelName(String channelID) {
 
         ChannelBO beat;
@@ -189,7 +196,8 @@ public class ChannelMasterHelper {
 
 
     public String getChannelHierarchy(int channelId, Context mContext) {
-        String sql, sql1 = "", str = "";
+        StringBuilder sql;StringBuilder sql1 = new StringBuilder();
+        String str = "";
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -209,16 +217,15 @@ public class ChannelMasterHelper {
             int loopEnd = mContentLevel - mChildLevel + 1;
 
             for (int i = 2; i <= loopEnd; i++) {
-                sql1 = sql1 + " LM" + i + ".ChId";
+                sql1.append(" LM").append(i).append(".ChId");
                 if (i != loopEnd)
-                    sql1 = sql1 + ",";
+                    sql1.append(",");
             }
-            sql = "select " + sql1 + "  from ChannelHierarchy LM1";
+            sql = new StringBuilder("select " + sql1 + "  from ChannelHierarchy LM1");
             for (int i = 2; i <= loopEnd; i++)
-                sql = sql + " INNER JOIN ChannelHierarchy LM" + i + " ON LM" + (i - 1)
-                        + ".ParentId = LM" + i + ".ChId";
-            sql = sql + " where LM1.ChId=" + channelId;
-            c = db.selectSQL(sql);
+                sql.append(" INNER JOIN ChannelHierarchy LM").append(i).append(" ON LM").append(i - 1).append(".ParentId = LM").append(i).append(".ChId");
+            sql.append(" where LM1.ChId=").append(channelId);
+            c = db.selectSQL(sql.toString());
             if (c != null) {
                 while (c.moveToNext()) {
                     for (int i = 0; i < c.getColumnCount(); i++) {
