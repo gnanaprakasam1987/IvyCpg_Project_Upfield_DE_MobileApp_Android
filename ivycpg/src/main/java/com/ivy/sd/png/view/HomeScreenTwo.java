@@ -849,8 +849,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             showDialog(2);
             return true;
         } else if (i1 == R.id.menu_supplier_selection) {
-
-            if (!bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE && mSupplierList.size() > 0 && mSupplierList.get(0).getIsPrimary() == 1) {// checking first position- because if primary available then there is a need to show seggregated view
+           // checking first position- because if primary available then there is a
+            // need to show seggregated view
+            if (!bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
+                    && mSupplierList.size() > 0 && mSupplierList.get(0).getIsPrimary() == 1) {
                 SupplierSelectionDialog dialog = new SupplierSelectionDialog();
                 dialog.show(getSupportFragmentManager(), "supplier");
                 //Bundle bndl=new Bundle();

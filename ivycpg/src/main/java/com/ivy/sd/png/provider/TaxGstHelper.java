@@ -96,16 +96,15 @@ public class TaxGstHelper implements TaxInterface {
     /**
      * @author rajesh.k Method to use download product wise tax details
      * 1. IS_TAX_LOC - true
-     *    Check location wise tax
-     *    LocationId (RetailerLocation)
-     *    sourceLocId(SupplierLocation)
-     *    isSameZone - Both LocationID are same
-     *    isDifferentZone - Both LocationID are not same
-     *2. IS_TAX_LOC - false
-     *    Check isSameZone
-     *    isSameZone - true means same location
-     *    isSameZone - false measn different location
-     *
+     * Check location wise tax
+     * LocationId (RetailerLocation)
+     * sourceLocId(SupplierLocation)
+     * isSameZone - Both LocationID are same
+     * isDifferentZone - Both LocationID are not same
+     * 2. IS_TAX_LOC - false
+     * Check isSameZone
+     * isSameZone - true means same location
+     * isSameZone - false measn different location
      */
 
     public void downloadProductTaxDetails() {
@@ -135,7 +134,7 @@ public class TaxGstHelper implements TaxInterface {
 
             if (mBusinessModel.configurationMasterHelper.IS_TAX_LOC) {
                 sb.append(" AND PTM.LocationId = " + mBusinessModel.getRetailerMasterBO().getRetailerTaxLocId());
-                sb.append(" AND PTM.sourceLocId =" + mBusinessModel.getRetailerMasterBO().getSupplierTaxLocId());
+                sb.append(" AND PTM.sourceLocId = " + mBusinessModel.getRetailerMasterBO().getSupplierTaxLocId());
             } else
                 sb.append(" AND PTM.isSameZone = " + mBusinessModel.getRetailerMasterBO().isSameZone());
 
