@@ -1,104 +1,104 @@
 package com.ivy.sd.png.view.profile;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatEditText;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
+        import android.Manifest;
+        import android.annotation.SuppressLint;
+        import android.app.AlertDialog;
+        import android.app.DatePickerDialog;
+        import android.app.Dialog;
+        import android.app.ProgressDialog;
+        import android.content.ActivityNotFoundException;
+        import android.content.Context;
+        import android.content.DialogInterface;
+        import android.content.Intent;
+        import android.content.pm.PackageManager;
+        import android.graphics.Bitmap;
+        import android.graphics.Color;
+        import android.graphics.Typeface;
+        import android.net.Uri;
+        import android.os.AsyncTask;
+        import android.os.Build;
+        import android.os.Bundle;
+        import android.os.Environment;
+        import android.support.annotation.Nullable;
+        import android.support.design.widget.TextInputLayout;
+        import android.support.v4.app.DialogFragment;
+        import android.support.v4.app.FragmentManager;
+        import android.support.v4.app.FragmentTransaction;
+        import android.support.v4.content.ContextCompat;
+        import android.support.v4.content.FileProvider;
+        import android.support.v7.view.ContextThemeWrapper;
+        import android.support.v7.widget.AppCompatCheckBox;
+        import android.support.v7.widget.AppCompatEditText;
+        import android.text.Editable;
+        import android.text.InputFilter;
+        import android.text.InputType;
+        import android.text.Spanned;
+        import android.text.TextUtils;
+        import android.text.TextWatcher;
+        import android.util.Log;
+        import android.util.TypedValue;
+        import android.view.Gravity;
+        import android.view.LayoutInflater;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.view.WindowManager;
+        import android.widget.AdapterView;
+        import android.widget.ArrayAdapter;
+        import android.widget.BaseAdapter;
+        import android.widget.Button;
+        import android.widget.CheckBox;
+        import android.widget.CompoundButton;
+        import android.widget.DatePicker;
+        import android.widget.ImageView;
+        import android.widget.LinearLayout;
+        import android.widget.ListView;
+        import android.widget.ScrollView;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import com.ivy.location.LocationUtil;
-import com.ivy.maplib.BaiduMapDialogue;
-import com.ivy.sd.camera.CameraActivity;
-import com.ivy.sd.png.asean.view.BuildConfig;
-import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ChannelBO;
-import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LocationBO;
-import com.ivy.sd.png.bo.NewOutletAttributeBO;
-import com.ivy.sd.png.bo.NewOutletBO;
-import com.ivy.sd.png.bo.RetailerFlexBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.SpinnerBO;
-import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.SubchannelBO;
-import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.MaterialSpinner;
-import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.HomeScreenFragment;
-import com.ivy.sd.png.view.MapDialogue;
-import com.ivy.sd.png.view.NearByRetailerDialog;
-import com.ivy.sd.png.view.RetailerOTPDialog;
+        import com.ivy.location.LocationUtil;
+        import com.ivy.maplib.BaiduMapDialogue;
+        import com.ivy.sd.camera.CameraActivity;
+        import com.ivy.sd.png.asean.view.BuildConfig;
+        import com.ivy.sd.png.asean.view.R;
+        import com.ivy.sd.png.bo.ChannelBO;
+        import com.ivy.sd.png.bo.ConfigureBO;
+        import com.ivy.sd.png.bo.LocationBO;
+        import com.ivy.sd.png.bo.NewOutletAttributeBO;
+        import com.ivy.sd.png.bo.NewOutletBO;
+        import com.ivy.sd.png.bo.RetailerFlexBO;
+        import com.ivy.sd.png.bo.RetailerMasterBO;
+        import com.ivy.sd.png.bo.SpinnerBO;
+        import com.ivy.sd.png.bo.StandardListBO;
+        import com.ivy.sd.png.bo.SubchannelBO;
+        import com.ivy.sd.png.commons.IvyBaseFragment;
+        import com.ivy.sd.png.commons.MaterialSpinner;
+        import com.ivy.sd.png.commons.SDUtil;
+        import com.ivy.sd.png.model.BusinessModel;
+        import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+        import com.ivy.sd.png.provider.SynchronizationHelper;
+        import com.ivy.sd.png.util.Commons;
+        import com.ivy.sd.png.util.DataMembers;
+        import com.ivy.sd.png.view.HomeScreenFragment;
+        import com.ivy.sd.png.view.MapDialogue;
+        import com.ivy.sd.png.view.NearByRetailerDialog;
+        import com.ivy.sd.png.view.RetailerOTPDialog;
 
-import org.jetbrains.annotations.NonNls;
+        import org.jetbrains.annotations.NonNls;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Vector;
-import java.util.regex.Pattern;
+        import java.io.File;
+        import java.text.SimpleDateFormat;
+        import java.util.ArrayList;
+        import java.util.Calendar;
+        import java.util.Collections;
+        import java.util.GregorianCalendar;
+        import java.util.HashMap;
+        import java.util.Locale;
+        import java.util.Vector;
+        import java.util.regex.Pattern;
 
-import static android.app.Activity.RESULT_OK;
+        import static android.app.Activity.RESULT_OK;
 
 public class ProfileEditFragment extends IvyBaseFragment
         implements RetailerOTPDialog.OTPListener, IProfileEditCallback {
@@ -606,7 +606,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 commonsparams);
 
                 } else if (configCode.equals(PROFILE_40) && flag == 1 && Order == 1) {
-                    if (retailerObj.getState() == null || retailerObj.getState().equals("null")) {retailerObj.setState("");
+                    if (retailerObj.getState() == null || retailerObj.getState().equals("null")) {
+                        retailerObj.setState("");
                     }
                     String text = retailerObj.getState() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -646,15 +647,13 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                }
-                else if (configCode.equals(PROFILE_06) && flag == 1 && Order == 1) {
+                } else if (configCode.equals(PROFILE_06) && flag == 1 && Order == 1) {
                     int id = retailerObj.getChannelID();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
                             id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
                     totalView.addView(getSpinnerView(mNumber, mName, configCode, id), commonsparams);
-                }
-                else if (configCode.equals(PROFILE_07) && flag == 1 && Order == 1) {
+                } else if (configCode.equals(PROFILE_07) && flag == 1 && Order == 1) {
                     int id = retailerObj.getSubchannelid();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
@@ -663,16 +662,14 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getSpinnerView(mNumber, mName, configCode, id
                             ), commonsparams);
-                }
-                else if (configCode.equals(PROFILE_43) && flag == 1 && Order == 1) {
+                } else if (configCode.equals(PROFILE_43) && flag == 1 && Order == 1) {
                     int id = retailerObj.getContractLovid();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
                             id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
                     totalView.addView(getSpinnerView(mNumber, mName, configCode, id), commonsparams);
-                }
-                else if (configCode.equals(PROFILE_08) && flag == 1 && Order == 1) {
+                } else if (configCode.equals(PROFILE_08) && flag == 1 && Order == 1) {
                     String textLat = retailerObj.getLatitude() + "";
                     @NonNls String MenuName = "LatLong";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -690,10 +687,10 @@ public class ProfileEditFragment extends IvyBaseFragment
                             totalView.addView(getLatlongTextView(mNumber, MenuName, text), commonsparams);
                         }
                     }
-                }
-                else if (configCode.equals(PROFILE_63) && flag == 1 && Order == 1) {
+                } else if (configCode.equals(PROFILE_63) && flag == 1 && Order == 1) {
                     isLatLongCameravailable = true;
                 }
+                //it is Deprecated from version of 132
                 else if (configCode.equals(PROFILE_09) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getContactname() == null || retailerObj.getContactname().equals("null")) {
@@ -713,7 +710,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                     else
                         totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS), commonsparams);
 
-                } else if (configCode.equals(PROFILE_10) && flag == 1 && Order == 1) {
+                }
+                //it is Deprecated from version of 132
+                else if (configCode.equals(PROFILE_10) && flag == 1 && Order == 1) {
                     if (retailerObj.getContactnumber1() == null
                             || retailerObj.getContactnumber1().equals("null")) {
                         retailerObj.setContactnumber1("");
@@ -730,7 +729,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                } else if (configCode.equals(PROFILE_11) && flag == 1 && Order == 1) {
+                }
+                //it is Deprecated from version of 132
+                else if (configCode.equals(PROFILE_11) && flag == 1 && Order == 1) {
                     if (retailerObj.getContactname2() == null
                             || retailerObj.getContactname2().equals("null")) {
                         retailerObj.setContactname2("");
@@ -756,7 +757,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 commonsparams);
 
 
-                } else if (configCode.equals(PROFILE_12) && flag == 1 && Order == 1) {
+                }
+                //it is Deprecated from version of 132
+                else if (configCode.equals(PROFILE_12) && flag == 1 && Order == 1) {
 
                     if (retailerObj.getContactnumber2() == null
                             || retailerObj.getContactnumber2().equals("null")) {
@@ -775,8 +778,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     totalView.addView(
                             getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_PHONE),
                             commonsparams);
-                }
-                else if (configCode.equals(PROFILE_13) && flag == 1 && Order == 1) {
+                } else if (configCode.equals(PROFILE_13) && flag == 1 && Order == 1) {
                     try {
                         String title = "";
 
@@ -790,10 +792,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                         if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                             if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
                                 id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
+                        totalView.addView(getSpinnerView(mNumber, title, configCode, id), commonsparams);
 
-                        totalView.addView(
-                                getSpinnerView(mNumber, title, configCode, id
-                                ), commonsparams);
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
@@ -803,10 +803,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     try {
                         String title = "";
 
-                        String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(
-                                locid, true);
+                        String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(locid, true);
                         if (loc2 != null) {
-
                             loc2id = SDUtil.convertToInt(loc2[0]);
                             title = loc2[2];
 
@@ -816,17 +814,16 @@ public class ProfileEditFragment extends IvyBaseFragment
                             if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
                                 id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
 
-                        totalView.addView(
-                                getSpinnerView(mNumber, title, configCode, id
-                                ), commonsparams);
+                        totalView.addView(getSpinnerView(mNumber, title, configCode, id), commonsparams);
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (configCode.equals(PROFILE_15) && flag == 1 && Order == 1) {
+                }
+
+                else if (configCode.equals(PROFILE_15) && flag == 1 && Order == 1) {
                     try {
                         String title = "";
-                        String[] loc3 = bmodel.mRetailerHelper
-                                .getParentLevelName(loc2id, true);
+                        String[] loc3 = bmodel.mRetailerHelper.getParentLevelName(loc2id, true);
 
                         if (loc3 != null) {
                             title = loc3[2];
@@ -836,31 +833,28 @@ public class ProfileEditFragment extends IvyBaseFragment
                         if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                             if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(id + ""))
                                 id = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode));
-
                         totalView.addView(
-                                getSpinnerView(mNumber, title, configCode, id
-                                ), commonsparams);
+                                getSpinnerView(mNumber, title, configCode, id), commonsparams);
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (configCode.equals(PROFILE_36)) {
+                }
+                else if (configCode.equals(PROFILE_36)) {
                     if (!retailerObj.getIsNew().equals("Y"))
-                        totalView.addView(
-                                getNearByRetailerView(mNumber, mName, true
-                                ), commonsparams);
+                        totalView.addView(getNearByRetailerView(mNumber, mName, true), commonsparams);
 
-
-                } else if (configCode.equals(PROFILE_25) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_25) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getCreditDays() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
                             text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
 
-                    totalView.addView(
-                            getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_NUMBER),
-                            commonsparams);
-                } else if (configCode.equals(PROFILE_20) && flag == 1 && Order == 1) {
+                    totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_CLASS_NUMBER), commonsparams);
+
+                }
+                else if (configCode.equals(PROFILE_20) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getRField1() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -869,15 +863,10 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                     if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
 
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
-                                commonsparams);
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME), commonsparams);
 
                     else
-
-                        totalView.addView(
-                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
-                                commonsparams);
+                        totalView.addView(getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS), commonsparams);
 
 
                 } else if (configCode.equals(PROFILE_26) && flag == 1 && Order == 1) {
@@ -989,7 +978,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
-                } else if (configCode.equals(PROFILE_55) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_55) && flag == 1 && Order == 1) {
 
                     String text = retailerObj.getRField7() + "";
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
@@ -1006,7 +996,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 getSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text)
                                 ), commonsparams);
                     }
-                } else if (configCode.equals(PROFILE_57) && flag == 1 && Order == 1) {
+                }
+                else if (configCode.equals(PROFILE_57) && flag == 1 && Order == 1) {
                     mPriorityProductList = bmodel.newOutletHelper.downloadPriorityProducts();
                     String productID = "";
                     ArrayList<String> products;
@@ -1029,10 +1020,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                         }
                     }
 
-                    totalView.addView(
-                            getPriorityProductView(mNumber, mName, sb.toString(), productID),
-                            commonsparams);
-                } else if (configCode.equals(PROFILE_58) && flag == 1 && Order == 1) {
+                    totalView.addView(getPriorityProductView(mNumber, mName, sb.toString(), productID), commonsparams);
+                }
+                else if (configCode.equals(PROFILE_58) && flag == 1 && Order == 1) {
                     LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT);
                     LLParams.setMargins(10, 5, 10, 5);
@@ -2137,8 +2127,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         android.R.layout.simple_spinner_item, mLocationMasterList2);
                 String loc2id = "";
                 int pos = 0, setPos = 0;
-                String[] loc2 = bmodel.mRetailerHelper
-                        .getParentLevelName(locid, true);
+                String[] loc2 = bmodel.mRetailerHelper.getParentLevelName(locid, true);
 
                 if (loc2 != null) {
                     loc2id = loc2[0];
@@ -2187,8 +2176,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                 String locid = "";
                 int pos = 0, setPos = 0;
-                String[] loc3 = bmodel.mRetailerHelper
-                        .getParentLevelName(loc2id, true);
+                String[] loc3 = bmodel.mRetailerHelper.getParentLevelName(loc2id, true);
 
                 if (loc3 != null) {
                     locid = loc3[0];
@@ -2509,6 +2497,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     }
 
+
     private LinearLayout getPriorityProductView(final int mNumber, final String MName, final String textvalue, final String productID) {
 
         LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
@@ -2546,8 +2535,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }
             }
         });
-
-
         priorityproducttextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
         secondlayout.addView(priorityproducttextview);
 
@@ -2561,8 +2548,10 @@ public class ProfileEditFragment extends IvyBaseFragment
 
 
     private LinearLayout getNearByRetailerView(int mNumber, String MName, boolean isEditMode) {
+
         if (bmodel.getNearByRetailers() != null)
             bmodel.getNearByRetailers().clear();
+
         LinearLayout layout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
 
         LinearLayout firstlayout = createLinearLayout();
@@ -2577,8 +2566,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             @Override
             public void onClick(View v) {
                 Vector<RetailerMasterBO> retailersList = bmodel.newOutletHelper.getLinkRetailerListByDistributorId().get(retailerObj.getDistributorId());
-                if (retailersList != null
-                        && retailersList.size() > 0) {
+                if (retailersList != null && retailersList.size() > 0) {
                     NearByRetailerDialog dialog = new NearByRetailerDialog(getActivity(), bmodel, retailersList, mSelectedIds);
                     dialog.show();
                     dialog.setCancelable(false);
@@ -2627,9 +2615,10 @@ public class ProfileEditFragment extends IvyBaseFragment
                         }
                     }
                 }
+
             } else
                 mSelectedIds = getNearbyRetailerIds();
-            //mSelectedIds = mNearbyRetIds;
+
         }
         // showing nearby retailers
         for (RetailerMasterBO bo : mSelectedIds) {
@@ -3391,7 +3380,6 @@ public class ProfileEditFragment extends IvyBaseFragment
             mMenuName = getArguments().getString("screentitle");
             hasLink = getArguments().getInt("hasLink");
 
-
         }
 
         @Override
@@ -3404,7 +3392,6 @@ public class ProfileEditFragment extends IvyBaseFragment
         @Override
         public void onStart() {
             super.onStart();
-            //getDialog().getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             getDialog().setTitle(mTitle);
             mTitleTV = (TextView) getView().findViewById(R.id.title);
             mTitleTV.setVisibility(View.GONE);
@@ -3415,7 +3402,6 @@ public class ProfileEditFragment extends IvyBaseFragment
             mDismisBtn = (Button) getView().findViewById(R.id.btn_dismiss);
             mDismisBtn.setVisibility(View.GONE);
             mPriorityproductLV = (ListView) getView().findViewById(R.id.lv_colletion_print);
-
 
             if (hasLink == 0) {
                 for (int i = 0; i < mPriorityProductList.size(); i++) {
@@ -3442,7 +3428,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                 MyAdapter adapter = new MyAdapter();
                 mPriorityproductLV.setAdapter(adapter);
             }
-
 
             mOkBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -3517,15 +3502,10 @@ public class ProfileEditFragment extends IvyBaseFragment
 
             for (StandardListBO standardListBO : mPriorityProductList) {
                 if (standardListBO.isChecked()) {
-
                     selectedPriorityProductList.add(standardListBO);
-
-
                     if (sb.length() > 0)
                         sb.append(", ");
-
                     sb.append(standardListBO.getListName());
-
                 }
                 if (selectedPriorityProductList.size() > 0) {
                     priorityproducttextview.setText(sb.toString());
@@ -4195,7 +4175,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             }
         } else {
             Toast.makeText(getActivity(), getResources().getString(
-                            R.string.unable_to_access_the_sdcard), Toast.LENGTH_SHORT).show();
+                    R.string.unable_to_access_the_sdcard), Toast.LENGTH_SHORT).show();
         }
     }
 

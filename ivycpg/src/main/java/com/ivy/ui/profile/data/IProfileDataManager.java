@@ -31,4 +31,10 @@ public interface IProfileDataManager {
 
     Single<Boolean> checkProfileImagePath(RetailerMasterBO ret);
 
+    void saveNearByRetailers(String id,Vector<RetailerMasterBO> NearByRetailers);
+
+    Observable<ArrayList<String>> getNearbyRetailerIds(String RetailerID);
+
+    Observable<HashMap<String, String>> getNearbyRetailersEditRequest(String retailerId);
+
 }

@@ -9,6 +9,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.NearByRetailerDialog;
+import com.ivy.ui.profile.edit.view.ProfileEditFragmentNew;
 
 import java.util.Vector;
 
@@ -52,14 +53,12 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar implements N
 
     @Override
     public void updateNearByRetailer(Vector<RetailerMasterBO> list) {
-       /* ProfileEditFragment mProfileEditFragment;
-        if (getSupportFragmentManager().findFragmentById(R.id.activity_profile_edit) instanceof ProfileEditFragment) {
-            mProfileEditFragment = (ProfileEditFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.activity_profile_edit);
-            mProfileEditFragment.updateNearByRetailer(list);
-        }*/
+        ProfileEditFragmentNew profileEditFragmentNew;
+        if (getSupportFragmentManager().findFragmentById(R.id.activity_profile_edit) instanceof ProfileEditFragmentNew) {
+            profileEditFragmentNew = (ProfileEditFragmentNew) getSupportFragmentManager().findFragmentById(R.id.activity_profile_edit);
+            profileEditFragmentNew.updateNearByRetailer(list);
+        }
     }
-
 
     public void updateCancel() {
         setResult(2);

@@ -3,6 +3,7 @@ package com.ivy.ui.profile.edit.presenter;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.text.InputType;
 import android.util.SparseArray;
 
 
@@ -70,6 +71,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private HashMap<String, String> mPreviousProfileChanges;
     private Vector<RetailerMasterBO> mDownloadLinkRetailer;
     private ArrayList<RetailerFlexBO> downloadRetailerFlexValues;
+    private Vector<RetailerMasterBO> RetailerMasterList;
 
 
     /*Location ArrayList*/
@@ -77,8 +79,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private ArrayList<LocationBO> mLocationMasterList2 = null;
     private ArrayList<LocationBO> mLocationMasterList3 = null;
     private SparseArray<Vector<RetailerMasterBO>> mLinkRetailerListByDistributorId;
+    private Vector<RetailerMasterBO> nearByRetailers = new Vector<>();
     private Vector<ConfigureBO> profileConfig = null;
-    Vector<ChannelBO> channelMaster = null;
+    private Vector<ChannelBO> channelMaster = null;
 
     private boolean isLatLong = false;
     private String path;
@@ -86,6 +89,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private String lat = "", longitude = "";
     private String imageFileName;
     private boolean IS_UPPERCASE_LETTER;
+    private int locid = 0, loc2id = 0;
 
 
     @Inject
@@ -99,7 +103,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                    @Profile RetailerMasterBO retailerMasterBO,
                                    @Profile ChannelMasterHelper channelMasterHelper,
                                    @Profile SubChannelMasterHelper subChannelMasterHelper,
-                                   @Profile RetailerHelper retailerHelper) {
+                                   @Profile RetailerHelper retailerHelper,
+                                   @Profile Vector<RetailerMasterBO> RetailerMasterList) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mProfileDataManager = profileDataManager;
         this.configurationMasterHelper = configurationMasterHelper;
@@ -108,6 +113,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         this.userMasterHelper = userMasterHelper;
         this.channelMasterHelper = channelMasterHelper;
         this.subChannelMasterHelper = subChannelMasterHelper;
+        this.RetailerMasterList = RetailerMasterList;
 
     }
 
@@ -239,6 +245,11 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     @Override
+    public String[] getParentLevelName(boolean b) {
+        return retailerHelper.getParentLevelName(loc2id, b);
+    }
+
+    @Override
     public String[] getParentLevelName(int locid, boolean b) {
         return retailerHelper.getParentLevelName(locid, b);
     }
@@ -246,24 +257,25 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     @Override
     public void downloadRetailerFlexValues(String type) {
         getCompositeDisposable().add(mProfileDataManager.downloadRetailerFlexValues(type)
-        .subscribeOn(getSchedulerProvider().io())
-        .observeOn(getSchedulerProvider().ui())
-        .subscribeWith(new DisposableObserver<ArrayList<RetailerFlexBO>>() {
-            @Override
-            public void onNext(ArrayList<RetailerFlexBO> retailerFlexBOS) {
-                getIvyView().updateRetailerFlexValues(retailerFlexBOS);
-            }
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<RetailerFlexBO>>() {
+                    @Override
+                    public void onNext(ArrayList<RetailerFlexBO> retailerFlexBOS) {
+                        getIvyView().updateRetailerFlexValues(retailerFlexBOS);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                System.out.println( e.getMessage());
-            }
-            @Override
-            public void onComplete() {
+                        System.out.println(e.getMessage());
+                    }
 
-            }
-        }));
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
 
 
     }
@@ -271,6 +283,101 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     @Override
     public boolean IS_BAIDU_MAP() {
         return configurationMasterHelper.IS_BAIDU_MAP;
+    }
+
+
+    @Override
+    public Vector<RetailerMasterBO> getNearByRetailers() {
+        return nearByRetailers;
+    }
+
+    @Override
+    public void setNearByRetailers(Vector<RetailerMasterBO> nearByRetailers) {
+        this.nearByRetailers = nearByRetailers;
+    }
+
+    @Override
+    public void getNearbyRetailerIds() {
+
+        getCompositeDisposable().add(mProfileDataManager.getNearbyRetailerIds(retailerMasterBO.getRetailerID())
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
+                    @Override
+                    public void onNext(ArrayList<String> ids) {
+                        if (ids != null) {
+                            Vector<RetailerMasterBO> mNearbyRetIds = new Vector<>();
+                            for (int i = 0; i < ids.size(); i++) {
+                                for (RetailerMasterBO bo : RetailerMasterList) {
+                                    if (bo.getRetailerID().equals(ids.get(i))) {
+                                        mNearbyRetIds.add(bo);
+                                    }
+                                }
+                            }
+                            getIvyView().getNearbyRetailerIds(mNearbyRetIds);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                }));
+
+    }
+
+
+    @Override
+    public void getNearbyRetailersEditRequest() {
+
+        getCompositeDisposable().add(mProfileDataManager.getNearbyRetailersEditRequest(retailerMasterBO.getRetailerID())
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<HashMap<String, String>>() {
+                    @Override
+                    public void onNext(HashMap<String, String> stringHashMap) {
+
+                        if(stringHashMap.size()>0){
+                            ArrayList<String> tempIds = new ArrayList<>();
+                            Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
+                            for (String retId : stringHashMap.keySet()) {
+                                if (stringHashMap.get(retId).equals("N")) {
+                                    tempIds.add(retId);
+                                }
+                            }
+                            for (String retId : tempIds) {
+                                for (RetailerMasterBO bo : mDownloadLinkRetailer) {
+                                    if (bo.getRetailerID().equals(retId + "")) {
+                                        mSelectedIds.add(bo);
+                                    }
+                                }
+                            }
+                            getIvyView().getNearbyRetailersEditRequest(mSelectedIds);
+                        }else{
+                            getNearbyRetailerIds();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
+
+    @Override
+    public void getLinkRetailerListByDistributorId() {
+        Vector<RetailerMasterBO> retailersList= mLinkRetailerListByDistributorId.get(retailerMasterBO.getDistributorId());
+        getIvyView().retailersButtonOnClick(retailersList,configurationMasterHelper.VALUE_NEARBY_RETAILER_MAX);
     }
 
     @Override
@@ -320,8 +427,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     if (!mPreviousProfileChanges.get(configCode).equals(retailderName))
                         retailderName = mPreviousProfileChanges.get(configCode);
                 checkConfigrationForEditText(mNumber, configCode, mName, retailderName);
-            }
-            else if (configCode.equals(ProfileConstant.PROFILE_03) && flag == 1 && Order == 1) {
+            } else if (configCode.equals(ProfileConstant.PROFILE_03) && flag == 1 && Order == 1) {
                 if (AppUtils.isEmptyString(retailerMasterBO.getAddress1()))
                     retailerMasterBO.setAddress1("");
                 String text = retailerMasterBO.getAddress1() + "";
@@ -329,8 +435,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     if (!mPreviousProfileChanges.get(configCode).equals(text))
                         text = mPreviousProfileChanges.get(configCode);
                 checkConfigrationForEditText(mNumber, configCode, mName, text);
-            }
-            else if (configCode.equals(ProfileConstant.PROFILE_04) && flag == 1 && Order == 1) {
+            } else if (configCode.equals(ProfileConstant.PROFILE_04) && flag == 1 && Order == 1) {
                 if (AppUtils.isEmptyString(retailerMasterBO.getAddress2()))
                     retailerMasterBO.setAddress2("");
                 String text = retailerMasterBO.getAddress2() + "";
@@ -338,8 +443,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     if (!mPreviousProfileChanges.get(configCode).equals(text))
                         text = mPreviousProfileChanges.get(configCode);
                 checkConfigrationForEditText(mNumber, configCode, mName, text);
-            }
-            else if (configCode.equals(ProfileConstant.PROFILE_05) && flag == 1 && Order == 1) {
+            } else if (configCode.equals(ProfileConstant.PROFILE_05) && flag == 1 && Order == 1) {
                 if (AppUtils.isEmptyString(retailerMasterBO.getAddress3()))
                     retailerMasterBO.setAddress3("");
                 String text = retailerMasterBO.getAddress3() + "";
@@ -347,8 +451,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     if (!mPreviousProfileChanges.get(configCode).equals(text))
                         text = mPreviousProfileChanges.get(configCode);
                 checkConfigrationForEditText(mNumber, configCode, mName, text);
-            }
-            else if (configCode.equals(ProfileConstant.PROFILE_39) && flag == 1 && Order == 1) {
+            } else if (configCode.equals(ProfileConstant.PROFILE_39) && flag == 1 && Order == 1) {
                 if (AppUtils.isEmptyString(retailerMasterBO.getCity()))
                     retailerMasterBO.setCity("");
                 String text = retailerMasterBO.getCity() + "";
@@ -357,8 +460,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         text = mPreviousProfileChanges.get(configCode);
                 Commons.print(ProfileConstant.PROFILE_39 + "" + profileConfig.get(i).getModule_Order());
                 checkConfigrationForEditText(mNumber, configCode, mName, text);
-            }
-            else if (configCode.equals(ProfileConstant.PROFILE_40) && flag == 1 && Order == 1) {
+            } else if (configCode.equals(ProfileConstant.PROFILE_40) && flag == 1 && Order == 1) {
                 if (AppUtils.isEmptyString(retailerMasterBO.getState()))
                     retailerMasterBO.setState("");
                 String text = retailerMasterBO.getState() + "";
@@ -367,8 +469,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         text = mPreviousProfileChanges.get(configCode);
                 Commons.print(ProfileConstant.PROFILE_40 + "" + profileConfig.get(i).getModule_Order());
                 checkConfigrationForEditText(mNumber, configCode, mName, text);
-            }
-            else if (configCode.equals(ProfileConstant.PROFILE_38) && flag == 1 && Order == 1) {
+            } else if (configCode.equals(ProfileConstant.PROFILE_38) && flag == 1 && Order == 1) {
                 if (AppUtils.isEmptyString(retailerMasterBO.getPincode()))
                     retailerMasterBO.setPincode("");
                 String text = retailerMasterBO.getPincode() + "";
@@ -392,22 +493,22 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 if (mPreviousProfileChanges.get(configCode) != null)
                     if (!mPreviousProfileChanges.get(configCode).equals(id + ""))
                         id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
-                channelMaster=channelMasterHelper.getChannelMaster();
-                getIvyView().createSpinnerView(channelMaster,mNumber,mName,configCode,id);
+                channelMaster = channelMasterHelper.getChannelMaster();
+                getIvyView().createSpinnerView(channelMaster, mNumber, mName, configCode, id);
             }
             else if (configCode.equals(ProfileConstant.PROFILE_07) && flag == 1 && Order == 1) {
                 int id = retailerMasterBO.getSubchannelid();
                 if (mPreviousProfileChanges.get(configCode) != null)
                     if (!mPreviousProfileChanges.get(configCode).equals(id + ""))
                         id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
-                getIvyView().createSpinnerView(mNumber,mName,configCode,id);
+                getIvyView().createSpinnerView(mNumber, mName, configCode, id);
             }
             else if (configCode.equals(ProfileConstant.PROFILE_43) && flag == 1 && Order == 1) {
                 int id = retailerMasterBO.getContractLovid();
                 if (mPreviousProfileChanges.get(configCode) != null)
                     if (!mPreviousProfileChanges.get(configCode).equals(id + ""))
                         id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
-                getIvyView().createSpinnerView(mNumber,mName,configCode,id);
+                getIvyView().createSpinnerView(mNumber, mName, configCode, id);
             }
             else if (configCode.equals(ProfileConstant.PROFILE_08) && flag == 1 && Order == 1) {
                 String textLat = retailerMasterBO.getLatitude() + "";
@@ -423,13 +524,154 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                             if (!mPreviousProfileChanges.get(profileConfig.get(j).getConfigCode()).equals(textLong))
                                 textLong = mPreviousProfileChanges.get(profileConfig.get(j).getConfigCode());
                         String text = textLat + ", " + textLong;
-                        getIvyView().createLatlongTextView(mNumber,MenuName,text);
+                        getIvyView().createLatlongTextView(mNumber, MenuName, text);
                     }
                 }
             }
             else if (configCode.equals(ProfileConstant.PROFILE_63) && flag == 1 && Order == 1) {
                 getIvyView().isLatLongCameravailable(true);
             }
+            else if (configCode.equals(ProfileConstant.PROFILE_13) && flag == 1 && Order == 1) {
+                try {
+                    String title = "";
+                    locid = retailerMasterBO.getLocationId();
+                    if (locid != 0) {
+                        String[] loc1 = retailerHelper.getParentLevelName(locid, false);
+                        title = loc1[2];
+                    }
+                    int id = retailerMasterBO.getLocationId();
+                    if (mPreviousProfileChanges.get(configCode) != null)
+                        if (mPreviousProfileChanges.get(configCode).equals(id + ""))
+                            id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
+                    getIvyView().createSpinnerView(mNumber, title, configCode, id, locid);
+
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_14) && flag == 1 && Order == 1) {
+                try {
+                    String title = "";
+                    String[] loc2 = retailerHelper.getParentLevelName(locid, true);
+                    if (loc2 != null) {
+                        loc2id = SDUtil.convertToInt(loc2[0]);
+                        title = loc2[2];
+                    }
+                    int id = retailerMasterBO.getLocationId();
+                    if (mPreviousProfileChanges.get(configCode) != null)
+                        if (mPreviousProfileChanges.get(configCode).equals(id + ""))
+                            id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
+                    getIvyView().createSpinnerView(mNumber, title, configCode, id);
+
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_15) && flag == 1 && Order == 1) {
+                try {
+                    String title = "";
+                    String[] loc3 = retailerHelper.getParentLevelName(loc2id, true);
+
+                    if (loc3 != null) {
+                        title = loc3[2];
+                    }
+                    int id = retailerMasterBO.getLocationId();
+                    if (mPreviousProfileChanges.get(configCode) != null)
+                        if (mPreviousProfileChanges.get(configCode).equals(id + ""))
+                            id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
+                    getIvyView().createSpinnerView(mNumber, title, configCode, id);
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_36)) {
+                if (!retailerMasterBO.getIsNew().equals("Y"))
+                    if (getNearByRetailers() != null)
+                        getNearByRetailers().clear();
+                getIvyView().createNearByRetailerView(mNumber, mName, true);
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_25) && flag == 1 && Order == 1) {
+
+                String text = retailerMasterBO.getCreditDays() + "";
+                if (mPreviousProfileChanges.get(configCode) != null)
+                    if (!mPreviousProfileChanges.get(configCode).equals(text))
+                        text = mPreviousProfileChanges.get(configCode);
+                checkConfigrationForEditText(mNumber, configCode, mName, text);
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_20) && flag == 1 && Order == 1) {
+                String text = retailerMasterBO.getRField1() + "";
+                if (mPreviousProfileChanges.get(configCode) != null)
+                    if (!mPreviousProfileChanges.get(configCode).equals(text))
+                        text = mPreviousProfileChanges.get(configCode);
+                checkConfigrationForEditText(mNumber, configCode, mName, text);
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_26) && flag == 1 && Order == 1) {
+                String text = retailerMasterBO.getRfield2() + "";
+                if (mPreviousProfileChanges.get(configCode) != null)
+                    if (!mPreviousProfileChanges.get(configCode).equals(text))
+                        text = mPreviousProfileChanges.get(configCode);
+                checkConfigrationForEditText(mNumber, configCode, mName, text);
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_27) && flag == 1 && Order == 1) {
+                String text = retailerMasterBO.getCredit_invoice_count() + "";
+                if (mPreviousProfileChanges.get(configCode) != null)
+                    if (!mPreviousProfileChanges.get(configCode).equals(text))
+                        text = mPreviousProfileChanges.get(configCode);
+                checkConfigrationForEditText(mNumber, configCode, mName, text);
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_28) && flag == 1 && Order == 1) {
+                String text = retailerMasterBO.getRField4() + "";
+                if (mPreviousProfileChanges.get(configCode) != null)
+                    if (!mPreviousProfileChanges.get(configCode).equals(text))
+                        text = mPreviousProfileChanges.get(configCode);
+                if (profileConfig.get(i).getHasLink() == 0)
+                    checkConfigrationForEditText(mNumber, configCode, mName, text);
+                else {
+                    if (text.equals(""))
+                        text = "0";
+                    getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
+                }
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_53) && flag == 1 && Order == 1) {
+                String text = retailerMasterBO.getRField5() + "";
+                if (mPreviousProfileChanges.get(configCode) != null)
+                    if (!mPreviousProfileChanges.get(configCode).equals(text))
+                        text = mPreviousProfileChanges.get(configCode);
+                if (profileConfig.get(i).getHasLink() == 0)
+                    checkConfigrationForEditText(mNumber, configCode, mName, text);
+                else {
+                    if (text.equals(""))
+                        text = "0";
+                    getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
+                }
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_54) && flag == 1 && Order == 1) {
+                String text = retailerMasterBO.getRField6() + "";
+                if (mPreviousProfileChanges.get(configCode) != null)
+                    if (!mPreviousProfileChanges.get(configCode).equals(text))
+                        text = mPreviousProfileChanges.get(configCode);
+                if (profileConfig.get(i).getHasLink() == 0)
+                    checkConfigrationForEditText(mNumber, configCode, mName, text);
+                else {
+                    if (text.equals(""))
+                        text = "0";
+                    getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
+                }
+            }
+            else if (configCode.equals(ProfileConstant.PROFILE_55) && flag == 1 && Order == 1) {
+                String text = retailerMasterBO.getRField7() + "";
+                if (mPreviousProfileChanges.get(configCode) != null)
+                    if (!mPreviousProfileChanges.get(configCode).equals(text))
+                        text = mPreviousProfileChanges.get(configCode);
+                if (profileConfig.get(i).getHasLink() == 0)
+                    checkConfigrationForEditText(mNumber, configCode, mName, text);
+                else {
+                    if (text.equals(""))
+                        text = "0";
+                    getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
+                }
+            }
+
         }
     }
 
@@ -478,6 +720,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_78)
                 || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_87)
                 || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_88)) {
+
             int Mandatory = profileConfig.get(mNumber).getMandatory();
             int MAX_CREDIT_DAYS = configurationMasterHelper.MAX_CREDIT_DAYS;
             getIvyView().createEditTextView(mNumber, configCode,
@@ -556,7 +799,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                          HashMap<String, String> PreviousProfileChanges,
                                          Vector<RetailerMasterBO> DownloadLinkRetailer,
                                          Boolean aBoolean
-                                         ) throws Exception {
+                    ) throws Exception {
                         ProfileEditPresenterImp.this.mContactTitle = ContactTitle;
                         ProfileEditPresenterImp.this.mContactStatus = ContactStatus;
                         ProfileEditPresenterImp.this.mLocationListByLevId = LocationListByLevId;
@@ -578,6 +821,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                             System.out.println("mPreviousProfileChangesSize-->"+mPreviousProfileChanges.size());
                             System.out.println("mDownloadLinkRetailerSize-->"+mDownloadLinkRetailer.size());
                           */
+                            downloadLinkRetailer();
                         }
                     }
 
@@ -640,27 +884,21 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             if (mDownloadLinkRetailer.size() > 0) {
 
                 for (int i = 0; i < mDownloadLinkRetailer.size(); i++) {
-
                     linkRetailerBO = mDownloadLinkRetailer.get(i);
-
                     if (distributorId != linkRetailerBO.getDistributorId()) {
-
                         if (distributorId != 0) {
                             mLinkRetailerListByDistributorId.put(distributorId, linkRetailerList);
                             linkRetailerList = new Vector<>();
                             linkRetailerList.add(linkRetailerBO);
                             distributorId = linkRetailerBO.getDistributorId();
-
                         } else {
                             linkRetailerList.add(linkRetailerBO);
                             distributorId = linkRetailerBO.getDistributorId();
                         }
-
                     } else {
                         linkRetailerList.add(linkRetailerBO);
                     }
                 }
-
                 if (linkRetailerList.size() > 0) {
                     mLinkRetailerListByDistributorId.put(distributorId, linkRetailerList);
                 }
@@ -669,7 +907,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             Commons.printException("" + e);
         }
     }
-
 
     /*comparing two values with equalsIgnoreCase*/
     private boolean comparConfigerCode(String configCode, @NonNls String configCodeFromDB) {

@@ -1,32 +1,32 @@
 package com.ivy.ui.profile.data;
 
 
-import android.database.Cursor;
-import android.util.SparseArray;
+        import android.database.Cursor;
+        import android.util.SparseArray;
 
 
-import com.ivy.core.di.scope.DataBaseInfo;
-import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.ChannelBO;
-import com.ivy.sd.png.bo.LocationBO;
-import com.ivy.sd.png.bo.NewOutletBO;
-import com.ivy.sd.png.bo.RetailerFlexBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+        import com.ivy.core.di.scope.DataBaseInfo;
+        import com.ivy.lib.existing.DBUtil;
+        import com.ivy.sd.png.bo.ChannelBO;
+        import com.ivy.sd.png.bo.LocationBO;
+        import com.ivy.sd.png.bo.NewOutletBO;
+        import com.ivy.sd.png.bo.RetailerFlexBO;
+        import com.ivy.sd.png.bo.RetailerMasterBO;
+        import com.ivy.sd.png.commons.SDUtil;
+        import com.ivy.sd.png.util.Commons;
+        import com.ivy.sd.png.util.DataMembers;
+        import com.ivy.utils.AppUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Vector;
-import java.util.concurrent.Callable;
+        import java.util.ArrayList;
+        import java.util.HashMap;
+        import java.util.LinkedHashMap;
+        import java.util.Vector;
+        import java.util.concurrent.Callable;
 
-import javax.inject.Inject;
+        import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.Single;
+        import io.reactivex.Observable;
+        import io.reactivex.Single;
 
 public class ProfileDataManagerImpl implements IProfileDataManager {
 
@@ -159,40 +159,40 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     @Override
     public Observable<HashMap<String, String>> getPreviousProfileChanges(final String RetailerID) {
 
-      return Observable.fromCallable(new Callable<HashMap<String, String>>() {
-          @Override
-          public HashMap<String, String> call() throws Exception {
+        return Observable.fromCallable(new Callable<HashMap<String, String>>() {
+            @Override
+            public HashMap<String, String> call() throws Exception {
 
-              HashMap<String, String> mPreviousProfileChangesList = new HashMap<>();
-              try {
-                  dbUtil.openDataBase();
-                  Cursor c, headerCursor;
-                  String tid = "";
-                  String currentDate;
-                  currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
-                  headerCursor = dbUtil.selectSQL("SELECT Tid FROM RetailerEditHeader" + " WHERE RetailerId = "
-                                  + RetailerID + " AND Date = " + AppUtils.QT(currentDate) + " AND Upload = " + AppUtils.QT("N"));
-                  if (headerCursor.getCount() > 0) {
-                      headerCursor.moveToNext();
-                      tid = headerCursor.getString(0);
-                      headerCursor.close();
-                  }
-                  c = dbUtil.selectSQL("select code, value from RetailerEditDetail RED INNER JOIN RetailerEditHeader REH ON REH.tid=RED.tid where REH.retailerid="
-                          + RetailerID + " and REH.tid=" + AppUtils.QT(tid));
-                  if (c != null) {
-                      while (c.moveToNext()) {
-                          mPreviousProfileChangesList.put(c.getString(0), c.getString(1));
-                      }
-                  }
-                  dbUtil.closeDB();
-              } catch (Exception e) {
-                  Commons.printException("" + e);
-                  dbUtil.closeDB();
-              }
+                HashMap<String, String> mPreviousProfileChangesList = new HashMap<>();
+                try {
+                    dbUtil.openDataBase();
+                    Cursor c, headerCursor;
+                    String tid = "";
+                    String currentDate;
+                    currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+                    headerCursor = dbUtil.selectSQL("SELECT Tid FROM RetailerEditHeader" + " WHERE RetailerId = "
+                            + RetailerID + " AND Date = " + AppUtils.QT(currentDate) + " AND Upload = " + AppUtils.QT("N"));
+                    if (headerCursor.getCount() > 0) {
+                        headerCursor.moveToNext();
+                        tid = headerCursor.getString(0);
+                        headerCursor.close();
+                    }
+                    c = dbUtil.selectSQL("select code, value from RetailerEditDetail RED INNER JOIN RetailerEditHeader REH ON REH.tid=RED.tid where REH.retailerid="
+                            + RetailerID + " and REH.tid=" + AppUtils.QT(tid));
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            mPreviousProfileChangesList.put(c.getString(0), c.getString(1));
+                        }
+                    }
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    dbUtil.closeDB();
+                }
 
-              return mPreviousProfileChangesList;
-          }
-      });
+                return mPreviousProfileChangesList;
+            }
+        });
     }
 
 
@@ -288,5 +288,76 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             }
         });
 
+    }
+
+
+    @Override
+    public void saveNearByRetailers(String id,Vector<RetailerMasterBO> NearByRetailers) {
+        try {
+            dbUtil.createDataBase();
+            dbUtil.openDataBase();
+            String columnsNew = "rid,nearbyrid,upload";
+            String values;
+            for (int j = 0; j < NearByRetailers.size(); j++) {
+                values = AppUtils.QT(id) + "," + NearByRetailers.get(j).getRetailerID() + "," + AppUtils.QT("N");
+                dbUtil.insertSQL("NearByRetailers", columnsNew, values);
+            }
+            dbUtil.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+    }
+
+
+    @Override
+    public Observable<ArrayList<String>> getNearbyRetailerIds(final String RetailerID) {
+        return Observable.fromCallable(new Callable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> call() throws Exception {
+                ArrayList<String> lst = new ArrayList<>();
+                try {
+                    dbUtil.openDataBase();
+                    Cursor c = dbUtil
+                            .selectSQL("SELECT nearbyrid from NearByRetailers where rid='" +RetailerID+"' and upload='Y'");
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            lst.add(c.getString(0));
+                        }
+                    }
+                    c.close();
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return lst;
+            }
+        });
+    }
+
+    @Override
+    public Observable<HashMap<String, String>> getNearbyRetailersEditRequest(final String retailerId) {
+        return Observable.fromCallable(new Callable<HashMap<String, String>>() {
+            @Override
+            public HashMap<String, String> call() throws Exception {
+                HashMap<String, String> lstEditRequests = new HashMap<>();
+                try {
+                    dbUtil.openDataBase();
+                    Cursor c = dbUtil
+                            .selectSQL("SELECT nearbyrid,status from RrtNearByEditRequest where rid=" + retailerId + " and upload='N'");
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            lstEditRequests.put(c.getString(0), c.getString(1));
+                        }
+
+                    }
+                    c.close();
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return lstEditRequests;
+            }
+        });
     }
 }

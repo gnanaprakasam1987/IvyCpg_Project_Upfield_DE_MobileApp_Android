@@ -180,6 +180,7 @@ import com.ivy.sd.print.PrintPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
+import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import org.jetbrains.annotations.NonNls;
 import org.json.JSONArray;
@@ -353,7 +354,7 @@ public class BusinessModel extends Application {
     String mExportFileLocation;
     public int daySpinnerPositon = 0;
 
-    //
+
     private Vector<RetailerMasterBO> nearByRetailers = new Vector<>();
 
     private String retailerAttributeList;
@@ -2870,13 +2871,7 @@ public class BusinessModel extends Application {
         }
     }
 
-    public Vector<RetailerMasterBO> getNearByRetailers() {
-        return nearByRetailers;
-    }
 
-    public void setNearByRetailers(Vector<RetailerMasterBO> nearByRetailers) {
-        this.nearByRetailers = nearByRetailers;
-    }
 
     public ArrayList<NewOutletAttributeBO> getRetailerAttribute() {
         return attributeList;
@@ -2886,6 +2881,33 @@ public class BusinessModel extends Application {
         this.attributeList = list;
     }
 
+
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getNearByRetailers}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    public Vector<RetailerMasterBO> getNearByRetailers() {
+        return nearByRetailers;
+    }
+
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#setNearByRetailers}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    public void setNearByRetailers(Vector<RetailerMasterBO> nearByRetailers) {
+        this.nearByRetailers = nearByRetailers;
+    }
+
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#saveNearByRetailers}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void saveNearByRetailers(String id) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,

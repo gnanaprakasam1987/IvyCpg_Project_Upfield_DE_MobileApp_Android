@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 
 import org.jetbrains.annotations.NonNls;
@@ -37,15 +38,9 @@ public interface IProfileEditContract {
 
         void createSpinnerView(int mNumber, String MName, String menuCode, int id);
 
-        void createTextView();
-
-        void createCheckBoxView();
-
-        void createButtonView();
+        void createSpinnerView(int mNumber, String MName, String menuCode, int id,int locid );
 
         void createLatlongTextView( int mNumber, String MName,  String textvalue);
-
-        void createEditTextWithSpiinerView();
 
         void showSuccessfullyProfileUpdatedAlert();
 
@@ -66,6 +61,17 @@ public interface IProfileEditContract {
         void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList);
 
         void isLatLongCameravailable(boolean b);
+
+        void getNearbyRetailerIds(Vector<RetailerMasterBO> retailerMasterBOVector);
+
+        void createNearByRetailerView(int mNumber, String MName, boolean isEditMode);
+
+        void getNearbyRetailersEditRequest(Vector<RetailerMasterBO> mSelectedIds);
+
+        void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList,int VALUE_NEARBY_RETAILER_MAX );
+
+
+
     }
 
     @PerActivity
@@ -101,9 +107,21 @@ public interface IProfileEditContract {
 
         String[] getParentLevelName(int locid, boolean b);
 
+        String[] getParentLevelName( boolean b);
+
         void downloadRetailerFlexValues( String type);
 
         boolean IS_BAIDU_MAP();
+
+        Vector<RetailerMasterBO> getNearByRetailers();
+
+        void setNearByRetailers(Vector<RetailerMasterBO> nearByRetailers);
+
+        void getNearbyRetailerIds();
+
+        void getNearbyRetailersEditRequest();
+
+        void getLinkRetailerListByDistributorId();
 
     }
 }

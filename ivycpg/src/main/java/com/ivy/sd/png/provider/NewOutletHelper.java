@@ -1764,6 +1764,12 @@ public class NewOutletHelper {
         return false;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailerIds(String)}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<String> getNearbyRetailerIds(String retailerId) {
         ArrayList<String> lst = new ArrayList<>();
         try {
@@ -1787,12 +1793,24 @@ public class NewOutletHelper {
         return lst;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailersEditRequest(int retailerId)}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public HashMap<String, String> getLstEditRequests() {
         return lstEditRequests;
     }
 
     private final HashMap<String, String> lstEditRequests = new HashMap<>();
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailersEditRequest(int retailerId)}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void getNearbyRetailersEditRequest(int retailerId) {
         lstEditRequests.clear();
         try {
@@ -2102,8 +2120,7 @@ public class NewOutletHelper {
                 }
             }
 
-            if (bmodel.getNearByRetailers() != null
-                    && bmodel.getNearByRetailers().size() > 0) {
+            if (bmodel.getNearByRetailers() != null && bmodel.getNearByRetailers().size() > 0) {
                 bmodel.saveNearByRetailers(getId());
             }
 

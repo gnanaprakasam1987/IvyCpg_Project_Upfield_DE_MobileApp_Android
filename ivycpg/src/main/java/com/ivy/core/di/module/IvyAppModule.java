@@ -26,6 +26,8 @@ import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.profile.edit.di.Profile;
 
+import java.util.Vector;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -111,6 +113,13 @@ public class IvyAppModule {
     @Profile
     RetailerHelper provideRetailerHelper() {
         return((BusinessModel)mContext).mRetailerHelper;
+    }
+
+
+    @Provides
+    @Profile
+    Vector<RetailerMasterBO> provideRetailerMaster(){
+        return ((BusinessModel)mContext).getRetailerMaster();
     }
 
     @Provides

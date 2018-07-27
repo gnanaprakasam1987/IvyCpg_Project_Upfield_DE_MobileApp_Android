@@ -5,10 +5,13 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.AppCompatEditText;
@@ -44,6 +47,7 @@ import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.sd.png.commons.MaterialSpinner;
@@ -54,6 +58,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
+import com.ivy.sd.png.view.NearByRetailerDialog;
+import com.ivy.sd.png.view.profile.ProfileEditFragment;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
@@ -98,15 +104,16 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     private ArrayList<InputFilter> inputFilters = null;
 
-    private LinearLayout.LayoutParams weight1,weight2;
+    private LinearLayout.LayoutParams weight1,weight2,weight3;
     private LinearLayout.LayoutParams mcommonsparams=null,params5;
 
     private Vector<ChannelBO> channelMaster = null;
     private ArrayList<NewOutletBO>  mcontractStatusList = null;
     private ArrayList<LocationBO> mLocationMasterList1 = null, mLocationMasterList2 = null, mLocationMasterList3 = null;
     private ArrayAdapter<LocationBO> locationAdapter1 = null, locationAdapter2 = null;
+    private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
 
-    private int locid = 0,loc2id = 0,subChannelSpinnerCount = 0;
+    private int locid = 0,subChannelSpinnerCount = 0;
     private String MName;
     private String menuCode;
     private int id;
@@ -114,7 +121,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private boolean isLatLongCameravailable = false;
 
     private TextView latlongtextview;
-    private ImageView imageView, latlongCameraBtn;
+    private TextView nearbyTextView;
+    private TextView priorityproducttextview;
+    private ImageView latlongCameraBtn;
 
     @Inject
     IProfileEditContract.ProfileEditPresenter<IProfileEditContract.ProfileEditView> profileEditPresenter;
@@ -139,6 +148,10 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         weight2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         weight2.weight = 2;
         weight2.gravity = Gravity.CENTER;
+
+        weight3 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        weight3.weight = 3;
+        weight3.gravity = Gravity.CENTER;
 
 
     }
@@ -314,14 +327,28 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         getmRootLinearLayout().addView(getSpinnerView(mNumber,MName,menuCode,id), getCommonsparams());
     }
 
+
     @Override
     public void createSpinnerView(int mNumber, String MName, String menuCode, int id) {
         getmRootLinearLayout().addView(getSpinnerView(mNumber,MName,menuCode,id), getCommonsparams());
     }
 
     @Override
+    public void createSpinnerView(int mNumber, String MName, String menuCode, int id,int locid) {
+        this.locid=locid;
+        getmRootLinearLayout().addView(getSpinnerView(mNumber,MName,menuCode,id), getCommonsparams());
+    }
+
+
+    @Override
     public void createLatlongTextView(int mNumber, String MName,  String textvalue) {
         getmRootLinearLayout().addView(getLatlongTextView(mNumber,MName,textvalue), getCommonsparams());
+    }
+
+    @Override
+    public void createNearByRetailerView(int mNumber, String MName, boolean isEditMode) {
+
+        getmRootLinearLayout().addView(getNearByRetailerView(mNumber,MName,isEditMode), getCommonsparams());
     }
 
     @Override
@@ -368,44 +395,159 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         }
     }
 
-    @Override
-    public void createTextView() {
-
-    }
-
-    @Override
-    public void createCheckBoxView() {
-
-    }
-
-    @Override
-    public void createButtonView() {
-
-    }
-
-
-
-
-
-    @Override
-    public void createEditTextWithSpiinerView() {
-
-    }
 
     @Override
     public void showSuccessfullyProfileUpdatedAlert() {
 
     }
 
+
     @Override
     public void navigateToProfileScreen() {
 
     }
 
+
     @Override
     public void showMessage(String msg) {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
+
+
+    @Override
+    public void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList) {
+
+        if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_53)){
+            ArrayAdapter<RetailerFlexBO> rField5Adapter = new ArrayAdapter<>(getActivity(),
+                    android.R.layout.simple_spinner_item);
+            rField5Adapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            rField5Adapter.add(new RetailerFlexBO("0", getActivity().getResources().getString(R.string.select_str) + " " + MName));
+            int selPos = 0;
+            for (int i = 0; i < retailerFlexBOArrayList.size(); i++) {
+                RetailerFlexBO retBO = retailerFlexBOArrayList.get(i);
+                rField5Adapter.add(retBO);
+                if (id == Integer.valueOf(retBO.getId()))
+                    selPos = i + 1;
+            }
+            rField5Spinner.setAdapter(rField5Adapter);
+            rField5Spinner.setSelection(selPos);
+            rField5Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int pos, long id) {
+                }
+                public void onNothingSelected(AdapterView<?> arg0) {
+                }
+            });
+        }else if(menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_54)){
+            ArrayAdapter<RetailerFlexBO> rField6Adapter = new ArrayAdapter<>(getActivity(),
+                    android.R.layout.simple_spinner_item);
+            rField6Adapter
+                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            rField6Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
+                    .getString(R.string.select_str) + " " + MName));
+
+            int selPos = 0;
+            for (int i = 0; i < retailerFlexBOArrayList.size(); i++) {
+                RetailerFlexBO retBO = retailerFlexBOArrayList.get(i);
+                rField6Adapter.add(retBO);
+                if (id == Integer.valueOf(retBO.getId()))
+                    selPos = i + 1;
+            }
+            rField6Spinner.setAdapter(rField6Adapter);
+            rField6Spinner.setSelection(selPos);
+            rField6Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int pos, long id) {
+
+                }
+                public void onNothingSelected(AdapterView<?> arg0) {
+
+                }
+            });
+        }else if(menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_55)){
+            ArrayAdapter<RetailerFlexBO> rField7Adapter = new ArrayAdapter<>(getActivity(),
+                    android.R.layout.simple_spinner_item);
+            rField7Adapter
+                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            rField7Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
+                    .getString(R.string.select_str) + " " + MName));
+            int selPos = 0;
+            for (int i = 0; i < retailerFlexBOArrayList.size(); i++) {
+                RetailerFlexBO retBO = retailerFlexBOArrayList.get(i);
+                rField7Adapter.add(retBO);
+                if (id == Integer.valueOf(retBO.getId()))
+                    selPos = i + 1;
+            }
+            rField7Spinner.setAdapter(rField7Adapter);
+            rField7Spinner.setSelection(selPos);
+            rField7Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int pos, long id) {
+
+                }
+
+                public void onNothingSelected(AdapterView<?> arg0) {
+
+                }
+
+            });
+        }else if(menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_28)){
+            ArrayAdapter<RetailerFlexBO> rField4Adapter = new ArrayAdapter<>(getActivity(),
+                    android.R.layout.simple_spinner_item);
+            rField4Adapter
+                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            rField4Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
+                    .getString(R.string.select_str) + " " + MName));
+            int selPos = 0;
+            for (int i = 0; i <retailerFlexBOArrayList.size(); i++) {
+                RetailerFlexBO retBO = retailerFlexBOArrayList.get(i);
+                rField4Adapter.add(retBO);
+                if (id == Integer.valueOf(retBO.getId()))
+                    selPos = i + 1;
+            }
+            rField4Spinner.setAdapter(rField4Adapter);
+            rField4Spinner.setSelection(selPos);
+            rField4Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int pos, long id) {
+                }
+
+                public void onNothingSelected(AdapterView<?> arg0) {
+                }
+
+            });
+        }
+
+    }
+
+
+    @Override
+    public void isLatLongCameravailable(boolean b) {
+        isLatLongCameravailable=b;
+    }
+
+
+    @Override
+    public void getNearbyRetailerIds(Vector<RetailerMasterBO> retailerMasterBOVector) {
+        this.mSelectedIds=retailerMasterBOVector;
+    }
+
+    @Override
+    public void getNearbyRetailersEditRequest(Vector<RetailerMasterBO> mSelectedIds) {
+        this.mSelectedIds.clear();
+        this.mSelectedIds=mSelectedIds;
+    }
+
+    @Override
+    public void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList, int VALUE_NEARBY_RETAILER_MAX) {
+
+        if (retailersList != null && retailersList.size() > 0) {
+            NearByRetailerDialog dialog = new NearByRetailerDialog(getActivity(), VALUE_NEARBY_RETAILER_MAX, retailersList, mSelectedIds);
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+    }
+
 
     private LinearLayout getmRootLinearLayout() {
         if (mRootLinearLayout == null) {
@@ -443,7 +585,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         return view;
     }
 
-    /*This method is used to create a new LinearLayout with attributes */
+
     private LinearLayout createLinearLayout(int oriendation, int resourcesId) {
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(oriendation);
@@ -451,7 +593,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         return linearlayout;
     }
 
-    /*This method is used to create a new LinearLayout with attributes */
+
     private LinearLayout createLinearLayout(int oriendation, int resourcesId, float weightSum) {
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(oriendation);
@@ -460,7 +602,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         return linearlayout;
     }
 
-    /*This method is used to create a new LinearLayout with attributes */
+
     private LinearLayout createLinearLayout() {
         return new LinearLayout(getActivity());
     }
@@ -485,6 +627,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         TextInputLayout editTextInputLayout;
         editTextInputLayout = new TextInputLayout(getActivity());
         editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
+
         editText[mNumber].addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
@@ -603,10 +746,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         return linearlayout;
     }
 
-    /*Get the EditTextView*/
+
     private AppCompatEditText getSingleEditTextView(int positionNumber, String configCode,
                                                     String menuName, String values, boolean IS_UPPERCASE_LETTER) {
-
         editText[positionNumber] = new AppCompatEditText(getActivity());
         editText[positionNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
         editText[positionNumber].setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
@@ -640,120 +782,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         return editText[positionNumber];
     }
 
-    @Override
-    public void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList) {
 
-        if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_53)){
-            ArrayAdapter<RetailerFlexBO> rField5Adapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item);
-            rField5Adapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            rField5Adapter.add(new RetailerFlexBO("0", getActivity().getResources().getString(R.string.select_str) + " " + MName));
-            int selPos = 0;
-            for (int i = 0; i < retailerFlexBOArrayList.size(); i++) {
-                RetailerFlexBO retBO = retailerFlexBOArrayList.get(i);
-                rField5Adapter.add(retBO);
-                if (id == Integer.valueOf(retBO.getId()))
-                    selPos = i + 1;
-            }
-            rField5Spinner.setAdapter(rField5Adapter);
-            rField5Spinner.setSelection(selPos);
-            rField5Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
-                }
-                public void onNothingSelected(AdapterView<?> arg0) {
-                }
-            });
-        }else if(menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_54)){
-            ArrayAdapter<RetailerFlexBO> rField6Adapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item);
-            rField6Adapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            rField6Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
-                    .getString(R.string.select_str) + " " + MName));
-
-            int selPos = 0;
-            for (int i = 0; i < retailerFlexBOArrayList.size(); i++) {
-                RetailerFlexBO retBO = retailerFlexBOArrayList.get(i);
-                rField6Adapter.add(retBO);
-                if (id == Integer.valueOf(retBO.getId()))
-                    selPos = i + 1;
-            }
-            rField6Spinner.setAdapter(rField6Adapter);
-            rField6Spinner.setSelection(selPos);
-            rField6Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
-
-                }
-                public void onNothingSelected(AdapterView<?> arg0) {
-
-                }
-            });
-        }else if(menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_55)){
-            ArrayAdapter<RetailerFlexBO> rField7Adapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item);
-            rField7Adapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            rField7Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
-                    .getString(R.string.select_str) + " " + MName));
-            int selPos = 0;
-            for (int i = 0; i < retailerFlexBOArrayList.size(); i++) {
-                RetailerFlexBO retBO = retailerFlexBOArrayList.get(i);
-                rField7Adapter.add(retBO);
-                if (id == Integer.valueOf(retBO.getId()))
-                    selPos = i + 1;
-            }
-            rField7Spinner.setAdapter(rField7Adapter);
-            rField7Spinner.setSelection(selPos);
-            rField7Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
-
-                }
-
-                public void onNothingSelected(AdapterView<?> arg0) {
-
-                }
-
-            });
-        }else if(menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_28)){
-            ArrayAdapter<RetailerFlexBO> rField4Adapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_spinner_item);
-            rField4Adapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            rField4Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
-                    .getString(R.string.select_str) + " " + MName));
-            int selPos = 0;
-            for (int i = 0; i <retailerFlexBOArrayList.size(); i++) {
-                RetailerFlexBO retBO = retailerFlexBOArrayList.get(i);
-                rField4Adapter.add(retBO);
-                if (id == Integer.valueOf(retBO.getId()))
-                    selPos = i + 1;
-            }
-            rField4Spinner.setAdapter(rField4Adapter);
-            rField4Spinner.setSelection(selPos);
-            rField4Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
-                }
-
-                public void onNothingSelected(AdapterView<?> arg0) {
-                }
-
-            });
-        }
-
-    }
-
-
-    @Override
-    public void isLatLongCameravailable(boolean b) {
-        isLatLongCameravailable=b;
-    }
-
-
-    // * ROFILE09, PROFILE10, PROFILE11, PROFILE12, PROFILE41, PROFILE42*/
     private LinearLayout getSpinnerView(int mNumber, String MName, @NonNls String menuCode, int id) {
 
         this.menuCode=menuCode;
@@ -960,7 +989,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                         android.R.layout.simple_spinner_item, mLocationMasterList3);
                 String locid = "";
                 int pos = 0, setPos = 0;
-                String[] loc3 =  profileEditPresenter.getParentLevelName(loc2id,true);
+                String[] loc3 =  profileEditPresenter.getParentLevelName(true);
                 if (loc3 != null) {
                     locid = loc3[0];
                 }
@@ -1029,7 +1058,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     }
 
-    /*This method is used to create a new LinearLayout with attributes */
+
     private TextView getSingleTextView(int positionNumber, String menuName) {
         textview[positionNumber] = new TextView(getActivity());
         textview[positionNumber].setText(menuName);
@@ -1089,6 +1118,106 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
 
+    private LinearLayout getNearByRetailerView(int mNumber, String MName, boolean isEditMode) {
+
+        LinearLayout layout = createLinearLayout(LinearLayout.HORIZONTAL,
+                getActivity().getResources().getColor(R.color.white_box_start));
+
+        LinearLayout firstlayout = createLinearLayout();
+        firstlayout.addView(getSingleTextView(mNumber, MName), weight1);
+        textview[mNumber].setTextColor(Color.BLACK);
+
+        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL, 0);
+
+        Button retailerButton = new Button(getActivity());
+        retailerButton.setText(R.string.edit);
+        retailerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                profileEditPresenter.getLinkRetailerListByDistributorId();
+            }
+        });
+
+        nearbyTextView = new TextView(getActivity());
+        nearbyTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+        nearbyTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
+        nearbyTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        nearbyTextView.setGravity(Gravity.CENTER);
+
+        ScrollView scrl = new ScrollView(getActivity());
+        LinearLayout lyt = createLinearLayout();
+        lyt.addView(nearbyTextView, weight1);
+        scrl.addView(lyt, weight1);
+
+        secondlayout.addView(scrl, weight1);
+        secondlayout.addView(retailerButton, weight3);
+        layout.addView(firstlayout, weight2);
+        layout.addView(secondlayout, weight1);
+
+        if (!isEditMode) {
+            retailerButton.setVisibility(View.GONE);
+            profileEditPresenter.getNearbyRetailerIds();
+        }
+        else {
+            profileEditPresenter.getNearbyRetailersEditRequest();
+        }
+        // showing nearby retailers
+        for (RetailerMasterBO bo : mSelectedIds) {
+            nearbyTextView.setText(nearbyTextView.getText() + DataMembers.CR1 + bo.getRetailerName());
+        }
+
+        return layout;
+    }
+
+    private LinearLayout getPriorityProductView(final int mNumber, final String MName, final String textvalue, final String productID) {
+
+        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
+
+        LinearLayout firstlayout = createLinearLayout();
+        firstlayout.setPadding(0, 0, 0, 12);
+        firstlayout.addView(getSingleTextView(mNumber, MName)); //TextView
+
+        LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL, 0);
+        secondlayout.setPadding(0, 0, 0, 12);
+
+        priorityproducttextview = new TextView(getActivity());
+        priorityproducttextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
+        priorityproducttextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        priorityproducttextview.setText(textvalue);
+
+
+        secondlayout.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (mPriorityProductList != null) {
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    @NonNls CustomFragment dialogFragment = new CustomFragment();
+                    @NonNls Bundle bundle = new Bundle();
+                    bundle.putString("title", MName);
+                    bundle.putString("screentitle", MName);
+                    bundle.putInt("hasLink", 0);
+                    bundle.putString("productID", productID);
+                    dialogFragment.setArguments(bundle);
+                    dialogFragment.show(fm, "Sample Fragment");
+                    dialogFragment.setCancelable(false);
+                } else {
+                    //  Toast.makeText(getActivity(), getResources().getString(R.string.priority_products_not_available), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        priorityproducttextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
+        secondlayout.addView(priorityproducttextview);
+
+        linearlayout.addView(firstlayout, params5);
+        linearlayout.addView(secondlayout, weight1);
+
+
+        return linearlayout;
+
+    }
+
+
     public void onMapViewClicked() {
         @NonNls Intent in;
         int REQUEST_CODE = 100;
@@ -1103,6 +1232,15 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         in.putExtra("lat", latdoub);
         in.putExtra("lon", longdoub);
         startActivityForResult(in, REQUEST_CODE);
+    }
+
+
+    public void updateNearByRetailer(Vector<RetailerMasterBO> list) {
+        nearbyTextView.setText("");
+        for (RetailerMasterBO bo : list) {
+            nearbyTextView.setText(nearbyTextView.getText() + DataMembers.CR1 + bo.getRetailerName());
+        }
+        mSelectedIds = list;
     }
 
 

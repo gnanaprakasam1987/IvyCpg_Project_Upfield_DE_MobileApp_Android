@@ -19,6 +19,8 @@ import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.ui.profile.edit.di.Profile;
 
+import java.util.Vector;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -50,6 +52,10 @@ public interface IvyAppComponent {
 
     @Profile
     RetailerHelper retailerHelper();
+
+    @Profile
+    Vector<RetailerMasterBO> getRetailerMaster();
+
 
     ConfigurationMasterHelper configurationMasterHelper();
 
