@@ -65,7 +65,6 @@ import android.widget.Toast;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -77,7 +76,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
@@ -88,7 +86,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1912,7 +1909,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         else
             menu.findItem(R.id.menu_photo_capture).setVisible(false);
         menu.findItem(R.id.menu_save).setVisible(false);
+
         menu.findItem(R.id.menu_reason).setVisible(bmodel.configurationMasterHelper.floating_np_reason_photo);
+
         if (mMenuCode.equalsIgnoreCase(SurveyHelperNew.cs_feedback_menucode)) {
             menu.findItem(R.id.menu_photo_capture).setVisible(false);
             menu.findItem(R.id.menu_msg).setVisible(false);
@@ -1924,8 +1923,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         if (mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
                 || mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
-                || mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS"))
+                || mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS")) {
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
+            menu.findItem(R.id.menu_reason).setVisible(false);
+        }
 
         if (drawerOpen || navDrawerOpen)
             menu.clear();
