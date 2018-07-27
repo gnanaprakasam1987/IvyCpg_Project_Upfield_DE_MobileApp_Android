@@ -27,6 +27,8 @@ public interface PhotoCaptureContract {
         void setSpinnerDefaults();
 
         void showUpdatedDialog();
+
+        void setToolBarTitle(String title);
     }
 
 
@@ -57,7 +59,7 @@ public interface PhotoCaptureContract {
 
         int getGlobalLocationIndex();
 
-        String getTitleLabel();
+        void getTitleLabel();
 
         void updateModuleTime();
 

@@ -7,6 +7,7 @@ import com.google.android.gms.common.util.DbUtils;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.di.module.ActivityModule;
@@ -44,6 +45,10 @@ public interface IvyAppComponent {
 
     @DataBaseInfo
     DBUtil dbUtil();
+
+
+    @LabelMasterInfo
+    LabelsDataManager labelsDataManager();
 
     AppDataProvider appDataProvider();
 

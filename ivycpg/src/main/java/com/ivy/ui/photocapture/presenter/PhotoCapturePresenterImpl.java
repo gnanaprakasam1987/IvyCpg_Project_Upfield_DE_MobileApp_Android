@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
@@ -39,7 +40,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
 
     private OutletTimeStampDataManager mOutletTimeStampDataManager;
 
-    private LabelsMasterHelper labelsMasterHelper;
+    private LabelsDataManager labelsDataManager;
 
     private PhotoCaptureDataManager photoCaptureDataManager;
 
@@ -58,12 +59,12 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     public PhotoCapturePresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable,
                                      ConfigurationMasterHelper configurationMasterHelper, V view,
                                      @OutletTimeStampInfo OutletTimeStampDataManager outletTimeStampDataManager,
-                                     PhotoCaptureDataManager photoCaptureDataManager, @LabelMasterInfo LabelsMasterHelper labelsMasterHelper) {
+                                     PhotoCaptureDataManager photoCaptureDataManager, @LabelMasterInfo LabelsDataManager labelsDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mOutletTimeStampDataManager = outletTimeStampDataManager;
         this.photoCaptureDataManager = photoCaptureDataManager;
         this.mConfigurationMasterHelper = configurationMasterHelper;
-        this.labelsMasterHelper = labelsMasterHelper;
+        this.labelsDataManager = labelsDataManager;
 
         if (view instanceof LifecycleOwner) {
             ((LifecycleOwner) view).getLifecycle().addObserver(this);
@@ -152,9 +153,17 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     }
 
     @Override
-    public String getTitleLabel() {
-        return labelsMasterHelper
-                .applyLabels((Object) "menu_photo");
+    public void getTitleLabel() {
+
+        getCompositeDisposable().add(labelsDataManager.getLabel("menu_photo")
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String value) throws Exception {
+                        getIvyView().setToolBarTitle(value);
+                    }
+                }));
+
     }
 
     @Override

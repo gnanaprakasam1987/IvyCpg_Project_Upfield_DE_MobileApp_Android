@@ -12,6 +12,8 @@ import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.core.data.db.DBHelperImpl;
 import com.ivy.core.data.db.DbHelper;
+import com.ivy.core.data.label.LabelsDataManager;
+import com.ivy.core.data.label.LabelsDataManagerImpl;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
@@ -110,6 +112,15 @@ public class IvyAppModule {
     protected LabelsMasterHelper providesLabelMaster() {
         return ((BusinessModel) mContext).labelsMasterHelper;
     }
+
+
+    @Provides
+    @LabelMasterInfo
+    protected LabelsDataManager providesLabelDataManager(LabelsDataManagerImpl labelsDataManager) {
+        return labelsDataManager;
+    }
+
+
 
 
     @Provides
