@@ -287,7 +287,7 @@ public class UploadHelper {
                 jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
                 jsonFormatter.addParameter("OrganisationId", businessModel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
-                jsonFormatter.addParameter("userparentPositionids",businessModel.getUserParentPosition());
+                jsonFormatter.addParameter("parentPositionids",businessModel.getUserParentPosition());
                 if (businessModel.synchronizationHelper.isDayClosed()) {
                     int varianceDwnDate = SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
                             businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),

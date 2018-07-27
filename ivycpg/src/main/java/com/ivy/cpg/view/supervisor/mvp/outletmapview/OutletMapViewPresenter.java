@@ -25,6 +25,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
@@ -66,38 +67,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
     @Override
     public void downloadOutletListAws() {
-        DBUtil db = null;
-        try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            String queryStr = "select retailerId, latitude,longitude,retailerName,address,username from SupRetailerMaster SRM " +
-                    "inner join usermaster um on um.userid = SRM.userId";
-
-            Cursor c = db.selectSQL(queryStr);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    RetailerBo retailerBo = new RetailerBo();
-                    retailerBo.setRetailerId(c.getInt(0));
-                    retailerBo.setMasterLatitude(c.getDouble(1));
-                    retailerBo.setMasterLongitude(c.getDouble(2));
-                    retailerBo.setRetailerName(c.getString(3));
-                    retailerBo.setAddress(c.getString(4));
-                    retailerBo.setUserName(c.getString(5));
-
-                    retailerMasterHashmap.put(retailerBo.getRetailerId(),retailerBo);
-                }
-                c.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-            if (db != null)
-                db.closeDB();
-        }
+        retailerMasterHashmap = SupervisorActivityHelper.getInstance().getRetailerMasterHashmap();
     }
 
     @Override
@@ -139,7 +109,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         outletMapView.clearMap();
         retailerList.clear();
         for(RetailerBo retailerBo : retailerMasterHashmap.values()){
-            if(!retailerBo.getIsOrdered() && !retailerBo.isVisited()) {
+            if(!retailerBo.getIsOrdered() && retailerBo.isVisited()) {
                 retailerList.add(retailerBo);
                 setMarker(retailerBo);
             }

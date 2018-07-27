@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.Marker;
 
 public class SellerBo implements Parcelable {
 
-    private int userId,billed,covered,target;
+    private int userId,billed,covered,target,retailerId;
     private String userName,retailerName;
     private boolean isAttendanceDone = false;
     private double latitude,longitude;
@@ -32,6 +32,7 @@ public class SellerBo implements Parcelable {
         orderValue = in.readLong();
         timeIn = in.readLong();
         timeOut = in.readLong();
+        retailerId = in.readInt();
     }
 
     public static final Creator<SellerBo> CREATOR = new Creator<SellerBo>() {
@@ -150,6 +151,14 @@ public class SellerBo implements Parcelable {
         this.marker = marker;
     }
 
+    public int getRetailerId() {
+        return retailerId;
+    }
+
+    public void setRetailerId(int retailerId) {
+        this.retailerId = retailerId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -169,5 +178,6 @@ public class SellerBo implements Parcelable {
         dest.writeLong(orderValue);
         dest.writeLong(timeIn);
         dest.writeLong(timeOut);
+        dest.writeInt(retailerId);
     }
 }

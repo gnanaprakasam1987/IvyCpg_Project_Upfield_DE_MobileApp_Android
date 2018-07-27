@@ -56,6 +56,7 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.supervisor.fragments.SupervisorMapFragment;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
@@ -2171,6 +2172,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_SUPERVISOR_MOVEMENT);
                 break;
             case MENU_SUPERVISOR_CALLANALYSIS:
+
+                SupervisorActivityHelper.getInstance().loginToFirebase();
+                SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext());
+
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("TrackingType", 2);

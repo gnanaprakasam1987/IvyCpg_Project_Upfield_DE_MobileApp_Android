@@ -3,6 +3,7 @@ package com.ivy.cpg.view.supervisor.mvp.sellerhomescreen;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +54,7 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class SellersMapHomeFragment extends IvyBaseFragment implements
         OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener,
@@ -69,6 +72,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     private InMarketSellerAdapter inMarketSellerAdapter;
 
     private ArrayList<SellerBo> inMarketSellerArrayList = new ArrayList<>();
+    private DatePickerDialog picker;
 
 
     @Override
@@ -391,8 +395,31 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
             }
         }
+        else if(item.getItemId() == R.id.menu_date){
+            showDatePicker();
+        }
 
         return false;
+    }
+
+    private void showDatePicker(){
+        final Calendar cldr = Calendar.getInstance();
+        int day = cldr.get(Calendar.DAY_OF_MONTH);
+        int month = cldr.get(Calendar.MONTH);
+        int year = cldr.get(Calendar.YEAR);
+        // date picker dialog
+        picker = new DatePickerDialog(getContext(),R.style.DatePickerDialogStyle,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        Toast.makeText(getContext(),
+                                "Selected Date "+dayOfMonth + "/" + (monthOfYear + 1) + "/" + year,
+                                Toast.LENGTH_SHORT).show();
+                        picker.hide();
+                    }
+                }, year, month, day);
+        picker.show();
+
     }
 
     @Override
@@ -586,6 +613,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     @Override
     public void onDetach() {
         super.onDetach();
-        sellerMapHomePresenter.removeFirestoreListener();
+        if (sellerMapHomePresenter != null)
+            sellerMapHomePresenter.removeFirestoreListener();
     }
 }

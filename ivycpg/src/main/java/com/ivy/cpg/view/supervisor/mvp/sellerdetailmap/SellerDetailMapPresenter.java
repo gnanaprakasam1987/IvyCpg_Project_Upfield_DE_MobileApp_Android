@@ -21,6 +21,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
@@ -91,8 +92,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                     retailerBo.setMasterLatitude(c.getDouble(3));
                     retailerBo.setMasterLongitude(c.getDouble(4));
                     retailerBo.setAddress(c.getString(5));
-                    retailerBo.setImgPath(c.getString(5));
-                    retailerBo.setDate(c.getString(5));
+                    retailerBo.setImgPath(c.getString(6));
+                    retailerBo.setDate(c.getString(7));
 
                     if (retailerBo.getMasterLatitude() != 0 && retailerBo.getMasterLongitude() != 0) {
 
@@ -246,7 +247,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
         if (document.getData() != null) {
             String timeIn = convertMillisToTime((long)document.getData().get("timeIn"));
-            String retailerName = (String)document.getData().get("retailerName");
+            String retailerName = SupervisorActivityHelper.getInstance().retailerNameById((int)(long)document.getData().get("retailerId"));
             String covered = String.valueOf((long)document.getData().get("covered"));
 
             double latitude = (double)document.getData().get("latitude");
@@ -277,96 +278,98 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
             RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
-            BitmapDescriptor icon;
-            if(retailerMasterBo.getIsOrdered() || documentSnapshotBo.getIsOrdered()) {
-                icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
-                retailerMasterBo.setIsOrdered(true);
-            }
-            else {
-                icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
-                retailerMasterBo.setIsOrdered(documentSnapshotBo.getIsOrdered());
-            }
+            if(retailerMasterBo != null) {
 
-            retailerMasterBo.setSkipped(false);
-            retailerMasterBo.setVisited(true);
+                BitmapDescriptor icon;
+                if (retailerMasterBo.getIsOrdered() || documentSnapshotBo.getIsOrdered()) {
+                    icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
+                    retailerMasterBo.setIsOrdered(true);
+                } else {
+                    icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
+                    retailerMasterBo.setIsOrdered(documentSnapshotBo.getIsOrdered());
+                }
 
-            long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
-            retailerMasterBo.setTotalOrderValue(totalOrderValue);
+                retailerMasterBo.setSkipped(false);
+                retailerMasterBo.setVisited(true);
 
-            retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());
-            retailerMasterBo.setTimeIn(documentSnapshotBo.getTimeIn());
-            retailerMasterBo.setTimeOut(documentSnapshotBo.getTimeOut());
+                long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
+                retailerMasterBo.setTotalOrderValue(totalOrderValue);
 
-            if(lastVisited < retailerMasterBo.getMasterSequence())
-                lastVisited = retailerMasterBo.getMasterSequence();
+                retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());
+                retailerMasterBo.setTimeIn(documentSnapshotBo.getTimeIn());
+                retailerMasterBo.setTimeOut(documentSnapshotBo.getTimeOut());
 
-            if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0) {
+                if (lastVisited < retailerMasterBo.getMasterSequence())
+                    lastVisited = retailerMasterBo.getMasterSequence();
 
-                retailerMasterBo.setMasterLatitude(documentSnapshotBo.getLatitude());
-                retailerMasterBo.setMasterLongitude(documentSnapshotBo.getLongitude());
+                if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0) {
 
-                retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
-                retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+                    retailerMasterBo.setMasterLatitude(documentSnapshotBo.getLatitude());
+                    retailerMasterBo.setMasterLongitude(documentSnapshotBo.getLongitude());
 
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .flat(true)
-                        .title(retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getTimeIn())
-                        .position(destLatLng)
-                        .icon(icon)
-                        .snippet(String.valueOf(retailerMasterBo.getRetailerId()));
+                    retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                    retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
 
-                sellerMapView.setRetailerMarker(retailerMasterBo,markerOptions);
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .flat(true)
+                            .title(retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getTimeIn())
+                            .position(destLatLng)
+                            .icon(icon)
+                            .snippet(String.valueOf(retailerMasterBo.getRetailerId()));
 
-            } else {
+                    sellerMapView.setRetailerMarker(retailerMasterBo, markerOptions);
 
-                String title = retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getTimeIn();
+                } else {
 
-                retailerMasterBo.getMarker().setTitle(title);
-                retailerMasterBo.getMarker().setIcon(icon);
+                    String title = retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getTimeIn();
 
-                retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
-                retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+                    retailerMasterBo.getMarker().setTitle(title);
+                    retailerMasterBo.getMarker().setIcon(icon);
 
-                destLatLng = retailerMasterBo.getMarker().getPosition();
-            }
+                    retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                    retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+
+                    destLatLng = retailerMasterBo.getMarker().getPosition();
+                }
 
 
-            // Set Visited Retailer details in HashMap with retailer id as key
+                // Set Visited Retailer details in HashMap with retailer id as key
 
-            RetailerBo retailerBoObj = new RetailerBo();
+                RetailerBo retailerBoObj = new RetailerBo();
 
-            retailerBoObj.setLatitude(documentSnapshotBo.getLatitude());
-            retailerBoObj.setLongitude(documentSnapshotBo.getLongitude());
-            retailerBoObj.setOrderValue(documentSnapshotBo.getOrderValue());
-            retailerBoObj.setIsOrdered(documentSnapshotBo.getIsOrdered());
-            retailerBoObj.setTimeIn(documentSnapshotBo.getTimeIn());
-            retailerBoObj.setTimeOut(documentSnapshotBo.getTimeOut());
-            retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
-            retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName() != null ? documentSnapshotBo.getRetailerName() : "");
-            retailerBoObj.setVisitedSequence(retailersVisitedSequence + 1);
+                retailerBoObj.setLatitude(documentSnapshotBo.getLatitude());
+                retailerBoObj.setLongitude(documentSnapshotBo.getLongitude());
+                retailerBoObj.setOrderValue(documentSnapshotBo.getOrderValue());
+                retailerBoObj.setIsOrdered(documentSnapshotBo.getIsOrdered());
+                retailerBoObj.setTimeIn(documentSnapshotBo.getTimeIn());
+                retailerBoObj.setTimeOut(documentSnapshotBo.getTimeOut());
+                retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
+                retailerBoObj.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(documentSnapshotBo.getRetailerId()));
+                retailerBoObj.setVisitedSequence(retailersVisitedSequence + 1);
 
-            if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
-                retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(retailerBoObj);
-            } else {
-                ArrayList<RetailerBo> visitedRetailerList = new ArrayList<>();
-                visitedRetailerList.add(retailerBoObj);
-                retailerVisitDetailsByRId.put(documentSnapshotBo.getRetailerId(), visitedRetailerList);
-            }
+                if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
+                    retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(retailerBoObj);
+                } else {
+                    ArrayList<RetailerBo> visitedRetailerList = new ArrayList<>();
+                    visitedRetailerList.add(retailerBoObj);
+                    retailerVisitDetailsByRId.put(documentSnapshotBo.getRetailerId(), visitedRetailerList);
+                }
 
-            //ends
+                //ends
 
-            sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()),lastVisited);
+                sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()), lastVisited);
 
-            if (previousRetailerId != 0 && previousRetailerId != documentSnapshotBo.getRetailerId()){
-                fetchRouteUrl(previousRetailerLatLng,destLatLng);
-            }
+                if (previousRetailerId != 0 && previousRetailerId != documentSnapshotBo.getRetailerId()) {
+                    fetchRouteUrl(previousRetailerLatLng, destLatLng);
+                }
 
-            previousRetailerId = documentSnapshotBo.getRetailerId();
-            previousRetailerLatLng = destLatLng;
+                previousRetailerId = documentSnapshotBo.getRetailerId();
+                previousRetailerLatLng = destLatLng;
 
 //            new UpdateSkippedMarker().execute();
 
-            updateSkippedMarker();
+                updateSkippedMarker();
+            }
         }
     }
 

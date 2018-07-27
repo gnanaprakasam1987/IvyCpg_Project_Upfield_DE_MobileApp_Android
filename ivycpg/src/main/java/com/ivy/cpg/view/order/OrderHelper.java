@@ -31,15 +31,18 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -316,6 +319,7 @@ public class OrderHelper {
             else
                 finalProductList = businessModel.productHelper.getProductMaster();
 
+            Set<String> parentHierarchyIds = new HashSet<>();
             //get entry level discount value
             double entryLevelDistSum = 0;
             Vector<ProductMasterBO> mOrderedProductList = new Vector<>();
@@ -349,6 +353,10 @@ public class OrderHelper {
                                     db.insertSQL(
                                             DataMembers.tbl_orderDetails,
                                             columns, values);
+
+                                    String[] ids = batchProductBO.getParentHierarchy().split("/");
+                                    parentHierarchyIds.addAll(Arrays.asList(ids));
+
                                 }
                             }
                         }
@@ -359,9 +367,25 @@ public class OrderHelper {
                                 .toString();
                         db.insertSQL(DataMembers.tbl_orderDetails, columns,
                                 values);
+
+                        String[] ids = product.getParentHierarchy().split("/");
+                        parentHierarchyIds.addAll(Arrays.asList(ids));
+
                     }
 
                 }
+
+            }
+
+            if (parentHierarchyIds.size() > 0) {
+
+                String parentHierarchy = "";
+                for (String ids : parentHierarchyIds) {
+                    parentHierarchy = parentHierarchy + "/" + ids;
+                }
+                parentHierarchy = parentHierarchy + "/";
+
+                db.updateSQL("update orderheader set ParentHierarchy = "+businessModel.QT(parentHierarchy)+" where orderid ="+uid);
 
             }
 

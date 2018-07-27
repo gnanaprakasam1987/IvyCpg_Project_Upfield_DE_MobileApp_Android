@@ -287,7 +287,8 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+                if(builder != null)
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
             }
         });
     }

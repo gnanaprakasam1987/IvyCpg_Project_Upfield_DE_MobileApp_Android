@@ -123,6 +123,10 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
                 }
 
                 outletMapViewPresenter.setTabPosition(tab.getPosition());
+
+                outletHorizontalRecycleView.setVisibility(View.GONE);
+
+                findViewById(R.id.cardview).setVisibility(View.VISIBLE);
             }
 
             @Override

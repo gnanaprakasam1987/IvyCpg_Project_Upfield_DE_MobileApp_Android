@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.util.SparseArray;
 import android.view.animation.LinearInterpolator;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -34,6 +36,7 @@ import com.ivy.sd.png.util.DataMembers;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -480,7 +483,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             sellerBoHashmap.setOrderValue(sellerBoDocumentSnapshot.getOrderValue());
             sellerBoHashmap.setTimeIn(sellerBoDocumentSnapshot.getTimeIn());
             sellerBoHashmap.setTimeOut(sellerBoDocumentSnapshot.getTimeOut());
-            sellerBoHashmap.setRetailerName(sellerBoDocumentSnapshot.getRetailerName()!=null?sellerBoDocumentSnapshot.getRetailerName():"");
+
+            sellerBoHashmap.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(sellerBoDocumentSnapshot.getRetailerId()));
 
             if (!sellerBoHashmap.isAttendanceDone()) {
                 computeSellerAttendance(sellerBoDocumentSnapshot.getUserId());

@@ -2,6 +2,7 @@ package com.ivy.cpg.view.supervisor.mvp.sellerlistview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.customviews.tooltip.Tooltip;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
+import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.utils.FontUtils;
 
@@ -134,12 +136,11 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
         holder.routeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(context, SellerMapViewActivity.class);
-//                intent.putExtra("SellerId", 1695);
-//                intent.putExtra("screentitle", "VSR01" );
-//                intent.putExtra("TrackingType", 2);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(intent);
+                Intent intent = new Intent(context, SellerDetailMapActivity.class);
+                intent.putExtra("SellerId", sellerListBos.get(holder.getAdapterPosition()).getUserId());
+                intent.putExtra("screentitle", sellerListBos.get(holder.getAdapterPosition()).getUserName() );
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             }
         });
     }
