@@ -155,7 +155,7 @@
     <string name="inv_date">Inv Date</string>
     <string name="ppq">PPQ</string>
     <string name="qty">Qty</string>
-    <string name="prod_code">Prod Code</string>
+    <string name="prod_code">Product Code</string>
     <string name="submit">Submit</string>
     <string name="hvp3m">HVP3M</string>
     <string name="sync">Synchronization</string>
@@ -813,7 +813,7 @@
     <string name="text_mdate">Missed Date</string>
     <string name="menu_not_available">Menu(s) is not available.</string>
     <string name="download_url_empty">Download Url is Empty </string>
-    <string name="out_of"> Out of %1$d Masters Downloaded</string>
+    <string name="out_of"> Out of “%1$d” Masters Downloaded</string>
     <string name="still_you_can">Still you can take “%1$d” more photos,Do you want to continue ? </string>
     <string name="table_downloaded">Table “%1$d” Downloaded </string>
     <string name="error">Error: </string>

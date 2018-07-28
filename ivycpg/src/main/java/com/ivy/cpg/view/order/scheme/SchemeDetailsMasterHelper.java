@@ -1091,7 +1091,7 @@ public class SchemeDetailsMasterHelper {
              * should not be equal zero in Scheme master table
              */
             StringBuffer sb = new StringBuffer();
-            sb.append("select  distinct(PID),SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from productMaster");
+            sb.append("select  distinct(PID),SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from object1");
             sb.append(" inner join SchemeBuyMaster SB on ProductMaster.pID=ProductID");
             sb.append(" inner join schememaster SM  on SM. schemeID=SB.schemeID");
             sb.append(" inner join schemeApplyCountMaster SAC on SAC.schemeid=SB.schemeid");
@@ -1131,7 +1131,7 @@ public class SchemeDetailsMasterHelper {
      */
     private void clearPROMOFlag(DBUtil db) {
 
-        String sql = "select distinct(PID) from productMaster inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
+        String sql = "select distinct(PID) from object1 inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
         Cursor c = db.selectSQL(sql);
         if (c != null) {
             while (c.moveToNext()) {
@@ -2981,7 +2981,7 @@ public class SchemeDetailsMasterHelper {
                     if ((productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0)
                             || (schemeBO.getFreeProducts() != null && schemeBO.getFreeProducts().size() > 0)) {//this condition checked for current accumulation scheme if buy product's not available
 
-                        int value = 1;
+                        double amount_free = 0;
                         StringBuffer sb = new StringBuffer();
                         sb.append(orderID + "," + schemeBO.getSchemeId() + ","
                                 + schemeProductBO.getProductId() + ",");
@@ -2995,7 +2995,7 @@ public class SchemeDetailsMasterHelper {
                                     + (productBO.getOrderedPcsQty() * productBO.getSrp())
                                     + (productBO.getOrderedOuterQty() * productBO.getOsrp());
                             double percentage_productContribution = ((line_value / totalOrderValueOfBuyProducts) * 100);
-                            double amount_free = schemeBO.getSelectedAmount() * (percentage_productContribution / 100);
+                            amount_free = schemeBO.getSelectedAmount() * (percentage_productContribution / 100);
 
                             sb.append("," + (amount_free));
 
@@ -3025,7 +3025,7 @@ public class SchemeDetailsMasterHelper {
                         // saving product wise discount value if scheme is amount type
                         if (schemeBO.isAmountTypeSelected()) {
 
-                            sb.append("," + (schemeProductBO.getDiscountValue() / value));
+                            sb.append("," + amount_free);
                         } else {
                             sb.append("," + schemeProductBO.getDiscountValue());
                         }

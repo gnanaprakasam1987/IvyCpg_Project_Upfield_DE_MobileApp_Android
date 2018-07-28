@@ -176,7 +176,8 @@ public class OrderHelper {
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
             uid = businessModel.QT(id);
 
-            if (!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID()) && businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
+            if (!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID()) &&
+                    businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
                 businessModel.insertSeqNumber("ORD");
                 uid = businessModel.QT(businessModel.downloadSequenceNo("ORD"));
             }
@@ -203,7 +204,8 @@ public class OrderHelper {
 
             }
             businessModel.invoiceNumber = uid.replaceAll("\'", "");
-            businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
+            businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL),
+                    ConfigurationMasterHelper.outDateFormat));
 
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
@@ -308,6 +310,7 @@ public class OrderHelper {
             // Save order details
             Vector<ProductMasterBO> finalProductList;
             columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP";
+
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
             else
@@ -328,170 +331,34 @@ public class OrderHelper {
                     entryLevelDistSum = entryLevelDistSum + product.getApplyValue();
 
                     if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
-                            && businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                        if (product.getBatchwiseProductCount() > 0) {
-                            ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper
-                                    .getBatchlistByProductID().get(
-                                            product.getProductID());
-                            if (batchList != null) {
-                                for (ProductMasterBO batchProductBO : batchList) {
-                                    if (batchProductBO.getOrderedPcsQty() > 0
-                                            || batchProductBO
-                                            .getOrderedCaseQty() > 0
-                                            || batchProductBO
-                                            .getOrderedOuterQty() > 0) {
-                                        values = getOrderDetails(product,
-                                                batchProductBO, uid, true)
-                                                .toString();
-                                        db.insertSQL(
-                                                DataMembers.tbl_orderDetails,
-                                                columns, values);
-                                    }
+                            && businessModel.configurationMasterHelper.IS_SIH_VALIDATION && product.getBatchwiseProductCount() > 0) {
+
+                        ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper
+                                .getBatchlistByProductID().get(
+                                        product.getProductID());
+                        if (batchList != null) {
+                            for (ProductMasterBO batchProductBO : batchList) {
+                                if (batchProductBO.getOrderedPcsQty() > 0
+                                        || batchProductBO
+                                        .getOrderedCaseQty() > 0
+                                        || batchProductBO
+                                        .getOrderedOuterQty() > 0) {
+                                    values = getOrderDetails(product,
+                                            batchProductBO, uid, true)
+                                            .toString();
+                                    db.insertSQL(
+                                            DataMembers.tbl_orderDetails,
+                                            columns, values);
                                 }
                             }
-                        } else {
-                            values = getOrderDetails(product, null, uid, false)
-                                    .toString();
-                            db.insertSQL(DataMembers.tbl_orderDetails, columns,
-                                    values);
                         }
+
 
                     } else {
                         values = getOrderDetails(product, null, uid, false)
                                 .toString();
                         db.insertSQL(DataMembers.tbl_orderDetails, columns,
                                 values);
-                    }
-
-
-                    // Insert the Crown Product Details
-                    if (businessModel.configurationMasterHelper.SHOW_CROWN_MANAGMENT
-                            && businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-
-                        if (product.getCrownOrderedPieceQty() > 0
-                                || product.getCrownOrderedCaseQty() > 0
-                                || product.getCrownOrderedOuterQty() > 0) {
-                            int crownPieceCount = (product
-                                    .getCrownOrderedCaseQty() * product
-                                    .getCaseSize())
-                                    + (product.getCrownOrderedPieceQty() * product
-                                    .getMSQty())
-                                    + (product.getCrownOrderedOuterQty() * product
-                                    .getOutersize());
-                            values = uid
-                                    + ","
-                                    + businessModel.QT(product.getProductID())
-                                    + ","
-                                    + crownPieceCount
-                                    + ","
-                                    + product.getSrp()
-                                    + ","
-                                    + product.getCaseSize()
-                                    + ","
-                                    + product.getCrownOrderedPieceQty()
-                                    + ","
-                                    + product.getCrownOrderedCaseQty()
-                                    + ","
-                                    + product.getCaseUomId()
-                                    + ","
-                                    + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID())
-                                    + ", "
-                                    + product.getMSQty()
-                                    + ","
-                                    + 0
-                                    + ","
-                                    + DatabaseUtils.sqlEscapeString(product
-                                    .getProductName())
-                                    + ","
-                                    + DatabaseUtils.sqlEscapeString(product
-                                    .getProductShortName())
-                                    + ","
-                                    + DatabaseUtils.sqlEscapeString(product
-                                    .getProductCode()) + ","
-                                    + product.getD1() + "," + product.getD2()
-                                    + "," + product.getD3() + ","
-                                    + product.getDA() + ","
-                                    + product.getCrownOrderedOuterQty() + ","
-                                    + product.getOutersize() + ","
-                                    + product.getOuUomid() + ","
-                                    + product.getSoInventory() + ","
-
-                                    + product.getSocInventory() + ","
-                                    + businessModel.productHelper.getmOrderType().get(2)
-
-                                    + "," + product.getCsrp() + ","
-                                    + product.getOsrp() + ","
-                                    + product.getPcUomid();
-
-                            db.insertSQL(DataMembers.tbl_orderDetails, columns,
-                                    values);
-                            Commons.print("Crown Product Insert End");
-                        }
-
-                    }
-
-                    // Insert the Free product Issue
-                    if (businessModel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN
-                            && businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-
-                        if (product.getFreePieceQty() > 0
-                                || product.getFreeCaseQty() > 0
-                                || product.getFreeOuterQty() > 0) {
-
-
-                            int freePieceCount = (product.getFreeCaseQty() * product
-                                    .getCaseSize())
-                                    + (product.getFreePieceQty() * product
-                                    .getMSQty())
-                                    + (product.getFreeOuterQty() * product
-                                    .getOutersize());
-                            values = uid
-                                    + ","
-                                    + businessModel.QT(product.getProductID())
-                                    + ","
-                                    + freePieceCount
-                                    + ","
-                                    + product.getSrp()
-                                    + ","
-                                    + product.getCaseSize()
-                                    + ","
-                                    + product.getFreePieceQty()
-                                    + ","
-                                    + product.getFreeCaseQty()
-                                    + ","
-                                    + product.getCaseUomId()
-                                    + ","
-                                    + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID())
-                                    + ", "
-                                    + product.getMSQty()
-                                    + ","
-                                    + 0
-                                    + ","
-                                    + DatabaseUtils.sqlEscapeString(product
-                                    .getProductName())
-                                    + ","
-                                    + DatabaseUtils.sqlEscapeString(product
-                                    .getProductShortName())
-                                    + ","
-                                    + DatabaseUtils.sqlEscapeString(product
-                                    .getProductCode()) + ","
-                                    + product.getD1() + "," + product.getD2()
-                                    + "," + product.getD3() + ","
-                                    + product.getDA() + ","
-                                    + product.getFreeOuterQty() + ","
-                                    + product.getOutersize() + ","
-                                    + product.getOuUomid() + ","
-                                    + product.getSoInventory() + ","
-                                    + product.getSocInventory() + ","
-                                    + businessModel.productHelper.getmOrderType().get(3)
-                                    + "," + product.getCsrp() + ","
-                                    + product.getOsrp() + ","
-                                    + product.getPcUomid();
-
-                            db.insertSQL(DataMembers.tbl_orderDetails, columns,
-                                    values);
-                        }
-
                     }
 
                 }
@@ -505,16 +372,21 @@ public class OrderHelper {
 
             }
 
-            // start insert scheme details
-            try {
 
+            try {
                 if (businessModel.configurationMasterHelper.IS_GST || businessModel.configurationMasterHelper.IS_GST_HSN) {
                     //update tax for scheme free product
                     //tax and price details are taken from ordered product which has highest tax rate.
                     // Also inserting in invoiceTaxDetail
                     businessModel.updateTaxForFreeProduct(mOrderedProductList, uid, db);
                 }
+            } catch (Exception e1) {
+                Commons.printException(e1);
 
+            }
+
+            // Insert scheme Details
+            try {
                 SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
                 if (schemeHelper.IS_SCHEME_ON
                         && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
@@ -522,10 +394,8 @@ public class OrderHelper {
                 }
                 schemeHelper.insertAccumulationDetails(mContext, db, uid);
 
-
-            } catch (Exception e1) {
-                Commons.printException(e1);
-
+            } catch (Exception e) {
+                Commons.printException(e);
             }
 
 
@@ -674,6 +544,11 @@ public class OrderHelper {
                     }
                 }
 
+                // Deleting existing order
+                if (hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())) {
+                    uid = deleteOrderTransactions(db, isVanSales, uid, mContext);
+                }
+
                 String id = businessModel.userMasterHelper.getUserMasterBO().getUserid()
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS);
                 uid = businessModel.QT(id);
@@ -722,7 +597,7 @@ public class OrderHelper {
 
                 // Save order details
                 Vector<ProductMasterBO> finalProductList;
-                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount";
+                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP";
 
                 finalProductList = productList;
 
@@ -1770,6 +1645,8 @@ public class OrderHelper {
                 product.setOrderPricePiece(pricePerPiece);
                 product.setSrp(srp);
                 product.setSoreasonId(skuResonId);
+                if (businessModel.configurationMasterHelper.IS_ORDER_SPLIT)
+                    product.setSeparateBill(false); // to clear spilit bills in Edit mode
                 if (!businessModel.configurationMasterHelper.SHOW_FOC)
                     product.setRemarks(remarks);
 

@@ -15,28 +15,13 @@ public class StandardListMasterConstants {
 
 	public static final String COLLECTION_PAY_TYPE = "COLLECTION_PAY_TYPE";
 	public static final String CREDIT_NOTE_TYPE="CREDIT_NOTE_TYPE";
-	public static final String MENU_STOCK = "MENU_STOCK";
 	public static final String MENU_ORDER = "MENU_ORDER";
 	public static final String MENU_COLLECTION = "MENU_COLLECTION";
-	public static final String MENU_WITS = "MENU_WITS";
-	public static final String MENU_CALL_ANLYS = "MENU_CALL_ANLYS";
-	public static final String MENU_INVOICE = "MENU_INVOICE";
 	public static final String MENU_STK_ORD = "MENU_STK_ORD";
-	public static final String MENU_DGT = "MENU_DGT";
 	public static final String MENU_REV = "MENU_REV";
-	public static final String MENU_CLOSING = "MENU_CLOSING";
-	public static final String MENU_ECALL = "MENU_ECALL";
-	public static final String MENU_RECORD = "MENU_RECORD";
-	public static final String MENU_LCALL = "MENU_LCALL";
 
 	// Extra
-	public static final String MENU_SALES_RET = "MENU_SALES_RET";
-	public static final String MENU_SURVEY = "MENU_SURVEY";
-	public static final String MENU_TASK = "MENU_TASK";
-	public static final String MENU_PHOTO = "MENU_PHOTO";
 	public static final String MONTH = "MONTH";
-	public static final String MENU_DASH = "MENU_DASH";
-	public static final String MENU_ASSET = "MENU_ASSET";
 	public static final String MENU_COLLECTION_VIEW = "MENU_COLLECTION_VIEW";
 
 	public static final String MENU_DAMAGE_STOCK = "MENU_DAMAGE_STOCK";
@@ -59,8 +44,6 @@ public class StandardListMasterConstants {
 	public static final String COLLECTION_DEBIT_NOTE_PAYMENT="CDP";
 
 	public static final String COUNTER_SALES_AGE_GROUP_TYPE="AGE_GROUP_TYPE";
-	public static final String COUNTER_SALES_STOCK_REASON_TYPE="STOCK_VARIAENCE";
-	public static final String COUNTER_SALES_STOCK_APPLY_FEEDBAKCS_TYPE = "APPLY_FEEDBACK";
 
 	public static final String REPORT_MENU = "MENU_REPORT";
 	public static final String MENU_ORDER_REPORT = "MENU_ORDER_REPORT";
@@ -74,15 +57,9 @@ public class StandardListMasterConstants {
 	public static final String MENU_COLLECTION_REPORT = "MENU_COLLECTION_REPORT";
 	public static final String MENU_TASK_EXECUTION_REPORT = "MENU_TASK_EXEC_REPORT";
 	public static final String MENU_EOD_STOCK_REPORT = "MENU_EOD_STOCK_REPORT";
-	public static final String MENU_VOLUME_REPORT = "MENU_VOLUME_REPORT";
-	public static final String MENU_SBD_REPORT = "MENU_SBD_REPORT";
-	public static final String MENU_DSRTODAY_REPORT = "MENU_DSRTODAY_REPORT";
-	public static final String MENU_DSRMTD_REPORT = "MENU_DSRMTD_REPORT";
-	public static final String MENU_INITIATIVE_REPORT = "MENU_INITIATIVE_REPORT";
 	public static final String MENU_TASK_REPORT = "MENU_TASK_REPORT";
 	public static final String MENU_QUESTION_REPORT = "MENU_QUESTION_REPORT";
 	public static final String MENU_CURRENT_STOCK_BATCH_REPORT="MENU_CURSTKBATCH_REPORT";
-	public static final String MENU_SUP_TEST_SCORE = "MENU_SUP_TEST_SCORE";
 	public static final String MENU_PS_ORD_RPT="MENU_PS_ORD_RPT";
 	public static final String MENU_DYN_REPORT = "MENU_DYN_RPT"; // Dynamic Report
 	public static final String MENU_LOG = "MENU_LOG"; // Activity Log
@@ -114,6 +91,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_OPPORTUNITIES_REPORT = "MENU_OPPORTUNITIES_REPORT";
 	public static final String MENU_TIMEANDTRAVEL_REPORT = "MENU_TIMEANDTRAVEL_REPORT";
 	public static final String MENU_PRODUCTIVITY_REPORT = "MENU_PRODUCTIVITY_REPORT";
+
 	public static final String FEEDBACK_TYPE="VFDK";
 	public static final String PRINT_FILE_INVOICE = "PF_INV_";
 	public static final String PRINT_FILE_COLLECTION = "PF_COL_";
@@ -123,6 +101,9 @@ public class StandardListMasterConstants {
 	public static final String MENU_CLOSING_STK_RPT = "MENU_CLOSING_STK_RPT";
 	public static final String MENU_ORD_STAT_RPT = "MENU_ORD_STAT_RPT";
 	public static final String MENU_INV_STAT_RPT = "MENU_INV_STAT_RPT";
+
+
+	public static final String MENU_INV_SALES_RETURN_REPORT = "MENU_INV_SALES_RETURN_REPORT";
 
 	public static final HashMap<String,String> mActivityCodeByMenuCode=new HashMap<>();
 

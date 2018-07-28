@@ -28,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -51,7 +50,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
     private TextView mTotalCaseTV;
     private TextView mTotalOuterTV;
     private Button saveBtn;
-    private LinearLayout sihLayout,caseLayout,outerLayout,pieceLayout;
+    private LinearLayout sihLayout, caseLayout, outerLayout, pieceLayout;
     private LinearLayout ll;
     private Intent loadActivity;
     private VanUnLoadModuleHelper mVanUnLoadModuleHelper;
@@ -78,7 +77,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         lpcText.setVisibility(View.GONE);
 
 
-        sihLayout = (LinearLayout)findViewById(R.id.ll_vanloadsih_lty);
+        sihLayout = (LinearLayout) findViewById(R.id.ll_vanloadsih_lty);
         caseLayout = (LinearLayout) findViewById(R.id.ll_vanloadcase_lty);
         outerLayout = (LinearLayout) findViewById(R.id.ll_vanloadouter_lty);
         pieceLayout = (LinearLayout) findViewById(R.id.ll_vanloadpiece_lty);
@@ -92,15 +91,15 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         mTotalCaseTV = (TextView) findViewById(R.id.tv_unload_total_case);
         mTotalOuterTV = (TextView) findViewById(R.id.tv_unload_total_outer);
         mTotalPcsTV = (TextView) findViewById(R.id.tv_unload_total_piece);
-        saveBtn =(Button) findViewById(R.id.btn_next);
+        saveBtn = (Button) findViewById(R.id.btn_next);
         saveBtn.setText(getResources().getString(R.string.save));
 
-        ((TextView)findViewById(R.id.productListTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.productListTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 //        ((TextView)findViewById(R.id.batchnotitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));//not used in xml so commented
-        ((TextView)findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)findViewById(R.id.itemcasetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)findViewById(R.id.outeritemcasetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)findViewById(R.id.itempiecetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.itemcasetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.outeritemcasetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.itempiecetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -137,7 +136,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
             getSupportActionBar().setIcon(null);
         }
         vanunloadlist = new Vector<>();
-        for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+        for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
             if (bo.getSih() > 0)
                 vanunloadlist.add(bo);
         }
@@ -189,7 +188,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
             findViewById(R.id.outeritemcasetitle).setVisibility(View.GONE);
             outerLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.outeritemcasetitle).getTag()) != null)
@@ -212,7 +211,6 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         updateBrandText("Brand", -1);
 
 
-
         saveBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,8 +221,8 @@ public class VanUnloadActivity extends ToolBarwithFilter {
     }
 
 
-    public void loadProductList(){
-       updateGeneralText(GENERAL);
+    public void loadProductList() {
+        updateGeneralText(GENERAL);
     }
 
     @Override
@@ -232,12 +230,9 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        else
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
+
 
         if (bmodel.configurationMasterHelper.IS_BAR_CODE_VAN_UNLOAD) {
             menu.findItem(R.id.menu_barcode).setVisible(true);
@@ -298,7 +293,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
 
     public void loadSearchedList() {
         if (mEdt_searchproductName.getText().length() >= 3) {
-            Vector<LoadManagementBO> items = bmodel.productHelper.getProducts();
+            Vector<LoadManagementBO> items = bmodel.productHelper.getLoadMgmtProducts();
 
             if (items == null) {
                 bmodel.showAlert(
@@ -311,7 +306,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
             String mSelectedFilter = bmodel.getProductFilter();
             for (int i = 0; i < siz; ++i) {
                 LoadManagementBO ret = items.elementAt(i);
-                if(ret.getSih() > 0) {
+                if (ret.getSih() > 0) {
                     if ("BarCode".equals(mSelectedFilter)) {
                         if (ret.getBarcode() != null && ret.getBarcode()
                                 .toLowerCase()
@@ -382,39 +377,18 @@ public class VanUnloadActivity extends ToolBarwithFilter {
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-        filterlist = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (LoadManagementBO productBO : vanunloadlist) {
-                if (levelBO.getProductID() == productBO.getParentid()) {
-                    filterlist.add(productBO);
-                }
-            }
-        }
-
-        mSchedule = new MyAdapter(filterlist);
-        lvwplist.setAdapter(mSchedule);
-
-        mDrawerLayout.closeDrawers();
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         filterlist = new ArrayList<>();
         if (mAttributeProducts != null) {
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
+            if (mFilteredPid!=0) {
                     for (LoadManagementBO productBO : vanunloadlist) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                             if (mAttributeProducts.contains(productBO.getProductid())) {
                                 filterlist.add(productBO);
                             }
                         }
-                    }
                 }
             } else {
                 for (int pid : mAttributeProducts) {
@@ -426,13 +400,11 @@ public class VanUnloadActivity extends ToolBarwithFilter {
                 }
             }
         } else {
-            if (mParentIdList.size() > 0 && !mFilterText.equalsIgnoreCase("")) {
-                for (LevelBO levelBO : mParentIdList) {
+            if (mFilteredPid!=0 && !mFilterText.equalsIgnoreCase("")) {
                     for (LoadManagementBO productBO : vanunloadlist) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                             filterlist.add(productBO);
                         }
-                    }
                 }
             } else {
                 int bid = -1;
@@ -519,7 +491,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
                 row = inflater.inflate(R.layout.van_unload, parent, false);
                 holder = new ViewHolder();
 
-                holder.listheaderLty = (LinearLayout)row.findViewById(R.id.van_unload_list_header);
+                holder.listheaderLty = (LinearLayout) row.findViewById(R.id.van_unload_list_header);
                 holder.caseQty = (EditText) row
                         .findViewById(R.id.productqtyCases);
                 holder.pieceQty = (EditText) row
@@ -550,7 +522,6 @@ public class VanUnloadActivity extends ToolBarwithFilter {
                     holder.outerQty.setVisibility(View.GONE);
 
 
-
                 holder.outerQty.addTextChangedListener(new TextWatcher() {
 
                     @Override
@@ -578,7 +549,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
                         if (!"".equals(qty)) {
                             holder.productBO.setOuterQty(SDUtil
                                     .convertToInt(qty));
-                            if(!"0".equals(qty)) {
+                            if (!"0".equals(qty)) {
                                 int sum = (holder.productBO.getOuterQty() * holder.productBO
                                         .getOuterSize())
                                         + (holder.productBO.getPieceqty())
@@ -614,7 +585,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
                         if (!"".equals(qty)) {
                             holder.productBO.setPieceqty(SDUtil
                                     .convertToInt(qty));
-                            if(!"0".equals(qty)) {
+                            if (!"0".equals(qty)) {
                                 int sum = (holder.productBO.getOuterQty() * holder.productBO
                                         .getOuterSize())
                                         + (holder.productBO.getPieceqty())
@@ -666,7 +637,7 @@ public class VanUnloadActivity extends ToolBarwithFilter {
                             holder.productBO.setCaseqty(SDUtil
                                     .convertToInt(qty));
 
-                            if(!"0".equals(qty)) {
+                            if (!"0".equals(qty)) {
                                 int sum = (holder.productBO.getOuterQty() * holder.productBO
                                         .getOuterSize())
                                         + (holder.productBO.getPieceqty())
@@ -784,24 +755,24 @@ public class VanUnloadActivity extends ToolBarwithFilter {
             holder.pieceQty.setText(tv);
             tv = product.getOuterQty() + "";
             holder.outerQty.setText(tv);
-            if (product.getBatchNo() != null&&!product.getBatchNo().trim().equals(""))  {
+            if (product.getBatchNo() != null && !product.getBatchNo().trim().equals("")) {
                 tv = "Batch No: " + product.getBatchNo() + "";
                 holder.batchno.setText(tv);
             } else {
                 holder.batchno.setText("");
             }
 
-            if (holder.productBO.getdUomid() == 0||!holder.productBO.isCaseMapped()) {
+            if (holder.productBO.getdUomid() == 0 || !holder.productBO.isCaseMapped()) {
                 holder.caseQty.setEnabled(false);
             } else {
                 holder.caseQty.setEnabled(true);
             }
-            if (holder.productBO.getdOuonid() == 0||!holder.productBO.isOuterMapped()) {
+            if (holder.productBO.getdOuonid() == 0 || !holder.productBO.isOuterMapped()) {
                 holder.outerQty.setEnabled(false);
             } else {
                 holder.outerQty.setEnabled(true);
             }
-            if (holder.productBO.getPiece_uomid() == 0||!holder.productBO.isPieceMapped()) {
+            if (holder.productBO.getPiece_uomid() == 0 || !holder.productBO.isPieceMapped()) {
                 holder.pieceQty.setEnabled(false);
             } else {
                 holder.pieceQty.setEnabled(true);
@@ -847,10 +818,10 @@ public class VanUnloadActivity extends ToolBarwithFilter {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                mVanUnLoadModuleHelper.saveVanUnLoad(vanunloadlist,getApplicationContext());
-                mVanUnLoadModuleHelper.UpdateSIH(vanunloadlist,getApplicationContext());
+                mVanUnLoadModuleHelper.saveVanUnLoad(vanunloadlist, getApplicationContext());
+                mVanUnLoadModuleHelper.UpdateSIH(vanunloadlist, getApplicationContext());
                 // If unloading empty
-                mVanUnLoadModuleHelper.updateEmptyReconilationTable(vanunloadlist,getApplicationContext());
+                mVanUnLoadModuleHelper.updateEmptyReconilationTable(vanunloadlist, getApplicationContext());
 
             } catch (Exception e) {
                 Commons.printException("" + e);

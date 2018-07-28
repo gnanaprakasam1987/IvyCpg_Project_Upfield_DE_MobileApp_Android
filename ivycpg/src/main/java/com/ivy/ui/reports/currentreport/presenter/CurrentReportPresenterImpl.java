@@ -78,13 +78,6 @@ public class CurrentReportPresenterImpl<V extends ICurrentReportContract.ICurren
     @Override
     public void getSpinnerData() {
         Vector<ChildLevelBo> items = new Vector<>();
-        try {
-            items = productHelper.getChildLevelBo();
-            if (items.size() == 0)
-                return;
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
         downloadCurrentStockReport();
         getIvyView().setUpBrandSpinner(items);
 

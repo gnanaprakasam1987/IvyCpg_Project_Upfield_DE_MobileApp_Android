@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SODAssetActivity extends IvyBaseActivityNoActionBar implements
-        BrandDialogInterface {
+        BrandDialogInterface,FiveLevelFilterCallBack {
 
 
     @Override
@@ -109,17 +110,11 @@ public class SODAssetActivity extends IvyBaseActivityNoActionBar implements
                                           List<Integer> mFilterId) {
 
     }
-
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         SODAssetFragment fragment = (SODAssetFragment) fm
                 .findFragmentById(R.id.sod_assetfragment);
-        fragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+        fragment.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 }

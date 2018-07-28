@@ -29,7 +29,7 @@ public class SupplierSelectionDialog extends DialogFragment {
 
     ExpandableListView lstSupplier;
     BusinessModel bmodel;
-    ArrayList<SupplierMasterBO> mSupplierList,primarySupplier,secondarySupplier;
+    ArrayList<SupplierMasterBO> mSupplierList, primarySupplier, secondarySupplier;
     Context mContext;
     ArrayList<String> lst_group;
     ArrayList<List<SupplierMasterBO>> lst_child;
@@ -38,7 +38,8 @@ public class SupplierSelectionDialog extends DialogFragment {
     public interface UpdateSupplierName {
         void updateSupplierName(String supplierName);
     }
-    public  SupplierSelectionDialog(){
+
+    public SupplierSelectionDialog() {
 
     }
 
@@ -104,8 +105,7 @@ public class SupplierSelectionDialog extends DialogFragment {
 
             for (int i = 0; i < lst_group.size(); i++)
                 lstSupplier.expandGroup(i);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }
@@ -121,18 +121,19 @@ public class SupplierSelectionDialog extends DialogFragment {
         public long getChildId(int groupPosition, int childPosition) {
             return 0;
         }
+
         @Override
         public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
             final ChildViewHolder childHolder;
-            List<SupplierMasterBO> list=lst_child.get(groupPosition);
+            List<SupplierMasterBO> list = lst_child.get(groupPosition);
             View row = convertView;
             if (row == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 row = inflater.inflate(R.layout.row_supplier_selection,
                         parent, false);
                 childHolder = new ChildViewHolder();
-                childHolder.tv_supplier=(TextView)row.findViewById(R.id.tv_supplier) ;
-                childHolder.chk=(CheckBox) row.findViewById(R.id.chk_selected) ;
+                childHolder.tv_supplier = (TextView) row.findViewById(R.id.tv_supplier);
+                childHolder.chk = (CheckBox) row.findViewById(R.id.chk_selected);
                 childHolder.chk.setClickable(false);
                 childHolder.tv_supplier.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -142,6 +143,7 @@ public class SupplierSelectionDialog extends DialogFragment {
                         bmodel.getRetailerMasterBO().setSupplierBO(childHolder.childList.get(childHolder.childPosition));
                         bmodel.getRetailerMasterBO().setDistributorId(childHolder.childList.get(childHolder.childPosition).getSupplierID());
                         bmodel.getRetailerMasterBO().setDistParentId(childHolder.childList.get(childHolder.childPosition).getDistParentID());
+                        bmodel.getRetailerMasterBO().setSupplierTaxLocId(childHolder.childList.get(childHolder.childPosition).getSupplierTaxLocId());
                         bmodel.updateRetailerWiseSupplierType(childHolder.childList.get(childHolder.childPosition)
                                 .getSupplierID());
                         updateSupplierName.updateSupplierName(childHolder.childList.get(childHolder.childPosition)
@@ -155,17 +157,16 @@ public class SupplierSelectionDialog extends DialogFragment {
             } else {
                 childHolder = (ChildViewHolder) row.getTag();
             }
-            childHolder.childPosition=childPosition;
-            childHolder.childList=list;
+            childHolder.childPosition = childPosition;
+            childHolder.childList = list;
             childHolder.tv_supplier.setText(childHolder.childList.get(childHolder.childPosition).getSupplierName());
 
-              if(bmodel.getRetailerMasterBO().getDistributorId()==childHolder.childList.get(childHolder.childPosition).getSupplierID()) {
-                  childHolder.chk.setVisibility(View.VISIBLE);
-                  childHolder.chk.setChecked(true);
-              }
-            else{
-                  childHolder.chk.setVisibility(View.GONE);
-              }
+            if (bmodel.getRetailerMasterBO().getDistributorId() == childHolder.childList.get(childHolder.childPosition).getSupplierID()) {
+                childHolder.chk.setVisibility(View.VISIBLE);
+                childHolder.chk.setChecked(true);
+            } else {
+                childHolder.chk.setVisibility(View.GONE);
+            }
 
 
             return row;
@@ -181,8 +182,8 @@ public class SupplierSelectionDialog extends DialogFragment {
                 row = inflater.inflate(R.layout.row_supplier_selection_header,
                         viewGroup, false);
                 groupHolder = new GroupViewHolder();
-                groupHolder.tv_header=(TextView)row.findViewById(R.id.tv_supplier) ;
-               // groupHolder.tv_header.setGravity(Gravity.LEFT);
+                groupHolder.tv_header = (TextView) row.findViewById(R.id.tv_supplier);
+                // groupHolder.tv_header.setGravity(Gravity.LEFT);
                 groupHolder.tv_header.setTextColor(getResources().getColor(R.color.Black));
                 groupHolder.tv_header.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_large));
 
@@ -191,12 +192,13 @@ public class SupplierSelectionDialog extends DialogFragment {
             } else {
                 groupHolder = (GroupViewHolder) row.getTag();
             }
-                //lstSupplier.expandGroup(position);
-                groupHolder.tv_header.setText(lst_group.get(position));
+            //lstSupplier.expandGroup(position);
+            groupHolder.tv_header.setText(lst_group.get(position));
 
 
             return row;
         }
+
         @Override
         public boolean hasStableIds() {
             return false;
@@ -235,7 +237,7 @@ public class SupplierSelectionDialog extends DialogFragment {
 
     class ChildViewHolder {
         TextView tv_supplier;
-       List<SupplierMasterBO> childList;
+        List<SupplierMasterBO> childList;
         CheckBox chk;
         int childPosition;
 

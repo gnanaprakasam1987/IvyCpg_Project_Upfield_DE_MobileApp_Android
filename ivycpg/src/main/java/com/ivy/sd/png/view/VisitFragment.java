@@ -58,6 +58,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaxGstHelper;
@@ -77,7 +78,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
+public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
 
     private static final String CODE_PRODUCTIVE = "Filt_01";
     private static final String CODE_NON_PRODUCTIVE = "Filt_02";
@@ -112,7 +113,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private AutoCompleteTextView mBrandAutoCompleteTV;
     private MapViewListener mapViewListener;
     private boolean isFromPlanning = false;
-    private boolean isFromPlanningSub=false;
+    private boolean isFromPlanningSub = false;
 
     private ArrayList<StandardListBO> mRetailerSelectionList;
 
@@ -204,11 +205,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),PlanningActivity.class);
-                if(isFromPlanning)
-                    intent.putExtra("From",MENU_PLANNING);
-                else if(isFromPlanningSub)
-                    intent.putExtra("From",MENU_PLANNING_SUB);
+                Intent intent = new Intent(getActivity(), PlanningActivity.class);
+                if (isFromPlanning)
+                    intent.putExtra("From", MENU_PLANNING);
+                else if (isFromPlanningSub)
+                    intent.putExtra("From", MENU_PLANNING_SUB);
                 startActivityForResult(intent, PROFILE_REQUEST_CODE);
             }
         });
@@ -224,8 +225,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         crossLine.setRotation(-5);
 
         if (getArguments() != null) {
-            isFromPlanning = getArguments().getBoolean("isPlanning",false);
-            isFromPlanningSub=getArguments().getBoolean("isPlanningSub",false);
+            isFromPlanning = getArguments().getBoolean("isPlanning", false);
+            isFromPlanningSub = getArguments().getBoolean("isPlanningSub", false);
         }
 
 
@@ -459,6 +460,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 .applyLabels(view.findViewById(
                                         R.id.label_TodayTgt)
                                         .getTag()));
+
+
+            if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
+                lbl_TodayTgt.setText(getString(R.string.total_vol));
+            }
+
+
         } catch (Exception e) {
             Commons.printException(e);
             if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
@@ -701,8 +709,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             Commons.printException("" + e);
         }
 
+
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
             tv_target.setText(String.valueOf(getStoreVisited()));
+
+            //cpg132-task13
+        else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
+            tv_target.setText(String.valueOf(getTotalVolume()));
         else
             tv_target.setText(getTotalVisitActual());
 
@@ -1064,11 +1077,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             mRetTgtAchv.put(configObj.getCode(), configObj.getDesc());
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
     private void updateRetailerProperty() {
 
         mRetailerProp = new HashMap<>();
@@ -1164,7 +1172,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         // To Do updateFromFiveLevelFilter
 
     }
@@ -1334,7 +1342,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                     if (isFromPlanning) {
                                         i.putExtra("From", MENU_PLANNING);
                                         i.putExtra("isPlanning", true);
-                                    }else if(isFromPlanningSub){
+                                    } else if (isFromPlanningSub) {
                                         i.putExtra("From", MENU_PLANNING_SUB);
                                         i.putExtra("isPlanningSub", true);
                                     } else {
@@ -1373,7 +1381,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 if (isFromPlanning) {
                                     i.putExtra("From", MENU_PLANNING);
                                     i.putExtra("isPlanning", true);
-                                }else if(isFromPlanningSub){
+                                } else if (isFromPlanningSub) {
                                     i.putExtra("From", MENU_PLANNING_SUB);
                                     i.putExtra("isPlanningSub", true);
                                 } else {
@@ -1823,7 +1831,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     }
 
     @SuppressLint("ValidFragment")
-    public  class CustomFragment extends DialogFragment {
+    public class CustomFragment extends DialogFragment {
         private String mTitle = "";
 
 
@@ -1917,6 +1925,104 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
         return count;
     }
+
+    private String getTotalVolume() {
+        tv_target.setTextSize(14);
+        DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        int pcQty = 0;
+        int caseQty = 0;
+        int outQty = 0;
+        try {
+
+            Cursor c = db.selectSQL("select sum (pieceqty) from OrderDetail");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    pcQty = c.getInt(0);
+
+                }
+                c.close();
+            }
+
+
+            Cursor c1 = db.selectSQL("select sum (caseQty) from OrderDetail");
+
+            if (c1 != null) {
+                if (c1.moveToNext()) {
+                    caseQty = c1.getInt(0);
+                }
+                c1.close();
+            }
+
+
+            Cursor c2 = db.selectSQL("select sum (outerQty) from OrderDetail");
+            if (c2 != null) {
+                if (c2.moveToNext()) {
+                    outQty = c2.getInt(0);
+                }
+                c2.close();
+            }
+
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        db.closeDB();
+
+
+        try {
+
+            StringBuilder sb = new StringBuilder();
+            String op = getString(R.string.item_piece);
+            String oc = getString(R.string.item_case);
+            String ou = getString(R.string.item_outer);
+
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("item_piece") != null)
+                op = bmodel.labelsMasterHelper
+                        .applyLabels("item_piece");
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("item_case") != null)
+                oc = bmodel.labelsMasterHelper
+                        .applyLabels("item_case");
+
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("item_outer") != null)
+                ou = bmodel.labelsMasterHelper
+                        .applyLabels("item_outer");
+
+
+            bmodel.configurationMasterHelper.SHOW_ORDER_PCS = true;
+            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+
+                sb.append(op + " " + pcQty);
+            }
+
+            bmodel.configurationMasterHelper.SHOW_ORDER_CASE = true;
+            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    sb.append(" : " + oc + " " + (caseQty));
+                else
+                    sb.append(caseQty + " " + oc + " ");
+            }
+            bmodel.configurationMasterHelper.SHOW_OUTER_CASE = true;
+            if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS || bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    sb.append(" : " + ou + " " + outQty);
+                else
+                    sb.append(ou + " " + outQty);
+            }
+
+            return sb.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
 
     public interface MapViewListener {
         void switchMapView();
@@ -2022,7 +2128,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                             if (isFromPlanning) {
                                 i.putExtra("From", MENU_PLANNING);
                                 i.putExtra("isPlanning", true);
-                            }else if(isFromPlanningSub){
+                            } else if (isFromPlanningSub) {
                                 i.putExtra("From", MENU_PLANNING_SUB);
                                 i.putExtra("isPlanningSub", true);
                             } else {

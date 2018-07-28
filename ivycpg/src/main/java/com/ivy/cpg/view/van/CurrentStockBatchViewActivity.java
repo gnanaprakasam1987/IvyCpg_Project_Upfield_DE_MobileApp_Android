@@ -17,7 +17,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
@@ -98,8 +97,8 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
         /** Load products from product master **/
         LoadManagementBO lbo;
         mylist = new Vector<>();
-        for (int j = 0; j < bmodel.productHelper.getProducts().size(); j++) {
-            lbo = bmodel.productHelper.getProducts().get(j);
+        for (int j = 0; j < bmodel.productHelper.getLoadMgmtProducts().size(); j++) {
+            lbo = bmodel.productHelper.getLoadMgmtProducts().get(j);
             if (lbo.getStocksih() > 0)
                 mylist.add(lbo);
         }
@@ -111,12 +110,8 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        } else {
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
-        }
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -205,35 +200,15 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-        ArrayList<LoadManagementBO> filterlist = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (LoadManagementBO loadMgtBO : mylist) {
-                if (levelBO.getProductID() == loadMgtBO.getParentid()) {
-                    filterlist.add(loadMgtBO);
-                }
-            }
-        }
-
-        MyAdapter mSchedule = new MyAdapter(filterlist);
-        lvwplist.setAdapter(mSchedule);
-        mDrawerLayout.closeDrawers();
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         ArrayList<LoadManagementBO> filterlist = new ArrayList<>();
         if (mAttributeProducts != null) {
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : mylist) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
-                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(productBO.getProductid())) {
-                                mylist.add(productBO);
-                            }
+            if (mFilteredPid != 0) {
+                for (LoadManagementBO productBO : mylist) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                        if (mAttributeProducts.contains(productBO.getProductid())) {
+                            mylist.add(productBO);
                         }
                     }
                 }
@@ -247,11 +222,9 @@ public class CurrentStockBatchViewActivity extends ToolBarwithFilter
                 }
             }
         } else {
-            for (LevelBO levelBO : mParentIdList) {
-                for (LoadManagementBO loadMgtBO : mylist) {
-                    if (levelBO.getProductID() == loadMgtBO.getParentid()) {
-                        filterlist.add(loadMgtBO);
-                    }
+            for (LoadManagementBO loadMgtBO : mylist) {
+                if (loadMgtBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                    filterlist.add(loadMgtBO);
                 }
             }
         }

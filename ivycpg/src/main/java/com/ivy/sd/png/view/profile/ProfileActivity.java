@@ -72,9 +72,11 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.CustomMapFragment;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MapWrapperLayout;
@@ -110,6 +112,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -1627,6 +1630,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                             .getItem(which);
                                     bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                                     bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                    bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
                                     bmodel.updateGroupIdForRetailer();
 
                                     dialog.dismiss();
@@ -1975,11 +1979,23 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (!isCancelled()) {
-                    if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && !bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                        bmodel.productHelper
-                                .downloadFiveFilterLevels(MENU_STK_ORD);
-                        bmodel.productHelper
-                                .downloadProductsWithFiveLevelFilter(MENU_STK_ORD);
+
+                    if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                        bmodel.getRetailerWiseSellerType();
+                        bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
+                    }
+
+                    if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+
+                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
+                                bmodel.productHelper.getFilterProductLevels()));
+                        GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                        if (genericObjectPair != null) {
+                            bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                            bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
+                        }
+
                     } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                         //to reload product filter if diffrent retailer selected
                         bmodel.productHelper.setmLoadedGlobalProductId(0);
@@ -2009,10 +2025,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                         }
                     }
 
-                    if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-                        bmodel.getRetailerWiseSellerType();
-                        bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
-                    }
+
 
 
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
@@ -2022,7 +2035,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                 bmodel.userMasterHelper.getUserMasterBO().getUserid(), bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
 
                     }
-
 
                     if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
                         bmodel.productHelper.downloadProductDiscountDetails();

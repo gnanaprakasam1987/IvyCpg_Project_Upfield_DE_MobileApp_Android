@@ -75,6 +75,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -97,7 +98,7 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class StockCheckFragment extends IvyBaseFragment implements
         BrandDialogInterface, OnClickListener, OnEditorActionListener,
-        CompetitorFilterInterface, StockCheckContractor.StockCheckView {
+        CompetitorFilterInterface, FiveLevelFilterCallBack,StockCheckContractor.StockCheckView {
 
 
     private static final String BRAND = "Brand";
@@ -510,6 +511,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             .findViewById(R.id.stock_and_order_listview_productname);
                     holder.psname.setTypeface(businessModel.configurationMasterHelper.getProductNameFont());
                     holder.psname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+                    holder.productCode = (TextView) row
+                            .findViewById(R.id.stock_and_order_listview_produtCode);
+                    holder.productCode.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.ppq = (TextView) row
                             .findViewById(R.id.stock_and_order_listview_ppq);
                     holder.ppq.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -577,6 +581,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         row.findViewById(R.id.layout_shelf).setVisibility(View.GONE);
 
                     }
+
+                    if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                        holder.productCode.setVisibility(View.GONE);
 
                     holder.audit.setOnClickListener(new OnClickListener() {
 
@@ -686,7 +693,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 boolean isChecked) {
                                             if (isChecked
                                                     && holder.productObj
-                                                    .getLocations()
+                                                    .downloadInStoreLocationsForStockCheck()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex)
                                                     .getShelfPiece() == -1) {
                                                 if (businessModel.configurationMasterHelper.SHOW_STOCK_SP) {
@@ -701,7 +708,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 } else if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP
                                                         && !businessModel.configurationMasterHelper.SHOW_STOCK_SC
                                                         && !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                                                    holder.productObj.getLocations()
+                                                    holder.productObj.downloadInStoreLocationsForStockCheck()
                                                             .get(stockCheckPresenter.mSelectedLocationIndex)
                                                             .setShelfPiece(1);
                                                 }
@@ -713,7 +720,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 }
                                             } else if (isChecked
                                                     && holder.productObj
-                                                    .getLocations()
+                                                    .downloadInStoreLocationsForStockCheck()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex)
                                                     .getShelfPiece() > 0) {
                                                 if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
@@ -741,7 +748,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                 } else if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP
                                                         && !businessModel.configurationMasterHelper.SHOW_STOCK_SC
                                                         && !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
-                                                    holder.productObj.getLocations()
+                                                    holder.productObj.downloadInStoreLocationsForStockCheck()
                                                             .get(stockCheckPresenter.mSelectedLocationIndex)
                                                             .setShelfPiece(-1);
                                                 }
@@ -1238,7 +1245,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                 holder.pname = holder.productObj.getProductName();
 
+
                 holder.psname.setText(holder.productObj.getProductShortName());
+                if (businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                    String prodCode = getResources().getString(R.string.prod_code) + ": " +
+                            holder.productObj.getProductCode() + " ";
+                    holder.productCode.setText(prodCode);
+                }
+
                 String strPPQ = getResources().getString(R.string.ppq) + ": "
                         + holder.productObj.getRetailerWiseProductWiseP4Qty() + "";
                 holder.ppq.setText(strPPQ);
@@ -1362,7 +1376,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         private EditText facingQty;
 
 
-        private TextView total;
+        private TextView total, productCode;
 
 
         private LinearLayout ll_stkCB;
@@ -1433,15 +1447,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_sih_apply).setVisible(false);
 
             menu.findItem(R.id.menu_sih_apply).setVisible(false);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && businessModel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
+            if (businessModel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
                 menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
             }
 
-            if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && stockCheckPresenter.mSelectedIdByLevelId != null) {
+            if (stockCheckPresenter.mSelectedIdByLevelId != null) {
                 for (Integer id : stockCheckPresenter.mSelectedIdByLevelId.keySet()) {
                     if (stockCheckPresenter.mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -1505,14 +1518,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_survey) {
             startActivity(new Intent(getActivity(), SurveyActivityNew.class));
             return true;
-        } else if (i == R.id.menu_product_filter) {
-            if (businessModel.configurationMasterHelper.IS_UNLINK_FILTERS) {
-                stockCheckPresenter.putValueToFilterMap("");
-            }
-            productFilterClickedFragment();
-            getActivity().supportInvalidateOptionsMenu();
-            return true;
-        } else if (i == R.id.menu_loc_filter) {
+        }else if (i == R.id.menu_loc_filter) {
             showLocation();
             return true;
         } else if (i == R.id.menu_spl_filter) {
@@ -1843,58 +1849,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     }
 
-    private void productFilterClickedFragment() {
-        try {
-            QUANTITY = null;
-
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            if (getActionBar() != null)
-                setScreenTitle(getResources().getString(R.string.filter));
-
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            if (businessModel.productHelper.getChildLevelBo().size() > 0)
-                bundle.putString("filterHeader", businessModel.productHelper
-                        .getChildLevelBo().get(0).getProductLevel());
-            else
-                bundle.putString("filterHeader", businessModel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-            bundle.putSerializable("serilizeContent",
-                    businessModel.productHelper.getChildLevelBo());
-
-            if (businessModel.productHelper.getParentLevelBo() != null
-                    && businessModel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", businessModel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                businessModel.productHelper.setPlevelMaster(businessModel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-
-            FilterFragment fragobj = new FilterFragment(stockCheckPresenter.getSelectedFilterMap());
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e + "");
-        }
-    }
-
-
     @Override
     public void loadStartVisit() {
     }
@@ -2030,13 +1984,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        stockCheckPresenter.getFilteredList(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        stockCheckPresenter.getFilteredList(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
     @Override

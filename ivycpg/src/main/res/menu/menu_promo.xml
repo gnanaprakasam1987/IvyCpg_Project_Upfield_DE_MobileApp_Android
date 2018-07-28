@@ -15,12 +15,6 @@
         android:title="@string/order_remarks"
         ivydist:showAsAction="always"/>
     <item
-        android:id="@+id/menu_product_filter"
-        android:icon="@drawable/icon_menu_filter"
-        android:orderInCategory="99"
-        android:title="@string/prd_filter"
-        ivydist:showAsAction="always"/>
-    <item
         android:id="@+id/menu_photo"
         android:icon="@drawable/ic_action_device_access_camera"
         android:orderInCategory="100"

@@ -16,6 +16,7 @@ public class DigitalContentBO {
 	private boolean lessimagewidth;
 	private int imgFlag;
 	private String groupName;
+	private String parentHierarchy;
 	private int sequenceNo;
 
 	public DigitalContentBO() {
@@ -189,4 +190,11 @@ public class DigitalContentBO {
 		}
 	};
 
+	public String getParentHierarchy() {
+		return parentHierarchy;
+	}
+
+	public void setParentHierarchy(String parentHierarchy) {
+		this.parentHierarchy = parentHierarchy;
+	}
 }
