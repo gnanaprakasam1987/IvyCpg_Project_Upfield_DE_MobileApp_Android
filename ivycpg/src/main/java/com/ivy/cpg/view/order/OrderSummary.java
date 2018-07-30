@@ -737,6 +737,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (remReturnValue > 0) {
                     double creditNoteAmt = orderHelper.getCreditNoteValue(OrderSummary.this, remReturnValue);
                     text_creditNote.setText(getResources().getString(R.string.credit_note) + " : " + bModel.formatValue(creditNoteAmt));
+                    text_creditNote.setVisibility(View.VISIBLE);
                 } else
                     text_creditNote.setVisibility(View.GONE);
             } else
