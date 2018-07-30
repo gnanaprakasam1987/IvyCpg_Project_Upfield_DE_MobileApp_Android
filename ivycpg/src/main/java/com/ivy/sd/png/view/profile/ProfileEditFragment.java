@@ -1026,9 +1026,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                         }
 
                     }
-
                     totalView.addView(getPriorityProductView(mNumber, mName, sb.toString(), productID), commonsparams);
                 }
+
                 else if (configCode.equals(PROFILE_58) && flag == 1 && Order == 1) {
                     LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -2649,7 +2649,8 @@ public class ProfileEditFragment extends IvyBaseFragment
         try {
             //flag=0 - add common atrributes and attributes for current(from DB) channel
             // flag==1 - add new(if user changing the channel, then corresponding attributes loaded) channel attributes
-            boolean isCommon = false, isFromChannel = false;
+            boolean isCommon = false,
+                    isFromChannel = false;
             if (flag == 0)
                 isCommon = true;
             else if (flag == 1)

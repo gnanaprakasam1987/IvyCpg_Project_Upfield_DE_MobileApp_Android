@@ -118,7 +118,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private ArrayList<LocationBO> mLocationMasterList1 = null, mLocationMasterList2 = null, mLocationMasterList3 = null;
     private ArrayAdapter<LocationBO> locationAdapter1 = null, locationAdapter2 = null;
     private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
-    private ArrayList<StandardListBO> mPriorityProductList = null,selectedPriorityProductList = null;;
+    private ArrayList<StandardListBO> mPriorityProductList = null, selectedPriorityProductList = null;
+    ;
 
     private int locid = 0;
     private int subChannelSpinnerCount = 0;
@@ -126,7 +127,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private String menuCode;
     private int id;
     private String selectedProductID = "";
-    static  String lat = "", longitude = "";
+    static String lat = "", longitude = "";
     private boolean isLatLongCameravailable = false;
 
     private TextView latlongtextview;
@@ -358,6 +359,23 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     public void createNearByRetailerView(int mNumber, String MName, boolean isEditMode) {
 
         getmRootLinearLayout().addView(getNearByRetailerView(mNumber, MName, isEditMode), getCommonsparams());
+    }
+
+    @Override
+    public void createPriorityProductView(ArrayList<StandardListBO> mPriorityProductList,
+                                          String selectedProductID, int mNumber,
+                                          String MName, String textvalue, String productID) {
+        this.mPriorityProductList = mPriorityProductList;
+        this.selectedProductID = selectedProductID;
+        getmRootLinearLayout().addView( getPriorityProductView(mNumber, MName, textvalue, productID),getCommonsparams());
+    }
+
+    @Override
+    public void createAttributeView(int flag) {
+        LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LLParams.setMargins(10, 5, 10, 5);
+
     }
 
     @Override
@@ -1180,22 +1198,16 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private LinearLayout getPriorityProductView(final int mNumber, final String MName, final String textvalue, final String productID) {
 
         LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
-
         LinearLayout firstlayout = createLinearLayout();
         firstlayout.setPadding(0, 0, 0, 12);
         firstlayout.addView(getSingleTextView(mNumber, MName)); //TextView
-
         LinearLayout secondlayout = createLinearLayout(LinearLayout.HORIZONTAL, 0);
         secondlayout.setPadding(0, 0, 0, 12);
-
         priorityproducttextview = new TextView(getActivity());
         priorityproducttextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
         priorityproducttextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         priorityproducttextview.setText(textvalue);
-
-
         secondlayout.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 if (mPriorityProductList != null) {
@@ -1224,6 +1236,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         return linearlayout;
 
     }
+
+
 
     @SuppressLint("ValidFragment")
     public class CustomFragment extends DialogFragment {
@@ -1359,6 +1373,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
         }
     }
+
 
     private void updatePriorityProducts() {
         selectedPriorityProductList = new ArrayList<>();

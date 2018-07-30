@@ -13,6 +13,7 @@ import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 
 import org.jetbrains.annotations.NonNls;
@@ -70,6 +71,10 @@ public interface IProfileEditContract {
 
         void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList,int VALUE_NEARBY_RETAILER_MAX );
 
+        void createPriorityProductView(ArrayList<StandardListBO> mPriorityProductList,String selectedProductID ,
+                                       int mNumber, String MName, String textvalue, String productID);
+
+        void createAttributeView(int flag);
 
 
     }

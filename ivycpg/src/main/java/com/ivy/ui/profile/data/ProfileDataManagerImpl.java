@@ -366,16 +366,58 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
     @Override
     public Observable<ArrayList<StandardListBO>> downloadPriorityProducts() {
-        return null;
+        return Observable.fromCallable(new Callable<ArrayList<StandardListBO>>() {
+            @Override
+            public ArrayList<StandardListBO> call() throws Exception {
+                ArrayList<StandardListBO> priorityproductList = null;
+                try {
+                    dbUtil.openDataBase();
+                    String sb = "select  priorityproductid,pname,ProductLevelId from PriorityProducts  pp inner join productmaster pm " +
+                            " on pm.pid=pp.priorityproductid  and pm.plid=pp.productlevelid";
+                    Cursor c = dbUtil.selectSQL(sb);
+                    if (c.getCount() > 0) {
+                        priorityproductList = new ArrayList<>();
+                        StandardListBO standardListBO;
+                        while (c.moveToNext()) {
+                            standardListBO = new StandardListBO();
+                            standardListBO.setListID(c.getString(0));
+                            standardListBO.setListName(c.getString(1));
+                            standardListBO.setListCode(c.getString(2));
+                            priorityproductList.add(standardListBO);
+                        }
+                    }
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                } finally {
+                    dbUtil.closeDB();
+                }
+                return priorityproductList;
+            }
+        });
     }
 
     @Override
-    public Observable<ArrayList<String>> downloadPriorityProductsForRetailer(String retailerId) {
+    public Observable<ArrayList<String>> downloadPriorityProductsForRetailer(final String retailerId) {
         return Observable.fromCallable(new Callable<ArrayList<String>>() {
             @Override
             public ArrayList<String> call() throws Exception {
-                ArrayList<String> retilerProductList =null;
-                return retilerProductList;
+                ArrayList<String> priorityproductList = null;
+                try {
+                    dbUtil.openDataBase();
+                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + AppUtils.QT(retailerId);
+                    Cursor c = dbUtil.selectSQL(sql);
+                    if (c.getCount() > 0) {
+                        priorityproductList = new ArrayList<>();
+                        while (c.moveToNext()) {
+                            priorityproductList.add(c.getString(0));
+                        }
+                    }
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                } finally {
+                    dbUtil.closeDB();
+                }
+                return priorityproductList;
             }
         }).flatMap(new Function<ArrayList<String>, ObservableSource<ArrayList<String>>>() {
             @Override
@@ -385,10 +427,23 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     public ArrayList<String> call() throws Exception {
 
                         if(strings==null) {
-                            ArrayList<String> retilerProductList = new ArrayList<>();
-
-
-                            return retilerProductList;
+                            ArrayList<String> priorityproductList = null;
+                            try {
+                                dbUtil.openDataBase();
+                                String sql = "select ProductId from RetailerEditPriorityProducts where status = 'N' and retailerId=" + AppUtils.QT(retailerId);
+                                Cursor c = dbUtil.selectSQL(sql);
+                                if (c.getCount() > 0) {
+                                    priorityproductList = new ArrayList<>();
+                                    while (c.moveToNext()) {
+                                        priorityproductList.add(c.getString(0));
+                                    }
+                                }
+                            } catch (Exception e) {
+                                Commons.printException("" + e);
+                            } finally {
+                                dbUtil.closeDB();
+                            }
+                            return priorityproductList;
                         }else
                             return strings;
                     }
