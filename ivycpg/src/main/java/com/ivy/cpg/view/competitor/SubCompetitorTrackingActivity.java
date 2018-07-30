@@ -366,6 +366,12 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 if (!bmodel.configurationMasterHelper.SHOW_SPINNER) {
                     ((Spinner) convertView.findViewById(R.id.spn_reason)).setVisibility(View.GONE);
                 }
+                if (!bmodel.configurationMasterHelper.SHOW_COMP_FEEDBACK) {
+                    convertView.findViewById(R.id.ll_hg).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_COMP_QTY) {
+                    convertView.findViewById(R.id.LL_qty).setVisibility(View.GONE);
+                }
 
                 holder.checkBox
                         .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

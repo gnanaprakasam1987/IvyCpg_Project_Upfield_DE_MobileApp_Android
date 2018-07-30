@@ -818,10 +818,10 @@ public class SOSFragment extends IvyBaseFragment implements
                                     if (parentTotal > 0)
                                         percentage = (actual / parentTotal) * 100;
 
-                                    sosBO.getLocations().get(mSelectedLocationIndex).setTarget(SDUtil.roundIt(target, 2));
+                                    sosBO.getLocations().get(mSelectedLocationIndex).setTarget(mBModel.formatValue(target));
                                     sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(mBModel
                                             .formatPercent(percentage));
-                                    sosBO.getLocations().get(mSelectedLocationIndex).setGap(SDUtil.roundIt(-gap, 2));
+                                    sosBO.getLocations().get(mSelectedLocationIndex).setGap(mBModel.formatValue(-gap));
                                 } else {
                                     sosBO.getLocations().get(mSelectedLocationIndex).setTarget(Integer.toString(0));
                                     sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(Integer.toString(0));
@@ -961,10 +961,10 @@ public class SOSFragment extends IvyBaseFragment implements
                                             if (parentTotal > 0)
                                                 percentage = (actual / parentTotal) * 100;
 
-                                            sosBO.getLocations().get(mSelectedLocationIndex).setTarget(SDUtil.roundIt(target, 2));
+                                            sosBO.getLocations().get(mSelectedLocationIndex).setTarget(mBModel.formatValue(target));
                                             sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(mBModel
                                                     .formatPercent(percentage));
-                                            sosBO.getLocations().get(mSelectedLocationIndex).setGap(SDUtil.roundIt(-gap, 2));
+                                            sosBO.getLocations().get(mSelectedLocationIndex).setGap(mBModel.formatValue(-gap));
                                         } else {
                                             sosBO.getLocations().get(mSelectedLocationIndex).setTarget(Integer.toString(0));
                                             sosBO.getLocations().get(mSelectedLocationIndex).setPercentage(Integer.toString(0));
