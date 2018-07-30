@@ -345,13 +345,12 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                 try {
                     mDbUtil.openDataBase();
 
-                    StringBuffer sb = new StringBuffer();
-                    sb.append("select min(Sequence) as childlevel,(select Sequence from LocationLevel l1 ");
-                    sb.append("inner join locationmaster lm on l1.id=LM.loclevelid where lm.locid=");
-                    sb.append(appDataProvider.getRetailMaster().getLocationId());
-                    sb.append(") as contentlevel  from LocationLevel");
+                    String sb = "select min(Sequence) as childlevel,(select Sequence from LocationLevel l1 " +
+                            "inner join locationmaster lm on l1.id=LM.loclevelid where lm.locid=" +
+                            appDataProvider.getRetailMaster().getLocationId() +
+                            ") as contentlevel  from LocationLevel";
 
-                    Cursor c = mDbUtil.selectSQL(sb.toString());
+                    Cursor c = mDbUtil.selectSQL(sb);
                     if (c != null) {
                         while (c.moveToNext()) {
                             mChildLevel = c.getInt(0);

@@ -14,6 +14,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.Vector;
 
+
 public class ChannelMasterHelper {
 
     private Context context;
@@ -137,14 +138,7 @@ public class ChannelMasterHelper {
     }
 
 
-    /**
-     * @param channelId
-     * @return mapping channelID
-     * @See {@link ChannelDataManagerImpl#getChannelHierarchy(int)}
-     * @deprecated
-     */
 
-    @Deprecated
     public String getChannelHierarchyForDiscount(int channelId, Context mContext) {
         String sql, sql1 = "", str = "";
         try {
@@ -178,6 +172,13 @@ public class ChannelMasterHelper {
         return str;
     }
 
+    /**
+     * @param channelId
+     * @return mapping channelID
+     * @See {@link ChannelDataManagerImpl#getChannelHierarchy(int)}
+     * @deprecated
+     */
+    @Deprecated
     public String getChannelHierarchy(int channelId, Context mContext) {
         String sql, sql1 = "", str = "";
         try {

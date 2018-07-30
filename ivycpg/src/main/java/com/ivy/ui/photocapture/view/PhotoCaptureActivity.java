@@ -46,6 +46,7 @@ import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.di.DaggerPhotoCaptureComponent;
 import com.ivy.ui.photocapture.di.PhotoCaptureModule;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.ClickGuard;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -189,6 +190,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         checkAndRequestPermissionAtRunTime(CAMERA_AND_WRITE_PERMISSION);
 
         handleDateButton(photoCapturePresenter.isDateEnabled());
+
+        ClickGuard.guard(saveBtn,imageView_capture,fromDateBtn,toDateBtn);
 
         setUpToolBar();
 
