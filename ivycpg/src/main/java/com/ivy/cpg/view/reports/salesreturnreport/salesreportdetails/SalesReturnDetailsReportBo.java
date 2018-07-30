@@ -1,7 +1,7 @@
-package com.ivy.cpg.view.reports.salesreport.salesreportdetails;
+package com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails;
 
 
-public class SalesReturnDeliveryReportBo {
+public class SalesReturnDetailsReportBo {
 
     private String Uid;
     private String productName;

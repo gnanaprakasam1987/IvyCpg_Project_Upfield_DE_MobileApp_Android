@@ -3993,10 +3993,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
-                if (isReturnDoneForUnOrderedProduct()) {
-                    Toast.makeText(StockAndOrder.this, getResources().getString(R.string.sales_return_allowed_only_for_ordered_products), Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 updatesalesReturnValue();
                 if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
                     if (!orderHelper.isPendingReplaceAmt()) {

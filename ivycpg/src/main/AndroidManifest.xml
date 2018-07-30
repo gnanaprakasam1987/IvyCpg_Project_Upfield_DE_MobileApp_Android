@@ -811,7 +811,7 @@
 
 
         <activity
-            android:name="com.ivy.cpg.view.reports.salesreport.salesreportdetails.SalesReturnDetailsActivity"
+            android:name="com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails.SalesReturnDetailsActivity"
             android:screenOrientation="portrait" />
 
 

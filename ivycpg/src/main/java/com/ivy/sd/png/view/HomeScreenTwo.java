@@ -1654,6 +1654,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     // Load Data for Special Filter
                     bmodel.configurationMasterHelper.downloadFilterList();
                     bmodel.productHelper.updateProductColor();
+                    bmodel.productHelper.loadRetailerWiseProductWiseP4StockAndOrderQty();
 
 
                     /** Load the screen **/
@@ -1940,7 +1941,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         salesReturnHelper.cloneReasonMaster(true);//
                         salesReturnHelper.clearSalesReturnTable(true);//
                         salesReturnHelper.removeSalesReturnTable(true);
-                        salesReturnHelper.loadSalesReturnData(getApplicationContext(), "ORDER");
                     }
                 }
                 if (!isClick) {
@@ -2622,7 +2622,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                             salesReturnHelper.getInstance(this).removeSalesReturnTable(false);
-                            salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(), "");
+                            salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(), "", "");
                         }
 
                         bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);
@@ -3704,6 +3704,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
+                bmodel.configurationMasterHelper.loadDeliveryUOMConfiguration();
                 OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
                 orderDeliveryHelper.downloadOrderDeliveryHeader(this);
 

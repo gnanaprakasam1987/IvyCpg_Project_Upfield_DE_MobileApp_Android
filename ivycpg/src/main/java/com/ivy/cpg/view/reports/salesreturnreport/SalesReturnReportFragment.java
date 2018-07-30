@@ -1,8 +1,7 @@
-package com.ivy.cpg.view.reports.salesreport;
+package com.ivy.cpg.view.reports.salesreturnreport;
 
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,16 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.salesreport.salesreportdetails.SalesReturnDetailsActivity;
-import com.ivy.lib.existing.DBUtil;
+import com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails.SalesReturnDetailsActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
 
 import java.util.List;
 
@@ -29,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class SalesReportFragment extends Fragment implements ReCyclerViewItemClickListener {
+public class SalesReturnReportFragment extends Fragment implements ReCyclerViewItemClickListener {
     private Unbinder unbinder;
 
     @BindView(R.id.recycler_salesReport)
@@ -64,7 +58,7 @@ public class SalesReportFragment extends Fragment implements ReCyclerViewItemCli
     }
 
     private void setTotalValue() {
-        int totalVal = new SalesReportHelper().getTotalReturnValueHeader(getActivity());
+        int totalVal = new SalesReturnReportHelper().getTotalReturnValueHeader(getActivity());
         text_totalOrderValue.setText(String.valueOf(totalVal));
         hideViews();
     }
@@ -80,12 +74,12 @@ public class SalesReportFragment extends Fragment implements ReCyclerViewItemCli
     }
 
     private void setUpAdapter() {
-        SalesReportHelper salesReportHelper = new SalesReportHelper();
-        list = salesReportHelper.getSalesReturnHeaderValue(getActivity());
+        SalesReturnReportHelper salesReturnReportHelper = new SalesReturnReportHelper();
+        list = salesReturnReportHelper.getSalesReturnHeaderValue(getActivity());
 
         if (list != null && list.size() > 0) {
             SalesReturnReportAdapter salesReturnReportAdapter =
-                    new SalesReturnReportAdapter(getActivity(), SalesReportFragment.this, list);
+                    new SalesReturnReportAdapter(getActivity(), SalesReturnReportFragment.this, list);
 
             recyclerView.setAdapter(salesReturnReportAdapter);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
