@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.ivy.cpg.view.login.LoginScreen.MyReceiver;
-import com.ivy.cpg.view.van.LoadManagementScreen;
+import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.view.AdhocPlanningFragment;
 import com.ivy.sd.png.view.NewOutletFragment.NewRetailerReceiver;
@@ -46,7 +46,7 @@ public class DownloadReceiver extends BroadcastReceiver {
                 context.sendBroadcast(broadCIntent);
                 break;
             case LOAD_MANAGEMENT:
-                broadCIntent.setAction(LoadManagementScreen.Loadmanagemntreceiver.RESPONSE);
+                broadCIntent.setAction(LoadManagementFragment.Loadmanagemntreceiver.RESPONSE);
                 broadCIntent.putExtras(bundle);
                 context.sendBroadcast(broadCIntent);
                 break;
