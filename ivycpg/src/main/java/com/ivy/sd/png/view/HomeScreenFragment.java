@@ -1957,6 +1957,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("SurveyType", 1);
                 bndl.putString("menucode", fragmentName);
+                bndl.putString("from", "HomeScreen");
                 fragment = new SurveyActivityNewFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -1967,6 +1968,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("SurveyType", 0);
                 bndl.putString("menucode", fragmentName);
+                bndl.putString("from", "HomeScreen");
                 fragment = new SurveyActivityNewFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -1977,6 +1979,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("SurveyType", 0);
                 bndl.putString("menucode", fragmentName);
+                bndl.putString("from", "HomeScreen");
                 fragment = new SurveyActivityNewFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,

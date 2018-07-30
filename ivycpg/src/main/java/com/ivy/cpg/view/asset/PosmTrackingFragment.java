@@ -943,8 +943,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 holder.audit.setImageResource(R.drawable.ic_audit_no);
 
             holder.assetNameTV.setText(holder.assetBO.getAssetName());
-            holder.reason1Spin.setSelection(assetTrackingHelper
-                    .getItemIndex(holder.assetBO.getReason1ID(), mPOSMReasonList));
 
             String availQty = holder.assetBO.getAvailQty() + "";
             holder.availQtyET.setText(availQty);
@@ -1001,6 +999,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
             }
 
+            holder.reason1Spin.setSelection(assetTrackingHelper
+                    .getItemIndex(holder.assetBO.getReason1ID(), mPOSMReasonList));
 
             if (!assetTrackingHelper.SHOW_POSM_TARGET) {
                 holder.targetTV.setVisibility(View.GONE);

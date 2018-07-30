@@ -147,6 +147,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     android.R.layout.select_dialog_singlechoice);
             for (StandardListBO temp : mPlanoGramHelper.getInStoreLocation())
                 locationAdapter.add(temp);
+
             if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
                 StandardListBO selectedId = locationAdapter
                         .getItem(mBModel.productHelper.getmSelectedGLobalLocationIndex());
@@ -160,6 +161,11 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     actionBar.setTitle(mPlanoGramHelper.mSelectedActivityName
                             + locationName);
                 }
+            } else if (mPlanoGramHelper.getInStoreLocation().size() == 1){
+                mSelectedLocationIndex = 0;
+                StandardListBO selectedId = locationAdapter.getItem(mSelectedLocationIndex);
+                if (selectedId != null)
+                    mSelectedLocationId = Integer.parseInt(selectedId.getListID());
             }
 
             // load data

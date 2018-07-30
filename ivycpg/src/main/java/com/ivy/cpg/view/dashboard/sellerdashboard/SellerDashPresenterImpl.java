@@ -593,7 +593,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE_INV)) {
                 double sales_ret_val = businessModel.getSalesReturnValue();
-                if (SDUtil.convertToDouble(dailrp.getTotLines()) == 0) {
+                if (SDUtil.convertToDouble(dailrp.getTotValues()) == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
                     dashBoardBO.setKpiAcheived(((sales_ret_val / SDUtil.convertToDouble(dailrp.getTotValues())) * 100) + "");

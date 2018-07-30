@@ -76,6 +76,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
@@ -156,12 +157,14 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         tabLayout.setOnTabSelectedListener(this);
-        Bundle extras = getActivity().getIntent().getExtras();
+        Bundle extras = getArguments();
+        if (extras == null)
+            extras = getActivity().getIntent().getExtras();
         if (extras != null) {
-            isNext = extras.getBoolean("IsMoveNextActivity", false);
+            isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
             mFrom = extras.getString("from") != null ? extras.getString("from") : "";
         }
-        isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
+
         initializeView(view);
         return view;
     }
@@ -1552,8 +1555,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     @SuppressLint("StringFormatInvalid")
     private void photoFunction(QuestionBO questBO, int i) {
-        if (!questBO.getSelectedAnswer().isEmpty()
-                || !questBO.getSelectedAnswerIDs().isEmpty()) {
+        if (!(questBO.getSelectedAnswer().isEmpty() && !questBO.getSelectedAnswer().contains(getResources().
+                getString(R.string.plain_select)))
+                || (!questBO.getSelectedAnswerIDs().isEmpty() && !questBO.getSelectedAnswerIDs().contains(-1))) {
             if (bmodel.isExternalStorageAvailable()) {
                 if (questBO.getQuestionID() != 0) {
                     if (questBO.getIsPhotoReq() == 1 && questBO.getImageNames().size() >= questBO.getMaxPhoto()) {
@@ -1635,7 +1639,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         getActivity(),
                         getResources()
                                 .getString(
-                                        R.string.please_answer_all_mandatory_questions),
+                                        R.string.answer_take_photo),
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -2186,10 +2190,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         }
 
         protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-           /* String temp = SDUtil.now(SDUtil.DATE_TIME_ID);
-            bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));*/
-            Log.e("Result", String.valueOf(result));
+
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
             alertDialog.dismiss();
             surveyHelperNew.remarkDone = "N";
@@ -2197,22 +2198,28 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                     "", getResources().getString(R.string.saved_successfully),
                     false, getActivity().getResources().getString(R.string.ok),
-                    null, isNext, new CommonDialog.PositiveClickListener() {
+                    null, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     questionsRv.invalidate();
+                    Bundle extras = getActivity().getIntent().getExtras();
+                    //Enabled global survey will re-direct to next screen or else screen remains same
+                    if (bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE || tabCount == 1) {
+                        if (extras != null && "HomeScreenTwo".equals(mFrom)) {
+                            Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                            intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                            intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                            startActivity(intent);
+                        } else if ("HomeScreen".equals(mFrom)) {
+                            Intent intent = new Intent(getActivity(), HomeScreenActivity.class);
+                            startActivity(intent);
+                        }
+                        getActivity().finish();
+                    }
                 }
             }, new CommonDialog.negativeOnClickListener() {
                 @Override
                 public void onNegativeButtonClick() {
-                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
-                    Bundle extras = getActivity().getIntent().getExtras();
-                    if (extras != null) {
-                        intent.putExtra("IsMoveNextActivity", extras.getBoolean("IsMoveNextActivity", false));
-                        intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
-                    }
-                    startActivity(intent);
-                    getActivity().finish();
                 }
             }).show();
         }
