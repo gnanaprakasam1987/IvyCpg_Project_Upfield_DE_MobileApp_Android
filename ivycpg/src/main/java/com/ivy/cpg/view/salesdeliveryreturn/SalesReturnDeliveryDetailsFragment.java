@@ -1,9 +1,10 @@
 package com.ivy.cpg.view.salesdeliveryreturn;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,15 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
+
 
 import java.util.List;
 import java.util.Vector;
@@ -53,7 +53,6 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
     private SalesReturnDeliveryDataBo salesReturnDeliveryDataBo = null;
 
-    private String uId = "";
 
 
     @Nullable
@@ -69,17 +68,55 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        setLabelMaserValue(view);
         if (getArguments() != null) {
             String data = getArguments().getString("DATA");
             salesReturnDeliveryDataBo =
                     new Gson().fromJson(data, SalesReturnDeliveryDataBo.class);
-            uId = salesReturnDeliveryDataBo.getUId();
+          //  uId = salesReturnDeliveryDataBo.getUId();
         }
         if (salesReturnDeliveryDataBo != null)
             getSalesReturnDeliveryDetails(salesReturnDeliveryDataBo.getUId());
     }
 
+
+    private void setLabelMaserValue(View view) {
+
+        BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
+
+
+        try {
+            if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.cqty).getTag()) != null)
+                ((TextView) view.findViewById(R.id.cqty))
+                        .setText(businessModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.cqty)
+                                        .getTag()));
+            if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.piececqty).getTag()) != null)
+                ((TextView) view.findViewById(R.id.piececqty))
+                        .setText(businessModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.piececqty)
+                                        .getTag()));
+
+            if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.actual_caseQty).getTag()) != null)
+                ((TextView) view.findViewById(R.id.actual_caseQty))
+                        .setText(businessModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.actual_caseQty)
+                                        .getTag()));
+
+            if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.actual_PcQty).getTag()) != null)
+                ((TextView) view.findViewById(R.id.actual_PcQty))
+                        .setText(businessModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.actual_PcQty)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+    }
 
     @Override
     public void onDestroy() {
@@ -115,30 +152,45 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
     private void setUpSalesReturnDeliveryDetailsAdapter(Vector<SalesReturnDeliveryDataModel>
                                                                 salesReturnDeliveryDataModels) {
-        SalesReturnDeliveryAdapter salesReturnDeliveryAdapter =
-                new SalesReturnDeliveryAdapter(getActivity().getApplicationContext(), null,
-                        salesReturnDeliveryDataModels, true);
 
-        recyclerView.setAdapter(salesReturnDeliveryAdapter);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                mLayoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        if (salesReturnDeliveryDataModels != null && salesReturnDeliveryDataModels.size() > 0) {
+            SalesReturnDeliveryAdapter salesReturnDeliveryAdapter =
+                    new SalesReturnDeliveryAdapter(getActivity().getApplicationContext(), null,
+                            salesReturnDeliveryDataModels, true);
+
+            recyclerView.setAdapter(salesReturnDeliveryAdapter);
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(mLayoutManager);
+            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                    mLayoutManager.getOrientation());
+            recyclerView.addItemDecoration(dividerItemDecoration);
+        } else {
+            Toast.makeText(getActivity(), "No data available", Toast.LENGTH_SHORT).show();
+        }
 
 
     }
 
     @OnClick(R.id.btn_save)
     public void setSaveSalesReturn() {
+        showConfirmAlert();
+    }
 
-        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList, salesReturnDeliveryDataBo);
-        //busnessmodel.saveModuleCompletion(getActivity().getIntent().getExtras().getString("menuCode"));
-        if (isSuccess) {
+    private void showConfirmAlert() {
 
-            Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
-            ((SalesReturnDeliveryActivity) getActivity()).onBackPressed();
-        }
+        new AlertDialog.Builder(getActivity())
+                .setTitle("IvyCpg")
+                .setMessage(getActivity().getString(R.string.do_u_want_to_save))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList, salesReturnDeliveryDataBo);
+                        if (isSuccess) {
+                            Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
+                            (getActivity()).onBackPressed();
+                        }
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
     }
 
     private EditText QUANTITY;
