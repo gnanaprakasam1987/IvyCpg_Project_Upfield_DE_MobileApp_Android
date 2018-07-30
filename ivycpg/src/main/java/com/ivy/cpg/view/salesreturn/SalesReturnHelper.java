@@ -72,9 +72,9 @@ public class SalesReturnHelper {
 
     private double totalValue = 0;
 
-    private String SignaturePath;
+    private String SignaturePath = "";
     private boolean isSignCaptured;
-    private String SignatureName;
+    private String SignatureName = "";
 
     private String invoiceId;
 
