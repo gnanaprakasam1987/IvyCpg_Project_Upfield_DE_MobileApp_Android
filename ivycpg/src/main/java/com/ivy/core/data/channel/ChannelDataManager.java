@@ -21,4 +21,8 @@ public interface ChannelDataManager {
     Single<String> fetchChannelName(String channelId);
 
     Single<String> getChannelHierarchyForDiscount(int channelId);
+
+    Single<String> getChannelHierarchy(int channelId);
+
+    Single<String> getLocationHierarchy();
 }
