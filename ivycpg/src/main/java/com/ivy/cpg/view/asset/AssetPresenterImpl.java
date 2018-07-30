@@ -158,7 +158,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         ArrayList<AssetTrackingBO> mAssetTrackingList = standardListBO.getAssetTrackingList();
         ArrayList<AssetTrackingBO> mAllAssetTrackingList = standardListBO.getAllAssetTrackingList();
 
-        if (mAssetTrackingList != null
+        if (mAssetTrackingList != null && mAllAssetTrackingList != null
                 && mAllAssetTrackingList.size() > 0) {
 
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
@@ -176,9 +176,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                     assetBO.setAvailQty(1);
                     mAssetList.add(assetBO);
                 } else {
-                    if (mAllAssetTrackingList != null) {
                         mAllAssetTrackingList.remove(assetBO);
-                    }
                 }
             }
         }
