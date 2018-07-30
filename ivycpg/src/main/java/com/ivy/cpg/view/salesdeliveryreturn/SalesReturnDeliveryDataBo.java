@@ -14,8 +14,11 @@ public class SalesReturnDeliveryDataBo {
     private String invoiceId;
 
     private String signaturePath = "";
+
     private String signatureName = "";
+
     private String refModuleTId = "";
+
     private String refModule = "";
 
 

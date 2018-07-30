@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -68,10 +69,10 @@ public class SalesReturnDeliveryFragment extends IvyBaseFragment implements Recy
         unbinder.unbind();
     }
 
-    public Observer<Vector<SalesReturnDeliveryDataModel>> getObserver() {
-        return new DisposableObserver<Vector<SalesReturnDeliveryDataModel>>() {
+    public Observer<Vector<SalesReturnDeliveryDataBo>> getObserver() {
+        return new DisposableObserver<Vector<SalesReturnDeliveryDataBo>>() {
             @Override
-            public void onNext(Vector<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModels) {
+            public void onNext(Vector<SalesReturnDeliveryDataBo> salesReturnDeliveryDataModels) {
                 setUpSalesReturnDeliveryAdapter(salesReturnDeliveryDataModels);
 
             }
@@ -86,9 +87,9 @@ public class SalesReturnDeliveryFragment extends IvyBaseFragment implements Recy
         };
     }
 
-    private Vector<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModelsList;
+    private Vector<SalesReturnDeliveryDataBo> salesReturnDeliveryDataModelsList;
 
-    private void setUpSalesReturnDeliveryAdapter(Vector<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModels) {
+    private void setUpSalesReturnDeliveryAdapter(Vector<SalesReturnDeliveryDataBo> salesReturnDeliveryDataModels) {
         this.salesReturnDeliveryDataModelsList = salesReturnDeliveryDataModels;
 
         SalesReturnDeliveryAdapter salesReturnDeliveryAdapter =
@@ -103,9 +104,11 @@ public class SalesReturnDeliveryFragment extends IvyBaseFragment implements Recy
     public void onItemClickListener(View view, int adapterPosition) {
 
         Bundle bundle = new Bundle();
-        bundle.putString("UID", salesReturnDeliveryDataModelsList.get(adapterPosition).getUId());
-        bundle.putInt("LPC", salesReturnDeliveryDataModelsList.get(adapterPosition).getLpc());
-        bundle.putString("RETURN", salesReturnDeliveryDataModelsList.get(adapterPosition).getReturnValue());
+        String data = new Gson().toJson(salesReturnDeliveryDataModelsList.get(adapterPosition));
+        bundle.putString("DATA", data);
+
+        //bundle.putInt("LPC", salesReturnDeliveryDataModelsList.get(adapterPosition).getLpc());
+        //bundle.putString("RETURN", salesReturnDeliveryDataModelsList.get(adapterPosition).getReturnValue());
         SalesReturnDeliveryDetailsFragment salesReturnDeliveryFragment = new SalesReturnDeliveryDetailsFragment();
         salesReturnDeliveryFragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

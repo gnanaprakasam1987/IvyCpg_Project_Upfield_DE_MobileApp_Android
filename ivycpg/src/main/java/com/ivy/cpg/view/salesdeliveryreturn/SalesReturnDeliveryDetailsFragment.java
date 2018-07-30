@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -49,7 +51,10 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     @BindView(R.id.SalesReturn_Details)
     RecyclerView recyclerView;
 
+    private SalesReturnDeliveryDataBo salesReturnDeliveryDataBo = null;
+
     private String uId = "";
+
 
     @Nullable
     @Override
@@ -64,12 +69,15 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         if (getArguments() != null) {
-            uId = getArguments().getString("UID");
-
-
+            String data = getArguments().getString("DATA");
+            salesReturnDeliveryDataBo =
+                    new Gson().fromJson(data, SalesReturnDeliveryDataBo.class);
+            uId = salesReturnDeliveryDataBo.getUId();
         }
-        getSalesReturnDeliveryDetails(uId);
+        if (salesReturnDeliveryDataBo != null)
+            getSalesReturnDeliveryDetails(salesReturnDeliveryDataBo.getUId());
     }
 
 
@@ -81,7 +89,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
     private void getSalesReturnDeliveryDetails(String uId) {
         compositeDisposable = new CompositeDisposable();
-        compositeDisposable.add((Disposable) SalesReturnDeliveryHelper.getInstance().getSaleReturnDeliveryDetails(getActivity(), uId)
+        compositeDisposable.add((Disposable) SalesReturnDeliveryHelper.getInstance().downloadSaleReturnDeliveryDetails(getActivity(), uId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getObserver()));
@@ -110,15 +118,21 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
         SalesReturnDeliveryAdapter salesReturnDeliveryAdapter =
                 new SalesReturnDeliveryAdapter(getActivity().getApplicationContext(), null,
                         salesReturnDeliveryDataModels, true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         recyclerView.setAdapter(salesReturnDeliveryAdapter);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                mLayoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
 
     }
 
     @OnClick(R.id.btn_save)
     public void setSaveSalesReturn() {
 
-        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList,uId);
+        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList, salesReturnDeliveryDataBo);
         //busnessmodel.saveModuleCompletion(getActivity().getIntent().getExtras().getString("menuCode"));
         if (isSuccess) {
 

@@ -3,10 +3,12 @@ package com.ivy.cpg.view.salesdeliveryreturn;
 
 public class SalesReturnDeliveryDataModel {
 
+    private String uId;
+
     public SalesReturnDeliveryDataModel() {
     }
 
-    private String uId;
+
 
     private String date;
 
@@ -120,13 +122,7 @@ public class SalesReturnDeliveryDataModel {
         this.inVoiceNumber = inVoiceNumber;
     }
 
-    public String getuId() {
-        return uId;
-    }
 
-    public void setuId(String uId) {
-        this.uId = uId;
-    }
 
     public int getdUomQty() {
         return dUomQty;

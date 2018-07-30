@@ -36,35 +36,47 @@ public class SalesReturnDeliveryHelper {
         return instance;
     }
 
-    public Observable<Vector<SalesReturnDeliveryDataModel>> downloadSaleReturnDelivery(final Context context) {
+    public Observable<Vector<SalesReturnDeliveryDataBo>> downloadSaleReturnDelivery(final Context context) {
 
-        return Observable.create(new ObservableOnSubscribe<Vector<SalesReturnDeliveryDataModel>>() {
+        return Observable.create(new ObservableOnSubscribe<Vector<SalesReturnDeliveryDataBo>>() {
             @Override
-            public void subscribe(final ObservableEmitter<Vector<SalesReturnDeliveryDataModel>> subscriber) throws Exception {
+            public void subscribe(final ObservableEmitter<Vector<SalesReturnDeliveryDataBo>> subscriber) throws Exception {
 
                 try {
                     BusinessModel businessModel = (BusinessModel) context.getApplicationContext();
-                    Vector<SalesReturnDeliveryDataModel> returnDeliveryDataModelVector = new Vector<>();
+                    Vector<SalesReturnDeliveryDataBo> returnDeliveryDataModelVector = new Vector<>();
                     DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+
+                    // +businessModel.getRetailerMasterBO().getRetailerID()
                     dbUtil.openDataBase();
-                    Cursor cursor = dbUtil.selectSQL("Select * from SalesReturnHeader where retailerId = " + businessModel.getRetailerMasterBO().getRetailerID()
-                            + " AND  upload='X'");
+                    Cursor cursor = dbUtil.selectSQL("Select " +
+                            "uid,date,ReturnValue,Lpc,invoiceid,SignaturePath,ImgName,RefModule,RefModuleTId " +
+                            "from SalesReturnHeader where retailerId ='" + businessModel.getRetailerMasterBO().getRetailerID() + "' " +
+                            "AND upload='X' " +
+                            "AND uid NOT IN (select ifnull(RefUID,0) from salesReturnHeader " +
+                            "where upload='Y') ");
 
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
-                            SalesReturnDeliveryDataModel salesReturnDeliveryDataModel = new SalesReturnDeliveryDataModel();
-                            salesReturnDeliveryDataModel.setUId(cursor.getString(0));
-                            salesReturnDeliveryDataModel.setDate(cursor.getString(1));
-                            salesReturnDeliveryDataModel.setReturnValue(cursor.getString(6));
-                            salesReturnDeliveryDataModel.setLpc(cursor.getInt(7));
-                            salesReturnDeliveryDataModel.setInvoiceId(cursor.getString(18));
-                            returnDeliveryDataModelVector.add(salesReturnDeliveryDataModel);
+                            SalesReturnDeliveryDataBo salesReturnDeliveryDataModel = new SalesReturnDeliveryDataBo();
+                            salesReturnDeliveryDataModel.setUId(cursor.getString(cursor.getColumnIndex("uid")));
+                            salesReturnDeliveryDataModel.setDate(cursor.getString(cursor.getColumnIndex("date")));
+                            salesReturnDeliveryDataModel.setReturnValue(cursor.getString(cursor.getColumnIndex("ReturnValue")));
+                            salesReturnDeliveryDataModel.setLpc(cursor.getInt(cursor.getColumnIndex("Lpc")));
+                            salesReturnDeliveryDataModel.setInvoiceId(cursor.getString(cursor.getColumnIndex("invoiceid")));
+                            salesReturnDeliveryDataModel.setSignaturePath(cursor.getString(cursor.getColumnIndex("SignaturePath")));
+                            salesReturnDeliveryDataModel.setSignatureName(cursor.getString(cursor.getColumnIndex("ImgName")));
+                            salesReturnDeliveryDataModel.setRefModule(cursor.getString(cursor.getColumnIndex("RefModule")));
+                            salesReturnDeliveryDataModel.setRefModuleTId(cursor.getString(cursor.getColumnIndex("RefModuleTId")));
 
-                            setSignaturePath(String.valueOf(cursor.getString(22)) != null ? String.valueOf(cursor.getString(22)) : "");
-                            setSignatureName(String.valueOf(cursor.getString(21)) != null ? String.valueOf(cursor.getString(21)) : "");
-                            setRefModule(String.valueOf(cursor.getString(23)) != null ? String.valueOf(cursor.getString(23)) : "");
-                            setRefModuleTId(String.valueOf(cursor.getString(24)));
-                            setReturnValue(Double.valueOf(cursor.getString(6)));
+
+                            // setSignaturePath(String.valueOf(cursor.getString(22)) != null ? String.valueOf(cursor.getString(22)) : "");
+                            //setSignatureName(String.valueOf(cursor.getString(21)) != null ? String.valueOf(cursor.getString(21)) : "");
+                            // setRefModule(String.valueOf(cursor.getString(23)) != null ? String.valueOf(cursor.getString(23)) : "");
+                            //setRefModuleTId(String.valueOf(cursor.getString(24)));
+                            // setReturnValue(Double.valueOf(cursor.getString(6)));
+
+                            returnDeliveryDataModelVector.add(salesReturnDeliveryDataModel);
                         }
 
                         subscriber.onNext(returnDeliveryDataModelVector);
@@ -80,7 +92,7 @@ public class SalesReturnDeliveryHelper {
     }
 
 
-    public Observable<Vector<SalesReturnDeliveryDataModel>> getSaleReturnDeliveryDetails(final Context context, final String uId) {
+    public Observable<Vector<SalesReturnDeliveryDataModel>> downloadSaleReturnDeliveryDetails(final Context context, final String uId) {
 
         return Observable.create(new ObservableOnSubscribe<Vector<SalesReturnDeliveryDataModel>>() {
             @Override
@@ -93,25 +105,27 @@ public class SalesReturnDeliveryHelper {
                     dbUtil.openDataBase();
 
                     Cursor cursor = dbUtil
-                            .selectSQL("SELECT distinct A.ListName as reasonDesc,PM.PName as ProductName,PM.PID as ProductID,srd .* from SalesReturnDetails srd"
-                                    + " LEFT JOIN ProductMaster PM ON srd.productID=PM.PID"
-                                    + " inner join StandardListMaster A INNER JOIN StandardListMaster B ON"
-                                    + " A.ParentId = B.ListId AND"
-                                    + " ( B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_NONSALABLE_REASON_TYPE
-                                    + "' OR B.ListCode = '" + StandardListMasterConstants.SALES_RETURN_SALABLE_REASON_TYPE + "')"
-                                    + " AND A.listId = srd.condition WHERE A.ListType = 'REASON'"
-                                    + " AND srd.RetailerID=" + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID())
-                                    + " AND upload ='X'");
-
-
-                    Cursor cursor1 = dbUtil.selectSQL("SELECT Pqty,Cqty from SalesReturnDetails where RetailerID=" + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID())
-                            + " AND upload ='N'");
+                            .selectSQL("SELECT DISTINCT SLM.ListName as reasonDesc,"
+                                    + "PM.PName as ProductName,"
+                                    + "IFNULL (SRD1.PQty,0) as ActPcsQty,"
+                                    + "IFNULL (SRD1.CQty,0)  as ActCaseQty,"
+                                    + "srd .* FROM SalesReturnDetails SRD"
+                                    + " LEFT JOIN ProductMaster PM ON SRD.productID=PM.PID"
+                                    + " INNER JOIN StandardListMaster SLM"
+                                    + " ON SLM.listId = srd.condition"
+                                    + " LEFT JOIN SAlesReturnDetails SRD1 ON SRD1.ProductId=SRD.ProductId " +
+                                    "and SRD1.condition=SRD.condition and SRD1.upload='N' " +
+                                    "and SRD1.RefUID = '" + uId + "'"
+                                    + " WHERE"
+                                    + " SRD.RetailerID='" + businessModel.getRetailerMasterBO().getRetailerID() + "'"
+                                    + " AND SRD.uid='" + uId + "'"
+                                    + " AND SRD.upload ='X'");
 
 
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
                             SalesReturnDeliveryDataModel salesReturnDeliveryDataModel = new SalesReturnDeliveryDataModel();
-                            salesReturnDeliveryDataModel.setUId(cursor.getString(0));
+                            salesReturnDeliveryDataModel.setUId(cursor.getString(cursor.getColumnIndex("uid")));
                             salesReturnDeliveryDataModel.setProductName(cursor.getString(cursor.getColumnIndex("ProductName")));
                             salesReturnDeliveryDataModel.setProductId(cursor.getString(cursor.getColumnIndex("ProductID")));
 
@@ -120,42 +134,39 @@ public class SalesReturnDeliveryHelper {
                             salesReturnDeliveryDataModel.setReturnPieceQuantity(cursor.getInt(cursor.getColumnIndex("Pqty")));
 
                             salesReturnDeliveryDataModel.setReason(cursor.getString(cursor.getColumnIndex("reasonDesc")));
-                            salesReturnDeliveryDataModel.setReasonCategory(cursor.getString(7));
-                            salesReturnDeliveryDataModel.setReasonID(cursor.getString(7));
-                            salesReturnDeliveryDataModel.setCaseSize(cursor.getInt(3));
+                            //salesReturnDeliveryDataModel.setReasonCategory(cursor.getString(7));
+                            salesReturnDeliveryDataModel.setReasonID(cursor.getString(cursor.getColumnIndex("Condition")));
+                            salesReturnDeliveryDataModel.setCaseSize(cursor.getInt(cursor.getColumnIndex("Cqty")));
 
-                            salesReturnDeliveryDataModel.setOldMrp(cursor.getDouble(11));
-                            salesReturnDeliveryDataModel.setMfgDate(cursor.getString(12));
+                            salesReturnDeliveryDataModel.setOldMrp(cursor.getDouble(cursor.getColumnIndex("oldmrp")));
+                            salesReturnDeliveryDataModel.setMfgDate(cursor.getString(cursor.getColumnIndex("mfgdate")));
 
-                            salesReturnDeliveryDataModel.setExpDate(cursor.getString(13));
-                            salesReturnDeliveryDataModel.setOuterQty(cursor.getInt(14));
+                            salesReturnDeliveryDataModel.setExpDate(cursor.getString(cursor.getColumnIndex("expdate")));
+                            salesReturnDeliveryDataModel.setOuterQty(cursor.getInt(cursor.getColumnIndex("outerQty")));
 
-                            salesReturnDeliveryDataModel.setdOUomQty(cursor.getInt(15));
-                            salesReturnDeliveryDataModel.setdOUomId(cursor.getInt(16));
+                            salesReturnDeliveryDataModel.setdOUomQty(cursor.getInt(cursor.getColumnIndex("dOuomQty")));
+                            salesReturnDeliveryDataModel.setdOUomId(cursor.getInt(cursor.getColumnIndex("dOuomid")));
 
-                            salesReturnDeliveryDataModel.setdUomId(cursor.getInt(17));
-                            salesReturnDeliveryDataModel.setInVoiceNumber(cursor.getString(18));
+                            salesReturnDeliveryDataModel.setdUomId(cursor.getInt(cursor.getColumnIndex("duomid")));
+                            salesReturnDeliveryDataModel.setInVoiceNumber(cursor.getString(cursor.getColumnIndex("invoiceno")));
 
-                            salesReturnDeliveryDataModel.setSrpedit(cursor.getFloat(19));
-                            salesReturnDeliveryDataModel.setTotalQuantity(cursor.getInt(20));
+                            salesReturnDeliveryDataModel.setSrpedit(cursor.getFloat(cursor.getColumnIndex("srpedited")));
+                            salesReturnDeliveryDataModel.setTotalQuantity(cursor.getInt(cursor.getColumnIndex("totalQty")));
 
-                            salesReturnDeliveryDataModel.setTotalAmount(cursor.getString(21));
-                            salesReturnDeliveryDataModel.setRetailerId(cursor.getString(22));
+                            salesReturnDeliveryDataModel.setTotalAmount(cursor.getString(cursor.getColumnIndex("totalamount")));
+                            salesReturnDeliveryDataModel.setRetailerId(cursor.getString(cursor.getColumnIndex("RetailerID")));
 
-                            salesReturnDeliveryDataModel.setReasonType(cursor.getInt(23));
+                            salesReturnDeliveryDataModel.setReasonType(cursor.getInt(cursor.getColumnIndex("reason_type")));
 
-                            salesReturnDeliveryDataModel.setLotNumber(cursor.getInt(24));
-                            salesReturnDeliveryDataModel.setPieceUomId(cursor.getInt(25));
+                            salesReturnDeliveryDataModel.setLotNumber(cursor.getInt(cursor.getColumnIndex("LotNumber")));
+                            salesReturnDeliveryDataModel.setPieceUomId(cursor.getInt(cursor.getColumnIndex("piece_uomid")));
 
-                            salesReturnDeliveryDataModel.setStatus(cursor.getInt(26));
-                            salesReturnDeliveryDataModel.setHnsCode(((cursor.getString(27)) != null) ? cursor.getString(27) : "");
+                            salesReturnDeliveryDataModel.setStatus(cursor.getInt(cursor.getColumnIndex("Status")));
+                            salesReturnDeliveryDataModel.setHnsCode(cursor.getString(cursor.getColumnIndex("HsnCode")));
 
-                            if (cursor1 != null) {
-                                while (cursor1.moveToNext()) {
-                                    salesReturnDeliveryDataModel.setActualPieceQuantity(cursor1.getInt(0));
-                                    salesReturnDeliveryDataModel.setActualCaseQuantity(cursor1.getInt(1));
-                                }
-                            }
+                            salesReturnDeliveryDataModel.setActualCaseQuantity(cursor.getInt(cursor.getColumnIndex("ActCaseQty")));
+                            salesReturnDeliveryDataModel.setActualPieceQuantity(cursor.getInt(cursor.getColumnIndex("ActPcsQty")));
+
 
 
                             returnDeliveryDataModelVector.add(salesReturnDeliveryDataModel);
@@ -169,11 +180,12 @@ public class SalesReturnDeliveryHelper {
                     subscriber.onError(exception);
                     subscriber.onComplete();
                 }
+
             }
         });
     }
 
-    public boolean saveSalesReturnDelivery(Context mContext, List<SalesReturnDeliveryDataModel> list,String uidRef) {
+    public boolean saveSalesReturnDelivery(Context mContext, List<SalesReturnDeliveryDataModel> list, SalesReturnDeliveryDataBo salesReturnDeliveryDataBo) {
         try {
 
 
@@ -190,10 +202,10 @@ public class SalesReturnDeliveryHelper {
                 indicativeFlag = 1;
 
 
-            String sb = "select uid from SalesReturnHeader where uid=" + AppUtils.QT(getUid()) +
+            String sb = "select uid from SalesReturnHeader where RefUID=" + AppUtils.QT(salesReturnDeliveryDataBo.getUId()) +
                     " AND RetailerID=" +
                     AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
-                    " AND upload='N' and distributorid=" + businessModel.retailerMasterBO.getDistributorId();
+                    " AND upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 if (c.moveToFirst()) {
@@ -206,7 +218,7 @@ public class SalesReturnDeliveryHelper {
                 c.close();
             }
 
-            setUid("SR"
+           String uid =  ("SR"
                     + businessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
 
@@ -216,7 +228,7 @@ public class SalesReturnDeliveryHelper {
                 String seqNo;
                 businessModel.insertSeqNumber("SR");
                 seqNo = businessModel.downloadSequenceNo("SR");
-                setUid(seqNo);
+                uid = seqNo;
             }
 
             isData = false;
@@ -232,12 +244,14 @@ public class SalesReturnDeliveryHelper {
                         + (salesReturnDeliveryDataModel.getOuterQty() * salesReturnDeliveryDataModel
                         .getOuterSize());
 
-                columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty,dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount,RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode";
+                columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty," +
+                        "dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount," +
+                        "RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode,RefUID";
                 if (salesReturnDeliveryDataModel.getActualPieceQuantity() > 0 ||
                         salesReturnDeliveryDataModel.getActualCaseQuantity() > 0) {
 
 
-                    values = AppUtils.QT(getUid())
+                    values = AppUtils.QT(uid)
                             + ","
                             + AppUtils.QT(salesReturnDeliveryDataModel.getProductId())
                             + ","
@@ -245,8 +259,7 @@ public class SalesReturnDeliveryHelper {
                             + ","
                             + salesReturnDeliveryDataModel.getActualCaseQuantity()
                             + ","
-                            + DatabaseUtils.sqlEscapeString(salesReturnDeliveryDataModel
-                            .getReasonID())
+                            + salesReturnDeliveryDataModel.getReasonID()
                             + ","
                             + salesReturnDeliveryDataModel.getCaseSize()
                             + ","
@@ -279,8 +292,12 @@ public class SalesReturnDeliveryHelper {
                             + ","
                             + AppUtils.QT(businessModel.retailerMasterBO
                             .getRetailerID()) + ","
-                            + salesReturnDeliveryDataModel.getReasonCategory() + "," + AppUtils.QT(salesReturnDeliveryDataModel.getLotNumber() + "") + "," + salesReturnDeliveryDataModel.getPieceUomId()
-                            + "," + AppUtils.QT(salesReturnDeliveryDataModel.getStatus() + "") + "," + AppUtils.QT(salesReturnDeliveryDataModel.getHnsCode());
+                            + salesReturnDeliveryDataModel.getReasonCategory() + ","
+                            + AppUtils.QT(salesReturnDeliveryDataModel.getLotNumber() + "")
+                            + "," + salesReturnDeliveryDataModel.getPieceUomId()
+                            + "," + AppUtils.QT(salesReturnDeliveryDataModel.getStatus() + "")
+                            + "," + AppUtils.QT(salesReturnDeliveryDataModel.getHnsCode())
+                            + "," + AppUtils.QT(salesReturnDeliveryDataModel.getUId());
 
 
                     db.insertSQL(
@@ -292,32 +309,26 @@ public class SalesReturnDeliveryHelper {
 
             if (isData) {
                 // Preapre and save salesreturn header.
-                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule";
+                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID";
 
-                if (businessModel.configurationMasterHelper.IS_INVOICE_SR)
-                    columns = columns + ",invoiceid";
-
-                values = AppUtils.QT(getUid()) + ","
+                values = AppUtils.QT(uid) + ","
                         + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                         + AppUtils.QT(businessModel.retailerMasterBO.getRetailerID()) + ","
                         + businessModel.retailerMasterBO.getBeatID() + ","
                         + businessModel.userMasterHelper.getUserMasterBO().getUserid()
-                        + "," + AppUtils.QT(String.valueOf(getReturnValue())) + "," + getLpc() + ","
+                        + "," + AppUtils.QT(salesReturnDeliveryDataBo.getReturnValue()) + "," + 0 + ","
                         + AppUtils.QT(businessModel.retailerMasterBO.getRetailerCode()) + ","
                         + AppUtils.QT(businessModel.getSaleReturnNote()) + ","
                         + AppUtils.QT(businessModel.mSelectedRetailerLatitude + "") + ","
                         + AppUtils.QT(businessModel.mSelectedRetailerLongitude + "") + ","
                         + businessModel.retailerMasterBO.getDistributorId() + ","
                         + businessModel.retailerMasterBO.getDistParentId() + ","
-                        + AppUtils.QT(getSignaturePath() != null ? getSignaturePath() : "") + ","
-                        + AppUtils.QT(getSignatureName()) + ","
+                        + AppUtils.QT(salesReturnDeliveryDataBo.getSignaturePath()) + ","
+                        + AppUtils.QT(salesReturnDeliveryDataBo.getSignatureName()) + ","
                         + indicativeFlag + ","
-                        + AppUtils.QT(getRefModuleTId()) + ","
-                        + AppUtils.QT(getRefModule());
-
-
-                if (businessModel.configurationMasterHelper.IS_INVOICE_SR)
-                    values = values + "," + AppUtils.QT(getInvoiceNo());
+                        + AppUtils.QT(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
+                        + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule())+"," +
+                        AppUtils.QT(salesReturnDeliveryDataBo.getUId());
 
                 db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
@@ -331,76 +342,9 @@ public class SalesReturnDeliveryHelper {
 
     }
 
-    private String uid;
-    private String InvoiceNo;
-    private double returnValue;
-    private int lpc;
-    private String signaturePath = "";
-    private String signatureName = "";
-    private String refModuleTId = "";
-    private String refModule = "";
 
-    public String getSignaturePath() {
-        return signaturePath;
-    }
 
-    public void setSignaturePath(String signaturePath) {
-        this.signaturePath = signaturePath;
-    }
 
-    public String getSignatureName() {
-        return signatureName;
-    }
 
-    public void setSignatureName(String signatureName) {
-        this.signatureName = signatureName;
-    }
 
-    public String getRefModuleTId() {
-        return refModuleTId;
-    }
-
-    public void setRefModuleTId(String refModuleTId) {
-        this.refModuleTId = refModuleTId;
-    }
-
-    public String getRefModule() {
-        return refModule;
-    }
-
-    public void setRefModule(String refModule) {
-        this.refModule = refModule;
-    }
-
-    public int getLpc() {
-        return lpc;
-    }
-
-    public void setLpc(int lpc) {
-        this.lpc = lpc;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setInvoiceNo(String invoiceNo) {
-        InvoiceNo = invoiceNo;
-    }
-
-    public String getInvoiceNo() {
-        return InvoiceNo;
-    }
-
-    public void setReturnValue(double returnValue) {
-        this.returnValue = returnValue;
-    }
-
-    public double getReturnValue() {
-        return returnValue;
-    }
 }
