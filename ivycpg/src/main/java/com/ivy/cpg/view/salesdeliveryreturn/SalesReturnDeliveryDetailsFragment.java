@@ -49,6 +49,8 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     @BindView(R.id.SalesReturn_Details)
     RecyclerView recyclerView;
 
+    private String uId = "";
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,7 +63,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String uId = "";
+
         if (getArguments() != null) {
             uId = getArguments().getString("UID");
 
@@ -116,7 +118,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     @OnClick(R.id.btn_save)
     public void setSaveSalesReturn() {
 
-        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList);
+        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList,uId);
         //busnessmodel.saveModuleCompletion(getActivity().getIntent().getExtras().getString("menuCode"));
         if (isSuccess) {
 

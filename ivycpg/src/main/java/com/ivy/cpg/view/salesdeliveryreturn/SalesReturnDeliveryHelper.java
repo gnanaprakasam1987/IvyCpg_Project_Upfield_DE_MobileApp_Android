@@ -173,7 +173,7 @@ public class SalesReturnDeliveryHelper {
         });
     }
 
-    public boolean saveSalesReturnDelivery(Context mContext, List<SalesReturnDeliveryDataModel> list) {
+    public boolean saveSalesReturnDelivery(Context mContext, List<SalesReturnDeliveryDataModel> list,String uidRef) {
         try {
 
 
@@ -312,7 +312,7 @@ public class SalesReturnDeliveryHelper {
                         + AppUtils.QT(getSignaturePath() != null ? getSignaturePath() : "") + ","
                         + AppUtils.QT(getSignatureName()) + ","
                         + indicativeFlag + ","
-                        + AppUtils.QT(getRefModuleTId()) + ","
+                        + AppUtils.QT(uidRef) + ","
                         + AppUtils.QT(getRefModule());
 
 
