@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports.salesreport.salesreportdetails;
+package com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.reports.salesreport.ReCyclerViewItemClickListener;
-import com.ivy.cpg.view.reports.salesreport.SalesReturnReportBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 
@@ -17,7 +15,7 @@ import java.util.List;
 
 
 public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesReturnReportDetailsAdapter.SalesReturnReportViewHolder> {
-    List<SalesReturnDeliveryReportBo> salesReturnReportBosList;
+    List<SalesReturnDetailsReportBo> salesReturnReportBosList;
     private Context mContext;
 
     /**
@@ -26,7 +24,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
      * @param salesReturnReportBosList : salesReturnReportBosList reference
      */
 
-    public SalesReturnReportDetailsAdapter(Context context,List<SalesReturnDeliveryReportBo> salesReturnReportBosList) {
+    public SalesReturnReportDetailsAdapter(Context context,List<SalesReturnDetailsReportBo> salesReturnReportBosList) {
         this.salesReturnReportBosList = salesReturnReportBosList;
         this.mContext = context;
     }

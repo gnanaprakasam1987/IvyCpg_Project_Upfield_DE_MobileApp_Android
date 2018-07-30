@@ -441,10 +441,8 @@ public class FilterFiveFragment<E> extends Fragment {
                                 }
 
                             }
-                            if (filterList != null) {
                                 productsAdapter = new FilterProductsAdapter(filterList);
                                 productSelectionListview.setAdapter(productsAdapter);
-                            }
 
                         } else {
                             Vector<LevelBO> filterList = updateFilterSelection(position);

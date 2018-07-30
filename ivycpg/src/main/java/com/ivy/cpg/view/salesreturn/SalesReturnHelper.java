@@ -852,7 +852,7 @@ public class SalesReturnHelper {
      * Load sales return transaction data into object.
      * If replacement is enbaled the replacement will also get loaded into memory.
      */
-    public void loadSalesReturnData(Context mContext, String module) {
+    public void loadSalesReturnData(Context mContext, String module, String orderId) {
         DBUtil db = null;
         try {
             String uId = "";
@@ -867,6 +867,8 @@ public class SalesReturnHelper {
             String sb = "select SI.productid,SI.batchid,SI.Condition,SI.Pqty,SI.Cqty,SI.oldmrp,SI.mfgdate,SI.expdate,SI.outerqty,Si.invoiceno," +
                     "SI.srpedited,SI.reason_type,SI.LotNumber,SI.status,SH.uid from SalesReturnDetails SI inner join SalesReturnHeader SH ON SH.uid=SI.uid " +
                     "where " + cond + " SH.Retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and SH.upload='N' and SH.RefModule = '" + module + "' and SH.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId();
+            if (!"".equals(orderId))
+                sb = sb + " and SH.RefModuleTId = " + bmodel.QT(orderId);
             Cursor c = db.selectSQL(sb);
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
