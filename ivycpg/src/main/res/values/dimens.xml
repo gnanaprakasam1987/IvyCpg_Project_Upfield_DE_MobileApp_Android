@@ -817,4 +817,10 @@
     <dimen name="score_card_height">120dp</dimen>
     <dimen name="qn_text_margin_left">5dp</dimen>
     <dimen name="web_view_width">180dp</dimen>
+
+
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="padding_normal">8dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
+    <dimen name="padding_extraLarge">24dp</dimen>
 </resources>

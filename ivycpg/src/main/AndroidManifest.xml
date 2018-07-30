@@ -795,12 +795,14 @@
         <activity
             android:name="com.ivy.cpg.view.asset.PosmGallery"
             android:screenOrientation="portrait" />
-        android:screenOrientation="portrait"/>
-
 
         <activity
             android:name="com.ivy.ui.activation.view.ActivationActivity"
             android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.cpg.view.salesdeliveryreturn.SalesReturnDeliveryActivity"
             android:screenOrientation="portrait" />
 
         <activity
