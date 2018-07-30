@@ -312,7 +312,7 @@ public class SalesReturnDeliveryHelper {
                         + AppUtils.QT(getSignaturePath() != null ? getSignaturePath() : "") + ","
                         + AppUtils.QT(getSignatureName()) + ","
                         + indicativeFlag + ","
-                        + AppUtils.QT(uidRef) + ","
+                        + AppUtils.QT(getRefModuleTId()) + ","
                         + AppUtils.QT(getRefModule());
 
 

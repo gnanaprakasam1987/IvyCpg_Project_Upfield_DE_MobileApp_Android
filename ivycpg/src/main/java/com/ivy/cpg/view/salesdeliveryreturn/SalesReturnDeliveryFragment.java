@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 
 import java.util.Vector;
 
@@ -27,7 +28,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class SalesReturnDeliveryFragment extends Fragment implements RecyclerViewItemClickListener {
+public class SalesReturnDeliveryFragment extends IvyBaseFragment implements RecyclerViewItemClickListener {
 
     private Unbinder unbinder;
 
