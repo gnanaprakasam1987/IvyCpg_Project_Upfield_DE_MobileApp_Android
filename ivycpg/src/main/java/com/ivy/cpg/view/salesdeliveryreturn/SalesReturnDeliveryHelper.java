@@ -36,7 +36,7 @@ public class SalesReturnDeliveryHelper {
         return instance;
     }
 
-    public Observable<Vector<SalesReturnDeliveryDataModel>> getSaleReturnDelivery(final Context context) {
+    public Observable<Vector<SalesReturnDeliveryDataModel>> downloadSaleReturnDelivery(final Context context) {
 
         return Observable.create(new ObservableOnSubscribe<Vector<SalesReturnDeliveryDataModel>>() {
             @Override

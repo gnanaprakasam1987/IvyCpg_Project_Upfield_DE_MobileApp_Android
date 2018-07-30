@@ -54,7 +54,7 @@ public class SalesReturnDeliveryFragment extends IvyBaseFragment implements Recy
 
     private void getSalesReturnDelivery() {
         compositeDisposable = new CompositeDisposable();
-        compositeDisposable.add((Disposable) SalesReturnDeliveryHelper.getInstance().getSaleReturnDelivery(getActivity())
+        compositeDisposable.add((Disposable) SalesReturnDeliveryHelper.getInstance().downloadSaleReturnDelivery(getActivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getObserver()));

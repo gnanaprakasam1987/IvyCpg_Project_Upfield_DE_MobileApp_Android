@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:textSize="@dimen/font_medium"
+            android:textSize="@dimen/font_small"
             android:padding="@dimen/padding_normal" />
 
         <TextView
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:textSize="@dimen/font_medium"
+            android:textSize="@dimen/font_small"
             android:layout_alignParentTop="true"
             android:padding="@dimen/padding_normal" />
 
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/txt_uid"
-            android:textSize="@dimen/font_medium"
+            android:textSize="@dimen/font_small"
             android:padding="@dimen/padding_normal" />
 
         <TextView
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/txt_dateReturn"
-            android:textSize="@dimen/font_medium"
+            android:textSize="@dimen/font_small"
             android:padding="@dimen/padding_normal" />
 
 
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/txt_returnValue"
-            android:textSize="@dimen/font_medium"
+            android:textSize="@dimen/font_small"
             android:padding="@dimen/padding_normal" />
     </RelativeLayout>
 
