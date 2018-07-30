@@ -99,8 +99,8 @@ public class ReasonPhotoDialog extends DialogFragment {
         getDialog().getWindow().setLayout(LayoutParams.MATCH_PARENT, dialogHeight);
 
         reasonObj = bmodel.reasonHelper.getReasonsWithPhoto();
-        mImageName=reasonObj.getImageName();
-        mImagePath=reasonObj.getImagePath();
+        mImageName = reasonObj.getImageName();
+        mImagePath = reasonObj.getImagePath();
         reasonAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
         reasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         reasonAdapter.add(new ReasonMaster("0", getActivity().getResources()
@@ -116,10 +116,12 @@ public class ReasonPhotoDialog extends DialogFragment {
 
                 ms_reason.setSelection(getReasonIndex(reasonObj.getReasonid()));
             }
-            if (reasonObj.getImageName() != null) {
+            if (reasonObj.getImageName() != null
+                    && !reasonObj.getImageName().isEmpty()) {
                 setImage(reasonObj.getImageName());
                 isPhotoTaken = true;
-            }
+            } else if (reasonObj.getImageName().isEmpty())
+                setImage(reasonObj.getImageName());
         }
 
         if (mSelectedReasonId != null)
@@ -163,7 +165,8 @@ public class ReasonPhotoDialog extends DialogFragment {
                                                public void onClick(View view) {
                                                    if (mSelectedReasonId.equals("0"))
                                                        Toast.makeText(getActivity(), getResources().getString(R.string.select_reason), Toast.LENGTH_SHORT).show();
-                                                   else if (!isPhotoTaken)
+                                                   else if (bmodel.configurationMasterHelper.IS_CHECK_PHOTO_MANDATORY
+                                                           && !isPhotoTaken)
                                                        Toast.makeText(getActivity(), getResources().getString(R.string.photo_mandatory), Toast.LENGTH_SHORT).show();
                                                    else {
                                                        reasonObj = new NonproductivereasonBO();
@@ -291,11 +294,19 @@ public class ReasonPhotoDialog extends DialogFragment {
                 isPhotoTaken = true;
                 bmodel.reasonHelper.saveImage(mImageName, mImagePath);
 
+            } else {
+                Commons.print(bmodel.mSelectedActivityName
+                        + "Camers Activity : Canceled");
+                isPhotoTaken = false;
+                reasonObj.setImageName("");
+                reasonObj.setImagePath("");
             }
         } else {
             Commons.print(bmodel.mSelectedActivityName
                     + "Camers Activity : Canceled");
             isPhotoTaken = false;
+            reasonObj.setImageName("");
+            reasonObj.setImagePath("");
         }
     }
 
@@ -320,7 +331,8 @@ public class ReasonPhotoDialog extends DialogFragment {
                 .load(imgFile)
                 .error(ContextCompat.getDrawable(getActivity(), R.drawable.no_image_available))
                 .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .into(ivReason);
     }
 
