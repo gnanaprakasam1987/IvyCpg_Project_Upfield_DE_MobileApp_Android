@@ -148,7 +148,6 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
-import com.ivy.sd.png.provider.SBDMerchandisingHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -175,7 +174,6 @@ import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
-import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
@@ -261,7 +259,7 @@ public class BusinessModel extends Application {
     public ProductHelper productHelper;
     public UserMasterHelper userMasterHelper;
     public ActivationHelper activationHelper;
-    public SBDMerchandisingHelper sbdMerchandisingHelper;
+
     public SynchronizationHelper synchronizationHelper;
     public RoadActivityHelper mroadActivityHelper;
     public TaskHelper taskHelper;
@@ -411,7 +409,6 @@ public class BusinessModel extends Application {
         productHelper = ProductHelper.getInstance(this);
         userMasterHelper = UserMasterHelper.getInstance(this);
         activationHelper = ActivationHelper.getInstance(this);
-        sbdMerchandisingHelper = SBDMerchandisingHelper.getInstance(this);
         synchronizationHelper = SynchronizationHelper.getInstance(this);
         taskHelper = TaskHelper.getInstance(this);
         reportHelper = ReportHelper.getInstance(this);
@@ -3827,11 +3824,6 @@ public class BusinessModel extends Application {
                     // ctx;
                     frm.finish();
                     BusinessModel.loadActivity(ctx, DataMembers.actLoginScreen);
-                } else if (idd == -27) {
-                    MerchandisingActivity frm = (MerchandisingActivity) ctx;
-                    frm.finish();
-                    BusinessModel.loadActivity(ctx,
-                            DataMembers.actHomeScreenTwo);
                 } else if (idd == -881) {
                     // do nothing
                 } else if (idd == 5000) {
@@ -4375,40 +4367,6 @@ public class BusinessModel extends Application {
     }
 
     /* ******* Invoice Number To Print End ******* */
-
-    /**
-     * this method will count number of today retailer for which SBD Merch is
-     * Mapped vs number of retailers where SBDMerchAchieved is equals to
-     * SBDMerchTarget
-     *
-     * @return RPS_Merch_Actual/SBDMerchTarget
-     */
-    public int[] getSDBMerchTargteAndAcheived() {
-        int val[] = new int[2];
-        int target = 0;
-        int acheived = 0;
-        float SbdMerchTgt;
-        try {
-            for (RetailerMasterBO ret : retailerMaster) {
-                if ((ret.getIsToday() == 1 || ret.getIsDeviated().equals("Y"))
-                        && ret.getSBDMerchTarget() > 0) {
-                    target = target + 1;
-                    SbdMerchTgt = (float) ret.getSBDMerchTarget()
-                            * configurationMasterHelper
-                            .getSbdMerchTargetPCent() / 100;
-                    if (ret.getSBDMerchAchieved() != 0)
-                        if (SbdMerchTgt <= ret.getSBDMerchAchieved())
-                            acheived = acheived + 1;
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        val[0] = acheived;
-        val[1] = target;
-        return val;
-    }
-
 
     public float getCollectionValue() {
 

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,6 +78,19 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
     @BindView(R.id.list)
     ListView listView;
 
+    @BindView(R.id.container_volume)
+    LinearLayout volumeContainer;
+
+    @BindView(R.id.lab_totalVolume)
+    TextView totalWeightLabel;
+
+    @BindView(R.id.txt_totalVolume_val)
+    TextView totalVolumeValue;
+
+    @BindView(R.id.view2)
+    View dividerVolume;
+
+
     private ArrayList<OrderReportBO> list;
 
     private OrderReportHelper reportHelper;
@@ -98,7 +112,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        System.out.println("Start"+System.currentTimeMillis());
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         View view = inflater.inflate(R.layout.fragment_order_report, container, false);
@@ -141,9 +155,9 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
         text_totalValueTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lab_dist_pre_post.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        list = businessModel.reportHelper.downloadOrderreport();
+        //list = businessModel.reportHelper.downloadOrderreport();
 
-        list = mOrderReportModelPresenter.getOrderReport();
+         list = mOrderReportModelPresenter.getOrderReport();
 
         updateOrderGrid();
 
@@ -282,8 +296,17 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             view.findViewById(R.id.view0).setVisibility(View.GONE);
         }
 
+        if (businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
+            showVolume();
+        }
+        System.out.println("Start"+System.currentTimeMillis());
         return view;
 
+    }
+
+    private void showVolume() {
+        volumeContainer.setVisibility(View.VISIBLE);
+        dividerVolume.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -379,6 +402,77 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             text_totalOrderValue.setText(SDUtil.format(reportHelper.getTotValues(getActivity().getApplicationContext()) - SalesReturnHelper.getInstance(getActivity()).getTotalSalesReturnValue(getActivity().getApplicationContext()),
                     businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                     businessModel.configurationMasterHelper.VALUE_COMMA_COUNT, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+
+
+        //cpg132-task13
+
+        if (businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
+            int pcQty = 0;
+            int caseQty = 0;
+            int outQty = 0;
+
+
+            for (OrderReportBO ret : list) {
+                pcQty = pcQty + ret.getVolumePcsQty();
+                caseQty = caseQty + ret.getVolumeCaseQty();
+                outQty = outQty + ret.getVolumeOuterQty();
+            }
+            totalWeightLabel.setText(getString(R.string.total_vol));
+
+
+            try {
+
+                StringBuilder sb = new StringBuilder();
+                String op = getString(R.string.item_piece);
+                String oc = getString(R.string.item_case);
+                String ou = getString(R.string.item_outer);
+
+                if (businessModel.labelsMasterHelper
+                        .applyLabels("item_piece") != null)
+                    op = businessModel.labelsMasterHelper
+                            .applyLabels("item_piece");
+                if (businessModel.labelsMasterHelper
+                        .applyLabels("item_case") != null)
+                    oc = businessModel.labelsMasterHelper
+                            .applyLabels("item_case");
+
+                if (businessModel.labelsMasterHelper
+                        .applyLabels("item_outer") != null)
+                    ou = businessModel.labelsMasterHelper
+                            .applyLabels("item_outer");
+
+
+
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
+
+                    sb.append(pcQty + " " + op);
+                }
+
+
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE) {
+
+                    if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+                        sb.append(" : " + caseQty + " " + oc);
+                    else
+                        sb.append(caseQty + " " + oc);
+                }
+
+                if (businessModel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                    if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS || businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+                        sb.append(" : " + outQty + " " + ou);
+                    else
+                        sb.append(outQty + " " + ou);
+                }
+
+                totalVolumeValue.setText(sb.toString());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
 
         // Load ListView
         //  com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter mSchedule = new com.ivy.cpg.view.reports.OrderReportFragment.MyAdapter(list);

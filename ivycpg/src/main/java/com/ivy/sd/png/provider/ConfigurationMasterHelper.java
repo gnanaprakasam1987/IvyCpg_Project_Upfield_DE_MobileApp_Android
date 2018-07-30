@@ -1308,6 +1308,11 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STORE_VISITED_COUNT;
     private static final String CODE_SHOW_STORE_VISITED = "FUN55";
 
+
+    //cpg132-task 13
+    public boolean SHOW_TOTAL_ACHIEVED_VOLUME = true;
+    private static final String SHOW_TOTAL_ACHIEVEDVOLUME = "FUN70";
+
     public static final String CODE_TAX_MODEL = "TAX_MODEL";
     public boolean IS_GST;
     public boolean IS_GST_MASTER;
@@ -2404,6 +2409,8 @@ public class ConfigurationMasterHelper {
         this.SHOW_TOTAL_VALUE_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) : false;
         this.SHOW_TOTAL_QTY_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) : false;
         this.SHOW_STORE_VISITED_COUNT = hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) : false;
+
+        this.SHOW_TOTAL_ACHIEVED_VOLUME = hashMapHHTModuleConfig.get(SHOW_TOTAL_ACHIEVEDVOLUME) != null ? hashMapHHTModuleConfig.get(SHOW_TOTAL_ACHIEVEDVOLUME) : false;
 
         this.IS_PROFILE_IMAGE = hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) : false;
 

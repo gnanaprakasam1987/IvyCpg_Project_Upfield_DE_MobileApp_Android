@@ -138,6 +138,8 @@ android {
     android {
         sourceSets {
             main {
+
+               // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
                 res.srcDirs =  [
                         'src/main/res/layouts/photocapture',
                         'src/main/res/layouts/activation',

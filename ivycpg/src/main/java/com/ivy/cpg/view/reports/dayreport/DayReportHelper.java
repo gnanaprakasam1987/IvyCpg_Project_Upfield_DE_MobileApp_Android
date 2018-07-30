@@ -34,9 +34,9 @@ public class DayReportHelper {
      * @return ArrayList<OrderReportBO>
      */
     public ArrayList<OrderReportBO> downloadOrderReport() {
-        ArrayList<OrderReportBO> reportOrDBooking = null;
+        ArrayList<OrderReportBO> reportordbooking = null;
         try {
-            OrderReportBO orderReport;
+            OrderReportBO orderreport;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -45,32 +45,36 @@ public class DayReportHelper {
                             + "OrderHeader.OrderValue,OrderHeader.LinesPerCall ,RetailerMaster.sbd_dist_stock,RetailerMaster.sbd_dist_achieve,"
                             + "OrderHeader.upload,OrderHeader.totalweight,OrderHeader.FocusPackLines,OrderHeader.MSPLines,OrderHeader.is_vansales,"
                             + "IFNULL((select sum(taxValue) from OrderTaxDetails where OrderId = OrderHeader.OrderID ),0) as taxValue,"
-                            + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue,OrderHeader.orderImage as orderImage "
+                            + "IFNULL((select sum(Value) from OrderDiscountDetail where OrderId = OrderHeader.OrderID ),0) as discountValue, "
+                            + "IFNULL(SUM(OD.pieceqty),0),IFNULL(SUM(OD.caseQty),0),IFNULL(SUM(OD.outerQty),0),OrderHeader.orderImage "
                             + "FROM OrderHeader INNER JOIN RetailerMaster "
                             + "ON OrderHeader.RetailerId = RetailerMaster.RetailerID INNER JOIN OrderDetail OD ON  OD.OrderID = OrderHeader.OrderID where OrderHeader.upload!='X' "
                             + "GROUP BY OrderHeader.OrderID ,OrderHeader.RetailerID,RetailerMaster.RetailerName,"
                             + "OrderHeader.OrderValue, OrderHeader.LinesPerCall");
 
             if (c != null) {
-                reportOrDBooking = new ArrayList<>();
+                reportordbooking = new ArrayList<>();
                 while (c.moveToNext()) {
-                    orderReport = new OrderReportBO();
-                    orderReport.setOrderID(c.getString(0));
-                    orderReport.setRetailerId(c.getString(1));
-                    orderReport.setRetailerName(c.getString(2));
-                    orderReport.setOrderTotal(c.getDouble(3));
-                    orderReport.setLPC(c.getString(4));
-                    orderReport.setDist(c.getString(5) + "/" + c.getString(6));
-                    orderReport.setUpload(c.getString(c
+                    orderreport = new OrderReportBO();
+                    orderreport.setOrderID(c.getString(0));
+                    orderreport.setRetailerId(c.getString(1));
+                    orderreport.setRetailerName(c.getString(2));
+                    orderreport.setOrderTotal(c.getDouble(3));
+                    orderreport.setLPC(c.getString(4));
+                    orderreport.setDist(c.getString(5) + "/" + c.getString(6));
+                    orderreport.setUpload(c.getString(c
                             .getColumnIndex("upload")));
-                    orderReport.setWeight(c.getFloat(c.getColumnIndex("totalWeight")));
-                    orderReport.setFocusBrandCount(c.getInt(9));
-                    orderReport.setMustSellCount(c.getInt(10));
-                    orderReport.setIsVanSeller(c.getInt(11));
-                    orderReport.setTaxValue(c.getDouble(c.getColumnIndex("taxValue")));
-                    orderReport.setDiscountValue(c.getDouble(c.getColumnIndex("discountValue")));
-                    orderReport.setOrderedImage(c.getString(c.getColumnIndex("orderImage")));
-                    reportOrDBooking.add(orderReport);
+                    orderreport.setWeight(c.getFloat(c.getColumnIndex("totalWeight")));
+                    orderreport.setFocusBrandCount(c.getInt(9));
+                    orderreport.setMustSellCount(c.getInt(10));
+                    orderreport.setIsVanSeller(c.getInt(11));
+                    orderreport.setTaxValue(c.getDouble(c.getColumnIndex("taxValue")));
+                    orderreport.setDiscountValue(c.getDouble(c.getColumnIndex("discountValue")));
+                    orderreport.setVolumePcsQty(c.getInt(14));
+                    orderreport.setVolumeCaseQty(c.getInt(15));
+                    orderreport.setVolumeOuterQty(c.getInt(16));
+                    orderreport.setOrderedImage(c.getString(17));
+                    reportordbooking.add(orderreport);
                 }
                 c.close();
             }
@@ -78,7 +82,7 @@ public class DayReportHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return reportOrDBooking;
+        return reportordbooking;
     }
 
     /**
