@@ -27,7 +27,6 @@
     <dimen name="list_item_width_dashboard_medium">250dp</dimen>
 
     <!-- Order Summary Screen -->
-    <dimen name="sku_text_qty">180dp</dimen>
 
     <!-- Visit List Item Screen -->
     <dimen name="visit_lst_img_width">32dp</dimen>
@@ -81,8 +80,6 @@
 
     <dimen name="crown_list_title_height">60dp</dimen>
 
-
-    <dimen name="dashreportnamewidth">160dp</dimen>
 
     <!--profile screem-->
     <dimen name="profile_collopsing_layout_height">350dp</dimen>
