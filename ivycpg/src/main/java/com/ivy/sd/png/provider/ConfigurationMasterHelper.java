@@ -1308,6 +1308,11 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STORE_VISITED_COUNT;
     private static final String CODE_SHOW_STORE_VISITED = "FUN55";
 
+
+    //cpg132-task 13
+    public boolean SHOW_TOTAL_ACHIEVED_VOLUME = true;
+    private static final String SHOW_TOTAL_ACHIEVEDVOLUME = "FUN70";
+
     public static final String CODE_TAX_MODEL = "TAX_MODEL";
     public boolean IS_GST;
     public boolean IS_GST_MASTER;
@@ -1468,6 +1473,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_KPI_CALENDAR = "KPI_CALENDER";
     public boolean IS_KPI_CALENDAR;
+
+    private static final String CODE_GST_TAX_LOCATION_TYPE = "TAX_LOCATION_TYPE";
+    public boolean IS_TAX_LOC;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2408,6 +2416,8 @@ public class ConfigurationMasterHelper {
         this.SHOW_TOTAL_QTY_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) : false;
         this.SHOW_STORE_VISITED_COUNT = hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) : false;
 
+        this.SHOW_TOTAL_ACHIEVED_VOLUME = hashMapHHTModuleConfig.get(SHOW_TOTAL_ACHIEVEDVOLUME) != null ? hashMapHHTModuleConfig.get(SHOW_TOTAL_ACHIEVEDVOLUME) : false;
+
         this.IS_PROFILE_IMAGE = hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_TAX_MODEL) != null) {
@@ -2580,6 +2590,11 @@ public class ConfigurationMasterHelper {
         this.IS_KPI_CALENDAR = hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) != null ? hashMapHHTModuleConfig.get(CODE_KPI_CALENDAR) : false;
 
         this.IS_SHOW_SKU_CODE = hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SKU_CODE) : false;
+
+        if (hashMapHHTModuleConfig.get(CODE_GST_TAX_LOCATION_TYPE) != null) {
+            getLocationTaxGSTModel(CODE_GST_TAX_LOCATION_TYPE);
+        }
+
     }
 
     private boolean isInOutModule() {
@@ -2772,6 +2787,34 @@ public class ConfigurationMasterHelper {
         }
 
     }
+
+    /**
+     * @param hhtCode for general Location wise GST Tax Model
+     */
+    private void getLocationTaxGSTModel(String hhtCode) {
+
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            Cursor c = db.selectSQL("select RField from HhtModuleMaster where hhtCode='" + hhtCode + "' and  ForSwitchSeller = 0");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    String RField = c.getString(0);
+                    if (RField.equals("TAX_LOC")) {
+                        IS_TAX_LOC = true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+
+    }
+
 
 
 

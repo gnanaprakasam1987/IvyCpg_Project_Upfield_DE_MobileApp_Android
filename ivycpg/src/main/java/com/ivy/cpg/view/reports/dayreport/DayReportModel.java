@@ -26,7 +26,6 @@ public class DayReportModel implements IDayReportModelPresenter {
     private Context mContext;
     private IDayReportView mIDayReportView;
     private BusinessModel mBusinessModel;
-    private boolean hasMerchandising;
     private Vector<ConfigureBO> mDayList = null;
 
     @Inject
@@ -148,13 +147,9 @@ public class DayReportModel implements IDayReportModelPresenter {
             }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT08")) {
                 int val[] = mBusinessModel.getSDBDistTargteAndAcheived();
                 con.setMenuNumber(val[0] + "/" + val[1]);
-            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT09")) {
-                int val[] = mBusinessModel.getSDBMerchTargteAndAcheived();
-                con.setMenuNumber(val[0] + "/" + val[1]);
-            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT10")) {
+            }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT10")) {
                 removable_config.add(con);
                 con.setMenuNumber("0");
-                hasMerchandising = true;
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT11")) {
                 removable_config.add(con);
                 //hasInitiative = true;
@@ -362,54 +357,7 @@ public class DayReportModel implements IDayReportModelPresenter {
 
         mDayList.removeElement(removable_config);
 
-        if (hasMerchandising) {
-            ConfigureBO con;
-            mBusinessModel.sbdMerchandisingHelper.setMerchTypeCodes();
 
-            ArrayList<MerchandisingposmBO> MerchCov;
-            MerchCov = mBusinessModel.sbdMerchandisingHelper.getSbdMerchCoverageBO();
-
-            ArrayList<MerchandisingposmBO> merchList = new ArrayList<>();
-            ArrayList<MerchandisingposmBO> merchInitList = new ArrayList<>();
-
-            MerchandisingposmBO merch;
-            for (int i = 0; i < MerchCov.size(); i++) {
-                con = new ConfigureBO();
-                merch = MerchCov.get(i);
-                con.setMenuName(merch.getPosmdescription());
-                con.setMenuNumber(merch.getAchieved() + "/" + merch.getTarget());
-                if (mBusinessModel.sbdMerchandisingHelper.merchTypeListCode
-                        .equals(merch.getTypeListId())) {
-                    merchList.add(merch);
-                } else if (mBusinessModel.sbdMerchandisingHelper.merchInitTypeListCode
-                        .equals(merch.getTypeListId())) {
-                    merchInitList.add(merch);
-                }
-            }
-
-            con = new ConfigureBO();
-            con.setMenuName("Merchandising");
-            con.setMenuNumber("Heading");
-            mDayList.add(con);
-            for (MerchandisingposmBO merchandisingposmBO : merchList) {
-                con = new ConfigureBO();
-                con.setMenuName(merchandisingposmBO.getPosmdescription());
-                con.setMenuNumber(merchandisingposmBO.getPosmValue());
-                mDayList.add(con);
-            }
-
-            con = new ConfigureBO();
-            con.setMenuName("Pricing");
-            con.setMenuNumber("Heading");
-            mDayList.add(con);
-
-            for (MerchandisingposmBO merchandisingposmBO : merchInitList) {
-                con = new ConfigureBO();
-                con.setMenuName(merchandisingposmBO.getPosmdescription());
-                con.setMenuNumber(merchandisingposmBO.getPosmValue());
-                mDayList.add(con);
-            }
-        }
 
         if (mBusinessModel.configurationMasterHelper.IS_SHOW_DROPSIZE) {
             for (ConfigureBO config : mBusinessModel
@@ -430,8 +378,6 @@ public class DayReportModel implements IDayReportModelPresenter {
     @Override
     public void downloadData() {
         // loadData();
-
-        mBusinessModel.sbdMerchandisingHelper.loadSbdMerchCoverage();
         mDayList = mBusinessModel.configurationMasterHelper.downloadDayReportList();
         if (mDayList != null && mDayList.size() > 0)
             updateDayReportData(mDayList);

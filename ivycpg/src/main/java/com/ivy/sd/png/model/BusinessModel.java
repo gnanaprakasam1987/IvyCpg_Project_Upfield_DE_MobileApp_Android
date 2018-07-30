@@ -144,7 +144,6 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
-import com.ivy.sd.png.provider.SBDMerchandisingHelper;
 import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -171,7 +170,6 @@ import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
-import com.ivy.sd.png.view.merch.MerchandisingActivity;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
@@ -250,7 +248,7 @@ public class BusinessModel extends Application {
     public ProductHelper productHelper;
     public UserMasterHelper userMasterHelper;
     public ActivationHelper activationHelper;
-    public SBDMerchandisingHelper sbdMerchandisingHelper;
+
     public SynchronizationHelper synchronizationHelper;
     public RoadActivityHelper mroadActivityHelper;
     public TaskHelper taskHelper;
@@ -410,7 +408,6 @@ public class BusinessModel extends Application {
         productHelper = ProductHelper.getInstance(this);
         userMasterHelper = UserMasterHelper.getInstance(this);
         activationHelper = ActivationHelper.getInstance(this);
-        sbdMerchandisingHelper = SBDMerchandisingHelper.getInstance(this);
         synchronizationHelper = SynchronizationHelper.getInstance(this);
         taskHelper = TaskHelper.getInstance(this);
         reportHelper = ReportHelper.getInstance(this);
@@ -709,8 +706,8 @@ public class BusinessModel extends Application {
             mInstance = this;
             //Glide - Circle Image Transform
             circleTransform = CircleTransform.getInstance(this.getApplicationContext());
-           // appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-           // appComponent.inject(this);
+            // appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+            // appComponent.inject(this);
 
             mApplicationComponent = DaggerIvyAppComponent.builder()
                     .ivyAppModule(new IvyAppModule(this))
@@ -1438,7 +1435,8 @@ public class BusinessModel extends Application {
                             + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
-                            + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent"
+                            + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId" : "0 as SupplierTaxLocId")
                             + " FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
@@ -1625,6 +1623,8 @@ public class BusinessModel extends Application {
                     retailer.setRegion(c.getString(c.getColumnIndex("Region")));
                     retailer.setCountry(c.getString(c.getColumnIndex("Country")));
                     retailer.setSbdPercent(c.getFloat(c.getColumnIndex("sbdDistPercent"))); // updated sbd percentage from history and ordered details
+                    retailer.setRetailerTaxLocId(c.getInt(c.getColumnIndex("RetailerTaxLocId")));
+                    retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -3836,11 +3836,6 @@ public class BusinessModel extends Application {
                     // ctx;
                     frm.finish();
                     BusinessModel.loadActivity(ctx, DataMembers.actLoginScreen);
-                } else if (idd == -27) {
-                    MerchandisingActivity frm = (MerchandisingActivity) ctx;
-                    frm.finish();
-                    BusinessModel.loadActivity(ctx,
-                            DataMembers.actHomeScreenTwo);
                 } else if (idd == -881) {
                     // do nothing
                 } else if (idd == 5000) {
@@ -3958,7 +3953,7 @@ public class BusinessModel extends Application {
                 while (c.moveToNext()) {
                     isAmazonUpload = true;
                 }
-            c.close();
+                c.close();
             }
             c = null;
 
@@ -3969,7 +3964,7 @@ public class BusinessModel extends Application {
                     while (c.moveToNext()) {
                         DataMembers.img_Down_URL = c.getString(0);
                     }
-                c.close();
+                    c.close();
                 }
             } else {
                 c = db
@@ -3978,7 +3973,7 @@ public class BusinessModel extends Application {
                     while (c.moveToNext()) {
                         DataMembers.img_Down_URL = c.getString(0) + "/";
                     }
-                c.close();
+                    c.close();
                 }
             }
             db.closeDB();
@@ -4011,7 +4006,7 @@ public class BusinessModel extends Application {
                             DataMembers.PLANOGRAM);
 
                 }
-            c.close();
+                c.close();
             }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL FROM DigitalContentMaster");
@@ -4021,7 +4016,7 @@ public class BusinessModel extends Application {
                             DataMembers.img_Down_URL + "" + c.getString(0),
                             DataMembers.DIGITALCONTENT);
                 }
-            c.close();
+                c.close();
             }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL FROM App_ImageInfo");
@@ -4031,7 +4026,7 @@ public class BusinessModel extends Application {
                             DataMembers.img_Down_URL + "" + c.getString(0),
                             DataMembers.APP_DIGITAL_CONTENT);
                 }
-            c.close();
+                c.close();
             }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL FROM MVPBadgeMaster");
@@ -4041,7 +4036,7 @@ public class BusinessModel extends Application {
                             DataMembers.img_Down_URL + "" + c.getString(0),
                             DataMembers.MVP);
                 }
-            c.close();
+                c.close();
             }
 
             c = db.selectSQL("SELECT DISTINCT ImagePath FROM LoyaltyBenefits");
@@ -4370,40 +4365,6 @@ public class BusinessModel extends Application {
     }
 
     /* ******* Invoice Number To Print End ******* */
-
-    /**
-     * this method will count number of today retailer for which SBD Merch is
-     * Mapped vs number of retailers where SBDMerchAchieved is equals to
-     * SBDMerchTarget
-     *
-     * @return RPS_Merch_Actual/SBDMerchTarget
-     */
-    public int[] getSDBMerchTargteAndAcheived() {
-        int val[] = new int[2];
-        int target = 0;
-        int acheived = 0;
-        float SbdMerchTgt;
-        try {
-            for (RetailerMasterBO ret : retailerMaster) {
-                if ((ret.getIsToday() == 1 || ret.getIsDeviated().equals("Y"))
-                        && ret.getSBDMerchTarget() > 0) {
-                    target = target + 1;
-                    SbdMerchTgt = (float) ret.getSBDMerchTarget()
-                            * configurationMasterHelper
-                            .getSbdMerchTargetPCent() / 100;
-                    if (ret.getSBDMerchAchieved() != 0)
-                        if (SbdMerchTgt <= ret.getSBDMerchAchieved())
-                            acheived = acheived + 1;
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        val[0] = acheived;
-        val[1] = target;
-        return val;
-    }
-
 
     public float getCollectionValue() {
 
@@ -6485,7 +6446,7 @@ public class BusinessModel extends Application {
                 sb.append("select did,dname,type,0,parentid from DistributorMaster ");
 
             } else {
-                sb.append("select sid,sname,stype,isPrimary,parentid,creditlimit from Suppliermaster ");
+                sb.append("select sid,sname,stype,isPrimary,parentid,creditlimit,supplierTaxLocId from Suppliermaster ");
                 sb.append("where rid=" + QT(retailerMasterBO.getRetailerID()));
                 sb.append(" or rid= 0 order by isPrimary desc");
             }
@@ -6505,6 +6466,8 @@ public class BusinessModel extends Application {
 
                     if (c.getColumnCount() == 6)
                         supplierMasterBO.setCreditLimit(c.getFloat(5));
+
+                    supplierMasterBO.setSupplierTaxLocId(c.getInt(6));
 
                     mSupplierList.add(supplierMasterBO);
                 }

@@ -225,11 +225,11 @@ public class DashBoardHelper {
             if (!isFromHomeScreenTwo) {
                 sb = "SELECT distinct " + monthText + " AS Month FROM SellerKPI " +
                         "WHERE Interval=" + bmodel.QT(P3M) +
-                        " order by Month desc";
+                        " order by fromdate desc";
             } else {
                 sb = "SELECT distinct " + monthText + " AS Month FROM RetailerKPI " +
                         "WHERE RetailerId= " + bmodel.getRetailerMasterBO().getRetailerID() + " AND Interval=" + bmodel.QT(P3M) +
-                        " order by Month desc";
+                        " order by fromdate desc";
             }
 
             Cursor c = db.selectSQL(sb);
@@ -934,7 +934,7 @@ public class DashBoardHelper {
             if (!isRetailer)
                 sql = "select distinct interval from SellerKPI";
             else
-                sql = "select distinct interval from RetailerKPI";
+                sql = "select distinct interval from RetailerKPI where RetailerId="+bmodel.getRetailerMasterBO().getRetailerID();
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 dashList = new ArrayList<>();
