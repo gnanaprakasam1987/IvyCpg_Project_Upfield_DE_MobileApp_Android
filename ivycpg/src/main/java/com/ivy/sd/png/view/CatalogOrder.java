@@ -120,6 +120,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private final String mNearExpiryTag = "Filt19";
     private final String mCompertior = "Filt23";
     private final String mDrugProducts = "Filt28";
+    private final String mSuggestedOrder = "Filt25";
     //public int mSelectedLocationIndex;
     private RecyclerViewAdapter adapter;
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
@@ -853,7 +854,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
                 || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
                 || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
-                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)) {
+                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)
+                || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0)) {
             return true;
         }
         return false;
