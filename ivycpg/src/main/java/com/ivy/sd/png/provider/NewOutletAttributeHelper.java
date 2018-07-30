@@ -7,6 +7,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,28 @@ public class NewOutletAttributeHelper {
     private NewOutletAttributeHelper(Context context) {
         this.context = context;
     }
+
+
+    public void setAttributeList(ArrayList<NewOutletAttributeBO> attribList) {
+        this.attribList = attribList;
+    }
+
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadRetailerAttribute()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    public ArrayList<NewOutletAttributeBO> getAttributeList() {
+        return attribList;
+    }
+
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadRetailerAttribute()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
 
     public void downloadRetailerAttribute() {
         try {
@@ -63,14 +86,28 @@ public class NewOutletAttributeHelper {
         }
     }
 
-    public void setAttributeList(ArrayList<NewOutletAttributeBO> attribList) {
-        this.attribList = attribList;
+
+
+    private void setAttributeParentList(ArrayList<NewOutletAttributeBO> attributeParentList) {
+        this.attributeParentList = attributeParentList;
     }
 
-    public ArrayList<NewOutletAttributeBO> getAttributeList() {
-        return attribList;
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadAttributeParentList(ArrayList<NewOutletAttributeBO> )}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    public ArrayList<NewOutletAttributeBO> getAttributeParentList() {
+        return attributeParentList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadAttributeParentList(ArrayList<NewOutletAttributeBO> )}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void downloadAttributeParentList() {
         try {
             attributeParentList = new ArrayList<>();
@@ -97,7 +134,6 @@ public class NewOutletAttributeHelper {
                             levelId = attribList.get(i).getLevelId();
                         }
                     }
-
                     temp.setLevelId(levelId);
                     attributeParentList.add(temp);
                 }
@@ -110,25 +146,44 @@ public class NewOutletAttributeHelper {
         }
     }
 
-    public HashMap<Integer, ArrayList<NewOutletAttributeBO>> getmAttributeBOListByLocationID() {
-        return mAttributeBOListByLocationID;
-    }
+
+
 
     HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID = null;
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadChannelWiseAttributeList()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    public HashMap<Integer, ArrayList<NewOutletAttributeBO>> getmAttributeBOListByLocationID() {
+        return mAttributeBOListByLocationID;
+    }
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadChannelWiseAttributeList()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public HashMap<Integer, ArrayList<Integer>> downloadChannelWiseAttributeList() {
+
         HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID = null;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT EAM.attributeid,CriteriaId,ECT.isMandatory,AttributeName FROM entityattributemaster EAM inner join EntityCriteriaType ECT ON EAM.attributeId=ECT.attributeId where parentid =0 and criteriaType='CHANNEL' and IsSystemComputed=0 order by sequence");
             if (c != null && c.getCount() > 0) {
+
                 mAttributeBOListByLocationID = new HashMap<>();
+
                 mAttributeListByLocationID = new HashMap<>();
+
                 NewOutletAttributeBO newOutletAttributeBO;
+
                 while (c.moveToNext()) {
+
                     newOutletAttributeBO = new NewOutletAttributeBO();
                     newOutletAttributeBO.setAttrId(c.getInt(0));
                     newOutletAttributeBO.setIsMandatory(c.getInt(2));
@@ -158,13 +213,24 @@ public class NewOutletAttributeHelper {
         return mAttributeListByLocationID;
     }
 
-
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getCommonAttributeList()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<Integer> getmCommonAttributeList() {
         if (mCommonAttributeList == null)
             mCommonAttributeList = new ArrayList<>();
         return mCommonAttributeList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getCommonAttributeList()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void downloadCommonAttributeList() {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -185,14 +251,14 @@ public class NewOutletAttributeHelper {
         }
     }
 
-    private void setAttributeParentList(ArrayList<NewOutletAttributeBO> attributeParentList) {
-        this.attributeParentList = attributeParentList;
-    }
 
-    public ArrayList<NewOutletAttributeBO> getAttributeParentList() {
-        return attributeParentList;
-    }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp}
+     * @since CPG131 replaced by {@link ProfileEditPresenterImp#getAttribMap()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public HashMap<String, ArrayList<NewOutletAttributeBO>> getAttribMap() {
         try {
             attribMap = new HashMap<>();
@@ -212,6 +278,12 @@ public class NewOutletAttributeHelper {
         return attribMap;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getEditAttributeList( String retailerID)()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<NewOutletAttributeBO> getEditAttributeList(String retailerID) {
         ArrayList<NewOutletAttributeBO> attributeBOArrayList = new ArrayList<>();
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);

@@ -1,35 +1,35 @@
 package com.ivy.ui.profile.data;
 
 
-        import android.database.Cursor;
-        import android.util.SparseArray;
+import android.database.Cursor;
 
 
-        import com.ivy.core.di.scope.DataBaseInfo;
-        import com.ivy.lib.existing.DBUtil;
-        import com.ivy.sd.png.bo.ChannelBO;
-        import com.ivy.sd.png.bo.LocationBO;
-        import com.ivy.sd.png.bo.NewOutletBO;
-        import com.ivy.sd.png.bo.RetailerFlexBO;
-        import com.ivy.sd.png.bo.RetailerMasterBO;
-        import com.ivy.sd.png.bo.StandardListBO;
-        import com.ivy.sd.png.commons.SDUtil;
-        import com.ivy.sd.png.util.Commons;
-        import com.ivy.sd.png.util.DataMembers;
-        import com.ivy.utils.AppUtils;
+import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.ChannelBO;
+import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.NewOutletAttributeBO;
+import com.ivy.sd.png.bo.NewOutletBO;
+import com.ivy.sd.png.bo.RetailerFlexBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
-        import java.util.ArrayList;
-        import java.util.HashMap;
-        import java.util.LinkedHashMap;
-        import java.util.Vector;
-        import java.util.concurrent.Callable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Vector;
+import java.util.concurrent.Callable;
 
-        import javax.inject.Inject;
+import javax.inject.Inject;
 
-        import io.reactivex.Observable;
-        import io.reactivex.ObservableSource;
-        import io.reactivex.Single;
-        import io.reactivex.functions.Function;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
 
 public class ProfileDataManagerImpl implements IProfileDataManager {
 
@@ -39,6 +39,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     public ProfileDataManagerImpl(@DataBaseInfo DBUtil dbUtil) {
         this.dbUtil = dbUtil;
     }
+
 
     @Override
     public Observable<ArrayList<NewOutletBO>> getContactTitle() {
@@ -69,6 +70,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
     }
 
+
     @Override
     public Observable<ArrayList<NewOutletBO>> getContactStatus() {
         return Observable.fromCallable(new Callable<ArrayList<NewOutletBO>>() {
@@ -97,6 +99,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
 
     }
+
 
     @Override
     public Observable<LinkedHashMap<Integer, ArrayList<LocationBO>>> getLocationListByLevId() {
@@ -159,6 +162,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
+
     @Override
     public Observable<HashMap<String, String>> getPreviousProfileChanges(final String RetailerID) {
 
@@ -206,7 +210,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public Boolean call() throws Exception {
                 dbUtil.openDataBase();
                 Cursor c = dbUtil
-                        .selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" +ret.getRetailerID());
+                        .selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" + ret.getRetailerID());
                 if (c != null) {
                     if (c.getCount() > 0) {
                         if (c.moveToNext()) {
@@ -261,6 +265,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
+
     @Override
     public Observable<ArrayList<RetailerFlexBO>> downloadRetailerFlexValues(final String type) {
 
@@ -295,7 +300,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
 
     @Override
-    public void saveNearByRetailers(String id,Vector<RetailerMasterBO> NearByRetailers) {
+    public void saveNearByRetailers(String id, Vector<RetailerMasterBO> NearByRetailers) {
         try {
             dbUtil.createDataBase();
             dbUtil.openDataBase();
@@ -322,7 +327,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                 try {
                     dbUtil.openDataBase();
                     Cursor c = dbUtil
-                            .selectSQL("SELECT nearbyrid from NearByRetailers where rid='" +RetailerID+"' and upload='Y'");
+                            .selectSQL("SELECT nearbyrid from NearByRetailers where rid='" + RetailerID + "' and upload='Y'");
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
                             lst.add(c.getString(0));
@@ -337,6 +342,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             }
         });
     }
+
 
     @Override
     public Observable<HashMap<String, String>> getNearbyRetailersEditRequest(final String retailerId) {
@@ -363,6 +369,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             }
         });
     }
+
 
     @Override
     public Observable<ArrayList<StandardListBO>> downloadPriorityProducts() {
@@ -396,6 +403,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
+
     @Override
     public Observable<ArrayList<String>> downloadPriorityProductsForRetailer(final String retailerId) {
         return Observable.fromCallable(new Callable<ArrayList<String>>() {
@@ -426,7 +434,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     @Override
                     public ArrayList<String> call() throws Exception {
 
-                        if(strings==null) {
+                        if (strings == null) {
                             ArrayList<String> priorityproductList = null;
                             try {
                                 dbUtil.openDataBase();
@@ -444,11 +452,324 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                                 dbUtil.closeDB();
                             }
                             return priorityproductList;
-                        }else
+                        } else
                             return strings;
                     }
                 });
             }
         });
     }
+
+
+    @Override
+    public Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute() {
+        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
+            @Override
+            public ArrayList<NewOutletAttributeBO> call() throws Exception {
+
+                ArrayList<NewOutletAttributeBO> attribList=null;
+
+                try {
+                    NewOutletAttributeBO temp;
+                    dbUtil.openDataBase();
+
+                    attribList = new ArrayList<>();
+
+                    Cursor c = dbUtil
+                            .selectSQL("SELECT attributeid, attributename, parentid, levelid, allowmultiple, iscriteriamapped FROM entityattributemaster where parentid !=" + 0 + " order by attributeid");
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            temp = new NewOutletAttributeBO();
+                            temp.setAttrId(c.getInt(0));
+                            temp.setAttrName(c.getString(1));
+                            temp.setParentId(c.getInt(2));
+                            temp.setLevelId(c.getInt(3));
+                            temp.setAllowMultiple(c.getInt(4));
+                            temp.setCriteriaMapped(c.getInt(5));
+
+                            attribList.add(temp);
+                        }
+                        c.close();
+                    }
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return attribList;
+            }
+        });
+    }
+
+
+
+
+    @Override
+    public Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeParentList(final ArrayList<NewOutletAttributeBO> attribList) {
+
+        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
+            @Override
+            public ArrayList<NewOutletAttributeBO> call() throws Exception {
+
+                ArrayList<NewOutletAttributeBO> attributeParentList=null;
+                try {
+                    attributeParentList = new ArrayList<>();
+                    NewOutletAttributeBO temp;
+
+                    dbUtil.openDataBase();
+                    Cursor c = dbUtil
+                            .selectSQL("SELECT attributeid, attributename, isSystemComputed,IsMandatory FROM entityattributemaster where parentid =0 order by sequence");
+                    if (c != null) {
+                        //downloadRetailerAttribute();
+                        while (c.moveToNext()) {
+                            int attribId = c.getInt(0);
+                            int levelId = 0;
+                            temp = new NewOutletAttributeBO();
+                            temp.setAttrId(attribId);
+                            temp.setAttrName(c.getString(1));
+                            temp.setIsMandatory(c.getInt(3));
+
+                            for (int i = 0; i < attribList.size(); i++) {
+                                int parentID = attribList.get(i).getParentId();
+                                if (attribId == parentID) {
+                                    attribId = attribList.get(i).getAttrId();
+                                    levelId = attribList.get(i).getLevelId();
+                                }
+                            }
+
+                            temp.setLevelId(levelId);
+                            attributeParentList.add(temp);
+                        }
+                        c.close();
+                    }
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return attributeParentList;
+            }
+        });
+    }
+
+
+
+    @Override
+    public Observable<ArrayList<Integer>> getCommonAttributeList() {
+        return Observable.fromCallable(new Callable<ArrayList<Integer>>() {
+            @Override
+            public ArrayList<Integer> call() throws Exception {
+                ArrayList<Integer> mCommonAttributeList = null;
+                try {
+                    dbUtil.openDataBase();
+                    Cursor c = dbUtil
+                            .selectSQL("SELECT attributeid FROM entityattributemaster where parentid =0 and attributeid not in(select attributeid from EntityCriteriaType) and IsSystemComputed=0 and IsCriteriaMapped=0 order by sequence");
+                    if (c != null && c.getCount() > 0) {
+                        mCommonAttributeList = new ArrayList<>();
+                        while (c.moveToNext()) {
+                            mCommonAttributeList.add(c.getInt(0));
+                        }
+                        c.close();
+                    }
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return mCommonAttributeList;
+            }
+        });
+    }
+
+
+    @Override
+    public Observable<ArrayList<NewOutletAttributeBO>> getEditAttributeList(final String retailerID) {
+        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
+            @Override
+            public ArrayList<NewOutletAttributeBO> call() throws Exception {
+                ArrayList<NewOutletAttributeBO> attributeBOArrayList = new ArrayList<>();
+                try {
+                    dbUtil.openDataBase();
+                    Cursor cursor = dbUtil.selectSQL("select attributeid, levelid, status from retailereditattribute where retailerid = " + retailerID + " and upload='N'");
+                    if (cursor != null) {
+                        NewOutletAttributeBO tempBO;
+                        while (cursor.moveToNext()) {
+                            tempBO = new NewOutletAttributeBO();
+                            tempBO.setAttrId(cursor.getInt(0));
+                            tempBO.setLevelId(cursor.getInt(1));
+                            tempBO.setStatus(cursor.getString(2));
+                            attributeBOArrayList.add(tempBO);
+                        }
+                        cursor.close();
+                        dbUtil.closeDB();
+                    }
+                } catch (Exception e) {
+                    dbUtil.closeDB();
+                    Commons.printException("" + e);
+                    return new ArrayList<>();
+                }
+                return attributeBOArrayList;
+            }
+        });
+    }
+
+
+    /*This method will return
+    * HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID ;
+      HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID;*/
+    @Override
+    public Observable<ChannelWiseAttributeList> downloadChannelWiseAttributeList() {
+
+        return Observable.fromCallable(new Callable<ChannelWiseAttributeList>() {
+            @Override
+            public ChannelWiseAttributeList call() throws Exception {
+
+                HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID = null;
+                HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID = null;
+                ChannelWiseAttributeList channelWiseAttributeList = null;
+                try {
+                    dbUtil.openDataBase();
+                    Cursor c = dbUtil
+                            .selectSQL("SELECT EAM.attributeid,CriteriaId,ECT.isMandatory,AttributeName FROM entityattributemaster EAM inner join EntityCriteriaType ECT ON EAM.attributeId=ECT.attributeId where parentid =0 and criteriaType='CHANNEL' and IsSystemComputed=0 order by sequence");
+                    if (c != null && c.getCount() > 0) {
+
+                        mAttributeBOListByLocationID = new HashMap<>();
+
+                        mAttributeListByLocationID = new HashMap<>();
+
+                        NewOutletAttributeBO newOutletAttributeBO;
+
+                        while (c.moveToNext()) {
+
+                            newOutletAttributeBO = new NewOutletAttributeBO();
+                            newOutletAttributeBO.setAttrId(c.getInt(0));
+                            newOutletAttributeBO.setIsMandatory(c.getInt(2));
+                            newOutletAttributeBO.setAttrName(c.getString(3));
+
+                            if (mAttributeBOListByLocationID.get(c.getInt(1)) != null) {
+                                mAttributeBOListByLocationID.get(c.getInt(1)).add(newOutletAttributeBO);
+                                mAttributeListByLocationID.get(c.getInt(1)).add(c.getInt(0));
+                            } else {
+                                ArrayList<NewOutletAttributeBO> mAtrributeList = new ArrayList<>();
+                                mAtrributeList.add(newOutletAttributeBO);
+
+                                mAttributeBOListByLocationID.put(c.getInt(1), mAtrributeList);
+
+                                ArrayList<Integer> list = new ArrayList<>();
+                                list.add(c.getInt(0));
+                                mAttributeListByLocationID.put(c.getInt(1), list);
+                            }
+
+                        }
+                        c.close();
+                    }
+
+                    channelWiseAttributeList = new ChannelWiseAttributeList(mAttributeBOListByLocationID, mAttributeListByLocationID);
+
+                    dbUtil.closeDB();
+
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return channelWiseAttributeList;
+            }
+        });
+
+    }
+
+
+    /*Note:->we need to update attributeBOArrayList in RetailerMasterBO */
+    @Override
+    public Observable<ArrayList<NewOutletAttributeBO>> getAttributeListForRetailer(final String RetailerID) {
+
+        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
+            @Override
+            public ArrayList<NewOutletAttributeBO> call() throws Exception {
+                ArrayList<NewOutletAttributeBO> attributeBOArrayList=null;
+                try {
+                    dbUtil.openDataBase();
+                    Cursor cursor = dbUtil.selectSQL("select RB.attributeid, RB.levelid from retailerattribute RB INNER JOIN " +
+                            "EntityAttributeMaster  EAM  ON RB.attributeid=EAM.Attributeid  where RB.retailerid = " + RetailerID +
+                            " order by EAM.ParentId");
+                    if (cursor != null) {
+                        attributeBOArrayList = new ArrayList<>();
+                        NewOutletAttributeBO tempBO;
+                        while (cursor.moveToNext()) {
+                            tempBO = new NewOutletAttributeBO();
+                            tempBO.setAttrId(cursor.getInt(0));
+                            tempBO.setLevelId(cursor.getInt(1));
+                            attributeBOArrayList.add(tempBO);
+                        }
+
+                       // getRetailerMasterBO().setAttributeBOArrayList(attributeBOArrayList);
+                        cursor.close();
+                    }
+
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return attributeBOArrayList;
+            }
+        });
+    }
+
+
+    @Override
+    public Observable<ArrayList<NewOutletAttributeBO>> updateRetailerMasterAttribute(
+           final ArrayList<NewOutletAttributeBO> list,
+           final ArrayList<NewOutletAttributeBO> childList,
+           final ArrayList<NewOutletAttributeBO> parentList) {
+        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
+            @Override
+            public ArrayList<NewOutletAttributeBO> call() throws Exception {
+                ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
+                int attribID;
+                int tempAttribID;
+                int parentID;
+                int tempParentID = 0;
+                String attribName = "";
+                String attribHeader = "";
+                int levelId;
+                String status;
+                NewOutletAttributeBO tempBO;
+                for (NewOutletAttributeBO attributeBO : list) {
+                    tempBO = new NewOutletAttributeBO();
+                    attribID = attributeBO.getAttrId();
+                    status = attributeBO.getStatus();
+                    levelId = attributeBO.getLevelId();
+                    for (int i = childList.size() - 1; i >= 0; i--) {
+                        NewOutletAttributeBO attributeBO1 = childList.get(i);
+                        tempAttribID = attributeBO1.getAttrId();
+                        if (attribID == tempAttribID) {
+                            attribName = attributeBO1.getAttrName();
+                            tempParentID = attributeBO1.getParentId();
+                            continue;
+                        }
+                        if (tempAttribID == tempParentID)
+                            tempParentID = attributeBO1.getParentId();
+                    }
+
+                    for (NewOutletAttributeBO attributeBO2 : parentList) {
+                        parentID = attributeBO2.getAttrId();
+                        if (tempParentID == parentID)
+                            attribHeader = attributeBO2.getAttrName();
+                    }
+                    tempBO.setAttrId(attribID);
+                    tempBO.setParentId(tempParentID);
+                    tempBO.setAttrName(attribName);
+                    tempBO.setAttrParent(attribHeader);
+                    tempBO.setStatus(status);
+                    tempBO.setLevelId(levelId);
+                    tempList.add(tempBO);
+                }
+                return tempList;
+            }
+        });
+    }
+
+
+
+
+
+
+
+
 }

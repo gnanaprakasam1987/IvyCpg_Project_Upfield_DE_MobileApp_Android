@@ -1769,6 +1769,12 @@ public class BusinessModel extends Application {
         }
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getAttributeListForRetailer(String)}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void getAttributeListForRetailer() {
 
         DBUtil db = null;

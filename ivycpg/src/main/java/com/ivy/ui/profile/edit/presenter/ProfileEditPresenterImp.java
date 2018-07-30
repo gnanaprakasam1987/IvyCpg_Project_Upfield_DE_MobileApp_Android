@@ -14,6 +14,7 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -28,6 +29,7 @@ import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.data.ChannelWiseAttributeList;
 import com.ivy.ui.profile.data.IProfileDataManager;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.Profile;
@@ -87,6 +89,11 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private Vector<ConfigureBO> profileConfig = null;
     private Vector<ChannelBO> channelMaster = null;
 
+    /*Attributes */
+    private HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelId;
+    private ArrayList<NewOutletAttributeBO> attributeList=null;
+    private ArrayList<NewOutletAttributeBO> attribList;
+
     private boolean isLatLong = false;
     private String path;
     private String[] imgPaths;
@@ -138,12 +145,183 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         IS_UPPERCASE_LETTER = configurationMasterHelper.IS_UPPERCASE_LETTER;
         /*First level  looping for prepare condition */
         for (ConfigureBO configureBO : profileConfig) {
+
             if ((configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_08) && configureBO.isFlag() == 1)
                     || (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_31) && configureBO.isFlag() == 1)) {
                 isLatLong = true;
                 lat = retailerMasterBO.getLatitude() + "";
                 longitude = retailerMasterBO.getLongitude() + "";
             }
+
+            //Prepare Attribute start here
+
+            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_58) && configureBO.isFlag() == 1) {
+
+                getCompositeDisposable().add(mProfileDataManager.getCommonAttributeList()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                        .subscribeWith(new DisposableObserver<ArrayList<Integer>>() {
+                            @Override
+                            public void onNext(ArrayList<Integer> AttributeList) {
+                              mCommonAttributeList=AttributeList;
+                            }
+                            @Override
+                            public void onError(Throwable e) {}
+
+                            @Override
+                            public void onComplete() {}
+                        }));
+
+
+                getCompositeDisposable().add(mProfileDataManager.downloadChannelWiseAttributeList()
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribeWith(new DisposableObserver<ChannelWiseAttributeList>() {
+                            @Override
+                            public void onNext(ChannelWiseAttributeList channelWiseAttributeList) {
+                                mAttributeListByChannelId=channelWiseAttributeList.getmAttributeListByLocationID();
+                                mAttributeBOListByLocationID=channelWiseAttributeList.getmAttributeBOListByLocationID();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {}
+
+                            @Override
+                            public void onComplete() {}
+                        }));
+
+
+                getCompositeDisposable().add(mProfileDataManager.getAttributeListForRetailer(retailerMasterBO.getRetailerID())
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<NewOutletAttributeBO>>() {
+                    @Override
+                    public void onNext(ArrayList<NewOutletAttributeBO> newOutletAttributeBOS) {
+                        retailerMasterBO.setAttributeBOArrayList(newOutletAttributeBOS);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onComplete() {}
+                }));
+
+
+
+               getCompositeDisposable().add(mProfileDataManager.getEditAttributeList(retailerMasterBO.getRetailerID())
+                       .subscribeOn(getSchedulerProvider().io())
+                       .observeOn(getSchedulerProvider().ui())
+                       .subscribeWith(new DisposableObserver<ArrayList<NewOutletAttributeBO>>() {
+                           @Override
+                           public void onNext(ArrayList<NewOutletAttributeBO> newOutletAttributeBOS) {
+                               ArrayList<NewOutletAttributeBO> EditAttributeList=newOutletAttributeBOS;
+                           }
+
+                           @Override
+                           public void onError(Throwable e) {
+
+                           }
+
+                           @Override
+                           public void onComplete() {
+
+                           }
+                       }));
+
+
+               getCompositeDisposable().add(mProfileDataManager.downloadRetailerAttribute()
+               .subscribeOn(getSchedulerProvider().io())
+               .observeOn(getSchedulerProvider().ui())
+               .subscribeWith(new DisposableObserver<ArrayList<NewOutletAttributeBO>>() {
+                   @Override
+                   public void onNext(ArrayList<NewOutletAttributeBO> attributeBOS) {
+                      attribList=attributeBOS;
+                   }
+
+                   @Override
+                   public void onError(Throwable e) {
+
+                   }
+
+                   @Override
+                   public void onComplete() {
+
+                       getCompositeDisposable().add(mProfileDataManager.downloadAttributeParentList(attribList)
+                               .subscribeOn(getSchedulerProvider().io())
+                       .observeOn(getSchedulerProvider().ui())
+                       .subscribeWith(new DisposableObserver<ArrayList<NewOutletAttributeBO>>() {
+                           @Override
+                           public void onNext(ArrayList<NewOutletAttributeBO> attributeParentList) {
+
+                           }
+
+                           @Override
+                           public void onError(Throwable e) {
+
+                           }
+
+                           @Override
+                           public void onComplete() {
+
+                           }
+                       }));
+                   }
+               }));
+
+
+
+                ArrayList<NewOutletAttributeBO> tempList = bmodel.newOutletHelper.updateRetailerMasterAttribute(EditAttributeList);
+                //Load Attribute List which
+                attributeList = bmodel.newOutletHelper.updateRetailerMasterAttribute(retailerMasterBO.getAttributeBOArrayList());
+
+
+                attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
+
+
+
+                try {
+                    if (!tempList.isEmpty()) {
+
+                        int size = attributeList.size();
+
+                        if (attributeList.size() > 0) {
+
+                            ArrayList<NewOutletAttributeBO> newOutletAttributeBOS = new ArrayList<>();
+                            newOutletAttributeBOS.addAll(attributeList);
+
+                            for (int i = 0; i < tempList.size(); i++) {
+
+                                for (int j = 0; j < size; j++) {
+
+                                    if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
+                                            && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
+                                            && tempList.get(i).getStatus().equalsIgnoreCase(ProfileConstant.D)) {
+
+                                        for (int k = 0; k < attributeList.size(); k++)
+                                            if (attributeList.get(k).getParentId() == tempList.get(i).getParentId()
+                                                    && attributeList.get(k).getAttrId() == tempList.get(i).getAttrId()
+                                                    && tempList.get(i).getStatus().equalsIgnoreCase(ProfileConstant.D))
+                                                attributeList.remove(j);
+
+                                    } else {
+                                        if (j == size - 1) {
+                                            attributeList.add(tempList.get(i));
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        } else {
+                            attributeList.addAll(tempList);
+                        }
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+
         }
         if (profileConfig.size() != 0) {
             //Check the Profile Image config is enable or not using PROFILE60
@@ -384,6 +562,85 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         getIvyView().retailersButtonOnClick(retailersList, configurationMasterHelper.VALUE_NEARBY_RETAILER_MAX);
     }
 
+
+
+    private ArrayList<Integer> mCommonAttributeList = null;// common attributes
+    private ArrayList<Integer> mChannelAttributeList = null;// attributes for selected channel already(from DB)..
+    private ArrayList<Integer> mNewChannelAttributeList = null;// Newly selected channel's attribute
+    private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap;
+
+    public HashMap<String, ArrayList<NewOutletAttributeBO>> getAttribMap() {
+        try {
+            attribMap = new HashMap<>();
+            ArrayList<NewOutletAttributeBO> tempList;
+            for (NewOutletAttributeBO parent : getAttributeParentList()) {
+                tempList = new ArrayList<>();
+                for (NewOutletAttributeBO child : getAttributeList()) {
+                    if (parent.getAttrId() == child.getParentId()) {
+                        tempList.add(child);
+                    }
+                }
+                attribMap.put(parent.getAttrName(), tempList);
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return attribMap;
+    }
+
+
+    @Override
+    public void isCommonAttributeView() {
+
+        getCompositeDisposable().add(mProfileDataManager.getCommonAttributeList()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<Integer>>() {
+                    @Override
+                    public void onNext(ArrayList<Integer> ids) {
+                        if (ids != null) {
+                            mCommonAttributeList = new ArrayList<>();
+                            mCommonAttributeList.addAll(ids);
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                }));
+
+        // attributes mapped to channel already are added here
+        if (isChannelAvailable()) {
+            mChannelAttributeList = new ArrayList<>();
+            int subChannelID;
+            if (mPreviousProfileChanges.get(ProfileConstant.PROFILE_07) != null)
+                subChannelID = SDUtil.convertToInt(mPreviousProfileChanges.get(ProfileConstant.PROFILE_07));
+            else
+                subChannelID = retailerMasterBO.getSubchannelid();
+            mChannelAttributeList.addAll(mAttributeListByChannelId.get(subChannelID));
+
+        }
+    }
+
+    // to check sub channel is available or not
+    // channel may be mapped in any sequance, so its availbily identified using iteration
+    private boolean isChannelAvailable() {
+        for (ConfigureBO configureBO : profileConfig) {
+            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_06)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    @Override
+    public void isNewChannelAttributeView() {}
+
+
     @Override
     public void imageOnClickListener() {
         final String imagePath = retailerMasterBO.getProfileImagePath();
@@ -411,6 +668,19 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                }
                            }
                 ));
+    }
+
+
+    public ArrayList<Integer> getmCommonAttributeList() {
+        if (mCommonAttributeList == null)
+            mCommonAttributeList = new ArrayList<>();
+        return mCommonAttributeList;
+    }
+
+    private HashMap<Integer, ArrayList<NewOutletAttributeBO>>  mAttributeBOListByLocationID;
+
+    public HashMap<Integer, ArrayList<NewOutletAttributeBO>> getmAttributeBOListByLocationID() {
+        return mAttributeBOListByLocationID;
     }
 
 

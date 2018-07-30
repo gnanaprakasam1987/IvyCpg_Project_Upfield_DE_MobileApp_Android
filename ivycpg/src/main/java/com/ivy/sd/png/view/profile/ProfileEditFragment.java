@@ -387,43 +387,57 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }*/
 
             if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_58) && configureBO.isFlag() == 1) {
-                ArrayList<NewOutletAttributeBO> tempList = bmodel.newOutletHelper.updateRetailerMasterAttribute(
-                        bmodel.newOutletAttributeHelper.getEditAttributeList(retailerObj.getRetailerID()));
+
+
+
                 bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
+
                 mAttributeListByChannelId = bmodel.newOutletAttributeHelper.downloadChannelWiseAttributeList();
+
                 //Load Retailer Based Attribute list and store in retailer master bo
                 bmodel.getAttributeListForRetailer();
+
+                ArrayList<NewOutletAttributeBO> EditAttributeList=bmodel.newOutletAttributeHelper.getEditAttributeList(retailerObj.getRetailerID());
+                ArrayList<NewOutletAttributeBO> tempList = bmodel.newOutletHelper.updateRetailerMasterAttribute(EditAttributeList);
                 //Load Attribute List which
                 attributeList = bmodel.newOutletHelper.updateRetailerMasterAttribute(retailerObj.getAttributeBOArrayList());
+
                 attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
+
                 try {
                     if (!tempList.isEmpty()) {
 
                         int size = attributeList.size();
+
                         if (attributeList.size() > 0) {
+
                             ArrayList<NewOutletAttributeBO> newOutletAttributeBOS = new ArrayList<>();
+
                             newOutletAttributeBOS.addAll(attributeList);
-                            for (int i = 0; i < tempList.size(); i++) {
-                                for (int j = 0; j < size; j++) {
 
-                                    if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
-                                            && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
-                                            && tempList.get(i).getStatus().equalsIgnoreCase(D)) {
+                                for (int i = 0; i < tempList.size(); i++) {
 
-                                        for (int k = 0; k < attributeList.size(); k++)
-                                            if (attributeList.get(k).getParentId() == tempList.get(i).getParentId()
-                                                    && attributeList.get(k).getAttrId() == tempList.get(i).getAttrId()
-                                                    && tempList.get(i).getStatus().equalsIgnoreCase(D))
-                                                attributeList.remove(j);
+                                    for (int j = 0; j < size; j++) {
 
-                                    } else {
-                                        if (j == size - 1) {
-                                            attributeList.add(tempList.get(i));
+                                        if (newOutletAttributeBOS.get(j).getParentId() == tempList.get(i).getParentId()
+                                                && newOutletAttributeBOS.get(j).getAttrId() == tempList.get(i).getAttrId()
+                                                && tempList.get(i).getStatus().equalsIgnoreCase(D)) {
+
+                                            for (int k = 0; k < attributeList.size(); k++)
+                                                if (attributeList.get(k).getParentId() == tempList.get(i).getParentId()
+                                                        && attributeList.get(k).getAttrId() == tempList.get(i).getAttrId()
+                                                        && tempList.get(i).getStatus().equalsIgnoreCase(D))
+                                                    attributeList.remove(j);
+
+                                        } else {
+                                            if (j == size - 1) {
+                                                attributeList.add(tempList.get(i));
+                                            }
                                         }
-                                    }
 
+                                    }
                                 }
-                            }
+
                         } else {
                             attributeList.addAll(tempList);
                         }
@@ -440,6 +454,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                 longitude = retailerObj.getLongitude() + "";
             }
         }
+
+
 
         if (is_contact_title2 || is_contact_title1) {
             mcontactTitleList = new ArrayList<>();
@@ -2645,6 +2661,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     //To create layout for Retailer Attribute
     private LinearLayout addAttributeView(int flag) {
+
         @NonNls LinearLayout parentLayout = null;
         try {
             //flag=0 - add common atrributes and attributes for current(from DB) channel
@@ -2707,7 +2724,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     mChannelAttributeList.addAll(mAttributeListByChannelId.get(subChannelID));
                 }
 
-            } else if (isFromChannel) {
+            }
+            else if (isFromChannel) {
 
 //                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null
 //                        && (Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")) == ((SpinnerBO) subchannel.getSelectedItem()).getId())) {
@@ -2731,12 +2749,12 @@ public class ProfileEditFragment extends IvyBaseFragment
                 if (mAttributeListByChannelId != null && mAttributeListByChannelId.get(((SpinnerBO) subchannel.getSelectedItem()).getId()) != null)
                     mNewChannelAttributeList.addAll(mAttributeListByChannelId.get(((SpinnerBO) subchannel.getSelectedItem()).getId()));
 
-//                }
-
             }
+
 
             spinnerHashMap = new HashMap<>();
             spinnerAdapterMap = new HashMap<>();
+
             if (isFromChannel && isNewChannel) {
 
                 // User selected a sub channel an it is new one.
@@ -2767,14 +2785,18 @@ public class ProfileEditFragment extends IvyBaseFragment
                         layout.addView(mn_textview);
 
                         final int columnCount = getLevel(parentBO.getAttrId());
+
                         MaterialSpinner spinner;
+
                         LinearLayout innerLL = new LinearLayout(getActivity());
                         innerLL.setOrientation(LinearLayout.VERTICAL);
                         innerLL.setLayoutParams(paramsAttribSpinner);
+
                         LinearLayout innerHL = new LinearLayout(getActivity());
                         innerHL.setWeightSum(2);
                         innerHL.setLayoutParams(LLParams);
                         innerHL.setOrientation(LinearLayout.HORIZONTAL);
+
                         boolean isAdded = false;
                         //  ArrayList<Integer> indexList = attributeIndexMap.get(attribName);
 
@@ -2787,13 +2809,11 @@ public class ProfileEditFragment extends IvyBaseFragment
                             spinner = new MaterialSpinner(getActivity());
 
                             attrbList = new ArrayList<>();
-                            attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                                    .getString(R.string.select_str) + " " + getActivity().getResources()
-                                    .getString(R.string.attribute)));
+                            attrbList.add(0, new NewOutletAttributeBO(-1,
+                                    getActivity().getResources().getString(R.string.select_str) + " " + getActivity().getResources().getString(R.string.attribute)));
                             attrbList.addAll(attribMap.get(attribName));
 
-                            final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                                    android.R.layout.simple_spinner_item, attrbList);
+                            final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, attrbList);
                             spinner.setAdapter(arrayAdapter);
                             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinner.setLayoutParams(innerParams);
@@ -2958,27 +2978,31 @@ public class ProfileEditFragment extends IvyBaseFragment
     }
 
 
-    private void prepareCommonAttributeView(ArrayList<Integer> mCommonAttributeList
-            , LinearLayout parentLayout, ArrayList<Integer> mAddedCommonAttributeList) {
+    private void prepareCommonAttributeView(ArrayList<Integer> mCommonAttributeList,
+                                            LinearLayout parentLayout,
+                                            ArrayList<Integer> mAddedCommonAttributeList) {
 
-        LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+               LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams innerParams = new LinearLayout.LayoutParams(0,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+               LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
         int rowCount = bmodel.newOutletAttributeHelper.getAttributeParentList().size();
+
         selectedAttribList = new HashMap<>();
+
         for (int i = 0; i < rowCount; i++) {
 
             final NewOutletAttributeBO parentBO = bmodel.newOutletAttributeHelper.getAttributeParentList().get(i);
-            if (mCommonAttributeList.contains(parentBO.getAttrId())
-                    && !mAddedCommonAttributeList.contains(parentBO.getAttrId())) {
+
+            if (mCommonAttributeList.contains(parentBO.getAttrId()) && !mAddedCommonAttributeList.contains(parentBO.getAttrId())) {
 
                 LinearLayout layout = new LinearLayout(getActivity());
                 layout.setOrientation(LinearLayout.HORIZONTAL);
                 layout.setGravity(Gravity.CENTER_VERTICAL);
                 layout.setWeightSum(3f);
                 layout.setLayoutParams(LLParams);
+
                 final String attribName = parentBO.getAttrName();
                 TextView mn_textview = new TextView(getActivity());
                 mn_textview.setText(attribName);
@@ -2986,6 +3010,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 mn_textview.setTextColor(Color.BLACK);
                 mn_textview.setLayoutParams(paramsAttrib);
                 layout.addView(mn_textview);
+
                 final int columnCount = getLevel(parentBO.getAttrId());
                 MaterialSpinner spinner;
                 LinearLayout innerLL = new LinearLayout(getActivity());
@@ -3262,6 +3287,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             selectedAttribList.put(tempParentID, tempBO);
         }
     }
+
 
     private ArrayList<NewOutletAttributeBO> getAttributeGroupedList(int parentID, ArrayList<NewOutletAttributeBO> list, int attribID) {
         ArrayList<NewOutletAttributeBO> arrayList = new ArrayList<>();

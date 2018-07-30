@@ -77,6 +77,8 @@ public interface IProfileEditContract {
         void createAttributeView(int flag);
 
 
+
+
     }
 
     @PerActivity
@@ -128,5 +130,9 @@ public interface IProfileEditContract {
 
         void getLinkRetailerListByDistributorId();
 
+        //AttributeView
+        void isCommonAttributeView();
+
+        void isNewChannelAttributeView();
     }
 }

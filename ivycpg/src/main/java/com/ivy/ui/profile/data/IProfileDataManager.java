@@ -2,6 +2,7 @@ package com.ivy.ui.profile.data;
 
 
 import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -41,5 +42,30 @@ public interface IProfileDataManager {
     Observable<ArrayList<StandardListBO>> downloadPriorityProducts();
 
     Observable<ArrayList<String>> downloadPriorityProductsForRetailer(String retailerId);
+
+
+    Observable<ArrayList<Integer>> getCommonAttributeList();
+
+
+    Observable<ArrayList<NewOutletAttributeBO>> getEditAttributeList(String retailerID);
+
+
+    Observable<ChannelWiseAttributeList> downloadChannelWiseAttributeList();
+
+
+    Observable<ArrayList<NewOutletAttributeBO>> getAttributeListForRetailer(String RetailerID);
+
+
+    Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeParentList(ArrayList<NewOutletAttributeBO> attribList);
+
+
+    Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute();
+
+
+    Observable<ArrayList<NewOutletAttributeBO>> updateRetailerMasterAttribute(
+            ArrayList<NewOutletAttributeBO> list,
+            ArrayList<NewOutletAttributeBO> retailerAttribute,
+            ArrayList<NewOutletAttributeBO> AttributeParentList);
+
 
 }
