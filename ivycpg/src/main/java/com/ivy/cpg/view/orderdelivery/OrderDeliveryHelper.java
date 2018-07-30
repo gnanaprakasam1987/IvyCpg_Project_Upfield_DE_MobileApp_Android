@@ -591,6 +591,7 @@ public class OrderDeliveryHelper {
                 Commons.printException(e);
             }
 
+            double totalAmount = getOrderedTotalValue();
             if (isEdit) {
 
                 int linesPerCall = 0;
@@ -656,12 +657,12 @@ public class OrderDeliveryHelper {
                 String invoiceHeaderQry = "Insert into InvoiceMaster (invoiceno,invoicedate,beatid,retailerId,invNetamount,discountedAmount," +
                         "orderid,ImageName,invoiceAmount,latitude,longitude,return_amt," +
                         "LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
-                        "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice)" +
+                        "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,totalamount)" +
                         " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," +
                         (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + "," + (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + ",orderid," +
                         "imagename," + (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + ",latitude,longitude,ReturnValue," + linesPerCall + ",totalWeight,SalesType," +
                         "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," + businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 +
-                        " from OrderHeader where OrderId = " + businessModel.QT(orderId);
+                        "," +totalAmount + " from OrderHeader where OrderId = " + businessModel.QT(orderId);
 
 
                 db.executeQ(invoiceHeaderQry);
@@ -671,12 +672,12 @@ public class OrderDeliveryHelper {
                 String invoiceHeaderQry = "Insert into InvoiceMaster (invoiceno,invoicedate,beatid,retailerId,invNetamount," +
                         "orderid,ImageName,discount,invoiceAmount,latitude,longitude,return_amt," +
                         "discount_type,LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
-                        "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,discountedAmount)" +
+                        "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,discountedAmount,totalamount)" +
                         " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," + businessModel.QT(businessModel.formatValueBasedOnConfig(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
                         ",orderid,imagename,discount," + businessModel.QT(getOrderDeliveryTotalValue()) +",latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
                         "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," +
                         businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + businessModel.QT(businessModel.formatValueBasedOnConfig(discountedAmount)) +
-                        " from OrderHeader where OrderId = " + businessModel.QT(orderId);
+                        "," +totalAmount + " from OrderHeader where OrderId = " + businessModel.QT(orderId);
 
                 db.executeQ(invoiceHeaderQry);
 
@@ -703,7 +704,7 @@ public class OrderDeliveryHelper {
                     saveProductLeveltax(orderId, db, totalOrderValue, invoiceId);
             }
 
-            db.updateSQL("update OrderHeader set invoicestatus = 1 where orderId = " + businessModel.QT(orderId));
+            db.updateSQL("update OrderHeader set invoicestatus = 1,totalamount =" + totalAmount +" where orderId = " + businessModel.QT(orderId));
             db.updateSQL("update SalesReturnHeader set upload='N',invoiceid = " + businessModel.QT(invoiceId) + " where RefModuleTId = " + businessModel.QT(orderId));
 
             String uid = "";
@@ -1113,5 +1114,25 @@ public class OrderDeliveryHelper {
 
         return schemeProductBOS;
 
+    }
+
+    /*To get invoice total value without applying tax and discount*/
+    private double getOrderedTotalValue() {
+        double line_total_price = 0;
+
+        int siz = getOrderedProductMasterBOS().size();
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO product = getOrderedProductMasterBOS().elementAt(i);
+
+            if ((product.getOrderedPcsQty() > 0
+                    || product.getOrderedCaseQty() > 0 || product
+                    .getOrderedOuterQty() > 0)) {
+
+                line_total_price += (product.getOrderedCaseQty() * product.getCsrp())
+                        + (product.getOrderedPcsQty() * product.getSrp())
+                        + (product.getOrderedOuterQty() * product.getOsrp());
+            }
+        }
+        return line_total_price;
     }
 }

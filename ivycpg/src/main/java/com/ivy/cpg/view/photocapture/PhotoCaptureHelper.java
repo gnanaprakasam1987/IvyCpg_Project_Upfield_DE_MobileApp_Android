@@ -397,6 +397,8 @@ public class PhotoCaptureHelper {
     }
 
     public ArrayList<PhotoCaptureLocationBO> getLocations() {
+        if (inStoreLocation == null)
+            inStoreLocation = new ArrayList<>();
         return inStoreLocation;
     }
 

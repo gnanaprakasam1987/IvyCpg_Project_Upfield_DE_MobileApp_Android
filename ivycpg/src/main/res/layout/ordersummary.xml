@@ -43,6 +43,7 @@
         android:layout_above="@+id/footer"
         android:layout_margin="@dimen/card_margin"
         android:maxLines="1"
+        android:visibility="gone"
         android:text="@string/credit_note"
         android:textSize="@dimen/font_small" />
 
