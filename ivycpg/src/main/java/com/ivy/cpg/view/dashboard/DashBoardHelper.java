@@ -934,7 +934,7 @@ public class DashBoardHelper {
             if (!isRetailer)
                 sql = "select distinct interval from SellerKPI";
             else
-                sql = "select distinct interval from RetailerKPI";
+                sql = "select distinct interval from RetailerKPI where RetailerId="+bmodel.getRetailerMasterBO().getRetailerID();
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 dashList = new ArrayList<>();

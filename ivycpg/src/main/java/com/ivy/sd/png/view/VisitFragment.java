@@ -1332,7 +1332,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 bmodel.setVisitretailerMaster(startVistitRetailers);
                                 startVisit = calledBy.equals(MENU_PLANNING);
 
-                                if (!profileClick) {
+                                if (!profileClick && !holder.retailerObjectHolder.getIsNew().equals("Y")) {
                                     profileClick = true;
                                     if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                                         bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
@@ -1371,7 +1371,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                             bmodel.setVisitretailerMaster(startVistitRetailers);
                             startVisit = calledBy.equals(MENU_PLANNING);
 
-                            if (!profileClick) {
+                            if (!profileClick && !holder.retailerObjectHolder.getIsNew().equals("Y")) {
                                 profileClick = true;
                                 if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                                     bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
