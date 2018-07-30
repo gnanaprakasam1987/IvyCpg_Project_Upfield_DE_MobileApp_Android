@@ -7,13 +7,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-
-        android:weightSum="6">
+        android:weightSum="8">
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:padding="@dimen/dimen_8dp"
+            android:layout_weight="4">
 
             <TextView
                 android:id="@+id/txt_productName"
@@ -21,7 +21,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:gravity="left"
-                android:padding="@dimen/padding_small"
                 android:textSize="@dimen/font_micro_small" />
 
             <TextView
@@ -30,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txt_productName"
                 android:gravity="left"
-                android:padding="@dimen/padding_small"
                 android:textSize="@dimen/font_micro_small" />
 
         </RelativeLayout>
@@ -43,6 +41,8 @@
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical" />
 
+
+
         <TextView
             android:id="@+id/txt_returnPieceQuantity"
             android:layout_width="0dp"
@@ -50,6 +50,7 @@
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
             android:text="0" />
+
 
         <EditText
             android:id="@+id/txt_actualCaseQuantity"
@@ -62,6 +63,7 @@
             android:inputType="number"
             android:maxLength="4"
             android:text="0" />
+
 
 
         <EditText

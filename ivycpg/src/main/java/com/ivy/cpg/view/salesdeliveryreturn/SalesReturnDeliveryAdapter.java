@@ -72,16 +72,11 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
      */
     @Override
     public void onBindViewHolder(final SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder holder, final int position) {
-            holder.constraintLayout.setVisibility(View.GONE);
             holder.relativeLayout.setVisibility(View.VISIBLE);
             holder.uId.setText(("UId : ") + salesReturnDeliveryDataModelsList.get(position).getUId());
-            holder.returnValue.setText(("ReturnValue : " + salesReturnDeliveryDataModelsList.get(position).getReturnValue()));
-            holder.lpc.setText(("LPC : " + salesReturnDeliveryDataModelsList.get(position).getLpc()));
             holder.dateReturn.setText("Date : " + salesReturnDeliveryDataModelsList.get(position).getDate());
 
             holder.uId.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.returnValue.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.lpc.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.dateReturn.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
     }
 
@@ -91,10 +86,6 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
     }
 
 
-    public Vector<SalesReturnDeliveryDataBo> getListItem() {
-        return new Vector<>(salesReturnDeliveryDataModelsList);
-    }
-
 
     /**
      * Create The view First Time and hold for reuse
@@ -103,11 +94,7 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
      */
 
     public class SalesReturnDeliveryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView uId, dateReturn, returnValue, lpc;
-
-        TextView productName, returnCaseQuantity, returnPieceQuantity;
-        EditText actualCaseQuantity, actualPieceQuantity;
-        ConstraintLayout constraintLayout;
+        TextView uId, dateReturn ;
         RelativeLayout relativeLayout;
 
 
@@ -115,9 +102,6 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
             super(itemView);
             uId = itemView.findViewById(R.id.txt_uid);
             dateReturn = itemView.findViewById(R.id.txt_dateReturn);
-            returnValue = itemView.findViewById(R.id.txt_returnValue);
-            lpc = itemView.findViewById(R.id.txt_lpc);
-            constraintLayout = itemView.findViewById(R.id.lyt_itemSalesReturn);
             relativeLayout = itemView.findViewById(R.id.container_salesReturnItem);
 
             itemView.setOnClickListener(this);
