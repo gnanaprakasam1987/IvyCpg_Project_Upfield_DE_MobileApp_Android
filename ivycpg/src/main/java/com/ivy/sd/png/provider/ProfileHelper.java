@@ -30,8 +30,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 import static com.ivy.lib.Utils.QT;
 
@@ -986,37 +990,75 @@ public class ProfileHelper {
         return givenLovId;
     }
 
-    public ArrayList<RetailerContactBo> downloadRetailerContact(String retailerID) {
-        ArrayList<RetailerContactBo> contactList = new ArrayList<>();
+    public Single<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID){
+        return Single.fromCallable(new Callable<ArrayList<RetailerContactBo>>() {
+            @Override
+            public ArrayList<RetailerContactBo> call() throws Exception {
+                ArrayList<RetailerContactBo> contactList = new ArrayList<>();
+                try {
+                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,"
+                            + " RC.contactname as cName,RC.contactname_LName as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
+                            + " ifnull(RC.Email,'') as email from RetailerContact RC "
+                            + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
+                            + " Where RC.RetailerId =" + bmodel.QT(retailerID);
 
-        String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,"
-                + " RC.contactname as cName,RC.contactname_LName as cLname,RC.ContactNumber as cNumber,RC.IsPrimary as isPrimary,"
-                + " ifnull(RC.Email,'') as email from RetailerContact RC "
-                + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
-                + " Where RC.RetailerId =" + bmodel.QT(retailerID);
-
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        Cursor c = db.selectSQL(sql);
-        if (c != null) {
-            while (c.moveToNext()) {
-                RetailerContactBo retailerContactBo = new RetailerContactBo();
-                if (c.getString(c.getColumnIndex("contactTitle")).length() > 0)
-                    retailerContactBo.setTitle(c.getString(c.getColumnIndex("contactTitle")));
-                else
-                    retailerContactBo.setTitle(c.getString(c.getColumnIndex("listName")));
-                retailerContactBo.setFistname(c.getString(c.getColumnIndex("cName")));
-                retailerContactBo.setLastname(c.getString(c.getColumnIndex("cLname")));
-                retailerContactBo.setContactNumber(c.getString(c.getColumnIndex("cNumber")));
-                retailerContactBo.setContactMail(c.getString(c.getColumnIndex("email")));
-                retailerContactBo.setIsPrimary(c.getInt(c.getColumnIndex("isPrimary")));
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    Cursor c = db.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            RetailerContactBo retailerContactBo = new RetailerContactBo();
+                            if (c.getString(c.getColumnIndex("contactTitle")).length() > 0)
+                                retailerContactBo.setTitle(c.getString(c.getColumnIndex("contactTitle")));
+                            else
+                                retailerContactBo.setTitle(c.getString(c.getColumnIndex("listName")));
+                            retailerContactBo.setFistname(c.getString(c.getColumnIndex("cName")));
+                            retailerContactBo.setLastname(c.getString(c.getColumnIndex("cLname")));
+                            retailerContactBo.setContactNumber(c.getString(c.getColumnIndex("cNumber")));
+                            retailerContactBo.setContactMail(c.getString(c.getColumnIndex("email")));
+                            retailerContactBo.setIsPrimary(c.getInt(c.getColumnIndex("isPrimary")));
+                            contactList.add(retailerContactBo);
+                        }
+                        c.close();
+                    }
+                    db.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                    contactList = new ArrayList<>();
+                }
+                return contactList;
             }
-            c.close();
-        }
-        db.closeDB();
+        });
+    }
 
-        return contactList;
 
+    public Single<HashMap<String,String>> downloadRetailerContactMenu(){
+        return Single.fromCallable(new Callable<HashMap<String,String>>() {
+            @Override
+            public HashMap<String,String> call() throws Exception {
+                HashMap<String, String> contactMenuMap = new HashMap<>();
+
+                try {
+                    String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + bmodel.QT("RETAILER_CONTACT") + " and flag =1";
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    Cursor c = db.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            contactMenuMap.put(c.getString(0), c.getString(1));
+                        }
+                        c.close();
+                    }
+                    db.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                    contactMenuMap = new HashMap<>();
+                }
+                return contactMenuMap;
+
+            }
+        });
     }
 }
