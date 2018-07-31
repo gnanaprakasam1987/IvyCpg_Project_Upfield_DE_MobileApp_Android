@@ -73,7 +73,6 @@ import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 public class ReportActivity extends BaseActivity implements
@@ -600,16 +599,6 @@ public class ReportActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
     }
 
     @Override

@@ -50,7 +50,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.lib.Logs;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SODBO;
 import com.ivy.sd.png.bo.SOSBO;
@@ -64,7 +63,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
@@ -727,15 +725,6 @@ public class SODFragment extends IvyBaseFragment implements
         }
     }
 
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-    }
 
     /**
      * Alert dialog to show location

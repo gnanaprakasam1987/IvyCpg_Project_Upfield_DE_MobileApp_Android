@@ -2340,7 +2340,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
             mDrawerLayout.openDrawer(GravityCompat.END);
 
             FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
             FragmentTransaction ft = fm
                     .beginTransaction();
@@ -2349,12 +2349,11 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
             Bundle bundle = new Bundle();
 
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "generalfilter");
             ft.commit();
@@ -2480,126 +2479,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         i.setAction(switchToProfile);
         i.putExtra(extraData, "dist_stok");
         this.sendBroadcast(i);
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-        try {
-            // Close the drawer
-            mDrawerLayout.closeDrawers();
-            String generaltxt = generalbutton;
-            Vector<ProductMasterBO> items = bmodel.productHelper
-                    .getProductMaster();
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-            int siz = items.size();
-            mylist = new Vector<>();
-
-            for (int i = 0; i < siz; ++i) {
-                ProductMasterBO ret = items.elementAt(i);
-
-                if (ret.getBarCode().equals(strBarCodeSearch)
-                        || ret.getCasebarcode().equals(strBarCodeSearch)
-                        || ret.getOuterbarcode().equals(strBarCodeSearch)
-                        || "ALL".equals(strBarCodeSearch)) {
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && ret.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0)) {
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
-                            if (!mFilterId.isEmpty()) {
-                                if (mFilterId.contains(ret.getParentid()) || (mFilterId.contains(-1))) {
-                                    if (generaltxt.equals(GENERAL))//No special filters selected
-                                    {
-                                        mylist.add(ret);
-                                    } else {
-                                        if (isSpecialFilterAppliedProduct(generaltxt, ret))  //special filter selected
-                                            mylist.add(ret);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
-                getProductBySequence();
-
-            // set the new list to listview
-            mSchedule = new MyAdapter(mylist);
-            lvwplist.setAdapter(mSchedule);
-
-            strBarCodeSearch = "ALL";
-            updateValue();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        try {
-            // Close the drawer
-            mDrawerLayout.closeDrawers();
-            String generaltxt = generalbutton;
-            Vector<ProductMasterBO> items = bmodel.productHelper
-                    .getProductMaster();
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-            int siz = items.size();
-            mylist = new Vector<>();
-            for (int i = 0; i < siz; ++i) {
-                ProductMasterBO ret = items.elementAt(i);
-
-                if (ret.getBarCode().equals(strBarCodeSearch)
-                        || ret.getCasebarcode().equals(strBarCodeSearch)
-                        || ret.getOuterbarcode().equals(strBarCodeSearch)
-                        || "ALL".equals(strBarCodeSearch)) {
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && ret.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
-                            if (mCategory != null) {
-                                if (!mCategory.isEmpty()) {
-                                    if (mCategory.contains(ret.getcParentid())
-                                            || (mCategory.contains(-1))) {
-
-                                        if (generaltxt.equals(GENERAL))//No special filters selected
-                                        {
-                                            mylist.add(ret);
-                                        } else {
-                                            if (isSpecialFilterAppliedProduct(generaltxt, ret))  //special filter selected
-                                                mylist.add(ret);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-            if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
-                getProductBySequence();
-            // set the new list to listview
-            mSchedule = new MyAdapter(mylist);
-            lvwplist.setAdapter(mSchedule);
-
-            strBarCodeSearch = "ALL";
-            updateValue();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
     }
 
     private boolean applyCommonFilterConfig(ProductMasterBO ret) {
