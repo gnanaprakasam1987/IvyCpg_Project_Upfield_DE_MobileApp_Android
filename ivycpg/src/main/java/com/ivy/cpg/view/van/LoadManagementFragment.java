@@ -317,10 +317,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         StockProposalScreen.class);
                 stockpropintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 stockpropintent.putExtra("screentitle", menuItem.getMenuName());
-                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
-                        "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
-
-                bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STOCK_PROPOSAL), 2);
+                stockpropintent.putExtra("isFromLodMgt", true);
+                stockpropintent.putExtra("menuCode",menuItem.getConfigCode());
                 startActivity(stockpropintent);
                 break;
             case MENU_MANUAL_VAN_LOAD:

@@ -37,7 +37,6 @@
     <string name="no_products_exists">ไม่มีรายการสั่งสินค้า</string>
     <string name="Noorderreason">เหตุผล</string>
     <string name="no_unsubmitted_orders">No unsubmitted orders.</string>
-    <string name="nodatadownload">ไม่มีข้อมูลที่ต้องการ Download</string>
     <string name="no_network_connection">ไม่สามารถเชื่มต่อ Internet</string>
     <string name="successfully_activated">การ Activate สำเร็จ กรุณาจดบันทึกรหัสอ้างอิง</string>
     <string name="invoice_created_successfully">Invoice created successfully.</string>
@@ -64,7 +63,6 @@
     <string name="amount_exeeds_the_balance_please_check">ยอดเงินเกิน กรุณาตรวจสอบ</string>
     <string name="its_highly_recommend_you_to_upload_the_images_before_capturing_new_image">Its highly recommend you to upload the images before capturing new image.</string>
     <string name="maximum_number_of_images_has_been_captured_without_upload_Do_upload_or_delete_images">จำนวนรูปภาพเกิน โปรด sync ข้อมูลหรือลบรูปภาพออก.</string>
-    <string name="wits_merchandising_already_done_Do_you_want_do_again">ตรวจสอบการจัดเรียงเรียบร้อยแล้ว ต้องการทำอีกรอบ?</string>
     <string name="order_exist_without_invoice">Orders exist without invoice creation.</string>
     <string name="password_does_not_match">Password ไม่ถูกต้อง</string>
     <string name="its_not_possible_to_upload_without_img">Its not possible to upload without images.</string>
@@ -200,9 +198,6 @@
     <string name="saving_sales_return">Saving Sales Return…</string>
     <string name="uploading_data">กำลัง Upload ข้อมูล</string>
     <string name="image_uploading">Image uploading…</string>
-    <string name="saving_init_merchandising">Saving Initiative Merchandising…</string>
-    <string name="saving_merchandising">Saving Merchandising…</string>
-    <string name="merch_initiative">Merch. Initiative</string>
     <string name="successfully_uploaded">การ Upload ข้อมูลเรียบร้อยแล้ว</string>
     <string name="upload_failed_please_try_again">การ Upload ข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง</string>
     <string name="images_sucessfully_uploaded">การ Upload ภาพถ่ายเรียบร้อยแล้ว</string>
@@ -260,7 +255,6 @@
     <string name="pre_post">Pre/Post</string>
     <string name="promotion">Promotion</string>
     <string name="initiative">สินค้าใหม่</string>
-    <string name="focus_merchandising">SBD Merchandising</string>
     <string name="Product_details">รายละเอียดสินค้า</string>
     <string name="new_task_saved">New Task has been saved.</string>
     <string name="choose_brand">Choose Brand</string>
@@ -537,11 +531,9 @@
     <string name="BATCH_NO">BATCH</string>
     <string name="select_reason_skip_seq">Select Reason for Skip Sequence</string>
     <string name="crown"> Crown Management</string>
-    <string name="crown_count_mismatch">Crown Qty mismatch from Product Qty</string>
     <string name="crown_count">Crown Count</string>
     <string name="liableqty">LiableQty</string>
     <string name="returnqty">ReturnQty</string>
-    <string name="enter_three_char">Enter atleast 3 letters.</string>
     <string name="loading_stock">Loading Stock</string>
     <string name="sold_stock">Sold Stock</string>
     <string name="free_issued">Free Issued</string>
@@ -558,7 +550,6 @@
     <string name="vanload_productprice">Loaded Product Price     :</string>
     <string name="vanunload_productprice">Unloaded Product Price :</string>
     <string name="batch_no_already_exist">Batch No. already exist</string>
-    <string name="crown_product">Crown Product</string>
     <string name="select_sub_depot">Select Sub Depot to Save</string>
     <string name="enter">Enter</string>
     <string name="code">Code</string>
@@ -1273,6 +1264,5 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
-    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
 
 </resources>

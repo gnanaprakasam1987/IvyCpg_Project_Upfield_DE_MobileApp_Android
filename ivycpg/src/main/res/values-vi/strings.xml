@@ -36,7 +36,6 @@
     <string name="no_products_exists">Không có sản phẩm</string>
     <string name="Noorderreason">Không có lý do</string>
     <string name="no_unsubmitted_orders">Không có ĐH chưa gửi</string>
-    <string name="nodatadownload">Không có dữ liệu</string>
     <string name="no_network_connection">Không có internet</string>
     <string name="successfully_activated">Kích hoạt thành công</string>
     <string name="invoice_created_successfully">Tạo hóa đơn thành công</string>
@@ -63,7 +62,6 @@
     <string name="amount_exeeds_the_balance_please_check">Số tiền vượt quá công nợ</string>
     <string name="its_highly_recommend_you_to_upload_the_images_before_capturing_new_image">Bạn phải gửi hình cũ trước khi chụp hình mới</string>
     <string name="maximum_number_of_images_has_been_captured_without_upload_Do_upload_or_delete_images">Đã vượt quá số hình cho phép. Bạn cần gửi hình hoặc xóa bớt</string>
-    <string name="wits_merchandising_already_done_Do_you_want_do_again">Trưng bày đã xong. Bạn muốn làm lại?</string>
     <string name="order_exist_without_invoice">Đơn hàng chưa có hóa đơn</string>
     <string name="password_does_not_match">Sai mật khẩu</string>
     <string name="its_not_possible_to_upload_without_img">Phải gửi hình kèm theo</string>
@@ -200,9 +198,6 @@
     <string name="loading">Loading…</string>
     <string name="uploading_data">Đang gửi dữ liệu…</string>
     <string name="image_uploading">Đang gửi ảnh…</string>
-    <string name="saving_init_merchandising">Đang lưu trưng bày trọng tâm…</string>
-    <string name="saving_merchandising">Đang lưu trưng bày…</string>
-    <string name="merch_initiative">VLBB CTTT</string>
     <string name="successfully_uploaded">Đã gửi thành công</string>
     <string name="upload_failed_please_try_again">Gửi thất bại. Thử lại</string>
     <string name="images_sucessfully_uploaded">Gửi hình thành công</string>
@@ -258,7 +253,6 @@
     <string name="pre_post">Pre/Post</string>
     <string name="promotion">C.T.KM</string>
     <string name="initiative">C.T.Trọng Tâm</string>
-    <string name="focus_merchandising">VLBB SBD</string>
     <string name="Product_details">Chi tiết SP</string>
     <string name="new_task_saved">Công việc đã lưu</string>
     <string name="actual">Thực Đạt</string>
@@ -534,11 +528,9 @@
     <string name="BATCH_NO">BATCH</string>
     <string name="select_reason_skip_seq">Select Reason for Skip Sequence</string>
     <string name="crown"> Crown Management</string>
-    <string name="crown_count_mismatch">Crown Qty mismatch from Product Qty</string>
     <string name="crown_count">Crown Count</string>
     <string name="liableqty">LiableQty</string>
     <string name="returnqty">ReturnQty</string>
-    <string name="enter_three_char">Enter atleast 3 letters.</string>
     <string name="loading_stock">Loading Stock</string>
     <string name="sold_stock">Sold Stock</string>
     <string name="free_issued">Free Issued</string>
@@ -555,7 +547,6 @@
     <string name="vanload_productprice">Loaded Product Price     :</string>
     <string name="vanunload_productprice">Unloaded Product Price :</string>
     <string name="batch_no_already_exist">Batch No. already exist</string>
-    <string name="crown_product">Crown Product</string>
     <string name="select_sub_depot">Select Sub Depot to Save</string>
     <string name="enter">Enter</string>
     <string name="code">Code</string>
@@ -1269,7 +1260,5 @@
         <item>T6</item>
         <item>T7</item>
     </string-array>
-
-    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
 
 </resources>

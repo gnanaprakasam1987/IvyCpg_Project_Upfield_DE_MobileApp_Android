@@ -37,7 +37,6 @@
     <string name="no_products_exists">产品不存在</string>
     <string name="Noorderreason">没有下单原因</string>
     <string name="no_unsubmitted_orders">没有未提交的订单。</string>
-    <string name="nodatadownload">无数据下载。</string>
     <string name="no_network_connection">没有互联网连接。</string>
     <string name="successfully_activated">成功激活。</string>
     <string name="invoice_created_successfully">收据创建成功</string>
@@ -64,7 +63,6 @@
     <string name="amount_exeeds_the_balance_please_check">金额超过余额，请检查。</string>
     <string name="its_highly_recommend_you_to_upload_the_images_before_capturing_new_image">强烈建议您在捕获新图像之前上传图像.。</string>
     <string name="maximum_number_of_images_has_been_captured_without_upload_Do_upload_or_delete_images">未上传的图像已超过存储最大数量。请上传或单击“库”删除图像。</string>
-    <string name="wits_merchandising_already_done_Do_you_want_do_again">检查已经完成。你想再进行一次吗？</string>
     <string name="order_exist_without_invoice">未创建收据的订单已存在</string>
     <string name="password_does_not_match">密码不匹配。</string>
     <string name="its_not_possible_to_upload_without_img">上传无法在没有图片的情况下进行</string>
@@ -198,10 +196,6 @@
     <string name="saving_sales_return">保存中…</string>
     <string name="uploading_data">数据上传中…</string>
     <string name="image_uploading">图像上传中…</string>
-    <string name="saving_init_merchandising">初始化商业检查保存中...</string>
-    <string name="saving_merchandising">商业检查保存中…</string>
-    <string name="focus_merchandising">0</string>
-    <string name="merch_initiative">检查初始化</string>
     <string name="successfully_uploaded">成功上传。</string>
     <string name="upload_failed_please_try_again">上传失败。请再试一次。</string>
     <string name="images_sucessfully_uploaded">图片上传成功。</string>
@@ -531,11 +525,9 @@
     <string name="BATCH_NO">批次</string>
     <string name="select_reason_skip_seq">选择跳过序列的原因</string>
     <string name="crown">皇冠管理</string>
-    <string name="crown_count_mismatch">皇冠数量与产品数量不匹配</string>
     <string name="crown_count">皇冠数</string>
     <string name="liableqty">欠数</string>
     <string name="returnqty">退还数量</string>
-    <string name="enter_three_char">输入至少3个字母。</string>
     <string name="loading_stock">装载库存</string>
     <string name="sold_stock">售出库存 </string>
     <string name="free_issued">赠品已发出</string>
@@ -552,7 +544,6 @@
     <string name="vanload_productprice">装载产品价格：</string>
     <string name="vanunload_productprice">卸载产品价格：</string>
     <string name="batch_no_already_exist">批次号已存在</string>
-    <string name="crown_product">皇冠产品</string>
     <string name="select_sub_depot">选择子仓库以保存</string>
     <string name="enter">进入</string>
     <string name="code">代码</string>
@@ -1269,5 +1260,4 @@
         <item>Sat</item>
     </string-array>
 
-    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
 </resources>

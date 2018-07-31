@@ -36,7 +36,6 @@
     <string name="no_products_exists">No existe el producto</string>
     <string name="Noorderreason">Razón de Falta de Orden</string>
     <string name="no_unsubmitted_orders">No hay órdenes por enviar</string>
-    <string name="nodatadownload">No hay información para descargar</string>
     <string name="no_network_connection">No hay conexión a internet</string>
     <string name="successfully_activated">Activado exitosamente</string>
     <string name="invoice_created_successfully">Se creó la factura correctamente</string>
@@ -63,7 +62,6 @@
     <string name="amount_exeeds_the_balance_please_check">La cantidad excede el balance establecido, favor de revisar.</string>
     <string name="its_highly_recommend_you_to_upload_the_images_before_capturing_new_image">Se recomienda que suba las imágenes antes de capturar una nueva imagen.</string>
     <string name="maximum_number_of_images_has_been_captured_without_upload_Do_upload_or_delete_images">Se capturó el máximo de imágenes permitido. Sincronice para subir las imágenes o de clic en galería para borrar imágenes.</string>
-    <string name="wits_merchandising_already_done_Do_you_want_do_again">Ya se realizó la actividad de mercadeo. ¿Quiere volver a realizarla?</string>
     <string name="order_exist_without_invoice">Existen órdenes sin facturar.</string>
     <string name="password_does_not_match">No coincide la contraseña.</string>
     <string name="its_not_possible_to_upload_without_img">No es posible subir la información sin imágenes.</string>
@@ -197,10 +195,6 @@
     <string name="saving_sales_return">Guardando…</string>
     <string name="uploading_data">Subiendo información…</string>
     <string name="image_uploading">Subiendo imagen…</string>
-    <string name="saving_init_merchandising">Guardando Mercadeo de Iniciativa…</string>
-    <string name="saving_merchandising">Guardando Mercadeo…</string>
-    <string name="focus_merchandising">Mercadeo SBD</string>
-    <string name="merch_initiative">Mercadeo Iniciativa</string>
     <string name="successfully_uploaded">Carga exitosa</string>
     <string name="upload_failed_please_try_again">Falló la carga. Favor de intentar nuevamente.</string>
     <string name="images_sucessfully_uploaded">Imágenes cargadas exitosamente.</string>
@@ -535,11 +529,9 @@
     <string name="BATCH_NO">LOTE</string>
     <string name="select_reason_skip_seq">Seleccione la Razón para Omitir Secuencia</string>
     <string name="crown">Crown Management</string>
-    <string name="crown_count_mismatch">Crown Qty mismatch from Product Qty</string>
     <string name="crown_count">Crown Count</string>
     <string name="liableqty">Cantidad Disponible</string>
     <string name="returnqty">Cantidad Devolución</string>
-    <string name="enter_three_char">Ingrese al menos 3 letras</string>
     <string name="loading_stock">Inventario Cargado</string>
     <string name="sold_stock">Inventario Vendido</string>
     <string name="free_issued">Producto Gratis</string>
@@ -556,7 +548,6 @@
     <string name="vanload_productprice">Precio de Producto Cargado:</string>
     <string name="vanunload_productprice">Precio de Producto Descargado:</string>
     <string name="batch_no_already_exist">Lote No. ya existe</string>
-    <string name="crown_product">Crown Product</string>
     <string name="select_sub_depot">Seleccione la Sub Bodega a Guardar</string>
     <string name="enter">Ingresar</string>
     <string name="code">Código</string>
@@ -1268,7 +1259,5 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
-
-    <string name="sales_return_allowed_only_for_ordered_products">Retorno de ventas Permitido solo para productos pedidos</string>
 
 </resources>

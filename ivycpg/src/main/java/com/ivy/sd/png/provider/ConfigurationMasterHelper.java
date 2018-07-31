@@ -1479,6 +1479,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_GST_TAX_LOCATION_TYPE = "TAX_LOCATION_TYPE";
     public boolean IS_TAX_LOC;
 
+    private static final String CODE_CHECK_PHOTO_MANDATORY = "FUN71";
+    public boolean IS_CHECK_PHOTO_MANDATORY;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2590,6 +2593,8 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_GST_TAX_LOCATION_TYPE) != null) {
             getLocationTaxGSTModel(CODE_GST_TAX_LOCATION_TYPE);
         }
+
+        this.IS_CHECK_PHOTO_MANDATORY = hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) : false;
 
     }
 

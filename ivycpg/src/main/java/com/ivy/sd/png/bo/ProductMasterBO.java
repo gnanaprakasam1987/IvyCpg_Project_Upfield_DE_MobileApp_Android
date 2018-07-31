@@ -1825,7 +1825,7 @@ public class ProductMasterBO {
     private int compParentId;
 
     private int hsnId;
-    private String hsnCode;
+    private String hsnCode = "";
 
     public int getHsnId() {
         return hsnId;

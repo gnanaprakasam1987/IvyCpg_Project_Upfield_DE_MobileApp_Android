@@ -32,7 +32,7 @@ public class OpportunitiesReport extends Fragment {
         bmodel.setContext(getActivity());
 
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment_container);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment_content);
         mTabHost.setForegroundGravity(Gravity.CENTER);
         mTabHost.addTab(mTabHost.newTabSpec("Top 10").setIndicator("Top 10"),
                 TopTenRetailers.class, null);
@@ -62,7 +62,7 @@ public class OpportunitiesReport extends Fragment {
         super.onResume();
         if (!createdTab) {
             createdTab = true;
-            mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment_container);
+            mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment_content);
         }
     }
 
