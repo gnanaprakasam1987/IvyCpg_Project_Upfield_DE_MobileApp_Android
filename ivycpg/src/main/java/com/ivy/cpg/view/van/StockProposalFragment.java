@@ -61,13 +61,13 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 import static com.ivy.sd.png.asean.view.R.id.sihTitle;
 
 /**
  * Created by hanifa.m on 5/5/2017.
+ * on
  */
 
 public class StockProposalFragment extends IvyBaseFragment implements
@@ -2480,16 +2480,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
     }
 
     @Override

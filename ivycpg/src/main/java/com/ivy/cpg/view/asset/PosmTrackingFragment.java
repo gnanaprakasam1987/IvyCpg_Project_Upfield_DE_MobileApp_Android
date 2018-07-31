@@ -51,7 +51,6 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
@@ -67,7 +66,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -79,8 +77,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 public class PosmTrackingFragment extends IvyBaseFragment implements
         OnEditorActionListener, BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface, FiveLevelFilterCallBack {
@@ -1669,17 +1665,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawers();
 
         refreshList();
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
     }
 
     @Override

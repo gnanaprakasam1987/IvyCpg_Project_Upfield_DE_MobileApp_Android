@@ -64,7 +64,6 @@ import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -1885,17 +1884,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
             QUANTITY.setText(strQuantity);
         } else
             QUANTITY.setText(append);
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
     }
 
     public void onClick(View v) {

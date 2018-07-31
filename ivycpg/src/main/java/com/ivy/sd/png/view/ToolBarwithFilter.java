@@ -41,11 +41,8 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ivy.cpg.view.stockcheck.StockCheckFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -59,7 +56,6 @@ import com.ivy.sd.png.util.Commons;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 
@@ -1211,19 +1207,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-        // TODO Auto-generated method stub
 
     }
 

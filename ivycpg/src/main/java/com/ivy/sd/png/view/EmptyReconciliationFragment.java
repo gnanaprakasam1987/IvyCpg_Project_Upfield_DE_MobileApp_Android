@@ -38,7 +38,6 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
@@ -50,8 +49,6 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 public class EmptyReconciliationFragment extends IvyBaseFragment implements
         BrandDialogInterface,FiveLevelFilterCallBack {
@@ -575,17 +572,6 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
             QUANTITY.setText(QUANTITY.getText() + append);
         } else
             QUANTITY.setText(append);
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
     }
 
     @Override
