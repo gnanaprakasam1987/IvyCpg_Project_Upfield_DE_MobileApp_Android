@@ -148,11 +148,6 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
         asf.updateFromFiveLevelFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts, mFilterText);    }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
         return false;
     }

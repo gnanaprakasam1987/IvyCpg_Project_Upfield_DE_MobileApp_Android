@@ -1848,10 +1848,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     }
 
-    @Override
-    public void loadStartVisit() {
-    }
-
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
             businessModel.showAlert(

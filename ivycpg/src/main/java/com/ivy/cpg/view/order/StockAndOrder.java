@@ -5715,11 +5715,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     private void switchProfile() {
         final String switchToProfile = "com.motorolasolutions.emdk.datawedge.api.ACTION_SWITCHTOPROFILE";
         final String extraData = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PROFILENAME";

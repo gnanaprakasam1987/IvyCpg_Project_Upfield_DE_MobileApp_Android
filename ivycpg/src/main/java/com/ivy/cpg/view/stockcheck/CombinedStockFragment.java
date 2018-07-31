@@ -1458,10 +1458,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
     }
 
-    @Override
-    public void loadStartVisit() {
-    }
-
 
     public void onClick(View v) {
         Button vw = (Button) v;

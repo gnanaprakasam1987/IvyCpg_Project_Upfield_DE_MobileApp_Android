@@ -1567,11 +1567,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         mDrawerLayout.closeDrawers();

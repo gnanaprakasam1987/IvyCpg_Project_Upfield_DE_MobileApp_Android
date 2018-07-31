@@ -633,11 +633,6 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void updateFiveFilteredList(ArrayList<AssetTrackingBO> mFilteredList) {
         updateListView(mFilteredList);
         mDrawerLayout.closeDrawers();

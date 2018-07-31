@@ -104,10 +104,5 @@ public class SurveyActivityNew extends IvyBaseActivityNoActionBar implements Bra
         asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
 
 }

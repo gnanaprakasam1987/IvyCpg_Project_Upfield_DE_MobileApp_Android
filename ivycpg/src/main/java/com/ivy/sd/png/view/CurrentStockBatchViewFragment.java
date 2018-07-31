@@ -395,11 +395,6 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
         ArrayList<LoadManagementBO> filterlist = new ArrayList<LoadManagementBO>();
         for (LevelBO levelBO : mParentIdList) {

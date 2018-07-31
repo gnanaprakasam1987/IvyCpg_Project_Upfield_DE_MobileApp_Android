@@ -65,11 +65,4 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
         fragment.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
-    @Override
-    public void loadStartVisit() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        SalesReturnFragment fragment = (SalesReturnFragment) fm
-                .findFragmentById(R.id.sales_return_fragment);
-        fragment.loadStartVisit();
-    }
 }

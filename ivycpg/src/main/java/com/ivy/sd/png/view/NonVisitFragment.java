@@ -922,12 +922,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     }
 
     @Override
-    public void loadStartVisit() {
-        // TO DO Auto-generated method stub
-
-    }
-
-    @Override
     public boolean onQueryTextChange(String s) {
         loadData(s);
         return true;

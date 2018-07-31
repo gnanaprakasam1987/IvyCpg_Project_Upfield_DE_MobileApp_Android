@@ -962,11 +962,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         return false;
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     public void numberPressed(View vw) {
         if (returnProductDialog != null) {
             if (returnProductDialog.isShowing()) {

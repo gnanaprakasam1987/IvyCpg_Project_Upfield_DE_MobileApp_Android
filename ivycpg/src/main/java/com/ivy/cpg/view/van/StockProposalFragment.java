@@ -2594,11 +2594,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         Commons.print("selected filter " + mFilteredPid + ", " + mSelectedIdByLevelId + ", " + mAttributeProducts + ", " + mFilterText);
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
