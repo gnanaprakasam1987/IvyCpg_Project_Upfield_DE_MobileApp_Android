@@ -87,6 +87,7 @@
             android:layout_marginEnd="@dimen/cardview_marginleftright"
             android:layout_marginStart="@dimen/cardview_marginleftright"
             android:background="@color/white"
+            app:cardBackgroundColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -98,6 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/spin_linlay_margin"
                 android:layout_marginEnd="@dimen/spin_linlay_margin"
+                android:background="@color/white"
                 android:layout_marginStart="@dimen/spin_linlay_margin"
                 android:padding="@dimen/card_rel_margin">
 
@@ -201,6 +203,7 @@
             android:layout_marginTop="@dimen/card_rel_margin"
             android:padding="@dimen/card_rel_margin"
             android:visibility="gone"
+            app:cardBackgroundColor="@color/white"
             android:translationZ="@dimen/dimen_5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -211,6 +214,7 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:layout_margin="@dimen/card_rel_margin">
 
                 <EditText
