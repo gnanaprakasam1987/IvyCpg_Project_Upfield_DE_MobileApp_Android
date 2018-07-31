@@ -12,14 +12,12 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -50,7 +48,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.VisitConfiguration;
@@ -76,7 +73,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
 
@@ -1052,17 +1048,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
     }
 
     private void updateRetailerAttributes() {

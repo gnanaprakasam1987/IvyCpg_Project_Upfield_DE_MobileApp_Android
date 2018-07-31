@@ -86,7 +86,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -688,16 +687,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
         }
         mDrawerLayout.closeDrawer(GravityCompat.END);
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mcatgory) {
 
     }
 
