@@ -18,6 +18,7 @@ import com.ivy.ui.photocapture.data.PhotoCaptureDataManager;
 import com.ivy.ui.photocapture.data.PhotoCaptureDataManagerImpl;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -402,6 +403,11 @@ public class PhotoCapturePresenterTest {
 
         assertEquals(mPresenter.getGlobalLocationIndex(), 1);
 
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mPresenter.onDetach();
     }
 
 
