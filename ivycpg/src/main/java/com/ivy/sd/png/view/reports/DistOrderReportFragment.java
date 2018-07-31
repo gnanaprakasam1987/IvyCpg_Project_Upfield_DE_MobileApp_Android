@@ -276,7 +276,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 					.get(arg2);
 			bmodel.reportHelper.updateDistributor(ret.getDistributorId()+"");
 			bmodel.productHelper
-					.downloadDistributorProductsWithFiveLevelFilter("MENU_PS_STKORD");
+					.downloadDistributorProducts("MENU_PS_STKORD");
 
 			Intent orderreportdetail = new Intent();
 			orderreportdetail.putExtra("OBJ",

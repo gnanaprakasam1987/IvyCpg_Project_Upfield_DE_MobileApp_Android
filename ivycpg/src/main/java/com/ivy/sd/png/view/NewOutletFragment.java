@@ -24,7 +24,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
@@ -51,13 +50,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -114,7 +110,7 @@ import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 
-public class NewOutletFragment extends IvyBaseFragment implements NearByRetailerDialog.NearByRetailerInterface {
+public class NewOutletFragment extends IvyBaseFragment implements NearByRetailerDialog.NearByRetailerInterface, PrioritySelectionDialog.PrioritySelectionListener {
     private double lattitude = 0;
     private double longitude = 0;
 
@@ -237,6 +233,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     static TextView dlExpDateTextView;
     static TextView flExpDateTextView;
     private SurveyHelperNew surveyHelperNew;
+    private PrioritySelectionDialog prioritySelectionDialog;
 
     @Override
     public void onAttach(Context context) {
@@ -470,7 +467,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     private void ValidateandDownloadMasters() {
-        if(profileConfig != null) {
+        if (profileConfig != null) {
             for (int i = 0; i < profileConfig.size(); i++) {
                 if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("CHANNEL")) {
@@ -2056,8 +2053,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         break;
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("GST_NO")
-                        && mandatory == 1) {
+                        .equalsIgnoreCase("GST_NO")) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if (editText[i].getText().toString().trim().length() == 0 ||
                             editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
@@ -2241,7 +2237,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
 
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
         return validate;
     }
@@ -3489,6 +3485,63 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     }
 
+    /**
+     *update selected item into priorityProductIDList
+     * @param position
+     * @param standardListBO
+     */
+    @Override
+    public void updateSelectedItems(int position, StandardListBO standardListBO) {
+        priorityProductIDList.clear();
+
+        priorityProductIDList.add(standardListBO);
+        priorityProductAutoCompleteTextView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                priorityProductAutoCompleteTextView.showDropDown();
+
+            }
+        }, 500);
+        priorityProductAutoCompleteTextView.setText(standardListBO.getListName());
+        priorityProductAutoCompleteTextView.setSelection(priorityProductAutoCompleteTextView.getText().length());
+        mSelectedpostion = position;
+        prioritySelectionDialog.dismiss();
+    }
+
+
+    /**
+     *  update selected item into priorityProductAutoCompleteTextView by comma separate
+     * @param mPriorityProductList
+     */
+    @Override
+    public void updatePriorityProducts(ArrayList<StandardListBO> mPriorityProductList) {
+        priorityProductIDList = new ArrayList<>();
+        priorityProductIDList.clear();
+        StringBuffer sb = new StringBuffer();
+
+        for (StandardListBO standardListBO : mPriorityProductList) {
+            if (standardListBO.isChecked()) {
+
+                priorityProductIDList.add(standardListBO);
+
+
+                if (sb.length() > 0)
+                    sb.append(", ");
+
+                sb.append(standardListBO.getListName());
+
+            }
+            if (priorityProductIDList.size() > 0) {
+                priorityProductAutoCompleteTextView.setText(sb.toString());
+
+            } else {
+                priorityProductAutoCompleteTextView.setText("");
+            }
+        }
+        prioritySelectionDialog.dismiss();
+    }
+
     @SuppressLint("ValidFragment")
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
@@ -3684,17 +3737,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         if (clickDuration < MAX_CLICK_DURATION) {
                             priorityProductAutoCompleteTextView.requestFocus();
                             if (mPriorityProductList != null) {
-
-                                FragmentManager fm = getActivity().getSupportFragmentManager();
-                                CustomFragment dialogFragment = new CustomFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("title", mName);
-                                bundle.putString("screentitle", mName);
-                                bundle.putInt("hasLink", hasLink);
-                                dialogFragment.setArguments(bundle);
-                                dialogFragment.show(fm, "Sample Fragment");
-                                dialogFragment.setCancelable(false);
-
+                                showPriorityDialog(mName, hasLink, mSelectedpostion, mPriorityProductList);
 
                             } else {
                                 Toast.makeText(getActivity(), "Priority Products Not Available", Toast.LENGTH_SHORT).show();
@@ -3748,6 +3791,12 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
     }
 
+    private void showPriorityDialog(String mName, int hasLink, int mSelectedpostion, ArrayList<StandardListBO> mPriorityProductList) {
+        prioritySelectionDialog = new PrioritySelectionDialog(getActivity(), mName
+                , hasLink, mSelectedpostion, mPriorityProductList);
+        prioritySelectionDialog.setPrioritySelectionListener(this);
+        prioritySelectionDialog.show();
+    }
 
     private LinearLayout getSpinnerView(int mNumber, String MName,
                                         String menuCode, int mandatory, int hasLink) {
@@ -6292,167 +6341,6 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         bmodel.applyAlertDialogTheme(builder);
     }
 
-    @SuppressLint("ValidFragment")
-    public class CustomFragment extends DialogFragment {
-        private String mTitle = "";
-        private TextView mTitleTV;
-        private Button mOkBtn, mDismisBtn;
-        private ListView mPriorityproductLV;
-
-        private int hasLink = 0;
-
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            mTitle = getArguments().getString("title");
-            hasLink = getArguments().getInt("hasLink");
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.custom_dialog_fragment, container, false);
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            getDialog().setTitle(mTitle);
-            if (getView() != null) {
-                mTitleTV = (TextView) getView().findViewById(R.id.title);
-                mTitleTV.setVisibility(View.GONE);
-            }
-            mOkBtn = (Button) getView().findViewById(R.id.btn_ok);
-            if (hasLink == 0)
-                mOkBtn.setVisibility(View.GONE);
-
-            mDismisBtn = (Button) getView().findViewById(R.id.btn_dismiss);
-            mDismisBtn.setVisibility(View.GONE);
-            mPriorityproductLV = (ListView) getView().findViewById(R.id.lv_colletion_print);
-            if (hasLink == 0) {
-                ArrayAdapter<StandardListBO> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_single_choice, mPriorityProductList);
-                mPriorityproductLV.setAdapter(adapter);
-                mPriorityproductLV.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                if (mSelectedpostion != -1)
-                    mPriorityproductLV.setItemChecked(mSelectedpostion, true);
-                mPriorityproductLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        priorityProductIDList.clear();
-                        StandardListBO standardListBO = mPriorityProductList.get(position);
-                        priorityProductIDList.add(standardListBO);
-                        priorityProductAutoCompleteTextView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                priorityProductAutoCompleteTextView.showDropDown();
-
-                            }
-                        }, 500);
-                        priorityProductAutoCompleteTextView.setText(standardListBO.getListName());
-                        priorityProductAutoCompleteTextView.setSelection(priorityProductAutoCompleteTextView.getText().length());
-                        mSelectedpostion = position;
-                        getDialog().dismiss();
-                    }
-                });
-            } else if (hasLink == 1) {
-                MyAdapter adapter = new MyAdapter();
-                mPriorityproductLV.setAdapter(adapter);
-            }
-
-
-            mOkBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    updatePriorityProducts();
-                    getDialog().dismiss();
-
-                }
-            });
-
-        }
-
-        class MyAdapter extends BaseAdapter {
-
-            @Override
-            public int getCount() {
-                return mPriorityProductList.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return null;
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return 0;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                LayoutInflater inflater = (LayoutInflater) getActivity()
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final ViewHolder holder;
-                if (convertView == null) {
-                    holder = new ViewHolder();
-                    convertView = inflater.inflate(R.layout.list_priotityproduct,
-                            parent, false);
-                    holder.productNameTV = (TextView) convertView.findViewById(R.id.tv_product_name);
-                    holder.productSelectCB = (CheckBox) convertView.findViewById(R.id.cb_productselect);
-                    holder.productSelectCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            holder.standardListBO.setChecked(isChecked);
-                        }
-                    });
-                    convertView.setTag(holder);
-
-                } else {
-                    holder = (ViewHolder) convertView.getTag();
-                }
-                holder.standardListBO = mPriorityProductList.get(position);
-                holder.productNameTV.setText(holder.standardListBO.getListName());
-                holder.productSelectCB.setChecked(holder.standardListBO.isChecked());
-                return convertView;
-            }
-        }
-
-        class ViewHolder {
-            StandardListBO standardListBO;
-            TextView productNameTV;
-            CheckBox productSelectCB;
-
-        }
-
-        private void updatePriorityProducts() {
-            priorityProductIDList = new ArrayList<>();
-            priorityProductIDList.clear();
-            sb = new StringBuffer();
-
-            for (StandardListBO standardListBO : mPriorityProductList) {
-                if (standardListBO.isChecked()) {
-
-                    priorityProductIDList.add(standardListBO);
-
-
-                    if (sb.length() > 0)
-                        sb.append(", ");
-
-                    sb.append(standardListBO.getListName());
-
-                }
-                if (priorityProductIDList.size() > 0) {
-                    priorityProductAutoCompleteTextView.setText(sb.toString());
-
-                } else {
-                    priorityProductAutoCompleteTextView.setText("");
-                }
-            }
-        }
-    }
-
     private void deleteNewRetailer() {
         try {
             DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
@@ -6465,6 +6353,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 if (tableName.equals(DataMembers.tbl_nearbyRetailer) ||
                         tableName.equals(DataMembers.tbl_retailerPotential)) {
                     db.deleteSQL(tableName, "rid ='" + bmodel.newOutletHelper.getId() + "'", false);
+                } else if (tableName.equals(DataMembers.tbl_orderHeaderRequest)) {
+                    db.executeQ("delete from " + DataMembers.tbl_orderDetailRequest + " where OrderID in (select OrderID from " + DataMembers.tbl_orderHeaderRequest
+                            + " where RetailerID = '" + bmodel.newOutletHelper.getId() + "')");
+                    db.deleteSQL(tableName, "RetailerID ='" + bmodel.newOutletHelper.getId() + "'", false);
                 } else {
                     db.deleteSQL(tableName, "RetailerID ='" + bmodel.newOutletHelper.getId() + "'", false);
                 }

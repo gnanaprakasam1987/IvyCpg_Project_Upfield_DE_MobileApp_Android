@@ -588,7 +588,6 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_spl_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         menu.findItem(R.id.menu_barcode).setVisible(false);
@@ -641,14 +640,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
             Intent intent = new Intent(OrderDiscount.this, SchemeApply.class);
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);
-        } else if ((bmodel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bmodel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
-                && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-            Intent intent = new Intent(OrderDiscount.this,
-                    CrownReturnActivity.class);
-            intent.putExtra("OrderFlag", "Nothing");
-            intent.putExtra("ScreenCode", screenCode);
-            startActivity(intent);
-        } else if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+        }else if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
             Intent intent = new Intent(OrderDiscount.this,
                     BatchAllocation.class);
             intent.putExtra("OrderFlag", "Nothing");

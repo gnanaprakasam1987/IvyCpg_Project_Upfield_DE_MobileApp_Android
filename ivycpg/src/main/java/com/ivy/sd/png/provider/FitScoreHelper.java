@@ -204,7 +204,7 @@ public class FitScoreHelper {
                 PID = "PID";
             }
             Cursor c = db
-                    .selectSQL("Select distinct A.PName,D.FromNorm,case when (ifnull(D.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,E.Weightage,B.Score from productMaster A " +
+                    .selectSQL("Select distinct A.PName,D.FromNorm,case when (ifnull(D.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,E.Weightage,B.Score from object1 A " +
                             Qry +
                             "inner join WeightageHeader C on C.CriteriaID = B.RetailerID " +
                             "inner join WeightageProductDetail D on C.HeaderID = D.HeaderID and D.ProductID = B." + PID + " " +
@@ -250,7 +250,7 @@ public class FitScoreHelper {
                 PID = "PID";
             }
 //            Cursor c = db
-//                    .selectSQL("Select distinct A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from productMaster A " +
+//                    .selectSQL("Select distinct A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from object1 A " +
 //                            Qry +
 //                            "inner join ProductTaggingCriteriaMapping C on C.CriteriaID = B.retailerID " +
 //                            "inner join ProductTaggingMaster D ON D.groupid=C.groupid " +
@@ -259,7 +259,7 @@ public class FitScoreHelper {
 //                            "inner join HHTModuleWeightage G on G.Module = F.ListCode " +
 //                            "WHERE C.CriteriaID = '" + retailerID + "' and G.Module = '" + Module + "'");
             Cursor c = db
-                    .selectSQL("Select distinct A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from productMaster A " +
+                    .selectSQL("Select distinct A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from object1 A " +
                             Qry +
                             "inner join StandardListMaster F on F.ListID = D.TaggingTypelovID " +
                             "inner join ProductTaggingMaster D ON D.TaggingTypelovID  =F.ListID " +
@@ -311,7 +311,7 @@ public class FitScoreHelper {
                             "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'" +
                             " AND B.Score>0");
 //            Cursor c = db
-//                    .selectSQL("Select A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from productMaster A " +
+//                    .selectSQL("Select A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from object1 A " +
 //                            "inner join AssetDetail B on A.Pid = B.ProductID " +
 //                            "inner join AssetHeader C on C.Uid = B.UID " +
 //                            "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
@@ -345,7 +345,7 @@ public class FitScoreHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("Select distinct A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score " +
-                            "from productMaster A inner join PromotionDetail B on A.Pid = B.BrandID " +
+                            "from object1 A inner join PromotionDetail B on A.Pid = B.BrandID " +
                             "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "'" +
                             " AND B.Score>0");
             if (c != null) {

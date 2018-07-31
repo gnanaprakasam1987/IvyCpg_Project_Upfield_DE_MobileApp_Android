@@ -123,6 +123,8 @@ public class ReportMenuFragment extends IvyBaseFragment {
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_ARCHV_RPT,
                     R.drawable.icon_reports);
+            menuIcons.put(StandardListMasterConstants.MENU_INV_SALES_RETURN_REPORT,
+                    R.drawable.icon_reports);
 
 
             Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
@@ -236,14 +238,20 @@ public class ReportMenuFragment extends IvyBaseFragment {
 
                 break;
             case StandardListMasterConstants.MENU_SALES_REPORT:
-                SalesReturnReportHelperSOHO salesReturnReportHelperSOHO = new SalesReturnReportHelperSOHO(getContext());
-                if (salesReturnReportHelperSOHO.getSalesReturnRetailerList().size() >= 1) {
+                if ((new SalesReturnReportHelperSOHO(getContext())).getSalesReturnRetailerList().size() >= 1) {
                     gotoReportActivity(config);
                 } else {
                     showToast();
                 }
                 break;
             case StandardListMasterConstants.MENU_ARCHV_RPT:
+                if (bmodel.isOnline()) {
+                    gotoReportActivity(config);
+                } else
+                    showToast();
+                break;
+
+            case StandardListMasterConstants.MENU_INV_SALES_RETURN_REPORT:
                 if (bmodel.isOnline()) {
                     gotoReportActivity(config);
                 } else

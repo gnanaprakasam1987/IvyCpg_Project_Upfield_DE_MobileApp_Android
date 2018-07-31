@@ -10,12 +10,6 @@
         android:title="@string/fivefilter"
         ivydist:showAsAction="always"/>
     <item
-        android:id="@+id/menu_product_filter"
-        android:icon="@drawable/icon_menu_filter"
-        android:orderInCategory="100"
-        android:title="P.F"
-        ivydist:showAsAction="always"/>
-    <item
         android:id="@+id/menu_competitor_filter"
         android:icon="@drawable/icon_menu_filter"
         android:orderInCategory="100"

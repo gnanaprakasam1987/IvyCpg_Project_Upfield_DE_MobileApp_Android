@@ -36,7 +36,6 @@
     <string name="no_products_exists">Tidak Ada Produk Tersedia</string>
     <string name="Noorderreason">Alasan Tidak Ada Order</string>
     <string name="no_unsubmitted_orders">Tidak Ada Order Yang Belum Dikirimkan</string>
-    <string name="nodatadownload">Tidak Ada Data Yang Diunduh</string>
     <string name="no_network_connection">Tidak Ada Koneksi Internet</string>
     <string name="successfully_activated">Aktivasi Berhasil</string>
     <string name="invoice_created_successfully">Invoice Berhasil Dibuat</string>
@@ -63,7 +62,6 @@
     <string name="amount_exeeds_the_balance_please_check">Jumlah Melebihi Batasan Saldo, Silakan Diperiksa Kembali.</string>
     <string name="its_highly_recommend_you_to_upload_the_images_before_capturing_new_image">Sangat Disarankan Anda Upload Gambar Sebelum Mengambil Gambar Baru</string>
     <string name="maximum_number_of_images_has_been_captured_without_upload_Do_upload_or_delete_images">Maksimum Gambar Sudah Diambil Tanpa Upload. Silakan Upload Atau Klik Gallery Untuk Menghapus Gambar</string>
-    <string name="wits_merchandising_already_done_Do_you_want_do_again">Merchandising Telah Selesai. Apakah Anda Ingin Melakukan Lagi ?</string>
     <string name="order_exist_without_invoice">Order Sudah Ada Namun Tanpa Pembuatan Invoice</string>
     <string name="password_does_not_match">Password Tidak Cocok</string>
     <string name="its_not_possible_to_upload_without_img">Tidak Bisa Upload Tanpa Memilih Gambar</string>
@@ -197,10 +195,6 @@
     <string name="saving_sales_return"> Menyimpan…</string>
     <string name="uploading_data"> Upload Data…</string>
     <string name="image_uploading"> Upload Gambar…</string>
-    <string name="saving_init_merchandising"> Menyimpan Initiatif Merchandising…</string>
-    <string name="saving_merchandising"> Menyimpan Merchandising…</string>
-    <string name="focus_merchandising">Merchandise Sbd</string>
-    <string name="merch_initiative">Inisiatif Merchandise</string>
     <string name="successfully_uploaded">Upload Berhasil</string>
     <string name="upload_failed_please_try_again">Upload Gagal. Silakan Coba Lagi</string>
     <string name="images_sucessfully_uploaded">Gambar Berhasil Diupload</string>
@@ -252,7 +246,7 @@
     <string name="no_visit_Planning">Perencanaan</string>
     <string name="order_gcas">Kode Gcas</string>
     <string name="choose_date">Pilih Tanggal</string>
-    <string name="exceed">Anda Sudah Melebihi Alokasi Yang Tersedia. Tersisa “%1$D” Lagi</string>
+    <string name="exceed">Anda Sudah Melebihi Alokasi Yang Tersedia. Tersisa “%1$d” Lagi</string>
     <string name="d1">D1</string>
     <string name="dist_inv">Inventori Distributor</string>
     <string name="pre_post">Sebelum/Sesudah</string>
@@ -534,11 +528,9 @@
     <string name="BATCH_NO">Batch</string>
     <string name="select_reason_skip_seq">Pilih Alasan Untuk Melewati Urutan</string>
     <string name="crown">Manajemen Crown</string>
-    <string name="crown_count_mismatch">Jumlah Crown Tidak Sesuai Dengan Jumlah Produk</string>
     <string name="crown_count">Jumlah Crown</string>
     <string name="liableqty">Kuantiti Liable</string>
     <string name="returnqty">Kuantiti Retur</string>
-    <string name="enter_three_char">Memasukkan Setidaknya 3 Huruf</string>
     <string name="loading_stock">Memuat Stok</string>
     <string name="sold_stock">Stok Terjual</string>
     <string name="free_issued">Barang Gratis Yang Dikeluarkan</string>
@@ -555,7 +547,6 @@
     <string name="vanload_productprice">Harga Produk Yang Dimuat :</string>
     <string name="vanunload_productprice">Harga Produk Yang Dibongkar :</string>
     <string name="batch_no_already_exist">Nomor Batch Sudah Ada</string>
-    <string name="crown_product">Product Crown</string>
     <string name="select_sub_depot">Pilih Sub Gudang Untuk Disimpan</string>
     <string name="enter">Masukkan </string>
     <string name="code">Kode</string>
@@ -1033,7 +1024,7 @@
     <string name="non_visit">Tidak Ada Visit</string>
     <string name="are_you_sure_you_want_to_logout">Apakah Anda Yakin Ingin Keluar?</string>
     <string name="vaload_heder_text">Pilih Kualitas Dari Tiap Batch</string>
-    <string name="total_items">Total Barang Yang Kembali Adalah "%1$D".</string>
+    <string name="total_items">Total Barang Yang Kembali Adalah “%1$d”.</string>
     <string name="srp_text">Srp:</string>
     <string name="loading_no">No Loading</string>
     <string name="dateend">Tanggal Berakhir</string>
@@ -1269,8 +1260,6 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
-
-    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
 
 </resources>
 

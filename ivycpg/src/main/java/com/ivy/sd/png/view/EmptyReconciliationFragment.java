@@ -44,6 +44,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper.SKUTypeBO;
 import com.ivy.sd.png.util.Commons;
 
@@ -53,7 +54,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class EmptyReconciliationFragment extends IvyBaseFragment implements
-        BrandDialogInterface {
+        BrandDialogInterface,FiveLevelFilterCallBack {
 
     private BusinessModel bmodel;
     private PriceTrackingHelper priceTrackingHelper;
@@ -122,7 +123,6 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
             if (mDrawerLayout != null)
                 drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
-            menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
             menu.findItem(R.id.menu_next).setVisible(!drawerOpen);
             menu.findItem(R.id.menu_location_filter).setVisible(!drawerOpen);
 
@@ -151,10 +151,7 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_next) {
             nextButtonClick();
             return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
-            return true;
-        } else if (i == R.id.menu_location_filter) {
+        }else if (i == R.id.menu_location_filter) {
             View anchor = getActivity().findViewById(item.getItemId());
             showPopup(getActivity(), anchor);
             return true;
@@ -302,36 +299,6 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
 
         super.onStart();
 
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-
-            if (frag != null)
-                ft.detach(frag);
-
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", "Brand");
-            bundle.putBoolean("isFormBrand", true);
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
     }
 
     private void nextButtonClick() {
@@ -646,12 +613,7 @@ public class EmptyReconciliationFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
     }
 

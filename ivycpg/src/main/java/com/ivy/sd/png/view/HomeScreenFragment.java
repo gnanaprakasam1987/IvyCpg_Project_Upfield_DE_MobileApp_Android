@@ -56,7 +56,6 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
-import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.SupervisorMapFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
@@ -69,6 +68,8 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
@@ -78,7 +79,6 @@ import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.attendance.inout.TimeTrackingFragment;
 
 import java.io.File;
@@ -86,6 +86,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener, PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
@@ -420,7 +421,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         });
 
 
-       /* ConfigData.setPowerAccuracy(LocationRequest.PRIORITY_HIGH_ACCURACY);*/
+        /* ConfigData.setPowerAccuracy(LocationRequest.PRIORITY_HIGH_ACCURACY);*/
 
         // image path
         photoPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
@@ -947,11 +948,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-//                stockpropintent = new Intent(getActivity(),
-//                        StockProposalScreen.class);
-//                stockpropintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_T
-
-                new DownloadStockProposal().execute();
                 switchFragment(MENU_LOAD_REQUEST, menuItem.getMenuName());
             }
 
@@ -1158,12 +1154,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                     if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
 
-                        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                            bmodel.productHelper
-                                    .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);
-                        else
-                            bmodel.productHelper
-                                    .downloadProductFilter(MENU_SURVEY_SW);
+
+                      /*  bmodel.productHelper
+                                .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);*/
+
+                        bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_SW));
+                        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_SW,
+                                bmodel.productHelper.getRetailerModuleSequenceValues()));
+
                     }
 
                     if (surveyHelperNew.getSurvey() != null
@@ -1216,12 +1214,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 surveyHelperNew.downloadQuestionDetails("MENU_SURVEY01_SW");
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
-                    if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                        bmodel.productHelper
-                                .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");
-                    else
-                        bmodel.productHelper
-                                .downloadProductFilter("MENU_SURVEY01_SW");
+                   /* bmodel.productHelper
+                            .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");*/
+                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY01_SW"));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts("MENU_SURVEY01_SW",
+                            bmodel.productHelper.getRetailerModuleSequenceValues()));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1273,12 +1270,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
 
-                    if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                        bmodel.productHelper
-                                .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);
-                    else
-                        bmodel.productHelper
-                                .downloadProductFilter(MENU_SURVEY_BA_CS);
+                    /*bmodel.productHelper
+                            .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);*/
+                    bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_BA_CS));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_BA_CS,
+                            bmodel.productHelper.getRetailerModuleSequenceValues()));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1728,7 +1724,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 (newOutletEditFragment != null && (fragmentName.equals(MENU_NEWRET_EDT))
                         && newOutletEditFragment.isVisible()) {
             return;
-        }  else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
+        } else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
                 && acknowledgementFragment.isVisible()) {
             return;
         } else if (planDeviationFragment != null && fragmentName.equals(MENU_NON_FIELD)
@@ -1770,7 +1766,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(deliveryRetailersFragment);
         if (mSellerDashFragment != null)
             ft.remove(mSellerDashFragment);
-        if(mRouteDashFragment != null)
+        if (mRouteDashFragment != null)
             ft.remove(mRouteDashFragment);
         if (mDashFragment != null)
             ft.remove(mDashFragment);
@@ -1846,10 +1842,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-                    bmodel.productHelper
-                            .downloadFiveFilterLevels(MENU_NEW_RETAILER);
-                    bmodel.productHelper
-                            .downloadProductsNewOutlet(MENU_NEW_RETAILER);
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
+                            bmodel.productHelper.getFilterProductLevels()));
+                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+                    if (genericObjectPair != null) {
+                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
+                    }
                 }
 
                 bndl = new Bundle();
@@ -1880,7 +1880,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_PLANNING:
                 bndl = new Bundle();
                 bndl.putString("From", MENU_PLANNING_CONSTANT);
-                bndl.putBoolean("isPlanning",true);
+                bndl.putBoolean("isPlanning", true);
                 isVisit = false;
                 bndl.putString("Newplanningsub", "");
                 fragment = new VisitFragment();
@@ -1951,6 +1951,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("SurveyType", 1);
                 bndl.putString("menucode", fragmentName);
+                bndl.putString("from", "HomeScreen");
                 fragment = new SurveyActivityNewFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -1961,6 +1962,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("SurveyType", 0);
                 bndl.putString("menucode", fragmentName);
+                bndl.putString("from", "HomeScreen");
                 fragment = new SurveyActivityNewFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -1971,6 +1973,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("SurveyType", 0);
                 bndl.putString("menucode", fragmentName);
+                bndl.putString("from", "HomeScreen");
                 fragment = new SurveyActivityNewFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -2074,7 +2077,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 break;
 
             case MENU_REPORT:
-                bmodel.productHelper.downloadProductFilter("MENU_STK_ORD");
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 fragment = new ReportMenuFragment();
@@ -2086,6 +2088,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_LOAD_REQUEST:
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
+                bndl.putString("menuCode", MENU_LOAD_REQUEST);
+                bndl.putBoolean("isFromLodMgt", false);
                 fragment = new StockProposalFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -2272,7 +2276,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         if (mSellerDashFragment != null) {
             ft.detach(mSellerDashFragment);
         }
-        if(mRouteDashFragment != null) {
+        if (mRouteDashFragment != null) {
             ft.detach(mRouteDashFragment);
         }
         if (mReportMenuFragment != null) {
@@ -2436,7 +2440,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
@@ -2618,49 +2621,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             private TextView menuBTN;
         }
     }
-
-    class DownloadStockProposal extends AsyncTask<Integer, Integer, Boolean> {
-
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                    bmodel.productHelper.loadProductsWithFiveLevel(
-                            "MENU_LOAD_MANAGEMENT", "MENU_STOCK_PROPOSAL");
-                else
-                    bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                            "MENU_STOCK_PROPOSAL");
-
-                bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get("MENU_STOCK_PROPOSAL"), 2);
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE; // Return your real result here
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            alertDialog.dismiss();
-
-        }
-
-    }
-
 
 
     private boolean checkMenusAvailable() {

@@ -793,9 +793,9 @@ public class ReportHelper {
             int mChildLevel = 0;
             int mContentLevel = 0;
 
-            if (bmodel.productHelper.getSequenceValues() != null) {
-                if (bmodel.productHelper.getSequenceValues().size() > 0) {
-                    mChildLevel = bmodel.productHelper.getSequenceValues().size();
+            if (bmodel.productHelper.getFilterProductLevels() != null) {
+                if (bmodel.productHelper.getFilterProductLevels().size() > 0) {
+                    mChildLevel = bmodel.productHelper.getFilterProductLevels().size();
                 }
             }
 
@@ -1837,7 +1837,7 @@ public class ReportHelper {
     public Vector<StockReportBO> downloadCurrentStockReport() {
 
         try {
-            Vector<LoadManagementBO> item = bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT", "");
+            Vector<LoadManagementBO> item = bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel("MENU_LOAD_MANAGEMENT", "");
             if (item != null) {
                 currentStock = new Vector<>();
                 for (LoadManagementBO load : item) {
@@ -2260,7 +2260,7 @@ public class ReportHelper {
                 bo.setBaseUomPieceWise(false);
             }
         } else if (reportType == 3) {
-            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                 bo.setBaseUomCaseWise(false);
                 bo.setBaseUomOuterWise(false);
                 bo.setBaseUomPieceWise(false);
@@ -2282,7 +2282,7 @@ public class ReportHelper {
                 bo.setBaseUomPieceWise(true);
             }
         } else if (reportType == 3) {
-            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                 bo.setBaseUomCaseWise(true);
                 bo.setBaseUomOuterWise(true);
                 bo.setBaseUomPieceWise(true);
@@ -2322,7 +2322,7 @@ public class ReportHelper {
                         }
                     }
                 } else if (reportType == 3) {
-                    for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+                    for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                         if (productId.equals(bo.getProductid() + "")) {
                             if (bo.getPiece_uomid() == uomId)
                                 bo.setBaseUomPieceWise(true);
@@ -2381,7 +2381,7 @@ public class ReportHelper {
                                 }
                             }
                         } else if (reportType == 3) {
-                            for (LoadManagementBO bo : bmodel.productHelper.getProducts()) {
+                            for (LoadManagementBO bo : bmodel.productHelper.getLoadMgmtProducts()) {
                                 if (c.getString(0).equals(bo.getProductid() + "")) {
                                     if (bo.getPiece_uomid() == uomId)
                                         bo.setBaseUomPieceWise(true);

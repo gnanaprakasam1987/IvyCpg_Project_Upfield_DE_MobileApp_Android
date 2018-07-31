@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by mansoor on 19/1/18.
@@ -96,6 +95,16 @@ public class TaxGstHelper implements TaxInterface {
 
     /**
      * @author rajesh.k Method to use download product wise tax details
+     * 1. IS_TAX_LOC - true
+     * Check location wise tax
+     * LocationId (RetailerLocation)
+     * sourceLocId(SupplierLocation)
+     * isSameZone - Both LocationID are same
+     * isDifferentZone - Both LocationID are not same
+     * 2. IS_TAX_LOC - false
+     * Check isSameZone
+     * isSameZone - true means same location
+     * isSameZone - false measn different location
      */
 
     public void downloadProductTaxDetails() {
@@ -113,7 +122,7 @@ public class TaxGstHelper implements TaxInterface {
             sb.append("select distinct A.pid,TM.TaxDesc,TM.taxrate,SLM.ListName,TM.TaxType,TM.minvalue,TM.maxValue,TM.applyRange,TM.groupid,ifnull(TM.parentType,0) from  productmaster A ");
             if (mBusinessModel.configurationMasterHelper.IS_GST)
                 sb.append("inner JOIN ProductTaxMaster PTM on  PTM.pid = A.pid ");
-            if(mBusinessModel.configurationMasterHelper.IS_GST_HSN)
+            if (mBusinessModel.configurationMasterHelper.IS_GST_HSN)
                 sb.append("inner JOIN ProductTaxMaster PTM on  PTM.HSNId = A.HSNId ");
             sb.append("inner JOIN TaxMaster TM on  PTM.groupid = TM.groupid ");
             sb.append("INNER JOIN StandardListMaster SLM ON SLM.Listid = TM.TaxType ");
@@ -122,8 +131,14 @@ public class TaxGstHelper implements TaxInterface {
 
             sb.append("where PTM.TaxTypeId = "
                     + mBusinessModel.getRetailerMasterBO().getTaxTypeId());
-            sb.append(" AND PTM.isSameZone = " + mBusinessModel.getRetailerMasterBO().isSameZone());
-            sb.append("  order by A.pid");
+
+            if (mBusinessModel.configurationMasterHelper.IS_TAX_LOC) {
+                sb.append(" AND PTM.LocationId = " + mBusinessModel.getRetailerMasterBO().getRetailerTaxLocId());
+                sb.append(" AND PTM.sourceLocId = " + mBusinessModel.getRetailerMasterBO().getSupplierTaxLocId());
+            } else
+                sb.append(" AND PTM.isSameZone = " + mBusinessModel.getRetailerMasterBO().isSameZone());
+
+            sb.append(" order by A.pid");
 
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -907,7 +922,7 @@ public class TaxGstHelper implements TaxInterface {
     @Override
     public float updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS) {
         float totalTaxAmount = 0;
-        if (productMasterBOS != null && productMasterBOS.size()>0) {
+        if (productMasterBOS != null && productMasterBOS.size() > 0) {
             for (ProductMasterBO productMasterBO : productMasterBOS) {
                 ProductMasterBO productBo = productMasterBO;
                 if (productBo != null) {
@@ -921,7 +936,7 @@ public class TaxGstHelper implements TaxInterface {
 
                         productBo.setDiscount_order_value(temp);
 
-                        if(mTaxListByProductId!=null && mTaxListByProductId.get(productBo.getProductID())!=null) {
+                        if (mTaxListByProductId != null && mTaxListByProductId.get(productBo.getProductID()) != null) {
 
                             ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());
                             if (taxList != null) {

@@ -3,6 +3,7 @@ package com.ivy.cpg.view.van;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,11 +17,11 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -31,7 +32,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class StockViewActivity extends ToolBarwithFilter implements
-        BrandDialogInterface, OnEditorActionListener {
+        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack {
     private ArrayList<LoadManagementBO> filterlist;
     private ArrayList<LoadManagementBO> mylist;
     private Vector<LoadManagementBO> mylist2;
@@ -186,31 +187,31 @@ public class StockViewActivity extends ToolBarwithFilter implements
         ) {
             public void onDrawerClosed(View view) {
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(i.getStringExtra("screentitle"));
+                    setScreenTitle(i.getStringExtra("screentitle"));
                 }
                 supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle("Filter");
+                    setScreenTitle("Filter");
                 }
                 supportInvalidateOptionsMenu();
             }
         };
 
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setIcon(null);
         }
-        mylist = new ArrayList<>(bmodel.productHelper.getProducts());
+        mylist = new ArrayList<>(bmodel.productHelper.getLoadMgmtProducts());
         Commons.print("stock view oncreate," + String.valueOf(mylist.size()));
 
         /** Load products from product master **/
 //        LoadManagementBO lbo;
 //        mylist2 = new Vector<>();
-//        for (int j = 0; j < bmodel.productHelper.getProducts().size(); j++) {
-//            lbo = bmodel.productHelper.getProducts().get(j);
+//        for (int j = 0; j < bmodel.productHelper.getLoadMgmtProducts().size(); j++) {
+//            lbo = bmodel.productHelper.getLoadMgmtProducts().get(j);
 //            if (lbo.getStocksih() > 0)
 //                mylist2.add(lbo);
 //        }
@@ -233,10 +234,6 @@ public class StockViewActivity extends ToolBarwithFilter implements
         if (!generalbutton.equals(GENERAL))
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
-        if (!brandbutton.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
-
 
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
         return super.onPrepareOptionsMenu(menu);
@@ -247,13 +244,17 @@ public class StockViewActivity extends ToolBarwithFilter implements
 
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            loadActivity = new Intent(StockViewActivity.this, HomeScreenActivity.class);
-            if (isFromPlanning)
-                loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
-            else
-                loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-            startActivity(loadActivity);
-            finish();
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                loadActivity = new Intent(StockViewActivity.this, HomeScreenActivity.class);
+                if (isFromPlanning)
+                    loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
+                else
+                    loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
+                startActivity(loadActivity);
+                finish();
+            }
         } else if (id == R.id.menu_expand) {
             if (!isExpandList) {
                 for (int i = 0; i < expandableListAdapter.getGroupCount(); i++) {
@@ -434,63 +435,15 @@ public class StockViewActivity extends ToolBarwithFilter implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-        filterlist = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (LoadManagementBO productBO : mylist) {
-                if (levelBO.getProductID() == productBO.getParentid()) {
-                    if (productBO.getSih() > 0)
-                        filterlist.add(productBO);
-                }
-            }
-        }
-
-        listDataChild = new HashMap<>();
-        for (LoadManagementBO parentBo : filterlist) {
-            childList = new ArrayList<>();
-            for (LoadManagementBO childBO : filterlist) {
-                if (parentBo.getProductid() == childBO.getProductid()
-                        && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty())
-                    childList.add(childBO);
-            }
-            String pid = String.valueOf(parentBo.getProductid());
-
-            listDataChild.put(pid, childList);//load child batch List data
-        }
-
-//---------- remove duplicate product name from given list-----------///
-
-        for (int i = 0; i < filterlist.size(); i++) {
-
-            for (int j = i + 1; j < filterlist.size(); j++) {
-                if (filterlist.get(i).getProductid() == filterlist.get(j).getProductid()) {
-                    filterlist.remove(j);
-                    j--;
-                }
-            }
-        }
-
-
-        expandableListAdapter = new ExpandableListAdapter(this, filterlist, listDataChild);
-        expandlvwplist.setAdapter(expandableListAdapter);
-
-        mDrawerLayout.closeDrawers();
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         filterlist = new ArrayList<>();
         if (mAttributeProducts != null) {
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : mylist) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
-                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(productBO.getProductid())) {
-                                filterlist.add(productBO);
-                            }
+            if (mFilteredPid != 0) {
+                for (LoadManagementBO productBO : mylist) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                        if (mAttributeProducts.contains(productBO.getProductid())) {
+                            filterlist.add(productBO);
                         }
                     }
                 }
@@ -504,16 +457,14 @@ public class StockViewActivity extends ToolBarwithFilter implements
                 }
             }
         } else {
-            if (mParentIdList.size() > 0 && !mFilterText.equalsIgnoreCase("")) {
-                for (LevelBO levelBO : mParentIdList) {
+            if (mFilteredPid != 0 && !mFilterText.equalsIgnoreCase("")) {
                     for (LoadManagementBO productBO : mylist) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
 
                             if (productBO.getSih() > 0)
                                 filterlist.add(productBO);
                         }
                     }
-                }
             } else {
                 for (LoadManagementBO productBO : mylist) {
                     if (productBO.getSih() > 0)

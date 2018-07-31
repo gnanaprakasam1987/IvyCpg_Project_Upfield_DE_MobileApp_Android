@@ -41,7 +41,6 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -49,10 +48,10 @@ import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
-        BrandDialogInterface, OnClickListener, OnEditorActionListener {
+        BrandDialogInterface, OnClickListener, OnEditorActionListener,FiveLevelFilterCallBack {
 
     private static final String BRAND = "Brand";
     private static final String GENERAL = "General";
@@ -114,7 +113,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             isAddBatchDialogClicked = false;
             batchEntryDialog.dismiss();
             Toast.makeText(ManualVanLoadActivity.this, R.string.batch_created_successfully, Toast.LENGTH_LONG).show();
-            if(list != null && list.size() > 0) {
+            if (list != null && list.size() > 0) {
                 mSchedule = new MyAdapter(list);
                 lvwplist.setAdapter(mSchedule);
             }
@@ -191,7 +190,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        vanlist = bmodel.productHelper.getProducts();
+        vanlist = bmodel.productHelper.getLoadMgmtProducts();
 
         updateBrandText("Brand", -1);
 
@@ -331,13 +330,13 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     subDepotAdapter = new ArrayAdapter<>(
                             ManualVanLoadActivity.this,
                             R.layout.spinner_blacktext_layout,
-                            bmodel.vanmodulehelper.getSubDepotList());
+                            bmodel.loadManagementHelper.getSubDepotList());
                 } else {
                     txtLbl.setText(R.string.distributor);
                     subDepotAdapter = new ArrayAdapter<>(
                             ManualVanLoadActivity.this,
                             android.R.layout.simple_spinner_item,
-                            bmodel.vanmodulehelper.getDistributorList());
+                            bmodel.loadManagementHelper.getDistributorList());
                 }
                 subDepotAdapter
                         .setDropDownViewResource(R.layout.spinner_blacktext_list_item);
@@ -434,7 +433,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
 
                 if (selectedSubDepotId != 0) {
-                    if (bmodel.vanmodulehelper.hasVanLoadDone()
+                    if (bmodel.loadManagementHelper.hasVanLoadDone()
                             && selectedSubDepotId != 0) {
                         if (bmodel.configurationMasterHelper.VANLOAD_TYPE == 0) {
                             new calculateLiability().execute();
@@ -458,7 +457,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
 
             } else {
-                if (bmodel.vanmodulehelper.hasVanLoadDone()) {
+                if (bmodel.loadManagementHelper.hasVanLoadDone()) {
                     showDialog(1);
                 } else {
                     bmodel.showAlert(
@@ -466,35 +465,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                             0);
                 }
             }
-        }
-    }
-
-    /**
-     * Used to Filter Category and Brand.
-     */
-    private void productFilterClickedFragment() {
-        try {
-
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = ManualVanLoadActivity.this
-                    .getSupportFragmentManager();
-            FilterFragment<?> frag = (FilterFragment<?>) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putBoolean("isFormBrand", true);
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e);
         }
     }
 
@@ -528,7 +498,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     + "(" + list.size() + ")");
         else
             tvSelectedFilter.setText(mFilterText + "(" + list.size() + ")");
-        if(list != null && list.size() > 0) {
+        if (list != null && list.size() > 0) {
             mSchedule = new MyAdapter(list);
             lvwplist.setAdapter(mSchedule);
         }
@@ -546,6 +516,60 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        filterlist = new ArrayList<>();
+        if (mAttributeProducts != null) {
+            if (mFilteredPid!=0) {
+                    for (LoadManagementBO productBO : vanlist) {
+                        if (productBO.getIssalable() == 1) {
+                            if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                                if (mAttributeProducts.contains(productBO.getProductid())) {
+                                    filterlist.add(productBO);
+                                }
+                            }
+                        }
+                    }
+            } else {
+                for (int pid : mAttributeProducts) {
+                    for (LoadManagementBO productBO : vanlist) {
+                        if (productBO.getIssalable() == 1) {
+                            if (pid == productBO.getProductid()) {
+                                filterlist.add(productBO);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if (mFilteredPid!=0 && !mFilterText.isEmpty()) {
+                    for (LoadManagementBO loadMgtBO : vanlist) {
+                        if (loadMgtBO.getIssalable() == 1) {
+                            if (loadMgtBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                                filterlist.add(loadMgtBO);
+                            }
+                        }
+                }
+            } else {
+                for (LoadManagementBO loadMgtBO : vanlist) {
+                    if (loadMgtBO.getIssalable() == 1) {
+                        filterlist.add(loadMgtBO);
+
+                    }
+                }
+            }
+        }
+        if (filterlist != null && filterlist.size() > 0) {
+            mSchedule = new MyAdapter(filterlist);
+            lvwplist.setAdapter(mSchedule);
+        }
+
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+
+        mDrawerLayout.closeDrawers();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vanload, menu);
         return super.onCreateOptionsMenu(menu);
@@ -555,19 +579,13 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if (!brandFilterText.equals(BRAND))
-            menu.findItem(R.id.menu_product_filter).setIcon(
-                    R.drawable.ic_action_filter_select);
-
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         menu.findItem(R.id.menu_fivefilter).setVisible(!drawerOpen);
-        menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_bottle_return).setVisible(!drawerOpen);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN && bmodel.configurationMasterHelper.VANLOAD_TYPE == 0)
             menu.findItem(R.id.menu_bottle_return).setVisible(true);
@@ -575,10 +593,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             menu.findItem(R.id.menu_bottle_return).setVisible(false);
 
 
-        if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            menu.findItem(R.id.menu_fivefilter).setVisible(true);
-        else
-            menu.findItem(R.id.menu_product_filter).setVisible(true);
+        menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
 
         return super.onPrepareOptionsMenu(menu);
@@ -592,9 +607,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 mDrawerLayout.closeDrawers();
             else
                 onBackButtonClick();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_bottle_return) {
             if (!isClicked) {
@@ -618,7 +630,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     public void onBackButtonClick() {
-        if (bmodel.vanmodulehelper.hasVanLoadDone()) {
+        if (bmodel.loadManagementHelper.hasVanLoadDone()) {
             showDialog(0);
         } else {
             loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
@@ -783,7 +795,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         }
 
         protected void onPostExecute(Boolean result) {
-            if(list != null && list.size() > 0) {
+            if (list != null && list.size() > 0) {
                 mSchedule = new MyAdapter(list);
                 lvwplist.setAdapter(mSchedule);
             }
@@ -879,7 +891,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             public void afterTextChanged(Editable s) {
                 String qty = s.toString();
                 if (!"".equals(qty)) {
-                    bmodel.vanmodulehelper.setmVanLoadAmount(SDUtil
+                    bmodel.loadManagementHelper.setmVanLoadAmount(SDUtil
                             .convertToFloat(qty));
 
                 }
@@ -888,7 +900,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         });
 
         String tv = SDUtil.roundIt(
-                bmodel.vanmodulehelper.calculateVanLoadProductPrice(), 2)
+                bmodel.loadManagementHelper.calculateVanLoadProductPrice(), 2)
                 + "";
 
         tvProductPrice.setText(tv);
@@ -897,7 +909,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         tvReturnProductPrice.setText(tv);
 
         tv = SDUtil.roundIt(
-                bmodel.vanmodulehelper.calculateVanLoadProductPrice()
+                bmodel.loadManagementHelper.calculateVanLoadProductPrice()
                         + bmodel.getOrderHeaderBO().getRemainigValue(), 2)
                 + "";
         tvTotalPrice.setText(tv);
@@ -911,7 +923,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                 float totalPrice = SDUtil
                                         .convertToFloat(tvTotalPrice.getText()
                                                 .toString());
-                                if (bmodel.vanmodulehelper.getmVanLoadAmount() == totalPrice) {
+                                if (bmodel.loadManagementHelper.getmVanLoadAmount() == totalPrice) {
                                     new SaveVanLoad().execute();
 
                                 } else {
@@ -967,29 +979,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-        filterlist = new ArrayList<>();
-        for (LevelBO levelBO : mParentIdList) {
-            for (LoadManagementBO loadMgtBO : vanlist) {
-                if (loadMgtBO.getIssalable() == 1) {
-                    if (levelBO.getProductID() == loadMgtBO.getParentid()) {
-                        filterlist.add(loadMgtBO);
-                    }
-                }
-            }
-        }
-        if(filterlist != null && filterlist.size() > 0) {
-            mSchedule = new MyAdapter(filterlist);
-            lvwplist.setAdapter(mSchedule);
-        }
-
-        mDrawerLayout.closeDrawers();
-        // TO DO Auto-generated method stub
-
-    }
-
     public void numberPressed(View vw) {
         if (returnProductDialog != null) {
             if (returnProductDialog.isShowing()) {
@@ -1031,64 +1020,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             quantity.setText(qty);
         } else
             quantity.setText(append);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        filterlist = new ArrayList<>();
-        if (mAttributeProducts != null) {
-            if (!mParentIdList.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO productBO : vanlist) {
-                        if (productBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == productBO.getParentid()) {
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                if (mAttributeProducts.contains(productBO.getProductid())) {
-                                    filterlist.add(productBO);
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                for (int pid : mAttributeProducts) {
-                    for (LoadManagementBO productBO : vanlist) {
-                        if (productBO.getIssalable() == 1) {
-                            if (pid == productBO.getProductid()) {
-                                filterlist.add(productBO);
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            if (mParentIdList.size() > 0 && !mFilterText.isEmpty()) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (LoadManagementBO loadMgtBO : vanlist) {
-                        if (loadMgtBO.getIssalable() == 1) {
-                            if (levelBO.getProductID() == loadMgtBO.getParentid()) {
-                                filterlist.add(loadMgtBO);
-                            }
-                        }
-                    }
-                }
-            } else {
-                for (LoadManagementBO loadMgtBO : vanlist) {
-                    if (loadMgtBO.getIssalable() == 1) {
-                        filterlist.add(loadMgtBO);
-
-                    }
-                }
-            }
-        }
-        if(filterlist != null && filterlist.size() > 0) {
-            mSchedule = new MyAdapter(filterlist);
-            lvwplist.setAdapter(mSchedule);
-        }
-
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-
-        mDrawerLayout.closeDrawers();
     }
 
     class MyAdapter extends ArrayAdapter<LoadManagementBO> {
@@ -1444,10 +1375,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.vanmodulehelper.saveVanLoad(vanlist, selectedSubDepotId);
+                bmodel.loadManagementHelper.saveVanLoad(vanlist, selectedSubDepotId);
                 // Clear the Values from the Objects after save in DB
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
-                    bmodel.vanmodulehelper.clearBomReturnProductsTable();
+                    bmodel.loadManagementHelper.clearBomReturnProductsTable();
                 }
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -1503,7 +1434,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.vanmodulehelper.setReturnQty();
+                bmodel.loadManagementHelper.setReturnQty();
                 bmodel.productHelper.calculateOrderReturnValue();
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -1545,7 +1476,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.vanmodulehelper.setReturnQty();
+                bmodel.loadManagementHelper.setReturnQty();
                 bmodel.productHelper.calculateOrderReturnValue();
                 if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
                     bmodel.productHelper.setGroupWiseReturnQty();
