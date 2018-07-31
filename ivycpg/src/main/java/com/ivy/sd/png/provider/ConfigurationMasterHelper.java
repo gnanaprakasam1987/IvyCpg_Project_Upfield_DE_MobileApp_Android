@@ -464,6 +464,8 @@ public class ConfigurationMasterHelper {
     private boolean LOAD_COMP_CONFIGS;
     public boolean SHOW_TIME_VIEW;
     public boolean SHOW_SPINNER;
+    public boolean SHOW_COMP_QTY;
+    public boolean SHOW_COMP_FEEDBACK;
 
     private static final String CODE_SHOW_JOINT_CALL_REMARKS = "JC_REMARK";
     public boolean IS_SHOW_JOINT_CALL_REMARKS;
@@ -1474,6 +1476,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_GST_TAX_LOCATION_TYPE = "TAX_LOCATION_TYPE";
     public boolean IS_TAX_LOC;
+
+    private static final String CODE_CHECK_PHOTO_MANDATORY = "FUN71";
+    public boolean IS_CHECK_PHOTO_MANDATORY;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2587,6 +2592,8 @@ public class ConfigurationMasterHelper {
             getLocationTaxGSTModel(CODE_GST_TAX_LOCATION_TYPE);
         }
 
+        this.IS_CHECK_PHOTO_MANDATORY = hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) : false;
+
     }
 
     private boolean isInOutModule() {
@@ -3331,6 +3338,8 @@ public class ConfigurationMasterHelper {
         try {
             SHOW_TIME_VIEW = false;
             SHOW_SPINNER = false;
+            SHOW_COMP_QTY = false;
+            SHOW_COMP_FEEDBACK = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3356,6 +3365,12 @@ public class ConfigurationMasterHelper {
                             break;
                         case "RSN":
                             SHOW_SPINNER = true;
+                            break;
+                        case "QTY":
+                            SHOW_COMP_QTY = true;
+                            break;
+                        case "FEEDBACK":
+                            SHOW_COMP_FEEDBACK = true;
                             break;
                     }
 

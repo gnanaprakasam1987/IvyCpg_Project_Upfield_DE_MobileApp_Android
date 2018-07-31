@@ -3,6 +3,7 @@ package com.ivy.cpg.view.van;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -186,20 +187,20 @@ public class StockViewActivity extends ToolBarwithFilter implements
         ) {
             public void onDrawerClosed(View view) {
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(i.getStringExtra("screentitle"));
+                    setScreenTitle(i.getStringExtra("screentitle"));
                 }
                 supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle("Filter");
+                    setScreenTitle("Filter");
                 }
                 supportInvalidateOptionsMenu();
             }
         };
 
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setIcon(null);
         }
@@ -243,13 +244,17 @@ public class StockViewActivity extends ToolBarwithFilter implements
 
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            loadActivity = new Intent(StockViewActivity.this, HomeScreenActivity.class);
-            if (isFromPlanning)
-                loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
-            else
-                loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-            startActivity(loadActivity);
-            finish();
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                loadActivity = new Intent(StockViewActivity.this, HomeScreenActivity.class);
+                if (isFromPlanning)
+                    loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
+                else
+                    loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
+                startActivity(loadActivity);
+                finish();
+            }
         } else if (id == R.id.menu_expand) {
             if (!isExpandList) {
                 for (int i = 0; i < expandableListAdapter.getGroupCount(); i++) {

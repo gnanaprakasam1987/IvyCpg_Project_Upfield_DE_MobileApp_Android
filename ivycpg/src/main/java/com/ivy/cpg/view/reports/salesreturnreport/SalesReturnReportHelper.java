@@ -1,10 +1,10 @@
-package com.ivy.cpg.view.reports.salesreport;
+package com.ivy.cpg.view.reports.salesreturnreport;
 
 
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.cpg.view.reports.salesreport.salesreportdetails.SalesReturnDeliveryReportBo;
+import com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails.SalesReturnDetailsReportBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
@@ -19,7 +19,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 
-public class SalesReportHelper {
+public class SalesReturnReportHelper {
 
 
     public List<SalesReturnReportBo> getSalesReturnHeaderValue(Context context) {
@@ -61,16 +61,16 @@ public class SalesReportHelper {
     }
 
 
-    public Observable<Vector<SalesReturnDeliveryReportBo>> getSaleReturnDeliveryDetails(final Context context, final String uId) {
+    public Observable<Vector<SalesReturnDetailsReportBo>> getSaleReturnDeliveryDetails(final Context context, final String uId) {
 
-        return Observable.create(new ObservableOnSubscribe<Vector<SalesReturnDeliveryReportBo>>() {
+        return Observable.create(new ObservableOnSubscribe<Vector<SalesReturnDetailsReportBo>>() {
             @Override
-            public void subscribe(final ObservableEmitter<Vector<SalesReturnDeliveryReportBo>> subscriber) throws Exception {
+            public void subscribe(final ObservableEmitter<Vector<SalesReturnDetailsReportBo>> subscriber) throws Exception {
 
                 try {
 
 
-                    Vector<SalesReturnDeliveryReportBo> returnDeliveryDataModelVector = new Vector<>();
+                    Vector<SalesReturnDetailsReportBo> returnDeliveryDataModelVector = new Vector<>();
                     DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
                     dbUtil.openDataBase();
 
@@ -84,7 +84,7 @@ public class SalesReportHelper {
 
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
-                            SalesReturnDeliveryReportBo salesReturnDeliveryDataModel = new SalesReturnDeliveryReportBo();
+                            SalesReturnDetailsReportBo salesReturnDeliveryDataModel = new SalesReturnDetailsReportBo();
                             salesReturnDeliveryDataModel.setUid(cursor.getString(0));
                             salesReturnDeliveryDataModel.setProductName(cursor.getString(cursor.getColumnIndex("ProductName")));
                             salesReturnDeliveryDataModel.setProductId(cursor.getString(cursor.getColumnIndex("ProductID")));

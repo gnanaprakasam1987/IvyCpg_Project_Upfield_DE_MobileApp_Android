@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports.salesreport.salesreportdetails;
+package com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -8,10 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.reports.salesreport.SalesReportHelper;
+import com.ivy.cpg.view.reports.salesreturnreport.SalesReturnReportHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -128,10 +127,10 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
 
         totalValue(uId);
 
-        SalesReportHelper salesReportHelper = new SalesReportHelper();
+        SalesReturnReportHelper salesReturnReportHelper = new SalesReturnReportHelper();
         mCompositeDisposable = new CompositeDisposable();
 
-        mCompositeDisposable.add((Disposable) salesReportHelper.getSaleReturnDeliveryDetails(this, uId)
+        mCompositeDisposable.add((Disposable) salesReturnReportHelper.getSaleReturnDeliveryDetails(this, uId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getObserver()));
@@ -139,10 +138,10 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
     }
 
 
-    public Observer<Vector<SalesReturnDeliveryReportBo>> getObserver() {
-        return new DisposableObserver<Vector<SalesReturnDeliveryReportBo>>() {
+    public Observer<Vector<SalesReturnDetailsReportBo>> getObserver() {
+        return new DisposableObserver<Vector<SalesReturnDetailsReportBo>>() {
             @Override
-            public void onNext(Vector<SalesReturnDeliveryReportBo> reportBos) {
+            public void onNext(Vector<SalesReturnDetailsReportBo> reportBos) {
                 setUpAdapter(reportBos);
 
             }
@@ -157,7 +156,7 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         };
     }
 
-    private void setUpAdapter(Vector<SalesReturnDeliveryReportBo> reportBos) {
+    private void setUpAdapter(Vector<SalesReturnDetailsReportBo> reportBos) {
         SalesReturnReportDetailsAdapter adapter = new SalesReturnReportDetailsAdapter(this, reportBos);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);

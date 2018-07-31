@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1320"
-    android:versionName="2.132.0.2164">
+    android:versionName="2.132.0.2243">
 
     <supports-screens
         android:anyDensity="true"
@@ -335,7 +335,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.HomeScreenActivity"
-            android:screenOrientation="portrait" />
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorPortrait">
+            <intent-filter>
+                <action android:name="com.ivy.sd.png.view.van.LoadManagementScreen.RECVR" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.ivy.cpg.primarysale.view.PrimarySaleActivity"
             android:screenOrientation="portrait" />
@@ -431,17 +439,6 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.LoadManagementScreen"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="sensorPortrait">
-            <intent-filter>
-                <action android:name="com.ivy.sd.png.view.van.LoadManagementScreen.RECVR" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity
             android:name="com.ivy.cpg.view.van.ManualVanLoadActivity"
             android:screenOrientation="portrait" />
@@ -795,8 +792,6 @@
         <activity
             android:name="com.ivy.cpg.view.asset.PosmGallery"
             android:screenOrientation="portrait" />
-        android:screenOrientation="portrait"/>
-
 
         <activity
             android:name="com.ivy.ui.activation.view.ActivationActivity"
@@ -804,7 +799,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.ivy.cpg.view.reports.salesreport.salesreportdetails.SalesReturnDetailsActivity"
+            android:name="com.ivy.cpg.view.salesdeliveryreturn.SalesReturnDeliveryActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails.SalesReturnDetailsActivity"
             android:screenOrientation="portrait" />
 
 

@@ -36,7 +36,6 @@
     <string name="no_products_exists">ບໍ່ມີຜະລິດຕະພັນ</string>
     <string name="Noorderreason">ບໍ່ມີເຫດຜົນການສັງຈອງ</string>
     <string name="no_unsubmitted_orders">ບໍ່ມີໃບສັ່ງຊື້</string>
-    <string name="nodatadownload">ບໍ່ມີຂໍ້ມູນໃຫ້ດາວໂຫລດ</string>
     <string name="no_network_connection">ບໍ່ມີການເຊື່ອມຕໍ່ອິນເຕີເນັດ</string>
     <string name="successfully_activated">ເປິດໃຊ້ງານລະບົບສຳເລັດ</string>
     <string name="invoice_created_successfully">ໃບບິນຂາຍຖຶກສ້າງສຳເລັດແລ້ວ</string>
@@ -63,7 +62,6 @@
     <string name="amount_exeeds_the_balance_please_check">ມູນຄ່າເກີນຍອດຄ້າງ. ກະລຸນນາກວດສອບ</string>
     <string name="its_highly_recommend_you_to_upload_the_images_before_capturing_new_image">ແນະນຳໃຫ້ອັບໂຫລດຮູບພາບກ່ອນຖ່າຍຮູບໃຫມ່</string>
     <string name="maximum_number_of_images_has_been_captured_without_upload_Do_upload_or_delete_images">ມີຈຳນວນຮູບທີ່ຖ່າຍຫລາຍເກີນໄປໂດຍບໍ່ໄດ້ອັບໂຫລດ. ກະລຸນນາອັບໂຫລດ ຫລືກົດໃສ່ Gallery ເພື່ອລຶບຮູບພາບ</string>
-    <string name="wits_merchandising_already_done_Do_you_want_do_again">ສົ່ງເສີມການຂາຍສຳເລັດ. ຕ້ອງການເຮັດອີກຄັ້ງບໍ່?</string>
     <string name="order_exist_without_invoice">ມີໃບສັ່ງຄ້າງໂດຍບໍ່ໄດ້ຖຶກສ້າງບິນຂາຍ</string>
     <string name="password_does_not_match">ລະຫັດບໍ່ຕົງກັນ</string>
     <string name="its_not_possible_to_upload_without_img">ບໍ່ສາມາດອັບໂຫລດໂດຍບໍ່ມີຮູບພາບ</string>
@@ -197,10 +195,6 @@
     <string name="saving_sales_return">ກຳລັງບັນທືກ</string>
     <string name="uploading_data">ກຳລັງອັບໂຫລດຂໍ້ມູນ</string>
     <string name="image_uploading">ກຳລັງອັບໂຫລດຮູບພາບ</string>
-    <string name="saving_init_merchandising">ກຳລັງບັນທືກເລີ້ມການ​ຈັດ​ໂຊ...</string>
-    <string name="saving_merchandising">ກຳລັງບັນທຶກການ​ຈັດ​ໂຊ...</string>
-    <string name="focus_merchandising">SBD ການ​ຈັດ​ໂຊ</string>
-    <string name="merch_initiative"> Merch. Initiative</string>
     <string name="successfully_uploaded">ອັບໂຫລດຂໍ້ມູນສຳເລັດແລ້ວ!</string>
     <string name="upload_failed_please_try_again">ອັບເດດຜິດພາດ. ກະລຸນນາລອງໃຫມ່</string>
     <string name="images_sucessfully_uploaded">ອັບໂຫລດຮູບສຳເລັດແລ້ວ!</string>
@@ -534,11 +528,9 @@
     <string name="BATCH_NO">ເລກທີ Batch</string>
     <string name="select_reason_skip_seq">ເລືອກເຫດຜົນເພື່ອຂ້າມລຳດັບ</string>
     <string name="crown">ຂັ້ນ​ບໍ​ລິ​ຫານ​ສູງ​ສຸດ</string>
-    <string name="crown_count_mismatch">Crown Qty mismatch from Product Qty</string>
     <string name="crown_count">Crown Count</string>
     <string name="liableqty">LiableQty</string>
     <string name="returnqty">ReturnQty</string>
-    <string name="enter_three_char">ໃສ່ຢ່າງຫນ້ອຍ 3 ຕົວ</string>
     <string name="loading_stock">Loading Stock</string>
     <string name="sold_stock">Sold Stock</string>
     <string name="free_issued">Free Issued</string>
@@ -555,7 +547,6 @@
     <string name="vanload_productprice">Loaded Product Price :</string>
     <string name="vanunload_productprice">Unloaded Product Price :</string>
     <string name="batch_no_already_exist">ເລກ Batch ມີແລ້ວ</string>
-    <string name="crown_product">Crown Product</string>
     <string name="select_sub_depot">ເລືອກສາງ​ຍ່ອຍເພື່ອ​ບັນ​ທຶກ</string>
     <string name="enter">ໃສ່</string>
     <string name="code">ລະຫັດ</string>
@@ -1269,7 +1260,5 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
-
-    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
 
 </resources>

@@ -674,6 +674,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
                     && isSpecialFilterAppliedProduct(generalButton, ret))
                 return true;
+            else  if (isSpecialFilterAppliedProduct(generalButton, ret))
+                return true;
 
         } else if (GENERAL.equals(generalButton)) {
             // product filter alone selected

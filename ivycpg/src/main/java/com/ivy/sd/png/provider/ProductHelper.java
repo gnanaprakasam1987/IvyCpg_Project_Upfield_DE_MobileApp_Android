@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
@@ -31,7 +32,6 @@ import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -3312,7 +3312,8 @@ public class ProductHelper {
             sql = "";
             sql1 = "";
         }
-        if (batchmenucode.equals("MENU_STOCK_PROPOSAL")) {
+        if (batchmenucode.equals("MENU_STOCK_PROPOSAL")
+                || batchmenucode.equals("MENU_STK_PRO")) {
             sql2 = " LEFT JOIN StockProposalMaster A ON A.pid = PM.PID";
             sql3 = " ,A.qty, A.pcsQty, A.caseQty, A.outerQty";
         } else {
@@ -3371,7 +3372,8 @@ public class ProductHelper {
                 bo.setMsqQty(c.getInt(24));
                 bo.setIssalable(c.getInt(25));
                 bo.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
-                if (batchmenucode.equals("MENU_STOCK_PROPOSAL")) {
+                if (batchmenucode.equals("MENU_STOCK_PROPOSAL")
+                        || batchmenucode.equals("MENU_STK_PRO")) {
                     bo.setStkprototalQty(c.getInt(c.getColumnIndex("qty")));
                     bo.setStkpropcsqty(c.getInt(c.getColumnIndex("pcsQty")));
                     bo.setStkprocaseqty(c.getInt(c.getColumnIndex("caseQty")));

@@ -30,7 +30,7 @@ public class TimeAndTravelReport extends Fragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment_container);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment_content);
         mTabHost.setForegroundGravity(Gravity.CENTER);
         mTabHost.addTab(mTabHost.newTabSpec("Time Taken").setIndicator("Time Taken"),
                 OrderTakenTimeReport.class, null);
@@ -60,7 +60,7 @@ public class TimeAndTravelReport extends Fragment {
         super.onResume();
         if (!createdTab) {
             createdTab = true;
-            mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment_container);
+            mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.fragment_content);
         }
     }
 
