@@ -185,7 +185,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
             /*android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("filter");
             FragmentTransaction ft = fm
                     .beginTransaction();
@@ -202,7 +202,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setBrandDialogInterface(this);
             fragobj.setArguments(bundle);
             ft.add(R.id.right_drawer, fragobj, "filter");

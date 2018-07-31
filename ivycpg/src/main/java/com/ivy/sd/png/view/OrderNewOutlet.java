@@ -2340,7 +2340,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
             mDrawerLayout.openDrawer(GravityCompat.END);
 
             FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
             FragmentTransaction ft = fm
                     .beginTransaction();
@@ -2349,12 +2349,11 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
             Bundle bundle = new Bundle();
 
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "generalfilter");
             ft.commit();

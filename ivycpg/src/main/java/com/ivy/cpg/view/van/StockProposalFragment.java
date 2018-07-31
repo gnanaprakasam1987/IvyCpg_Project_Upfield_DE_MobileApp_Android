@@ -54,7 +54,7 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.lang.ref.WeakReference;
@@ -2860,7 +2860,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("filter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -2868,14 +2868,12 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
-            bundle.putString("isFrom", "stockproposal");
-            bundle.putSerializable("filterContent",
+            bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper
                             .getSpecialFilterList("STKPRO12"));
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
 
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "filter");
