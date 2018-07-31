@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports.dynamicReport;
 
 
 import android.graphics.Color;
@@ -21,8 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.DynamicReportDetailBO;
-import com.ivy.sd.png.bo.DynamicReportHeaderBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -41,6 +39,7 @@ public class DynamicReportFragment extends Fragment {
 
 
     private BusinessModel bmodel;
+    private DynamicReportHelper dynamicReportHelper;
     private View view;
     private List<DynamicReportHeaderBO> headers;
     private DynamicReportDetailBO details;
@@ -67,6 +66,7 @@ public class DynamicReportFragment extends Fragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        dynamicReportHelper = DynamicReportHelper.getInstance(getActivity());
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -89,13 +89,13 @@ public class DynamicReportFragment extends Fragment {
         else
             ll_item.setBackgroundResource(R.drawable.background_item);
 
-        if (bmodel.dynamicReportHelper.isRep_retailer()) {
+        if (dynamicReportHelper.isRep_retailer()) {
             ll_report_retailer.setVisibility(View.VISIBLE);
             reportArrayAdapter = new ArrayAdapter<SpinnerBO>(getActivity(), android.R.layout.simple_spinner_item);
             reportArrayAdapter.add(new SpinnerBO(0, getResources().getString(R.string.select)));
-            if (bmodel.dynamicReportHelper.getReportRetailer() != null &&
-                    bmodel.dynamicReportHelper.getReportRetailer().size() != 0) {
-                for (SpinnerBO bo : bmodel.dynamicReportHelper.getReportRetailer())
+            if (dynamicReportHelper.getReportRetailer() != null &&
+                    dynamicReportHelper.getReportRetailer().size() != 0) {
+                for (SpinnerBO bo : dynamicReportHelper.getReportRetailer())
                     reportArrayAdapter.add(bo);
             }
             retailerSpinner.setAdapter(reportArrayAdapter);
@@ -109,7 +109,7 @@ public class DynamicReportFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 int selectedId = reportArrayAdapter.getItem(position).getId();
                 if (selectedId > 0) {
-                    bmodel.dynamicReportHelper.downloadRetailerReport(reportArrayAdapter.getItem(position).getId());
+                    dynamicReportHelper.downloadRetailerReport(reportArrayAdapter.getItem(position).getId());
                     setUpReportLayout();
                 }
             }
@@ -132,8 +132,8 @@ public class DynamicReportFragment extends Fragment {
         detailsSparseArray = new SparseArray<>();
         recordSet = new TreeSet<>();
 
-        headers = bmodel.dynamicReportHelper.getDynamicReportHeaderBOs();
-        details = bmodel.dynamicReportHelper.getDynamicReportDetailBO();
+        headers = dynamicReportHelper.getDynamicReportHeaderBOs();
+        details = dynamicReportHelper.getDynamicReportDetailBO();
 
         detailsSparseArray = details.getDetailsSparseArray();
         recordSet = details.getRecordSet();

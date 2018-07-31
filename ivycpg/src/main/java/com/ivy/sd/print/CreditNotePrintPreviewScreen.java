@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.reports.creditNoteReport.CreditNoteHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -157,7 +158,7 @@ public class CreditNotePrintPreviewScreen extends IvyBaseActivityNoActionBar {
     private void doInitialize() {
         try {
 
-            mDetails = bmodel.reportHelper.getCreditNoteList();
+            mDetails = new CreditNoteHelper(this).loadCreditNote();
             updateDetails();
 
             total.setText(bmodel.formatValue(totalColl));
@@ -322,7 +323,7 @@ public class CreditNotePrintPreviewScreen extends IvyBaseActivityNoActionBar {
                 // disconnect();
                 isPrinterLanguageDetected = false;
             } /*
-			 * catch (ZebraPrinterLanguageUnknownException e) {
+             * catch (ZebraPrinterLanguageUnknownException e) {
 			 * setStatus("Unknown Printer Language", Color.RED);
 
 			 *

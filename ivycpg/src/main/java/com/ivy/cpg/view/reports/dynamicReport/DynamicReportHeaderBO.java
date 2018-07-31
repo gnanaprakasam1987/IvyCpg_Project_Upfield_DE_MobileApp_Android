@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.reports.dynamicReport;
 
 /**
  * Created by karthikeyan.a on 3/16/2016.

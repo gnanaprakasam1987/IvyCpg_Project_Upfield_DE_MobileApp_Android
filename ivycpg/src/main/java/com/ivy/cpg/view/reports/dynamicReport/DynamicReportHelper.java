@@ -1,12 +1,10 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.reports.dynamicReport;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.DynamicReportDetailBO;
-import com.ivy.sd.png.bo.DynamicReportHeaderBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;

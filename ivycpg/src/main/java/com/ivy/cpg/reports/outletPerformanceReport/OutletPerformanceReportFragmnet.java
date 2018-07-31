@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.reports.outletPerformanceReport;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.OutletReportBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -31,7 +30,6 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.SellerListFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +49,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
     View view;
     private BusinessModel bmodel;
+    private OutletPerfomanceHelper outletPerfomanceHelper;
     private DrawerLayout mDrawerLayout;
     FrameLayout drawer;
 
@@ -69,6 +68,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
         try {
             bmodel = (BusinessModel) getActivity().getApplicationContext();
             bmodel.setContext(getActivity());
+            outletPerfomanceHelper = OutletPerfomanceHelper.getInstance(getActivity());
 
             if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
                 Toast.makeText(getActivity(),
@@ -89,7 +89,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
     }
 
     private void downloadReportData() {
-        lstReports = bmodel.reportHelper.downloadOutletReports();
+        lstReports = outletPerfomanceHelper.downloadOutletReports();
     }
 
     @Override
@@ -117,7 +117,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                     R.string.close
             ) {
                 public void onDrawerClosed(View view) {
-                    ((TextView) getActivity().findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
+                    ((TextView) getActivity().findViewById(R.id.tv_toolbar_title)).setText(outletPerfomanceHelper.mSelectedActivityName);
                     getActivity().supportInvalidateOptionsMenu();
                 }
 
@@ -151,7 +151,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
             LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-            for (OutletReportBO bo : bmodel.reportHelper.getLstUsers()) {
+            for (OutletReportBO bo : outletPerfomanceHelper.getLstUsers()) {
 
                 if (isAllUser || mSelectedUsers.contains(bo.getUserId())) {
 
@@ -331,7 +331,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
         @Override
         protected String doInBackground(String... params) {
             bmodel.synchronizationHelper.updateAuthenticateToken(false);
-            String response = bmodel.synchronizationHelper.sendPostMethod(bmodel.reportHelper.getPerformRptUrl(), jsonObject);
+            String response = bmodel.synchronizationHelper.sendPostMethod(outletPerfomanceHelper.getPerformRptUrl(), jsonObject);
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 Iterator itr = jsonObject.keys();
@@ -367,7 +367,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
             if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 if (errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    if (bmodel.reportHelper.isPerformReport()) {
+                    if (outletPerfomanceHelper.isPerformReport()) {
 
                         downloadReportData();
                         updateView(null, true);
@@ -409,7 +409,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
             SellerListFragment fragment = new SellerListFragment();
             Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("users", bmodel.reportHelper.getLstUsers());
+            bundle.putParcelableArrayList("users", outletPerfomanceHelper.getLstUsers());
             fragment.setArguments(bundle);
 
             ft.replace(R.id.right_drawer, fragment, "filter");

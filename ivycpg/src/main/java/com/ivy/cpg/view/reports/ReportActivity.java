@@ -16,16 +16,28 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.cpg.reports.outletPerformanceReport.OutletPerfomanceHelper;
+import com.ivy.cpg.reports.outletPerformanceReport.OutletPerformanceReportFragmnet;
+import com.ivy.cpg.reports.outletPerformanceReport.SellerListFragment;
+import com.ivy.cpg.view.reports.asset.AssetTrackingReportFragment;
 import com.ivy.cpg.view.reports.attendancereport.AttendanceReport;
+import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportFragment;
 import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
+import com.ivy.cpg.view.reports.creditNoteReport.CreditNoteReportFragment;
 import com.ivy.cpg.view.reports.dayreport.DayReportFragment;
+import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
+import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.reports.eodstockreport.EODStockReportFragmentRe;
+import com.ivy.cpg.view.reports.inventoryreport.InventoryReportFragment;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportFragment;
 import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
 import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
+import com.ivy.cpg.view.reports.promotion.PromotionTrackingReport;
 import com.ivy.cpg.view.reports.retailerProperty.RetailerPropertyReportFragment;
 import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
+import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
+import com.ivy.cpg.view.reports.userlogreport.LogReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LevelBO;
@@ -38,31 +50,21 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.SellerListFragment;
-import com.ivy.cpg.view.reports.asset.AssetTrackingReportFragment;
-import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportFragment;
-import com.ivy.sd.png.view.reports.CreditNoteReportFragment;
-import com.ivy.sd.png.view.reports.DeliveryStockReport;
 import com.ivy.sd.png.view.reports.DistOrderReportFragment;
-import com.ivy.sd.png.view.reports.DynamicReportFragment;
-import com.ivy.cpg.view.reports.inventoryreport.InventoryReportFragment;
-import com.ivy.cpg.view.reports.userlogreport.LogReportFragment;
-import com.ivy.sd.png.view.reports.OutletPerformanceReportFragmnet;
-import com.ivy.sd.png.view.reports.PndInvoiceReportFragment;
-import com.ivy.cpg.view.reports.promotion.PromotionTrackingReport;
+import com.ivy.cpg.reports.pndInvoiceReport.PndInvoiceReportFragment;
 import com.ivy.sd.png.view.reports.QuestionReportFragment;
 import com.ivy.sd.png.view.reports.SOreportFragment;
-import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
-import com.ivy.sd.png.view.reports.soho.SalesReturnReportFragmentSOHO;
 import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
 import com.ivy.sd.png.view.reports.SellerMapViewReportFragment;
 import com.ivy.sd.png.view.reports.SellerPerformanceReportFragment;
 import com.ivy.sd.png.view.reports.TaskExecutionReportFragment;
 import com.ivy.sd.png.view.reports.WebViewArchivalReportFragment;
+import com.ivy.sd.png.view.reports.deliveryStockReport.DeliveryStockReport;
 import com.ivy.sd.png.view.reports.piramal.BrandwisePerformance;
 import com.ivy.sd.png.view.reports.piramal.OpportunitiesReport;
 import com.ivy.sd.png.view.reports.piramal.ProductivityReport;
 import com.ivy.sd.png.view.reports.piramal.TimeAndTravelReport;
+import com.ivy.sd.png.view.reports.soho.SalesReturnReportFragmentSOHO;
 import com.ivy.ui.reports.beginstockreport.view.BeginningStockFragment;
 import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 
@@ -88,7 +90,7 @@ public class ReportActivity extends BaseActivity implements
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        Toolbar  toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Set title to actionbar
@@ -157,7 +159,7 @@ public class ReportActivity extends BaseActivity implements
                     .findFragmentByTag(StandardListMasterConstants.MENU_SKU_REPORT);
             if (currentStockBatchViewFragment != null) {
                 currentStockBatchViewFragment.onBackButtonClick();
-            }else if(salesVolumeReportFragment!=null){
+            } else if (salesVolumeReportFragment != null) {
                 salesVolumeReportFragment.onBackButtonClick();
             } else {
                 if (fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
@@ -197,7 +199,7 @@ public class ReportActivity extends BaseActivity implements
 
         if (config.getConfigCode().contains(
                 StandardListMasterConstants.MENU_DYN_REPORT)) {
-            bmodel.dynamicReportHelper.downloadDynamicReport(config.getConfigCode());
+            DynamicReportHelper.getInstance(this).downloadDynamicReport(config.getConfigCode());
 
             DynamicReportFragment dynamicReportFragment = new DynamicReportFragment();
             Bundle bundle = new Bundle();
@@ -280,7 +282,7 @@ public class ReportActivity extends BaseActivity implements
 
             SalesVolumeReportFragment salesVolumeReportFragment = new SalesVolumeReportFragment();
             salesVolumeReportFragment.setArguments(getIntent().getExtras());
-            transaction.replace(R.id.fragment_content, salesVolumeReportFragment,StandardListMasterConstants.MENU_SKU_REPORT);
+            transaction.replace(R.id.fragment_content, salesVolumeReportFragment, StandardListMasterConstants.MENU_SKU_REPORT);
 
             commitFragment(transaction, config);
 
@@ -527,12 +529,13 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_RETPERFO_RPT)) {
-            bmodel.reportHelper.downloadUsers();
-            if (bmodel.reportHelper.getLstUsers().size() > 0) {
+            OutletPerfomanceHelper outletPerfomanceHelper = OutletPerfomanceHelper.getInstance(this);
+            outletPerfomanceHelper.downloadUsers();
+            if (outletPerfomanceHelper.getLstUsers().size() > 0) {
 
                 OutletPerformanceReportFragmnet mOutletPerformanceReportFragmnet = new OutletPerformanceReportFragmnet();
                 transaction.replace(R.id.fragment_content, mOutletPerformanceReportFragmnet, StandardListMasterConstants.MENU_RETPERFO_RPT);
-                bmodel.mSelectedActivityName = config.getMenuName();
+                outletPerfomanceHelper.mSelectedActivityName = config.getMenuName();
 
                 commitFragment(transaction, config);
 

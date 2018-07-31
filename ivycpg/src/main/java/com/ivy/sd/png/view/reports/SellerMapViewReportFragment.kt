@@ -29,13 +29,13 @@ import com.google.android.gms.maps.model.*
 import com.google.maps.android.ui.IconGenerator
 import com.ivy.maplib.MapWrapperLayout
 import com.ivy.sd.png.asean.view.R
-import com.ivy.sd.png.bo.OutletReportBO
+import com.ivy.cpg.reports.outletPerformanceReport.OutletReportBO
 import com.ivy.sd.png.commons.SDUtil
 import com.ivy.sd.png.model.BusinessModel
 import com.ivy.sd.png.provider.ConfigurationMasterHelper
 import com.ivy.sd.png.util.Commons
 import com.ivy.sd.png.view.HomeScreenActivity
-import com.ivy.sd.png.view.SellerListFragment
+import com.ivy.cpg.reports.outletPerformanceReport.SellerListFragment
 import com.ivy.sd.png.view.profile.DirectionsJSONParser
 import org.json.JSONObject
 import java.io.IOException

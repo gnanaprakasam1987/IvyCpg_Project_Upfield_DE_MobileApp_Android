@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.sd.png.view.reports.deliveryStockReport;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +10,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
@@ -22,20 +21,20 @@ import java.util.ArrayList;
 
 public class DeliveryStockReport extends android.support.v4.app.Fragment implements View.OnClickListener {
 
-    private View view;
-    ListView listView;
+
     BusinessModel bmodel;
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_delivery_report, container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_delivery_report, container,
                 false);
 
         try {
             bmodel = (BusinessModel) getActivity().getApplicationContext();
             bmodel.setContext(getActivity());
 
-            listView = (ListView) view.findViewById(R.id.list);
+            ListView listView = (ListView) view.findViewById(R.id.list);
 
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
@@ -60,22 +59,23 @@ public class DeliveryStockReport extends android.support.v4.app.Fragment impleme
                 Commons.printException(e);
             }
 
-            bmodel.deliveryManagementHelper.downloadDeliveryStock();
+            ArrayList<DeliveryStockBo> deliveryStockList = DeliveryStockHelper.getInstance(getActivity()).downloadDeliveryStock(getActivity());
 
-            MyAdapter adapter = new MyAdapter(bmodel.deliveryManagementHelper.getmDeliveryStocks());
-            listView.setAdapter(adapter);
-        }
-        catch (Exception ex){
+            if (deliveryStockList.size() > 0) {
+                MyAdapter adapter = new MyAdapter(deliveryStockList);
+                listView.setAdapter(adapter);
+            }
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
 
         return view;
     }
 
-    class MyAdapter extends ArrayAdapter<ProductMasterBO> {
-        ArrayList<ProductMasterBO> items;
+    class MyAdapter extends ArrayAdapter<DeliveryStockBo> {
+        ArrayList<DeliveryStockBo> items;
 
-        MyAdapter(ArrayList<ProductMasterBO> items) {
+        MyAdapter(ArrayList<DeliveryStockBo> items) {
             super(getActivity(), R.layout.row_delivery_report,
                     items);
             this.items = items;
@@ -102,14 +102,13 @@ public class DeliveryStockReport extends android.support.v4.app.Fragment impleme
             } else {
                 holder = (ViewHolder) row.getTag();
             }
-            holder.productBO=items.get(position);
+            holder.deliveryStkBO = items.get(position);
 
-            holder.tvwpsname.setText(holder.productBO.getProductShortName());
+            holder.tvwpsname.setText(holder.deliveryStkBO.getProductShortName());
 
-            holder.tv_case_qty.setText(holder.productBO.getOrderedCaseQty() + "");
-            holder.tv_outer_qty.setText(holder.productBO.getOrderedOuterQty() + "");
-            holder.tv_piece_qty.setText(holder.productBO.getOrderedPcsQty() + "");
-
+            holder.tv_case_qty.setText(holder.deliveryStkBO.getOrderedCaseQty() + "");
+            holder.tv_outer_qty.setText(holder.deliveryStkBO.getOrderedOuterQty() + "");
+            holder.tv_piece_qty.setText(holder.deliveryStkBO.getOrderedPcsQty() + "");
 
 
             return (row);
@@ -120,7 +119,7 @@ public class DeliveryStockReport extends android.support.v4.app.Fragment impleme
 
         TextView tvwpsname;
         TextView tv_case_qty, tv_piece_qty, tv_outer_qty;
-        ProductMasterBO productBO;
+        DeliveryStockBo deliveryStkBO;
     }
 
     @Override

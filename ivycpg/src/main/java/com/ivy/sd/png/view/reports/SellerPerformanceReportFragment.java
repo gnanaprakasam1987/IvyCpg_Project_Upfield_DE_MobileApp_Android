@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.OutletReportBO;
+import com.ivy.cpg.reports.outletPerformanceReport.OutletReportBO;
 import com.ivy.sd.png.bo.SellerPerformanceBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;

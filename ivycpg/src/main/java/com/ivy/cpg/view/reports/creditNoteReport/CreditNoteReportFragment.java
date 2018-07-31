@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.reports;
+package com.ivy.cpg.view.reports.creditNoteReport;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,8 +23,7 @@ import java.util.ArrayList;
  */
 public class CreditNoteReportFragment extends Fragment {
     BusinessModel bModel;
-    ListView listView;
-    Button btnPrint;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,13 +32,15 @@ public class CreditNoteReportFragment extends Fragment {
         bModel = (BusinessModel) getActivity().getApplicationContext();
         bModel.setContext(getActivity());
 
-        listView=(ListView) view.findViewById(R.id.creditnote_listview);
-        btnPrint=(Button) view.findViewById(R.id.print);
-        bModel.reportHelper.loadCreditNote();
+        ListView listView = view.findViewById(R.id.creditnote_listview);
+        Button btnPrint = view.findViewById(R.id.print);
 
-        if(bModel.configurationMasterHelper.IS_PRINT_CREDIT_NOTE_REPORT&&bModel.reportHelper.getCreditNoteList().size()>0)
-        {
+        ArrayList<CreditNoteListBO> creditNoteList = new CreditNoteHelper(getActivity()).loadCreditNote();
+        if (bModel.configurationMasterHelper.IS_PRINT_CREDIT_NOTE_REPORT
+                && creditNoteList.size() > 0) {
             btnPrint.setVisibility(View.VISIBLE);
+            MyAdapter adapter = new MyAdapter(creditNoteList);
+            listView.setAdapter(adapter);
         }
 
         btnPrint.setOnClickListener(new View.OnClickListener() {
@@ -56,8 +57,7 @@ public class CreditNoteReportFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        MyAdapter adapter=new MyAdapter(bModel.reportHelper.getCreditNoteList());
-        listView.setAdapter(adapter);
+
     }
 
     class MyAdapter extends ArrayAdapter<CreditNoteListBO> {
@@ -71,7 +71,7 @@ public class CreditNoteReportFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
 
-            CreditNoteListBO creditNoteListBO =  items
+            CreditNoteListBO creditNoteListBO = items
                     .get(position);
             View row = convertView;
 
@@ -84,7 +84,7 @@ public class CreditNoteReportFragment extends Fragment {
 
                 holder.tvCreditId = (TextView) row.findViewById(R.id.creditIdTv);
                 holder.tvCreditAmount = (TextView) row.findViewById(R.id.creditAmtTv);
-                holder.isIssued=(TextView)row.findViewById(R.id.is_issued);
+                holder.isIssued = (TextView) row.findViewById(R.id.is_issued);
 
                 row.setTag(holder);
             } else {
@@ -95,7 +95,7 @@ public class CreditNoteReportFragment extends Fragment {
             holder.tvRetName.setText(creditNoteListBO.getRetailerName());
             holder.tvCreditId.setText(creditNoteListBO.getId());
             holder.tvCreditAmount.setText(bModel.formatValue(creditNoteListBO.getAmount()));
-            if(creditNoteListBO.isUsed())
+            if (creditNoteListBO.isUsed())
                 holder.isIssued.setText("Y");
             else
                 holder.isIssued.setText("N");
@@ -107,7 +107,7 @@ public class CreditNoteReportFragment extends Fragment {
     class ViewHolder {
 
         TextView tvRetName;
-        TextView tvCreditAmount,tvCreditId,isIssued;
+        TextView tvCreditAmount, tvCreditId, isIssued;
     }
 
 }

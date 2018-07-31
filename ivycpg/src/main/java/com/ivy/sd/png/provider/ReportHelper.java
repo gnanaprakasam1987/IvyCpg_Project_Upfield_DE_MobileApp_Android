@@ -7,18 +7,16 @@ import android.database.SQLException;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
-import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ContractBO;
-import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.bo.OrderTakenTimeBO;
-import com.ivy.sd.png.bo.OutletReportBO;
+import com.ivy.cpg.reports.outletPerformanceReport.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductivityReportBO;
@@ -37,7 +35,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.util.StandardListMasterConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,7 +60,6 @@ public class ReportHelper {
 
     private String webViewPlanUrl = "";
     private String webReportUrl = "";
-    private ArrayList<CreditNoteListBO> creditNoteList;
 
 
     private ArrayList<SyncStatusBO> mSyncStatusBOList;
@@ -2210,48 +2206,6 @@ public class ReportHelper {
         this.webReportUrl = webReportUrl;
     }
 
-    public ArrayList<CreditNoteListBO> getCreditNoteList() {
-        return creditNoteList;
-    }
-
-    public void setCreditNoteList(ArrayList<CreditNoteListBO> creditNoteList) {
-        this.creditNoteList = creditNoteList;
-    }
-
-    public void loadCreditNote() {
-        try {
-            creditNoteList = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT DISTINCT CN.id,CN.amount,RM.RetailerName,isused FROM CreditNote CN INNER JOIN RetailerMaster RM ON RM.retailerid=CN.retailerid");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    CreditNoteListBO obj = new CreditNoteListBO();
-                    obj.setId(c.getString(0));
-                    obj.setAmount(c.getDouble(1));
-                    obj.setRetailerName(c.getString(2));
-
-                    boolean flag;
-                    flag = c.getInt(3) == 1;
-                    if (flag)
-                        obj.setUsed(true);
-                    else
-                        obj.setUsed(false);
-
-                    creditNoteList.add(obj);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e + " ");
-        }
-
-    }
 
     public void updateBaseUOM(String activity, int reportType) {
         //reportType(1)-EOD, reportType(2)-currentStock, reportType(3)-CurrentStockBatchwise

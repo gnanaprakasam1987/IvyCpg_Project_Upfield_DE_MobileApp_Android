@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.reports.pndInvoiceReport.PendingInvoiceHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -34,6 +35,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.reports.soho.SalesReturnReportHelperSOHO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -189,7 +191,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 break;
             case StandardListMasterConstants.MENU_PND_INVOICE_REPORT:
                 bmodel.collectionHelper.updateInvoiceDiscountAmount();
-                bmodel.downloadInvoice();
+                PendingInvoiceHelper.getInstance(getActivity()).downloadInvoice();
                 if (bmodel.getInvoiceHeaderBO().size() >= 1) {
                     gotoReportActivity(config);
                 } else {
@@ -234,7 +236,8 @@ public class ReportMenuFragment extends IvyBaseFragment {
 
                 break;
             case StandardListMasterConstants.MENU_SALES_REPORT:
-                if (bmodel.reportHelper.getSalesReturnRetailerList().size() >= 1) {
+                SalesReturnReportHelperSOHO salesReturnReportHelperSOHO = new SalesReturnReportHelperSOHO(getContext());
+                if (salesReturnReportHelperSOHO.getSalesReturnRetailerList().size() >= 1) {
                     gotoReportActivity(config);
                 } else {
                     showToast();

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.reports.outletPerformanceReport;
 
 import android.os.Parcel;
 import android.os.Parcelable;
