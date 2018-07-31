@@ -14,6 +14,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.bo.PlanningOutletBO;
+import com.ivy.sd.png.bo.RetailerContractBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.asset.AssetHistoryBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -22,6 +23,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -982,5 +984,39 @@ public class ProfileHelper {
         }
         db.closeDB();
         return givenLovId;
+    }
+
+    public ArrayList<RetailerContactBo> downloadRetailerContact(String retailerID) {
+        ArrayList<RetailerContactBo> contactList = new ArrayList<>();
+
+        String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,"
+                + " RC.contactname as cName,RC.contactname_LName as cLname,RC.ContactNumber as cNumber,RC.IsPrimary as isPrimary,"
+                + " ifnull(RC.Email,'') as email from RetailerContact RC "
+                + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
+                + " Where RC.RetailerId =" + bmodel.QT(retailerID);
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+        Cursor c = db.selectSQL(sql);
+        if (c != null) {
+            while (c.moveToNext()) {
+                RetailerContactBo retailerContactBo = new RetailerContactBo();
+                if (c.getString(c.getColumnIndex("contactTitle")).length() > 0)
+                    retailerContactBo.setTitle(c.getString(c.getColumnIndex("contactTitle")));
+                else
+                    retailerContactBo.setTitle(c.getString(c.getColumnIndex("listName")));
+                retailerContactBo.setFistname(c.getString(c.getColumnIndex("cName")));
+                retailerContactBo.setLastname(c.getString(c.getColumnIndex("cLname")));
+                retailerContactBo.setContactNumber(c.getString(c.getColumnIndex("cNumber")));
+                retailerContactBo.setContactMail(c.getString(c.getColumnIndex("email")));
+                retailerContactBo.setIsPrimary(c.getInt(c.getColumnIndex("isPrimary")));
+            }
+            c.close();
+        }
+        db.closeDB();
+
+        return contactList;
+
     }
 }
