@@ -37,11 +37,11 @@ public interface PhotoCaptureContract {
 
         boolean isMaxPhotoLimitReached();
 
-        void fetchPhotoCaptureProducts();
+     /*   void fetchPhotoCaptureProducts();
 
         void fetchPhotoCaptureTypes();
 
-        void fetchLocations();
+        void fetchLocations();*/
 
         void fetchEditedPhotoTypes();
 

@@ -1,6 +1,7 @@
 package com.ivy.ui.photocapture.presenter;
 
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
@@ -62,7 +63,7 @@ public class PhotoCapturePresenterTest {
     private PhotoCaptureDataManager photoCaptureDataManager;
 
     @Mock
-    private LabelsMasterHelper labelsMasterHelper;
+    private LabelsDataManager labelsMasterHelper;
 
     @Mock
     private OutletTimeStampDataManager outletTimeStampDataManager;
@@ -126,6 +127,20 @@ public class PhotoCapturePresenterTest {
         then(mView).should().showLoading();
         then(mView).should().hideLoading();
 
+
+    }
+
+    @Test
+    public void testFetchEditDataFailed(){
+
+        given(mDataManager.getRetailMaster()).willReturn(mock(RetailerMasterBO.class));
+
+        given(photoCaptureDataManager.fetchEditedLocations(mDataManager.getRetailMaster().getRetailerID(), mDataManager.getRetailMaster().getDistributorId())).willReturn(Observable.<ArrayList<PhotoCaptureLocationBO>>error(new Throwable()));
+
+        mPresenter.fetchEditedPhotoTypes();
+        testScheduler.triggerActions();
+
+        then(mView).shouldHaveZeroInteractions();
 
     }
 
@@ -255,10 +270,16 @@ public class PhotoCapturePresenterTest {
 
     @Test
     public void testGetTitleLabel() {
-        given(labelsMasterHelper.applyLabels((Object) "menu_photo")).willReturn("Hello");
 
-        assertEquals(mPresenter.getTitleLabel(), "Hello");
+        given(labelsMasterHelper.getLabel("menu_photo")).willReturn(Single.just("Hello"));
+
+        mPresenter.getTitleLabel();
+        testScheduler.triggerActions();
+
+        then(mView).should().setToolBarTitle("Hello");
+
     }
+
 
     @Test
     public void testUpdateLocalData() {

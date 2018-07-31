@@ -280,6 +280,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
         return getDataManager().getSavedImageCount() >= mConfigurationMasterHelper.photocount;
     }
 
+/*
     @Override
     public void fetchPhotoCaptureProducts() {
 
@@ -367,6 +368,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
                     }
                 }));
     }
+*/
 
     @Override
     public void fetchEditedPhotoTypes() {
