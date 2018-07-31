@@ -24,7 +24,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.reports.pndInvoiceReport.PendingInvoiceHelper;
+import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
+import com.ivy.cpg.view.reports.pndInvoiceReport.PendingInvoiceHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -35,7 +36,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.reports.soho.SalesReturnReportHelperSOHO;
+import com.ivy.cpg.view.reports.soho.SalesReturnReportHelperSOHO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -225,12 +226,13 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 }
                 break;
             case StandardListMasterConstants.MENU_SELLER_PERFOMANCE_REPORT:
-                if (bmodel.reportHelper.isPerformReport()) {
+                OutletPerfomanceHelper perfomanceHelper = OutletPerfomanceHelper.getInstance(getActivity());
+                if (perfomanceHelper.isPerformReport()) {
                     gotoReportActivity(config);
                 } else {
-                    String Url = bmodel.reportHelper.getPerformRptUrl();
+                    String Url = perfomanceHelper.getPerformRptUrl();
                     if (Url != null && Url.length() > 0) {
-                        new PerformRptDownloadData(config, Url).execute();
+                        new PerformRptDownloadData(config, Url,perfomanceHelper).execute();
                     } else {
                         Toast.makeText(getActivity(), "Download Url Not Available", Toast.LENGTH_LONG).show();
                     }
@@ -401,11 +403,13 @@ public class ReportMenuFragment extends IvyBaseFragment {
         JSONObject jsonObject = null;
         ConfigureBO config;
         String Url;
+        OutletPerfomanceHelper outletPerfomanceHelper;
         private ProgressDialog progressDialogue;
 
-        PerformRptDownloadData(ConfigureBO config, String Url) {
+        PerformRptDownloadData(ConfigureBO config, String Url,OutletPerfomanceHelper perfomanceHelper) {
             this.config = config;
             this.Url = Url;
+            this.outletPerfomanceHelper = perfomanceHelper;
 
         }
 
@@ -457,7 +461,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
             if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 if (errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    if (bmodel.reportHelper.isPerformReport()) {
+                    if (outletPerfomanceHelper.isPerformReport()) {
                         Intent intent = new Intent(getActivity(), ReportActivity.class);
                         Bundle bun = new Bundle();
                         bun.putSerializable("config", config);

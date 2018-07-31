@@ -12,15 +12,13 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ContractBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.bo.OrderTakenTimeBO;
-import com.ivy.cpg.reports.outletPerformanceReport.OutletReportBO;
+import com.ivy.cpg.view.reports.performancereport.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductivityReportBO;
-import com.ivy.sd.png.bo.QuestionReportBO;
 import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
@@ -29,7 +27,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.SyncStatusBO;
-import com.ivy.sd.png.bo.TaskReportBo;
+import com.ivy.cpg.view.reports.taskexcutionreport.TaskReportBo;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -54,12 +52,11 @@ public class ReportHelper {
     private List<List<PaymentBO>> childPaymentList;
     private Vector<StockReportBO> currentStock;
     private ArrayList<StockReportBO> mEODStockReportList;
-    private Vector<QuestionReportBO> questionReport;
     private HashMap<String, StockReportBO> mEODReportBOByProductID;
 
 
     private String webViewPlanUrl = "";
-    private String webReportUrl = "";
+
 
 
     private ArrayList<SyncStatusBO> mSyncStatusBOList;
@@ -1199,37 +1196,6 @@ public class ReportHelper {
         }
     }
 
-    public void loadQuestionReport() {
-        QuestionReportBO chkReportBo;
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT Text, V1,V2,V3,V4 FROM L3SuperwiserAuditReport ");
-            if (c != null) {
-                questionReport = new Vector<>();
-                while (c.moveToNext()) {
-                    chkReportBo = new QuestionReportBO();
-                    chkReportBo.setText(c.getString(0));
-                    chkReportBo.setV1(c.getInt(1));
-                    chkReportBo.setV2(c.getInt(2));
-                    chkReportBo.setV3(c.getInt(3));
-                    chkReportBo.setV4(c.getInt(4));
-                    questionReport.add(chkReportBo);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public Vector<QuestionReportBO> getQuestionReport() {
-        return questionReport;
-
-    }
 
     private double updateOutStanding(String invoiceNo, double paidTotal, double totalAppliedDiscount) {
         double balance = 0;
@@ -2172,40 +2138,6 @@ public class ReportHelper {
         }
     }
 
-    public void downloadWebViewReportUrl(String menuCode) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        Cursor c = db
-                .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_REPORTS'");
-        if (c != null) {
-            if (c.moveToNext()) {
-                webReportUrl = c.getString(0);
-            }
-            c.close();
-        }
-
-        if (!"".equals(webReportUrl)) {
-            Cursor c1 = db
-                    .selectSQL("select ListName from StandardListMaster where ListCode='" + menuCode + "' AND ListType = 'WEBVIEW_REPORTS'");
-            if (c1 != null) {
-                while (c1.moveToNext()) {
-                    webReportUrl += c1.getString(0);
-                }
-                c1.close();
-            }
-        }
-
-        db.closeDB();
-    }
-
-    public String getWebReportUrl() {
-        return webReportUrl;
-    }
-
-    public void setWebReportUrl(String webReportUrl) {
-        this.webReportUrl = webReportUrl;
-    }
-
 
     public void updateBaseUOM(String activity, int reportType) {
         //reportType(1)-EOD, reportType(2)-currentStock, reportType(3)-CurrentStockBatchwise
@@ -2755,279 +2687,6 @@ public class ReportHelper {
         return url;
     }
 
-    public ArrayList<ProductMasterBO> getOrderedProductMaster() {
-        return productMaster;
-    }
-
-    private ArrayList<ProductMasterBO> productMaster = new ArrayList<>();
-    ArrayList<Integer> parentIds = new ArrayList<>();
-    HashMap<Integer, String> parentIdsMap = new HashMap<>();
-
-    public void downloadProductReportsWithFiveLevelFilter() {
-        try {
-            ProductMasterBO product;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            db.openDataBase();
-
-            int mFiltrtLevel = 0;
-            int mContentLevel = 0;
-
-
-            String sql = "";
-
-
-            Cursor filterCur = db
-                    .selectSQL("SELECT Distinct IFNULL(PL2.Sequence,0), IFNULL(PL3.Sequence,0) FROM ProductLevel CF " +
-                            "LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  (Select RField from HhtModuleMaster " +
-                            "where hhtCode = 'RPT03' and flag = 1 and ForSwitchSeller = 0) " +
-                            "LEFT JOIN ProductLevel PL3 ON PL3.LevelId = (Select LevelId from ProductLevel " +
-                            "where Sequence = (Select max(Sequence) from ProductLevel))");
-
-            if (filterCur != null) {
-                if (filterCur.moveToNext()) {
-                    mFiltrtLevel = filterCur.getInt(0);
-                    mContentLevel = filterCur.getInt(1);
-                }
-                filterCur.close();
-            }
-
-            int loopEnd = mContentLevel - mFiltrtLevel + 1;
-            sql = "select A"
-                    + loopEnd
-                    + ".pid,A"
-                    + loopEnd
-                    + ".pname,sum(OD.Qty),A1.pid,A"
-                    + loopEnd
-                    + ".psname,A"
-                    + loopEnd
-                    + ".isSalable," +
-                    "A1.pname as brandname,A1.parentid,sum(OD.NetAmount) from ProductMaster A1";
-
-            for (int i = 2; i <= loopEnd; i++)
-                sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
-                        + ".ParentId = A" + (i - 1) + ".PID";
-
-            sql = sql + " left join OrderDetail OD on OD.ProductID = A" + loopEnd + ".pid WHERE A1.PLid IN " +
-                    "(Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1 and ForSwitchSeller = 0) and "
-                    + " A" + loopEnd + ".pid = OD.ProductId"
-                    + " group by A" + loopEnd + ".pid ORDER BY "
-                    + " A" + loopEnd + ".rowid";
-
-
-            Cursor c = db.selectSQL(sql);
-            productMaster = new ArrayList<>();
-            if (c != null) {
-                while (c.moveToNext()) {
-                    product = new ProductMasterBO();
-                    product.setProductID(c.getString(0));
-                    product.setProductName(c.getString(1));
-                    product.setTotalQty(c.getInt(2));
-                    product.setParentid(c.getInt(3));
-                    product.setProductShortName(c.getString(4));
-                    product.setIsSaleable(c.getInt(5));
-                    product.setBrandname(c.getString(6));
-                    product.setcParentid(c.getInt(7));
-                    product.setTotalamount(SDUtil.convertToDouble(c.getString(8)));
-
-                    productMaster.add(product);
-                    parentIds.add(product.getParentid());
-                    parentIdsMap.put(product.getParentid(), product.getProductID());
-
-                }
-                c.close();
-            }
-            db.closeDB();
-            if (parentIds != null && parentIds.size() > 0) {
-                downloadSellerReportFilter();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public HashMap<Integer, Vector<LevelBO>> getMfilterlevelBo() {
-        return mfilterlevelBo;
-    }
-
-    private HashMap<Integer, Vector<LevelBO>> mfilterlevelBo = new HashMap<>();
-
-    public Vector<LevelBO> getSequencevalues() {
-        return sequencevalues;
-    }
-
-    private Vector<LevelBO> sequencevalues;
-
-    public void downloadSellerReportFilter() {
-        int LevelID = 0;
-        sequencevalues = new Vector<>();
-        try {
-
-            LevelBO levelBo;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            db.openDataBase();
-
-            String sql = "select distinct PM.PID,PM.PName," +
-                    "PM.ParentId,PM.PLid,PL.LevelName from ProductMaster PM left join ProductLevel PL on PL.LevelId = PM.PLid where PM.PLid = (Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1 and and ForSwitchSeller = 0)";
-
-            Cursor c = db.selectSQL(sql);
-            Vector<LevelBO> levelBOVector = new Vector<>();
-            if (c != null) {
-                while (c.moveToNext()) {
-                    if (parentIdsMap.containsKey(c.getInt(0))) {
-                        LevelID = c.getInt(3);
-                        levelBo = new LevelBO();
-                        levelBo.setProductID(c.getInt(0));
-                        levelBo.setLevelName(c.getString(1));
-                        levelBo.setParentID(c.getInt(2));
-                        //levelBo.setProductLevel(c.getString(4));
-                        levelBOVector.add(levelBo);
-                        if (sequencevalues.size() == 0) {
-                            levelBo = new LevelBO();
-                            levelBo.setProductID(LevelID);
-                            levelBo.setLevelName(c.getString(4));
-                            levelBo.setParentID(c.getInt(2));
-                            sequencevalues.add(levelBo);
-                        }
-
-                    }
-                }
-                mfilterlevelBo.put(LevelID, levelBOVector);
-                c.close();
-            }
-            db.closeDB();
-            //mfilterlevelBo.put()
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void prepareArchiveFileDownload(String filePath) {
-        bmodel.setDigitalContentURLS(new HashMap<String, String>());
-
-        boolean isAmazonUpload = false;
-
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-        Cursor c = db
-                .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1 and ForSwitchSeller = 0");
-        if (c != null) {
-            while (c.moveToNext()) {
-                isAmazonUpload = true;
-            }
-        }
-        c.close();
-
-        if (!isAmazonUpload) {
-            c = db
-                    .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    DataMembers.img_Down_URL = c.getString(0);
-                }
-            }
-
-        } else {
-            c = db
-                    .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    DataMembers.img_Down_URL = c.getString(0) + "/";
-                }
-            }
-
-        }
-
-        bmodel.getDigitalContentURLS().put(
-                DataMembers.img_Down_URL + filePath,
-                DataMembers.PRINTFILE);
-
-        c.close();
-        c = null;
-        db.closeDB();
-    }
-
-
-    public void downloadWebViewArchAuthUrl() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_ARCH'");
-            if (c != null) {
-                if (c.moveToNext()) {
-                    webViewAuthUrl = c.getString(0);
-                }
-                c.close();
-            }
-
-            if (!"".equals(webViewAuthUrl)) {
-                Cursor c1 = db
-                        .selectSQL("select ListName from StandardListMaster where ListCode='AUTH' AND ListType = 'WEBVIEW_ARCH'");
-                if (c1 != null) {
-                    if (c1.moveToNext()) {
-                        webViewAuthUrl += c1.getString(0);
-                    }
-                    c1.close();
-                }
-            }
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            webViewAuthUrl = "";
-        }
-    }
-
-
-    public void downloadWebViewArchUrl() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_ARCH'");
-            if (c != null) {
-                if (c.moveToNext()) {
-                    webViewArchUrl = c.getString(0);
-                }
-                c.close();
-            }
-
-            if (!"".equals(webViewArchUrl)) {
-                Cursor c1 = db
-                        .selectSQL("select ListName from StandardListMaster where ListCode='ACTION' AND ListType = 'WEBVIEW_ARCH'");
-                if (c1 != null) {
-                    while (c1.moveToNext()) {
-                        webViewArchUrl += c1.getString(0);
-                    }
-                    c1.close();
-                }
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            webViewArchUrl = "";
-        }
-    }
-
-
-    public String getWebViewArchUrl() {
-        return webViewArchUrl;
-    }
-
-    public void setWebViewArchUrl(String webViewArchUrl) {
-        this.webViewArchUrl = webViewArchUrl;
-    }
-
-    private String webViewArchUrl = "";
 
     public double getTotValues(Context mContext) {
         try {

@@ -590,7 +590,7 @@
             android:name="com.ivy.sd.png.view.MVPActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.reports.DistOrderreportdetail"
+            android:name="com.ivy.cpg.view.reports.distorderreport.DistOrderreportdetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.UserFeedbackActivity"
@@ -753,7 +753,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.reports.soho.SalesReturnValidationReportSOHO"
+            android:name="com.ivy.cpg.view.reports.soho.SalesReturnValidationReportSOHO"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.SubDHomeActivity"
