@@ -15,8 +15,8 @@ import java.util.HashMap;
 public class NewOutletAttributeHelper {
 
     private Context context;
-    private ArrayList<NewOutletAttributeBO> attribList;
-    private ArrayList<NewOutletAttributeBO> attributeParentList;
+    private ArrayList<NewOutletAttributeBO> mAttributeBOArrayListChild;
+    private ArrayList<NewOutletAttributeBO> mAttributeParentList;
     private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap;
 
     private ArrayList<Integer> mCommonAttributeList;
@@ -36,7 +36,7 @@ public class NewOutletAttributeHelper {
 
 
     public void setAttributeList(ArrayList<NewOutletAttributeBO> attribList) {
-        this.attribList = attribList;
+        this.mAttributeBOArrayListChild = attribList;
     }
 
     /**
@@ -46,7 +46,7 @@ public class NewOutletAttributeHelper {
      * @deprecated This has been Migrated to MVP pattern
      */
     public ArrayList<NewOutletAttributeBO> getAttributeList() {
-        return attribList;
+        return mAttributeBOArrayListChild;
     }
 
     /**
@@ -56,13 +56,13 @@ public class NewOutletAttributeHelper {
      * @deprecated This has been Migrated to MVP pattern
      */
 
-    public void downloadRetailerAttribute() {
+    public void downloadRetailerAttributeChildList() {
         try {
             NewOutletAttributeBO temp;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            attribList = new ArrayList<>();
+            mAttributeBOArrayListChild = new ArrayList<>();
             Cursor c = db
                     .selectSQL("SELECT attributeid, attributename, parentid, levelid, allowmultiple, iscriteriamapped FROM entityattributemaster where parentid !=" + 0 + " order by attributeid");
             if (c != null) {
@@ -75,9 +75,9 @@ public class NewOutletAttributeHelper {
                     temp.setAllowMultiple(c.getInt(4));
                     temp.setCriteriaMapped(c.getInt(5));
 
-                    attribList.add(temp);
+                    mAttributeBOArrayListChild.add(temp);
                 }
-                setAttributeList(attribList);
+                setAttributeList(mAttributeBOArrayListChild);
                 c.close();
             }
             db.closeDB();
@@ -88,8 +88,8 @@ public class NewOutletAttributeHelper {
 
 
 
-    private void setAttributeParentList(ArrayList<NewOutletAttributeBO> attributeParentList) {
-        this.attributeParentList = attributeParentList;
+    private void setmAttributeParentList(ArrayList<NewOutletAttributeBO> mAttributeParentList) {
+        this.mAttributeParentList = mAttributeParentList;
     }
 
     /**
@@ -98,8 +98,8 @@ public class NewOutletAttributeHelper {
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
-    public ArrayList<NewOutletAttributeBO> getAttributeParentList() {
-        return attributeParentList;
+    public ArrayList<NewOutletAttributeBO> getmAttributeParentList() {
+        return mAttributeParentList;
     }
 
     /**
@@ -110,7 +110,7 @@ public class NewOutletAttributeHelper {
      */
     public void downloadAttributeParentList() {
         try {
-            attributeParentList = new ArrayList<>();
+            mAttributeParentList = new ArrayList<>();
             NewOutletAttributeBO temp;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -118,7 +118,7 @@ public class NewOutletAttributeHelper {
             Cursor c = db
                     .selectSQL("SELECT attributeid, attributename, isSystemComputed,IsMandatory FROM entityattributemaster where parentid =0 order by sequence");
             if (c != null) {
-                downloadRetailerAttribute();
+                downloadRetailerAttributeChildList();
                 while (c.moveToNext()) {
                     int attribId = c.getInt(0);
                     int levelId = 0;
@@ -127,17 +127,17 @@ public class NewOutletAttributeHelper {
                     temp.setAttrName(c.getString(1));
                     temp.setIsMandatory(c.getInt(3));
 
-                    for (int i = 0; i < attribList.size(); i++) {
-                        int parentID = attribList.get(i).getParentId();
+                    for (int i = 0; i < mAttributeBOArrayListChild.size(); i++) {
+                        int parentID = mAttributeBOArrayListChild.get(i).getParentId();
                         if (attribId == parentID) {
-                            attribId = attribList.get(i).getAttrId();
-                            levelId = attribList.get(i).getLevelId();
+                            attribId = mAttributeBOArrayListChild.get(i).getAttrId();
+                            levelId = mAttributeBOArrayListChild.get(i).getLevelId();
                         }
                     }
                     temp.setLevelId(levelId);
-                    attributeParentList.add(temp);
+                    mAttributeParentList.add(temp);
                 }
-                setAttributeParentList(attributeParentList);
+                setmAttributeParentList(mAttributeParentList);
                 c.close();
             }
             db.closeDB();
@@ -215,7 +215,7 @@ public class NewOutletAttributeHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getCommonAttributeList()}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadCommonAttributeList()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -227,7 +227,7 @@ public class NewOutletAttributeHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getCommonAttributeList()}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadCommonAttributeList()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -255,7 +255,7 @@ public class NewOutletAttributeHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp}
-     * @since CPG131 replaced by {@link ProfileEditPresenterImp#getAttribMap()}
+     * @since CPG131 replaced by {@link ProfileEditPresenterImp#getAttributeMap()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -263,7 +263,7 @@ public class NewOutletAttributeHelper {
         try {
             attribMap = new HashMap<>();
             ArrayList<NewOutletAttributeBO> tempList;
-            for (NewOutletAttributeBO parent : getAttributeParentList()) {
+            for (NewOutletAttributeBO parent : getmAttributeParentList()) {
                 tempList = new ArrayList<>();
                 for (NewOutletAttributeBO child : getAttributeList()) {
                     if (parent.getAttrId() == child.getParentId()) {
@@ -280,7 +280,7 @@ public class NewOutletAttributeHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getEditAttributeList( String retailerID)()}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadEditAttributeList( String retailerID)()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */

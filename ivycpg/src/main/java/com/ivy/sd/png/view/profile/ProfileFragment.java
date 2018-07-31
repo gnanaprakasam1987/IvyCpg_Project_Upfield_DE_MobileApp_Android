@@ -1350,9 +1350,9 @@ public class ProfileFragment extends IvyBaseFragment {
     private void updateRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
         attributeList = new ArrayList<>();
         bmodel.newOutletAttributeHelper.downloadAttributeParentList();
-        bmodel.newOutletAttributeHelper.downloadRetailerAttribute();
+        bmodel.newOutletAttributeHelper.downloadRetailerAttributeChildList();
         ArrayList<NewOutletAttributeBO> childList = bmodel.newOutletAttributeHelper.getAttributeList();
-        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getmAttributeParentList();
         int attribID;
         int tempAttribID;
         int parentID;

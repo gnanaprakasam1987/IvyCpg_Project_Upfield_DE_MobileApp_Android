@@ -10,6 +10,7 @@ import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -133,6 +134,22 @@ public interface IProfileEditContract {
         //AttributeView
         void isCommonAttributeView();
 
-        void isNewChannelAttributeView();
+        HashMap<Integer, ArrayList<Integer>> getAttributeListByLocationId();
+
+
+        int getLevel(int attrId);
+
+        ArrayList<NewOutletAttributeBO> getAttributeMapList(String attribName);
+
+        ArrayList<NewOutletAttributeBO> getAttributeList();
+
+        ArrayList<NewOutletAttributeBO> getAttributeListChild();
+
+        ArrayList<NewOutletAttributeBO> getAttributeParentList();
+
+        ArrayList<Integer> getCommonAttributeList();
+
+        ArrayList<Integer> getChannelAttributeList();
+
     }
 }

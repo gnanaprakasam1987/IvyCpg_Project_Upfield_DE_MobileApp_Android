@@ -894,7 +894,7 @@ public class NewOutletHelper {
                     isData = true;
 
                     ArrayList<NewOutletAttributeBO> attributeList = updateRetailerMasterAttribute(bmodel.getRetailerAttribute());
-                    //    ArrayList<NewOutletAttributeBO> ids = updateRetailerMasterAttribute(bmodel.newOutletAttributeHelper.getEditAttributeList(bmodel.getRetailerMasterBO().getRetailerID()));
+                    //    ArrayList<NewOutletAttributeBO> ids = updateRetailerMasterAttribute(bmodel.newOutletAttributeHelper.downloadEditAttributeList(bmodel.getRetailerMasterBO().getRetailerID()));
                     ArrayList<NewOutletAttributeBO> attList = updateRetailerMasterAttribute(bmodel.getRetailerMasterBO().getAttributeBOArrayList());
 
 
@@ -1243,7 +1243,7 @@ public class NewOutletHelper {
         //Load Child Attribute list which parent is not zero
         ArrayList<NewOutletAttributeBO> childList = bmodel.newOutletAttributeHelper.getAttributeList();
         //Load Parent Attribute List which Parent id is zero
-        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getmAttributeParentList();
 
         ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
         int attribID;

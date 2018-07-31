@@ -224,7 +224,7 @@ public class ProfileEditFragment extends IvyBaseFragment
     private HashMap<String, MaterialSpinner> spinnerHashMap = null;
     private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
     private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap = null;
-    private HashMap<Integer, ArrayList<Integer>> mAttributeListByChannelId;
+    private HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID;
 
 
     private int other1_editText_index, other2_editText_index, lName1_editText_index, lName2_editText_index;
@@ -392,15 +392,17 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                 bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
 
-                mAttributeListByChannelId = bmodel.newOutletAttributeHelper.downloadChannelWiseAttributeList();
+                mAttributeListByLocationID = bmodel.newOutletAttributeHelper.downloadChannelWiseAttributeList();
 
                 //Load Retailer Based Attribute list and store in retailer master bo
                 bmodel.getAttributeListForRetailer();
 
                 ArrayList<NewOutletAttributeBO> EditAttributeList=bmodel.newOutletAttributeHelper.getEditAttributeList(retailerObj.getRetailerID());
-                ArrayList<NewOutletAttributeBO> tempList = bmodel.newOutletHelper.updateRetailerMasterAttribute(EditAttributeList);
+
                 //Load Attribute List which
                 attributeList = bmodel.newOutletHelper.updateRetailerMasterAttribute(retailerObj.getAttributeBOArrayList());
+
+                ArrayList<NewOutletAttributeBO> tempList = bmodel.newOutletHelper.updateRetailerMasterAttribute(EditAttributeList);
 
                 attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
 
@@ -2660,7 +2662,7 @@ public class ProfileEditFragment extends IvyBaseFragment
     }
 
     //To create layout for Retailer Attribute
-    private LinearLayout addAttributeView(int flag) {
+    private LinearLayout  addAttributeView(int flag) {
 
         @NonNls LinearLayout parentLayout = null;
         try {
@@ -2721,7 +2723,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_07) != null)
                         subChannelID = SDUtil.convertToInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get(PROFILE_07));
                     else subChannelID = bmodel.getRetailerMasterBO().getSubchannelid();
-                    mChannelAttributeList.addAll(mAttributeListByChannelId.get(subChannelID));
+                    mChannelAttributeList.addAll(mAttributeListByLocationID.get(subChannelID));
                 }
 
             }
@@ -2746,8 +2748,8 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                 // getting newly selected channel's attribute
                 mNewChannelAttributeList = new ArrayList<>();
-                if (mAttributeListByChannelId != null && mAttributeListByChannelId.get(((SpinnerBO) subchannel.getSelectedItem()).getId()) != null)
-                    mNewChannelAttributeList.addAll(mAttributeListByChannelId.get(((SpinnerBO) subchannel.getSelectedItem()).getId()));
+                if (mAttributeListByLocationID != null && mAttributeListByLocationID.get(((SpinnerBO) subchannel.getSelectedItem()).getId()) != null)
+                    mNewChannelAttributeList.addAll(mAttributeListByLocationID.get(((SpinnerBO) subchannel.getSelectedItem()).getId()));
 
             }
 
@@ -2758,10 +2760,10 @@ public class ProfileEditFragment extends IvyBaseFragment
             if (isFromChannel && isNewChannel) {
 
                 // User selected a sub channel an it is new one.
-                for (int i = 0; i < bmodel.newOutletAttributeHelper.getAttributeParentList().size(); i++) {
+                for (int i = 0; i < bmodel.newOutletAttributeHelper.getmAttributeParentList().size(); i++) {
 
                     final NewOutletAttributeBO parentBO;
-                    parentBO = bmodel.newOutletAttributeHelper.getAttributeParentList().get(i);
+                    parentBO = bmodel.newOutletAttributeHelper.getmAttributeParentList().get(i);
 
                     if (mNewChannelAttributeList.contains(parentBO.getAttrId())) {
 
@@ -2987,13 +2989,13 @@ public class ProfileEditFragment extends IvyBaseFragment
         LinearLayout.LayoutParams innerParams = new LinearLayout.LayoutParams(0,
                LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
-        int rowCount = bmodel.newOutletAttributeHelper.getAttributeParentList().size();
+        int rowCount = bmodel.newOutletAttributeHelper.getmAttributeParentList().size();
 
         selectedAttribList = new HashMap<>();
 
         for (int i = 0; i < rowCount; i++) {
 
-            final NewOutletAttributeBO parentBO = bmodel.newOutletAttributeHelper.getAttributeParentList().get(i);
+            final NewOutletAttributeBO parentBO = bmodel.newOutletAttributeHelper.getmAttributeParentList().get(i);
 
             if (mCommonAttributeList.contains(parentBO.getAttrId()) && !mAddedCommonAttributeList.contains(parentBO.getAttrId())) {
 
@@ -3199,6 +3201,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         //  return parentLayout;
     }
 
+
     private int getLevel(int attrId) {
         int count = 0;
         ArrayList<NewOutletAttributeBO> arrayList = bmodel.newOutletAttributeHelper.getAttributeList();
@@ -3238,13 +3241,15 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     @SuppressLint("UseSparseArrays")
     private void updateRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
+
         attributeHeaderList = new ArrayList<>();
-        ArrayList<ArrayList<NewOutletAttributeBO>> attributeGroupedList;
         listHashMap = new HashMap<>();
         attributeIndexMap = new HashMap<>();
         selectedAttribList = new HashMap<>();
+        ArrayList<ArrayList<NewOutletAttributeBO>> attributeGroupedList;
         ArrayList<NewOutletAttributeBO> childList = bmodel.newOutletAttributeHelper.getAttributeList();
-        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getmAttributeParentList();
+
         int attribID;
         int tempAttribID;
         int parentID = 0;
@@ -4384,7 +4389,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                     try {
                         // to check all common mandatory attributes selected
-                        for (NewOutletAttributeBO attributeBO : bmodel.newOutletAttributeHelper.getAttributeParentList()) {
+                        for (NewOutletAttributeBO attributeBO : bmodel.newOutletAttributeHelper.getmAttributeParentList()) {
 
                             if (bmodel.newOutletAttributeHelper.getmCommonAttributeList().contains(attributeBO.getAttrId())) {
                                 NewOutletAttributeBO tempBO = selectedAttribList.get(attributeBO.getAttrId());

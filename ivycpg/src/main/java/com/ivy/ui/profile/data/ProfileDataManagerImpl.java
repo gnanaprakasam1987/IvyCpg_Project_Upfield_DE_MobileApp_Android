@@ -461,99 +461,9 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     }
 
 
+    /*It will return CommonAttributeList*/
     @Override
-    public Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute() {
-        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
-            @Override
-            public ArrayList<NewOutletAttributeBO> call() throws Exception {
-
-                ArrayList<NewOutletAttributeBO> attribList=null;
-
-                try {
-                    NewOutletAttributeBO temp;
-                    dbUtil.openDataBase();
-
-                    attribList = new ArrayList<>();
-
-                    Cursor c = dbUtil
-                            .selectSQL("SELECT attributeid, attributename, parentid, levelid, allowmultiple, iscriteriamapped FROM entityattributemaster where parentid !=" + 0 + " order by attributeid");
-                    if (c != null) {
-                        while (c.moveToNext()) {
-                            temp = new NewOutletAttributeBO();
-                            temp.setAttrId(c.getInt(0));
-                            temp.setAttrName(c.getString(1));
-                            temp.setParentId(c.getInt(2));
-                            temp.setLevelId(c.getInt(3));
-                            temp.setAllowMultiple(c.getInt(4));
-                            temp.setCriteriaMapped(c.getInt(5));
-
-                            attribList.add(temp);
-                        }
-                        c.close();
-                    }
-                    dbUtil.closeDB();
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-                return attribList;
-            }
-        });
-    }
-
-
-
-
-    @Override
-    public Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeParentList(final ArrayList<NewOutletAttributeBO> attribList) {
-
-        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
-            @Override
-            public ArrayList<NewOutletAttributeBO> call() throws Exception {
-
-                ArrayList<NewOutletAttributeBO> attributeParentList=null;
-                try {
-                    attributeParentList = new ArrayList<>();
-                    NewOutletAttributeBO temp;
-
-                    dbUtil.openDataBase();
-                    Cursor c = dbUtil
-                            .selectSQL("SELECT attributeid, attributename, isSystemComputed,IsMandatory FROM entityattributemaster where parentid =0 order by sequence");
-                    if (c != null) {
-                        //downloadRetailerAttribute();
-                        while (c.moveToNext()) {
-                            int attribId = c.getInt(0);
-                            int levelId = 0;
-                            temp = new NewOutletAttributeBO();
-                            temp.setAttrId(attribId);
-                            temp.setAttrName(c.getString(1));
-                            temp.setIsMandatory(c.getInt(3));
-
-                            for (int i = 0; i < attribList.size(); i++) {
-                                int parentID = attribList.get(i).getParentId();
-                                if (attribId == parentID) {
-                                    attribId = attribList.get(i).getAttrId();
-                                    levelId = attribList.get(i).getLevelId();
-                                }
-                            }
-
-                            temp.setLevelId(levelId);
-                            attributeParentList.add(temp);
-                        }
-                        c.close();
-                    }
-                    dbUtil.closeDB();
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-                return attributeParentList;
-            }
-        });
-    }
-
-
-
-    @Override
-    public Observable<ArrayList<Integer>> getCommonAttributeList() {
+    public Observable<ArrayList<Integer>> downloadCommonAttributeList() {
         return Observable.fromCallable(new Callable<ArrayList<Integer>>() {
             @Override
             public ArrayList<Integer> call() throws Exception {
@@ -578,42 +488,9 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
-
-    @Override
-    public Observable<ArrayList<NewOutletAttributeBO>> getEditAttributeList(final String retailerID) {
-        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
-            @Override
-            public ArrayList<NewOutletAttributeBO> call() throws Exception {
-                ArrayList<NewOutletAttributeBO> attributeBOArrayList = new ArrayList<>();
-                try {
-                    dbUtil.openDataBase();
-                    Cursor cursor = dbUtil.selectSQL("select attributeid, levelid, status from retailereditattribute where retailerid = " + retailerID + " and upload='N'");
-                    if (cursor != null) {
-                        NewOutletAttributeBO tempBO;
-                        while (cursor.moveToNext()) {
-                            tempBO = new NewOutletAttributeBO();
-                            tempBO.setAttrId(cursor.getInt(0));
-                            tempBO.setLevelId(cursor.getInt(1));
-                            tempBO.setStatus(cursor.getString(2));
-                            attributeBOArrayList.add(tempBO);
-                        }
-                        cursor.close();
-                        dbUtil.closeDB();
-                    }
-                } catch (Exception e) {
-                    dbUtil.closeDB();
-                    Commons.printException("" + e);
-                    return new ArrayList<>();
-                }
-                return attributeBOArrayList;
-            }
-        });
-    }
-
-
-    /*This method will return
-    * HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID ;
-      HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID;*/
+    /*This method will return ChannelWiseAttributeList model class with below list
+     mAttributeListByLocationID
+     mAttributeBOListByLocationID*/
     @Override
     public Observable<ChannelWiseAttributeList> downloadChannelWiseAttributeList() {
 
@@ -675,9 +552,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     }
 
 
-    /*Note:->we need to update attributeBOArrayList in RetailerMasterBO */
+    /*It will return attributeBOArrayList.
+    Note:->we need to update attributeBOArrayList in RetailerMasterBO */
     @Override
-    public Observable<ArrayList<NewOutletAttributeBO>> getAttributeListForRetailer(final String RetailerID) {
+    public Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeListForRetailer(final String RetailerID) {
 
         return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
             @Override
@@ -698,7 +576,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             attributeBOArrayList.add(tempBO);
                         }
 
-                       // getRetailerMasterBO().setAttributeBOArrayList(attributeBOArrayList);
+                        // getRetailerMasterBO().setAttributeBOArrayList(attributeBOArrayList);
                         cursor.close();
                     }
 
@@ -707,6 +585,128 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     Commons.printException(e);
                 }
                 return attributeBOArrayList;
+            }
+        });
+    }
+
+
+    /*It will return the attributeBOArrayList */
+    @Override
+    public Observable<ArrayList<NewOutletAttributeBO>> downloadEditAttributeList(final String retailerID) {
+        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
+            @Override
+            public ArrayList<NewOutletAttributeBO> call() throws Exception {
+                ArrayList<NewOutletAttributeBO> attributeBOArrayList = new ArrayList<>();
+                try {
+                    dbUtil.openDataBase();
+                    Cursor cursor = dbUtil.selectSQL("select attributeid, levelid, status from retailereditattribute where retailerid = " + retailerID + " and upload='N'");
+                    if (cursor != null) {
+                        NewOutletAttributeBO tempBO;
+                        while (cursor.moveToNext()) {
+                            tempBO = new NewOutletAttributeBO();
+                            tempBO.setAttrId(cursor.getInt(0));
+                            tempBO.setLevelId(cursor.getInt(1));
+                            tempBO.setStatus(cursor.getString(2));
+                            attributeBOArrayList.add(tempBO);
+                        }
+                        cursor.close();
+                        dbUtil.closeDB();
+                    }
+                } catch (Exception e) {
+                    dbUtil.closeDB();
+                    Commons.printException("" + e);
+                    return new ArrayList<>();
+                }
+                return attributeBOArrayList;
+            }
+        });
+    }
+
+
+    /*It will return the RetailerAttribute Child */
+    @Override
+    public Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute() {
+        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
+            @Override
+            public ArrayList<NewOutletAttributeBO> call() throws Exception {
+
+                ArrayList<NewOutletAttributeBO> attribListChild=null;
+
+                try {
+                    NewOutletAttributeBO temp;
+                    dbUtil.openDataBase();
+
+                    attribListChild = new ArrayList<>();
+
+                    Cursor c = dbUtil
+                            .selectSQL("SELECT attributeid, attributename, parentid, levelid, allowmultiple, iscriteriamapped FROM entityattributemaster where parentid !=" + 0 + " order by attributeid");
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            temp = new NewOutletAttributeBO();
+                            temp.setAttrId(c.getInt(0));
+                            temp.setAttrName(c.getString(1));
+                            temp.setParentId(c.getInt(2));
+                            temp.setLevelId(c.getInt(3));
+                            temp.setAllowMultiple(c.getInt(4));
+                            temp.setCriteriaMapped(c.getInt(5));
+
+                            attribListChild.add(temp);
+                        }
+                        c.close();
+                    }
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return attribListChild;
+            }
+        });
+    }
+
+    /*It will return the RetailerAttribute Parent */
+    @Override
+    public Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeParentList(final ArrayList<NewOutletAttributeBO> attribList) {
+
+        return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
+            @Override
+            public ArrayList<NewOutletAttributeBO> call() throws Exception {
+
+                ArrayList<NewOutletAttributeBO> attributeParentList=null;
+                try {
+                    attributeParentList = new ArrayList<>();
+                    NewOutletAttributeBO temp;
+
+                    dbUtil.openDataBase();
+                    Cursor c = dbUtil
+                            .selectSQL("SELECT attributeid, attributename, isSystemComputed,IsMandatory FROM entityattributemaster where parentid =0 order by sequence");
+                    if (c != null) {
+                        //downloadRetailerAttributeChildList();
+                        while (c.moveToNext()) {
+                            int attribId = c.getInt(0);
+                            int levelId = 0;
+                            temp = new NewOutletAttributeBO();
+                            temp.setAttrId(attribId);
+                            temp.setAttrName(c.getString(1));
+                            temp.setIsMandatory(c.getInt(3));
+
+                            for (int i = 0; i < attribList.size(); i++) {
+                                int parentID = attribList.get(i).getParentId();
+                                if (attribId == parentID) {
+                                    attribId = attribList.get(i).getAttrId();
+                                    levelId = attribList.get(i).getLevelId();
+                                }
+                            }
+
+                            temp.setLevelId(levelId);
+                            attributeParentList.add(temp);
+                        }
+                        c.close();
+                    }
+                    dbUtil.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return attributeParentList;
             }
         });
     }
@@ -764,12 +764,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             }
         });
     }
-
-
-
-
-
-
 
 
 }

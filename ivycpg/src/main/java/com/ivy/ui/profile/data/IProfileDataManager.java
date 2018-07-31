@@ -44,22 +44,23 @@ public interface IProfileDataManager {
     Observable<ArrayList<String>> downloadPriorityProductsForRetailer(String retailerId);
 
 
-    Observable<ArrayList<Integer>> getCommonAttributeList();
+    Observable<ArrayList<Integer>> downloadCommonAttributeList();
 
 
-    Observable<ArrayList<NewOutletAttributeBO>> getEditAttributeList(String retailerID);
+    Observable<ArrayList<NewOutletAttributeBO>> downloadEditAttributeList(String retailerID);
 
 
     Observable<ChannelWiseAttributeList> downloadChannelWiseAttributeList();
 
 
-    Observable<ArrayList<NewOutletAttributeBO>> getAttributeListForRetailer(String RetailerID);
+    Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeListForRetailer(String RetailerID);
+
+
+    Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute();
 
 
     Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeParentList(ArrayList<NewOutletAttributeBO> attribList);
 
-
-    Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute();
 
 
     Observable<ArrayList<NewOutletAttributeBO>> updateRetailerMasterAttribute(

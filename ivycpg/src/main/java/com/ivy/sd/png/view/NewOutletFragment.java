@@ -502,8 +502,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         .equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
                     isAttribute = true;
                     bmodel.newOutletAttributeHelper.downloadAttributeParentList();
-                    bmodel.newOutletAttributeHelper.downloadRetailerAttribute();
-                    mAttributeParentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+                    bmodel.newOutletAttributeHelper.downloadRetailerAttributeChildList();
+                    mAttributeParentList = bmodel.newOutletAttributeHelper.getmAttributeParentList();
                     attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
 
                     bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
