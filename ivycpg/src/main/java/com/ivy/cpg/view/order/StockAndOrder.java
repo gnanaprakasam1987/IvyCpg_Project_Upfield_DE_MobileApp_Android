@@ -108,7 +108,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.MOQHighlightDialog;
@@ -155,7 +155,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private static final String BRAND = "Brand";
     private static final String GENERAL = "General";
 
-
+    // Selected spl filter will be maintained in this hasmap. This will max one record.
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
 
     private final String mSbd = "Filt02";
@@ -5578,7 +5578,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mDrawerLayout.openDrawer(GravityCompat.END);
 
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -5587,12 +5587,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             Bundle bundle = new Bundle();
 
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "generalfilter");
             ft.commit();

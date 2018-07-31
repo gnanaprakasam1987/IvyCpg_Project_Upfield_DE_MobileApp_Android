@@ -220,7 +220,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                 jsonObject.put("DeviceId",
                         DeviceUtils.getIMEINumber(ChangePasswordActivity.this));
                 jsonObject.put("VersionCode",
-                        AppUtils.getApplicationVersionName(ChangePasswordActivity.this));
+                        AppUtils.getApplicationVersionNumber(ChangePasswordActivity.this));
                 jsonObject.put("UserId", bmodel.userMasterHelper
                         .getUserMasterBO().getUserid());
 
