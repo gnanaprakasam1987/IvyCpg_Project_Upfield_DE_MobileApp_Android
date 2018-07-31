@@ -34,7 +34,6 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -241,16 +240,6 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
             getActivity().finish();
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
     }
 
     @Override

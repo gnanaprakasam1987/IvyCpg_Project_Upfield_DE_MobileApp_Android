@@ -31,7 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -43,13 +42,11 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 public class NearExpiryTrackingFragment extends IvyBaseFragment implements
@@ -852,17 +849,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 }
             }
         }
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
     }
 
     @Override

@@ -59,7 +59,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SODBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -73,7 +72,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
@@ -81,7 +79,6 @@ import com.ivy.sd.png.view.RemarksDialog;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 public class SODAssetFragment extends IvyBaseFragment implements
@@ -1453,15 +1450,6 @@ public class SODAssetFragment extends IvyBaseFragment implements
                 mSelectedET.setText(strVal);
             }
         }
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
     }
 
     /**

@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -32,8 +31,6 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by dharmapriya.k on 11/1/2017,3:18 PM.
@@ -188,7 +185,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
             /*android.support.v4.app.FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("filter");
             FragmentTransaction ft = fm
                     .beginTransaction();
@@ -205,7 +202,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setBrandDialogInterface(this);
             fragobj.setArguments(bundle);
             ft.add(R.id.right_drawer, fragobj, "filter");
@@ -307,16 +304,6 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
     public void onBackPressed() {
         // do something on back.
         return;
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
     }
 
     @Override

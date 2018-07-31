@@ -86,7 +86,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -2285,17 +2284,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         public void onSwipeBottom() {
         }
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        // TODO Auto-generated method stub
     }
 
     @Override
