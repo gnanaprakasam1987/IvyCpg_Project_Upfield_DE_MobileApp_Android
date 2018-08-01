@@ -74,14 +74,6 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
     }
 
     @Override
-    public void loadStartVisit() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PriceTrackFragment fragment = (PriceTrackFragment) fm
-                .findFragmentById(R.id.price_track_fragment);
-        fragment.loadStartVisit();
-    }
-
-    @Override
     public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PriceTrackFragment fragment = (PriceTrackFragment) fm

@@ -352,10 +352,5 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
         mDrawerLayout.closeDrawers();
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
 }
 

@@ -628,11 +628,6 @@ public class ReportActivity extends BaseActivity implements
 
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
 
     @Override
     public void updateUserSelection(ArrayList<Integer> mSelectedUsers, boolean isAllUser) {

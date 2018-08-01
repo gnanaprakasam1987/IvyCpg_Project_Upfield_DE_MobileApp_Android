@@ -68,8 +68,4 @@ public class PlanoGramActivity extends IvyBaseActivityNoActionBar implements
         asf.updateFromFiveLevelFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
 }

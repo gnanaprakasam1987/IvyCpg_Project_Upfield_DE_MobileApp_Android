@@ -2291,11 +2291,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         // TODO Auto-generated method stub
     }
 
-    @Override
-    public void loadStartVisit() {
-        // TODO Auto-generated method stub
-    }
-
     private void loadQuestionFromFiveLevelFilter(int surveyId, int filteredProductId) {
         ArrayList<QuestionBO> items = new ArrayList<>();
         for (SurveyBO surBO : surveyHelperNew.getSurvey()) {

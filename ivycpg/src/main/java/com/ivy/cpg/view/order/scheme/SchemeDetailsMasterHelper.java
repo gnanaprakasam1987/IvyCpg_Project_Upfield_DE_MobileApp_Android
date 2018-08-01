@@ -3033,7 +3033,6 @@ public class SchemeDetailsMasterHelper {
                         db.insertSQL(DataMembers.tbl_scheme_details,
                                 schemeDetailColumn, sb.toString());
 
-
                     }
 
                 }

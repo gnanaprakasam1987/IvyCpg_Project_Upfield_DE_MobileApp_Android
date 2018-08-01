@@ -1675,11 +1675,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         updateBrandText(BRAND, mSelectedLastFilterSelection);
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     /**
      * Show location alert
      */

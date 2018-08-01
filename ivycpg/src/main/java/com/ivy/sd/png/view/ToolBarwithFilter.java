@@ -1205,11 +1205,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mylist = new ArrayList<>();
         fiveFilter_productIDs = new ArrayList<>();
