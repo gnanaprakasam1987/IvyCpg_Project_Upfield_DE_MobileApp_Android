@@ -997,7 +997,7 @@ public class ProfileHelper {
                 ArrayList<RetailerContactBo> contactList = new ArrayList<>();
                 try {
                     String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,"
-                            + " RC.contactname as cName,RC.contactname_LName as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
+                            + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
                             + " ifnull(RC.Email,'') as email from RetailerContact RC "
                             + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
                             + " Where RC.RetailerId =" + bmodel.QT(retailerID);

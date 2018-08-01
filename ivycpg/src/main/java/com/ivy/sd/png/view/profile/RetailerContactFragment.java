@@ -64,7 +64,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
     private void initializeViews() {
         appSchedulerProvider = new AppSchedulerProvider();
 
-        new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContactMenu()
+        new CompositeDisposable().add(bmodel.profilehelper.downloadRetailerContactMenu()
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribe(new Consumer<HashMap<String, String>>() {
@@ -81,7 +81,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
     }
 
     private void getDataToPopulate() {
-        new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID())
+        new CompositeDisposable().add( bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID())
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribe(new Consumer<ArrayList<RetailerContactBo>>() {
@@ -156,15 +156,14 @@ public class RetailerContactFragment extends IvyBaseFragment {
                     holder.title.setText(retailerContactBo.getTitle());
                 else
                     holder.title.setVisibility(View.GONE);
-                holder.firstName.setText(retailerContactBo.getFistname());
-                holder.lastName.setText(retailerContactBo.getLastname());
+                holder.firstName.setText(retailerContactBo.getFistname()+" "+retailerContactBo.getLastname());
             }
 
             if (contactMenuMap.get(CODE_CONTACTPRIMARY) != null) {
                 if (retailerContactBo.getIsPrimary() == 1)
                     holder.ivIsPrimary.setVisibility(View.VISIBLE);
                 else
-                    holder.ivIsPrimary.setVisibility(View.GONE);
+                    holder.ivIsPrimary.setVisibility(View.INVISIBLE);
 
             }
             if (contactMenuMap.get(CODE_CONTACTNUMBER) != null && retailerContactBo.getContactNumber().length() > 0)
@@ -187,7 +186,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView title, firstName, lastName;
+            private TextView title, firstName;
             private TextView textCno, textCEmail;
             private ImageView ivIsPrimary;
 
@@ -196,28 +195,25 @@ public class RetailerContactFragment extends IvyBaseFragment {
 
                 title = itemView.findViewById(R.id.tvTitle);
                 firstName = itemView.findViewById(R.id.tvFirstName);
-                lastName = itemView.findViewById(R.id.tvLastName);
                 ivIsPrimary = itemView.findViewById(R.id.ivIsPrimary);
                 textCno = itemView.findViewById(R.id.tvContactNo);
                 textCEmail = itemView.findViewById(R.id.tvEmail);
 
                 title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 firstName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                lastName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 textCno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 textCEmail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
                 if (contactMenuMap.get(CODE_CONTACTNAME) == null) {
                     title.setVisibility(View.GONE);
                     firstName.setVisibility(View.GONE);
-                    lastName.setVisibility(View.GONE);
                 }
 
                 if (contactMenuMap.get(CODE_CONTACTNUMBER) == null)
                     textCno.setVisibility(View.GONE);
 
                 if (contactMenuMap.get(CODE_CONTACTPRIMARY) == null)
-                    ivIsPrimary.setVisibility(View.GONE);
+                    ivIsPrimary.setVisibility(View.INVISIBLE);
 
                 if (contactMenuMap.get(CODE_CONTACTMAIL) == null)
                     textCEmail.setVisibility(View.GONE);
