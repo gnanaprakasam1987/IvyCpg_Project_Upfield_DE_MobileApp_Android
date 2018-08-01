@@ -96,7 +96,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private BusinessModel bmodel;
     private int tabPos;
     private int tabCount;
-    private String imageName = "", pathSrc = "";
+    private String imageName = "";
     ;
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int DRAG_AND_DROP = 2;
@@ -128,12 +128,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private boolean isViewMode;
     private TabLayout tabLayout;
     private Button saveButton;
-    private boolean isNext = false;
     private String mFrom = "";
-    private AlertDialog objDialog = null;
-    private boolean hide_selectuser_icon = false;
     private ArrayList<StandardListBO> childList;
-    private ArrayAdapter<String> mChildUserNameAdapter;
     private int mSelectedIdIndex = -1, isFromDragDrop = -1;
     private String childUserName = "";
     private boolean isFromChild;
@@ -153,14 +149,14 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_new_survey, container, false);
-        mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
-        tabLayout = (TabLayout) view.findViewById(R.id.tabs);
-        tabLayout.setOnTabSelectedListener(this);
+        mDrawerLayout = view.findViewById(R.id.drawer_layout);
+        tabLayout = view.findViewById(R.id.tabs);
+        tabLayout.addOnTabSelectedListener(this);
         Bundle extras = getArguments();
         if (extras == null)
             extras = getActivity().getIntent().getExtras();
         if (extras != null) {
-            isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
+            isFromChild = extras.getBoolean("isFromChild", false);
             mFrom = extras.getString("from") != null ? extras.getString("from") : "";
         }
 
@@ -253,19 +249,17 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             if (childList.size() > 1) {
                 showDialog();
             } else if (childList.size() == 1) {
-                hide_selectuser_icon = true;
                 bmodel.setSelectedUserId(childList.get(0).getChildUserId());
                 loadListData();
             }
         } else {
-            hide_selectuser_icon = true;
             bmodel.setSelectedUserId(bmodel.userMasterHelper.getUserMasterBO().getUserid());
             loadListData();
         }
     }
 
     private void showDialog() {
-        mChildUserNameAdapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<String> mChildUserNameAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
         for (StandardListBO temp : childList)
             mChildUserNameAdapter.add(temp.getChildUserName());
@@ -282,12 +276,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         if (mMenuCode.equals("MENU_SURVEY_BA_CS"))
                             setScreenTitle(bmodel.mSelectedActivityName + " (" +
                                     childUserName + ")");
-                        hide_selectuser_icon = false;
                         loadListData();
                         dialog.dismiss();
                     }
                 });
-        objDialog = bmodel.applyAlertDialogTheme(builder);
+        AlertDialog objDialog = bmodel.applyAlertDialogTheme(builder);
         objDialog.setCancelable(false);
     }
 
@@ -1597,7 +1590,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     questBO.setImage2Path(path);
                                     questBO.setImage2Captured(true);
                                 }
-                                pathSrc = path;
                                 Log.e("TakenPath", path);
                                 intent.putExtra("quality", 40);
                                 intent.putExtra("path", path);

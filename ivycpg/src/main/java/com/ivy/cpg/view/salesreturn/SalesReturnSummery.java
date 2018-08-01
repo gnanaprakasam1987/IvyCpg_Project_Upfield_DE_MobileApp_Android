@@ -602,7 +602,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
     private void onNextButtonClick() {
         if (salesReturnHelper.hasSalesReturn()) {
-            if (bmodel.configurationMasterHelper.IS_INVOICE_SR) // SR18 Config Code
+            if (bmodel.configurationMasterHelper.IS_INVOICE_SR && !mInvoiceListAdapter.isEmpty()) // SR18 Config Code
                 showInvoiceNoDialog();
             else
                 new SaveAsyncTask().execute();

@@ -311,10 +311,9 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
     }
 
     public ArrayList<ProductMasterBO> getmInvoiceDetailsList() {
-        if (mInvoiceDetailsList != null) {
-            return mInvoiceDetailsList;
-        }
-        return new ArrayList<ProductMasterBO>();
+        if (mInvoiceDetailsList == null)
+            mInvoiceDetailsList = new ArrayList<>();
+        return mInvoiceDetailsList;
     }
 
     public void saveDeliveryManagement(String invoiceno, String selectedItem, String SignName, String SignPath, String contactName, String contactNo) {
