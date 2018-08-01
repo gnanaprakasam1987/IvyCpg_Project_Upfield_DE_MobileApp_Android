@@ -1,5 +1,6 @@
 package com.ivy.ui.photocapture.data;
 
+import com.ivy.core.data.AppDataManagerContract;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
@@ -11,7 +12,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-public interface PhotoCaptureDataManager {
+public interface PhotoCaptureDataManager extends AppDataManagerContract {
 
     Observable<ArrayList<PhotoCaptureProductBO>> fetchPhotoCaptureProducts();
 

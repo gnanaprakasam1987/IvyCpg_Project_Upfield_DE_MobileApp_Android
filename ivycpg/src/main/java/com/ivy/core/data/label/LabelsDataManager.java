@@ -1,11 +1,13 @@
 package com.ivy.core.data.label;
 
+import com.ivy.core.data.AppDataManagerContract;
+
 import java.util.HashMap;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-public interface LabelsDataManager {
+public interface LabelsDataManager extends AppDataManagerContract{
 
     Single<String> getLabel(String key);
 

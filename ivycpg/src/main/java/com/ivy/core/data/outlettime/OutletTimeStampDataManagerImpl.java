@@ -31,6 +31,10 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
     public OutletTimeStampDataManagerImpl(@DataBaseInfo DBUtil dbUtil, DataManager dataManager) {
         this.mDbUtil = dbUtil;
         this.mDataManager = dataManager;
+        mDbUtil.createDataBase();
+
+        if(mDbUtil.isDbNullOrClosed())
+            mDbUtil.openDataBase();
     }
 
 
@@ -40,18 +44,13 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
             @Override
             public Boolean call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("select VisitID from OutletTimestamp where ");
-                    sb.append(" RetailerID=" + QT(retailerId));
-                    Cursor c = mDbUtil.selectSQL(sb.toString());
+
+                    String sb = "select VisitID from OutletTimestamp where " +
+                            " RetailerID=" + QT(retailerId);
+                    Cursor c = mDbUtil.selectSQL(sb);
                     return c.getCount() > 0;
                 } catch (Exception e) {
                     return false;
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
             }
@@ -69,8 +68,6 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
             @Override
             public Boolean call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
 
                     String dateTime = now(DATE_GLOBAL) + " " + timeOut;
                     String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + dateTime
@@ -82,9 +79,6 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
                     return true;
 
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return false;
@@ -105,8 +99,7 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
             public Void call() {
                 mDataManager.setModuleInTime(QT(date + " " + timeIn));
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     String values = mDataManager.getUniqueId() + ","
                             + QT(moduleCode) + ","
@@ -115,10 +108,7 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
                             + QT(mDataManager.getRetailMaster().getRetailerID());
                     mDbUtil.insertSQL(DataMembers.tbl_outlet_time_stamp_detail, DataMembers.tbl_outlet_time_stamp_detail_cols, values);
 
-                } catch (Exception e) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
+                } catch (Exception ignored) {
                 }
 
                 return null;
@@ -132,8 +122,7 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
             @Override
             public Void call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     mDbUtil.deleteSQL(DataMembers.tbl_OutletTimestamp, "retailerid="
                             + mDataManager.getRetailMaster().getRetailerID(), false);
@@ -142,12 +131,8 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
                     mDbUtil.deleteSQL(DataMembers.tbl_OutletTimestamp_images, "uid="
                             + mDataManager.getUniqueId(), false);
 
-                    mDbUtil.closeDB();
 
-                } catch (Exception e) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
+                } catch (Exception ignored) {
                 }
                 return null;
             }
@@ -160,8 +145,6 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
             @Override
             public Void call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
 
                     String dateTime = now(DATE_GLOBAL) + " " + timeOut;
                     String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
@@ -179,13 +162,9 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
                             + "' AND TimeIn = '" + mDataManager.getInTime() + "'";
                     mDbUtil.updateSQL(query);
 
-                    mDbUtil.closeDB();
 
 
-                } catch (Exception e) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
+                } catch (Exception ignored) {
                 }
                 return null;
             }
@@ -193,4 +172,10 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
     }
 
 
+    @Override
+    public void tearDown() {
+        if(mDbUtil.isDbNullOrClosed())
+            mDbUtil.closeDB();
+        mDataManager.tearDown();
+    }
 }

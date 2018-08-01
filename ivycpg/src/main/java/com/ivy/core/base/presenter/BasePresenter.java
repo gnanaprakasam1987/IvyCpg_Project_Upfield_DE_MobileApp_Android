@@ -64,6 +64,7 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onDetach() {
         mCompositeDisposable.dispose();
+        mDataManager.tearDown();
         if (ivyView instanceof LifecycleOwner) {
             ((LifecycleOwner) ivyView).getLifecycle().removeObserver(this);
         }

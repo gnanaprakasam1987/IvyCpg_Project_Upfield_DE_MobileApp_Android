@@ -1,5 +1,6 @@
 package com.ivy.core.data.user;
 
+import com.ivy.core.data.AppDataManagerContract;
 import com.ivy.sd.png.bo.UserMasterBO;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-public interface UserDataManager {
+public interface UserDataManager extends AppDataManagerContract{
 
     Completable fetchUserDetails();
 

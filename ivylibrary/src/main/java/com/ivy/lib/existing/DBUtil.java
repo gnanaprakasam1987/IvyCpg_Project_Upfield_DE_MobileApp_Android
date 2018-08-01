@@ -142,6 +142,13 @@ public class DBUtil extends SQLiteOpenHelper{
         }
     }
 
+    public boolean isDbNullOrClosed(){
+        if(isEncrypted)
+           return db_encrypted==null || !db_encrypted.isOpen();
+        else
+            return db==null || !db.isOpen();
+    }
+
     /**
      * Check if the database already exist to avoid re-copying the file each
      * time you open the application.

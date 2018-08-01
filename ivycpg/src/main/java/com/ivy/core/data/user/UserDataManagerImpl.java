@@ -45,6 +45,11 @@ public class UserDataManagerImpl implements UserDataManager {
         this.mDbUtil = dbUtil;
         this.appDataProvider = appDataProvider;
         this.configurationMasterHelper = configurationMasterHelper;
+
+        mDbUtil.createDataBase();
+
+        if(mDbUtil.isDbNullOrClosed())
+            mDbUtil.openDataBase();
     }
 
     @Override
@@ -53,8 +58,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Void call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     Cursor c = mDbUtil.selectSQL("select " + DataMembers.tbl_userMaster_cols
                             + " from Usermaster where isDeviceUser=1");
@@ -119,13 +123,9 @@ public class UserDataManagerImpl implements UserDataManager {
                         }
                         c.close();
                     }
-                    mDbUtil.closeDB();
 
 
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return null;
@@ -140,8 +140,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Boolean call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     Cursor c = mDbUtil.selectSQL("select " + DataMembers.tbl_userMaster_cols
                             + " from " + DataMembers.tbl_userMaster
@@ -150,7 +149,6 @@ public class UserDataManagerImpl implements UserDataManager {
                     if (c != null) {
                         if (c.getCount() == 0) {
                             c.close();
-                            mDbUtil.closeDB();
                             return false;
                         }
 
@@ -194,9 +192,6 @@ public class UserDataManagerImpl implements UserDataManager {
                     return true;
                 } catch (Exception e) {
                     return false;
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
             }
         });
@@ -208,8 +203,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Void call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     StringBuilder sb = new StringBuilder();
 
@@ -280,9 +274,6 @@ public class UserDataManagerImpl implements UserDataManager {
                         c.close();
                     }
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return null;
@@ -296,8 +287,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Void call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     String sb = "Select DName,CNumber,Address1,Address2,Address3,TinNo,CSTNo,FaxNo,code,GSTNumber from DistributorMaster " +
                             "where did=" + appDataProvider.getUser().getDistributorid();
@@ -319,9 +309,6 @@ public class UserDataManagerImpl implements UserDataManager {
                     }
 
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return null;
@@ -335,8 +322,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Boolean call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
                     StringBuffer sb = new StringBuffer();
                     sb.append("SELECT hhtcode FROM hhtmodulemaster WHERE hhtcode = ");
                     sb.append(QT(CODE_IS_PWD_ENCRYPTED));
@@ -350,17 +336,13 @@ public class UserDataManagerImpl implements UserDataManager {
                     return false;
                 } catch (Exception e) {
                     return false;
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
             }
         }), Single.fromCallable(new Callable<String>() {
             @Override
             public String call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
                     String type = "";
                     Cursor c = mDbUtil.selectSQL("select PwdEncryptType from AppVariables");
                     if (c.getCount() > 0) {
@@ -375,9 +357,6 @@ public class UserDataManagerImpl implements UserDataManager {
                     return type;
                 } catch (Exception e) {
                     return "";
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
             }
         }), new BiFunction<Boolean, String, PasswordEncryption>() {
@@ -392,8 +371,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Completable apply(PasswordEncryption encrypted) {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     String password = "";
                     if (encrypted.isEncrypted()) {
@@ -410,9 +388,6 @@ public class UserDataManagerImpl implements UserDataManager {
 
 
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
                 return null;
             }
@@ -425,8 +400,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Void call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     String query = "update userMaster set distributorid=" + parentId
                             + ", branchid=" + distid + ", distributorName='" + distname + "' where userID=" + appDataProvider.getUser().getUserid();
@@ -437,9 +411,6 @@ public class UserDataManagerImpl implements UserDataManager {
                     appDataProvider.getUser().setBranchId(SDUtil.convertToInt(distid));
 
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return null;
@@ -454,8 +425,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public String call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
                     String filter = "";
                     String sql = "select RField from "
                             + DataMembers.tbl_HhtModuleMaster
@@ -502,9 +472,6 @@ public class UserDataManagerImpl implements UserDataManager {
 
                             return userList;
                         } catch (Exception ignored) {
-                        } finally {
-                            if (mDbUtil != null)
-                                mDbUtil.closeDB();
                         }
 
                         return new ArrayList<>();
@@ -520,8 +487,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
                     String codeChild = "CHILD";
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where isDeviceuser!=1 AND relationship =" + QT(codeChild);
@@ -540,9 +506,6 @@ public class UserDataManagerImpl implements UserDataManager {
 
                     return userList;
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return new ArrayList<>();
@@ -556,8 +519,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where distributorid = " + distributorId;
                     Cursor c = mDbUtil.selectSQL(query);
@@ -575,9 +537,6 @@ public class UserDataManagerImpl implements UserDataManager {
 
                     return userList;
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return new ArrayList<>();
@@ -591,8 +550,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where distributorid in (" + distributorIds + ")";
                     Cursor c = mDbUtil.selectSQL(query);
@@ -610,9 +568,6 @@ public class UserDataManagerImpl implements UserDataManager {
 
                     return userList;
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return new ArrayList<>();
@@ -626,8 +581,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Void call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     String tid = appDataProvider.getUser().getUserid()
                             + "" + appDataProvider.getRetailMaster().getRetailerID()
@@ -645,11 +599,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     mDbUtil.executeQ(insertquery);
 
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
-
                 return null;
             }
         });
@@ -661,8 +611,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where isDeviceuser = 1 OR relationship =" + QT("CHILD");
                     Cursor c = mDbUtil.selectSQL(query);
@@ -680,9 +629,6 @@ public class UserDataManagerImpl implements UserDataManager {
 
                     return userList;
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return new ArrayList<>();
@@ -696,8 +642,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where relationship =" + QT("CHILD") + " OR relationship = 'ASSOCIATE'";
                     Cursor c = mDbUtil.selectSQL(query);
@@ -715,9 +660,6 @@ public class UserDataManagerImpl implements UserDataManager {
 
                     return userList;
                 } catch (Exception ignored) {
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
 
                 return new ArrayList<>();
@@ -731,8 +673,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Boolean call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
                     Cursor c = mDbUtil
                             .selectSQL("SELECT Value FROM UserEditDetail  where Code='ProfileImagePath' AND UserID=" + userId);
                     if (c != null) {
@@ -746,9 +687,6 @@ public class UserDataManagerImpl implements UserDataManager {
                     return false;
                 } catch (Exception e) {
                     return false;
-                } finally {
-                    if (mDbUtil != null)
-                        mDbUtil.closeDB();
                 }
             }
         });
@@ -760,6 +698,12 @@ public class UserDataManagerImpl implements UserDataManager {
             return SDUtil.convertIntoMD5hashAndBase64(pwd);
         else
             return BCrypt.hashpw(pwd, BCrypt.gensalt());
+    }
+
+    @Override
+    public void tearDown() {
+        if(mDbUtil!=null)
+            mDbUtil.closeDB();
     }
 
     class PasswordEncryption {

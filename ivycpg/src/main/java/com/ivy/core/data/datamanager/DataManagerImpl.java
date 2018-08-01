@@ -217,4 +217,9 @@ public class DataManagerImpl implements DataManager {
         return imageSize;
 
     }
+
+    @Override
+    public void tearDown() {
+        dbHelper.tearDown();
+    }
 }

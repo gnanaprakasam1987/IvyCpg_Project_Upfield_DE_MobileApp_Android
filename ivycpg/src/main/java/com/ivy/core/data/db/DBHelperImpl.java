@@ -26,6 +26,9 @@ public class DBHelperImpl implements DbHelper {
     public DBHelperImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider) {
         mDbUtil = dbUtil;
         this.appDataProvider = appDataProvider;
+        mDbUtil.createDataBase();
+        if (mDbUtil.isDbNullOrClosed())
+            mDbUtil.openDataBase();
     }
 
     @Override
@@ -35,8 +38,7 @@ public class DBHelperImpl implements DbHelper {
             public String call() {
                 String theme = "blue";
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
+
 
                     String query = "select RField from HhtModuleMaster where hhtcode='THEME01' and flag=1 and  ForSwitchSeller = 0";
                     Cursor c = mDbUtil.selectSQL(query);
@@ -46,7 +48,6 @@ public class DBHelperImpl implements DbHelper {
                         }
                     }
                     mDbUtil.close();
-                    mDbUtil.closeDB();
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -65,8 +66,6 @@ public class DBHelperImpl implements DbHelper {
             public String call() {
                 String fontSize = "Small";
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
 
                     String query = "select RField from HhtModuleMaster where hhtcode='THEME02' and flag=1 and  ForSwitchSeller = 0";
                     Cursor c = mDbUtil.selectSQL(query);
@@ -77,7 +76,6 @@ public class DBHelperImpl implements DbHelper {
                         }
                     }
                     c.close();
-                    mDbUtil.closeDB();
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -94,8 +92,6 @@ public class DBHelperImpl implements DbHelper {
             @Override
             public Double call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
 
                     Cursor c = mDbUtil.selectSQL("select sum(ordervalue)from "
                             + DataMembers.tbl_orderHeader + " where retailerid="
@@ -105,14 +101,12 @@ public class DBHelperImpl implements DbHelper {
                         if (c.moveToNext()) {
                             double i = c.getDouble(0);
                             c.close();
-                            mDbUtil.closeDB();
                             return i;
                         }
                     }
 
                 } catch (Exception e) {
                     Commons.printException("" + e);
-                    mDbUtil.closeDB();
                 }
 
                 return 0.0;
@@ -126,8 +120,6 @@ public class DBHelperImpl implements DbHelper {
             @Override
             public Boolean call() {
                 try {
-                    mDbUtil.createDataBase();
-                    mDbUtil.openDataBase();
 
                     Cursor c = mDbUtil
                             .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
@@ -147,8 +139,6 @@ public class DBHelperImpl implements DbHelper {
                     return true;
                 } catch (Exception e) {
                     Commons.printException("" + e);
-                } finally {
-                    mDbUtil.closeDB();
                 }
 
                 return false;
@@ -157,4 +147,9 @@ public class DBHelperImpl implements DbHelper {
     }
 
 
+    @Override
+    public void tearDown() {
+        if (mDbUtil != null)
+            mDbUtil.closeDB();
+    }
 }

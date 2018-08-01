@@ -1,10 +1,12 @@
 package com.ivy.core.data.outlettime;
 
+import com.ivy.core.data.AppDataManagerContract;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-public interface OutletTimeStampDataManager {
+public interface OutletTimeStampDataManager extends AppDataManagerContract {
 
     Single<Boolean> isVisited(String retailerId);
 

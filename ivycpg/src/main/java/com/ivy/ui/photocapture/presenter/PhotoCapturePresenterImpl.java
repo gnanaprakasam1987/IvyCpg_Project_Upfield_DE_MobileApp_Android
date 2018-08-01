@@ -408,4 +408,12 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     }
 
 
+    @Override
+    public void onDetach() {
+        photoCaptureDataManager.tearDown();
+        mOutletTimeStampDataManager.tearDown();
+        labelsDataManager.tearDown();
+
+        super.onDetach();
+    }
 }
