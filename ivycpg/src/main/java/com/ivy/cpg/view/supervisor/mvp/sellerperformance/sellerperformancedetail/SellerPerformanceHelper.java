@@ -1,14 +1,14 @@
-package com.ivy.cpg.view.supervisor.mvp.sellerperformance;
+package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail;
 
 
 import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
 
-public class SellerPerformanceHelper implements SellerPerformanceContractor.SellerPerformancePresenter{
+public class SellerPerformanceHelper {
 
     private String[] mMonths = new String[]{
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
+            "May 8","May 09","May 10"
     };
 
     SellerPerformanceHelper() {
@@ -26,10 +26,5 @@ public class SellerPerformanceHelper implements SellerPerformanceContractor.Sell
         }
 
         return entries1;
-    }
-
-    @Override
-    public void getSellerListData() {
-
     }
 }

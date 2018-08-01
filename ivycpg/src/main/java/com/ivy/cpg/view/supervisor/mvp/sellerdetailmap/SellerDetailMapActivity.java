@@ -1,15 +1,12 @@
 package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +27,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -39,7 +35,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
-import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
@@ -161,7 +158,10 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         tvSellerPerformanceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SellerDetailMapActivity.this,SellerPerformanceListActivity.class);
+                Intent intent = new Intent(SellerDetailMapActivity.this,SellerPerformanceDetailActivity.class);
+                intent.putExtra("SellerId",userId);
+                intent.putExtra("Date","07052018");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
@@ -493,13 +493,6 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 holder.tvTimeOut.setVisibility(View.VISIBLE);
                 holder.tvSkipped.setVisibility(View.GONE);
             }
-
-//            if(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeIn()).isEmpty()
-//                    && outletListBos.get(position).isSkipped()){
-//
-//            }else {
-//
-//            }
 
         }
 

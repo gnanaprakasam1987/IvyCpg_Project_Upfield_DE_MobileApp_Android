@@ -799,9 +799,9 @@
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
             android:screenOrientation="portrait" />
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity"
+        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceDetailActivity"
+        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"

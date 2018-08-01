@@ -8,12 +8,16 @@ import com.google.android.gms.maps.model.Marker;
 
 public class SellerBo implements Parcelable {
 
-    private int userId,billed,covered,target,retailerId;
+    private int userId,billed,covered,target,retailerId,lpc;
     private String userName,retailerName;
     private boolean isAttendanceDone = false;
     private double latitude,longitude;
-    private long orderValue,timeIn,timeOut;
+    private long orderValue,timeIn,timeOut,totalOrderValue;
     private Marker marker;
+
+
+    private int targetLines,achievedLines,targetCoverage,achievedCoverage;
+    private long targetValue,achievedValue;
 
     public SellerBo(){
 
@@ -157,6 +161,70 @@ public class SellerBo implements Parcelable {
 
     public void setRetailerId(int retailerId) {
         this.retailerId = retailerId;
+    }
+
+    public int getTargetLines() {
+        return targetLines;
+    }
+
+    public void setTargetLines(int targetLines) {
+        this.targetLines = targetLines;
+    }
+
+    public int getAchievedLines() {
+        return achievedLines;
+    }
+
+    public void setAchievedLines(int achievedLines) {
+        this.achievedLines = achievedLines;
+    }
+
+    public int getTargetCoverage() {
+        return targetCoverage;
+    }
+
+    public void setTargetCoverage(int targetCoverage) {
+        this.targetCoverage = targetCoverage;
+    }
+
+    public int getAchievedCoverage() {
+        return achievedCoverage;
+    }
+
+    public void setAchievedCoverage(int achievedCoverage) {
+        this.achievedCoverage = achievedCoverage;
+    }
+
+    public long getTargetValue() {
+        return targetValue;
+    }
+
+    public void setTargetValue(long targetValue) {
+        this.targetValue = targetValue;
+    }
+
+    public long getAchievedValue() {
+        return achievedValue;
+    }
+
+    public void setAchievedValue(long achievedValue) {
+        this.achievedValue = achievedValue;
+    }
+
+    public long getTotalOrderValue() {
+        return totalOrderValue;
+    }
+
+    public void setTotalOrderValue(long totalOrderValue) {
+        this.totalOrderValue = totalOrderValue;
+    }
+
+    public int getLpc() {
+        return lpc;
+    }
+
+    public void setLpc(int lpc) {
+        this.lpc = lpc;
     }
 
     @Override

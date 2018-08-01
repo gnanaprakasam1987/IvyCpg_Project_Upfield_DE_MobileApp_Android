@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.mvp.sellerperformance;
+package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -14,30 +15,32 @@ import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.CombinedData;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.ivy.cpg.view.supervisor.fragments.OutletPagerDialogFragment;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.utils.FontUtils;
 
-import java.util.ArrayList;
-
 import static android.graphics.Color.rgb;
 
-public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar {
+public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar implements
+        SellerPerformanceDetailContractor.SellerPerformanceDetailView {
 
-    SellerPerformanceHelper sellerPerformanceHelper;
-    private String[] mMonths;
-    private TextView sellerNameTv,sellerPositionTv,sellerPerformPercentTv,valueTargetTv,valueActualTv,valuePercentTv,
+    private SellerPerformanceDetailPresenter sellerPerformancePresenter;
+    private TextView sellerNameTv,sellerPerformPercentTv,valueTargetTv,valueActualTv,valuePercentTv,
             coverageTargetTv,coverageActualtv,coveragePercenttv,linesTargetTv,linesActualTv,linesPercentTv,
             plannedValueTv,deviatedTv,durationTv,productiveTv;
+
+    private ProgressBar progressBar;
+
+    private TabLayout tabLayout;
+
+    private int sellerId=0;
+    private String selectedDate="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,18 +60,34 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         setScreenTitle("Seller Performance");
         initViews();
 
-        sellerPerformanceHelper = new SellerPerformanceHelper();
-        mMonths = sellerPerformanceHelper.getSellerPerformanceList();
 
-        combinedChart();
+        if(getIntent().getExtras() != null) {
+            sellerId = getIntent().getExtras().getInt("SellerId");
+            selectedDate = getIntent().getExtras().getString("Date");
+        }
+
+        sellerPerformancePresenter = new SellerPerformanceDetailPresenter();
+
+        sellerPerformancePresenter.setDetailView(this,SellerPerformanceDetailActivity.this);
+
+        sellerPerformancePresenter.downloadSellerData(sellerId,selectedDate);
+
+        sellerPerformancePresenter.setSellerActivityListener(sellerId,selectedDate);
+
+        sellerPerformancePresenter.downloadSellerKPI(sellerId,selectedDate,false);
+
+        sellerPerformancePresenter.downloadSellerOutletAWS(sellerId);
+
+        sellerPerformancePresenter.setSellerActivityDetailListener(sellerId,selectedDate);
 
         findViewById(R.id.bottom_outlet_btn_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment();
-//                outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
-//                outletPagerDialogFragment.setCancelable(false);
-//                outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+
+                OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment(sellerPerformancePresenter);
+                outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+                outletPagerDialogFragment.setCancelable(false);
+                outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
             }
         });
     }
@@ -90,7 +109,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         ((TextView)findViewById(R.id.seller_performance_btn)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
 
         sellerNameTv = findViewById(R.id.seller_name);
-        sellerPositionTv = findViewById(R.id.seller_position);
+        TextView sellerPositionTv = findViewById(R.id.seller_position);
         sellerPerformPercentTv = findViewById(R.id.seller_perform_percent);
 
         valueTargetTv = findViewById(R.id.value_target);
@@ -106,6 +125,8 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         deviatedTv = findViewById(R.id.deviated_value);
         durationTv = findViewById(R.id.duration_value);
         productiveTv = findViewById(R.id.productive_value);
+
+        progressBar = findViewById(R.id.progressBar);
 
         sellerNameTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
         sellerPositionTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
@@ -124,7 +145,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         durationTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
         productiveTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
 
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout = findViewById(R.id.tab_layout);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -132,8 +153,10 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
                 switch (tab.getPosition()) {
                     case 0:
+                        sellerPerformancePresenter.downloadSellerKPI(sellerId,selectedDate,false);
                         break;
                     case 1:
+                        sellerPerformancePresenter.downloadSellerKPI(sellerId,selectedDate,true);
                         break;
                 }
             }
@@ -159,6 +182,91 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void changeTabsFont(TabLayout tabLayout) {
+
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateSellerPerformanceData(SellerBo sellerBo) {
+
+        sellerNameTv.setText(sellerBo.getUserName());
+
+        int target = sellerBo.getTarget();
+        int billed = sellerBo.getBilled();
+        int sellerProductive = 0;
+
+        if (target != 0) {
+            sellerProductive = (int)((float)billed / (float)target * 100);
+        }
+
+        progressBar.setProgress(sellerProductive);
+
+        sellerPerformPercentTv.setText(sellerProductive+"%");
+    }
+
+
+    @Override
+    public void updateChartInfo(){
+        combinedChart();
+    }
+
+    @Override
+    public void updateSellerTabViewInfo(SellerBo sellerBo) {
+        coverageTargetTv.setText(String.valueOf(sellerBo.getTargetCoverage()));
+        linesTargetTv.setText(String.valueOf(sellerBo.getTargetLines()));
+        valueTargetTv.setText(String.valueOf(sellerBo.getTargetValue()));
+
+        int covered,lines;
+        long orderValue;
+
+        if(tabLayout.getSelectedTabPosition() == 1){
+            covered = sellerBo.getAchievedCoverage();
+            orderValue = sellerBo.getAchievedValue();
+            lines = sellerBo.getAchievedLines();
+        }else{
+            covered = sellerBo.getCovered();
+            orderValue = sellerBo.getTotalOrderValue();
+            lines = sellerBo.getLpc();
+        }
+
+        coverageActualtv.setText(String.valueOf(covered));
+        valueActualTv.setText(String.valueOf(orderValue));
+        linesActualTv.setText(String.valueOf(lines));
+
+        if (sellerBo.getTargetCoverage() != 0) {
+            int coverPercent = (int)((float)covered / (float)sellerBo.getTargetCoverage() * 100);
+            coveragePercenttv.setText(coverPercent+"%");
+        }
+
+        if (sellerBo.getTargetValue() != 0) {
+            int orderPercent = (int)((float)orderValue / (float)sellerBo.getTargetValue() * 100);
+            valuePercentTv.setText(orderPercent+"%");
+        }
+
+        if (sellerBo.getTargetLines() != 0) {
+            int linePercent = (int)((float)lines / (float)sellerBo.getTargetLines() * 100);
+            linesPercentTv.setText(linePercent+"%");
+        }
+
+
+        plannedValueTv.setText(String.valueOf(sellerBo.getTarget()));
+        deviatedTv.setText("0");
+        durationTv.setText("0");
+        productiveTv.setText("0");
     }
 
     private void combinedChart(){
@@ -197,14 +305,14 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return mMonths[(int) value % mMonths.length];
+                return sellerPerformancePresenter.getChartDaysStr().get((int)value % sellerPerformancePresenter.getChartDaysStr().size());
             }
         });
 
         CombinedData data = new CombinedData();
 
         data.setData(generateLineData());
-        data.setData(generateBarData());
+//        data.setData(generateBarData());
 
         xAxis.setAxisMaximum(data.getXMax() + 0.25f);
 
@@ -219,21 +327,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         LineData d = new LineData();
 
-        ArrayList<Entry> entries1 = new ArrayList<>();
-        ArrayList<Entry> entries2 = new ArrayList<>();
-
-        entries1.add(new Entry(2f,10f));
-        entries1.add(new Entry(4f,8f));
-        entries1.add(new Entry(6f,2f));
-        entries1.add(new Entry(8f,6f));
-
-        entries2.add(new Entry(1f,20f));
-        entries2.add(new Entry(3f,32f));
-        entries2.add(new Entry(8f,2f));
-        entries2.add(new Entry(10f,6f));
-
-
-        LineDataSet set = new LineDataSet(entries1, "Covered");
+        LineDataSet set = new LineDataSet(sellerPerformancePresenter.getSellerCoveredEntry(), "Covered");
         set.setColor((ContextCompat.getColor(this,R.color.colorPrimary)));
         set.setLineWidth(2.5f);
         set.setCircleColor(rgb(240, 238, 70));
@@ -244,7 +338,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         set.setValueTextSize(10f);
         set.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
 
-        LineDataSet set1 = new LineDataSet(entries2, "Productivity");
+        LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
         set1.setColor((ContextCompat.getColor(this,R.color.GREEN)));
         set1.setLineWidth(2.5f);
         set1.setCircleColor(rgb(240, 238, 70));
@@ -262,42 +356,5 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         d.addDataSet(set1);
 
         return d;
-    }
-
-    private BarData generateBarData() {
-
-        BarDataSet set1 = new BarDataSet(sellerPerformanceHelper.getBarEntries(), "Bar 1");
-        set1.setColor(ContextCompat.getColor(this,R.color.white_trans));
-        set1.setValueTextColor((ContextCompat.getColor(this,R.color.white_trans)));
-        set1.setValueTextSize(10f);
-        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-
-        float barWidth = 0.45f; // x2 dataset
-        // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
-
-        BarData d = new BarData(set1);
-        d.setBarWidth(barWidth);
-
-        // make this BarData object grouped
-//        d.groupBars(0, groupSpace, barSpace); // start at x = 0
-
-        return d;
-    }
-
-    private void changeTabsFont(TabLayout tabLayout) {
-
-        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
-        int tabsCount = vg.getChildCount();
-        for (int j = 0; j < tabsCount; j++) {
-            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
-            int tabChildCount = vgTab.getChildCount();
-            for (int i = 0; i < tabChildCount; i++) {
-                View tabViewChild = vgTab.getChildAt(i);
-                if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-                }
-            }
-        }
     }
 }

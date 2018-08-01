@@ -3,11 +3,20 @@ package com.ivy.cpg.view.supervisor.mvp.sellerhomescreen;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -29,14 +38,26 @@ import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.MyHttpConnectionNew;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.annotation.Nullable;
 
@@ -59,11 +80,16 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     private boolean isRealTimeLocationOn = false;
     private int sellerCountFirestore = 0;
     private boolean isZoomed = false;
+    private int totalOutletCount = 0;
+    private TextView messagetv;
+    BusinessModel bmodel;
+
 
     @Override
     public void setView(SellerMapHomeContract.SellerMapHomeView sellerMapHomeView, Context context) {
         this.sellerMapHomeView = sellerMapHomeView;
         this.context = context;
+        bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     @Override
@@ -79,7 +105,9 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select userId,userName from usermaster where isDeviceuser!=1 and userlevel = '"+loadUserLevel()+"'";
+            String queryStr = "select um.userId,um.userName,count(sm.userId) from usermaster um " +
+                    "left join SupRetailerMaster sm on sm.userId = um.userid where isDeviceuser!=1 and userlevel = '"+loadUserLevel()+"'  group by um.userid";
+
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {
@@ -89,12 +117,15 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
                     sellerBo.setUserId(c.getInt(0));
                     sellerBo.setUserName(c.getString(1));
+                    sellerBo.setTarget(c.getInt(2));
 
                     if (sellerInfoHasMap.get(sellerBo.getUserId()) == null) {
                         sellerInfoHasMap.put(sellerBo.getUserId(), sellerBo);
                     }
 
                     totalSellerCount = totalSellerCount + 1;
+
+                    totalOutletCount = totalOutletCount + sellerBo.getTarget();
                 }
                 c.close();
             }
@@ -107,47 +138,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
         sellerMapHomeView.displayTotalSellerCount(totalSellerCount);
         sellerMapHomeView.updateSellerAttendance(totalSellerCount,0);
-    }
-
-    @Override
-    public void getSellerWiseRetailerAWS(){
-
-        int totalOutletCount = 0;
-
-        DBUtil db = null;
-        try {
-
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            String queryStr = "select userId,count(userId) from SupRetailerMaster group by userId";
-
-            Cursor c = db.selectSQL(queryStr);
-            if (c != null) {
-                while (c.moveToNext()) {
-
-                    int count = c.getInt(1);
-
-                    totalOutletCount = totalOutletCount + count;
-
-                    if(sellerInfoHasMap.get(c.getInt(0)) != null)
-                        sellerInfoHasMap.get(c.getInt(0)).setTarget(c.getInt(1));
-                }
-                c.close();
-            }
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-            if (db != null)
-                db.closeDB();
-        }
-
         sellerMapHomeView.displayTotalOutletCount(totalOutletCount);
-
     }
 
     @Override
@@ -348,7 +339,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
         int sellerProductive = 0;
         if (coveredOutlet!=0) {
-            sellerProductive = (int)((float)billedOutlet / (float)coveredOutlet * 100);
+            sellerProductive = (int)((float)billedOutlet / (float)totalOutletCount * 100);
         }
         sellerMapHomeView.sellerProductivity(sellerProductive);
 
@@ -359,6 +350,11 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     public void removeFirestoreListener() {
         if(registration != null)
             registration.remove();
+    }
+
+    @Override
+    public void downloadSupRetailerMaster(String selectedDate) {
+        new DownloadSupRetailMaster().execute();
     }
 
     @Override
@@ -555,6 +551,138 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     ArrayList<SellerBo> getAllSellerList(){
         return new ArrayList<>(sellerInfoHasMap.values());
+    }
+
+    class DownloadSupRetailMaster extends AsyncTask<String, Void, Boolean> {
+        AlertDialog alertDialog;
+
+        protected void onPreExecute() {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            customProgressDialog(builder,
+                    context.getResources().getString(R.string.progress_dialog_title_downloading));
+            alertDialog = builder.create();
+            alertDialog.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            return isOnline() && prepareData();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            alertDialog.dismiss();
+            if (result) {
+                Toast.makeText(context, "Download Successfull", Toast.LENGTH_SHORT).show();
+            }else
+                Toast.makeText(context, "Download Failed", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private boolean prepareData() {
+
+        boolean isSuccess = false;
+        try {
+            JSONObject json = new JSONObject();
+
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+            json.put("RequestDate",
+                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+
+            String downloadurl = DataMembers.SERVER_URL + getDownloadUrl();
+
+            Commons.print("downloadUrl "+downloadurl);
+            System.out.println("json = " + json);
+            String response = bmodel.synchronizationHelper.sendPostMethod(downloadurl, json);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        String errorCode = jsonObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            bmodel.synchronizationHelper
+                                    .parseJSONAndInsert(jsonObject, false);
+                            isSuccess = true;
+                        }
+                    }
+                }
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+        return isSuccess;
+
+    }
+
+    private String getDownloadUrl(){
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String downloadurl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            String sb = "select url from urldownloadmaster where " +
+                    "mastername='SUP_RTR_MASTER' and typecode='SYNMAS'";
+
+            Cursor c = db.selectSQL(sb);
+            if (c != null) {
+                if (c.getCount() > 0 && c.moveToNext()) {
+                    downloadurl = c.getString(0);
+                }
+            }
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+        return downloadurl;
+    }
+
+    public void customProgressDialog(AlertDialog.Builder builder, String message) {
+
+        try {
+            View view = View.inflate(context, R.layout.custom_alert_dialog, null);
+
+            TextView title = (TextView) view.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            messagetv = (TextView) view.findViewById(R.id.text);
+            messagetv.setText(message);
+
+            builder.setView(view);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private boolean isOnline() {
+
+        try {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+                return true;
+            }
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+        return false;
+
     }
 
 }

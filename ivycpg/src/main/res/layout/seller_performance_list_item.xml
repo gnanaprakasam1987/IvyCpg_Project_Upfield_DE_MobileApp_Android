@@ -55,7 +55,7 @@
                 android:maxLines="1"
                 android:paddingLeft="@dimen/_8sdp"
                 android:ellipsize="end"
-                android:text="Sales Volume sfffsffs Sales Volume sfffs ffs"
+                android:text=""
                 android:textColor="#de000000"
                 android:textSize="@dimen/_14sdp" />
 
@@ -67,7 +67,7 @@
                 android:layout_weight="0.4"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/_8sdp"
-                android:text="Sales Volume"
+                android:text="Productivity"
                 android:textColor="#8b000000"
                 android:textSize="@dimen/_12sdp" />
 
@@ -97,7 +97,7 @@
                 android:layout_height="@dimen/_45sdp"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:text="100%"
+                android:text=""
                 android:textColor="#262e4f"
                 android:textSize="@dimen/_12sdp"
                 android:id="@+id/seller_perform_percent"/>

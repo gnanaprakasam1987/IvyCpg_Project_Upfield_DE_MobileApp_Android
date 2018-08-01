@@ -381,7 +381,8 @@ public class OrderHelper {
 
                 String parentHierarchy = "";
                 for (String ids : parentHierarchyIds) {
-                    parentHierarchy = parentHierarchy + "/" + ids;
+                    if(!ids.trim().equals(""))
+                        parentHierarchy = parentHierarchy + "/" + ids;
                 }
                 parentHierarchy = parentHierarchy + "/";
 

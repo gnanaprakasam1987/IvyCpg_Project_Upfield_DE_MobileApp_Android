@@ -9061,7 +9061,7 @@ public class BusinessModel extends Application {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select parentPositionids from UserMaster where userid="
+                    .selectSQL("select ParentPositionIds from UserMaster where userid="
                             + QT(String.valueOf(userMasterHelper.getUserMasterBO().getUserid())));
             if (c != null) {
                 if (c.moveToNext()) {

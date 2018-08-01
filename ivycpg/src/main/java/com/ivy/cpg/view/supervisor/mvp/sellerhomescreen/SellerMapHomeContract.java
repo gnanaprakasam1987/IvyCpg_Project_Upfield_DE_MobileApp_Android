@@ -48,8 +48,6 @@ public interface SellerMapHomeContract {
 
         void getSellerListAWS();
 
-        void getSellerWiseRetailerAWS();
-
         boolean isRealtimeLocation();
 
         void loginToFirebase(Context context,int userId);
@@ -69,6 +67,8 @@ public interface SellerMapHomeContract {
         void animateSellerMarker(final LatLng destination, final Marker marker);
 
         void removeFirestoreListener();
+
+        void downloadSupRetailerMaster(String selectedDate);
     }
 
 }

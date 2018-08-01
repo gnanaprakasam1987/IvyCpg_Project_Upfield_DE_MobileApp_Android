@@ -39,13 +39,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
-import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
-import com.ivy.cpg.view.supervisor.mvp.sellerperformance.SellerPerformanceListActivity;
+import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -412,10 +410,15 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                        String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                         Toast.makeText(getContext(),
-                                "Selected Date "+dayOfMonth + "/" + (monthOfYear + 1) + "/" + year,
+                                "Selected Date "+selectedDate,
                                 Toast.LENGTH_SHORT).show();
                         picker.hide();
+
+                        sellerMapHomePresenter.downloadSupRetailerMaster(selectedDate);
+
                     }
                 }, year, month, day);
         picker.show();
@@ -498,7 +501,6 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         });
 
         sellerMapHomePresenter.getSellerListAWS();
-        sellerMapHomePresenter.getSellerWiseRetailerAWS();
 
         sellerMapHomePresenter.loginToFirebase(getContext().getApplicationContext(),4);
     }

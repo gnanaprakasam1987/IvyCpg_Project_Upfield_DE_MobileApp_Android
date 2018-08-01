@@ -1,7 +1,8 @@
-package com.ivy.cpg.view.supervisor.mvp.sellerperformance;
+package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,13 +23,12 @@ import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.CombinedData;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
+import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.HideShowScrollListener;
@@ -37,21 +37,25 @@ import java.util.ArrayList;
 
 import static android.graphics.Color.rgb;
 
-public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
+public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar implements SellerPerformanceContractor.SellerPerformanceView
+        , SellerPerformanceListAdapter.ItemClickedListener{
 
-    private RecyclerView recyclerView;
+    private RecyclerView sellerPerformanceRecycler;
+    private SellerPerformanceListAdapter sellerPerformanceListAdapter;
 
     private LinearLayout bottomLayout;
     private Animation slide_down, slide_up;
-    SellerPerformanceHelper sellerPerformanceHelper;
-    private String[] mMonths;
+//    SellerPerformanceHelper sellerPerformanceHelper;
+//    private String[] mMonths;
+    private ArrayList<SellerBo> sellerPerformanceList = new ArrayList<>();
+    private SellerPerformancePresenter sellerPerformancePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seller_performance_list);
 
-        recyclerView = findViewById(R.id.seller_list_recycler);
+        sellerPerformanceRecycler = findViewById(R.id.seller_list_recycler);
         bottomLayout = findViewById(R.id.bottom_layout);
 
         slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -74,23 +78,27 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
 
         prepareScreenData();
 
-        sellerPerformanceHelper = new SellerPerformanceHelper();
-        mMonths = sellerPerformanceHelper.getSellerPerformanceList();
+        sellerPerformancePresenter = new SellerPerformancePresenter();
+        sellerPerformancePresenter.setView(this,SellerPerformanceListActivity.this);
+        sellerPerformancePresenter.getSellerListAWS();
+        sellerPerformancePresenter.sellerActivityInfoListener(4,"07052018");
 
-        combinedChart();
+//        sellerPerformanceHelper = new SellerPerformanceHelper();
+//        mMonths = sellerPerformanceHelper.getSellerPerformanceList();
 
     }
 
+
     private void prepareScreenData(){
 
-        SellerPerformanceListAdapter myAdapter = new SellerPerformanceListAdapter(getApplicationContext());
-        recyclerView.setAdapter(myAdapter);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        sellerPerformanceListAdapter = new SellerPerformanceListAdapter(SellerPerformanceListActivity.this, sellerPerformanceList,this);
+        sellerPerformanceRecycler.setAdapter(sellerPerformanceListAdapter);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(SellerPerformanceListActivity.this);
+        sellerPerformanceRecycler.setLayoutManager(mLayoutManager);
+        sellerPerformanceRecycler.setItemAnimator(new DefaultItemAnimator());
 
 
-        recyclerView.addOnScrollListener(new HideShowScrollListener() {
+        sellerPerformanceRecycler.addOnScrollListener(new HideShowScrollListener() {
             @Override
             public void onHide() {
                 if (bottomLayout.getVisibility() == View.VISIBLE) {
@@ -158,6 +166,18 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void updateSellerPerformanceList(ArrayList<SellerBo> sellerList) {
+        sellerPerformanceList.clear();
+        sellerPerformanceList.addAll(sellerList);
+        sellerPerformanceListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateChartInfo(){
+        combinedChart();
+    }
+
     private void combinedChart(){
         CombinedChart mChart = findViewById(R.id.combined_chart);
         mChart.getDescription().setEnabled(false);
@@ -194,14 +214,14 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return mMonths[(int) value % mMonths.length];
+                return sellerPerformancePresenter.getChartDaysStr().get((int)value % sellerPerformancePresenter.getChartDaysStr().size());
             }
         });
 
         CombinedData data = new CombinedData();
 
         data.setData(generateLineData());
-        data.setData(generateBarData());
+//        data.setData(generateBarData());
 
         xAxis.setAxisMaximum(data.getXMax() + 0.25f);
 
@@ -216,21 +236,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
 
         LineData d = new LineData();
 
-        ArrayList<Entry> entries1 = new ArrayList<>();
-        ArrayList<Entry> entries2 = new ArrayList<Entry>();
-
-        entries1.add(new Entry(2f,10f));
-        entries1.add(new Entry(4f,8f));
-        entries1.add(new Entry(6f,2f));
-        entries1.add(new Entry(8f,6f));
-
-        entries2.add(new Entry(1f,20f));
-        entries2.add(new Entry(3f,32f));
-        entries2.add(new Entry(8f,2f));
-        entries2.add(new Entry(10f,6f));
-
-
-        LineDataSet set = new LineDataSet(entries1, "Covered");
+        LineDataSet set = new LineDataSet(sellerPerformancePresenter.getSellerCoveredEntry(), "Covered");
         set.setColor((ContextCompat.getColor(this,R.color.colorPrimary)));
         set.setLineWidth(2.5f);
         set.setCircleColor(rgb(240, 238, 70));
@@ -241,7 +247,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
         set.setValueTextSize(10f);
         set.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
 
-        LineDataSet set1 = new LineDataSet(entries2, "Productivity");
+        LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
         set1.setColor((ContextCompat.getColor(this,R.color.GREEN)));
         set1.setLineWidth(2.5f);
         set1.setCircleColor(rgb(240, 238, 70));
@@ -261,29 +267,37 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar {
         return d;
     }
 
-    private BarData generateBarData() {
-
-        BarDataSet set1 = new BarDataSet(sellerPerformanceHelper.getBarEntries(), "Bar 1");
-        set1.setColor(ContextCompat.getColor(this,R.color.white_trans));
-        set1.setValueTextColor((ContextCompat.getColor(this,R.color.white_trans)));
-        set1.setValueTextSize(10f);
-        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-
-        float barWidth = 0.45f; // x2 dataset
-        // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
-
-        BarData d = new BarData(set1);
-        d.setBarWidth(barWidth);
-
-        // make this BarData object grouped
-//        d.groupBars(0, groupSpace, barSpace); // start at x = 0
-
-        return d;
-    }
+//    private BarData generateBarData() {
+//
+//        BarDataSet set1 = new BarDataSet(sellerPerformanceHelper.getBarEntries(), "Bar 1");
+//        set1.setColor(ContextCompat.getColor(this,R.color.white_trans));
+//        set1.setValueTextColor((ContextCompat.getColor(this,R.color.white_trans)));
+//        set1.setValueTextSize(10f);
+//        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+//
+//
+//        float barWidth = 0.45f; // x2 dataset
+//        // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
+//
+//        BarData d = new BarData(set1);
+//        d.setBarWidth(barWidth);
+//
+//        // make this BarData object grouped
+////        d.groupBars(0, groupSpace, barSpace); // start at x = 0
+//
+//        return d;
+//    }
 
     private float getRandom(float range, float startsfrom) {
         return (float) (Math.random() * range) + startsfrom;
     }
 
+    @Override
+    public void itemclicked(SellerBo sellerBo) {
+        Intent intent = new Intent(SellerPerformanceListActivity.this,SellerPerformanceDetailActivity.class);
+        intent.putExtra("SellerId",sellerBo.getUserId());
+        intent.putExtra("Date","07052018");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 }

@@ -63,7 +63,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     private int retailersVisitedSequence = 0;
     private int lastVisited = 0;
 
-
     @Override
     public void setView(SellerDetailMapContractor.SellerDetailMapView sellerMapView, Context context) {
         this.sellerMapView = sellerMapView;
@@ -79,7 +78,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select retailerId,retailerName,sequence,latitude,longitude,address,img_path,date from " +
+            String queryStr = "select retailerId,retailerName,sequence,latitude,longitude,address,imgpath,date from " +
                     "SupRetailerMaster where userId ='" + userId + "' order by sequence ASC";
 
             Cursor c = db.selectSQL(queryStr);
@@ -281,14 +280,15 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             if(retailerMasterBo != null) {
 
                 BitmapDescriptor icon;
-                if (retailerMasterBo.getIsOrdered() || documentSnapshotBo.getIsOrdered()) {
+                if (retailerMasterBo.getIsOrdered() || documentSnapshotBo.getOrderValue() > 0) {
                     icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
                     retailerMasterBo.setIsOrdered(true);
                 } else {
                     icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
-                    retailerMasterBo.setIsOrdered(documentSnapshotBo.getIsOrdered());
+                    retailerMasterBo.setIsOrdered(false);
                 }
 
+                documentSnapshotBo.setIsOrdered(retailerMasterBo.getIsOrdered());
                 retailerMasterBo.setSkipped(false);
                 retailerMasterBo.setVisited(true);
 

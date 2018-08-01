@@ -202,13 +202,14 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
             RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
-            if(retailerMasterBo.getIsOrdered() || documentSnapshotBo.getIsOrdered()) {
+            if(retailerMasterBo.getIsOrdered() || documentSnapshotBo.getOrderValue() > 0) {
                 retailerMasterBo.setIsOrdered(true);
             }
             else {
-                retailerMasterBo.setIsOrdered(documentSnapshotBo.getIsOrdered());
+                retailerMasterBo.setIsOrdered(false);
             }
 
+            documentSnapshotBo.setIsOrdered(retailerMasterBo.getIsOrdered());
             retailerMasterBo.setSkipped(false);
             retailerMasterBo.setVisited(true);
 

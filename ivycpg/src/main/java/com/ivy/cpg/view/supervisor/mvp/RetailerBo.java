@@ -8,7 +8,9 @@ public class RetailerBo {
     private int retailerId,userId,visitedSequence,masterSequence,lastVisitedRetailer;
     private String retailerName,date,address,imgPath,userName;
     private double latitude,longitude,masterLatitude,masterLongitude;
-    private boolean isDeviated,isOrdered,isSkipped = false,isVisited = false;
+    private boolean isDeviated
+            ,isOrdered
+            ,isSkipped = false,isVisited = false;
     private long totalOrderValue,orderValue,timeIn,timeOut;
     private Marker marker;
 
