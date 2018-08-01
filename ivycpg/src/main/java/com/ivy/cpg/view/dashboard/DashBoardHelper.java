@@ -924,7 +924,7 @@ public class DashBoardHelper {
     // get a interval from DB
     public ArrayList<String> getDashList(boolean isRetailer) {
 
-        ArrayList<String> dashList = null;
+        ArrayList<String> dashList = new ArrayList<>();
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -937,7 +937,6 @@ public class DashBoardHelper {
                 sql = "select distinct interval from RetailerKPI where RetailerId="+bmodel.getRetailerMasterBO().getRetailerID();
             Cursor c = db.selectSQL(sql);
             if (c != null) {
-                dashList = new ArrayList<>();
                 while (c.moveToNext()) {
                     dashList.add(c.getString(0));
                 }
@@ -947,7 +946,7 @@ public class DashBoardHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
         return dashList;
     }

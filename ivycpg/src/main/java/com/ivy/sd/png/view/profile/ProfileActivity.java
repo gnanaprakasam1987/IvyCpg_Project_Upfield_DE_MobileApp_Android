@@ -1933,7 +1933,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             }
         });
-        alertDialog.show();
+        bmodel.applyAlertDialogTheme(alertDialog);
     }
 
     private boolean checkUserIsNearByRetailer(RetailerMasterBO ret) {
