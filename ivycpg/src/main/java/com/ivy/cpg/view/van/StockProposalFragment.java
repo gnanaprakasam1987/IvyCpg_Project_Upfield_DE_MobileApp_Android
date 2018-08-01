@@ -67,7 +67,7 @@ import static com.ivy.sd.png.asean.view.R.id.sihTitle;
 
 /**
  * Created by hanifa.m on 5/5/2017.
- * on
+ * on tha
  */
 
 public class StockProposalFragment extends IvyBaseFragment implements
