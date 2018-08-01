@@ -55,7 +55,7 @@ public class DeliveryManagementHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select invoiceno,invoicedate,invNetamount,linespercall from invoicemaster ");
+            sb.append("select invoiceno,invoicedate,invNetamount,linespercall from InvoiceDeliveryMaster ");
             sb.append(" where retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             sb.append(" and invoiceno not in(select vh.invoiceid from vandeliveryheader vh)");
             Cursor c = db.selectSQL(sb.toString());
