@@ -22,71 +22,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:id="@+id/tv_schemetype"
-                    style="?attr/customListItemPrimary"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/list_margin"
-                    android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="1.1"
-                    android:gravity="center"
-                    android:text="Status Inclusing Current Order" />
-
-                <TextView
-                    android:id="@+id/tv_current_cumulative_purchase"
-                    style="?attr/customListItemPrimary"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/list_margin"
-                    android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.2"
-                    android:gravity="center"
-                    android:text="0" />
-
-                <TextView
-                    android:id="@+id/tv_current_cumulative_scheme_discount"
-                    style="?attr/customListItemPrimary"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/list_margin"
-                    android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.2"
-                    android:gravity="center"
-                    android:text="0" />
-
-                <TextView
-                    android:id="@+id/tv_current_scheme_per_amt"
-                    style="?attr/customListItemPrimary"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/list_margin"
-                    android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.2"
-                    android:gravity="center"
-                    android:text="0" />
-
-                <TextView
-                    android:id="@+id/tv_current_balance_to_nextslab"
-                    style="?attr/customListItemPrimary"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/list_margin"
-                    android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.25"
-                    android:gravity="center"
-                    android:text="0" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:background="@color/black_bg1"
                 android:orientation="horizontal"
@@ -99,7 +34,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.90"
+                    android:layout_weight="0.8"
                     android:gravity="left|center_vertical"
                     android:paddingLeft="@dimen/dimen_5dp"
                     android:text="Product Name" />
@@ -122,7 +57,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.25"
+                    android:layout_weight="0.2"
                     android:gravity="center"
                     android:text="Ordered Qty(Cases)" />
 
@@ -155,9 +90,20 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.25"
+                    android:layout_weight="0.2"
                     android:gravity="center"
                     android:text="Final Qty(Cases)" />
+
+                <TextView
+                    android:id="@+id/tv_header_gqt"
+                    style="?attr/customListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/list_margin"
+                    android:layout_marginRight="@dimen/list_margin"
+                    android:layout_weight="0.2"
+                    android:gravity="center"
+                    android:text="GQT" />
 
             </LinearLayout>
 
@@ -178,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_weight="0.9"
+                android:layout_weight="0.8"
                 android:gravity="left"
                 android:paddingLeft="@dimen/dimen_5dp"
                 android:text="Product Name" />
@@ -201,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_weight="0.25"
+                android:layout_weight="0.2"
                 android:gravity="center"
                 android:text="0" />
 
@@ -234,7 +180,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_weight="0.25"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="0" />
+
+            <TextView
+                android:id="@+id/tv_gqt"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/list_margin"
+                android:layout_marginRight="@dimen/list_margin"
+                android:layout_weight="0.2"
                 android:gravity="center"
                 android:text="0" />
         </LinearLayout>

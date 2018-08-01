@@ -307,7 +307,7 @@ public class OrderHelper {
 
             // Save order details
             Vector<ProductMasterBO> finalProductList;
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,upsellingQty";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
             else
@@ -722,7 +722,7 @@ public class OrderHelper {
 
                 // Save order details
                 Vector<ProductMasterBO> finalProductList;
-                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount";
+                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,upsellingQty";
 
                 finalProductList = productList;
 
@@ -1277,6 +1277,7 @@ public class OrderHelper {
         sb.append("," + businessModel.QT(productBo.getHsnCode()));
         sb.append("," + totalValue);
         sb.append("," + productBo.getMRP());
+        sb.append("," + productBo.getIncreasedPcs());
 
         return sb;
 
@@ -2044,7 +2045,7 @@ public class OrderHelper {
 
             // Save invoice details table and update sih
             ProductMasterBO product;
-            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,RField1,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode,NetAmount";
+            String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty,RField1,d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice,PcsUOMId,OrderType,priceoffvalue,PriceOffId,weight,hasserial,schemeAmount,DiscountAmount,taxAmount,HsnCode,NetAmount,upsellingQty";
             int siz = businessModel.productHelper.getProductMaster().size();
             for (int i = 0; i < siz; ++i) {
                 product = businessModel.productHelper.getProductMaster()
@@ -2304,7 +2305,7 @@ public class OrderHelper {
             sb.append("," + taxAmount);
             sb.append("," + businessModel.QT(product.getHsnCode()));
             sb.append("," + totalValue);
-
+            sb.append("," + product.getIncreasedPcs());
             return sb;
         } catch (Exception e) {
             Commons.printException("" + e);

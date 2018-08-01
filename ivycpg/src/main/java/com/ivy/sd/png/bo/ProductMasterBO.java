@@ -1938,4 +1938,14 @@ public class ProductMasterBO {
     public void setSelectedUomPosition(int selectedUomPosition) {
         this.selectedUomPosition = selectedUomPosition;
     }
+
+    private int increasedPcs;
+
+    public int getIncreasedPcs() {
+        return increasedPcs;
+    }
+
+    public void setIncreasedPcs(int increasedPcs) {
+        this.increasedPcs = increasedPcs;
+    }
 }

@@ -695,4 +695,71 @@ public class SchemeBO {
         return isChecked;
     }
 
+    private double totalOrderQty;
+
+    public double getTotalOrderQty() {
+        return totalOrderQty;
+    }
+
+    public void setTotalOrderQty(double totalOrderQty) {
+        this.totalOrderQty = totalOrderQty;
+    }
+
+    private double totalPriceQty;
+
+    public double getTotalPriceQty() {
+        return totalPriceQty;
+    }
+
+    public void setTotalPriceQty(double totalPriceQty) {
+        this.totalPriceQty = totalPriceQty;
+    }
+
+    private boolean isCurrentSlab;
+
+    public boolean isCurrentSlab() {
+        return isCurrentSlab;
+    }
+
+    public void setCurrentSlab(boolean currentSlab) {
+        isCurrentSlab = currentSlab;
+    }
+
+    private boolean isNextSlab;
+
+    public boolean isNextSlab() {
+        return isNextSlab;
+    }
+
+    public void setNextSlab(boolean nextSlab) {
+        isNextSlab = nextSlab;
+    }
+
+    private double fromQty, toQty;
+
+    public double getFromQty() {
+        return fromQty;
+    }
+
+    public void setFromQty(double fromQty) {
+        this.fromQty = fromQty;
+    }
+
+    public double getToQty() {
+        return toQty;
+    }
+
+    public void setToQty(double toQty) {
+        this.toQty = toQty;
+    }
+
+    private boolean everyCaseUOM;
+
+    public boolean isEveryCaseUOM() {
+        return everyCaseUOM;
+    }
+
+    public void setEveryCaseUOM(boolean everyCaseUOM) {
+        this.everyCaseUOM = everyCaseUOM;
+    }
 }

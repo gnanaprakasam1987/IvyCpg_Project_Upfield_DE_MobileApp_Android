@@ -12,86 +12,204 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        android:background="#FFFFFF"
-        android:orientation="horizontal" android:weightSum="2">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_scheme"
-            style="?attr/customListItemPrimary"
-            android:layout_width="0dp"
-            android:layout_weight="0.6"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start|center"
-            android:padding="4dp"
-            android:text="Scheme Name"
-            android:textColor="@color/black_bg1" />
+            android:layout_margin="2dp"
+            android:background="#FFFFFF"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-        <TextView
-            android:id="@+id/tv_schemeduration"
-            style="?attr/customListItemPrimary"
-            android:layout_width="0dp"
-            android:layout_weight="0.2"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:layout_marginRight="@dimen/list_margin"
-            android:gravity="center"
-            android:text="Duration" />
+            <TextView
+                android:id="@+id/tv_scheme"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:gravity="start|center"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:text="Scheme Name"
+                android:textColor="@color/black_bg1" />
 
-        <TextView
-            android:id="@+id/tv_schemetype"
-            style="?attr/customListItemPrimary"
-            android:layout_width="0dp"
-            android:layout_weight="0.23"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:layout_marginRight="@dimen/list_margin"
-            android:gravity="center"
-            android:text="Type" />
+            <TextView
+                android:id="@+id/tv_schemeduration"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:gravity="center"
+                android:text="Duration" />
 
-        <TextView
-            android:id="@+id/tv_cumulative_purchase"
-            style="?attr/customListItemPrimary"
-            android:layout_width="0dp"
-            android:layout_weight="0.23"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:layout_marginRight="@dimen/list_margin"
-            android:gravity="center"
-            android:text="Cum.Percentage" />
+            <TextView
+                android:id="@+id/tv_schemetype"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:gravity="center"
+                android:text="Type" />
 
-        <TextView
-            android:id="@+id/tv_cumulative_scheme_discount"
-            style="?attr/customListItemPrimary"
-            android:layout_width="0dp"
-            android:layout_weight="0.23"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:layout_marginRight="@dimen/list_margin"
-            android:gravity="center"
-            android:text="Cur Slab Amt" />
+            <TextView
+                android:id="@+id/tv_cumulative_purchase"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:gravity="center"
+                android:text="Cumiulative Purchase" />
 
-        <TextView
-            android:id="@+id/tv_scheme_per_amt"
-            style="?attr/customListItemPrimary"
-            android:layout_width="0dp"
-            android:layout_weight="0.23"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:layout_marginRight="@dimen/list_margin"
-            android:gravity="center"
-            android:text="Cur Slab" />
+            <TextView
+                android:id="@+id/tv_curslab_sch_amt"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:gravity="center"
+                android:text="Cumulative Scheme discount" />
 
-        <TextView
-            android:id="@+id/tv_nextslab"
-            style="?attr/customListItemPrimary"
-            android:layout_width="0dp"
-            android:layout_weight="0.23"
+            <TextView
+                android:id="@+id/tv_curslab_rs_per"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:gravity="center"
+                android:text="Scheme per/amt" />
+
+            <TextView
+                android:id="@+id/tv_nextslab"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:gravity="center"
+                android:text="Balance to Next Slab" />
+
+            <TextView
+                android:id="@+id/tv_nextslab_sch_amt"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:gravity="center"
+                android:text="Next slab scheme amount" />
+
+            <TextView
+                android:id="@+id/tv_nextslab_rs_per"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:gravity="center"
+                android:text="Next slab scheme Per" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:layout_marginRight="@dimen/list_margin"
-            android:gravity="center"
-            android:text="Next Slab" />
+            android:layout_margin="2dp"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_schemetypeLabel"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:layout_weight="0.8"
+                android:gravity="left"
+                android:text="Status Including Current Order" />
+
+            <TextView
+                android:id="@+id/tv_current_cumulative_purchase"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="0" />
+
+            <TextView
+                android:id="@+id/tv_current_cumulative_scheme_discount"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="0" />
+
+            <TextView
+                android:id="@+id/tv_current_scheme_per_amt"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="0" />
+
+            <TextView
+                android:id="@+id/tv_current_balance_to_nextslab"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="0" />t
+
+            <TextView
+                android:id="@+id/tv_next_cumulative_scheme_discount"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="0" />
+
+            <TextView
+                android:id="@+id/tv_next_scheme_per_amt"
+                style="?attr/customListItemPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_2dp"
+                android:paddingRight="@dimen/dimen_2dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="0" />
+
+        </LinearLayout>
+
     </LinearLayout>
 </android.support.v7.widget.CardView>

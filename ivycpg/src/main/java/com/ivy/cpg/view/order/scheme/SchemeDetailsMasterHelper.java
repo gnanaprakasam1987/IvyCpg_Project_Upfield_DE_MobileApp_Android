@@ -438,7 +438,7 @@ public class SchemeDetailsMasterHelper {
             }
         }
         c.close();
-
+        loadParentSchemInfo(db);
 
     }
 
@@ -4839,6 +4839,52 @@ public class SchemeDetailsMasterHelper {
 
     }
 
+    ArrayList<ParentSchemeBO> parentSchemeList = new ArrayList<>();
+
+    public ArrayList<ParentSchemeBO> getParentSchemeList() {
+        return parentSchemeList;
+    }
+
+    public void setParentSchemeList(ArrayList<ParentSchemeBO> parentSchemeList) {
+        this.parentSchemeList = parentSchemeList;
+    }
+
+    public void loadParentSchemInfo(DBUtil db) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Select distinct SM.parentID, SM.shortName, SM.buyType from SchemeMaster SM");
+        Cursor c = db.selectSQL(sb.toString());
+
+        if (c.getCount() > 0) {
+            parentSchemeList = new ArrayList<>();
+            while (c.moveToNext()) {
+                ParentSchemeBO schemeBO = new ParentSchemeBO();
+                schemeBO.setSchemeID(c.getInt(0));
+                schemeBO.setSchemeDesc(c.getString(1));
+                schemeBO.setBuyType(c.getString(2));
+                schemeBO.setCumulativePurchase(0);
+                schemeBO.setCurSlabCumSchAmt(0);
+                schemeBO.setCurSlabrsorPer(0);
+                schemeBO.setNextSlabBalance(0);
+                schemeBO.setNextSlabCumSchAmt(0);
+                schemeBO.setNextSlabrsorPer(0);
+                parentSchemeList.add(schemeBO);
+            }
+        }
+        c.close();
+
+        setParentSchemeList(parentSchemeList);
+    }
+
+    public void resetSchemeQPSList() {
+        for(SchemeBO scheme : mSchemeList){
+            scheme.setFromQty(0);
+            scheme.setToQty(0);
+            scheme.setTotalOrderQty(0);
+            scheme.setCurrentSlab(false);
+            scheme.setNextSlab(false);
+        }
+    }
 
 }
 
