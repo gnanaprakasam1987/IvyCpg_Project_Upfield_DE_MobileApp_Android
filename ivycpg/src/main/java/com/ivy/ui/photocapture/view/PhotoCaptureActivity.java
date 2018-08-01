@@ -217,12 +217,6 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         setSupportActionBar(toolbar);
         toolBarTitleTxt.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
 
-        photoCapturePresenter.getTitleLabel();
-        if(!isNullOrEmpty(title))
-            toolBarTitleTxt.setText(title);
-        else
-            photoCapturePresenter.getTitleLabel();
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Used to remove the appLogo action bar icon and set title as home
         // (title support click)
@@ -230,6 +224,14 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         // Used to hide the appLogo icon from action bar
 
         getSupportActionBar().setIcon(null);
+
+        getSupportActionBar().setTitle(null);
+
+        photoCapturePresenter.getTitleLabel();
+        if(!isNullOrEmpty(title))
+            toolBarTitleTxt.setText(title);
+        else
+            photoCapturePresenter.getTitleLabel();
 
     }
 

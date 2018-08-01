@@ -186,6 +186,10 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
         return getDataManager().getRetailMaster().getRetailerID();
     }
 
+    /**
+     *
+     * @return <code>true</code> if PHOTOCAP05 is true
+     */
     @Override
     public boolean isImagePathChanged() {
         return mConfigurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE;
@@ -193,7 +197,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
 
     @Override
     public void updateLocalData(int productId, int typeId, int locationId, String imageName, String feedback, String productName, String typeName, String locationName) {
-        updateLocalData(productId,typeId,locationId,imageName,feedback,"","","","",productName,typeName,locationName);
+        updateLocalData(productId, typeId, locationId, imageName, feedback, "", "", "", "", productName, typeName, locationName);
     }
 
     @Override
@@ -252,6 +256,9 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
 
     }
 
+    /**
+     * @return <code>true<code/> if FUN52 is true
+     */
     @Override
     public boolean shouldNavigateToNextActivity() {
         return mConfigurationMasterHelper.IS_PRINT_FILE_SAVE;
@@ -397,11 +404,17 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
                 }));
     }
 
+    /**
+     * @return <code>true</code> if FUN23 is true
+     */
     @Override
     public boolean isGlobalLocation() {
         return mConfigurationMasterHelper.IS_GLOBAL_LOCATION;
     }
 
+    /**
+     * @return <code>true</code> if PHOTOCAP02 is true
+     */
     @Override
     public boolean isDateEnabled() {
         return mConfigurationMasterHelper.SHOW_DATE_BTN;
@@ -413,7 +426,6 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
         photoCaptureDataManager.tearDown();
         mOutletTimeStampDataManager.tearDown();
         labelsDataManager.tearDown();
-
         super.onDetach();
     }
 }
