@@ -3,7 +3,7 @@ package com.ivy.sd.png.bo;
 public class NonproductivereasonBO {
 
 	private String retailerid, retailerName, date, reasonid;
-	private String reasontype, collectionReasonID, collectionReasonType, moduleCode, imagePath="", imageName;
+	private String reasontype, collectionReasonID, collectionReasonType, moduleCode, imagePath="", imageName="";
 	private int beatId,distributorID;
 
 	public NonproductivereasonBO() {

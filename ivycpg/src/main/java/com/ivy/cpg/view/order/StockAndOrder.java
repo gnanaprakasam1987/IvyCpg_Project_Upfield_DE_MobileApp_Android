@@ -108,7 +108,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.MOQHighlightDialog;
@@ -155,7 +155,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private static final String BRAND = "Brand";
     private static final String GENERAL = "General";
 
-
+    // Selected spl filter will be maintained in this hasmap. This will max one record.
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
 
     private final String mSbd = "Filt02";
@@ -3993,10 +3993,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
-                if (isReturnDoneForUnOrderedProduct()) {
-                    Toast.makeText(StockAndOrder.this, getResources().getString(R.string.sales_return_allowed_only_for_ordered_products), Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 updatesalesReturnValue();
                 if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
                     if (!orderHelper.isPendingReplaceAmt()) {
@@ -5582,7 +5578,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mDrawerLayout.openDrawer(GravityCompat.END);
 
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -5591,12 +5587,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             Bundle bundle = new Bundle();
 
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "generalfilter");
             ft.commit();
@@ -5720,11 +5715,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     private void switchProfile() {
         final String switchToProfile = "com.motorolasolutions.emdk.datawedge.api.ACTION_SWITCHTOPROFILE";
         final String extraData = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PROFILENAME";
@@ -5733,193 +5723,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         i.setAction(switchToProfile);
         i.putExtra(extraData, "dist_stok");
         this.sendBroadcast(i);
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-        try {
-            // Close the drawer
-            mDrawerLayout.closeDrawers();
-            String generaltxt = generalbutton;
-            Vector<ProductMasterBO> items = productList;
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-            int siz = items.size();
-            mylist = new Vector<>();
-
-            for (int i = 0; i < siz; ++i) {
-                ProductMasterBO ret = items.elementAt(i);
-
-                if (ret.getBarCode().equals(strBarCodeSearch)
-                        || ret.getCasebarcode().equals(strBarCodeSearch)
-                        || ret.getOuterbarcode().equals(strBarCodeSearch)
-                        || "ALL".equals(strBarCodeSearch)) {
-                    if (loadStockedProduct == -1
-                            || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
-                            if (!mFilterId.isEmpty()) {
-                                if (mFilterId.contains(ret.getParentid()) || (mFilterId.contains(-1))) {
-                                    if (generaltxt.equals(GENERAL))//No special filters selected
-                                    {
-                                        if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                            if (strBarCodeSearch.equals(ret.getBarCode())) {
-                                                ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                            } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
-                                                ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                            } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
-                                                ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                            }
-                                        }
-                                        mylist.add(ret);
-                                    } else {
-                                        if (isSpecialFilterAppliedProduct(generaltxt, ret)) {  //special filter selected
-                                            if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                                if (strBarCodeSearch.equals(ret.getBarCode())) {
-                                                    ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                                } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
-                                                    ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                                } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
-                                                    ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                                }
-                                            }
-                                            mylist.add(ret);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!generaltxt.equals(GENERAL)) {
-                String strPname = getFilterName(generaltxt) + " ("
-                        + mylist.size() + ")";
-
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                    setScreenTitle(strPname);
-                }
-
-            } else {
-                String strPname = getResources().getString(
-                        R.string.product_name)
-                        + " (" + mylist.size() + ")";
-
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                    setScreenTitle(strPname);
-                }
-            }
-            if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
-                getProductBySequence();
-
-            // set the new list to listview
-            mSchedule = new MyAdapter(mylist);
-            lvwplist.setAdapter(mSchedule);
-
-            strBarCodeSearch = "ALL";
-            updateValue();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        try {
-            // Close the drawer
-            mDrawerLayout.closeDrawers();
-            String generaltxt = generalbutton;
-            Vector<ProductMasterBO> items = productList;
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-            int siz = items.size();
-            mylist = new Vector<>();
-            for (int i = 0; i < siz; ++i) {
-                ProductMasterBO ret = items.elementAt(i);
-
-                if (ret.getBarCode().equals(strBarCodeSearch)
-                        || ret.getCasebarcode().equals(strBarCodeSearch)
-                        || ret.getOuterbarcode().equals(strBarCodeSearch)
-                        || "ALL".equals(strBarCodeSearch)) {
-                    if (loadStockedProduct == -1
-                            || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
-                            if (mCategory != null) {
-                                if (!mCategory.isEmpty()) {
-                                    if (mCategory.contains(ret.getcParentid())
-                                            || (mCategory.contains(-1))) {
-
-                                        if (generaltxt.equals(GENERAL))//No special filters selected
-                                        {
-                                            if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                                if (strBarCodeSearch.equals(ret.getBarCode())) {
-                                                    ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                                } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
-                                                    ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                                } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
-                                                    ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                                }
-                                            }
-                                            mylist.add(ret);
-                                        } else {
-                                            if (isSpecialFilterAppliedProduct(generaltxt, ret)) { //special filter selected
-                                                if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                                    if (strBarCodeSearch.equals(ret.getBarCode())) {
-                                                        ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                                    } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
-                                                        ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                                    } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
-                                                        ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                                    }
-                                                }
-                                                mylist.add(ret);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            if (!generaltxt.equals(GENERAL)) {
-                String strPname = getFilterName(generaltxt) + " ("
-                        + mylist.size() + ")";
-
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                    setScreenTitle(strPname);
-                }
-
-            } else {
-                String strPname = getResources().getString(
-                        R.string.product_name)
-                        + " (" + mylist.size() + ")";
-
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                    setScreenTitle(strPname);
-                }
-            }
-            if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
-                getProductBySequence();
-            // set the new list to listview
-            mSchedule = new MyAdapter(mylist);
-            lvwplist.setAdapter(mSchedule);
-
-            strBarCodeSearch = "ALL";
-            updateValue();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
     }
 
     private boolean applyCommonFilterConfig(ProductMasterBO ret) {

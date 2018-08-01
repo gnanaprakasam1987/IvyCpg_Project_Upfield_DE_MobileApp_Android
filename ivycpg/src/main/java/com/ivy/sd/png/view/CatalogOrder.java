@@ -86,7 +86,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -120,6 +119,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private final String mNearExpiryTag = "Filt19";
     private final String mCompertior = "Filt23";
     private final String mDrugProducts = "Filt28";
+    private final String mSuggestedOrder = "Filt25";
     //public int mSelectedLocationIndex;
     private RecyclerViewAdapter adapter;
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
@@ -690,16 +690,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     }
 
-    @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mcatgory) {
-
-    }
-
     private int checkStockValidation() {
         int flag;
 
@@ -853,7 +843,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
                 || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
                 || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
-                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)) {
+                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)
+                || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0)) {
             return true;
         }
         return false;
@@ -943,11 +934,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     @Override
     public void updateCancel() {
         mDrawerLayout.closeDrawers();
-    }
-
-    @Override
-    public void loadStartVisit() {
-
     }
 
     @Override
@@ -1192,7 +1178,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             mDrawerLayout.openDrawer(GravityCompat.END);
 
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -1201,12 +1187,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             Bundle bundle = new Bundle();
 
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "generalfilter");
             ft.commit();

@@ -53,8 +53,6 @@
     <dimen name="spinner_width">240dp</dimen>
 
     <!-- Order Summary Screen -->
-    <dimen name="sku_text_product_name">460dp</dimen>
-    <dimen name="sku_text_qty">140dp</dimen>
 
     <!-- Visit List Item Screen -->
     <dimen name="visit_lst_img_width">28dp</dimen>
@@ -154,7 +152,6 @@
 
     <!-- sku wise target -->asset_qty
 
-    <dimen name="crown_header_height">30dp</dimen>
     <dimen name="crown_list_title_height">55dp</dimen>
 
 
@@ -175,7 +172,6 @@
     <dimen name="mvprankpaddingright">3dp</dimen>
 
     <dimen name="mvp_field_margin">10dp</dimen>
-    <dimen name="dashreportnamewidth">137dp</dimen>
     <dimen name="homescreenlist_view_width">500dp</dimen>
 
 

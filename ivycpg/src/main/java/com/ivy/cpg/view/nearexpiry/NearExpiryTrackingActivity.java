@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
@@ -16,8 +15,6 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 public class NearExpiryTrackingActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface,FiveLevelFilterCallBack {
@@ -105,28 +102,4 @@ public class NearExpiryTrackingActivity extends IvyBaseActivityNoActionBar imple
         }
     }
 
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        NearExpiryTrackingFragment fragment = (NearExpiryTrackingFragment) fm
-                .findFragmentById(R.id.nearexpiry_tracking_fragment);
-        fragment.updateMultiSelectionBrand(mFilterName, mFilterId);
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        NearExpiryTrackingFragment fragment = (NearExpiryTrackingFragment) fm
-                .findFragmentById(R.id.nearexpiry_tracking_fragment);
-        fragment.updateMultiSelectionCategory(mCategory);
-    }
-
-    @Override
-    public void loadStartVisit() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        NearExpiryTrackingFragment fragment = (NearExpiryTrackingFragment) fm
-                .findFragmentById(R.id.nearexpiry_tracking_fragment);
-        fragment.loadStartVisit();
-    }
 }

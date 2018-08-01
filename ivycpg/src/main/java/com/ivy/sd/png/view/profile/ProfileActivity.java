@@ -195,7 +195,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private String ASSET_HISTORY = "";
     private String TASK = "";
     private String SALES_PER_LEVEL = "";
-    private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "";
+    private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "",retailer_contact_title;
 
     private Timer mLocTimer;
     private LocationFetchTimer timerTask;
@@ -402,6 +402,21 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         } catch (Exception ex) {
             Commons.printException("Error while setting label for Profile Tab", ex);
         }
+        if (bmodel.configurationMasterHelper.SHOW_RETAILER_CONTACT) {
+            try {
+                if ((bmodel.labelsMasterHelper.applyLabels("retailer_contact") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("retailer_contact").length() > 0)) {
+                    retailer_contact_title = bmodel.labelsMasterHelper.applyLabels("retailer_contact");
+                    tabLayout.addTab(tabLayout.newTab()
+                            .setText(retailer_contact_title));
+                } else {
+                    retailer_contact_title = "Contacts";
+                    tabLayout.addTab(tabLayout.newTab().setText(retailer_contact_title));
+                }
+            } catch (Exception ex) {
+                Commons.printException("Error while setting label for Msl Tab", ex);
+            }
+        }
         if (bmodel.configurationMasterHelper.SHOW_HISTORY) {
             try {
                 bmodel.configurationMasterHelper.loadProfileHistoryConfiguration();
@@ -564,6 +579,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.SHOW_SBD_GAP_IN_PROFILE) {
             tabLayout.addTab(tabLayout.newTab().setText("SBD Gap"));
         }
+
+
 
         View root = tabLayout.getChildAt(0);
         if (root instanceof LinearLayout) {
@@ -1360,6 +1377,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 return new DsitributorProfileFragment();
             } else if (tabName.equalsIgnoreCase("SBD Gap")) {
                 return new SBDGapFragment();
+            }else if (tabName.equals(retailer_contact_title)) {
+                return new RetailerContactFragment();
             }
             return null;
         }

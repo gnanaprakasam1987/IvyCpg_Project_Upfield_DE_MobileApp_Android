@@ -29,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
@@ -40,7 +39,6 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack {
@@ -439,17 +437,6 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int id) {
         bmodel.mEmptyReturnHelper.mSelectedFilter = id;
         mDrawerLayout.closeDrawers();
@@ -465,11 +452,6 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     @Override
     public void updateCancel() {
         mDrawerLayout.closeDrawers();
-    }
-
-    @Override
-    public void loadStartVisit() {
-
     }
 
     @Override

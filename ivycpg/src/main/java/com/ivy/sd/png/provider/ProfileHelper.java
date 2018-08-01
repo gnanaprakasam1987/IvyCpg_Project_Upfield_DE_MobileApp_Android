@@ -14,6 +14,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.bo.PlanningOutletBO;
+import com.ivy.sd.png.bo.RetailerContractBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.asset.AssetHistoryBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -22,14 +23,19 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 import static com.ivy.lib.Utils.QT;
 
@@ -423,7 +429,7 @@ public class ProfileHelper {
                     .selectSQL("SELECT Distinct PIH.Retailerid,RetailerCode,PIH.refid,PIH.invoicedate,PIH.invoicevalue,lpc,Flag,PIH.PaidAmount," +
                             "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,PID.uomid, PID.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,PIH.invoiceid,IM .RField1,IM.RField2,IM.RField3,IM.RField4,PIH.orderNo" +
                             " FROM P4InvoiceHistoryMaster PIH left join P4InvoiceHistoryDetail PID ON PID.refid=PIH.refid" +
-                            " left join object1 PM ON PM.pid=PID.productid" +
+                            " left join ProductMaster PM ON PM.pid=PID.productid" +
                             " left join StandardListMaster rm on PIH.reasonid =  rm.ListId" +
                             " left join InvoiceMaster IM ON  PIH.invoiceid =  IM.InvoiceNo where PIH.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID());
             if (c != null) {
@@ -982,5 +988,77 @@ public class ProfileHelper {
         }
         db.closeDB();
         return givenLovId;
+    }
+
+    public Single<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID){
+        return Single.fromCallable(new Callable<ArrayList<RetailerContactBo>>() {
+            @Override
+            public ArrayList<RetailerContactBo> call() throws Exception {
+                ArrayList<RetailerContactBo> contactList = new ArrayList<>();
+                try {
+                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,"
+                            + " RC.contactname as cName,RC.contactname_LName as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
+                            + " ifnull(RC.Email,'') as email from RetailerContact RC "
+                            + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
+                            + " Where RC.RetailerId =" + bmodel.QT(retailerID);
+
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    Cursor c = db.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            RetailerContactBo retailerContactBo = new RetailerContactBo();
+                            if (c.getString(c.getColumnIndex("contactTitle")).length() > 0)
+                                retailerContactBo.setTitle(c.getString(c.getColumnIndex("contactTitle")));
+                            else
+                                retailerContactBo.setTitle(c.getString(c.getColumnIndex("listName")));
+                            retailerContactBo.setFistname(c.getString(c.getColumnIndex("cName")));
+                            retailerContactBo.setLastname(c.getString(c.getColumnIndex("cLname")));
+                            retailerContactBo.setContactNumber(c.getString(c.getColumnIndex("cNumber")));
+                            retailerContactBo.setContactMail(c.getString(c.getColumnIndex("email")));
+                            retailerContactBo.setIsPrimary(c.getInt(c.getColumnIndex("isPrimary")));
+                            contactList.add(retailerContactBo);
+                        }
+                        c.close();
+                    }
+                    db.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                    contactList = new ArrayList<>();
+                }
+                return contactList;
+            }
+        });
+    }
+
+
+    public Single<HashMap<String,String>> downloadRetailerContactMenu(){
+        return Single.fromCallable(new Callable<HashMap<String,String>>() {
+            @Override
+            public HashMap<String,String> call() throws Exception {
+                HashMap<String, String> contactMenuMap = new HashMap<>();
+
+                try {
+                    String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + bmodel.QT("RETAILER_CONTACT") + " and flag =1";
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    Cursor c = db.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            contactMenuMap.put(c.getString(0), c.getString(1));
+                        }
+                        c.close();
+                    }
+                    db.closeDB();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                    contactMenuMap = new HashMap<>();
+                }
+                return contactMenuMap;
+
+            }
+        });
     }
 }

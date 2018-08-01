@@ -569,7 +569,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 if (productBO.getOrderedCaseQty() > 0
                         || productBO.getOrderedPcsQty() > 0
-                        || productBO.getOrderedOuterQty() > 0) {
+                        || productBO.getOrderedOuterQty() > 0
+                        || (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))) {
 
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
@@ -737,6 +738,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (remReturnValue > 0) {
                     double creditNoteAmt = orderHelper.getCreditNoteValue(OrderSummary.this, remReturnValue);
                     text_creditNote.setText(getResources().getString(R.string.credit_note) + " : " + bModel.formatValue(creditNoteAmt));
+                    text_creditNote.setVisibility(View.VISIBLE);
                 } else
                     text_creditNote.setVisibility(View.GONE);
             } else
@@ -1339,7 +1341,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         finish();
                                     }
                                 })
-                        .setPositiveButton(
+                        .setPositiveButton(bModel.labelsMasterHelper
+                                        .applyLabels((Object) "Ord_Sum_Print_Order") != null ? bModel.labelsMasterHelper
+                                        .applyLabels((Object) "Ord_Sum_Print_Order") :
                                 getResources().getString(R.string.print_order),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
@@ -3476,6 +3480,25 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         });
         commonDialog.show();
         commonDialog.setCancelable(false);
+    }
+
+    private boolean isReturnDoneForProduct(ProductMasterBO productMasterBO) {
+        try {
+            for (SalesReturnReasonBO bo : productMasterBO.getSalesReturnReasonList()) {
+                if (bo.getPieceQty() != 0 || bo.getCaseQty() != 0
+                        || bo.getOuterQty() > 0)
+                    return true;
+
+            }
+
+            if (productMasterBO.getRepPieceQty() > 0
+                    || productMasterBO.getRepOuterQty() > 0 || productMasterBO.getRepCaseQty() > 0)
+                return true;
+
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        return false;
     }
 
 }

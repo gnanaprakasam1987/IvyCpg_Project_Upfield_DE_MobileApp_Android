@@ -321,6 +321,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_TYPE_DIALOG = "ORDB39";
     private static final String CODE_SHOW_LAST_3MONTHS_SALES = "PRO22";
     private static final String CODE_MSL_NOT_SOLD = "PRO24";
+    private static final String CODE_RETAILER_CONTACT = "PRO28";
     private static final String CODE_NORMAL_DASHBOARD = "DASH13";
     private static final String CODE_SHOW_NEARBY_RETAILER_MAX = "NEARBYMAX";
 
@@ -376,7 +377,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FIT_SCORE = "FITDASH";
     public boolean IS_FITSCORE_NEEDED;
 
-    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD, SHOW_NOR_DASHBOARD;
+    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD, SHOW_NOR_DASHBOARD,SHOW_RETAILER_CONTACT;
     private static final String CODE_SHOW_COLLECTION_PRINT = "COLL12";
     public boolean SHOW_COLLECTION_PRINT;
     public int MAX_NO_OF_PRODUCT_LINES = 1;
@@ -464,6 +465,8 @@ public class ConfigurationMasterHelper {
     private boolean LOAD_COMP_CONFIGS;
     public boolean SHOW_TIME_VIEW;
     public boolean SHOW_SPINNER;
+    public boolean SHOW_COMP_QTY;
+    public boolean SHOW_COMP_FEEDBACK;
 
     private static final String CODE_SHOW_JOINT_CALL_REMARKS = "JC_REMARK";
     public boolean IS_SHOW_JOINT_CALL_REMARKS;
@@ -1306,6 +1309,11 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STORE_VISITED_COUNT;
     private static final String CODE_SHOW_STORE_VISITED = "FUN55";
 
+
+    //cpg132-task 13
+    public boolean SHOW_TOTAL_ACHIEVED_VOLUME = true;
+    private static final String SHOW_TOTAL_ACHIEVEDVOLUME = "FUN70";
+
     public static final String CODE_TAX_MODEL = "TAX_MODEL";
     public boolean IS_GST;
     public boolean IS_GST_MASTER;
@@ -1469,6 +1477,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_GST_TAX_LOCATION_TYPE = "TAX_LOCATION_TYPE";
     public boolean IS_TAX_LOC;
+
+    private static final String CODE_CHECK_PHOTO_MANDATORY = "FUN71";
+    public boolean IS_CHECK_PHOTO_MANDATORY;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2161,6 +2172,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_ORDER_FOCUS_COUNT = hashMapHHTModuleConfig.get(CODE_SHOW_ORDER_FOCUS_COUNT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ORDER_FOCUS_COUNT) : false;
         this.SHOW_LAST_3MONTHS_BILLS = hashMapHHTModuleConfig.get(CODE_SHOW_LAST_3MONTHS_SALES) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_LAST_3MONTHS_SALES) : false;
         this.SHOW_MSL_NOT_SOLD = hashMapHHTModuleConfig.get(CODE_MSL_NOT_SOLD) != null ? hashMapHHTModuleConfig.get(CODE_MSL_NOT_SOLD) : false;
+        this.SHOW_RETAILER_CONTACT = hashMapHHTModuleConfig.get(CODE_RETAILER_CONTACT) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_CONTACT) : false;
         this.SHOW_NOR_DASHBOARD = hashMapHHTModuleConfig.get(CODE_NORMAL_DASHBOARD) != null ? hashMapHHTModuleConfig.get(CODE_NORMAL_DASHBOARD) : false;
         this.SHOW_COLLECTION_PRINT = hashMapHHTModuleConfig.get(CODE_SHOW_COLLECTION_PRINT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COLLECTION_PRINT) : false;
         this.SHOW_NETAMOUNT_IN_REPORT = hashMapHHTModuleConfig.get(CODE_NETAMOUNT_IN_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_NETAMOUNT_IN_REPORT) : false;
@@ -2403,6 +2415,8 @@ public class ConfigurationMasterHelper {
         this.SHOW_TOTAL_QTY_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) : false;
         this.SHOW_STORE_VISITED_COUNT = hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) : false;
 
+        this.SHOW_TOTAL_ACHIEVED_VOLUME = hashMapHHTModuleConfig.get(SHOW_TOTAL_ACHIEVEDVOLUME) != null ? hashMapHHTModuleConfig.get(SHOW_TOTAL_ACHIEVEDVOLUME) : false;
+
         this.IS_PROFILE_IMAGE = hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_TAX_MODEL) != null) {
@@ -2579,6 +2593,8 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_GST_TAX_LOCATION_TYPE) != null) {
             getLocationTaxGSTModel(CODE_GST_TAX_LOCATION_TYPE);
         }
+
+        this.IS_CHECK_PHOTO_MANDATORY = hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) : false;
 
     }
 
@@ -3324,6 +3340,8 @@ public class ConfigurationMasterHelper {
         try {
             SHOW_TIME_VIEW = false;
             SHOW_SPINNER = false;
+            SHOW_COMP_QTY = false;
+            SHOW_COMP_FEEDBACK = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3349,6 +3367,12 @@ public class ConfigurationMasterHelper {
                             break;
                         case "RSN":
                             SHOW_SPINNER = true;
+                            break;
+                        case "QTY":
+                            SHOW_COMP_QTY = true;
+                            break;
+                        case "FEEDBACK":
+                            SHOW_COMP_FEEDBACK = true;
                             break;
                     }
 

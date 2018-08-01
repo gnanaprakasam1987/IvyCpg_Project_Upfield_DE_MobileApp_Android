@@ -486,20 +486,6 @@
                         android:dividerHeight="1dp"
                         android:fitsSystemWindows="true" />
 
-                    <ExpandableListView
-                        android:id="@+id/expand_lvwplist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/ListHeader"
-                        android:cacheColorHint="@null"
-                        android:childDivider="@android:color/white"
-                        android:childIndicator="@null"
-                        android:divider="@android:color/transparent"
-                        android:dividerHeight="1dp"
-                        android:fitsSystemWindows="true"
-                        android:groupIndicator="@null"
-                        android:visibility="gone"/>
-
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -507,7 +493,7 @@
 
     <FrameLayout
         android:id="@+id/right_drawer"
-        android:layout_width="@dimen/filter_slider_width"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@drawable/background_noise" />

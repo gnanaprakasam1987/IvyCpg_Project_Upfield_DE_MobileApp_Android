@@ -46,7 +46,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SOSKUBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -58,7 +57,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
@@ -879,11 +877,6 @@ public class SOSKUFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawers();
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     /**
      * Open Dialog with Competitor to Get Actual Values and Calculate Total
      * Value
@@ -1226,17 +1219,6 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
     }
 
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
 
     private ActionBar getActionBar() {
         return ((AppCompatActivity) getActivity()).getSupportActionBar();

@@ -212,7 +212,7 @@ public class OrderHelper {
 
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath";
+                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath,totalamount";
 
             String printFilePath = "";
             if (businessModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
@@ -295,7 +295,8 @@ public class OrderHelper {
                     + "," + businessModel.QT(businessModel.getRField2()) + "," + businessModel.QT(SDUtil.now(SDUtil.TIME))
                     + "," + businessModel.QT(businessModel.getRemarkType()) + "," + businessModel.QT(businessModel.getRField3())
                     + "," + businessModel.QT(businessModel.getOrderHeaderBO().getOrderImageName())
-                    + "," + businessModel.QT(orderImagePath);
+                    + "," + businessModel.QT(orderImagePath)
+                    + "," + getOrderTotalValue();
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -1636,6 +1637,8 @@ public class OrderHelper {
                     c.close();
                 }
             }
+            if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                SalesReturnHelper.getInstance(mContext).loadSalesReturnData(mContext, "ORDER", orderID);
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1794,7 +1797,7 @@ public class OrderHelper {
 
             // Save invoice header
             businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
-            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3";
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,totalamount";
             StringBuilder sb = new StringBuilder();
             sb.append(businessModel.QT(invoiceId) + ",");
             sb.append(businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -1870,6 +1873,7 @@ public class OrderHelper {
             sb.append("," + businessModel.QT(businessModel.getRField1()));
             sb.append("," + businessModel.QT(businessModel.getRField2()));
             sb.append("," + businessModel.QT(businessModel.getRField3()));
+            sb.append("," + getInvoiceTotalValue());
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());
@@ -3488,5 +3492,108 @@ public class OrderHelper {
 
         return creditNoteAmt;
 
+    }
+
+    /*To get invoice total value without applying tax and discount*/
+    private double getInvoiceTotalValue() {
+        double line_total_price = 0;
+
+        int siz = businessModel.productHelper.getProductMaster().size();
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO product = businessModel.productHelper.getProductMaster()
+                    .elementAt(i);
+
+            if ((product.getOrderedPcsQty() > 0
+                    || product.getOrderedCaseQty() > 0 || product
+                    .getOrderedOuterQty() > 0)) {
+
+
+                if (product.getBatchwiseProductCount() == 0 || !businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+
+                    line_total_price += (product.getOrderedCaseQty() * product.getCsrp())
+                            + (product.getOrderedPcsQty() * product.getSrp())
+                            + (product.getOrderedOuterQty() * product.getOsrp());
+
+                } else {
+
+                    ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper
+                            .getBatchlistByProductID().get(
+                                    product.getProductID());
+
+                    if (batchList != null) {
+                        for (ProductMasterBO batchWiseProductBO : batchList) {
+                            if (batchWiseProductBO.getOrderedPcsQty() > 0
+                                    || batchWiseProductBO
+                                    .getOrderedCaseQty() > 0
+                                    || batchWiseProductBO
+                                    .getOrderedOuterQty() > 0) {
+                                line_total_price += (batchWiseProductBO.getOrderedCaseQty() * batchWiseProductBO.getCsrp())
+                                        + (batchWiseProductBO.getOrderedPcsQty() * batchWiseProductBO.getSrp())
+                                        + (batchWiseProductBO.getOrderedOuterQty() * batchWiseProductBO.getOsrp());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return line_total_price;
+    }
+
+    /*To get ordered product total value without applying tax and discount*/
+    private double getOrderTotalValue() {
+        double line_total_price = 0;
+
+        // Save order details
+        Vector<ProductMasterBO> finalProductList;
+        if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
+            finalProductList = mSortedOrderedProducts;
+        else
+            finalProductList = businessModel.productHelper.getProductMaster();
+
+        for (int i = 0; i < finalProductList.size(); ++i) {
+            ProductMasterBO product = finalProductList.elementAt(i);
+
+            if (product.getOrderedPcsQty() > 0
+                    || product.getOrderedCaseQty() > 0
+                    || product.getOrderedOuterQty() > 0) {
+
+                if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                        && businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                    if (product.getBatchwiseProductCount() > 0) {
+                        ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper
+                                .getBatchlistByProductID().get(
+                                        product.getProductID());
+                        if (batchList != null) {
+                            for (ProductMasterBO batchProductBO : batchList) {
+                                if (batchProductBO.getOrderedPcsQty() > 0
+                                        || batchProductBO
+                                        .getOrderedCaseQty() > 0
+                                        || batchProductBO
+                                        .getOrderedOuterQty() > 0) {
+                                    line_total_price += (batchProductBO.getOrderedCaseQty() * batchProductBO
+                                            .getCsrp())
+                                            + (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
+                                            + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
+                                }
+                            }
+                        }
+                    } else {
+                        line_total_price += (product.getOrderedCaseQty() * product
+                                .getCsrp())
+                                + (product.getOrderedPcsQty() * product.getSrp())
+                                + (product.getOrderedOuterQty() * product.getOsrp());
+                    }
+
+                } else {
+                    line_total_price += (product.getOrderedCaseQty() * product
+                            .getCsrp())
+                            + (product.getOrderedPcsQty() * product.getSrp())
+                            + (product.getOrderedOuterQty() * product.getOsrp());
+                }
+
+            }
+
+        }
+        return line_total_price;
     }
 }

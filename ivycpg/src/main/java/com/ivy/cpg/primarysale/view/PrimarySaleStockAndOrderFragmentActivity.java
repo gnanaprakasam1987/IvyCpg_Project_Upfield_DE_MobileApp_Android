@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
@@ -15,8 +14,6 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by vinodh.r on 28-09-2015.
@@ -86,16 +83,6 @@ public class PrimarySaleStockAndOrderFragmentActivity extends IvyBaseActivityNoA
 
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int id) {
 
     }
@@ -107,11 +94,6 @@ public class PrimarySaleStockAndOrderFragmentActivity extends IvyBaseActivityNoA
 
     @Override
     public void updateCancel() {
-
-    }
-
-    @Override
-    public void loadStartVisit() {
 
     }
 

@@ -25,7 +25,7 @@ import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
 import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
 import com.ivy.cpg.view.reports.retailerProperty.RetailerPropertyReportFragment;
 import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
-import com.ivy.cpg.view.reports.salesreport.SalesReportFragment;
+import com.ivy.cpg.view.reports.salesreturnreport.SalesReturnReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -69,7 +69,6 @@ import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 public class ReportActivity extends BaseActivity implements
@@ -572,8 +571,8 @@ public class ReportActivity extends BaseActivity implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_INV_SALES_RETURN_REPORT)) {
 
-            SalesReportFragment salesReportFragment = new SalesReportFragment();
-            transaction.replace(R.id.fragment_content, salesReportFragment);
+            SalesReturnReportFragment salesReturnReportFragment = new SalesReturnReportFragment();
+            transaction.replace(R.id.fragment_content, salesReturnReportFragment);
             commitFragment(transaction, config);
         }
     }
@@ -595,16 +594,6 @@ public class ReportActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
     }
 
     @Override
@@ -636,11 +625,6 @@ public class ReportActivity extends BaseActivity implements
 
     @Override
     public void updateCancel() {
-
-    }
-
-    @Override
-    public void loadStartVisit() {
 
     }
 

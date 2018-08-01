@@ -12,14 +12,12 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -50,7 +48,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.VisitConfiguration;
@@ -76,7 +73,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
 
@@ -113,7 +109,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private AutoCompleteTextView mBrandAutoCompleteTV;
     private MapViewListener mapViewListener;
     private boolean isFromPlanning = false;
-    private boolean isFromPlanningSub=false;
+    private boolean isFromPlanningSub = false;
 
     private ArrayList<StandardListBO> mRetailerSelectionList;
 
@@ -205,11 +201,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),PlanningActivity.class);
-                if(isFromPlanning)
-                    intent.putExtra("From",MENU_PLANNING);
-                else if(isFromPlanningSub)
-                    intent.putExtra("From",MENU_PLANNING_SUB);
+                Intent intent = new Intent(getActivity(), PlanningActivity.class);
+                if (isFromPlanning)
+                    intent.putExtra("From", MENU_PLANNING);
+                else if (isFromPlanningSub)
+                    intent.putExtra("From", MENU_PLANNING_SUB);
                 startActivityForResult(intent, PROFILE_REQUEST_CODE);
             }
         });
@@ -225,8 +221,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         crossLine.setRotation(-5);
 
         if (getArguments() != null) {
-            isFromPlanning = getArguments().getBoolean("isPlanning",false);
-            isFromPlanningSub=getArguments().getBoolean("isPlanningSub",false);
+            isFromPlanning = getArguments().getBoolean("isPlanning", false);
+            isFromPlanningSub = getArguments().getBoolean("isPlanningSub", false);
         }
 
 
@@ -460,6 +456,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 .applyLabels(view.findViewById(
                                         R.id.label_TodayTgt)
                                         .getTag()));
+
+
+            if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
+                lbl_TodayTgt.setText(getString(R.string.total_vol));
+            }
+
+
         } catch (Exception e) {
             Commons.printException(e);
             if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
@@ -702,8 +705,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             Commons.printException("" + e);
         }
 
+
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
             tv_target.setText(String.valueOf(getStoreVisited()));
+
+            //cpg132-task13
+        else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
+            tv_target.setText(String.valueOf(getTotalVolume()));
         else
             tv_target.setText(getTotalVisitActual());
 
@@ -1033,24 +1041,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
     }
 
     private void updateRetailerAttributes() {
@@ -1320,7 +1312,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 bmodel.setVisitretailerMaster(startVistitRetailers);
                                 startVisit = calledBy.equals(MENU_PLANNING);
 
-                                if (!profileClick) {
+                                if (!profileClick && !holder.retailerObjectHolder.getIsNew().equals("Y")) {
                                     profileClick = true;
                                     if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                                         bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
@@ -1330,7 +1322,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                     if (isFromPlanning) {
                                         i.putExtra("From", MENU_PLANNING);
                                         i.putExtra("isPlanning", true);
-                                    }else if(isFromPlanningSub){
+                                    } else if (isFromPlanningSub) {
                                         i.putExtra("From", MENU_PLANNING_SUB);
                                         i.putExtra("isPlanningSub", true);
                                     } else {
@@ -1359,7 +1351,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                             bmodel.setVisitretailerMaster(startVistitRetailers);
                             startVisit = calledBy.equals(MENU_PLANNING);
 
-                            if (!profileClick) {
+                            if (!profileClick && !holder.retailerObjectHolder.getIsNew().equals("Y")) {
                                 profileClick = true;
                                 if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
                                     bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
@@ -1369,7 +1361,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 if (isFromPlanning) {
                                     i.putExtra("From", MENU_PLANNING);
                                     i.putExtra("isPlanning", true);
-                                }else if(isFromPlanningSub){
+                                } else if (isFromPlanningSub) {
                                     i.putExtra("From", MENU_PLANNING_SUB);
                                     i.putExtra("isPlanningSub", true);
                                 } else {
@@ -1819,7 +1811,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     }
 
     @SuppressLint("ValidFragment")
-    public  class CustomFragment extends DialogFragment {
+    public class CustomFragment extends DialogFragment {
         private String mTitle = "";
 
 
@@ -1913,6 +1905,104 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
         return count;
     }
+
+    private String getTotalVolume() {
+        tv_target.setTextSize(14);
+        DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        int pcQty = 0;
+        int caseQty = 0;
+        int outQty = 0;
+        try {
+
+            Cursor c = db.selectSQL("select sum (pieceqty) from OrderDetail");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    pcQty = c.getInt(0);
+
+                }
+                c.close();
+            }
+
+
+            Cursor c1 = db.selectSQL("select sum (caseQty) from OrderDetail");
+
+            if (c1 != null) {
+                if (c1.moveToNext()) {
+                    caseQty = c1.getInt(0);
+                }
+                c1.close();
+            }
+
+
+            Cursor c2 = db.selectSQL("select sum (outerQty) from OrderDetail");
+            if (c2 != null) {
+                if (c2.moveToNext()) {
+                    outQty = c2.getInt(0);
+                }
+                c2.close();
+            }
+
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        db.closeDB();
+
+
+        try {
+
+            StringBuilder sb = new StringBuilder();
+            String op = getString(R.string.item_piece);
+            String oc = getString(R.string.item_case);
+            String ou = getString(R.string.item_outer);
+
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("item_piece") != null)
+                op = bmodel.labelsMasterHelper
+                        .applyLabels("item_piece");
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("item_case") != null)
+                oc = bmodel.labelsMasterHelper
+                        .applyLabels("item_case");
+
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("item_outer") != null)
+                ou = bmodel.labelsMasterHelper
+                        .applyLabels("item_outer");
+
+
+            bmodel.configurationMasterHelper.SHOW_ORDER_PCS = true;
+            if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+
+                sb.append(op + " " + pcQty);
+            }
+
+            bmodel.configurationMasterHelper.SHOW_ORDER_CASE = true;
+            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    sb.append(" : " + oc + " " + (caseQty));
+                else
+                    sb.append(caseQty + " " + oc + " ");
+            }
+            bmodel.configurationMasterHelper.SHOW_OUTER_CASE = true;
+            if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS || bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    sb.append(" : " + ou + " " + outQty);
+                else
+                    sb.append(ou + " " + outQty);
+            }
+
+            return sb.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
 
     public interface MapViewListener {
         void switchMapView();
@@ -2018,7 +2108,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                             if (isFromPlanning) {
                                 i.putExtra("From", MENU_PLANNING);
                                 i.putExtra("isPlanning", true);
-                            }else if(isFromPlanningSub){
+                            } else if (isFromPlanningSub) {
                                 i.putExtra("From", MENU_PLANNING_SUB);
                                 i.putExtra("isPlanningSub", true);
                             } else {
