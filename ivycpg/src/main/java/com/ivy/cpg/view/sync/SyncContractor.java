@@ -34,7 +34,7 @@ public interface SyncContractor {
 
         void updateIsWithImageStatus(boolean isWithImage);
 
-        void validateAndUpload();
+        void validateAndUpload(boolean isDayCloseChecked);
 
         void upload();
 
