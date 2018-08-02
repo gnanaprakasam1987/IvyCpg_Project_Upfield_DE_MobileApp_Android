@@ -8,15 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -26,9 +21,11 @@ import com.ivy.utils.rx.AppSchedulerProvider;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by mansoor.k on 30-07-2018.
@@ -64,37 +61,67 @@ public class RetailerContactFragment extends IvyBaseFragment {
     private void initializeViews() {
         appSchedulerProvider = new AppSchedulerProvider();
 
-        new CompositeDisposable().add(bmodel.profilehelper.downloadRetailerContactMenu()
+        new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContactMenu()
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
-                .subscribe(new Consumer<HashMap<String, String>>() {
-                    @Override
-                    public void accept(HashMap<String, String> menuMap) throws Exception {
-                        contactMenuMap = menuMap;
-                        if (contactMenuMap.size() > 0)
-                            getDataToPopulate();
-                        else
-                            Toast.makeText(getActivity(), getString(R.string.retailer_contact_menu), Toast.LENGTH_SHORT).show();
-                    }
-                }));
+                .subscribeWith(getHashMapObserver()));
 
+    }
+
+    private Observer<HashMap<String, String>> getHashMapObserver() {
+        return new DisposableObserver<HashMap<String, String>>() {
+            @Override
+            public void onNext(HashMap<String, String> menuMap) {
+                contactMenuMap = menuMap;
+                if (contactMenuMap.size() > 0)
+                    getDataToPopulate();
+                else
+                    Toast.makeText(getActivity(), getString(R.string.retailer_contact_menu), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
     }
 
     private void getDataToPopulate() {
-        new CompositeDisposable().add( bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID())
+        new CompositeDisposable().add((Disposable)bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID())
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
-                .subscribe(new Consumer<ArrayList<RetailerContactBo>>() {
-                    @Override
-                    public void accept(ArrayList<RetailerContactBo> contactList) throws Exception {
-                        retailerContactList = contactList;
-                        if (retailerContactList.size() > 0)
-                            populateData();
-                        else
-                            Toast.makeText(getActivity(), getString(R.string.retailer_contact_list), Toast.LENGTH_SHORT).show();
-                    }
-                }));
+                .subscribeWith(arrayListObserver()));
     }
+
+    private Observer<ArrayList<RetailerContactBo>> arrayListObserver(){
+        return new DisposableObserver<ArrayList<RetailerContactBo>>() {
+            @Override
+            public void onNext(ArrayList<RetailerContactBo> contactList) {
+                retailerContactList = contactList;
+                if (retailerContactList.size() > 0)
+                    populateData();
+                else
+                    Toast.makeText(getActivity(), getString(R.string.retailer_contact_list), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+    }
+
+
 
     @Override
     public void setUserVisibleHint(boolean isFragmentVisible_) {
@@ -156,7 +183,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
                     holder.title.setText(retailerContactBo.getTitle());
                 else
                     holder.title.setVisibility(View.GONE);
-                holder.firstName.setText(retailerContactBo.getFistname()+" "+retailerContactBo.getLastname());
+                holder.firstName.setText(retailerContactBo.getFistname() + " " + retailerContactBo.getLastname());
             }
 
             if (contactMenuMap.get(CODE_CONTACTPRIMARY) != null) {
@@ -213,7 +240,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
                     textCno.setVisibility(View.GONE);
 
                 if (contactMenuMap.get(CODE_CONTACTPRIMARY) == null)
-                    ivIsPrimary.setVisibility(View.INVISIBLE);
+                    ivIsPrimary.setVisibility(View.GONE);
 
                 if (contactMenuMap.get(CODE_CONTACTMAIL) == null)
                     textCEmail.setVisibility(View.GONE);

@@ -1138,7 +1138,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private void editOrder() {
 
         isEditMode = true;
-        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+        discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
 
         if (bModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT)
             discountHelper.clearDiscountQuantity();
@@ -1344,7 +1344,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         .setPositiveButton(bModel.labelsMasterHelper
                                         .applyLabels((Object) "Ord_Sum_Print_Order") != null ? bModel.labelsMasterHelper
                                         .applyLabels((Object) "Ord_Sum_Print_Order") :
-                                getResources().getString(R.string.print_order),
+                                        getResources().getString(R.string.print_order),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
@@ -1390,7 +1390,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         if (!bModel.hasStockInOrder())
                                             bModel.deleteModuleCompletion("MENU_STK_ORD");
                                         // clear scheme free products
-                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+                                        discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
 
                                         new MyThread(OrderSummary.this,
                                                 DataMembers.DELETE_ORDER).start();
@@ -1422,7 +1422,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 bModel.synchronizationHelper.deleteFiles(
                                                         PHOTO_PATH, bModel.getOrderHeaderBO().getSignatureName());
                                         }
-                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+                                        discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
                                         bModel.deleteModuleCompletion("MENU_STK_ORD");
                                         new MyThread(OrderSummary.this,
                                                 DataMembers.DELETE_STOCK_AND_ORDER).start();
@@ -3369,7 +3369,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
         if (!isEditMode) {
             bModel.productHelper.clearOrderTable();
-            discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+            discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
         }
         unbindDrawables(findViewById(R.id.root));
     }
