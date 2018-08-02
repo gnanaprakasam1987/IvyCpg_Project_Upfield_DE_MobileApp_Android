@@ -1390,7 +1390,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
         if (isSubmitButtonClicked) {
             presenter.isFromCallAnalysis = true;
-            presenter.validateAndUpload();
+            presenter.validateAndUpload(false);
         } else {
 //            BusinessModel.loadActivity(CallAnalysisActivity.this,
 //                    DataMembers.actPlanning);
