@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -78,7 +77,6 @@ public class DeliveryStockReport extends IvyBaseFragment implements View.OnClick
             } catch (Exception e) {
                 Commons.printException(e);
             }
-            compositeDisposable = new CompositeDisposable();
 
             getDeliverStockData();
 
@@ -107,14 +105,18 @@ public class DeliveryStockReport extends IvyBaseFragment implements View.OnClick
                 .subscribeWith(new DisposableObserver<ArrayList<DeliveryStockBo>>() {
                     @Override
                     public void onNext(ArrayList<DeliveryStockBo> deliveryStockList) {
-                        MyAdapter adapter = new MyAdapter(deliveryStockList);
-                        listView.setAdapter(adapter);
+                        if (deliveryStockList.size() > 0) {
+                            MyAdapter adapter = new MyAdapter(deliveryStockList);
+                            listView.setAdapter(adapter);
+                        } else {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         alertDialog.dismiss();
-                        Toast.makeText(getActivity(),getResources().getString(R.string.unable_to_load_data),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -124,25 +126,6 @@ public class DeliveryStockReport extends IvyBaseFragment implements View.OnClick
                     }
                 }));
 
-    }
-
-    public Observer<ArrayList<DeliveryStockBo>> getDeliverySTKObserver() {
-        return new DisposableObserver<ArrayList<DeliveryStockBo>>() {
-            @Override
-            public void onNext(ArrayList<DeliveryStockBo> deliveryStockList) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
     }
 
     @Override
@@ -171,13 +154,7 @@ public class DeliveryStockReport extends IvyBaseFragment implements View.OnClick
                 row = inflater.inflate(R.layout.row_delivery_report, parent,
                         false);
                 holder = new ViewHolder(row);
-               // holder.tvwpsname = (TextView) row.findViewById(R.id.product_name_title);
                 holder.tvwpsname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-
-               /* holder.tv_case_qty = (TextView) row.findViewById(R.id.case_qty);
-                holder.tv_outer_qty = (TextView) row.findViewById(R.id.outer_qty);
-                holder.tv_piece_qty = (TextView) row.findViewById(R.id.piece_qty);*/
-
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -208,7 +185,7 @@ public class DeliveryStockReport extends IvyBaseFragment implements View.OnClick
         @BindView(R.id.piece_qty)
         TextView tv_outer_qty;
 
-        ViewHolder(View view){
+        ViewHolder(View view) {
             ButterKnife.bind(view);
         }
 

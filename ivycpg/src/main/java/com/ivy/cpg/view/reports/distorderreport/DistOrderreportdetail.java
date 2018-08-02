@@ -22,6 +22,12 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
 public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
         OnClickListener {
     /**
@@ -35,6 +41,7 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
     private double TotalValue;
     private String TotalLines;
     private Toolbar toolbar;
+    private CompositeDisposable compositeDisposable;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,16 +131,37 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
             if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
                 findViewById(R.id.outercqty).setVisibility(View.GONE);
 
-            String orderID = obj.getOrderId();
 
-            ArrayList<DistOrderReportBo> distList = DistOrderReportHelper.getInstance(this).distOrderReportDetail(orderID);
+            getDistOrdDeetails(obj.getOrderId());
 
 
-            updateOrderDetailsGrid(distList);
         } catch (Exception e) {
             Commons.printException(e);
         }
 
+    }
+
+    private void getDistOrdDeetails(String orderID) {
+        compositeDisposable = new CompositeDisposable();
+        compositeDisposable.add((Disposable) DistOrderReportHelper.getInstance().distOrderReportDetail(this, orderID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<ArrayList<DistOrderReportBo>>() {
+                    @Override
+                    public void onNext(ArrayList<DistOrderReportBo> distOrderReportList) {
+                        updateOrderDetailsGrid(distOrderReportList);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
     }
 
     private void updateOrderDetailsGrid(ArrayList<DistOrderReportBo> mylist) {

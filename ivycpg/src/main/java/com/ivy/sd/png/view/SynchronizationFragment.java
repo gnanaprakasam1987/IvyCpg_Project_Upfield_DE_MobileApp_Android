@@ -1334,7 +1334,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                         BusinessModel.loadActivity(getActivity(),
                                 DataMembers.actHomeScreen);
                     } else {
-                        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(getActivity().getApplicationContext());
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
                     }
                     isClicked = false;

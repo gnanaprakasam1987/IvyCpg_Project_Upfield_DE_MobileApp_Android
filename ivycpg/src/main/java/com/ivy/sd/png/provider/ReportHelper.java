@@ -7,10 +7,8 @@ import android.database.SQLException;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
-import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BeatMasterBO;
-import com.ivy.sd.png.bo.ContractBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.OrderDetail;
@@ -32,7 +30,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -485,52 +482,7 @@ public class ReportHelper {
     }
 
 
-    ArrayList<ContractBO> contractList;
 
-    public ArrayList<ContractBO> getContractList() {
-        return contractList;
-    }
-
-    public void setContractList(ArrayList<ContractBO> contractList) {
-        this.contractList = contractList;
-    }
-
-    public void downloadContractReport() {
-        ContractBO contractBO;
-        ArrayList<ContractBO> contractBOArrayList = new ArrayList<>();
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("Select Distinct RM.RetailerID, RM.RetailerCode, RM.RetailerName, (select ch.ChName from channelhierarchy ch where ch.chid = RM.subchannelid) AS SubChannel, RC.ContractDesc, RC.StartDate, RC.EndDate,RC.ContractId  from RetailerMaster RM inner join  RetailerContract RC where RM.RetailerID = RC.RetailerId");
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    contractBO = new ContractBO();
-                    contractBO.setOutletCode(c.getString(1));
-                    contractBO.setOutletName(c.getString(2));
-                    contractBO.setSubChannel(c.getString(3));
-                    contractBO.setTradeName(c.getString(4));
-                    contractBO.setStartDate(DateUtil.convertFromServerDateToRequestedFormat(
-                            c.getString(5),
-                            ConfigurationMasterHelper.outDateFormat));
-                    contractBO.setEndDate(DateUtil.convertFromServerDateToRequestedFormat(
-                            c.getString(6),
-                            ConfigurationMasterHelper.outDateFormat));
-                    contractBO.setDaysToExp(Utils.getDaysDifference(SDUtil.now(SDUtil.DATE_GLOBAL), c.getString(6), "yyyy/MM/dd"));
-                    contractBO.setContractID(c.getString(7));
-                    if (contractBO.getDaysToExp() <= 45)
-                        contractBOArrayList.add(contractBO);
-                }
-                if (contractBOArrayList != null)
-                    setContractList(contractBOArrayList);
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
 
 
     /**

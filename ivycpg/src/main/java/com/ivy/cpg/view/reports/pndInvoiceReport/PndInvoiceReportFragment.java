@@ -1,7 +1,7 @@
 package com.ivy.cpg.view.reports.pndInvoiceReport;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +12,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.InvoiceHeaderBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
 
-public class PndInvoiceReportFragment extends Fragment {
-    private ListView lvwplist;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
+public class PndInvoiceReportFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
-    private ArrayList<InvoiceHeaderBO> mylist;
+    private CompositeDisposable compositeDisposable;
+    private Unbinder unbinder;
+
+    @BindView(R.id.list)
+    ListView lvwplist;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -31,6 +43,8 @@ public class PndInvoiceReportFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_pnd_invoice_report,
                 container, false);
+        unbinder = ButterKnife.bind(view);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
@@ -44,13 +58,44 @@ public class PndInvoiceReportFragment extends Fragment {
         lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
-
-        mylist = bmodel.getInvoiceHeaderBO();
-        MyAdapter mSchedule = new MyAdapter(mylist);
-        lvwplist.setAdapter(mSchedule);
-
+        getPndInvoiceData();
 
         return view;
+    }
+
+    private void getPndInvoiceData() {
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(getActivity());
+        compositeDisposable = new CompositeDisposable();
+        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        compositeDisposable.add((Disposable) PendingInvoiceHelper.getInstance().downloadPndInvoice(getActivity())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableObserver<ArrayList<PndInvoiceReportBo>>() {
+                    @Override
+                    public void onNext(ArrayList<PndInvoiceReportBo> pndInvList) {
+                        if (pndInvList.size() > 0) {
+                            MyAdapter mSchedule = new MyAdapter(pndInvList);
+                            lvwplist.setAdapter(mSchedule);
+                        } else {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        alertDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        alertDialog.dismiss();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
+                    }
+                }));
     }
 
     @Override
@@ -58,11 +103,19 @@ public class PndInvoiceReportFragment extends Fragment {
         super.onResume();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (compositeDisposable != null
+                && !compositeDisposable.isDisposed())
+            compositeDisposable.dispose();
+        unbinder.unbind();
+    }
 
-    class MyAdapter extends ArrayAdapter<InvoiceHeaderBO> {
-        ArrayList<InvoiceHeaderBO> items;
+    class MyAdapter extends ArrayAdapter<PndInvoiceReportBo> {
+        ArrayList<PndInvoiceReportBo> items;
 
-        private MyAdapter(ArrayList<InvoiceHeaderBO> items) {
+        private MyAdapter(ArrayList<PndInvoiceReportBo> items) {
             super(getActivity(), R.layout.row_pnd_invoice_report, items);
             this.items = items;
         }
@@ -70,23 +123,13 @@ public class PndInvoiceReportFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
 
-            InvoiceHeaderBO invoiceHeaderBO = items.get(position);
+            PndInvoiceReportBo invoiceHeaderBO = items.get(position);
             View row = convertView;
 
             if (row == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 row = inflater.inflate(R.layout.row_pnd_invoice_report, parent, false);
-                holder = new ViewHolder();
-
-                ((View) row.findViewById(R.id.invoiceview_doted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-                holder.tvRetailerName = (TextView) row.findViewById(R.id.tv_retailer_name);
-                holder.tvInvoiceNo = (TextView) row.findViewById(R.id.invoice_number);
-                holder.tvDate = (TextView) row.findViewById(R.id.tvDate);
-                holder.tvInvAmount = (TextView) row.findViewById(R.id.tvinvamtValue);
-                holder.tvAmtPaid = (TextView) row.findViewById(R.id.tvpaidamtValue);
-                holder.tvBalance = (TextView) row.findViewById(R.id.tvbalamtValue);
-
+                holder = new ViewHolder(row);
 
                 holder.tvRetailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tvInvoiceNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -94,9 +137,10 @@ public class PndInvoiceReportFragment extends Fragment {
                 holder.tvInvAmount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tvAmtPaid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tvBalance.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                ((TextView) row.findViewById(R.id.tvinvamt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.tvinvamt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.tvinvamt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+
+                holder.labelTvInvAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.labelTvPaidAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.labelTvBalanceAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
 
                 row.setTag(holder);
             } else {
@@ -117,8 +161,41 @@ public class PndInvoiceReportFragment extends Fragment {
     }
 
     class ViewHolder {
-        InvoiceHeaderBO invoiceReportBO;
-        TextView tvRetailerName, tvInvoiceNo, tvDate, tvInvAmount, tvAmtPaid, tvBalance;
+        PndInvoiceReportBo invoiceReportBO;
+
+        @BindView(R.id.invoiceview_doted_line)
+        View invoiceview_doted_line;
+
+        @BindView(R.id.tv_retailer_name)
+        TextView tvRetailerName;
+
+        @BindView(R.id.invoice_number)
+        TextView tvInvoiceNo;
+
+        @BindView(R.id.tvDate)
+        TextView tvDate;
+
+        @BindView(R.id.tvinvamt)
+        TextView labelTvInvAmt;
+
+        @BindView(R.id.tvinvamtValue)
+        TextView tvInvAmount;
+
+        @BindView(R.id.tvpaidamt)
+        TextView labelTvPaidAmt;
+
+        @BindView(R.id.tvpaidamtValue)
+        TextView tvAmtPaid;
+
+        @BindView(R.id.tvbalamtValue)
+        TextView labelTvBalanceAmt;
+
+        @BindView(R.id.tvbalamtValue)
+        TextView tvBalance;
+
+        ViewHolder(View view) {
+            ButterKnife.bind(view);
+        }
     }
 
 

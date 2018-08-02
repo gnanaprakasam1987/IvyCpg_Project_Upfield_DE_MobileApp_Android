@@ -51,7 +51,7 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.TaxGstHelper;
 import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.ContractReportFragment;
+import com.ivy.cpg.view.reports.contractreport.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.cpg.view.reports.pndInvoiceReport.PndInvoiceReportFragment;
@@ -246,7 +246,7 @@ public class ReportActivity extends BaseActivity implements
             mDeliveryStockReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mDeliveryStockReport);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_DAY_REPORT)) {
@@ -397,7 +397,7 @@ public class ReportActivity extends BaseActivity implements
             brandwisePerformanceFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, brandwisePerformanceFragment);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_OPPORTUNITIES_REPORT)) {
@@ -406,7 +406,7 @@ public class ReportActivity extends BaseActivity implements
             mOpportunitiesReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mOpportunitiesReport);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_TIMEANDTRAVEL_REPORT)) {
@@ -424,7 +424,7 @@ public class ReportActivity extends BaseActivity implements
             mProductivityReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mProductivityReport);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_LOG)) {
@@ -458,7 +458,7 @@ public class ReportActivity extends BaseActivity implements
             ContractReportFragment mContractReport = new ContractReportFragment();
             transaction.replace(R.id.fragment_content, mContractReport);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SFG_REPORT)) {
 
@@ -491,7 +491,7 @@ public class ReportActivity extends BaseActivity implements
             transaction.replace(R.id.fragment_content, mInventoryReport);
             bmodel.mSelectedActivityName = config.getMenuName();
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
@@ -545,7 +545,7 @@ public class ReportActivity extends BaseActivity implements
             WebViewArchivalReportFragment webViewArchivalReportFragment = new WebViewArchivalReportFragment();
             transaction.replace(R.id.fragment_content, webViewArchivalReportFragment);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
@@ -580,13 +580,6 @@ public class ReportActivity extends BaseActivity implements
             transaction.replace(R.id.fragment_content, salesReturnReportFragment);
             commitFragment(transaction, config);
         }
-    }
-
-    private void setSubTitle(FragmentTransaction transaction, ConfigureBO config) {
-        transaction.addToBackStack(null);
-        getSupportActionBar().setSubtitle(config.getMenuName());
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        transaction.commit();
     }
 
     private void commitFragment(FragmentTransaction transaction, ConfigureBO config) {

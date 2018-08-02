@@ -96,12 +96,10 @@ public class DeliveryStockHelper {
                                 mDeliveryProductsBObyId.put(bo.getProductID(), bo);
                                 mDeliveryStocks.add(bo);
                             }
-
                         }
-
-                        subscriber.onNext(mDeliveryStocks);
-                        subscriber.onComplete();
                     }
+                    subscriber.onNext(mDeliveryStocks);
+                    subscriber.onComplete();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     subscriber.onError(ex);

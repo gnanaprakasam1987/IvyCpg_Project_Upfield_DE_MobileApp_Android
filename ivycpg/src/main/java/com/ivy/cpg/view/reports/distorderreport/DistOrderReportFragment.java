@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
@@ -27,16 +26,59 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function3;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
+
 public class DistOrderReportFragment extends IvyBaseFragment implements OnClickListener,
         OnItemClickListener {
 
-    private TextView totalOrderValue, averageLines, mlpc, mavg_pre_post,
-            totalLines;
-    private ListView lvwplist;
     private BusinessModel bmodel;
     private ArrayList<DistOrderReportBo> mylist;
-    private View view;
     private DistOrderReportBo mSelectedReportBO;
+    private Unbinder unbinder;
+    private CompositeDisposable compositeDisposable;
+
+    @BindView(R.id.list)
+    ListView lvwplist;
+
+    @BindView(R.id.txttotal)
+    TextView totalOrderValue;
+
+    @BindView(R.id.txtavglines)
+    TextView averageLines;
+
+    @BindView(R.id.lpc)
+    TextView mlpc;
+
+    @BindView(R.id.txt_dist_pre_post)
+    TextView mavg_pre_post;
+
+    @BindView(R.id.txttotallines)
+    TextView totalLines;
+
+    @BindView(R.id.lbl_avg_lines)
+    TextView lblAvgLines;
+
+    @BindView(R.id.lbl_total_lines)
+    TextView lblTotLines;
+
+    @BindView(R.id.lab_dist_pre_post)
+    TextView lblDistPrePost;
+
+    @BindView(R.id.dist)
+    TextView distTv;
+
+    @BindView(R.id.outna)
+    TextView outletName;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -44,8 +86,10 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        view = inflater.inflate(R.layout.fragment_order_report, container,
+        View view = inflater.inflate(R.layout.fragment_order_report, container,
                 false);
+        unbinder = ButterKnife.bind(this, view);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
@@ -56,97 +100,127 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
             getActivity().finish();
         }
 
-        totalOrderValue = (TextView) view.findViewById(R.id.txttotal);
-        averageLines = (TextView) view.findViewById(R.id.txtavglines);
-        mavg_pre_post = (TextView) view.findViewById(R.id.txt_dist_pre_post);
-        mlpc = (TextView) view.findViewById(R.id.lpc);
-        totalLines = (TextView) view.findViewById(R.id.txttotallines);
-        lvwplist = (ListView) view.findViewById(R.id.list);
+
+        updateViews();
+
+        DistOrderReportHelper distOrderReportHelper = DistOrderReportHelper.getInstance();
+
+        getDistOrdReportData(distOrderReportHelper);
+
+        return view;
+
+    }
+
+    /**
+     * Disable View's based on confgi
+     * add labels
+     */
+    private void updateViews() {
         lvwplist.setCacheColorHint(0);
         lvwplist.setOnItemClickListener(this);
-        DistOrderReportHelper distOrderReportHelper = DistOrderReportHelper.getInstance(getActivity());
-        mylist = distOrderReportHelper.downloadDistributorOrderReport();
-        updateOrderGrid();
-        double avglinesorderbooking = distOrderReportHelper
-                .getavglinesfororderbooking("OrderHeader");
-        if (bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
 
-            double totoutlets = distOrderReportHelper
-                    .getorderbookingCount("OrderHeader");
-            double result = avglinesorderbooking / totoutlets;
-            String resultS = result + "";
-            if (resultS.equals(getResources().getString(R.string.nan))) {
-                averageLines.setText("" + 0);
-            } else {
-                averageLines.setText("" + SDUtil.roundIt(result, 2));
-            }
-
-        }
-        if (bmodel.configurationMasterHelper.SHOW_TOTAL_LINES)
-            totalLines.setText(avglinesorderbooking + "");
+        if (!bmodel.configurationMasterHelper.SHOW_TOTAL_LINES)
+            totalLines.setVisibility(View.GONE);
 
         if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
-            view.findViewById(R.id.lbl_avg_lines).setVisibility(View.GONE);
+            lblAvgLines.setVisibility(View.GONE);
             averageLines.setVisibility(View.GONE);
             // mlpc.setVisibility(View.GONE);
         }
         if (!bmodel.configurationMasterHelper.SHOW_TOTAL_LINES) {
             totalLines.setVisibility(View.GONE);
-            view.findViewById(R.id.lbl_total_lines).setVisibility(View.GONE);
+            lblTotLines.setVisibility(View.GONE);
 
         }
         if (!bmodel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
-            view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
-            view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
-            view.findViewById(R.id.dist).setVisibility(View.GONE);
+            lblDistPrePost.setVisibility(View.GONE);
+            mavg_pre_post.setVisibility(View.GONE);
+            distTv.setVisibility(View.GONE);
 
         }
 
         try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.outna).getTag()) != null)
-                ((TextView) view.findViewById(R.id.outna))
-                        .setText(bmodel.labelsMasterHelper.applyLabels(view
-                                .findViewById(R.id.outna).getTag()));
+            if (bmodel.labelsMasterHelper.applyLabels(outletName.getTag()) != null)
+                outletName.setText(bmodel.labelsMasterHelper
+                        .applyLabels(outletName.getTag()));
         } catch (Exception e) {
             Commons.printException(e);
         }
         try {
-            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.lpc).getTag()) != null)
-                ((TextView) view.findViewById(R.id.lpc))
-                        .setText(bmodel.labelsMasterHelper.applyLabels(view
-                                .findViewById(R.id.lpc).getTag()));
+            if (bmodel.labelsMasterHelper.applyLabels(mlpc.getTag()) != null)
+                mlpc.setText(bmodel.labelsMasterHelper.applyLabels(mlpc.getTag()));
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
 
-        return view;
+    double avgLine = 0, totOutlet = 0;
 
+    private void getDistOrdReportData(DistOrderReportHelper distOrderReportHelper) {
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(getActivity());
+        compositeDisposable = new CompositeDisposable();
+        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();
+        compositeDisposable.add((Disposable) Observable.zip(distOrderReportHelper.downloadDistributorOrderReport(getActivity()), distOrderReportHelper.getavglinesfororderbooking("OrderHeader", getActivity())
+                , distOrderReportHelper.getorderbookingCount("OrderHeader", getActivity())
+                , new Function3<ArrayList<DistOrderReportBo>, Double, Double, Object>() {
+
+                    @Override
+                    public Object apply(ArrayList<DistOrderReportBo> distOrderReportBos, Double avgLines, Double totOutlets) throws Exception {
+                        mylist.addAll(distOrderReportBos);
+                        avgLine = avgLines;
+                        totOutlet = totOutlets;
+                        return true;
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Object>() {
+                    @Override
+                    public void onNext(Object o) {
+                        // Show alert if no order exist.
+                        if (mylist.size() == 0) {
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.no_orders_available),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        updateOrderGrid(avgLine, totOutlet);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        // Show alert if error loading data.
+                        alertDialog.dismiss();
+                        if (mylist == null) {
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.unable_to_load_data),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        alertDialog.dismiss();
+                    }
+                }));
     }
 
     public void onClick(View comp) {
 
     }
 
-    private void updateOrderGrid() {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
+    private void updateOrderGrid(double avgLine, double totOutlet) {
         double totalvalue = 0;
         int pre = 0, post = 0;
-
-        // Show alert if error loading data.
-        if (mylist == null) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.unable_to_load_data),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        // Show alert if no order exist.
-        if (mylist.size() == 0) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.no_orders_available),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         // Calculate the total order value.
         for (DistOrderReportBo ret : mylist) {
@@ -185,12 +259,25 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
         }
         // Format and set on the lable
         totalOrderValue.setText("" + bmodel.formatValue(totalvalue));
+        if (bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
+            double result = avgLine / totOutlet;
+            String resultS = result + "";
+            if (resultS.equals(getResources().getString(R.string.nan))) {
+                averageLines.setText("" + 0);
+            } else {
+                averageLines.setText("" + SDUtil.roundIt(result, 2));
+            }
+        }
+        if (bmodel.configurationMasterHelper.SHOW_TOTAL_LINES)
+            totalLines.setText(totOutlet + "");
+
 
         // Load listview.
         MyAdapter mSchedule = new MyAdapter(mylist);
         lvwplist.setAdapter(mSchedule);
 
     }
+
 
     class MyAdapter extends ArrayAdapter<DistOrderReportBo> {
         ArrayList<DistOrderReportBo> items;
@@ -211,14 +298,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 row = inflater
                         .inflate(R.layout.row_order_report, parent, false);
-                holder = new ViewHolder();
-                holder.tvwrname = (TextView) row.findViewById(R.id.PRDNAME);
-
-                holder.tvwvalue = (TextView) row.findViewById(R.id.PRDMRP);
-                holder.tvwlpc = (TextView) row.findViewById(R.id.PRDRP);
-                holder.tvwDist = (TextView) row.findViewById(R.id.dist_txt);
-                holder.tvOrderNo = (TextView) row.findViewById(R.id.orderno);
-
+                holder = new ViewHolder(row);
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -262,11 +342,32 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 
     class ViewHolder {
         String ref;// product id
+
+        @BindView(R.id.PRDNAME)
         TextView tvwrname;
-        TextView tvwvol, tvwvalue, tvwlpc, tvwDist;
+
+        @BindView(R.id.PRDNAME)
+        TextView tvwvol;
+
+        @BindView(R.id.PRDMRP)
+        TextView tvwvalue;
+
+        @BindView(R.id.PRDRP)
+        TextView tvwlpc;
+
+        @BindView(R.id.dist_txt)
+        TextView tvwDist;
+
+        @BindView(R.id.orderno)
         TextView tvOrderNo;
 
+        ViewHolder(View view) {
+            ButterKnife.bind(view);
+        }
+
+
     }
+
 
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         // TODO Auto-generated method stub
@@ -286,13 +387,6 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
             orderreportdetail.putExtra("TotalLines", ret.getLpc());
             orderreportdetail.setClass(getActivity(), DistOrderreportdetail.class);
             startActivityForResult(orderreportdetail, 0);
-
-			/*
-             * FragmentTransaction ft=getFragmentManager().beginTransaction();
-			 * ft.replace(R.id.realtabcontent, new
-			 * OrderReportDetailFragment(),"orderdetail");
-			 * ft.addToBackStack(null); ft.commit();
-			 */
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -315,8 +409,8 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-			/*progressDialogue = ProgressDialog.show(getActivity(),
-					DataMembers.SD, "Exporting orders...", true, false);*/
+            /*progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, "Exporting orders...", true, false);*/
             builder = new AlertDialog.Builder(getActivity());
 
             customProgressDialog(builder, "Exporting orders...");
