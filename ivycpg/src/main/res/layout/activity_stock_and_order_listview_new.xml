@@ -849,32 +849,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/llPcs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/pcsTitle"
-                        style="?attr/customListItemSecondary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="item_piece"
-                        android:text="@string/item_piece" />
-
-                    <EditText
-                        android:id="@+id/stock_and_order_listview_pcs_qty"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:maxLength="5"
-                        android:text="@string/zero" />
-
-                </LinearLayout>
-
-                <LinearLayout
                     android:id="@+id/llCase"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -920,6 +894,32 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
+                        android:text="@string/zero" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llPcs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/pcsTitle"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="item_piece"
+                        android:text="@string/item_piece" />
+
+                    <EditText
+                        android:id="@+id/stock_and_order_listview_pcs_qty"
+                        style="@style/EditText_ListItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:maxLength="5"
                         android:text="@string/zero" />
 
                 </LinearLayout>
