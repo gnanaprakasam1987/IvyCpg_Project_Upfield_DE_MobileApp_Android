@@ -33,11 +33,13 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
     private Context context;
     private boolean showStatus;
     private ArrayList<SellerBo> sellerListBos = new ArrayList<>();
+    private String selectedDate;
 
-    SellerListAdapter(Context context,boolean showStatus,ArrayList<SellerBo> sellerListBos){
+    SellerListAdapter(Context context,boolean showStatus,ArrayList<SellerBo> sellerListBos,String selectedDate){
         this.context = context;
         this.showStatus = showStatus;
         this.sellerListBos = sellerListBos;
+        this.selectedDate = selectedDate;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -121,7 +123,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
                             .setDismissOnClick(false)
                             .setCornerRadius(5f)
                             .setGravity(Gravity.BOTTOM)
-                            .setText("Last visit at " + convertTime(sellerListBos.get(holder.getAdapterPosition()).getTimeIn()))
+                            .setText("Last visit at " + convertTime(sellerListBos.get(holder.getAdapterPosition()).getInTime()))
                             .setTextSize(R.dimen._11sdp)
                             .setBackgroundColor(ContextCompat.getColor(context, R.color.tootl_tip_bg))
                             .setTextColor(ContextCompat.getColor(context, R.color.WHITE))
@@ -139,6 +141,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
                 Intent intent = new Intent(context, SellerDetailMapActivity.class);
                 intent.putExtra("SellerId", sellerListBos.get(holder.getAdapterPosition()).getUserId());
                 intent.putExtra("screentitle", sellerListBos.get(holder.getAdapterPosition()).getUserName() );
+                intent.putExtra("Date",selectedDate);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

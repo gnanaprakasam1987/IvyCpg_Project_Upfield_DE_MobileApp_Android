@@ -319,12 +319,12 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-            holder.tvInTime.setText(sellerMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeIn()));
-            holder.tvOutTime.setText(sellerMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeOut()));
+            holder.tvInTime.setText(sellerMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getInTime()));
+            holder.tvOutTime.setText(sellerMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getOutTime()));
             holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getOrderValue()));
             holder.tvDuration.setText(
-                    sellerMapViewPresenter.calculateDuration(visitedRetailers.get(position).getTimeIn(),
-                            visitedRetailers.get(position).getTimeOut()));
+                    sellerMapViewPresenter.calculateDuration(visitedRetailers.get(position).getInTime(),
+                            visitedRetailers.get(position).getOutTime()));
 
         }
 

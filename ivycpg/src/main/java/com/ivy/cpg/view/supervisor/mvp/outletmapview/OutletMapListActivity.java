@@ -5,6 +5,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -14,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +31,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.mvp.FilterScreenFragment;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
@@ -38,12 +43,12 @@ import com.ivy.utils.FontUtils;
 import java.util.ArrayList;
 
 public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener,OutletMapViewContractor.OutletMapView {
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, OutletMapViewContractor.OutletMapView {
 
     private GoogleMap mMap;
     private TabLayout tabLayout;
     private ViewGroup mymarkerview;
-    private TextView tvMapInfoUserName,tvInfoVisitTime;
+    private TextView tvMapInfoUserName, tvInfoVisitTime;
     private MapWrapperLayout mapWrapperLayout;
     private int tabPos;
     private RecyclerViewPager outletHorizontalRecycleView;
@@ -51,6 +56,12 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
     private ArrayList<RetailerBo> outletListBos = new ArrayList<>();
 
     private OutletMapViewPresenter outletMapViewPresenter;
+    private int sellerid;
+    private String selectedDate;
+
+    private FrameLayout drawer;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
 
     @Override
@@ -74,10 +85,12 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         setScreenTitle("Total Outlets");
         Bundle extras = getIntent().getExtras();
-        tabPos = extras!=null?extras.getInt("TabPos"):0;
+        tabPos = extras != null ? extras.getInt("TabPos") : 0;
+        sellerid = extras != null ? extras.getInt("Sellerid") : 0;
+        selectedDate = extras != null ? extras.getString("Date") : "";
 
         outletMapViewPresenter = new OutletMapViewPresenter();
-        outletMapViewPresenter.setView(this,OutletMapListActivity.this);
+        outletMapViewPresenter.setView(this, OutletMapListActivity.this);
 
         initViews();
         initViewPager();
@@ -90,16 +103,23 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
     private void initViews() {
 
-        mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_outlet_info_window, null);
+        mymarkerview = (ViewGroup) getLayoutInflater().inflate(R.layout.map_custom_outlet_info_window, null);
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
         tvInfoVisitTime = mymarkerview.findViewById(R.id.tv_visit_time);
 
-        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.right_drawer);
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
 
-        ((TextView)findViewById(R.id.tv_planned_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.tv_covered_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.tv_unbilled_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+
+        ((TextView) findViewById(R.id.tv_planned_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        ((TextView) findViewById(R.id.tv_covered_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        ((TextView) findViewById(R.id.tv_unbilled_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
 
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, getPixelsFromDp(this, 39 + 20)));
@@ -138,11 +158,42 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             }
         });
 
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.END);
+
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+                mDrawerLayout, /* DrawerLayout object */
+                R.string.ok, /* "open drawer" description for accessibility */
+                R.string.close /* "close drawer" description for accessibility */
+        ) {
+            public void onDrawerClosed(View view) {
+                setScreenTitle("");
+                supportInvalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                setScreenTitle(getResources().getString(R.string.filter));
+                supportInvalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        findViewById(R.id.filter_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterFragment();
+            }
+        });
+
     }
 
     @Override
-    public void clearMap(){
-        if(mMap!=null)
+    public void clearMap() {
+        if (mMap != null)
             mMap.clear();
     }
 
@@ -159,7 +210,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
             @Override
             public void onMapClick(LatLng latLng) {
-                if(outletHorizontalRecycleView.getVisibility() == View.VISIBLE)
+                if (outletHorizontalRecycleView.getVisibility() == View.VISIBLE)
                     outletHorizontalRecycleView.setVisibility(View.GONE);
 
                 findViewById(R.id.cardview).setVisibility(View.VISIBLE);
@@ -170,7 +221,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         outletMapViewPresenter.downloadOutletListAws();
 
-        outletMapViewPresenter.setOutletActivityDetail(4,"07052018");
+        outletMapViewPresenter.setOutletActivityDetail(sellerid, selectedDate);
 
         outletMapViewPresenter.setTabPosition(tabPos);
 
@@ -191,13 +242,13 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         findViewById(R.id.cardview).setVisibility(View.GONE);
 
         int pagerPos = 0;
-        int count=0;
-        for(RetailerBo detailsBo : outletListBos){
-            if(detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())){
+        int count = 0;
+        for (RetailerBo detailsBo : outletListBos) {
+            if (detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())) {
                 pagerPos = count;
                 break;
             }
-            count = count+1;
+            count = count + 1;
         }
 
         outletHorizontalRecycleView.scrollToPosition(pagerPos);
@@ -211,7 +262,8 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+                if (builder != null)
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
             }
         });
     }
@@ -219,7 +271,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public void onInfoWindowClick(Marker marker) {
 
-        if(outletMapViewPresenter.getRetailerVisitDetailsByRId(Integer.valueOf(marker.getSnippet())) == null){
+        if (outletMapViewPresenter.getRetailerVisitDetailsByRId(Integer.valueOf(marker.getSnippet())) == null) {
             Toast.makeText(this, "No visited details found for this retailer", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -227,7 +279,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment(Integer.parseInt(marker.getSnippet()), outletMapViewPresenter);
         outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
         outletPagerDialogFragment.setCancelable(false);
-        outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+        outletPagerDialogFragment.show(getSupportFragmentManager(), "OutletPager");
     }
 
     @Override
@@ -269,11 +321,11 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
             String[] stringSplit = marker.getTitle().split("//");
 
-            if(stringSplit.length > 1){
+            if (stringSplit.length > 1) {
                 tvMapInfoUserName.setText(stringSplit[0]);
-                tvInfoVisitTime.setText(getResources().getString(R.string.visit_time)+" "+
+                tvInfoVisitTime.setText(getResources().getString(R.string.visit_time) + " " +
                         outletMapViewPresenter.convertMillisToTime(Long.valueOf(stringSplit[1])));
-            }else {
+            } else {
                 tvMapInfoUserName.setText(stringSplit[0]);
                 tvInfoVisitTime.setText(getResources().getString(R.string.visit_time));
             }
@@ -320,8 +372,12 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            finish();
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                mDrawerLayout.closeDrawers();
+            } else {
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -337,7 +393,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             for (int i = 0; i < tabChildCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
                 }
             }
         }
@@ -355,7 +411,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
                 false);
         outletHorizontalRecycleView.setLayoutManager(layout);
 
-        outletInfoHorizontalAdapter = new OutletInfoHorizontalAdapter(OutletMapListActivity.this,outletListBos,outletMapViewPresenter);
+        outletInfoHorizontalAdapter = new OutletInfoHorizontalAdapter(OutletMapListActivity.this, outletListBos, outletMapViewPresenter);
         outletHorizontalRecycleView.setAdapter(outletInfoHorizontalAdapter);
 
         outletHorizontalRecycleView.setHasFixedSize(true);
@@ -399,13 +455,15 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
 
-                double angle = 130.0;
-                double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
-                double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.outlet_map_info_y));
-                outletListBos.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
+                if (outletListBos.get(newPosition).getMarker() != null) {
+                    double angle = 130.0;
+                    double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
+                    double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.outlet_map_info_y));
+                    outletListBos.get(newPosition).getMarker().setInfoWindowAnchor((float) x, (float) y);
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(outletListBos.get(newPosition).getMarker().getPosition()));
-                outletListBos.get(newPosition).getMarker().showInfoWindow();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(outletListBos.get(newPosition).getMarker().getPosition()));
+                    outletListBos.get(newPosition).getMarker().showInfoWindow();
+                }
 
             }
         });
@@ -441,4 +499,27 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             }
         });
     }
+
+    private void filterFragment() {
+        try {
+
+            mDrawerLayout.openDrawer(GravityCompat.END);
+
+            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FilterScreenFragment frag = (FilterScreenFragment) fm
+                    .findFragmentByTag("FilterScreen");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+
+            FilterScreenFragment fragobj = new FilterScreenFragment();
+
+            ft.replace(R.id.right_drawer, fragobj, "FilterScreen");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
 }

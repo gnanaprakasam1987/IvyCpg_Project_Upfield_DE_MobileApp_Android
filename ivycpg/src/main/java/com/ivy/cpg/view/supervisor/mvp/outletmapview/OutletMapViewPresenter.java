@@ -1,7 +1,6 @@
 package com.ivy.cpg.view.supervisor.mvp.outletmapview;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 
@@ -11,11 +10,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,10 +22,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -161,14 +155,18 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
     public void getMarkerForFocus() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
+        boolean isFocus = false;
+
         for (RetailerBo retailerBo : retailerList) {
             if (retailerBo.getMasterLatitude() > 0 && retailerBo.getMasterLatitude() > 0) {
                 LatLng builderLatLng = new LatLng(retailerBo.getMasterLatitude(),retailerBo.getMasterLongitude());
                 builder.include(builderLatLng);
+                isFocus = true;
             }
         }
 
-        outletMapView.focusMarker(builder);
+        if (isFocus)
+            outletMapView.focusMarker(builder);
     }
 
     @Override
@@ -194,72 +192,75 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
     private void setSellerDetailValues(DocumentSnapshot documentSnapshot) {
 
-        RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
+        try {
+            RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
 
-        if (documentSnapshotBo != null) {
+            if (documentSnapshotBo != null) {
 
-            //Update retailer info in master list
+                //Update retailer info in master list
 
-            RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
+                RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
-            if(retailerMasterBo.getIsOrdered() || documentSnapshotBo.getOrderValue() > 0) {
-                retailerMasterBo.setIsOrdered(true);
+                if (retailerMasterBo.getIsOrdered() || documentSnapshotBo.getOrderValue() > 0) {
+                    retailerMasterBo.setIsOrdered(true);
+                } else {
+                    retailerMasterBo.setIsOrdered(false);
+                }
+
+                documentSnapshotBo.setIsOrdered(retailerMasterBo.getIsOrdered());
+                retailerMasterBo.setSkipped(false);
+                retailerMasterBo.setVisited(true);
+
+                long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
+                retailerMasterBo.setTotalOrderValue(totalOrderValue);
+
+                retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());
+                retailerMasterBo.setInTime(documentSnapshotBo.getInTime());
+                retailerMasterBo.setOutTime(documentSnapshotBo.getOutTime());
+
+                if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0) {
+
+                    retailerMasterBo.setMasterLatitude(documentSnapshotBo.getLatitude());
+                    retailerMasterBo.setMasterLongitude(documentSnapshotBo.getLongitude());
+
+                    retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                    retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+
+                } else {
+
+                    retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                    retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+                }
+
+
+                // Set Visited Retailer details in HashMap with retailer id as key
+
+                RetailerBo retailerBoObj = new RetailerBo();
+
+                retailerBoObj.setLatitude(documentSnapshotBo.getLatitude());
+                retailerBoObj.setLongitude(documentSnapshotBo.getLongitude());
+                retailerBoObj.setOrderValue(documentSnapshotBo.getOrderValue());
+                retailerBoObj.setIsOrdered(documentSnapshotBo.getIsOrdered());
+                retailerBoObj.setInTime(documentSnapshotBo.getInTime());
+                retailerBoObj.setOutTime(documentSnapshotBo.getOutTime());
+                retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
+                retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName() != null ? documentSnapshotBo.getRetailerName() : "");
+
+                if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
+                    retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(retailerBoObj);
+                } else {
+                    ArrayList<RetailerBo> visitedRetailerList = new ArrayList<>();
+                    visitedRetailerList.add(retailerBoObj);
+                    retailerVisitDetailsByRId.put(documentSnapshotBo.getRetailerId(), visitedRetailerList);
+                }
+
+                //ends
+
+                setTabMapValues();
+
             }
-            else {
-                retailerMasterBo.setIsOrdered(false);
-            }
-
-            documentSnapshotBo.setIsOrdered(retailerMasterBo.getIsOrdered());
-            retailerMasterBo.setSkipped(false);
-            retailerMasterBo.setVisited(true);
-
-            long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
-            retailerMasterBo.setTotalOrderValue(totalOrderValue);
-
-            retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());
-            retailerMasterBo.setTimeIn(documentSnapshotBo.getTimeIn());
-            retailerMasterBo.setTimeOut(documentSnapshotBo.getTimeOut());
-
-            if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0) {
-
-                retailerMasterBo.setMasterLatitude(documentSnapshotBo.getLatitude());
-                retailerMasterBo.setMasterLongitude(documentSnapshotBo.getLongitude());
-
-                retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
-                retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
-
-            } else {
-
-                retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
-                retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
-            }
-
-
-            // Set Visited Retailer details in HashMap with retailer id as key
-
-            RetailerBo retailerBoObj = new RetailerBo();
-
-            retailerBoObj.setLatitude(documentSnapshotBo.getLatitude());
-            retailerBoObj.setLongitude(documentSnapshotBo.getLongitude());
-            retailerBoObj.setOrderValue(documentSnapshotBo.getOrderValue());
-            retailerBoObj.setIsOrdered(documentSnapshotBo.getIsOrdered());
-            retailerBoObj.setTimeIn(documentSnapshotBo.getTimeIn());
-            retailerBoObj.setTimeOut(documentSnapshotBo.getTimeOut());
-            retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
-            retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName() != null ? documentSnapshotBo.getRetailerName() : "");
-
-            if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
-                retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(retailerBoObj);
-            } else {
-                ArrayList<RetailerBo> visitedRetailerList = new ArrayList<>();
-                visitedRetailerList.add(retailerBoObj);
-                retailerVisitDetailsByRId.put(documentSnapshotBo.getRetailerId(), visitedRetailerList);
-            }
-
-            //ends
-
-            setTabMapValues();
-
+        }catch (Exception e){
+            Commons.printException(e);
         }
     }
 
@@ -306,7 +307,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
     private void setMarker(RetailerBo retailerBo){
 
-        String title = retailerBo.getRetailerName() + "//" + retailerBo.getTimeIn();
+        String title = retailerBo.getRetailerName() + "//" + retailerBo.getInTime();
 
         BitmapDescriptor icon;
         if(retailerBo.getIsOrdered() && retailerBo.isVisited())

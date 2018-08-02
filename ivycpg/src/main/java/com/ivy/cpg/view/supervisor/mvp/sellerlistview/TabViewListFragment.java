@@ -26,16 +26,18 @@ public class TabViewListFragment extends IvyBaseFragment{
 
     private Animation slide_down, slide_up;
     private LinearLayout bottomLayout;
+    private String selectedDate;
 
     public TabViewListFragment() {
     }
 
-    public static TabViewListFragment getInstance(int position, ArrayList<SellerBo> sellerListBos, boolean showStatus) {
+    public static TabViewListFragment getInstance(int position, ArrayList<SellerBo> sellerListBos, boolean showStatus,String selectedDate) {
         TabViewListFragment tabViewListFragment = new TabViewListFragment();
         Bundle args = new Bundle();
         args.putSerializable("Sellers", sellerListBos);
         args.putInt("position", position);
         args.putBoolean("ShowStatus",showStatus);
+        args.putString("Date",selectedDate);
         tabViewListFragment.setArguments(args);
         return tabViewListFragment;
     }
@@ -107,11 +109,12 @@ public class TabViewListFragment extends IvyBaseFragment{
         super.setArguments(args);
         this.sellerListBos = (ArrayList<SellerBo>) args.getSerializable("Sellers");
         this.showStatus = args.getBoolean("ShowStatus");
+        this.selectedDate = args.getString("Date");
     }
 
     private void prepareScreenData(){
 
-        SellerListAdapter myAdapter = new SellerListAdapter(getContext().getApplicationContext(),showStatus,sellerListBos);
+        SellerListAdapter myAdapter = new SellerListAdapter(getContext().getApplicationContext(),showStatus,sellerListBos,selectedDate);
         recyclerView.setAdapter(myAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);

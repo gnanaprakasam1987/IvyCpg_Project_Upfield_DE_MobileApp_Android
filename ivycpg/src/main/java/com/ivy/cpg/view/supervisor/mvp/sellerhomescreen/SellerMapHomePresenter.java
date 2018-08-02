@@ -5,14 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -38,7 +35,7 @@ import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
-import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
@@ -48,15 +45,16 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Locale;
 import java.util.Vector;
 
 import javax.annotation.Nullable;
@@ -93,9 +91,16 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     @Override
-    public void getSellerListAWS(){
+    public void getSellerListAWS(String date){
 
         int totalSellerCount = 0;
+
+        sellerInfoHasMap.clear();
+        sellerIdHashSet.clear();
+        inMarketSellerCount = 0;
+        sellerCountFirestore = 0;
+        isZoomed = false;
+        totalOutletCount = 0;
 
         DBUtil db = null;
         try {
@@ -106,7 +111,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             db.openDataBase();
 
             String queryStr = "select um.userId,um.userName,count(sm.userId) from usermaster um " +
-                    "left join SupRetailerMaster sm on sm.userId = um.userid where isDeviceuser!=1 and userlevel = '"+loadUserLevel()+"'  group by um.userid";
+                    "left join SupRetailerMaster sm on sm.userId = um.userid and sm.date = '"+date+"' " +
+                    "where isDeviceuser!=1 and userlevel in( '"+loadUserLevel()+"')  group by um.userid";
 
 
             Cursor c = db.selectSQL(queryStr);
@@ -142,12 +148,42 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     @Override
+    public int getLoginUserId(){
+
+        int userId = 0;
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String queryStr = "select um.userpositionid from usermaster um where isDeviceuser=1";
+
+            Cursor c = db.selectSQL(queryStr);
+            if (c != null && c.moveToNext()) {
+
+                userId = c.getInt(0);
+
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+            if (db != null)
+                db.closeDB();
+        }
+        return userId;
+    }
+
+    @Override
     public boolean isRealtimeLocation(){
 
         try {
             String sql = "select flag from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='FIRESTORE01'";
+                    + " where hhtCode='REALTIME02'";
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -322,7 +358,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         for(Integer userId : sellerIdHashSet){
             SellerBo sellerBo = sellerInfoHasMap.get(userId);
 
-            totatlOrderValue = totatlOrderValue + sellerBo.getOrderValue();
+            totatlOrderValue = totatlOrderValue + sellerBo.getTotalOrderValue();
 
             coveredOutlet = coveredOutlet + sellerBo.getCovered();
             billedOutlet = billedOutlet + sellerBo.getBilled();
@@ -354,7 +390,35 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     @Override
     public void downloadSupRetailerMaster(String selectedDate) {
-        new DownloadSupRetailMaster().execute();
+        new DownloadSupRetailMaster(selectedDate).execute();
+    }
+
+    public boolean checkSelectedDateExist(String date){
+        boolean isExist = false;
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String queryStr = "select count(date) from SupRetailerMaster where date='"+date+"'";
+
+            Cursor c = db.selectSQL(queryStr);
+            if (c != null && c.moveToNext()) {
+                if (c.getInt(0) > 0)
+                    isExist = true;
+
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+            if (db != null)
+                db.closeDB();
+        }
+        return isExist;
     }
 
     @Override
@@ -413,7 +477,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         try {
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='SUP_USER_LOAD_LEVEL' and flag = 1";
+                    + " where hhtCode='REALTIME03' and flag = 1";
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -428,6 +492,14 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+
+//        String[] codes = code.split(",");
+//        ArrayList<String> codeList = new ArrayList<>();
+//        for(String userLevel : codes) {
+//            code = "'" + userLevel + "'";
+//            codeList.add(code);
+//        }
+
         return code;
 
     }
@@ -464,71 +536,88 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     private void setValues(DocumentSnapshot documentSnapshot){
 
-        SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
+        try {
+            SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
 
-        System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+            System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
-        if(sellerBoDocumentSnapshot != null && sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId()) != null) {
+            if (sellerBoDocumentSnapshot != null && sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId()) != null) {
 
-            SellerBo sellerBoHashmap = sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId());
+                SellerBo sellerBoHashmap = sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId());
 
-            sellerBoHashmap.setBilled(sellerBoDocumentSnapshot.getBilled());
-            sellerBoHashmap.setCovered(sellerBoDocumentSnapshot.getCovered());
-            sellerBoHashmap.setLatitude(sellerBoDocumentSnapshot.getLatitude());
-            sellerBoHashmap.setLongitude(sellerBoDocumentSnapshot.getLongitude());
-            sellerBoHashmap.setOrderValue(sellerBoDocumentSnapshot.getOrderValue());
-            sellerBoHashmap.setTimeIn(sellerBoDocumentSnapshot.getTimeIn());
-            sellerBoHashmap.setTimeOut(sellerBoDocumentSnapshot.getTimeOut());
+                sellerBoHashmap.setBilled(sellerBoDocumentSnapshot.getBilled());
+                sellerBoHashmap.setCovered(sellerBoDocumentSnapshot.getCovered());
+                sellerBoHashmap.setLatitude(sellerBoDocumentSnapshot.getLatitude());
+                sellerBoHashmap.setLongitude(sellerBoDocumentSnapshot.getLongitude());
+                sellerBoHashmap.setOrderValue(sellerBoDocumentSnapshot.getOrderValue());
+                sellerBoHashmap.setTotalOrderValue(sellerBoDocumentSnapshot.getTotalOrderValue());
+                sellerBoHashmap.setInTime(sellerBoDocumentSnapshot.getInTime());
+                sellerBoHashmap.setOutTime(sellerBoDocumentSnapshot.getOutTime());
 
-            sellerBoHashmap.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(sellerBoDocumentSnapshot.getRetailerId()));
+                sellerBoHashmap.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(sellerBoDocumentSnapshot.getRetailerId()));
 
-            if (!sellerBoHashmap.isAttendanceDone()) {
-                computeSellerAttendance(sellerBoDocumentSnapshot.getUserId());
+                if(sellerBoHashmap.getLatitude() == 0 || sellerBoHashmap.getLongitude() == 0 ){
+                    LatLng latLng = SupervisorActivityHelper.getInstance().retailerLatLngByRId(sellerBoHashmap.getRetailerId());
+                    sellerBoHashmap.setLatitude(latLng.latitude);
+                    sellerBoHashmap.setLongitude(latLng.longitude);
+                }
+
+                if (!sellerBoHashmap.isAttendanceDone()) {
+                    computeSellerAttendance(sellerBoDocumentSnapshot.getUserId());
+                }
+
+                if (!isRealTimeLocationOn) {
+
+                    LatLng destLatLng = new LatLng(sellerBoDocumentSnapshot.getLatitude(), sellerBoDocumentSnapshot.getLongitude());
+
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .flat(true)
+                            .title(sellerBoHashmap.getUserName())
+                            .position(destLatLng)
+                            .snippet(String.valueOf(sellerBoHashmap.getUserId()));
+
+                    setMarkerHasMap(sellerBoHashmap, markerOptions);
+                }
+
+                computeSellerInfo();
             }
-
-            if (!isRealTimeLocationOn) {
-
-                LatLng destLatLng = new LatLng(sellerBoDocumentSnapshot.getLatitude(), sellerBoDocumentSnapshot.getLongitude());
-
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .flat(true)
-                        .title(sellerBoHashmap.getUserName())
-                        .position(destLatLng)
-                        .snippet(String.valueOf(sellerBoHashmap.getUserId()));
-
-                setMarkerHasMap(sellerBoHashmap,markerOptions);
-            }
-
-            computeSellerInfo();
+        }catch(Exception e){
+            Commons.printException(e);
         }
     }
 
     private void setLocationValues(DocumentSnapshot documentSnapshot){
 
-        SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
+        try {
+            SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
 
-        if (sellerBoDocumentSnapshot != null) {
+            if (sellerBoDocumentSnapshot != null) {
 
-            System.out.println("setLocationValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+                System.out.println("setLocationValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
-            LatLng destLatLng = new LatLng(sellerBoDocumentSnapshot.getLatitude(), sellerBoDocumentSnapshot.getLongitude());
+                LatLng destLatLng = new LatLng(sellerBoDocumentSnapshot.getLatitude(), sellerBoDocumentSnapshot.getLongitude());
 
-            SellerBo sellerHasmapBo = sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId());
+                SellerBo sellerHasmapBo = sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId());
 
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .flat(true)
-                    .title(sellerHasmapBo.getUserName())
-                    .position(destLatLng)
-                    .snippet(String.valueOf(sellerHasmapBo.getUserId()));
+                if (sellerHasmapBo != null) {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .flat(true)
+                            .title(sellerHasmapBo.getUserName())
+                            .position(destLatLng)
+                            .snippet(String.valueOf(sellerHasmapBo.getUserId()));
 
-            sellerHasmapBo.setLatitude(sellerBoDocumentSnapshot.getLatitude());
-            sellerHasmapBo.setLongitude(sellerBoDocumentSnapshot.getLongitude());
+                    sellerHasmapBo.setLatitude(sellerBoDocumentSnapshot.getLatitude());
+                    sellerHasmapBo.setLongitude(sellerBoDocumentSnapshot.getLongitude());
 
-            if (!sellerHasmapBo.isAttendanceDone()) {
-                computeSellerAttendance(sellerHasmapBo.getUserId());
+                    if (!sellerHasmapBo.isAttendanceDone()) {
+                        computeSellerAttendance(sellerHasmapBo.getUserId());
+                    }
+
+                    setMarkerHasMap(sellerHasmapBo, markerOptions);
+                }
             }
-
-            setMarkerHasMap(sellerHasmapBo,markerOptions);
+        }catch(Exception e){
+            Commons.printException(e);
         }
     }
 
@@ -554,6 +643,13 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     class DownloadSupRetailMaster extends AsyncTask<String, Void, Boolean> {
+
+        private String selectedDate;
+
+        DownloadSupRetailMaster(String seletedDate){
+            this.selectedDate = seletedDate;
+        }
+
         AlertDialog alertDialog;
 
         protected void onPreExecute() {
@@ -570,7 +666,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         @Override
         protected Boolean doInBackground(String... params) {
 
-            return isOnline() && prepareData();
+            return isOnline() && prepareData(selectedDate);
         }
 
         @Override
@@ -579,13 +675,16 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             alertDialog.dismiss();
             if (result) {
                 Toast.makeText(context, "Download Successfull", Toast.LENGTH_SHORT).show();
+
+                sellerMapHomeView.updateSellerInfoByDate(convertGlobalDateToPlane(selectedDate));
+
             }else
                 Toast.makeText(context, "Download Failed", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private boolean prepareData() {
+    private boolean prepareData(String selectedDate) {
 
         boolean isSuccess = false;
         try {
@@ -594,27 +693,44 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid());
             json.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
+            json.put("MobileDateTime",
+                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
             json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
-            json.put("RequestDate",
-                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+            json.put("RequestDate",selectedDate);
 
-            String downloadurl = DataMembers.SERVER_URL + getDownloadUrl();
+            String downloadurl = getDownloadUrl();
 
             Commons.print("downloadUrl "+downloadurl);
             System.out.println("json = " + json);
-            String response = bmodel.synchronizationHelper.sendPostMethod(downloadurl, json);
+
+            Vector<String> responseVector = getSupRetailerMasterResponse(json, downloadurl);
+
             try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
-                        String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                            bmodel.synchronizationHelper
-                                    .parseJSONAndInsert(jsonObject, false);
-                            isSuccess = true;
+                if (responseVector.size() > 0) {
+
+                    for (String s : responseVector) {
+
+                        JSONObject jsonObject = new JSONObject(s);
+                        Iterator itr = jsonObject.keys();
+                        while (itr.hasNext()) {
+
+                            String key = (String) itr.next();
+                            if (key.equals("Master")) {
+                                bmodel.synchronizationHelper
+                                        .parseJSONAndInsert(jsonObject, false);
+                                isSuccess = true;
+
+                            } else if (key.equals("Errorcode")) {
+                                String tokenResponse = jsonObject.getString("Errorcode");
+                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+
+                                    isSuccess = false;
+
+                                }
+                            }
                         }
                     }
                 }
@@ -628,6 +744,35 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
         return isSuccess;
 
+    }
+
+    public Vector<String> getSupRetailerMasterResponse(JSONObject data,
+                                            String appendurl) {
+        // Update Security key
+        bmodel.synchronizationHelper.updateAuthenticateToken(false);
+        StringBuilder url = new StringBuilder();
+        url.append(DataMembers.SERVER_URL);
+        url.append(appendurl);
+        if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            try {
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                http.addHeader("SECURITY_TOKEN_KEY", bmodel.synchronizationHelper.getSecurityKey());
+                http.setParamsJsonObject(data);
+
+                http.connectMe();
+                Vector<String> result = http.getResult();
+                if (result == null) {
+                    return new Vector<>();
+                }
+                return result;
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return new Vector<>();
+            }
+        } else {
+            return new Vector<>();
+        }
     }
 
     private String getDownloadUrl(){
@@ -683,6 +828,23 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         }
         return false;
 
+    }
+
+    private String convertGlobalDateToPlane(String globalDate){
+        try {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            Date date = sdf.parse(globalDate);
+
+            sdf = new SimpleDateFormat("MMddyyyy",Locale.ENGLISH);
+            globalDate =sdf.format(date);
+            return globalDate;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return globalDate;
     }
 
 }

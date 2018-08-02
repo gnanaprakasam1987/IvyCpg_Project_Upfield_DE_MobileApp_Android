@@ -7,24 +7,33 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.supervisor.mvp.FilterScreenFragment;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellerMapHomePresenter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Vector;
 
 public class SellerListActivity extends IvyBaseActivityNoActionBar {
 
@@ -34,6 +43,10 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     private ArrayList<SellerBo> sellersList = new ArrayList<>();
     private ArrayList<SellerBo> sellersInMarketList = new ArrayList<>();
     private ArrayList<SellerBo> sellersAbsentList = new ArrayList<>();
+    private String selectedDate;
+    private FrameLayout drawer;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +66,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
 
         Bundle getValue = getIntent().getBundleExtra("SellerInfo");
         sellersList = getValue.getParcelableArrayList("SellerList");
+        selectedDate = getValue.getString("Date");
 
         for (SellerBo sellerBo : sellersList)
             if(sellerBo.isAttendanceDone())
@@ -61,6 +75,13 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                 sellersAbsentList.add(sellerBo);
 
         viewPager = findViewById(R.id.viewPager);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.right_drawer);
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
 
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);//setting tab over viewpager
@@ -108,6 +129,30 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         }
 
         changeTabsFont(tabLayout);
+
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.END);
+
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+                mDrawerLayout, /* DrawerLayout object */
+                R.string.ok, /* "open drawer" description for accessibility */
+                R.string.close /* "close drawer" description for accessibility */
+        ) {
+            public void onDrawerClosed(View view) {
+                setScreenTitle("");
+                supportInvalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                setScreenTitle(getResources().getString(R.string.filter));
+                supportInvalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     @Override
@@ -137,6 +182,12 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mDrawerLayout.closeDrawer(GravityCompat.END);
+    }
+
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_dashboard).setVisible(false);
         menu.findItem(R.id.menu_date).setVisible(false);
@@ -147,8 +198,13 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            finish();
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                mDrawerLayout.closeDrawers();
+            } else {
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -176,7 +232,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
 
         @Override
         public Fragment getItem(int position) {
-            return TabViewListFragment.getInstance(position, prepareListValues(position), position == 0);
+            return TabViewListFragment.getInstance(position, prepareListValues(position), position == 0,selectedDate);
         }
 
         @Override
@@ -224,11 +280,33 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     }
 
     public void filter(){
-
+        filterFragment();
     }
 
     public void sort(){
 
+    }
+
+    private void filterFragment() {
+        try {
+
+            mDrawerLayout.openDrawer(GravityCompat.END);
+
+            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FilterScreenFragment frag = (FilterScreenFragment) fm
+                    .findFragmentByTag("FilterScreen");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+
+            FilterScreenFragment fragobj = new FilterScreenFragment();
+
+            ft.replace(R.id.right_drawer, fragobj, "FilterScreen");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 
 }

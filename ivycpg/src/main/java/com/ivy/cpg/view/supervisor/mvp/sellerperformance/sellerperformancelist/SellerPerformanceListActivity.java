@@ -45,10 +45,11 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
     private LinearLayout bottomLayout;
     private Animation slide_down, slide_up;
-//    SellerPerformanceHelper sellerPerformanceHelper;
-//    private String[] mMonths;
     private ArrayList<SellerBo> sellerPerformanceList = new ArrayList<>();
     private SellerPerformancePresenter sellerPerformancePresenter;
+
+    private String selectedDate;
+    private int sellerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +79,13 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
         prepareScreenData();
 
+        sellerId = getIntent().getExtras()!=null?getIntent().getExtras().getInt("Sellerid"):0;
+        selectedDate = getIntent().getExtras()!=null?getIntent().getExtras().getString("Date"):"";
+
         sellerPerformancePresenter = new SellerPerformancePresenter();
         sellerPerformancePresenter.setView(this,SellerPerformanceListActivity.this);
         sellerPerformancePresenter.getSellerListAWS();
-        sellerPerformancePresenter.sellerActivityInfoListener(4,"07052018");
+        sellerPerformancePresenter.sellerActivityInfoListener(sellerId,selectedDate);
 
 //        sellerPerformanceHelper = new SellerPerformanceHelper();
 //        mMonths = sellerPerformanceHelper.getSellerPerformanceList();
@@ -296,7 +300,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
     public void itemclicked(SellerBo sellerBo) {
         Intent intent = new Intent(SellerPerformanceListActivity.this,SellerPerformanceDetailActivity.class);
         intent.putExtra("SellerId",sellerBo.getUserId());
-        intent.putExtra("Date","07052018");
+        intent.putExtra("Date",selectedDate);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

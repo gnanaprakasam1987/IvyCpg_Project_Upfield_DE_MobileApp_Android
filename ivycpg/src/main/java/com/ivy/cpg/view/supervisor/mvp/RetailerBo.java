@@ -11,7 +11,7 @@ public class RetailerBo {
     private boolean isDeviated
             ,isOrdered
             ,isSkipped = false,isVisited = false;
-    private long totalOrderValue,orderValue,timeIn,timeOut;
+    private long totalOrderValue,orderValue, inTime, outTime;
     private Marker marker;
 
     public int getRetailerId() {
@@ -86,20 +86,20 @@ public class RetailerBo {
         this.orderValue = orderValue;
     }
 
-    public long getTimeIn() {
-        return timeIn;
+    public long getInTime() {
+        return inTime;
     }
 
-    public void setTimeIn(long timeIn) {
-        this.timeIn = timeIn;
+    public void setInTime(long inTime) {
+        this.inTime = inTime;
     }
 
-    public long getTimeOut() {
-        return timeOut;
+    public long getOutTime() {
+        return outTime;
     }
 
-    public void setTimeOut(long timeOut) {
-        this.timeOut = timeOut;
+    public void setOutTime(long outTime) {
+        this.outTime = outTime;
     }
 
     public double getMasterLatitude() {

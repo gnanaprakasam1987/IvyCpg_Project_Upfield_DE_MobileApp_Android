@@ -12,7 +12,7 @@ public class SellerBo implements Parcelable {
     private String userName,retailerName;
     private boolean isAttendanceDone = false;
     private double latitude,longitude;
-    private long orderValue,timeIn,timeOut,totalOrderValue;
+    private long orderValue, inTime, outTime,totalOrderValue;
     private Marker marker;
 
 
@@ -34,8 +34,8 @@ public class SellerBo implements Parcelable {
         latitude = in.readDouble();
         longitude = in.readDouble();
         orderValue = in.readLong();
-        timeIn = in.readLong();
-        timeOut = in.readLong();
+        inTime = in.readLong();
+        outTime = in.readLong();
         retailerId = in.readInt();
     }
 
@@ -131,20 +131,20 @@ public class SellerBo implements Parcelable {
         this.orderValue = orderValue;
     }
 
-    public long getTimeIn() {
-        return timeIn;
+    public long getInTime() {
+        return inTime;
     }
 
-    public void setTimeIn(long timeIn) {
-        this.timeIn = timeIn;
+    public void setInTime(long inTime) {
+        this.inTime = inTime;
     }
 
-    public long getTimeOut() {
-        return timeOut;
+    public long getOutTime() {
+        return outTime;
     }
 
-    public void setTimeOut(long timeOut) {
-        this.timeOut = timeOut;
+    public void setOutTime(long outTime) {
+        this.outTime = outTime;
     }
 
     public Marker getMarker() {
@@ -244,8 +244,8 @@ public class SellerBo implements Parcelable {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeLong(orderValue);
-        dest.writeLong(timeIn);
-        dest.writeLong(timeOut);
+        dest.writeLong(inTime);
+        dest.writeLong(outTime);
         dest.writeInt(retailerId);
     }
 }

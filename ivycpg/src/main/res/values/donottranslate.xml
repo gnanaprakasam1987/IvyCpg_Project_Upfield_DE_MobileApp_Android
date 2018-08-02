@@ -165,6 +165,7 @@
 
     <string name="last_vist">Last Vist : </string>
     <string name="visit_time">Visit Time : </string>
+    <string name="yet_to_visit">Yet to visit </string>
     <string name="targeted">Targeted </string>
     <string name="covered">Covered </string>
     <string name="please_complete">Please Complete</string>

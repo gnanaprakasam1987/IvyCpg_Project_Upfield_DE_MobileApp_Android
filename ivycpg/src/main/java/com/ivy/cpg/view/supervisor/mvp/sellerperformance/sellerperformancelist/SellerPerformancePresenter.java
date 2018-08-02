@@ -102,7 +102,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
         try {
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='SUP_USER_LOAD_LEVEL' and flag = 1";
+                    + " where hhtCode='REALTIME03' and flag = 1";
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -179,11 +179,15 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
 
                             for (DocumentSnapshot snapshot : task.getResult().getDocuments()) {
 
-                                SellerBo sellerBoDocumentSnapshot = snapshot.toObject((SellerBo.class));
+                                try {
+                                    SellerBo sellerBoDocumentSnapshot = snapshot.toObject((SellerBo.class));
 
-                                if(sellerBoDocumentSnapshot != null) {
-                                    covered = covered + sellerBoDocumentSnapshot.getCovered();
-                                    billed = billed + sellerBoDocumentSnapshot.getBilled();
+                                    if (sellerBoDocumentSnapshot != null) {
+                                        covered = covered + sellerBoDocumentSnapshot.getCovered();
+                                        billed = billed + sellerBoDocumentSnapshot.getBilled();
+                                    }
+                                }catch(Exception e){
+                                    Commons.printException(e);
                                 }
                             }
 
@@ -231,17 +235,21 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
 
     private void setValues(DocumentSnapshot documentSnapshot){
 
-        SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
+        try {
+            SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
 
-        System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+            System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
-        if(sellerBoDocumentSnapshot != null && sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId()) != null) {
+            if (sellerBoDocumentSnapshot != null && sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId()) != null) {
 
-            SellerBo sellerBoHashmap = sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId());
+                SellerBo sellerBoHashmap = sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId());
 
-            sellerBoHashmap.setBilled(sellerBoDocumentSnapshot.getBilled());
-            sellerBoHashmap.setCovered(sellerBoDocumentSnapshot.getCovered());
+                sellerBoHashmap.setBilled(sellerBoDocumentSnapshot.getBilled());
+                sellerBoHashmap.setCovered(sellerBoDocumentSnapshot.getCovered());
 
+            }
+        }catch (Exception e){
+            Commons.printException(e);
         }
     }
 

@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.Marker;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.customviews.scrollingpagerindicator.ScrollingPagerIndicator;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
@@ -319,12 +318,12 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-            holder.tvInTime.setText(outletMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeIn()));
-            holder.tvOutTime.setText(outletMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeOut()));
+            holder.tvInTime.setText(outletMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getInTime()));
+            holder.tvOutTime.setText(outletMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getOutTime()));
             holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getOrderValue()));
             holder.tvDuration.setText(
-                    outletMapViewPresenter.calculateDuration(visitedRetailers.get(position).getTimeIn(),
-                            visitedRetailers.get(position).getTimeOut()));
+                    outletMapViewPresenter.calculateDuration(visitedRetailers.get(position).getInTime(),
+                            visitedRetailers.get(position).getOutTime()));
 
         }
 

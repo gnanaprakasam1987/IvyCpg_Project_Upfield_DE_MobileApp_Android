@@ -6,10 +6,7 @@ import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 
 import com.github.mikephil.charting.data.Entry;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -22,11 +19,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -120,17 +117,23 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
                         if(documentSnapshot != null) {
-                            selectedSeller.setCovered((int)(long)documentSnapshot.get("covered"));
-                            selectedSeller.setBilled((int)(long)documentSnapshot.get("billed"));
-                            selectedSeller.setTotalOrderValue(documentSnapshot.get("totalOrderValue")!=null?(long)documentSnapshot.get("totalOrderValue"):0);
-                            selectedSeller.setLpc((documentSnapshot.get("lpc")!=null?(int)(long)documentSnapshot.get("lpc"):0));
-                            sellerPerformanceView.updateSellerPerformanceData(selectedSeller);
 
-                            prepareChartData(userId,getPreviousDays(date,-2));
+                            SellerBo documentSnapshotBo = documentSnapshot.toObject((SellerBo.class));
 
-                            sellerPerformanceView.updateSellerTabViewInfo(selectedSeller);
+                            if(documentSnapshotBo != null) {
+                                selectedSeller.setCovered(documentSnapshotBo.getCovered());
+                                selectedSeller.setBilled((documentSnapshotBo.getBilled()));
+                                selectedSeller.setTotalOrderValue(documentSnapshotBo.getTotalOrderValue());
+                                selectedSeller.setLpc(documentSnapshotBo.getLpc());
+                                sellerPerformanceView.updateSellerPerformanceData(selectedSeller);
+
+                                prepareChartData(userId, getPreviousDays(date, -2));
+
+                                sellerPerformanceView.updateSellerTabViewInfo(selectedSeller);
+                            }
 
                         }
+
                     }
                 });
     }
@@ -156,21 +159,23 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
                             DocumentSnapshot snapshot = task.getResult() ;
 
-                            SellerBo sellerBoDocumentSnapshot = snapshot.toObject((SellerBo.class));
+                            try {
+                                SellerBo sellerBoDocumentSnapshot = snapshot.toObject((SellerBo.class));
 
-                            if(sellerBoDocumentSnapshot != null) {
-                                covered = sellerBoDocumentSnapshot.getCovered();
-                                billed = sellerBoDocumentSnapshot.getBilled();
+                                if (sellerBoDocumentSnapshot != null) {
+                                    covered = sellerBoDocumentSnapshot.getCovered();
+                                    billed = sellerBoDocumentSnapshot.getBilled();
+                                }
+
+                                setChartData(date, covered, billed, userId);
+                            }catch(Exception e){
+                                Commons.printException(e);
                             }
-
-                            setChartData(date,covered,billed,userId);
                         }
 
                     }
                 });
     }
-
-
 
     private void setChartData(String date, int covered, int billed,int userId){
 
@@ -315,7 +320,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                 .collection(DETAIL_PATH);
 
         registration = queryRef
-                .orderBy("timeIn", Query.Direction.ASCENDING)
+                .orderBy("inTime", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -335,61 +340,65 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
     private void setSellerDetailValues(DocumentSnapshot documentSnapshot) {
 
-        RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
+        try {
+            RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
 
-        System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+            System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
-        if (documentSnapshotBo != null) {
+            if (documentSnapshotBo != null) {
 
-            LatLng destLatLng = new LatLng(documentSnapshotBo.getLatitude(), documentSnapshotBo.getLongitude());
+                LatLng destLatLng = new LatLng(documentSnapshotBo.getLatitude(), documentSnapshotBo.getLongitude());
 
-            //Update retailer info in master list
+                //Update retailer info in master list
 
-            RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
+                RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
-            if(retailerMasterBo != null) {
+                if (retailerMasterBo != null) {
 
 
-                if (retailerMasterBo.getIsOrdered() || documentSnapshotBo.getOrderValue() > 0) {
-                    retailerMasterBo.setIsOrdered(true);
-                } else {
-                    retailerMasterBo.setIsOrdered(false);
+                    if (retailerMasterBo.getIsOrdered() || documentSnapshotBo.getOrderValue() > 0) {
+                        retailerMasterBo.setIsOrdered(true);
+                    } else {
+                        retailerMasterBo.setIsOrdered(false);
+                    }
+
+                    documentSnapshotBo.setIsOrdered(retailerMasterBo.getIsOrdered());
+                    retailerMasterBo.setSkipped(false);
+                    retailerMasterBo.setVisited(true);
+
+                    long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
+                    retailerMasterBo.setTotalOrderValue(totalOrderValue);
+
+                    retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());
+                    retailerMasterBo.setInTime(documentSnapshotBo.getInTime());
+                    retailerMasterBo.setOutTime(documentSnapshotBo.getOutTime());
+
+                    // Set Visited Retailer details in HashMap with retailer id as key
+
+                    RetailerBo retailerBoObj = new RetailerBo();
+
+                    retailerBoObj.setLatitude(documentSnapshotBo.getLatitude());
+                    retailerBoObj.setLongitude(documentSnapshotBo.getLongitude());
+                    retailerBoObj.setOrderValue(documentSnapshotBo.getOrderValue());
+                    retailerBoObj.setIsOrdered(documentSnapshotBo.getIsOrdered());
+                    retailerBoObj.setInTime(documentSnapshotBo.getInTime());
+                    retailerBoObj.setOutTime(documentSnapshotBo.getOutTime());
+                    retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
+                    retailerBoObj.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(documentSnapshotBo.getRetailerId()));
+
+                    if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
+                        retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(retailerBoObj);
+                    } else {
+                        ArrayList<RetailerBo> visitedRetailerList = new ArrayList<>();
+                        visitedRetailerList.add(retailerBoObj);
+                        retailerVisitDetailsByRId.put(documentSnapshotBo.getRetailerId(), visitedRetailerList);
+                    }
+
+                    //ends
                 }
-
-                documentSnapshotBo.setIsOrdered(retailerMasterBo.getIsOrdered());
-                retailerMasterBo.setSkipped(false);
-                retailerMasterBo.setVisited(true);
-
-                long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
-                retailerMasterBo.setTotalOrderValue(totalOrderValue);
-
-                retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());
-                retailerMasterBo.setTimeIn(documentSnapshotBo.getTimeIn());
-                retailerMasterBo.setTimeOut(documentSnapshotBo.getTimeOut());
-
-                // Set Visited Retailer details in HashMap with retailer id as key
-
-                RetailerBo retailerBoObj = new RetailerBo();
-
-                retailerBoObj.setLatitude(documentSnapshotBo.getLatitude());
-                retailerBoObj.setLongitude(documentSnapshotBo.getLongitude());
-                retailerBoObj.setOrderValue(documentSnapshotBo.getOrderValue());
-                retailerBoObj.setIsOrdered(documentSnapshotBo.getIsOrdered());
-                retailerBoObj.setTimeIn(documentSnapshotBo.getTimeIn());
-                retailerBoObj.setTimeOut(documentSnapshotBo.getTimeOut());
-                retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
-                retailerBoObj.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(documentSnapshotBo.getRetailerId()));
-
-                if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
-                    retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(retailerBoObj);
-                } else {
-                    ArrayList<RetailerBo> visitedRetailerList = new ArrayList<>();
-                    visitedRetailerList.add(retailerBoObj);
-                    retailerVisitDetailsByRId.put(documentSnapshotBo.getRetailerId(), visitedRetailerList);
-                }
-
-                //ends
             }
+        }catch (Exception e){
+            Commons.printException(e);
         }
     }
 

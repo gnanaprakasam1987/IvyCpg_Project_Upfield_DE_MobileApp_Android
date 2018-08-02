@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,15 +45,21 @@ import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity;
+import com.ivy.lib.Utils;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.utils.FontUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class SellersMapHomeFragment extends IvyBaseFragment implements
         OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener,
@@ -66,11 +73,14 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName;
     private RecyclerViewPager sellerListRecyclerView;
+    private ProgressBar progressBar;
     private SellerMapHomePresenter sellerMapHomePresenter;
     private InMarketSellerAdapter inMarketSellerAdapter;
 
     private ArrayList<SellerBo> inMarketSellerArrayList = new ArrayList<>();
     private DatePickerDialog picker;
+    private String selectedDate="";
+    private int loginUserId;
 
 
     @Override
@@ -106,9 +116,13 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             Commons.printException(e);
         }
 
+        selectedDate = SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN);
+
 
         sellerMapHomePresenter = new SellerMapHomePresenter();
         sellerMapHomePresenter.setView(this,getContext());
+
+        loginUserId = sellerMapHomePresenter.getLoginUserId();
 
         initViews(view);
         initViewPager(view);
@@ -132,6 +146,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         tvTotalOutlet = view.findViewById(R.id.tv_ttl_outlet);
         tvOrderValue = view.findViewById(R.id.tv_order_value);
         tvSellerProductivePercent = view.findViewById(R.id.seller_perform_percent);
+        progressBar = view.findViewById(R.id.progressBar);
 
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
 
@@ -204,7 +219,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 values.putInt("TabPos", 0);
                 values.putString("Screen", "Seller");
                 values.putParcelableArrayList("SellerList",sellerMapHomePresenter.getAllSellerList());
-
+                values.putInt("Sellerid",loginUserId);
+                values.putString("Date",selectedDate);
                 intent.putExtra("SellerInfo",values);
 
                 startActivity(intent);
@@ -217,7 +233,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
                 intent.putExtra("TabPos", 0);
                 intent.putExtra("Screen", "Outlet");
-
+                intent.putExtra("Sellerid",loginUserId);
+                intent.putExtra("Date",selectedDate);
                 startActivity(intent);
             }
         });
@@ -228,6 +245,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
                 intent.putExtra("TabPos", 1);
                 intent.putExtra("Screen", "Outlet");
+                intent.putExtra("Sellerid",loginUserId);
+                intent.putExtra("Date",selectedDate);
                 startActivity(intent);
             }
         });
@@ -238,6 +257,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
                 intent.putExtra("TabPos", 2);
                 intent.putExtra("Screen", "Outlet");
+                intent.putExtra("Sellerid",loginUserId);
+                intent.putExtra("Date",selectedDate);
                 startActivity(intent);
             }
         });
@@ -247,6 +268,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), SellerPerformanceListActivity.class);
                 intent.putExtra("Screen", "Seller Performance");
+                intent.putExtra("Sellerid",loginUserId);
+                intent.putExtra("Date",selectedDate);
                 startActivity(intent);
             }
         });
@@ -260,7 +283,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 false);
         sellerListRecyclerView.setLayoutManager(layout);
 
-        inMarketSellerAdapter = new InMarketSellerAdapter(getContext().getApplicationContext(), inMarketSellerArrayList);
+        inMarketSellerAdapter = new InMarketSellerAdapter(getContext().getApplicationContext(), inMarketSellerArrayList,selectedDate);
         sellerListRecyclerView.setAdapter(inMarketSellerAdapter);
 
         sellerListRecyclerView.setHasFixedSize(true);
@@ -400,31 +423,6 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         return false;
     }
 
-    private void showDatePicker(){
-        final Calendar cldr = Calendar.getInstance();
-        int day = cldr.get(Calendar.DAY_OF_MONTH);
-        int month = cldr.get(Calendar.MONTH);
-        int year = cldr.get(Calendar.YEAR);
-        // date picker dialog
-        picker = new DatePickerDialog(getContext(),R.style.DatePickerDialogStyle,
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-                        String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                        Toast.makeText(getContext(),
-                                "Selected Date "+selectedDate,
-                                Toast.LENGTH_SHORT).show();
-                        picker.hide();
-
-                        sellerMapHomePresenter.downloadSupRetailerMaster(selectedDate);
-
-                    }
-                }, year, month, day);
-        picker.show();
-
-    }
-
     @Override
     public void onClick(View v) {
 
@@ -500,20 +498,16 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             }
         });
 
-        sellerMapHomePresenter.getSellerListAWS();
+        sellerMapHomePresenter.getSellerListAWS(SDUtil.now(SDUtil.DATE_GLOBAL));
 
-        sellerMapHomePresenter.loginToFirebase(getContext().getApplicationContext(),4);
+        sellerMapHomePresenter.loginToFirebase(getContext().getApplicationContext(),loginUserId);
     }
 
     @Override
     public void firebaseLoginSuccess() {
 
-        sellerMapHomePresenter.sellerAttendanceInfoListener(4,"07052018");
+        updateSellerInfoByDate(selectedDate);
 
-        sellerMapHomePresenter.sellerActivityInfoListener(4,"07052018");
-
-        if (sellerMapHomePresenter.isRealtimeLocation())
-            sellerMapHomePresenter.realtimeLocationInfoListener(4,"07102018");
     }
 
     @Override
@@ -585,6 +579,21 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     @Override
     public void sellerProductivity(int productivityPercent) {
         tvSellerProductivePercent.setText(productivityPercent+"%");
+        progressBar.setProgress(productivityPercent);
+    }
+
+    @Override
+    public void updateSellerInfoByDate(String selectedDate) {
+
+        this.selectedDate = selectedDate;
+
+        sellerMapHomePresenter.sellerAttendanceInfoListener(loginUserId,selectedDate);
+
+        sellerMapHomePresenter.sellerActivityInfoListener(loginUserId,selectedDate);
+
+        if (sellerMapHomePresenter.isRealtimeLocation())
+            sellerMapHomePresenter.realtimeLocationInfoListener(loginUserId,selectedDate);
+
     }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
@@ -610,6 +619,113 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     private int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
+    }
+
+    private void showDatePicker(){
+
+        String[] splitDate = convertPlaneDateToGlobal(selectedDate).split("/");
+
+        int day = SDUtil.convertToInt(splitDate[2]);
+        int month = SDUtil.convertToInt(splitDate[1]);
+        int year = SDUtil.convertToInt(splitDate[0]);
+        // date picker dialog
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(day, month, year);
+
+        picker = new DatePickerDialog(getContext(),R.style.DatePickerDialogStyle,mDateSetListener,day,month,year);
+
+        picker.updateDate(year, month - 1, day);
+
+        picker.show();
+
+    }
+
+    private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            Calendar dateConversion = new GregorianCalendar(year, month, day);
+            String convertedDate = sdf.format(dateConversion.getTime());
+
+            Toast.makeText(getContext(),
+                    "Selected Date "+convertedDate,
+                    Toast.LENGTH_SHORT).show();
+            picker.hide();
+
+
+            if(!isSameDateSelected(convertedDate)) {
+
+                if (mMap != null)
+                    mMap.clear();
+
+                tvOrderValue.setText("0");
+                tvCoveredOutlet.setText("0");
+                tvSellerProductivePercent.setText("0");
+                tvTotalOutlet.setText("0");
+                tvUnbilledOutlet.setText("0");
+                absentSeller.setText("0");
+                marketSeller.setText("0");
+                totalSeller.setText("0");
+                progressBar.setProgress(0);
+
+                sellerMapHomePresenter.getSellerListAWS(convertedDate);
+
+                if (!sellerMapHomePresenter.checkSelectedDateExist(convertedDate))
+                    sellerMapHomePresenter.downloadSupRetailerMaster(convertedDate);
+                else {
+                    updateSellerInfoByDate(convertGlobalDateToPlane(convertedDate));
+                }
+            }
+        }
+    };
+
+    private boolean isSameDateSelected(String selectedDate){
+        boolean isSameDate = false;
+        try {
+            if (this.selectedDate.equals(convertGlobalDateToPlane(selectedDate)))
+                isSameDate = true;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+        return isSameDate;
+    }
+
+    private String convertPlaneDateToGlobal(String planeDate){
+        try {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
+            Date date = sdf.parse(planeDate);
+
+            sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            planeDate =sdf.format(date);
+
+            return planeDate;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return planeDate;
+    }
+
+    private String convertGlobalDateToPlane(String globalDate){
+        try {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            Date date = sdf.parse(globalDate);
+
+            sdf = new SimpleDateFormat("MMddyyyy",Locale.ENGLISH);
+            globalDate =sdf.format(date);
+            return globalDate;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return globalDate;
     }
 
     @Override

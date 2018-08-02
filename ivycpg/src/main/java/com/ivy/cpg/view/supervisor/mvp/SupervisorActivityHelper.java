@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -55,7 +56,7 @@ public class SupervisorActivityHelper {
         }
     }
 
-    public void downloadOutletListAws(Context context) {
+    public void downloadOutletListAws(Context context,String date) {
         DBUtil db = null;
         try {
             db = new DBUtil(context, DataMembers.DB_NAME,
@@ -64,7 +65,7 @@ public class SupervisorActivityHelper {
             db.openDataBase();
 
             String queryStr = "select retailerId, latitude,longitude,retailerName,address,username from SupRetailerMaster SRM " +
-                    "inner join usermaster um on um.userid = SRM.userId";
+                    "inner join usermaster um on um.userid = SRM.userId where date = '"+date+"'";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {
@@ -117,6 +118,17 @@ public class SupervisorActivityHelper {
             return retailerMasterHashmap.get(retailerId).getRetailerName();
 
         return "";
+    }
+
+
+    public LatLng retailerLatLngByRId(int retailerId){
+        LatLng latLng = new LatLng(0,0);
+
+        if(retailerMasterHashmap.get(retailerId) != null){
+            latLng = new LatLng(retailerMasterHashmap.get(retailerId).getMasterLatitude(),retailerMasterHashmap.get(retailerId).getMasterLongitude());
+        }
+
+        return latLng;
     }
 
 }

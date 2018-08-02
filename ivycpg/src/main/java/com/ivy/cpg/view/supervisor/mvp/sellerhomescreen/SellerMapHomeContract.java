@@ -40,13 +40,17 @@ public interface SellerMapHomeContract {
         void updateUnbilledCount(int unBilledOutlet);
 
         void sellerProductivity(int productivityPercent);
+
+        void updateSellerInfoByDate(String selectedDate);
     }
 
     interface SellerMapHomePresenter {
 
         void setView(SellerMapHomeView supervisorHomeView, Context context);
 
-        void getSellerListAWS();
+        int getLoginUserId();
+
+        void getSellerListAWS(String date);
 
         boolean isRealtimeLocation();
 

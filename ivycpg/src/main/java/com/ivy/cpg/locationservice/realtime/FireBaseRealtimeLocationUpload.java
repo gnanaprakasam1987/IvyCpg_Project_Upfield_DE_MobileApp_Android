@@ -219,15 +219,13 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             db.createDataBase();
             db.openDataBase();
 
-            Cursor cursor = db.selectSQL("select userid from usermaster where isDeviceuser=0 and relationship = 'PARENT'");
+            Cursor cursor = db.selectSQL("select parentpositionids from usermaster where isDeviceuser=1");
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    supervisorIds.append(cursor.getString(0)).append("/");
+                    supervisorIds.append(cursor.getString(0));
                 }
             } else
                 supervisorIds = new StringBuilder();
-
-            supervisorIds.append("1").append("/").append("3").append("/").append("4");
 
             db.closeDB();
         } catch (Exception e) {

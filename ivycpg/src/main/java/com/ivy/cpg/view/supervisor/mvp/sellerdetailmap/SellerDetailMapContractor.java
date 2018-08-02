@@ -28,7 +28,7 @@ public interface SellerDetailMapContractor {
 
         void setView(SellerDetailMapView sellerMapView, Context context);
 
-        void downloadSellerOutletAWS(int userId);
+        void downloadSellerOutletAWS(int userId,String date);
 
         void isRealtimeLocation();
 

@@ -36,7 +36,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity;
-import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
@@ -51,7 +50,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
     private GoogleMap mMap;
     private int userId;
-    private String userName;
+    private String userName,seletedDate;
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName, tvInfoVisitTime, tvSellerName, tvSellerStartTime, tvSellerLastVisit, tvTarget, tvCovered;
@@ -92,6 +91,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             else {
                 userId = extras.getInt("SellerId");
                 userName = extras.getString("screentitle");
+                seletedDate = extras.getString("Date");
                 setScreenTitle(userName);
             }
         } catch (Exception e) {
@@ -160,7 +160,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             public void onClick(View v) {
                 Intent intent = new Intent(SellerDetailMapActivity.this,SellerPerformanceDetailActivity.class);
                 intent.putExtra("SellerId",userId);
-                intent.putExtra("Date","07052018");
+                intent.putExtra("Date",seletedDate);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
@@ -222,7 +222,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         //Download retailers from Master Seller wise
         //Plot pins base on retailer master location
-        sellerMapViewPresenter.downloadSellerOutletAWS(userId);
+        sellerMapViewPresenter.downloadSellerOutletAWS(userId,seletedDate);
 
         sellerMapViewPresenter.isRealtimeLocation();
 
@@ -230,10 +230,10 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         sellerMapViewPresenter.getMarkerForFocus();
 
         //Sellers last visit info listener
-        sellerMapViewPresenter.setSellerActivityListener(userId,"07052018");
+        sellerMapViewPresenter.setSellerActivityListener(userId,seletedDate);
 
         //Draw route based on sellers activity
-        sellerMapViewPresenter.setSellerActivityDetailListener(userId,"07052018");
+        sellerMapViewPresenter.setSellerActivityDetailListener(userId,seletedDate);
 
     }
 
@@ -480,8 +480,8 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
             holder.tvSerialNumber.setText(String.valueOf(outletListBos.get(position).getMasterSequence()));
             holder.tvStoreName.setText(outletListBos.get(position).getRetailerName());
-            holder.tvTimeIn.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeIn()));
-            holder.tvTimeOut.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getTimeOut()));
+            holder.tvTimeIn.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getInTime()));
+            holder.tvTimeOut.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getOutTime()));
 
             if(sellerMapViewPresenter.getLastVisited() != 0 && sellerMapViewPresenter.getLastVisited() > outletListBos.get(position).getMasterSequence()
                     && !outletListBos.get(position).isVisited()){

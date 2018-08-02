@@ -24,10 +24,12 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
 
     private Context context;
     private ArrayList<SellerBo> sellerArrayList = new ArrayList<>();
+    private String selectedDate;
 
-    InMarketSellerAdapter(Context context, ArrayList<SellerBo> sellerArrayList){
+    InMarketSellerAdapter(Context context, ArrayList<SellerBo> sellerArrayList,String selectedDate){
         this.context = context;
         this.sellerArrayList = sellerArrayList;
+        this.selectedDate = selectedDate;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -60,8 +62,11 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         holder.userName.setText(sellerArrayList.get(position).getUserName());
-        holder.retailerName.setText(context.getResources().getString(R.string.last_vist)+" "+sellerArrayList.get(position).getRetailerName());
-        holder.retailerVisit.setText(context.getResources().getString(R.string.visit_time)+" "+convertTime(sellerArrayList.get(position).getTimeIn()));
+        if(sellerArrayList.get(position).getRetailerName() == null)
+            holder.retailerName.setText(context.getResources().getString(R.string.last_vist) +" "+context.getResources().getString(R.string.yet_to_visit));
+        else
+            holder.retailerName.setText(context.getResources().getString(R.string.last_vist)+" "+sellerArrayList.get(position).getRetailerName());
+        holder.retailerVisit.setText(context.getResources().getString(R.string.visit_time)+" "+convertTime(sellerArrayList.get(position).getInTime()));
         holder.target.setText(context.getResources().getString(R.string.targeted)+" "+sellerArrayList.get(position).getTarget());
         holder.covered.setText(context.getResources().getString(R.string.covered)+" "+sellerArrayList.get(position).getCovered());
 
@@ -71,6 +76,7 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
                 Intent intent = new Intent(context, SellerDetailMapActivity.class);
                 intent.putExtra("SellerId", sellerArrayList.get(position).getUserId());
                 intent.putExtra("screentitle", sellerArrayList.get(position).getUserName());
+                intent.putExtra("Date",selectedDate);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

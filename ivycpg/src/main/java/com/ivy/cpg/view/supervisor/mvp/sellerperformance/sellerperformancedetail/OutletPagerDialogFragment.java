@@ -13,11 +13,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.Marker;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.customviews.scrollingpagerindicator.ScrollingPagerIndicator;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
-import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapPresenter;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.utils.FontUtils;
@@ -302,12 +300,12 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-            holder.tvInTime.setText(sellerPerformanceDetailPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeIn()));
-            holder.tvOutTime.setText(sellerPerformanceDetailPresenter.convertMillisToTime(visitedRetailers.get(position).getTimeOut()));
+            holder.tvInTime.setText(sellerPerformanceDetailPresenter.convertMillisToTime(visitedRetailers.get(position).getInTime()));
+            holder.tvOutTime.setText(sellerPerformanceDetailPresenter.convertMillisToTime(visitedRetailers.get(position).getOutTime()));
             holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getOrderValue()));
             holder.tvDuration.setText(
-                    sellerPerformanceDetailPresenter.calculateDuration(visitedRetailers.get(position).getTimeIn(),
-                            visitedRetailers.get(position).getTimeOut()));
+                    sellerPerformanceDetailPresenter.calculateDuration(visitedRetailers.get(position).getInTime(),
+                            visitedRetailers.get(position).getOutTime()));
 
         }
 
