@@ -72,9 +72,10 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     }
 
     @Override
-    public void validateAndUpload() {
+    public void validateAndUpload(boolean isDayCloseChecked) {
 
-        if (!mUploadHelper.isAttendanceCompleted(mContext.getApplicationContext())) {
+        if (isDayCloseChecked
+                && !mUploadHelper.isAttendanceCompleted(mContext.getApplicationContext())) {
             view.showAttendanceNotCompletedToast();
             return;
         }

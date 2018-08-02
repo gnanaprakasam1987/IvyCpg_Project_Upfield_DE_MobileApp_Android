@@ -1140,13 +1140,13 @@ public class DiscountHelper {
         return totalSchemeDiscountValue;
     }
 
-
     /**
      * Clear scheme free products
      *
+     * @param context
      * @param mOrderedProductList Ordered product list
      */
-    public void clearSchemeFreeProduct(LinkedList<ProductMasterBO> mOrderedProductList) {
+    public void clearSchemeFreeProduct(Context context, LinkedList<ProductMasterBO> mOrderedProductList) {
         if (mOrderedProductList != null)
             for (ProductMasterBO productB0 : mOrderedProductList) {
                 if (productB0.getSchemeProducts() != null) {
@@ -1157,8 +1157,19 @@ public class DiscountHelper {
                 productB0.setSoreasonId(0);
 
             }
+        //Mansoor Clear Applied Scheme List
+        SchemeDetailsMasterHelper schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(context);
+        if (schemeDetailsMasterHelper.getSchemeList() != null) {
+            for (SchemeBO schemeBO : schemeDetailsMasterHelper.getSchemeList()) {
+                schemeBO.setChecked(false);
+                for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts())
+                    schemeProductBO.setQuantitySelected(0);
+            }
+        }
+
 
     }
+
 
     /**
      * clear discount values product wise
