@@ -46,7 +46,6 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
                     }
 
                 } catch (Exception ignored) {
-
                 }
                 return "";
             }

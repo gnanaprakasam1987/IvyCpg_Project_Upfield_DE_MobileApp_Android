@@ -10,21 +10,17 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.PhotoCaptureTestDataFactory;
 import com.ivy.ui.photocapture.data.PhotoCaptureDataManager;
-import com.ivy.ui.photocapture.data.PhotoCaptureDataManagerImpl;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -37,10 +33,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.TestScheduler;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -89,7 +83,7 @@ public class PhotoCapturePresenterTest {
 
         given(photoCaptureDataManager.fetchEditedLocations(mDataManager.getRetailMaster().getRetailerID(), mDataManager.getRetailMaster().getDistributorId())).willReturn(Observable.fromCallable(new Callable<ArrayList<PhotoCaptureLocationBO>>() {
             @Override
-            public ArrayList<PhotoCaptureLocationBO> call() throws Exception {
+            public ArrayList<PhotoCaptureLocationBO> call() {
                 return PhotoCaptureTestDataFactory.getPhotoCaptureLocationList();
             }
         }));
@@ -153,7 +147,7 @@ public class PhotoCapturePresenterTest {
 
         given(photoCaptureDataManager.fetchEditedLocations(mDataManager.getRetailMaster().getRetailerID(), mDataManager.getRetailMaster().getDistributorId())).willReturn(Observable.fromCallable(new Callable<ArrayList<PhotoCaptureLocationBO>>() {
             @Override
-            public ArrayList<PhotoCaptureLocationBO> call() throws Exception {
+            public ArrayList<PhotoCaptureLocationBO> call() {
                 return PhotoCaptureTestDataFactory.getPhotoCaptureLocationList();
             }
         }));
@@ -406,7 +400,7 @@ public class PhotoCapturePresenterTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         mPresenter.onDetach();
     }
 

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DBUtil extends SQLiteOpenHelper{
+public class DBUtil extends SQLiteOpenHelper {
 
     private final String DB_PATH;
     private final String DB_NAME;
@@ -39,6 +39,7 @@ public class DBUtil extends SQLiteOpenHelper{
     }
 
     public void insertSQL(String tbl, String columns, String content) {
+        db.beginTransaction();
         String sql = "insert into " + tbl + "(" + columns + ") values("
                 + content + ")";
         if (BuildConfig.DEBUG) {
@@ -46,7 +47,7 @@ public class DBUtil extends SQLiteOpenHelper{
         }
 
         if (!isEncrypted)
-        db.execSQL(sql);
+            db.execSQL(sql);
         else
             db_encrypted.execSQL(sql);
     }
@@ -108,7 +109,7 @@ public class DBUtil extends SQLiteOpenHelper{
         }
 
         if (!isEncrypted)
-        return db.rawQuery(sql, null);
+            return db.rawQuery(sql, null);
         else
             return db_encrypted.rawQuery(sql, null);
     }
@@ -119,9 +120,9 @@ public class DBUtil extends SQLiteOpenHelper{
     }
 
     public void closeDB() {
-        if(!isEncrypted)
-        this.db.close();
-        else if (db_encrypted!=null)
+        if (!isEncrypted)
+            this.db.close();
+        else if (db_encrypted != null)
             db_encrypted.close();
     }
 
@@ -142,11 +143,11 @@ public class DBUtil extends SQLiteOpenHelper{
         }
     }
 
-    public boolean isDbNullOrClosed(){
-        if(isEncrypted)
-           return db_encrypted==null || !db_encrypted.isOpen();
+    public boolean isDbNullOrClosed() {
+        if (isEncrypted)
+            return db_encrypted == null || !db_encrypted.isOpen();
         else
-            return db==null || !db.isOpen();
+            return db == null || !db.isOpen();
     }
 
     /**
@@ -156,18 +157,18 @@ public class DBUtil extends SQLiteOpenHelper{
      * @return true if it exists, false if it doesn't
      */
     private boolean checkDataBase() {
-            SQLiteDatabase checkDB = null;
-            try {
-                String myPath = DB_PATH + DB_NAME;
-                checkDB = SQLiteDatabase.openDatabase(myPath, null,
-                        SQLiteDatabase.OPEN_READONLY);
-            } catch (SQLiteException e) {
-                // database does't exist yet.
-            }
-            if (checkDB != null) {
-                checkDB.close();
-            }
-            return checkDB != null;
+        SQLiteDatabase checkDB = null;
+        try {
+            String myPath = DB_PATH + DB_NAME;
+            checkDB = SQLiteDatabase.openDatabase(myPath, null,
+                    SQLiteDatabase.OPEN_READONLY);
+        } catch (SQLiteException e) {
+            // database does't exist yet.
+        }
+        if (checkDB != null) {
+            checkDB.close();
+        }
+        return checkDB != null;
         // abbas
     }
 
@@ -194,15 +195,15 @@ public class DBUtil extends SQLiteOpenHelper{
         myOutput.close();
         myInput.close();
         if (isEncrypted)
-            encrypt(myContext,DB_NAME,DB_PASSWORD);
+            encrypt(myContext, DB_NAME, DB_PASSWORD);
     }
 
     public void openDataBase() throws SQLException {
         // Open the database
         String myPath = DB_PATH + DB_NAME;
         if (!isEncrypted)
-        db = SQLiteDatabase.openDatabase(myPath, null,
-                SQLiteDatabase.OPEN_READWRITE);
+            db = SQLiteDatabase.openDatabase(myPath, null,
+                    SQLiteDatabase.OPEN_READWRITE);
         else {
             net.sqlcipher.database.SQLiteDatabase.loadLibs(myContext);
             File databaseFile = myContext.getDatabasePath(DB_NAME);
