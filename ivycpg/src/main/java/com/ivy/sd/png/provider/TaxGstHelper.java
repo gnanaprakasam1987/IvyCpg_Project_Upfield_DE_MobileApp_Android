@@ -250,7 +250,7 @@ public class TaxGstHelper implements TaxInterface {
                         .getRetailerID()) + ",");
                 sb.append(mBusinessModel.QT(invoiceid) + "," + taxBO.getTaxRate() + ",");
                 sb.append(mBusinessModel.QT(taxBO.getTaxType()) + ","
-                        + SDUtil.format(taxBO.getTotalTaxAmount(), 2, mBusinessModel.configurationMasterHelper.VALUE_COMMA_COUNT));
+                        + SDUtil.format(taxBO.getTotalTaxAmount(), 2, 0));
                 db.insertSQL("InvoiceTaxDetails", columns, sb.toString());
 
             }
@@ -298,10 +298,10 @@ public class TaxGstHelper implements TaxInterface {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from invoicetaxdetails IT");
+            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from OrderTaxDetails IT");
             sb.append(" inner join taxmaster TM on IT.groupid=TM.Groupid and IT.TaxType=TM.taxtype ");
             sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
-            sb.append(" where invoiceid=" + mBusinessModel.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc");
+            sb.append(" where orderid=" + mBusinessModel.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 int groupid = 0;
@@ -382,10 +382,10 @@ public class TaxGstHelper implements TaxInterface {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from invoicetaxdetails IT");
+            sb.append("select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from OrderTaxDetails IT");
             sb.append(" left join taxmaster TM on IT.groupid=TM.Groupid");
             sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
-            sb.append(" where invoiceid=" + mBusinessModel.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate");
+            sb.append(" where orderid=" + mBusinessModel.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 String groupid = "";
@@ -832,11 +832,12 @@ public class TaxGstHelper implements TaxInterface {
         values.append(taxBO.getTaxType() + "," + taxvalue
                 + "," + mBusinessModel.getRetailerMasterBO().getRetailerID());
         values.append("," + taxBO.getGroupId() + ",0");
-        db.insertSQL("InvoiceTaxDetails", columns, values.toString());
+
         db.insertSQL("OrderTaxDetails", columns, values.toString());
-        values = null;
 
-
+        if (mBusinessModel.getRetailerMasterBO().getIsVansales() == 1
+                || mBusinessModel.configurationMasterHelper.IS_INVOICE)
+            db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 
     public void insertProductLevelTaxForFreeProduct(String orderId, DBUtil db,
@@ -849,9 +850,12 @@ public class TaxGstHelper implements TaxInterface {
         values.append(taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
                 + "," + mBusinessModel.getRetailerMasterBO().getRetailerID());
         values.append("," + taxBO.getGroupId() + ",1");
-        db.insertSQL("InvoiceTaxDetails", columns, values.toString());
+
         db.insertSQL("OrderTaxDetails", columns, values.toString());
-        values = null;
+
+        if (mBusinessModel.getRetailerMasterBO().getIsVansales() == 1
+                || mBusinessModel.configurationMasterHelper.IS_INVOICE)
+            db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 
     /**
@@ -862,7 +866,7 @@ public class TaxGstHelper implements TaxInterface {
     public double applyBillWiseTax(double totalOrderValue) {
         double totalExclusiveOrderAmount = SDUtil.convertToDouble(SDUtil.format(totalOrderValue,
                 mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, mBusinessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+                0, false));
         double totalTaxValue = 0.0;
         if (!mBusinessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
             double totalTaxRate = 0;
@@ -951,6 +955,8 @@ public class TaxGstHelper implements TaxInterface {
                                 }
 
                                 totalTaxAmount = totalTaxAmount + taxAmount;
+                                productBo.setTaxApplyvalue(taxAmount);
+                                productBo.setTaxValue(productBo.getDiscount_order_value());
 
                                 productBo.setDiscount_order_value(productBo.getDiscount_order_value() + taxAmount);
                             }
