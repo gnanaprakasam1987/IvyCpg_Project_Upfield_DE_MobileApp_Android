@@ -1041,11 +1041,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
     }

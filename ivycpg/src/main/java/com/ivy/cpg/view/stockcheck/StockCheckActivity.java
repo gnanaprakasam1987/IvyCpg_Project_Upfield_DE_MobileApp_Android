@@ -117,9 +117,4 @@ public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
         asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
 }

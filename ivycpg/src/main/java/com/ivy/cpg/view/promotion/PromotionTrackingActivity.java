@@ -99,10 +99,6 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 		asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
 	}
 
-	@Override
-	public void loadStartVisit() {
-	}
-
 	public void numberPressed(View vw) {
 		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm

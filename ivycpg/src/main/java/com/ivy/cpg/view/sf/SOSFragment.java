@@ -710,11 +710,6 @@ public class SOSFragment extends IvyBaseFragment implements
         mDrawerLayout.closeDrawers();
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     /**
      * Open Dialog with Competitor to Get Actual Values and Calculate Total
      * Value

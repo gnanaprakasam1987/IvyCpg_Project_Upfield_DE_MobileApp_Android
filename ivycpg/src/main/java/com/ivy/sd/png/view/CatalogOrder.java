@@ -937,11 +937,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
         //String filtertext = getResources().getString(R.string.product_name);
         /*if (!filter.equals(""))

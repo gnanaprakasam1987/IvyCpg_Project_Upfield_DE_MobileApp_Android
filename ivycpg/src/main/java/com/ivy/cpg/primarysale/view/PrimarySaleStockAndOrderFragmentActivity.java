@@ -98,11 +98,6 @@ public class PrimarySaleStockAndOrderFragmentActivity extends IvyBaseActivityNoA
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PrimarySaleStockAndOrderFragment asf = (PrimarySaleStockAndOrderFragment) fm

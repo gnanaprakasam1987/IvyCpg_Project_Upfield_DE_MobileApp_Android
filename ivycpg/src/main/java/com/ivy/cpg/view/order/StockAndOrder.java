@@ -5715,11 +5715,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     private void switchProfile() {
         final String switchToProfile = "com.motorolasolutions.emdk.datawedge.api.ACTION_SWITCHTOPROFILE";
         final String extraData = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PROFILENAME";
@@ -5829,8 +5824,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 totalQty += (product.getLocations().get(i).getShelfOuter() * product
                         .getOutersize());
 
-            if (product.getLocations().get(i).getAvailability() > -1)
-                totalQty += product.getLocations().get(i).getAvailability();
+//            if (product.getLocations().get(i).getAvailability() > -1)
+//                totalQty += product.getLocations().get(i).getAvailability(); //Along with stock quantity this also gets added and showing wrong count
 
             totalQty += product.getLocations().get(i).getWHPiece();
             totalQty += (product.getLocations().get(i).getWHCase() * product

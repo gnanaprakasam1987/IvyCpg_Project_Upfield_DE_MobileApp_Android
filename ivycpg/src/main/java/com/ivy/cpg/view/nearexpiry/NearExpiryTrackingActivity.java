@@ -102,11 +102,4 @@ public class NearExpiryTrackingActivity extends IvyBaseActivityNoActionBar imple
         }
     }
 
-    @Override
-    public void loadStartVisit() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        NearExpiryTrackingFragment fragment = (NearExpiryTrackingFragment) fm
-                .findFragmentById(R.id.nearexpiry_tracking_fragment);
-        fragment.loadStartVisit();
-    }
 }

@@ -60,14 +60,6 @@ public class EmptyReturnActivity extends IvyBaseActivityNoActionBar implements B
         fragment.updateCancel();
     }
 
-    @Override
-    public void loadStartVisit() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        EmptyReturnFragment fragment = (EmptyReturnFragment) fm
-                .findFragmentById(R.id.empty_return_fragment);
-        fragment.loadStartVisit();
-    }
-
 
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {

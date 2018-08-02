@@ -455,10 +455,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         mDrawerLayout.closeDrawers();
     }
 
-    @Override
-    public void loadStartVisit() {
-    }
-
     public HashMap<Integer, Integer> mSelectedIdByLevelId;
 
     @Override
