@@ -958,7 +958,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                             0);
 
                 } else {
-                    presenter.validateAndUpload();
+                    presenter.validateAndUpload(dayCloseCheckBox.isChecked());
 
                 }
             } else {

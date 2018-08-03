@@ -3535,9 +3535,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_RTR_KPI) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
-                DashBoardHelper.getInstance(this).loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", "MONTH");
+                DashBoardHelper dashBoardHelper = DashBoardHelper.getInstance(this);
+                ArrayList<String> dashList = dashBoardHelper.getDashList(true);
+                if (!dashList.isEmpty())
+                    dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", dashList.get(0));
 
-                if (DashBoardHelper.getInstance(this).getDashChartDataList().size() > 0) {
+                if (dashBoardHelper.getDashChartDataList() != null && !dashBoardHelper.getDashChartDataList().isEmpty()) {
                     Intent i = new Intent(this,
                             SellerDashBoardActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -3547,9 +3550,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bnd.putBoolean("isFromHomeScreenTwo", true);
                     bnd.putString("menuCode", menu.getConfigCode());
                     i.putExtras(bnd);
-//                    i.putExtra("screentitle", menu.getMenuName());
-//                    i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
-//                    i.putExtra("isFromHomeScreenTwo", true);
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
