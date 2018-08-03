@@ -47,7 +47,6 @@ import android.widget.Toast;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -60,7 +59,6 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -71,7 +69,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 import me.relex.circleindicator.CircleIndicator;
@@ -147,6 +144,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     android.R.layout.select_dialog_singlechoice);
             for (StandardListBO temp : mPlanoGramHelper.getInStoreLocation())
                 locationAdapter.add(temp);
+
             if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
                 StandardListBO selectedId = locationAdapter
                         .getItem(mBModel.productHelper.getmSelectedGLobalLocationIndex());
@@ -160,6 +158,11 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     actionBar.setTitle(mPlanoGramHelper.mSelectedActivityName
                             + locationName);
                 }
+            } else if (mPlanoGramHelper.getInStoreLocation().size() == 1){
+                mSelectedLocationIndex = 0;
+                StandardListBO selectedId = locationAdapter.getItem(mSelectedLocationIndex);
+                if (selectedId != null)
+                    mSelectedLocationId = Integer.parseInt(selectedId.getListID());
             }
 
             // load data
@@ -1273,17 +1276,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
     @Override
     public void loadStartVisit() {
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
     }
 
     @Override

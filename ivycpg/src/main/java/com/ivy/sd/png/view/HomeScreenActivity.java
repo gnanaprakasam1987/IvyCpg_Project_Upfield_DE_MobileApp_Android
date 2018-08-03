@@ -2,42 +2,37 @@ package com.ivy.sd.png.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.PlanningSubScreenFragment;
+import com.ivy.cpg.view.van.StockProposalFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.model.ApplicationConfigs;
+import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by rajkumar.s on 12/30/2016.
  */
 
-public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements HomeScreenFragment.homeScreenItemClickedListener {
+public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements HomeScreenFragment.homeScreenItemClickedListener,
+        BrandDialogInterface, FiveLevelFilterCallBack {
 
     private DrawerLayout mDrawerLayout;
     private LinearLayout content_frame;
@@ -165,5 +160,50 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
                 Commons.printException("" + e);
             }
         }
+    }
+
+
+    public void numberPressed(View vw) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        StockProposalFragment asf = (StockProposalFragment) fm
+                .findFragmentById(R.id.fragment_content);
+        asf.numberPressed(vw);
+    }
+
+    @Override
+    public void updateBrandText(String mFilterText, int id) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        StockProposalFragment asf = (StockProposalFragment) fm
+                .findFragmentById(R.id.fragment_content);
+        asf.updateBrandText(mFilterText, id);
+    }
+
+    @Override
+    public void updateGeneralText(String mFilterText) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        StockProposalFragment asf = (StockProposalFragment) fm
+                .findFragmentById(R.id.fragment_content);
+        asf.updateGeneralText(mFilterText);
+    }
+
+    @Override
+    public void updateCancel() {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        StockProposalFragment asf = (StockProposalFragment) fm
+                .findFragmentById(R.id.fragment_content);
+        asf.updateCancel();
+    }
+
+    @Override
+    public void loadStartVisit() {
+
+    }
+
+    @Override
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        StockProposalFragment asf = (StockProposalFragment) fm
+                .findFragmentById(R.id.fragment_content);
+        asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 }

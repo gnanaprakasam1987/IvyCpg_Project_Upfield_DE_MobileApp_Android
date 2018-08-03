@@ -103,7 +103,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_INV_STAT_RPT = "MENU_INV_STAT_RPT";
 
 
-	public static final String MENU_INV_SALES_RETURN_REPORT = "MENU_INV_SALES_RETURN_REPORT";
+	public static final String MENU_INV_SALES_RETURN_REPORT = "MENU_SALES_RET_REPORT";
 
 	public static final HashMap<String,String> mActivityCodeByMenuCode=new HashMap<>();
 

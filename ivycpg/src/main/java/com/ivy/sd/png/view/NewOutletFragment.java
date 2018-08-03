@@ -6353,6 +6353,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 if (tableName.equals(DataMembers.tbl_nearbyRetailer) ||
                         tableName.equals(DataMembers.tbl_retailerPotential)) {
                     db.deleteSQL(tableName, "rid ='" + bmodel.newOutletHelper.getId() + "'", false);
+                } else if (tableName.equals(DataMembers.tbl_orderHeaderRequest)) {
+                    db.executeQ("delete from " + DataMembers.tbl_orderDetailRequest + " where OrderID in (select OrderID from " + DataMembers.tbl_orderHeaderRequest
+                            + " where RetailerID = '" + bmodel.newOutletHelper.getId() + "')");
+                    db.deleteSQL(tableName, "RetailerID ='" + bmodel.newOutletHelper.getId() + "'", false);
                 } else {
                     db.deleteSQL(tableName, "RetailerID ='" + bmodel.newOutletHelper.getId() + "'", false);
                 }

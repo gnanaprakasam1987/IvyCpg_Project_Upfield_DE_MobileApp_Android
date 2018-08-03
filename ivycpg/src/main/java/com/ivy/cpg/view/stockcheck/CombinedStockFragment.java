@@ -80,7 +80,6 @@ import com.ivy.sd.png.view.SchemeDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 public class CombinedStockFragment extends IvyBaseFragment implements
@@ -1463,17 +1462,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     public void loadStartVisit() {
     }
 
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
 
     public void onClick(View v) {
         Button vw = (Button) v;

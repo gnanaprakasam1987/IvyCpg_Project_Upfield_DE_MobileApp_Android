@@ -161,8 +161,6 @@
 
     <string name="drug_license_expired">Drug License Expired</string>
     <string name="uom_not_available">Uom Not Available</string>
-    <string name="title_activity_posm_image_gallery">PosmImageGallery</string>
-    <string name="title_activity_posm_gallery">PosmGallery</string>
     <string name="pwd_policy_not_match">Password Policy Not Matched</string>
     <string name="please_complete">Please Complete</string>
     <string name="actual_value_exceeds_total">Actual Value Exceeds Total Value</string>
@@ -172,15 +170,10 @@
 
     <string name="lpc">LPC</string>
     <string name="return_value">Return Value</string>
-    <string name="replace_value">Replace Value</string>
-
-    <string name="case_qty">Case Quantity</string>
-    <string name="piece_qty">Piece Quantity</string>
-    <string name="outer_qty">Outer Quantity</string>
-    <string name="reason_type">Reason - ReasonType</string>
 
     <string name="salesreport_details">SalesReturn Report Details</string>
     <string name="last_download_on">Last Download: </string>
     <string name="last_upload_on">Last Upload: </string>
     <string name="select_category">Select Category</string>
+    <string name="answer_take_photo">Answer the question to take photo.</string>
 </resources>

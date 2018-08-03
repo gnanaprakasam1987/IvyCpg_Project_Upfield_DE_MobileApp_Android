@@ -68,6 +68,7 @@ import com.ivy.cpg.view.price.PriceTrackCompActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.promotion.PromotionHelper;
 import com.ivy.cpg.view.promotion.PromotionTrackingActivity;
+import com.ivy.cpg.view.salesdeliveryreturn.SalesReturnDeliveryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sf.SODActivity;
@@ -166,6 +167,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_DISPLAY_SCH = "MENU_DISPLAY_SCH";
     public static final String MENU_DISPLAY_SCH_TRACK = "MENU_DISPLAY_SCH_TRACK";
     public static final String MENU_ORD_DELIVERY = "MENU_DELIVERY_MGMT_ORD";
+    public static final String MENU_SALES_RET_DELIVERY ="MENU_SALES_RET_DELIVERY";
 
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
@@ -1449,6 +1451,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
+                }else if (menuDB.get(i).getConfigCode().equals(MENU_SALES_RET_DELIVERY)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
                 }
 
             }
@@ -1654,6 +1664,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     // Load Data for Special Filter
                     bmodel.configurationMasterHelper.downloadFilterList();
                     bmodel.productHelper.updateProductColor();
+                    bmodel.productHelper.loadRetailerWiseProductWiseP4StockAndOrderQty();
 
 
                     /** Load the screen **/
@@ -1940,7 +1951,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         salesReturnHelper.cloneReasonMaster(true);//
                         salesReturnHelper.clearSalesReturnTable(true);//
                         salesReturnHelper.removeSalesReturnTable(true);
-                        salesReturnHelper.loadSalesReturnData(getApplicationContext(), "ORDER");
                     }
                 }
                 if (!isClick) {
@@ -2622,7 +2632,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                             salesReturnHelper.getInstance(this).removeSalesReturnTable(false);
-                            salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(), "");
+                            salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(), "", "");
                         }
 
                         bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);
@@ -3704,6 +3714,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
+                bmodel.configurationMasterHelper.loadDeliveryUOMConfiguration();
                 OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
                 orderDeliveryHelper.downloadOrderDeliveryHeader(this);
 
@@ -3731,6 +3742,17 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+            }
+        }else if(menu.getConfigCode().equals(MENU_SALES_RET_DELIVERY) && hasLink == 1){
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP){
+                Intent i = new Intent(this,
+                        SalesReturnDeliveryActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                i.putExtra("menuName", menu.getMenuName());
+                i.putExtra("menuCode", menu.getConfigCode());
+                startActivity(i);
+                finish();
             }
         } else {
             isCreated = false;

@@ -1451,7 +1451,7 @@ public class BusinessModel extends Application {
 
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? " left join SupplierMaster SM ON SM.rid = A.RetailerID" : "")
 
-                            + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID and RPG.distributorid=RetDistributorId"
+                            + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID and (RPG.distributorid=RetDistributorId OR RPG.distributorid = 0)"
 
                             + " LEFT JOIN RetailerVisit RV ON RV.RetailerID = A.RetailerID"
 
@@ -2374,22 +2374,6 @@ public class BusinessModel extends Application {
                     || product.getOrderedPcsQty() > 0
                     || product.getOrderedOuterQty() > 0)
                 return true;
-
-
-            if (configurationMasterHelper.SHOW_STOCK_SP
-                    || configurationMasterHelper.SHOW_STOCK_SC
-                    || configurationMasterHelper.SHOW_SHELF_OUTER) {
-                int cSize2 = product.getLocations().size();
-                for (int f = 0; f < cSize2; f++) {
-                    if (product.getLocations().get(f).getAvailability() != -1
-                            || product.getLocations().get(f).getReasonId() != 0
-                            || product.getLocations().get(f).getShelfPiece() != -1
-                            || product.getLocations().get(f).getShelfCase() != -1
-                            || product.getLocations().get(f).getShelfOuter() != -1) {
-                        return true;
-                    }
-                }
-            }
         }
         return false;
     }
@@ -4848,7 +4832,7 @@ public class BusinessModel extends Application {
                         || product.getLocations().get(j).getCockTailQty() > 0
                         || product.getIsListed() > 0
                         || product.getIsDistributed() > 0
-                        || !product.getReasonID().equals("0")
+                        || product.getLocations().get(j).getReasonId() != 0
                         || product.getLocations().get(j).getAvailability() > -1)
                     return true;
             }
@@ -8679,7 +8663,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT COUNT(DISTINCT RETAILERID) FROM RETAILERMASTER");
+                    .selectSQL("SELECT COUNT(DISTINCT RM.RETAILERID) FROM RETAILERMASTER RM inner join RetailerMasterInfo RMI " +
+                            "on RM.RetailerID = RMI.RetailerId where RMI.istoday = 1");
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext())
@@ -8770,7 +8755,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select count(distinct InvoiceNo),sum(invNetamount) from Invoicemaster where invoicedate = "
+                    .selectSQL("select count(distinct InvoiceNo),sum(totalamount) from Invoicemaster where invoicedate = "
                             + QT(userMasterHelper.getUserMasterBO().getDownloadDate()));
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -8796,7 +8781,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select count(distinct orderid),sum(ordervalue) from OrderHeader where invoicestatus =0 ");
+                    .selectSQL("select count(distinct orderid),sum(totalamount) from OrderHeader where invoicestatus =0 ");
             if (c != null) {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {

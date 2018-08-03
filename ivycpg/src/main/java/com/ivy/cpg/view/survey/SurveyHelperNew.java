@@ -973,16 +973,17 @@ public class SurveyHelperNew {
                             !qus.getSelectedAnswerIDs().contains(-1)) && !qus.getQuestionType().equals("EMAIL")) {
                         return true;
                     }
-                    if (qus.getQuestionType().equals("EMAIL")) {
+                    if (qus.getQuestionType().equals("EMAIL") && qus.getSelectedAnswer().size() > 0) {
                         isEmail = true;
-                        if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
+                        if (!isValidEmail(qus.getSelectedAnswer().get(0))) {
                             invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                             invalidEmails.append("\n");
                         }
                     }
-                    if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
+                    if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")
+                            && qus.getSelectedAnswer().size() > 0) {
                         isNum = true;
-                        if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
+                        if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty()) {
                             if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
                                 if (!isInRange(SDUtil.convertToFloat(qus.getFromValue()), SDUtil.convertToFloat(qus.getToValue()),
                                         SDUtil.convertToFloat(qus.getSelectedAnswer().get(0)))) {
@@ -1149,11 +1150,13 @@ public class SurveyHelperNew {
                                 else
                                     optionScore = questionBO.getQuestScore();
 
-                                if ("TEXT".equals(questionBO.getQuestionType()) ||
-                                        "NUM".equals(questionBO.getQuestionType()) ||
-                                        "PERC".equals(questionBO.getQuestionType()) || "OPT".equals(questionBO.getQuestionType())
-                                        && !questionBO
-                                        .getSelectedAnswer().isEmpty()) {
+                                if ("TEXT".equals(questionBO.getQuestionType())
+                                        || "NUM".equals(questionBO.getQuestionType())
+                                        || "PERC".equals(questionBO.getQuestionType())
+                                        || "EMAIL".equals(questionBO.getQuestionType())
+                                        || "DATE".equals(questionBO.getQuestionType())
+                                        || "PH_NO".equals(questionBO.getQuestionType())
+                                        && !questionBO.getSelectedAnswer().isEmpty()) {
                                     String detailvalues = values1
                                             + ","
                                             + questionBO.getSelectedAnswerIDs()
@@ -1338,10 +1341,13 @@ public class SurveyHelperNew {
                                     else
                                         optionScore = questionBO.getQuestScore();
 
-                                    if ("TEXT".equals(questionBO.getQuestionType()) ||
-                                            "NUM".equals(questionBO.getQuestionType()) ||
-                                            "PERC".equals(questionBO.getQuestionType()) && !questionBO
-                                                    .getSelectedAnswer().isEmpty()) {
+                                    if ("TEXT".equals(questionBO.getQuestionType())
+                                            || "NUM".equals(questionBO.getQuestionType())
+                                            || "PERC".equals(questionBO.getQuestionType())
+                                            || "EMAIL".equals(questionBO.getQuestionType())
+                                            || "DATE".equals(questionBO.getQuestionType())
+                                            || "PH_NO".equals(questionBO.getQuestionType())
+                                            && !questionBO.getSelectedAnswer().isEmpty()) {
                                         String detailvalues = values1
                                                 + ","
                                                 + questionBO.getSelectedAnswerIDs()
@@ -1440,7 +1446,7 @@ public class SurveyHelperNew {
 
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
     }
 
