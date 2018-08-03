@@ -14,7 +14,6 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.bo.PlanningOutletBO;
-import com.ivy.sd.png.bo.RetailerContractBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.asset.AssetHistoryBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -33,9 +32,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.Callable;
 
-import io.reactivex.Single;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 import static com.ivy.lib.Utils.QT;
 
@@ -990,14 +990,45 @@ public class ProfileHelper {
         return givenLovId;
     }
 
-    public Single<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID){
-        return Single.fromCallable(new Callable<ArrayList<RetailerContactBo>>() {
+    public Observable<HashMap<String, String>> downloadRetailerContactMenu() {
+        return Observable.create(new ObservableOnSubscribe<HashMap<String, String>>() {
             @Override
-            public ArrayList<RetailerContactBo> call() throws Exception {
+            public void subscribe(ObservableEmitter<HashMap<String, String>> subscriber) throws Exception {
+                HashMap<String, String> contactMenuMap = new HashMap<>();
+
+                try {
+                    String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + bmodel.QT("RETAILER_CONTACT") + " and flag =1";
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    Cursor c = db.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            contactMenuMap.put(c.getString(0), c.getString(1));
+                        }
+                        c.close();
+                    }
+                    db.closeDB();
+                    subscriber.onNext(contactMenuMap);
+                    subscriber.onComplete();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                    subscriber.onError(e);
+                    subscriber.onComplete();
+                }
+            }
+        });
+    }
+
+
+    public Observable<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID) {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<RetailerContactBo>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<RetailerContactBo>> subscriber) throws Exception {
                 ArrayList<RetailerContactBo> contactList = new ArrayList<>();
                 try {
                     String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,"
-                            + " RC.contactname as cName,RC.contactname_LName as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
+                            + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
                             + " ifnull(RC.Email,'') as email from RetailerContact RC "
                             + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
                             + " Where RC.RetailerId =" + bmodel.QT(retailerID);
@@ -1023,41 +1054,13 @@ public class ProfileHelper {
                         c.close();
                     }
                     db.closeDB();
-                } catch (Exception e) {
-                    Commons.printException(e);
-                    contactList = new ArrayList<>();
+                    subscriber.onNext(contactList);
+                    subscriber.onComplete();
+                } catch (Exception exception) {
+                    Commons.printException(exception);
+                    subscriber.onError(exception);
+                    subscriber.onComplete();
                 }
-                return contactList;
-            }
-        });
-    }
-
-
-    public Single<HashMap<String,String>> downloadRetailerContactMenu(){
-        return Single.fromCallable(new Callable<HashMap<String,String>>() {
-            @Override
-            public HashMap<String,String> call() throws Exception {
-                HashMap<String, String> contactMenuMap = new HashMap<>();
-
-                try {
-                    String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + bmodel.QT("RETAILER_CONTACT") + " and flag =1";
-                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
-                    db.openDataBase();
-                    Cursor c = db.selectSQL(sql);
-                    if (c != null) {
-                        while (c.moveToNext()) {
-                            contactMenuMap.put(c.getString(0), c.getString(1));
-                        }
-                        c.close();
-                    }
-                    db.closeDB();
-                } catch (Exception e) {
-                    Commons.printException(e);
-                    contactMenuMap = new HashMap<>();
-                }
-                return contactMenuMap;
-
             }
         });
     }

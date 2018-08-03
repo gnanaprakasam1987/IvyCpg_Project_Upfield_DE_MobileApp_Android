@@ -20,138 +20,147 @@ import java.util.ArrayList;
 
 public class OutletTimeStampHelper {
 
-	private final Context context;
-	private final BusinessModel bmodel;
-	private String uid;
+    private final Context context;
+    private final BusinessModel bmodel;
+    private String uid;
 
-	// timein is used to update timeout
-	private String timeIn;
-	private String timeInModuleWise;
+    // timein is used to update timeout
+    private String timeIn;
+    private String timeInModuleWise;
 
-	private int lastRetailerSequence=0;
-	private double lastRetailerLattitude=0;
-	private double lastRetailerLongitude=0;
-	private int lastRetailerId=0;
+    private int lastRetailerSequence = 0;
+    private double lastRetailerLattitude = 0;
+    private double lastRetailerLongitude = 0;
+    private int lastRetailerId = 0;
 
-	private static OutletTimeStampHelper instance = null;
+    private static OutletTimeStampHelper instance = null;
 
-	private int getLastRetailerId() {
-		return lastRetailerId;
-	}
+    private int getLastRetailerId() {
+        return lastRetailerId;
+    }
 
-	public double getLastRetailerLattitude() {
-		return lastRetailerLattitude;
-	}
+    public double getLastRetailerLattitude() {
+        return lastRetailerLattitude;
+    }
 
-	public double getLastRetailerLongitude() {
-		return lastRetailerLongitude;
-	}
+    public double getLastRetailerLongitude() {
+        return lastRetailerLongitude;
+    }
 
-	private int getLastRetailerSequence() {
-		return lastRetailerSequence;
-	}
+    private int getLastRetailerSequence() {
+        return lastRetailerSequence;
+    }
 
-	private OutletTimeStampHelper(Context context) {
-		this.context = context;
-		this.bmodel = (BusinessModel) context;
-	}
+    private OutletTimeStampHelper(Context context) {
+        this.context = context;
+        this.bmodel = (BusinessModel) context;
+    }
 
-	public static OutletTimeStampHelper getInstance(Context context) {
-		if (instance == null) {
-			instance = new OutletTimeStampHelper(context);
-		}
-		return instance;
-	}
+    public static OutletTimeStampHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new OutletTimeStampHelper(context);
+        }
+        return instance;
+    }
 
-	public String getTimeIn() {
-		return timeIn;
-	}
+    public String getTimeIn() {
+        return timeIn;
+    }
 
-	public void setTimeIn(String timeIn) {
-		this.timeIn = timeIn;
-	}
+    public void setTimeIn(String timeIn) {
+        this.timeIn = timeIn;
+    }
 
-	public String getUid() {
-		return uid;
-	}
+    public String getUid() {
+        return uid;
+    }
 
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
-	private String QT(String data) {
-		return "'" + data + "'";
-	}
+    private String QT(String data) {
+        return "'" + data + "'";
+    }
 
-	/**
-	 * Used to delete timeStamp.
-	 * 
-	 */
-	public void deleteTimeStamp() {
+    /**
+     * Used to delete timeStamp.
+     */
+    public void deleteTimeStamp() {
 
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			db.deleteSQL(DataMembers.tbl_OutletTimestamp, "retailerid="
-					+ bmodel.retailerMasterBO.getRetailerID(), false);
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
-	
-	/**
-	 * Used to delete timeStamp.
-	 * 
-	 */
-	public void deleteTimeStampAllModule() {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			db.deleteSQL(DataMembers.tbl_outlet_time_stamp_detail, "retailerid="
-					+ bmodel.retailerMasterBO.getRetailerID() + " AND UID=" + getUid(), false);
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_OutletTimestamp, "retailerid="
+                    + bmodel.retailerMasterBO.getRetailerID(), false);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-	/**
-	 * Used to delete timeStamp.
-	 *
-	 */
-	public void deleteTimeStampImages() {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			db.deleteSQL(DataMembers.tbl_OutletTimestamp_images, "uid="
-					+ getUid(), false);
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+    /**
+     * Used to delete timeStamp.
+     */
+    public void deleteTimeStampAllModule() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_outlet_time_stamp_detail, "retailerid="
+                    + bmodel.retailerMasterBO.getRetailerID() + " AND UID=" + getUid(), false);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-	/**
-	 * Used to set Time Stamp.
-	 * 
-	 * @param date date of last user visited retailer
-	 * @param timeIn time of last user visited retailer
-	 */
-	public void saveTimeStamp(String date, String timeIn,float distance,String folderPath,String fName,String mVisitMode,String mNFCREasonId) {
-		ArrayList<UserMasterBO> joinCallList=bmodel.userMasterHelper.getUserMasterBO().getJoinCallUserList();
-		try {
-			if(bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED)
-			  saveOutletTimeStampImages(folderPath,fName);
+    /**
+     * Used to delete timeStamp.
+     */
+    public void deleteTimeStampImages() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_OutletTimestamp_images, "uid="
+                    + getUid(), false);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-			float dist = LocationUtil.calculateDistance(
-					bmodel.getRetailerMasterBO().getLatitude(), bmodel.getRetailerMasterBO().getLongitude());
+    /**
+     * Used to set Time Stamp.
+     *
+     * @param date   date of last user visited retailer
+     * @param timeIn time of last user visited retailer
+     */
+    public boolean saveTimeStamp(String date, String timeIn, float distance, String folderPath, String fName, String mVisitMode, String mNFCREasonId) {
+
+        ArrayList<UserMasterBO> joinCallList = bmodel.userMasterHelper.getUserMasterBO().getJoinCallUserList();
+        boolean sucessFlag=true;
+        try {
+
+            try {
+                if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED)
+                    saveOutletTimeStampImages(folderPath, fName);
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            float dist = 0f;
+            try {
+                dist = LocationUtil.calculateDistance(
+                        bmodel.getRetailerMasterBO().getLatitude(), bmodel.getRetailerMasterBO().getLongitude());
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
 			int joinCallFlag=0;
 			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -159,19 +168,14 @@ public class OutletTimeStampHelper {
 			db.createDataBase();
 			db.openDataBase();
 			
-			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode" +
-					",latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery," +
-					"LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc";
+			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc";
 
-			if(isJointCall(joinCallList)){  // check join call or not
-				joinCallFlag=1;
-			}
 
 			String values = getUid() + ","
 					+ bmodel.retailerMasterBO.getBeatID() + "," + QT(date)
 					+ "," + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
 					+ QT(date + " " + timeIn) + "," + QT(date + " " + timeIn)
-					+ "," + QT(bmodel.retailerMasterBO.getRetailerName()) + ","
+					+ "," + QT("") + ","
 					+ QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
 					+ QT(LocationUtil.latitude + "") + ","
 					+ QT(LocationUtil.longitude + "")+","
@@ -186,34 +190,35 @@ public class OutletTimeStampHelper {
 					+","+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
 					+","+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
 					+","+QT(String.valueOf(bmodel.getOrderValue()))
-					+","+QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
+                    +","+QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
 
-			db.insertSQL("OutletTimestamp", columns, values);
-			
-			if(joinCallFlag==1){  // insert join call details
-				for(UserMasterBO userBo:joinCallList){
-					if(userBo.getIsJointCall()==1){
-				String joinCallColumns="timestampid,supid";
-				
-				String joinCallValues=getUid()+","+userBo.getUserid();
-				db.insertSQL("OutletJoinCall", joinCallColumns, joinCallValues);
-				}
-				}
-			}
+            db.insertSQL("OutletTimestamp", columns, values);
 
-			if(!("".equals(mVisitMode))) {
-				String ret_columns = "UId, EntryMode, ReasonId, RetailerId";
+            if (joinCallFlag == 1) {  // insert join call details
+                for (UserMasterBO userBo : joinCallList) {
+                    if (userBo.getIsJointCall() == 1) {
+                        String joinCallColumns = "timestampid,supid";
+                        String joinCallValues = getUid() + "," + userBo.getUserid();
+                        db.insertSQL("OutletJoinCall", joinCallColumns, joinCallValues);
+                    }
+                }
+            }
 
-				String ret_values = getUid() + "," + QT(mVisitMode) + "," + QT(mNFCREasonId) + "," + QT(bmodel.retailerMasterBO.getRetailerID());
+            if (!("".equals(mVisitMode))) {
+                String ret_columns = "UId, EntryMode, ReasonId, RetailerId";
 
-				db.insertSQL("RetailerEntryDetails", ret_columns, ret_values);
-			}
+                String ret_values = getUid() + "," + QT(mVisitMode) + "," + QT(mNFCREasonId) + "," + QT(bmodel.retailerMasterBO.getRetailerID());
 
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+                db.insertSQL("RetailerEntryDetails", ret_columns, ret_values);
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+            sucessFlag = false;
+        }
+        return sucessFlag;
+    }
 
 	/**
 	 * Set Time Out
@@ -238,7 +243,7 @@ public class OutletTimeStampHelper {
 					+", Battery = "+getBatteryPercentage(context)
 					+", IsLocationEnabled = "+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
 					+", IsDeviated = "+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
-					+", lpc = "+ bmodel.retailerMasterBO.getTotalLines()
+                    +", lpc = "+ bmodel.retailerMasterBO.getTotalLines()
 					+"  WHERE RetailerID = '"
 					+bmodel.retailerMasterBO.getRetailerID()
 					+ "' AND TimeIn = '" + getTimeIn() + "'";
@@ -249,223 +254,230 @@ public class OutletTimeStampHelper {
 		}
 	}
 
-	/**
-	 * Used to set Time Stamp.
-	 *
-	 * @param date module start-in date
-	 * @param timeIn module start-in time
-	 */
-	public void saveTimeStampModuleWise(String date, String timeIn, String moduleCode) {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			timeInModuleWise = QT(date + " " + timeIn);
-			String values = getUid() + ","
-					+ QT(moduleCode) + ","
-					+ timeInModuleWise + "," +timeInModuleWise
-					+ ","
-					+ QT(bmodel.retailerMasterBO.getRetailerID());
-			db.insertSQL(DataMembers.tbl_outlet_time_stamp_detail, DataMembers.tbl_outlet_time_stamp_detail_cols, values);
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+    /**
+     * Used to set Time Stamp.
+     *
+     * @param date   module start-in date
+     * @param timeIn module start-in time
+     */
+    public void saveTimeStampModuleWise(String date, String timeIn, String moduleCode) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            timeInModuleWise = QT(date + " " + timeIn);
+            String values = getUid() + ","
+                    + QT(moduleCode) + ","
+                    + timeInModuleWise + "," + timeInModuleWise
+                    + ","
+                    + QT(bmodel.retailerMasterBO.getRetailerID());
+            db.insertSQL(DataMembers.tbl_outlet_time_stamp_detail, DataMembers.tbl_outlet_time_stamp_detail_cols, values);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-	/**
-	 * Set Time Out
-	 *
-	 * @param timeOut module exit time
-	 */
-	public void updateTimeStampModuleWise(String timeOut) {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			String dateTime = com.ivy.sd.png.commons.SDUtil.now(com.ivy.sd.png.commons.SDUtil.DATE_GLOBAL) + " " + timeOut;
-			String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + dateTime
-					+ "'  WHERE RetailerID = '"
-					+ bmodel.retailerMasterBO.getRetailerID()
-					+ "' AND TimeIn = " + timeInModuleWise + " AND UID = "+getUid();
-			db.updateSQL(query);
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+    /**
+     * Set Time Out
+     *
+     * @param timeOut module exit time
+     */
+    public void updateTimeStampModuleWise(String timeOut) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String dateTime = com.ivy.sd.png.commons.SDUtil.now(com.ivy.sd.png.commons.SDUtil.DATE_GLOBAL) + " " + timeOut;
+            String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + dateTime
+                    + "'  WHERE RetailerID = '"
+                    + bmodel.retailerMasterBO.getRetailerID()
+                    + "' AND TimeIn = " + timeInModuleWise + " AND UID = " + getUid();
+            db.updateSQL(query);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-	private void saveOutletTimeStampImages(String folderPath,
-										  String fNameStarts){
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
+    private void saveOutletTimeStampImages(String folderPath,
+                                           String fNameStarts) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
 
-			File folder = new File(folderPath);
-			//noinspection ConstantConditions
-			if ((folder != null) || (folder.exists())) {
-				String fnames[] = folder.list();
-				if (fnames != null) {
-					String columns = "uid,imageName";
-					for (String str : fnames) {
+            File folder = new File(folderPath);
+            //noinspection ConstantConditions
+            if ((folder != null) || (folder.exists())) {
+                String fnames[] = folder.list();
+                if (fnames != null) {
+                    String columns = "uid,imageName";
+                    for (String str : fnames) {
 
-						if ((str != null) && (str.length() > 0)) {
-							if (str.startsWith(fNameStarts)) {
-								String values = getUid() + ","+
-								QT("/Retail/"
-										+ bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
-										.replace("/", "")
-										+ "/"
-										+ bmodel.userMasterHelper.getUserMasterBO()
-										.getUserid() + "/"
-										+str);
-								db.insertSQL("OutletTimestampImages", columns, values);
-							}
-						}
-					}
-				}
-			}
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+                        if ((str != null) && (str.length() > 0)) {
+                            if (str.startsWith(fNameStarts)) {
+                                String values = getUid() + "," +
+                                        QT("/Retail/"
+                                                + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                                                .replace("/", "")
+                                                + "/"
+                                                + bmodel.userMasterHelper.getUserMasterBO()
+                                                .getUserid() + "/"
+                                                + str);
+                                db.insertSQL("OutletTimestampImages", columns, values);
+                            }
+                        }
+                    }
+                }
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-	public void getlastRetailerDatas(){
-		try{
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
+    public void getlastRetailerDatas() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
 
-			Cursor c=db.selectSQL("SELECT distinct retailerid,latitude,longitude,sequence FROM OutletTimestamp order by rowid"
-					);
-			if(c.getCount()>0){
-				if(c.moveToLast()){
-					lastRetailerId=c.getInt(0);
-					lastRetailerLattitude=c.getDouble(1);
-					lastRetailerLongitude=c.getDouble(2);
-					lastRetailerSequence=c.getInt(3);
-				}
-			}
-			c.close();
-			db.close();
-		}catch(Exception e){
-			Commons.printException(e);
-		}
-	}
+            Cursor c = db.selectSQL("SELECT distinct retailerid,latitude,longitude,sequence FROM OutletTimestamp order by rowid"
+            );
+            if (c.getCount() > 0) {
+                if (c.moveToLast()) {
+                    lastRetailerId = c.getInt(0);
+                    lastRetailerLattitude = c.getDouble(1);
+                    lastRetailerLongitude = c.getDouble(2);
+                    lastRetailerSequence = c.getInt(3);
+                }
+            }
+            c.close();
+            db.close();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-	/**
-	 * Method to update joint call inforamation module wise
-	 * @param menuCode menu item code
-	 * @param uid user id
-	 * @param oldUid last user id
+    /**
+     * Method to update joint call inforamation module wise
+     *
+     * @param menuCode menu item code
+     * @param uid      user id
+     * @param oldUid   last user id
+     */
+    public void updateJointCallDetailsByModuleWise(String menuCode, String uid, String oldUid) {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select uid from ActivityJointCall where ");
+            sb.append(" menuCode=" + bmodel.QT(menuCode));
+            sb.append(" and uid=" + bmodel.QT(oldUid));
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                c.moveToNext();
 
-	 */
-	public void updateJointCallDetailsByModuleWise(String menuCode,String uid,String oldUid){
-		DBUtil db=null;
-		try {
-			db= new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			StringBuilder sb=new StringBuilder();
-			sb.append("select uid from ActivityJointCall where ");
-			sb.append(" menuCode="+bmodel.QT(menuCode));
-			sb.append(" and uid="+bmodel.QT(oldUid));
-			Cursor c=db.selectSQL(sb.toString());
-			if(c.getCount()>0){
-				c.moveToNext();
+                db.deleteSQL("ActivityJointCall",
+                        "uid = " + QT(c.getString(0)), false);
+            }
 
-				db.deleteSQL("ActivityJointCall",
-						"uid = " + QT(c.getString(0)), false);
-			}
+            ArrayList<UserMasterBO> joinCallUserList = bmodel.userMasterHelper
+                    .getUserMasterBO().getJoinCallUserList();
+            if (joinCallUserList != null) {
+                String columns = "menucode,uid,supervisorid";
+                for (UserMasterBO userMasterBO : joinCallUserList) {
+                    if (userMasterBO.getIsJointCall() == 1) {
+                        StringBuilder values = new StringBuilder();
 
-			ArrayList<UserMasterBO> joinCallUserList=bmodel.userMasterHelper
-					.getUserMasterBO().getJoinCallUserList();
-			if(joinCallUserList!=null){
-				String columns="menucode,uid,supervisorid";
-				for(UserMasterBO userMasterBO:joinCallUserList){
-					if(userMasterBO.getIsJointCall()==1){
-						StringBuilder values=new StringBuilder();
+                        values.append(bmodel.QT(menuCode) + "," + bmodel.QT(uid) + ",");
+                        values.append(userMasterBO.getUserid());
 
-						values.append(bmodel.QT(menuCode)+","+bmodel.QT(uid)+",");
-						values.append(userMasterBO.getUserid());
+                        db.insertSQL("ActivityJointCall", columns, values.toString());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            if (db != null)
+                db.closeDB();
+        }
+    }
 
-						db.insertSQL("ActivityJointCall",columns,values.toString());
-					}
-				}
-			}
-		}catch (Exception e){
-			Commons.printException(e);
-		}finally {
-			if(db != null)
-				db.closeDB();
-		}
-	}
+    public boolean isJointCall(ArrayList<UserMasterBO> joinCallList) {
+        if (joinCallList != null) {
+            for (UserMasterBO userBO : joinCallList) {
+                if (userBO.getIsJointCall() == 1)
+                    return true;
+            }
+        }
+        return false;
+    }
 
-	public boolean isJointCall(ArrayList<UserMasterBO> joinCallList){
-		if(joinCallList!=null){
-			for(UserMasterBO userBO:joinCallList){
-				if(userBO.getIsJointCall()==1)
-					return true;
-			}
-		}
-		return false;
-	}
+    public boolean isVisited(String retailerId) {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select VisitID from OutletTimestamp where ");
+            sb.append(" RetailerID=" + bmodel.QT(retailerId));
+            Cursor c = db.selectSQL(sb.toString());
+            return c.getCount() > 0;
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        } finally {
+            if (db != null)
+                db.closeDB();
+        }
+    }
 
-	public boolean isVisited(String retailerId) {
-		DBUtil db = null;
-		try {
-			db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			StringBuilder sb = new StringBuilder();
-			sb.append("select VisitID from OutletTimestamp where ");
-			sb.append(" RetailerID=" + bmodel.QT(retailerId));
-			Cursor c = db.selectSQL(sb.toString());
-			return c.getCount() > 0;
-		} catch (Exception e) {
-			Commons.printException(e);
-			return false;
-		} finally {
-			if(db != null)
-				db.closeDB();
-		}
-	}
+    public void deleteTimeStampModuleWise(String modulecode) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_outlet_time_stamp_detail, "retailerid="
+                    + bmodel.retailerMasterBO.getRetailerID() + " AND UID=" + getUid() + " AND ModuleCode=" + QT(modulecode), false);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
-	public void deleteTimeStampModuleWise(String modulecode) {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			db.deleteSQL(DataMembers.tbl_outlet_time_stamp_detail, "retailerid="
-					+ bmodel.retailerMasterBO.getRetailerID() + " AND UID=" + getUid()+" AND ModuleCode="+QT(modulecode), false);
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+    /**
+     * Get current battery percentage
+     */
+    private int getBatteryPercentage(Context context) {
 
-	/**
-	 * Get current battery percentage
-	 */
-	private int getBatteryPercentage(Context context) {
+        int batteryPercentage = 0;
+        try {
+            IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            Intent batteryStatus = context.registerReceiver(null, iFilter);
 
-		IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-		Intent batteryStatus = context.registerReceiver(null, iFilter);
+            int level = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : -1;
+            int scale = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1) : -1;
 
-		int level = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : -1;
-		int scale = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1) : -1;
+            float batteryPct = level / (float) scale;
 
-		float batteryPct = level / (float) scale;
+            batteryPercentage = (int) (batteryPct * 100);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return batteryPercentage;
 
-		return (int) (batteryPct * 100);
-	}
+    }
 }

@@ -195,7 +195,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private String ASSET_HISTORY = "";
     private String TASK = "";
     private String SALES_PER_LEVEL = "";
-    private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "",retailer_contact_title;
+    private String invoice_history_title = "", msl_title = "", retailer_kpi_title = "", plan_outlet_title = "", order_history_title = "", profile_title = "", retailer_contact_title;
 
     private Timer mLocTimer;
     private LocationFetchTimer timerTask;
@@ -579,7 +579,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.SHOW_SBD_GAP_IN_PROFILE) {
             tabLayout.addTab(tabLayout.newTab().setText("SBD Gap"));
         }
-
 
 
         View root = tabLayout.getChildAt(0);
@@ -1377,7 +1376,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 return new DsitributorProfileFragment();
             } else if (tabName.equalsIgnoreCase("SBD Gap")) {
                 return new SBDGapFragment();
-            }else if (tabName.equals(retailer_contact_title)) {
+            } else if (tabName.equals(retailer_contact_title)) {
                 return new RetailerContactFragment();
             }
             return null;
@@ -1935,7 +1934,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             }
         });
-        alertDialog.show();
+        bmodel.applyAlertDialogTheme(alertDialog);
     }
 
     private boolean checkUserIsNearByRetailer(RetailerMasterBO ret) {
@@ -2011,7 +2010,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                         bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
                         bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
                                 bmodel.productHelper.getFilterProductLevels()));
-                        GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                        GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                         if (genericObjectPair != null) {
                             bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                             bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
@@ -2045,8 +2044,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                             bmodel.productHelper.downloadGenericProductID();
                         }
                     }
-
-
 
 
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
@@ -2092,9 +2089,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         protected void onPostExecute(Boolean result) {
             if (!isCancelled()) {
-                // to get last user visited retailer sequence and location to calculate distance..
-                bmodel.outletTimeStampHelper.getlastRetailerDatas();
-                float distance = calculateDistanceBetweenRetailers();
+
+                float distance = 0.0f;
+                try {
+                    // to get last user visited retailer sequence and location to calculate distance..
+                    bmodel.outletTimeStampHelper.getlastRetailerDatas();
+                    distance = calculateDistanceBetweenRetailers();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
 
                 String date = SDUtil.now(SDUtil.DATE_GLOBAL);
                 String time = SDUtil.now(SDUtil.TIME);
@@ -2103,7 +2106,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
                 bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));
 
-                bmodel.outletTimeStampHelper.saveTimeStamp(
+
+                boolean outletTimeStampSaved=bmodel.outletTimeStampHelper.saveTimeStamp(
                         SDUtil.now(SDUtil.DATE_GLOBAL), time
                         , distance, photoPath, fnameStarts, mVisitMode, mNFCReasonId);
 
@@ -2116,12 +2120,16 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 Commons.print("Attribute<><><><><><<<><><><><<" + bmodel.getRetailerAttributeList());
 
-                Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
-                i.putExtra("isLocDialog", true);
-                i.putExtra("isMandatoryDialog", true);
-                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(i);
-                finish();
+                if(outletTimeStampSaved) {
+                    Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
+                    i.putExtra("isLocDialog", true);
+                    i.putExtra("isMandatoryDialog", true);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(i);
+                    finish();
+                }else{
+                    Toast.makeText(getApplicationContext(),getString(R.string.not_able_to_register_visit),Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
