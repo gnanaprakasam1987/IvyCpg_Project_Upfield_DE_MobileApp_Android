@@ -65,39 +65,43 @@ public class OutletTimeStampHelper {
         return instance;
     }
 
-	/**
+    /**
      * @See {@link AppDataProviderImpl#getInTime()}
      * @deprecated
-     */public String getTimeIn() {
-		return timeIn;
-	}
+     */
+    public String getTimeIn() {
+        return timeIn;
+    }
 
-	/**
+    /**
      * @param timeIn
      * @See {@link com.ivy.core.data.app.AppDataProviderImpl#setInTime(String)}
      * @deprecated
-     */public void setTimeIn(String timeIn) {
+     */
+    public void setTimeIn(String timeIn) {
         // Until all the code is refactored, Timein is updated in the Appdataprovider and business model
-        bmodel.codeCleanUpUtil.setInTime(timeIn) ;
-		this.timeIn = timeIn;
-	}
+        bmodel.codeCleanUpUtil.setInTime(timeIn);
+        this.timeIn = timeIn;
+    }
 
-	/**
+    /**
      * @See {@link AppDataProviderImpl#getUniqueId()}
      * @deprecated
-     */public String getUid() {
-		return uid;
-	}
+     */
+    public String getUid() {
+        return uid;
+    }
 
-	/**
+    /**
      * @param uid Unique Identifier
      * @See {@link com.ivy.core.data.app.AppDataProviderImpl#setUniqueId(String)}
      * @deprecated
-     */public void setUid(String uid) {
+     */
+    public void setUid(String uid) {
         // Until all the code is refactored, Unique is updated in the Appdataprovider and business model
-        bmodel.codeCleanUpUtil.setUniqueId(uid) ;
-		this.uid = uid;
-	}
+        bmodel.codeCleanUpUtil.setUniqueId(uid);
+        this.uid = uid;
+    }
 
     private String QT(String data) {
         return "'" + data + "'";
@@ -287,55 +291,61 @@ public class OutletTimeStampHelper {
         }
     }
 
-	/**
-	 * Used to set Time Stamp.
-	 *
-	 * @param date module start-in date
-	 * @param timeIn module start-in time* @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#saveTimeStampModuleWise(String, String, String)}
+
+    /**
+     * Used to set Time Stamp.
+     *
+     * @param date   module start-in date
+     * @param timeIn module start-in time
+     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#saveTimeStampModuleWise(String, String, String)}
      * @deprecated This has been Migrated to MVP pattern
-	 */
-	public void saveTimeStampModuleWise(String date, String timeIn, String moduleCode) {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			timeInModuleWise = QT(date + " " + timeIn);bmodel.codeCleanUpUtil.setModuleTime(timeInModuleWise);
-			String values = getUid() + ","
-					+ QT(moduleCode) + ","
-					+ timeInModuleWise + "," +timeInModuleWise
-					+ ","
-					+ QT(bmodel.retailerMasterBO.getRetailerID());
-			db.insertSQL(DataMembers.tbl_outlet_time_stamp_detail, DataMembers.tbl_outlet_time_stamp_detail_cols, values);
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+     */
+    public void saveTimeStampModuleWise(String date, String timeIn, String moduleCode) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            timeInModuleWise = QT(date + " " + timeIn);
+
+            bmodel.codeCleanUpUtil.setModuleTime(timeInModuleWise);
+            String values = getUid() + ","
+                    + QT(moduleCode) + ","
+                    + timeInModuleWise + "," + timeInModuleWise
+                    + ","
+                    + QT(bmodel.retailerMasterBO.getRetailerID());
+            db.insertSQL(DataMembers.tbl_outlet_time_stamp_detail, DataMembers.tbl_outlet_time_stamp_detail_cols, values);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
 
-	 /**
-	 * @param timeOut module exit time* @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#updateTimeStampModuleWise(String)}
+    /**
+     * @param timeOut module exit time
+     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#updateTimeStampModuleWise(String)}
      * Set Time Out
      * @deprecated This has been Migrated to MVP pattern
-	 */
-	public void updateTimeStampModuleWise(String timeOut) {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			String dateTime = com.ivy.sd.png.commons.SDUtil.now(com.ivy.sd.png.commons.SDUtil.DATE_GLOBAL) + " " + timeOut;
-			String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + dateTime
-					+ "'  WHERE RetailerID = '"
-					+ bmodel.retailerMasterBO.getRetailerID()
-					+ "' AND TimeIn = " + timeInModuleWise + " AND UID = "+getUid();
-			db.updateSQL(query);
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+     */
+    public void updateTimeStampModuleWise(String timeOut) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String dateTime = com.ivy.sd.png.commons.SDUtil.now(com.ivy.sd.png.commons.SDUtil.DATE_GLOBAL) + " " + timeOut;
+            String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + dateTime
+                    + "'  WHERE RetailerID = '"
+                    + bmodel.retailerMasterBO.getRetailerID()
+                    + "' AND TimeIn = " + timeInModuleWise + " AND UID = " + getUid();
+            db.updateSQL(query);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
     private void saveOutletTimeStampImages(String folderPath,
                                            String fNameStarts) {
@@ -458,31 +468,32 @@ public class OutletTimeStampHelper {
         return false;
     }
 
-	/**
+    /**
      * @param retailerId
      * @return
      * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#isVisited(String)}
      * @deprecated This has been Migrated to MVP pattern
-     */public boolean isVisited(String retailerId) {
-		DBUtil db = null;
-		try {
-			db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			StringBuilder sb = new StringBuilder();
-			sb.append("select VisitID from OutletTimestamp where ");
-			sb.append(" RetailerID=" + bmodel.QT(retailerId));
-			Cursor c = db.selectSQL(sb.toString());
-			return c.getCount() > 0;
-		} catch (Exception e) {
-			Commons.printException(e);
-			return false;
-		} finally {
-			if(db != null)
-				db.closeDB();
-		}
-	}
+     */
+    public boolean isVisited(String retailerId) {
+        DBUtil db = null;
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select VisitID from OutletTimestamp where ");
+            sb.append(" RetailerID=" + bmodel.QT(retailerId));
+            Cursor c = db.selectSQL(sb.toString());
+            return c.getCount() > 0;
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        } finally {
+            if (db != null)
+                db.closeDB();
+        }
+    }
 
     public void deleteTimeStampModuleWise(String modulecode) {
         try {
@@ -500,7 +511,10 @@ public class OutletTimeStampHelper {
 
     /**
      * Get current battery percentage
+     * @deprecated
+     * @See {@link com.ivy.utils.DeviceUtils#getBatteryPercentage(Context)}
      */
+    @Deprecated
     private int getBatteryPercentage(Context context) {
 
 		int batteryPercentage = 0;
