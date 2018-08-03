@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/newoutlet_fragment"
-        android:name="com.ivy.sd.png.view.NewOutletFragment"
+        android:name="com.ivy.sd.png.view.NewoutletContainerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp" />

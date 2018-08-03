@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/card_margin"
+        android:elevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/viewpger_padding">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvTitlePrimary"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/isprimary"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_nano_small"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <CheckBox
+                    android:id="@+id/cbIsPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/card_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitlePrimary" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/card_margin"
+                    android:maxLines="1"
+                    android:text="@string/contact_title"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_nano_small"
+                    app:layout_constraintEnd_toStartOf="@id/tvTitleFirstName"
+                    app:layout_constraintStart_toEndOf="@id/tvTitlePrimary"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/sp_reason"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/card_margin"
+                    app:layout_constraintEnd_toEndOf="@id/tvTitle"
+                    app:layout_constraintStart_toStartOf="@id/tvTitle"
+                    app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+                <TextView
+                    android:id="@+id/tvTitleFirstName"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/card_margin"
+                    android:maxLines="1"
+                    android:text="@string/contact_person_first_name"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_nano_small"
+                    app:layout_constraintEnd_toStartOf="@id/tvTitleLastName"
+                    app:layout_constraintStart_toEndOf="@id/tvTitle"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/etFirstName"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:inputType="textPersonName"
+                    android:maxLength="20"
+                    app:layout_constraintEnd_toEndOf="@id/tvTitleFirstName"
+                    app:layout_constraintStart_toStartOf="@id/tvTitleFirstName"
+                    app:layout_constraintTop_toBottomOf="@id/tvTitleFirstName" />
+
+                <TextView
+                    android:id="@+id/tvTitleLastName"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/card_margin"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:text="@string/contact_person_last_name"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_nano_small"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tvTitleFirstName"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/etLastName"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:inputType="textPersonName"
+                    android:maxLength="20"
+                    app:layout_constraintEnd_toEndOf="@id/tvTitleLastName"
+                    app:layout_constraintStart_toStartOf="@id/tvTitleLastName"
+                    app:layout_constraintTop_toBottomOf="@id/tvTitleLastName" />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl1">
+
+                <TextView
+                    android:id="@+id/tvTitlePhno"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:text="@string/contact_no"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_nano_small"
+                    app:layout_constraintEnd_toStartOf="@+id/tvTitleEmail"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <EditText
+                    android:id="@+id/etPhno"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:inputType="phone"
+                    android:maxLength="20"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/etEmail"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvTitleEmail"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:text="@string/email"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_nano_small"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvTitlePhno" />
+
+                <EditText
+                    android:id="@+id/etEmail"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:inputType="textEmailAddress"
+                    android:maxLength="20"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/etPhno"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitleEmail" />
+            </android.support.constraint.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_contacts"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:cacheColorHint="@null"
+        android:drawSelectorOnTop="false"
+        android:fitsSystemWindows="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardView" />
+
+
+</android.support.constraint.ConstraintLayout>

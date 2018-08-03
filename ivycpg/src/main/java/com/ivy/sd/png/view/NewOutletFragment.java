@@ -271,17 +271,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        //Set Screen Title
-        try {
-            if (getArguments().getString("screentitle") == null)
-                setScreenTitle(bmodel.getMenuName("MENU_NEW_RETAILER"));
-            else
-                setScreenTitle(getArguments().getString("screentitle"));
-        } catch (Exception e) {
 
-            setScreenTitle(getResources().getString(R.string.new_retailer));
-            Commons.printException(e);
-        }
 
         if (Build.VERSION.SDK_INT >= 14) {
             Point size = new Point();
