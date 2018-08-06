@@ -11,7 +11,6 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
@@ -22,8 +21,6 @@ import com.ivy.sd.png.view.DataPickerDialogFragment;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 public class
 AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
@@ -149,22 +146,6 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
         AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateFromFiveLevelFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts, mFilterText);    }
-
-    @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
 
     @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {

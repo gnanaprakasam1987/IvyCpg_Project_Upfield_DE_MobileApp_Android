@@ -3602,7 +3602,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
             mDrawerLayout.openDrawer(GravityCompat.END);
 
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -3611,12 +3611,11 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
             Bundle bundle = new Bundle();
 
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "generalfilter");
             ft.commit();
@@ -3735,11 +3734,6 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
         }
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     private void switchProfile() {
         final String switchToProfile = "com.motorolasolutions.emdk.datawedge.api.ACTION_SWITCHTOPROFILE";
         final String extraData = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PROFILENAME";
@@ -3748,201 +3742,6 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
         i.setAction(switchToProfile);
         i.putExtra(extraData, "dist_stok");
         this.sendBroadcast(i);
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-        try {
-            // Close the drawer
-            mDrawerLayout.closeDrawers();
-            String generaltxt = generalbutton;
-            Vector<ProductMasterBO> items = productList;
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-            int siz = items.size();
-            mylist = new Vector<>();
-
-            for (int i = 0; i < siz; ++i) {
-                ProductMasterBO ret = items.elementAt(i);
-
-                if (ret.getBarCode().equals(strBarCodeSearch)
-                        || ret.getCasebarcode().equals(strBarCodeSearch)
-                        || ret.getOuterbarcode().equals(strBarCodeSearch)
-                        || "ALL".equals(strBarCodeSearch)) {
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && ret.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0)) {
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER) {
-                            if (!mFilterId.isEmpty()) {
-                                if (mFilterId.contains(ret.getParentid()) || (mFilterId.contains(-1))) {
-                                    if (generaltxt.equals(GENERAL))//No special filters selected
-                                    {
-                                        if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                            if (strBarCodeSearch.equals(ret.getBarCode())) {
-                                                ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                            } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
-                                                ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                            } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
-                                                ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                            }
-                                        }
-                                        mylist.add(ret);
-                                    } else {
-                                        if (isSpecialFilterAppliedProduct(generaltxt, ret)) {  //special filter selected
-                                            if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                                if (strBarCodeSearch.equals(ret.getBarCode())) {
-                                                    ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                                } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
-                                                    ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                                } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
-                                                    ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                                }
-                                            }
-                                            mylist.add(ret);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!generaltxt.equals(GENERAL)) {
-                String strPname = getFilterName(generaltxt) + " ("
-                        + mylist.size() + ")";
-                pnametitle.setText(strPname);
-
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                    setScreenTitle(strPname);
-                }
-
-            } else {
-                String strPname = getResources().getString(
-                        R.string.product_name)
-                        + " (" + mylist.size() + ")";
-                pnametitle.setText(strPname);
-
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                    setScreenTitle(strPname);
-                }
-            }
-            if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
-                getProductBySequence();
-
-            // set the new list to listview
-            mSchedule = new SubDStockCheckActivity.MyAdapter(mylist);
-            lvwplist.setAdapter(mSchedule);
-
-            strBarCodeSearch = "ALL";
-            updateValue();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        try {
-            // Close the drawer
-            mDrawerLayout.closeDrawers();
-            String generaltxt = generalbutton;
-            Vector<ProductMasterBO> items = productList;
-            if (items == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-            int siz = items.size();
-            mylist = new Vector<>();
-            for (int i = 0; i < siz; ++i) {
-                ProductMasterBO ret = items.elementAt(i);
-
-                if (ret.getBarCode().equals(strBarCodeSearch)
-                        || ret.getCasebarcode().equals(strBarCodeSearch)
-                        || ret.getOuterbarcode().equals(strBarCodeSearch)
-                        || "ALL".equals(strBarCodeSearch)) {
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && ret.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER) {
-                            if (mCategory != null) {
-                                if (!mCategory.isEmpty()) {
-                                    if (mCategory.contains(ret.getcParentid())
-                                            || (mCategory.contains(-1))) {
-
-                                        if (generaltxt.equals(GENERAL))//No special filters selected
-                                        {
-                                            if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                                if (strBarCodeSearch.equals(ret.getBarCode())) {
-                                                    ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                                } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
-                                                    ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                                } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
-                                                    ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                                }
-                                            }
-                                            mylist.add(ret);
-                                        } else {
-                                            if (isSpecialFilterAppliedProduct(generaltxt, ret)) { //special filter selected
-                                                if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                                    if (strBarCodeSearch.equals(ret.getBarCode())) {
-                                                        ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
-                                                    } else if (strBarCodeSearch.equals(ret.getCasebarcode())) {
-                                                        ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
-                                                    } else if (strBarCodeSearch.equals(ret.getOuterbarcode())) {
-                                                        ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
-                                                    }
-                                                }
-                                                mylist.add(ret);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            if (!generaltxt.equals(GENERAL)) {
-                String strPname = getFilterName(generaltxt) + " ("
-                        + mylist.size() + ")";
-                pnametitle.setText(strPname);
-
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                    setScreenTitle(strPname);
-                }
-
-            } else {
-                String strPname = getResources().getString(
-                        R.string.product_name)
-                        + " (" + mylist.size() + ")";
-                pnametitle.setText(strPname);
-
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                    setScreenTitle(strPname);
-                }
-            }
-            if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
-                getProductBySequence();
-            // set the new list to listview
-            mSchedule = new SubDStockCheckActivity.MyAdapter(mylist);
-            lvwplist.setAdapter(mSchedule);
-
-            strBarCodeSearch = "ALL";
-            updateValue();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
     }
 
     private boolean applyCommonFilterConfig(ProductMasterBO ret) {

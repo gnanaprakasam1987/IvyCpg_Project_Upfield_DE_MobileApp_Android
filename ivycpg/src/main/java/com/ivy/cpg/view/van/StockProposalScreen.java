@@ -11,15 +11,12 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class StockProposalScreen extends IvyBaseActivityNoActionBar implements BrandDialogInterface, FiveLevelFilterCallBack {
-
-    private BusinessModel bmodel;
-    private Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,15 +24,19 @@ public class StockProposalScreen extends IvyBaseActivityNoActionBar implements B
         setContentView(R.layout.activity_stock_proposal);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
-        bmodel = (BusinessModel) this.getApplicationContext();
+        BusinessModel bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        try {
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            if (toolbar != null) {
+                setSupportActionBar(toolbar);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+            }
+        }catch (Exception e){
+            Commons.printException(e);
         }
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
@@ -66,6 +67,7 @@ public class StockProposalScreen extends IvyBaseActivityNoActionBar implements B
                 try {
                     ((ViewGroup) view).removeAllViews();
                 } catch (Exception e) {
+                    Commons.printException(e);
                 }
             }
         }
@@ -76,16 +78,6 @@ public class StockProposalScreen extends IvyBaseActivityNoActionBar implements B
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.stock_proposal_fragment);
         asf.numberPressed(vw);
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
     }
 
     @Override
@@ -110,11 +102,6 @@ public class StockProposalScreen extends IvyBaseActivityNoActionBar implements B
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.stock_proposal_fragment);
         asf.updateCancel();
-    }
-
-    @Override
-    public void loadStartVisit() {
-
     }
 
     @Override

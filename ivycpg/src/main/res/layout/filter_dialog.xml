@@ -50,31 +50,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/chooseCategoryTitle"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/list_header_height"
-            android:adjustViewBounds="true"
-            android:background="@color/Black"
-            android:gravity="center_vertical"
-            android:padding="4dp"
-            android:tag="level1"
-            android:text="@string/choose_category"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/list_primary" />
-
-        <GridView
-            android:id="@+id/categoryGrid"
-            android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:horizontalSpacing="5dp"
-            android:numColumns="3"
-            android:padding="5dp"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="5dp"/>
-
-        <TextView
             android:id="@+id/chooseBrandTitle"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/list_header_height"
@@ -83,28 +58,17 @@
             android:gravity="center_vertical"
             android:padding="4dp"
             android:tag="level2"
-            android:text="@string/choose_brand"
+            android:text="@string/choose_special_filter"
             android:textColor="@android:color/white"
             android:textSize="@dimen/list_primary" />
 
-        <GridView
-            android:id="@+id/brandGrid"
-            android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:horizontalSpacing="5dp"
-            android:numColumns="3"
-            android:padding="5dp"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="5dp"/>
 
         <android.support.v7.widget.CardView
             android:id="@+id/splFilterCard"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:visibility="gone"
+            android:visibility="visible"
             card_view:cardBackgroundColor="@color/WHITE"
             card_view:cardCornerRadius="0dp"
             card_view:cardElevation="5dp"

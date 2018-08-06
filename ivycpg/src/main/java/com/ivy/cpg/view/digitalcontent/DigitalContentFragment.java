@@ -34,7 +34,6 @@ import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DigitalContentBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -437,15 +436,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int pid) {
         // Close the drawer
         mDrawerLayout.closeDrawers();
@@ -463,10 +453,6 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     @Override
     public void updateCancel() {
         mDrawerLayout.closeDrawers();
-    }
-
-    @Override
-    public void loadStartVisit() {
     }
 
     public HashMap<Integer, Integer> mSelectedIdByLevelId;

@@ -38,7 +38,6 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.DateWisePlanBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -55,8 +54,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Vector;
 
 public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         SearchView.OnQueryTextListener,FiveLevelFilterCallBack {
@@ -922,25 +919,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     public void updateCancel() {
         profileclick = false;
         getActivity().finish();
-    }
-
-    @Override
-    public void loadStartVisit() {
-        // TO DO Auto-generated method stub
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        // TO DO Auto-generated method stub
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-        // TO DO Auto-generated method stub
-
     }
 
     @Override

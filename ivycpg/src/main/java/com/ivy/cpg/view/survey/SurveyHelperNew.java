@@ -966,10 +966,10 @@ public class SurveyHelperNew {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
-                    if (qus.getSelectedAnswer() != null && (!qus.getSelectedAnswer().isEmpty() && !qus.getSelectedAnswer().
-                            contains(context.getResources().
-                                    getString(R.string.plain_select))) && qus.getSelectedAnswerIDs() != null
-                            && (!qus.getSelectedAnswerIDs().isEmpty() &&
+                    if ((qus.getSelectedAnswer() != null && !qus.getSelectedAnswer().isEmpty()
+                            && !qus.getSelectedAnswer().contains(context.getResources().
+                                    getString(R.string.plain_select)))
+                            || (qus.getSelectedAnswerIDs() != null && !qus.getSelectedAnswerIDs().isEmpty() &&
                             !qus.getSelectedAnswerIDs().contains(-1)) && !qus.getQuestionType().equals("EMAIL")) {
                         return true;
                     }

@@ -56,7 +56,6 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
@@ -961,22 +960,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void loadStartVisit() {
-
     }
 
     public void numberPressed(View vw) {

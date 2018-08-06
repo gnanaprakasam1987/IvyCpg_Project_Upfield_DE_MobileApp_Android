@@ -43,7 +43,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     int distributorId;
     int distParentId;
     private String RetailerID = "0", movRetailerId = "0";
-    private String RetailerCode;
+    private String RetailerCode = "";
     private String RetailerName, movRetailerName;
     private String Addressid = "0";
     private String Cp1id = "0";
@@ -126,7 +126,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private float osAmt;
     private int billsCount;
     private String isOrderMerch;
-    private String isDeviated;
+    private String isDeviated="";
     private String isNew;
     private String isDigitalContent;
     private String isReviewPlan;
