@@ -117,11 +117,6 @@ public class CombinedStockFragmentActivity extends IvyBaseActivityNoActionBar im
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         CombinedStockFragment asf = (CombinedStockFragment) fm

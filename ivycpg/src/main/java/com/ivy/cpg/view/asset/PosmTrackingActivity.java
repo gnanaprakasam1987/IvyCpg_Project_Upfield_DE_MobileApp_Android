@@ -126,11 +126,6 @@ public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
         return false;
     }

@@ -80,7 +80,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MustSellReasonDialog;
 import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
@@ -1848,10 +1848,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     }
 
-    @Override
-    public void loadStartVisit() {
-    }
-
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
             businessModel.showAlert(
@@ -2041,7 +2037,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 setScreenTitle(getResources().getString(R.string.filter));
 
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("filter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -2049,13 +2045,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putString("filterName", stockCheckPresenter.GENERAL);
-            bundle.putBoolean("isFormBrand", false);
 
             bundle.putSerializable("serilizeContent",
                     stockCheckPresenter.getGeneralFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(stockCheckPresenter.getSelectedFilterMap());
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(stockCheckPresenter.getSelectedFilterMap());
             fragobj.setArguments(bundle);
             ft.add(R.id.right_drawer, fragobj, "filter");
             ft.commit();

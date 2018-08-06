@@ -1275,10 +1275,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void loadStartVisit() {
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         mPlanoGramHelper.clearInstance();

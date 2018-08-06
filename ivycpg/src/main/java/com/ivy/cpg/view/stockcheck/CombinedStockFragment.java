@@ -73,7 +73,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
@@ -1458,10 +1458,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
     }
 
-    @Override
-    public void loadStartVisit() {
-    }
-
 
     public void onClick(View v) {
         Button vw = (Button) v;
@@ -1832,7 +1828,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             if (getActionBar() != null)
                 setScreenTitle(getResources().getString(R.string.filter));
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("filter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -1840,13 +1836,12 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
 
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.add(R.id.right_drawer, fragobj, "filter");
             ft.commit();

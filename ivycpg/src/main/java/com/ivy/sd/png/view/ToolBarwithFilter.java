@@ -1127,7 +1127,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("filter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -1135,12 +1135,11 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                 ft.detach(frag);
             Bundle bundle = new Bundle();
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.add(R.id.right_drawer, fragobj, "filter");
             ft.commit();
@@ -1203,11 +1202,6 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         } catch (Exception e) {
             Commons.printException("" + e);
         }
-    }
-
-    @Override
-    public void loadStartVisit() {
-
     }
 
     @Override

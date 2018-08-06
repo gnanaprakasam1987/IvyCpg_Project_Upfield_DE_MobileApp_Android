@@ -3604,7 +3604,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             mDrawerLayout.openDrawer(GravityCompat.END);
 
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -3613,12 +3613,11 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             Bundle bundle = new Bundle();
 
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "generalfilter");
             ft.commit();
@@ -3734,11 +3733,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             updateBrandText(BRAND, -1);
             strBarCodeSearch = "ALL";
         }
-    }
-
-    @Override
-    public void loadStartVisit() {
-
     }
 
     private void switchProfile() {

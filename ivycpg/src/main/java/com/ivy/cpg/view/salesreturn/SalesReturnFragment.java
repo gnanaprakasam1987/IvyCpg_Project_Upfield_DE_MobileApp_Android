@@ -951,11 +951,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
     }
 
-    @Override
-    public void loadStartVisit() {
-
-    }
-
     private void showCustomDialog() {
 
         new CommonDialog(getActivity().getApplicationContext(), getActivity(), "", getResources().getString(

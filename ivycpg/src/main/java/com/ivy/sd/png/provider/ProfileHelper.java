@@ -22,14 +22,20 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 import static com.ivy.lib.Utils.QT;
 
@@ -998,5 +1004,80 @@ public class ProfileHelper {
         }
         db.closeDB();
         return givenLovId;
+    }
+
+    public Observable<HashMap<String, String>> downloadRetailerContactMenu() {
+        return Observable.create(new ObservableOnSubscribe<HashMap<String, String>>() {
+            @Override
+            public void subscribe(ObservableEmitter<HashMap<String, String>> subscriber) throws Exception {
+                HashMap<String, String> contactMenuMap = new HashMap<>();
+
+                try {
+                    String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + bmodel.QT("RETAILER_CONTACT") + " and flag =1";
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    Cursor c = db.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            contactMenuMap.put(c.getString(0), c.getString(1));
+                        }
+                        c.close();
+                    }
+                    db.closeDB();
+                    subscriber.onNext(contactMenuMap);
+                    subscriber.onComplete();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                    subscriber.onError(e);
+                    subscriber.onComplete();
+                }
+            }
+        });
+    }
+
+
+    public Observable<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID) {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<RetailerContactBo>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<RetailerContactBo>> subscriber) throws Exception {
+                ArrayList<RetailerContactBo> contactList = new ArrayList<>();
+                try {
+                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,"
+                            + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
+                            + " ifnull(RC.Email,'') as email from RetailerContact RC "
+                            + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
+                            + " Where RC.RetailerId =" + bmodel.QT(retailerID);
+
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    Cursor c = db.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            RetailerContactBo retailerContactBo = new RetailerContactBo();
+                            if (c.getString(c.getColumnIndex("contactTitle")).length() > 0)
+                                retailerContactBo.setTitle(c.getString(c.getColumnIndex("contactTitle")));
+                            else
+                                retailerContactBo.setTitle(c.getString(c.getColumnIndex("listName")));
+                            retailerContactBo.setFistname(c.getString(c.getColumnIndex("cName")));
+                            retailerContactBo.setLastname(c.getString(c.getColumnIndex("cLname")));
+                            retailerContactBo.setContactNumber(c.getString(c.getColumnIndex("cNumber")));
+                            retailerContactBo.setContactMail(c.getString(c.getColumnIndex("email")));
+                            retailerContactBo.setIsPrimary(c.getInt(c.getColumnIndex("isPrimary")));
+                            contactList.add(retailerContactBo);
+                        }
+                        c.close();
+                    }
+                    db.closeDB();
+                    subscriber.onNext(contactList);
+                    subscriber.onComplete();
+                } catch (Exception exception) {
+                    Commons.printException(exception);
+                    subscriber.onError(exception);
+                    subscriber.onComplete();
+                }
+            }
+        });
     }
 }

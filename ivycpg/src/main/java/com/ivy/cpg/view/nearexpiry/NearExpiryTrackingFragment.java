@@ -852,11 +852,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void updateFromFiveLevelFilter(int productId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mDrawerLayout.closeDrawers();
         updatebrandtext(productId, mSelectedIdByLevelId, mAttributeProducts);

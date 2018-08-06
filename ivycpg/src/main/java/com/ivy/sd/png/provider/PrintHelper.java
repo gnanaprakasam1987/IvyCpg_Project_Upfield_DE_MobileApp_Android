@@ -2801,47 +2801,7 @@ public class PrintHelper {
         return PrintDataBytes;
     }
 
-    /**
-     * method for round value calculation
-     **/
 
-    private String formatSalesValueInPrint(double value) {
-
-        String formattedValue = "0";
-        try {
-            if (bmodel.configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
-                if (bmodel.configurationMasterHelper.IS_APPLY_CURRENCY_CONFIG) {
-                    // getting currency config value for decimal value..
-
-                    String tempVal;
-                    String fractionalStr;
-
-                    tempVal = value + "";
-                    fractionalStr = tempVal.substring(tempVal.indexOf('.') + 1);
-                    fractionalStr = (fractionalStr.length() > 2 ? fractionalStr.substring(0, 2) : fractionalStr);
-
-                    int integerValue = (int) value;
-                    int fractionValue = SDUtil.convertToInt(fractionalStr);
-
-                    formattedValue = (integerValue + bmodel.getCurrencyActualValue(fractionValue) + "");
-
-
-                } else {
-                    formattedValue = SDUtil.format(value, 0, 0);
-
-                }
-            } else {
-                // format normally
-
-                return bmodel.formatValue(value);
-
-            }
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        }
-
-        return formattedValue;
-    }
 
     /**
      * When save invoice print file created and stored in mobile

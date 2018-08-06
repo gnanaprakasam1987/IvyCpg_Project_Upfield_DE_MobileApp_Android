@@ -643,10 +643,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         mDrawerLayout.closeDrawers();
     }
 
-    @Override
-    public void loadStartVisit() {
-    }
-
 
     /* Shows in store locations as dialog */
     private void showLocation() {
