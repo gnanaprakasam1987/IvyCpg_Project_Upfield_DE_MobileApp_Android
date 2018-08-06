@@ -29,7 +29,7 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion '27.0.3'
 
     useLibrary 'org.apache.http.legacy'
@@ -37,11 +37,14 @@ android {
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 28
         multiDexEnabled true
         resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        buildConfigField("String", "BASE_URL", "\"${BASE_CPG_DEV_URL}\"")
+        buildConfigField("String", "TEST_USER_NAME", "\"${TEST_USER_NAME}\"")
+        buildConfigField("String", "TEST_PASSWORD", "\"${TEST_PASSWORD}\"")
+        buildConfigField("boolean", "IS_AUTO_LOGIN_ENABLED", IS_AUTO_LOGIN_ENABLED)
     }
 
     lintOptions {
@@ -106,7 +109,6 @@ android {
             zipAlignEnabled true
         }
     }
-
     dexOptions {
         preDexLibraries = false
         jumboMode = true
@@ -139,8 +141,8 @@ android {
         sourceSets {
             main {
 
-               // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
-                res.srcDirs =  [
+                // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
+                res.srcDirs = [
                         'src/main/res/layouts/activation',
                         'src/main/res/layouts',
                         'src/main/res'
@@ -233,11 +235,9 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
-
     // reactive
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjava2Version"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
-
 
     // dependencies for local unit tests
     testImplementation "junit:junit:$rootProject.ext.junitVersion"

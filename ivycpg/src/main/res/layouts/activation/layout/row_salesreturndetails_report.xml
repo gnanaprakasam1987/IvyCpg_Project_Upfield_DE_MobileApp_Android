@@ -7,13 +7,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="8">
+        >
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="4"
             android:padding="2dp">
 
@@ -24,16 +24,16 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_gravity="left"
-                android:layout_marginTop="@dimen/divder_margin"
+
                 android:gravity="left"
                 android:padding="@dimen/dimen_2dp"
                 android:text="@string/product_name"
                 android:textColor="@color/black_bg1"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                 />
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/text_productName">
 
 
@@ -41,10 +41,11 @@
                     android:id="@+id/text_reason"
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_gravity="center_vertical|left"
                     android:layout_marginBottom="@dimen/icons_top_margin"
+                    android:text="Dummy Reason"
                     android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center_vertical|left"
                     android:maxLines="1" />
@@ -53,7 +54,7 @@
                     android:id="@+id/text_divider"
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_marginBottom="@dimen/icons_top_margin"
                     android:layout_marginRight="@dimen/dimen_4dp"
@@ -66,7 +67,7 @@
                     android:id="@+id/text_reasonType"
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_marginBottom="@dimen/icons_top_margin"
                     android:layout_toRightOf="@+id/text_divider"
@@ -79,7 +80,7 @@
         <TextView
             android:id="@+id/text_caseQty"
             android:layout_width="@dimen/dimen_0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_weight="1"
             android:gravity="center"
@@ -87,24 +88,22 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_small" />
 
-
-
-
         <TextView
             android:id="@+id/text_outerQty"
             android:layout_width="@dimen/dimen_0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_weight="1"
             android:gravity="center"
             android:maxLines="1"
             android:text="0"
+            android:visibility="gone"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_small" />
         <TextView
             android:id="@+id/text_pieceQty"
             android:layout_width="@dimen/dimen_0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_weight="1"
             android:gravity="center"
@@ -115,9 +114,9 @@
         <TextView
             android:id="@+id/text_value"
             android:layout_width="@dimen/dimen_0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center"
             android:maxLines="1"
             android:textColor="@android:color/black"
