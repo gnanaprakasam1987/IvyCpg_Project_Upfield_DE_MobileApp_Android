@@ -16,6 +16,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -99,12 +100,14 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private LinearLayout mRootLinearLayout = null;
     private LinearLayout.LayoutParams weight1, weight2, weight3;
     private LinearLayout.LayoutParams mcommonsparams = null, params5;
+    private LinearLayout.LayoutParams params8;
     private LinearLayout.LayoutParams paramsAttrib, paramsAttribSpinner;
 
     private TextView latlongtextview;
     private TextView nearbyTextView;
     private TextView priorityproducttextview;
     private ImageView latlongCameraBtn;
+    private AppCompatCheckBox inSEZcheckBox = null;
 
 
     private TextView textview[] = new TextView[100];
@@ -161,6 +164,10 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         params5 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params5.setMargins(0, 0, 20, 0);
         params5.gravity = Gravity.CENTER;
+
+        params8 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params8.gravity = Gravity.CENTER;
+        params8.setMargins(0, 0, 0, 0);
 
         weight1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -347,6 +354,12 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         getmRootLinearLayout().addView(getEditTextView(mNumber, configCode, menuName,
                 values, IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS), getCommonsparams());
 
+    }
+
+    @Override
+    public void createCheckBoxView(String isSEZzone, int Mandatory, String menuName) {
+
+        getmRootLinearLayout().addView(getCheckBoxView(isSEZzone,Mandatory,menuName),getCommonsparams());
     }
 
     @Override
@@ -796,6 +809,46 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         }
 
         return linearlayout;
+    }
+
+    private LinearLayout getCheckBoxView(String mSEZzone,int mMandatory,String mMenuName){
+
+        LinearLayout baselayout = new LinearLayout(getActivity());
+        baselayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout linearlayout = new LinearLayout(getActivity());
+        linearlayout.setOrientation(LinearLayout.VERTICAL);
+
+        inSEZcheckBox = new AppCompatCheckBox(getActivity());
+
+        if (mSEZzone.equals("1")) {
+            inSEZcheckBox.setChecked(true);
+        } else {
+            inSEZcheckBox.setChecked(false);
+        }
+        linearlayout.addView(inSEZcheckBox, weight2);
+
+        LinearLayout textLayout = new LinearLayout(getActivity());
+        textLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        if (mMandatory == 1) {
+            LinearLayout.LayoutParams weight0 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            TextView mn_textview = new TextView(getActivity());
+            mn_textview.setText("*");
+            mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+            mn_textview.setTextColor(Color.RED);
+            textLayout.addView(mn_textview, weight0);
+        }
+
+        TextView days = new TextView(getActivity());
+        days.setText(mMenuName);
+        days.setTextColor(Color.BLACK);
+        days.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+        textLayout.addView(days, params8);
+        baselayout.addView(textLayout);
+        baselayout.addView(linearlayout);
+
+        return baselayout;
     }
 
 

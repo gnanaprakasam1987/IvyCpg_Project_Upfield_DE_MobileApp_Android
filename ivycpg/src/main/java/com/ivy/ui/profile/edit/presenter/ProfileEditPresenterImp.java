@@ -798,6 +798,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void checkConfigrationForEditText(int mNumber, String configCode, String menuName, String values) {
+
         String mConfigCode = profileConfig.get(mNumber).getConfigCode();
         if (!comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) ||
                 !comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER) ||
@@ -806,14 +807,17 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
             getIvyView().checkRegex(profileConfig.get(mNumber).getRegex());
         }
+
         if (comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER)) {  /*PanNumber*/
             getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkPANRegex(mNumber);
         }
+
         if (comparConfigerCode(mConfigCode, ProfileConstant.GSTN)) {   /*GST*/
             getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkGSTRegex(mNumber);
         }
+
         if (comparConfigerCode(mConfigCode, ProfileConstant.STORENAME)
                 || comparConfigerCode(mConfigCode, ProfileConstant.ADDRESS1)
                 || comparConfigerCode(mConfigCode, ProfileConstant.ADDRESS2)
@@ -945,10 +949,34 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         getIvyView().createAttributeView(0);
                         break;
                     case ProfileConstant.GSTN:
-                      prepareGSTN();
+                        prepareGSTN();
                         break;
                     case ProfileConstant.INSEZ:
                         prepareSezCheckBox();
+                        break;
+                    case ProfileConstant.PAN_NUMBER:
+                        preparePanNumber();
+                        break;
+                    case ProfileConstant.FOOD_LICENCE_NUM:
+                        prepareFoodLicenceNumber();
+                        break;
+                    case ProfileConstant.DRUG_LICENSE_NUM:
+                        prepareDrugLicenseNumber();
+                        break;
+                    case ProfileConstant.EMAIL:
+                        prepareEmail();
+                        break;
+                    case ProfileConstant.MOBILE:
+                        prepareMobile();
+                        break;
+                    case ProfileConstant.FAX:
+                        prepareFAX();
+                        break;
+                    case ProfileConstant.REGION:
+                        prepareRegion();
+                        break;
+                    case ProfileConstant.COUNTRY:
+                        prepareCountry();
                         break;
                 }
             } else {
@@ -958,7 +986,104 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     }
 
+
+    private void prepareCountry() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getCountry()))
+            retailerMasterBO.setCountry("");
+        String text = retailerMasterBO.getCountry();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+
+    private void prepareRegion() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getRegion()))
+            retailerMasterBO.setRegion("");
+        String text = retailerMasterBO.getRegion();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+
+    private void prepareFAX() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getFax()))
+            retailerMasterBO.setFax("");
+        String text = retailerMasterBO.getFax();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+
+    private void prepareMobile() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getMobile()))
+            retailerMasterBO.setMobile("");
+        String text = retailerMasterBO.getMobile();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+
+    private void prepareEmail() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getEmail()))
+            retailerMasterBO.setEmail("");
+        String text = retailerMasterBO.getEmail();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+
+    private void prepareDrugLicenseNumber() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getDLNo()))
+            retailerMasterBO.setDLNo("");
+        String text = retailerMasterBO.getDLNo();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+
+    private void prepareFoodLicenceNumber() {
+
+        if (AppUtils.isEmptyString(retailerMasterBO.getFoodLicenceNo()))
+            retailerMasterBO.setFoodLicenceNo("");
+        String text = retailerMasterBO.getFoodLicenceNo();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+
+    }
+
+
+    private void preparePanNumber() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getPanNumber()))
+            retailerMasterBO.setPanNumber("");
+        String text = retailerMasterBO.getPanNumber();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+
     private void prepareSezCheckBox() {
+        int Mandatory = profileConfig.get(mNumber).getMandatory();
+        String text = retailerMasterBO.getIsSEZzone() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        getIvyView().createCheckBoxView(text, Mandatory, mName);
     }
 
 
@@ -972,6 +1097,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         checkConfigrationForEditText(mNumber, configCode, mName, retailderName);
     }
 
+
     private void prepareAddress1() {
         if (AppUtils.isEmptyString(retailerMasterBO.getAddress1()))
             retailerMasterBO.setAddress1("");
@@ -981,6 +1107,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 text = mPreviousProfileChanges.get(configCode);
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
+
 
     private void prepareAddress2() {
         if (AppUtils.isEmptyString(retailerMasterBO.getAddress2()))
@@ -992,6 +1119,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
 
+
     private void prepareAddress3() {
         if (AppUtils.isEmptyString(retailerMasterBO.getAddress3()))
             retailerMasterBO.setAddress3("");
@@ -1001,6 +1129,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 text = mPreviousProfileChanges.get(configCode);
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
+
 
     private void prepareCity() {
         if (AppUtils.isEmptyString(retailerMasterBO.getCity()))
@@ -1013,6 +1142,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
 
+
     private void prepareState() {
         if (AppUtils.isEmptyString(retailerMasterBO.getState()))
             retailerMasterBO.setState("");
@@ -1023,6 +1153,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         Commons.print(ProfileConstant.STATE + "" + profileConfig.get(mNumber).getModule_Order());
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
+
 
     private void preparePincode() {
         if (AppUtils.isEmptyString(retailerMasterBO.getPincode()))
@@ -1035,6 +1166,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
 
+
     private void prepareContectNumber() {
         if (AppUtils.isEmptyString(retailerMasterBO.getContactnumber()))
             retailerMasterBO.setContactnumber("");
@@ -1045,6 +1177,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
 
+
     private void prepareChennel() {
         int id = retailerMasterBO.getChannelID();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -1054,6 +1187,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         getIvyView().createSpinnerView(channelMaster, mNumber, mName, configCode, id);
     }
 
+
     private void prepareSubChennal() {
         int id = retailerMasterBO.getSubchannelid();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -1062,6 +1196,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         getIvyView().createSpinnerView(mNumber, mName, configCode, id);
     }
 
+
     private void prepareContract() {
         int id = retailerMasterBO.getContractLovid();
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -1069,6 +1204,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
         getIvyView().createSpinnerView(mNumber, mName, configCode, id);
     }
+
 
     private void prepareLatLong() {
         String textLat = retailerMasterBO.getLatitude() + "";
@@ -1089,6 +1225,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
     }
 
+
     private void prepareLocation1() {
         try {
             String title = "";
@@ -1107,6 +1244,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             Commons.printException(e);
         }
     }
+
 
     private void prepareLocation2() {
         try {
@@ -1127,6 +1265,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
     }
 
+
     private void prepareLocation() {
         try {
             String title = "";
@@ -1144,6 +1283,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
     }
 
+
     private void prepareCrediPreriod() {
         String text = retailerMasterBO.getCreditDays() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -1152,12 +1292,14 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
 
+
     private void prepareNearByRetailer() {
         if (!retailerMasterBO.getIsNew().equals("Y"))
             if (getNearByRetailers() != null)
                 getNearByRetailers().clear();
         getIvyView().createNearByRetailerView(mNumber, mName, true);
     }
+
 
     private void prepareRfield1() {
         String text = retailerMasterBO.getRField1() + "";
@@ -1167,6 +1309,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
 
+
     private void prepareRfield2() {
         String text = retailerMasterBO.getRfield2() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -1175,6 +1318,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
 
+
     private void prepareProfile27() {
         String text = retailerMasterBO.getCredit_invoice_count() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -1182,6 +1326,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 text = mPreviousProfileChanges.get(configCode);
         checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
+
 
     private void prepareRfield4() {
         String text = retailerMasterBO.getRField4() + "";
@@ -1197,6 +1342,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
     }
 
+
     private void prepareRfield5() {
         String text = retailerMasterBO.getRField5() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -1210,6 +1356,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
         }
     }
+
 
     private void prepareRfield6() {
         String text = retailerMasterBO.getRField6() + "";
@@ -1225,6 +1372,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
     }
 
+
     private void prepareRfield7() {
         String text = retailerMasterBO.getRField7() + "";
         if (mPreviousProfileChanges.get(configCode) != null)
@@ -1238,6 +1386,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
         }
     }
+
 
     private void prepareGSTN() {
         String text = retailerMasterBO.getGSTNumber() + "";

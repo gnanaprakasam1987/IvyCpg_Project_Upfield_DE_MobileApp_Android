@@ -1105,9 +1105,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }
                 else if (configCode.equals(PROFILE_81) && flag == 1 && Order == 1) {
 
-                    if (retailerObj.getPanNumber() == null
-                            || retailerObj.getPanNumber().equals(
-                            "null")) {
+                    if (retailerObj.getPanNumber() == null || retailerObj.getPanNumber().equals("null")) {
                         retailerObj.setPanNumber("");
                     }
 
@@ -1129,9 +1127,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }
                 else if (configCode.equals(PROFILE_82) && flag == 1 && Order == 1) {
 
-                    if (retailerObj.getFoodLicenceNo() == null
-                            || retailerObj.getFoodLicenceNo().equals(
-                            "null")) {
+                    if (retailerObj.getFoodLicenceNo() == null || retailerObj.getFoodLicenceNo().equals("null")) {
                         retailerObj.setFoodLicenceNo("");
                     }
 
@@ -1154,12 +1150,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }
                 else if (configCode.equals(PROFILE_84) && flag == 1 && Order == 1) {
 
-                    if (retailerObj.getDLNo() == null
-                            || retailerObj.getDLNo().equals(
-                            "null")) {
+                    if (retailerObj.getDLNo() == null || retailerObj.getDLNo().equals("null")) {
                         retailerObj.setDLNo("");
                     }
-
                     String text = retailerObj.getDLNo();
                     if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
                         if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
@@ -1178,12 +1171,16 @@ public class ProfileEditFragment extends IvyBaseFragment
 
                 }
                 else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase(PROFILE_85)) {
-                    LinearLayout secondlayout = new LinearLayout(getActivity());
-                    LinearLayout firstlayout = new LinearLayout(getActivity());
+
                     LinearLayout linearlayout = new LinearLayout(getActivity());
                     linearlayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                    LinearLayout firstlayout = new LinearLayout(getActivity());
+                    LinearLayout secondlayout = new LinearLayout(getActivity());
+
                     LinearLayout finallayout = new LinearLayout(getActivity());
                     finallayout.setOrientation(LinearLayout.HORIZONTAL);
+
                     TextView tv_label = new TextView(getActivity());
                     tv_label.setText(mName);
                     tv_label.setTextColor(Color.BLACK);
@@ -1197,9 +1194,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                     dlExpDateTextView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     dlExpDateTextView.setId(mNumber);
                     dlExpDateTextView.setTypeface(dlExpDateTextView.getTypeface(), Typeface.NORMAL);
-                    if (retailerObj.getDLNoExpDate() == null
-                            || retailerObj.getDLNoExpDate().equals(
-                            "null") || retailerObj.getDLNoExpDate().isEmpty()) {
+                    if (retailerObj.getDLNoExpDate() == null ||
+                            retailerObj.getDLNoExpDate().equals("null") ||
+                            retailerObj.getDLNoExpDate().isEmpty()) {
                         retailerObj.setDLNoExpDate("Select Date");
                     }
 

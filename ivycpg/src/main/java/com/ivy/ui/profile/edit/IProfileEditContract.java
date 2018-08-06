@@ -36,6 +36,8 @@ public interface IProfileEditContract {
                                 String values,boolean IS_UPPERCASE_LETTER,
                                 int Mandatory,int MAX_CREDIT_DAYS);
 
+        void createCheckBoxView(String isSEZzone,int Mandatory,String menuName);
+
         void createSpinnerView(Vector<ChannelBO> channelMaster,int mNumber, String MName, String menuCode, int id);
 
         void createSpinnerView(int mNumber, String MName, String menuCode, int id);
