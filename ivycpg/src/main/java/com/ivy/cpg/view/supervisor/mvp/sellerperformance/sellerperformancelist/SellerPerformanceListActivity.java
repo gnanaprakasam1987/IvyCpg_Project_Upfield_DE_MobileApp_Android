@@ -29,9 +29,12 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CombinedData;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -150,7 +153,6 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         });
 
     }
-
 
     private void prepareScreenData(){
 
@@ -272,26 +274,33 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
         l.setDrawInside(false);
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setDrawGridLines(false);
         rightAxis.setAxisMinimum(0f);
         rightAxis.setDrawAxisLine(false);
-        rightAxis.setEnabled(false);
+        rightAxis.setEnabled(true);
+        rightAxis.setDrawGridLines(true);
+        rightAxis.setGridColor(ContextCompat.getColor(this,R.color.WHITE));
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        leftAxis.setEnabled(false);
-        leftAxis.setDrawAxisLine(false);
+        leftAxis.setEnabled(true);
+        leftAxis.setDrawAxisLine(true);
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.WHITE));
+        leftAxis.setGridColor(ContextCompat.getColor(this,R.color.WHITE));
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAxisMinimum(0f);
         xAxis.setGranularity(1f);
-        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(false);
+        xAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.WHITE));
 
         xAxis.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
@@ -328,6 +337,13 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(true);
         set.setValueTextSize(10f);
+        set.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+
+                return String.valueOf((int)value);
+            }
+        });
         set.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
 
         LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
@@ -339,6 +355,15 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setDrawValues(true);
         set1.setValueTextSize(10f);
+        set1.setValueFormatter(new IValueFormatter() {
+
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+
+                return String.valueOf((int)value);
+            }
+        });
+
         set1.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
 
         set.setAxisDependency(YAxis.AxisDependency.LEFT);

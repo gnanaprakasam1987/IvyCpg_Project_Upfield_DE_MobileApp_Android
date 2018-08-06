@@ -207,8 +207,8 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     private void setChartData(String date, int covered, int billed,int userId){
 
         chartDaysStr.add(convertDateStrShort(date));
-        sellerCoveredEntry.add(new Entry((float) CHART_DAYS,(float)covered));
-        sellerBilledEntry.add(new Entry((float) CHART_DAYS,(float)billed));
+        sellerCoveredEntry.add(new Entry(CHART_DAYS,covered));
+        sellerBilledEntry.add(new Entry(CHART_DAYS,billed));
 
 
         if(CHART_DAYS == CHART_DAYS_COUNT) {

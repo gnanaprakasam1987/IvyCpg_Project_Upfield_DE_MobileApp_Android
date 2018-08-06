@@ -68,6 +68,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListenerRegistration registration ;
     private int CHART_DAYS = 0;
+    private final int CHART_DAYS_COUNT = 4;
     private ArrayList<String> chartDaysStr = new ArrayList<>();
     private ArrayList<Entry> sellerCoveredEntry = new ArrayList<>();
     private ArrayList<Entry> sellerBilledEntry = new ArrayList<>();
@@ -148,9 +149,10 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                                 selectedSeller.setBilled((documentSnapshotBo.getBilled()));
                                 selectedSeller.setTotalOrderValue(documentSnapshotBo.getTotalOrderValue());
                                 selectedSeller.setLpc(documentSnapshotBo.getLpc());
+                                selectedSeller.setTotallpc(documentSnapshotBo.getTotallpc());
                                 sellerPerformanceView.updateSellerPerformanceData(selectedSeller);
 
-                                prepareChartData(userId, getPreviousDays(date, -2));
+                                prepareChartData(userId, getPreviousDays(date, -CHART_DAYS_COUNT));
 
                                 sellerPerformanceView.updateSellerTabViewInfo(selectedSeller);
                             }
@@ -203,11 +205,11 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     private void setChartData(String date, int covered, int billed,int userId){
 
         chartDaysStr.add(convertDateStrShort(date));
-        sellerCoveredEntry.add(new Entry((float) CHART_DAYS,(float)covered));
-        sellerBilledEntry.add(new Entry((float) CHART_DAYS,(float)billed));
+        sellerCoveredEntry.add(new Entry( CHART_DAYS,covered));
+        sellerBilledEntry.add(new Entry(CHART_DAYS,billed));
 
 
-        if(CHART_DAYS == 2) {
+        if(CHART_DAYS == CHART_DAYS_COUNT) {
 
             sellerPerformanceView.updateChartInfo();
 
@@ -358,7 +360,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                     }
                 });
     }
-
 
     private void setSellerDetailValues(DocumentSnapshot documentSnapshot) {
 

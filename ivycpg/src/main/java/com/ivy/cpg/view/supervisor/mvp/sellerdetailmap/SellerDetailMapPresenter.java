@@ -348,8 +348,17 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                         retailerMasterBo.getMarker().setTitle(title);
                         retailerMasterBo.getMarker().setIcon(icon);
 
-                        retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
-                        retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+                        if(documentSnapshotBo.getLatitude() == 0 || documentSnapshotBo.getLongitude() == 0){
+                            retailerMasterBo.setLatitude(retailerMasterBo.getMasterLatitude());
+                            retailerMasterBo.setLongitude(retailerMasterBo.getMasterLongitude());
+                        }else{
+                            retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                            retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+                        }
+
+                        LatLng newRetailLatlng = new LatLng(retailerMasterBo.getLatitude(),retailerMasterBo.getLongitude());
+
+                        retailerMasterBo.getMarker().setPosition(newRetailLatlng);
 
                         destLatLng = retailerMasterBo.getMarker().getPosition();
                     }
@@ -409,7 +418,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
 //        String sensor = "sensor=false&units=metric";
-        String alternatives = "alternatives=false&mode=driving";
+        String alternatives = "alternatives=false&mode=walking";
         String mapKey = "key="+context.getString(R.string.google_maps_api_key);
         String parameters = str_origin + "&" + str_dest + "&" + alternatives+"&"+mapKey;
         String output = "json";

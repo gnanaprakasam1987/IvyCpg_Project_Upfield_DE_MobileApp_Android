@@ -12,9 +12,29 @@
         android:background="@color/white"
         tools:context="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity">
 
-        <include
+        <android.support.v7.widget.Toolbar
+            xmlns:local="http://schemas.android.com/apk/res-auto"
             android:id="@+id/toolbar"
-            layout="@layout/material_tool_bar" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize"
+            local:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            local:theme="@style/MyToolbarBlue">
+
+            <TextView
+                android:id="@+id/tv_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:ellipsize="end"
+                android:gravity="start|top"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/toolbar_title"
+                android:textSize="@dimen/actionbar_title_text_size" />
+
+        </android.support.v7.widget.Toolbar>
 
         <LinearLayout
             android:layout_width="match_parent"

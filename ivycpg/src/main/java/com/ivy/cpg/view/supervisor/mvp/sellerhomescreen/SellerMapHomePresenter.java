@@ -6,8 +6,11 @@ import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -516,6 +519,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             if (sellerInfoHasMap.get(userId) != null &&
                     !sellerInfoHasMap.get(userId).isAttendanceDone()) {
                 computeSellerAttendance(userId);
+                notifyAttendance();
             }
         }
 
@@ -565,6 +569,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
                 if (!sellerBoHashmap.isAttendanceDone()) {
                     computeSellerAttendance(sellerBoDocumentSnapshot.getUserId());
+                    notifyAttendance();
                 }
 
                 if (!isRealTimeLocationOn) {
@@ -612,6 +617,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
                     if (!sellerHasmapBo.isAttendanceDone()) {
                         computeSellerAttendance(sellerHasmapBo.getUserId());
+                        notifyAttendance();
                     }
 
                     setMarkerHasMap(sellerHasmapBo, markerOptions);
@@ -748,7 +754,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     }
 
-    public Vector<String> getSupRetailerMasterResponse(JSONObject data,
+    private Vector<String> getSupRetailerMasterResponse(JSONObject data,
                                             String appendurl) {
         // Update Security key
         bmodel.synchronizationHelper.updateAuthenticateToken(false);
@@ -855,5 +861,15 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     public void setSelectedDate(String selectedDate) {
         this.selectedDate = selectedDate;
+    }
+
+    private void notifyAttendance(){
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(context, notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

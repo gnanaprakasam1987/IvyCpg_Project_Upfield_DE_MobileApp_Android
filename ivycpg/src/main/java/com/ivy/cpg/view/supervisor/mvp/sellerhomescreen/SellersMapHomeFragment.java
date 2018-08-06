@@ -398,6 +398,16 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (!isToday())
+            menu.findItem(R.id.menu_date).setTitle(convertPlaneDateToGlobal(selectedDate));
+        else
+            menu.findItem(R.id.menu_date).setTitle("Today");
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             startActivity(new Intent(getActivity(),
@@ -581,6 +591,10 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     @SuppressLint("SetTextI18n")
     @Override
     public void sellerProductivity(int productivityPercent) {
+
+        if (productivityPercent > 100)
+            productivityPercent = 100;
+
         tvSellerProductivePercent.setText(productivityPercent+"%");
         progressBar.setProgress(productivityPercent);
     }
@@ -676,6 +690,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
                 SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(),convertedDate);
 
+                getActivity().invalidateOptionsMenu();
+
                 if (!sellerMapHomePresenter.checkSelectedDateExist(convertedDate))
                     sellerMapHomePresenter.downloadSupRetailerMaster(convertedDate);
                 else {
@@ -731,6 +747,10 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         }
 
         return globalDate;
+    }
+
+    private boolean isToday(){
+        return convertPlaneDateToGlobal(selectedDate).equals(SDUtil.now(SDUtil.DATE_GLOBAL));
     }
 
     @Override

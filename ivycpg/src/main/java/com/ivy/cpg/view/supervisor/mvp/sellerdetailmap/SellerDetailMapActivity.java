@@ -237,7 +237,6 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
     }
 
-
     @Override
     public boolean onMarkerClick(Marker marker) {
         Commons.print("on Marker Click called");
@@ -327,7 +326,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         int colorNormalId = R.color.map_poly_line;
 
-        if (lineOptions == null) {
+//        if (lineOptions == null) {
 
             lineOptions = new PolylineOptions();
 
@@ -340,9 +339,9 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             mapPolyLine = mMap.addPolyline(lineOptions);
             mapPolyLine.setClickable(true);
 
-        } else {
-            mapPolyLine.setPoints(points);
-        }
+//        } else {
+//            mapPolyLine.setPoints(points);
+//        }
     }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {

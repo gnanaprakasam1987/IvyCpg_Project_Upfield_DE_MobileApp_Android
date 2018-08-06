@@ -51,7 +51,7 @@ class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, St
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
         List<HashMap<String, String>> path;
-        ArrayList<LatLng> points;
+        ArrayList<LatLng> points = null;
 
         if (routes != null) {
 
@@ -72,8 +72,9 @@ class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, St
                     points.add(position);
                 }
 
-                sellerMapViewPresenter.drawRoute(points);
+//                sellerMapViewPresenter.drawRoute(points);
             }
+            sellerMapViewPresenter.drawRoute(points);
         }
 
     }

@@ -16,9 +16,12 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CombinedData;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
@@ -150,10 +153,10 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
                 switch (tab.getPosition()) {
                     case 0:
-                        sellerPerformancePresenter.downloadSellerKPI(sellerId,selectedDate,false);
+                        sellerPerformancePresenter.downloadSellerKPI(sellerId,convertPlaneDateToGlobal(selectedDate),false);
                         break;
                     case 1:
-                        sellerPerformancePresenter.downloadSellerKPI(sellerId,selectedDate,true);
+                        sellerPerformancePresenter.downloadSellerKPI(sellerId,convertPlaneDateToGlobal(selectedDate),true);
                         break;
                 }
             }
@@ -223,6 +226,9 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
             sellerProductive = (int)((float)billed / (float)target * 100);
         }
 
+        if (sellerProductive > 100)
+            sellerProductive = 100;
+
         progressBar.setProgress(sellerProductive);
 
         sellerPerformPercentTv.setText(sellerProductive+"%");
@@ -249,7 +255,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         }else{
             covered = sellerBo.getCovered();
             orderValue = sellerBo.getTotalOrderValue();
-            lines = sellerBo.getLpc();
+            lines = sellerBo.getTotallpc();
         }
 
         coverageActualtv.setText(String.valueOf(covered));
@@ -258,17 +264,17 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         if (sellerBo.getTargetCoverage() != 0) {
             int coverPercent = (int)((float)covered / (float)sellerBo.getTargetCoverage() * 100);
-            coveragePercenttv.setText(coverPercent+"%");
+            coveragePercenttv.setText((coverPercent>100?100:coverPercent)+"%");
         }
 
         if (sellerBo.getTargetValue() != 0) {
             int orderPercent = (int)((float)orderValue / (float)sellerBo.getTargetValue() * 100);
-            valuePercentTv.setText(orderPercent+"%");
+            valuePercentTv.setText((orderPercent>100?100:orderPercent)+"%");
         }
 
         if (sellerBo.getTargetLines() != 0) {
             int linePercent = (int)((float)lines / (float)sellerBo.getTargetLines() * 100);
-            linesPercentTv.setText(linePercent+"%");
+            linesPercentTv.setText((linePercent>100?100:linePercent)+"%");
         }
 
 
@@ -293,31 +299,37 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         Legend l = mChart.getLegend();
         l.setWordWrapEnabled(true);
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
         l.setDrawInside(false);
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setDrawGridLines(false);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-//        rightAxis.setPosition(YAxis.YAxisLabelPosition.);
-        rightAxis.setEnabled(false);
-
+        rightAxis.setAxisMinimum(0f);
+        rightAxis.setDrawAxisLine(false);
+        rightAxis.setEnabled(true);
+        rightAxis.setDrawGridLines(true);
+        rightAxis.setGridColor(ContextCompat.getColor(this,R.color.WHITE));
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        leftAxis.setEnabled(false);
-        leftAxis.setDrawAxisLine(false);
-
+        leftAxis.setEnabled(true);
+        leftAxis.setDrawAxisLine(true);
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.WHITE));
+        leftAxis.setGridColor(ContextCompat.getColor(this,R.color.WHITE));
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAxisMinimum(0f);
         xAxis.setGranularity(1f);
-        xAxis.setDrawGridLines(true);
         xAxis.setDrawAxisLine(true);
+        xAxis.setDrawGridLines(false);
+        xAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.WHITE));
+
         xAxis.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
@@ -354,6 +366,13 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(true);
         set.setValueTextSize(10f);
+        set.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+
+                return String.valueOf((int)value);
+            }
+        });
         set.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
 
         LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
@@ -365,6 +384,13 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setDrawValues(true);
         set1.setValueTextSize(10f);
+        set1.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+
+                return String.valueOf((int)value);
+            }
+        });
         set1.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
 
         set.setAxisDependency(YAxis.AxisDependency.LEFT);

@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
@@ -28,12 +29,14 @@ public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPer
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView sellerNameTv,sellerPositionTv,sellerPerformancePercentTv;
+        private ProgressBar progressBar;
 
         public MyViewHolder(View view) {
             super(view);
             sellerNameTv = view.findViewById(R.id.seller_name);
             sellerPositionTv = view.findViewById(R.id.seller_position);
             sellerPerformancePercentTv = view.findViewById(R.id.seller_perform_percent);
+            progressBar = view.findViewById(R.id.progressBar);
 
             sellerNameTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             sellerPositionTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
@@ -63,6 +66,7 @@ public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPer
         }
 
         holder.sellerPerformancePercentTv.setText(sellerProductive+"%");
+        holder.progressBar.setProgress(sellerProductive);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
