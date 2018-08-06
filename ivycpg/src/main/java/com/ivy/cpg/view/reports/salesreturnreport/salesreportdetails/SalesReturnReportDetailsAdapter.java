@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.List;
 
@@ -18,15 +19,18 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
     List<SalesReturnDetailsReportBo> salesReturnReportBosList;
     private Context mContext;
 
+    private BusinessModel businessModel;
+
     /**
      * Initialize the values
      *
      * @param salesReturnReportBosList : salesReturnReportBosList reference
      */
 
-    public SalesReturnReportDetailsAdapter(Context context,List<SalesReturnDetailsReportBo> salesReturnReportBosList) {
+    public SalesReturnReportDetailsAdapter(Context context, List<SalesReturnDetailsReportBo> salesReturnReportBosList) {
         this.salesReturnReportBosList = salesReturnReportBosList;
         this.mContext = context;
+        businessModel = (BusinessModel) context.getApplicationContext();
     }
 
 
@@ -56,10 +60,18 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
         holder.productName.setText(salesReturnReportBosList.get(position).getProductName());
         holder.caseQty.setText(String.valueOf(salesReturnReportBosList.get(position).getCaseQty()));
         holder.pieceQty.setText(String.valueOf(salesReturnReportBosList.get(position).getPieceQty()));
-        holder.value.setText(String.valueOf(SDUtil.format(salesReturnReportBosList.get(position).getReturnValue(),2,0)));
+        holder.value.setText(String.valueOf(SDUtil.format(salesReturnReportBosList.get(position).getReturnValue(), 2, 0)));
         holder.reason.setText(salesReturnReportBosList.get(position).getReason());
         holder.reasonType.setText(salesReturnReportBosList.get(position).getReasonType());
         holder.outerQty.setText(String.valueOf(salesReturnReportBosList.get(position).getOuterQty()));
+
+
+        if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+            holder.caseQty.setVisibility(View.GONE);
+        if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+            holder.pieceQty.setVisibility(View.GONE);
+        if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
+            holder.outerQty.setVisibility(View.GONE);
 
         if (position % 2 == 0)
             holder.view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));

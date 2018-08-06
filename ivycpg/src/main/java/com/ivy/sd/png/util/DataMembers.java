@@ -1,5 +1,6 @@
 package com.ivy.sd.png.util;
 
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.model.ApplicationConfigs;
 
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
-    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
+    public static String SERVER_URL = BuildConfig.BASE_URL;
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
