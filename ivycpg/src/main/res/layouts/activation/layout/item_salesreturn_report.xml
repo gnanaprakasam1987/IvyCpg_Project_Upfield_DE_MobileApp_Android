@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<card_view:android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/list_margin"
-    card_view:cardBackgroundColor="@color/WHITE"
-    card_view:cardCornerRadius="0dp"
-    card_view:cardElevation="5dp"
-    card_view:cardPreventCornerOverlap="true"
-    card_view:cardUseCompatPadding="true"
-    card_view:contentPadding="0dp">
+
 
     <RelativeLayout
         android:layout_width="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_height="wrap_content">
 
         <TextView
@@ -22,17 +14,19 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:text="name"
             android:padding="@dimen/dimen_8dp"
-            android:layout_marginTop="@dimen/list_margin"
+
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/font_small" />
 
         <View
             android:id="@+id/invoiceview_doted_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_2dp"
+            android:padding="@dimen/dimen_2dp"
             android:layout_below="@+id/text_retailerName"
-            android:layout_marginBottom="@dimen/list_item_inter_margin"
+
             android:background="@drawable/line_dotted" />
 
         <RelativeLayout
@@ -44,7 +38,7 @@
                 android:id="@+id/linearLayout_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+
                 android:orientation="horizontal">
 
                 <TextView
@@ -53,7 +47,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:text="@string/id"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_nano_small" />
 
                 <TextView
                     android:layout_width="@dimen/list_item_width"
@@ -61,7 +55,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:text="@string/lpc"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_nano_small" />
 
                 <TextView
                     android:layout_width="@dimen/list_item_width"
@@ -69,7 +63,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:text="@string/return_value"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/font_nano_small" />
 
             </LinearLayout>
 
@@ -87,8 +81,9 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:padding="2dp"
+                    android:text="uid"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/font_micro_small" />
 
                 <TextView
                     android:id="@+id/text_lpc"
@@ -97,8 +92,9 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:padding="2dp"
+                    android:text="0"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/font_micro_small" />
 
 
                 <TextView
@@ -109,9 +105,8 @@
                     android:gravity="center"
                     android:padding="2dp"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/font_micro_small" />
 
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
-</card_view:android.support.v7.widget.CardView>
