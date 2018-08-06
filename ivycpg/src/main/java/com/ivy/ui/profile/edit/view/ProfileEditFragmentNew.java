@@ -123,7 +123,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private ArrayList<StandardListBO> mPriorityProductList = null, selectedPriorityProductList = null;
     private HashMap<String, MaterialSpinner> spinnerHashMap = null;
     private HashMap<String, ArrayAdapter<NewOutletAttributeBO>> spinnerAdapterMap = null;
-    private ArrayList<NewOutletAttributeBO>  attributeHeaderList = null;
+    private ArrayList<NewOutletAttributeBO> attributeHeaderList = null;
     private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap = null;
     private HashMap<String, ArrayList<Integer>> attributeIndexMap = null;
     private HashMap<Integer, NewOutletAttributeBO> selectedAttribList = null;
@@ -145,7 +145,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int LATLONG_CAMERA_REQUEST_CODE = 2;
     private String imageFileName, cameraFilePath = "";
-
 
 
     @Inject
@@ -199,6 +198,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         mButtonSave.setTypeface(FontUtils.getFontBalooHai(getContext(), FontUtils.FontType.REGULAR));
         setHasOptionsMenu(true);
         profileEditPresenter.downLoadDataFromDataBase();
+        mScrollView.addView(getmRootLinearLayout());
     }
 
     @Override
@@ -227,7 +227,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @Override
     public void createImageView() {
         getmRootLinearLayout().addView(getImageView());
-        mScrollView.addView(getmRootLinearLayout());
     }
 
     /*Set Image by URI using path params */
@@ -394,7 +393,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         LLParams.setMargins(10, 5, 10, 5);
-        getmRootLinearLayout().addView(addAttributeView(flag),LLParams);
+        getmRootLinearLayout().addView(addAttributeView(flag), LLParams);
 
     }
 
@@ -464,7 +463,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @Override
     public void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList) {
 
-        if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_53)) {
+        if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD5)) {
             ArrayAdapter<RetailerFlexBO> rField5Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField5Adapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -486,7 +485,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 public void onNothingSelected(AdapterView<?> arg0) {
                 }
             });
-        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_54)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD6)) {
             ArrayAdapter<RetailerFlexBO> rField6Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField6Adapter
@@ -513,7 +512,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
                 }
             });
-        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_55)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD7)) {
             ArrayAdapter<RetailerFlexBO> rField7Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField7Adapter
@@ -540,7 +539,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 }
 
             });
-        } else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_28)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.RField4)) {
             ArrayAdapter<RetailerFlexBO> rField4Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
             rField4Adapter
@@ -698,7 +697,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         });
 
         //if  Email
-        if (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_78) && Mandatory == 1) {
+        if (comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) && Mandatory == 1) {
             LinearLayout emailLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
             LinearLayout.LayoutParams emailParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
             emailParam.weight = 7;
@@ -727,14 +726,14 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             linearlayout.addView(editTextInputLayout, weight1);
 
         /*ContactNumber,PHNO1,PHNO2,MOBILE,FAX*/
-        if (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_30) ||
-                comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_79) ||
-                comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_86)) {
+        if (comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER) ||
+                comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) ||
+                comparConfigerCode(mConfigCode, ProfileConstant.FAX)) {
 
             editTextInputLayout = new TextInputLayout(getActivity());
             editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
 
-            if (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_79) && Mandatory == 1)  /*MOBILE*/ {
+            if (comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) && Mandatory == 1)  /*MOBILE*/ {
 
                 LinearLayout mobileLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
                 LinearLayout.LayoutParams mobileParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -768,7 +767,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         }
 
         //CREDITPERIOD
-        if (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_25)) {
+        if (comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
             editTextInputLayout = new TextInputLayout(getActivity());
             editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
             editText[mNumber].addTextChangedListener(new TextWatcher() {
@@ -809,7 +808,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         editText[positionNumber].setText(values);
         editText[positionNumber].setHint(menuName);
 
-        if (!comparConfigerCode(configCode, ProfileConstant.PROFILE_78)) {//if not Email //cmd for not apply inputfilter value for email id
+        if (!comparConfigerCode(configCode, ProfileConstant.EMAIL)) {//if not Email //cmd for not apply inputfilter value for email id
             getInputFilter(positionNumber);
         }
 
@@ -818,13 +817,13 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         else
             editText[positionNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
-        if (comparConfigerCode(configCode, ProfileConstant.PROFILE_30)
-                || comparConfigerCode(configCode, ProfileConstant.PROFILE_79)
-                || comparConfigerCode(configCode, ProfileConstant.PROFILE_86)) {
+        if (comparConfigerCode(configCode, ProfileConstant.CONTACT_NUMBER)
+                || comparConfigerCode(configCode, ProfileConstant.MOBILE)
+                || comparConfigerCode(configCode, ProfileConstant.FAX)) {
             editText[positionNumber].setInputType(InputType.TYPE_CLASS_PHONE);
         }
 
-        if (comparConfigerCode(configCode, ProfileConstant.PROFILE_25)) {
+        if (comparConfigerCode(configCode, ProfileConstant.CREDITPERIOD)) {
             editText[positionNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
             if (values.equals("0") || values.equals("-1"))
                 editText[positionNumber].setText("");
@@ -850,7 +849,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         spinweight.weight = 1;
         spinweight.gravity = Gravity.CENTER;
 
-        if (menuCode.equals(ProfileConstant.PROFILE_06)) {
+        if (menuCode.equals(ProfileConstant.CHANNEL)) {
             channel = new MaterialSpinner(getActivity());
             channel.setId(mNumber);
             channel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
@@ -889,7 +888,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
         }
 
-        if (menuCode.equals(ProfileConstant.PROFILE_43)) {
+        if (menuCode.equals(ProfileConstant.CONTRACT)) {
             int selected_pos = 0;
             try {
                 contractSpinner = new MaterialSpinner(getActivity());
@@ -923,15 +922,14 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             }
         }
 
-        if (menuCode.equals(ProfileConstant.PROFILE_07)) {
+        if (menuCode.equals(ProfileConstant.SUBCHANNEL)) {
             subchannel = new MaterialSpinner(getActivity());
             subchannel.setId(mNumber);
             subchannel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             subchannel.setFloatingLabelText(MName);
             layout.addView(subchannel, spinweight);
 
-        }
-        else if (menuCode.equals(ProfileConstant.PROFILE_13)) {
+        } else if (menuCode.equals(ProfileConstant.LOCATION01)) {
             try {
                 location1 = new MaterialSpinner(getActivity());
                 location1.setId(mNumber);
@@ -977,8 +975,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             } catch (Exception e) {
                 Commons.printException(e);
             }
-        }
-        else if (menuCode.equals(ProfileConstant.PROFILE_14)) {
+        } else if (menuCode.equals(ProfileConstant.LOCATION02)) {
             try {
                 location2 = new MaterialSpinner(getActivity());
                 location2.setId(mNumber);
@@ -1024,8 +1021,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             } catch (Exception e) {
                 Commons.printException(e);
             }
-        }
-        else if (menuCode.equals(ProfileConstant.PROFILE_15)) {
+        } else if (menuCode.equals(ProfileConstant.LOCATION)) {
             try {
                 location3 = new MaterialSpinner(getActivity());
                 location3.setId(mNumber);
@@ -1071,8 +1067,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             } catch (Exception e) {
                 Commons.printException(e);
             }
-        }
-        else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_53)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD5)) {
             rField5Spinner = new MaterialSpinner(getActivity());
             rField5Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField5Spinner.setId(mNumber);
@@ -1080,8 +1075,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_5);
             layout.addView(rField5Spinner, spinweight);
 
-        }
-        else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_54)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD6)) {
             rField6Spinner = new MaterialSpinner(getActivity());
             rField6Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField6Spinner.setId(mNumber);
@@ -1089,8 +1083,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_6);
             layout.addView(rField6Spinner, spinweight);
 
-        }
-        else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_55)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD7)) {
             rField7Spinner = new MaterialSpinner(getActivity());
             rField7Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField7Spinner.setId(mNumber);
@@ -1098,8 +1091,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_7);
             layout.addView(rField7Spinner, spinweight);
 
-        }
-        else if (menuCode.equalsIgnoreCase(ProfileConstant.PROFILE_28)) {
+        } else if (menuCode.equalsIgnoreCase(ProfileConstant.RField4)) {
             rField4Spinner = new MaterialSpinner(getActivity());
             rField4Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField4Spinner.setId(mNumber);
@@ -1265,7 +1257,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
 
-
     //To create layout for Retailer Attribute
     private LinearLayout addAttributeView(int flag) {
 
@@ -1337,14 +1328,14 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             if (isFromChannel && isNewChannel) {
 
                 // User selected a sub channel an it is new one.
-                for (int i = 0; i <profileEditPresenter.getAttributeParentList().size(); i++) {
+                for (int i = 0; i < profileEditPresenter.getAttributeParentList().size(); i++) {
 
                     final NewOutletAttributeBO parentBO;
                     parentBO = profileEditPresenter.getAttributeParentList().get(i);
 
                     if (mNewAttributeListByLocationID.contains(parentBO.getAttrId())) {
 
-                         LinearLayout layout = new LinearLayout(getActivity());
+                        LinearLayout layout = new LinearLayout(getActivity());
 
                         // setting tag as channel, used to remove channel views particularly and update new one if channel changed
                         layout.setTag("channel");
@@ -1465,7 +1456,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                             @NonNls LinearLayout layout = new LinearLayout(getActivity());
                             // setting tag as channel, used to remove channel views particularly and update new one if channel changed
                             if (profileEditPresenter.getChannelAttributeList() != null
-                                    && profileEditPresenter.getChannelAttributeList().contains(parentBO.getAttrId())) layout.setTag("channel");
+                                    && profileEditPresenter.getChannelAttributeList().contains(parentBO.getAttrId()))
+                                layout.setTag("channel");
                             layout.setOrientation(LinearLayout.HORIZONTAL);
                             layout.setGravity(Gravity.CENTER_VERTICAL);
                             layout.setWeightSum(3f);
@@ -1994,7 +1986,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
             int position = 0, setPos = 0;
             int subChannelID = getSubchannelid();
-            String mPreviousProfileChanges = profileEditPresenter.getPreviousProfileChangesList(ProfileConstant.PROFILE_07);
+            String mPreviousProfileChanges = profileEditPresenter.getPreviousProfileChangesList(ProfileConstant.SUBCHANNEL);
             if (!AppUtils.isEmptyString(mPreviousProfileChanges))
                 if (!mPreviousProfileChanges.equals(subChannelID + ""))
                     subChannelID = SDUtil.convertToInt(mPreviousProfileChanges);
@@ -2017,7 +2009,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     //SpinnerBO tempBo = (SpinnerBO) parent.getSelectedItem();
                     if (++subChannelSpinnerCount > 1) {
-                        // addAttributeView(1);
+                        addAttributeView(1);
                     }
 
                 }

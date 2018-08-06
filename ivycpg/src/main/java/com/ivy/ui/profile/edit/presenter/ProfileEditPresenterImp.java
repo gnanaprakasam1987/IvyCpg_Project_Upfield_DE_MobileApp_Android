@@ -117,7 +117,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private int locid = 0, loc2id = 0;
 
 
-
     @Inject
     public ProfileEditPresenterImp(DataManager dataManager,
                                    SchedulerProvider schedulerProvider,
@@ -150,72 +149,14 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         userMasterHelper = null;
         channelMasterHelper = null;
         retailerHelper = null;
+        subChannelMasterHelper = null;
     }
 
     @Override
     public void downLoadDataFromDataBase() {
 
-        getProfileEditDownloadedList();
         profileConfig = configurationMasterHelper.getProfileModuleConfig();
         IS_UPPERCASE_LETTER = configurationMasterHelper.IS_UPPERCASE_LETTER;
-        /*First level  looping for prepare condition */
-        for (ConfigureBO configureBO : profileConfig) {
-
-            if ((configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_08) && configureBO.isFlag() == 1)
-                    || (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_31) && configureBO.isFlag() == 1)) {
-                isLatLong = true;
-                lat = retailerMasterBO.getLatitude() + "";
-                longitude = retailerMasterBO.getLongitude() + "";
-            }
-
-            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_58) && configureBO.isFlag() == 1) {
-                getCompositeDisposable().add(Observable.zip(
-                        mProfileDataManager.downloadCommonAttributeList(),
-                        mProfileDataManager.downloadChannelWiseAttributeList(),
-                        mProfileDataManager.downloadAttributeListForRetailer(retailerMasterBO.getRetailerID()),
-                        mProfileDataManager.downloadEditAttributeList(retailerMasterBO.getRetailerID()),
-                        mProfileDataManager.downloadRetailerAttribute(),
-                        new Function5<ArrayList<Integer>, ChannelWiseAttributeList, ArrayList<NewOutletAttributeBO>,
-                                ArrayList<NewOutletAttributeBO>, ArrayList<NewOutletAttributeBO>, Boolean>() {
-                            @Override
-                            public Boolean apply(
-                                    ArrayList<Integer> mCommonAttributeList,
-                                    ChannelWiseAttributeList mChannelWiseAttributeModel,
-                                    ArrayList<NewOutletAttributeBO> mAttributeBOArrayList,
-                                    ArrayList<NewOutletAttributeBO> mEditAttributeList,
-                                    ArrayList<NewOutletAttributeBO> mAttributeBOArrayListChild) throws Exception {
-
-                                ProfileEditPresenterImp.this.mCommonAttributeList = mCommonAttributeList;
-                                //Below both arraylist come from ChannelWiseAtttributeModel.class
-                                ProfileEditPresenterImp.this.mAttributeListByLocationID = mChannelWiseAttributeModel.getmAttributeListByLocationID();
-                                ProfileEditPresenterImp.this.mAttributeBOListByLocationID = mChannelWiseAttributeModel.getmAttributeBOListByLocationID();
-                                //Below both function just update in retailer MasterBo for future use
-                                retailerMasterBO.setAttributeBOArrayList(mAttributeBOArrayList);
-                                ProfileEditPresenterImp.this.mEditAttributeList = mEditAttributeList;
-                                ProfileEditPresenterImp.this.mAttributeChildList = mAttributeBOArrayListChild;
-
-                                return true;
-                            }
-                        })
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribeWith(new DisposableObserver<Boolean>() {
-                            @Override
-                            public void onNext(Boolean aBoolean) {
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                downloadAttributeParent();
-                            }
-                        }));
-            }
-
-        }
 
         if (profileConfig.size() != 0) {
             //Check the Profile Image config is enable or not using PROFILE60
@@ -225,6 +166,71 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 prepareProfileImage();
             }
         }
+
+        for (ConfigureBO configureBO : profileConfig) {    /*First level  looping for prepare condition */
+
+            if ((configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.LATTITUDE_LONGITUDE) && configureBO.isFlag() == 1)
+                    || (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_31) && configureBO.isFlag() == 1)) {
+                isLatLong = true;
+                lat = retailerMasterBO.getLatitude() + "";
+                longitude = retailerMasterBO.getLongitude() + "";
+            }
+
+            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.ATTRIBUTE) && configureBO.isFlag() == 1)
+                downLoadAtrributeList();
+        }
+
+        downloadProfileEditList();
+    }
+
+
+    private void downLoadAtrributeList() {
+        getCompositeDisposable().add(Observable.zip(
+                mProfileDataManager.downloadCommonAttributeList(),
+                mProfileDataManager.downloadChannelWiseAttributeList(),
+                mProfileDataManager.downloadAttributeListForRetailer(retailerMasterBO.getRetailerID()),
+                mProfileDataManager.downloadEditAttributeList(retailerMasterBO.getRetailerID()),
+                mProfileDataManager.downloadRetailerAttribute(),
+                new Function5<ArrayList<Integer>, ChannelWiseAttributeList, ArrayList<NewOutletAttributeBO>,
+                        ArrayList<NewOutletAttributeBO>, ArrayList<NewOutletAttributeBO>, Boolean>() {
+                    @Override
+                    public Boolean apply(
+                            ArrayList<Integer> commonAttributeList,
+                            ChannelWiseAttributeList channelWiseAttributeModel,
+                            ArrayList<NewOutletAttributeBO> mAttributeBOArrayList,
+                            ArrayList<NewOutletAttributeBO> editAttributeList,
+                            ArrayList<NewOutletAttributeBO> attributeBOArrayListChild) throws Exception {
+
+                        mCommonAttributeList = commonAttributeList;
+                        //Below both aerialist come from ChannelWiseAtttributeModel.class
+                        mAttributeListByLocationID = channelWiseAttributeModel.getAttributeListByLocationID();
+                        mAttributeBOListByLocationID = channelWiseAttributeModel.getAttributeBOListByLocationID();
+                        //Below both function just update in retailer MasterBo for future use
+                        retailerMasterBO.setAttributeBOArrayList(mAttributeBOArrayList);
+                        mEditAttributeList = editAttributeList;
+                        mAttributeChildList = attributeBOArrayListChild;
+                        return true;
+                    }
+                })
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println("ProfileEditPresenterImp.." + e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        downloadAttributeParent();
+                    }
+                }));
+
     }
 
 
@@ -235,17 +241,17 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 .subscribeWith(new DisposableObserver<ArrayList<NewOutletAttributeBO>>() {
                     @Override
                     public void onNext(ArrayList<NewOutletAttributeBO> attributeParentList) {
-
-                        ProfileEditPresenterImp.this.mAttributeParentList = attributeParentList;
+                        mAttributeParentList = attributeParentList;
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        System.out.println("ProfileEditPresenterImp.." + e.getMessage());
                     }
 
                     @Override
                     public void onComplete() {
-
+                        getAttributeMap();
                         updateUserMasterAttribute();
                     }
                 }));
@@ -261,8 +267,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     @Override
                     public Boolean apply(ArrayList<NewOutletAttributeBO> mTempList,
                                          ArrayList<NewOutletAttributeBO> mattributeList) throws Exception {
-                        ProfileEditPresenterImp.this.mAttributeList = mattributeList;
-                        getAttributeMap();
+                        mAttributeList = mattributeList;
                         getTempList(mTempList);
                         return true;
                     }
@@ -276,6 +281,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
                     @Override
                     public void onError(Throwable e) {
+                        System.out.println("ProfileEditPresenterImp.." + e.getMessage());
                     }
 
                     @Override
@@ -383,7 +389,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 getIvyView().showMessage("Location not captured.");
             } else {
                 if (!isLatLong) {
-                    profileConfig.add(new ConfigureBO(ProfileConstant.PROFILE_08, "Latitude", lat, 0, 0, 0));
+                    profileConfig.add(new ConfigureBO(ProfileConstant.LATTITUDE_LONGITUDE, "Latitude", lat, 0, 0, 0));
                     profileConfig.add(new ConfigureBO(ProfileConstant.PROFILE_31, "Latitude", longitude, 0, 0, 0));
                 } else {
                     getIvyView().setlatlongtextview(lat, longitude);
@@ -571,11 +577,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         if (isChannelAvailable()) {
             mChannelAttributeList = new ArrayList<>();
             int subChannelID;
-            if (mPreviousProfileChanges.get(ProfileConstant.PROFILE_07) != null)
-                subChannelID = SDUtil.convertToInt(mPreviousProfileChanges.get(ProfileConstant.PROFILE_07));
+            if (mPreviousProfileChanges.get(ProfileConstant.SUBCHANNEL) != null)
+                subChannelID = SDUtil.convertToInt(mPreviousProfileChanges.get(ProfileConstant.SUBCHANNEL));
             else
                 subChannelID = retailerMasterBO.getSubchannelid();
-            mChannelAttributeList.addAll(mAttributeListByLocationID.get(subChannelID));
+            if (mAttributeListByLocationID != null)
+                mChannelAttributeList.addAll(mAttributeListByLocationID.get(subChannelID));
 
         }
     }
@@ -584,7 +591,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     // channel may be mapped in any sequance, so its availbily identified using iteration
     private boolean isChannelAvailable() {
         for (ConfigureBO configureBO : profileConfig) {
-            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_06)) {
+            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.CHANNEL)) {
                 return true;
             }
         }
@@ -594,17 +601,26 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     @Override
     public HashMap<Integer, ArrayList<Integer>> getAttributeListByLocationId() {
+        if (mAttributeListByLocationID == null) {
+            mAttributeListByLocationID = new HashMap<>();
+        }
         return mAttributeListByLocationID;
     }
 
 
     @Override
     public ArrayList<NewOutletAttributeBO> getAttributeParentList() {
+        if (mAttributeParentList == null) {
+            mAttributeParentList = new ArrayList<>();
+        }
         return mAttributeParentList;
     }
 
     @Override
     public ArrayList<Integer> getCommonAttributeList() {
+        if (mCommonAttributeList == null) {
+            mCommonAttributeList = new ArrayList<>();
+        }
         return mCommonAttributeList;
     }
 
@@ -628,21 +644,33 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     @Override
     public ArrayList<NewOutletAttributeBO> getAttributeMapList(String attribName) {
+        if (attribMap == null) {
+            attribMap = new HashMap<>();
+        }
         return attribMap.get(attribName);
     }
 
     @Override
     public ArrayList<NewOutletAttributeBO> getAttributeList() {
+        if (mAttributeList == null) {
+            mAttributeList = new ArrayList<>();
+        }
         return mAttributeList;
     }
 
     @Override
     public ArrayList<NewOutletAttributeBO> getAttributeListChild() {
+        if (mAttributeChildList == null) {
+            mAttributeChildList = new ArrayList<>();
+        }
         return mAttributeChildList;
     }
 
     @Override
     public ArrayList<Integer> getChannelAttributeList() {
+        if (mChannelAttributeList == null) {
+            mChannelAttributeList = new ArrayList<>();
+        }
         return mChannelAttributeList;
     }
 
@@ -677,331 +705,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
 
-    private void dataPreparation() {
-        //Second Level looping for prepare view
-        for (int mNumber = 0; mNumber < profileConfig.size(); mNumber++) {
-            int flag = profileConfig.get(mNumber).isFlag();
-            int Order = profileConfig.get(mNumber).getModule_Order();
-            String mName = profileConfig.get(mNumber).getMenuName();
-            String configCode = profileConfig.get(mNumber).getConfigCode();
-
-            if (comparConfigerCode(configCode, ProfileConstant.PROFILE_02) && flag == 1 && Order == 1) {
-                if (AppUtils.isEmptyString(retailerMasterBO.getRetailerName()))
-                    retailerMasterBO.setRetailerName("");
-                String retailderName = retailerMasterBO.getRetailerName() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(retailderName))
-                        retailderName = mPreviousProfileChanges.get(configCode);
-                checkConfigrationForEditText(mNumber, configCode, mName, retailderName);
-            } else if (configCode.equals(ProfileConstant.PROFILE_03) && flag == 1 && Order == 1) {
-                if (AppUtils.isEmptyString(retailerMasterBO.getAddress1()))
-                    retailerMasterBO.setAddress1("");
-                String text = retailerMasterBO.getAddress1() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_04) && flag == 1 && Order == 1) {
-                if (AppUtils.isEmptyString(retailerMasterBO.getAddress2()))
-                    retailerMasterBO.setAddress2("");
-                String text = retailerMasterBO.getAddress2() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_05) && flag == 1 && Order == 1) {
-                if (AppUtils.isEmptyString(retailerMasterBO.getAddress3()))
-                    retailerMasterBO.setAddress3("");
-                String text = retailerMasterBO.getAddress3() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_39) && flag == 1 && Order == 1) {
-                if (AppUtils.isEmptyString(retailerMasterBO.getCity()))
-                    retailerMasterBO.setCity("");
-                String text = retailerMasterBO.getCity() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                Commons.print(ProfileConstant.PROFILE_39 + "" + profileConfig.get(mNumber).getModule_Order());
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_40) && flag == 1 && Order == 1) {
-                if (AppUtils.isEmptyString(retailerMasterBO.getState()))
-                    retailerMasterBO.setState("");
-                String text = retailerMasterBO.getState() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                Commons.print(ProfileConstant.PROFILE_40 + "" + profileConfig.get(mNumber).getModule_Order());
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_38) && flag == 1 && Order == 1) {
-                if (AppUtils.isEmptyString(retailerMasterBO.getPincode()))
-                    retailerMasterBO.setPincode("");
-                String text = retailerMasterBO.getPincode() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                Commons.print(ProfileConstant.PROFILE_38 + "," + "" + profileConfig.get(mNumber).getModule_Order());
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_30) && flag == 1 && Order == 1) {
-                if (AppUtils.isEmptyString(retailerMasterBO.getContactnumber()))
-                    retailerMasterBO.setContactnumber("");
-                String text = retailerMasterBO.getContactnumber() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_06) && flag == 1 && Order == 1) {
-                int id = retailerMasterBO.getChannelID();
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(id + ""))
-                        id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
-                channelMaster = channelMasterHelper.getChannelMaster();
-                getIvyView().createSpinnerView(channelMaster, mNumber, mName, configCode, id);
-            } else if (configCode.equals(ProfileConstant.PROFILE_07) && flag == 1 && Order == 1) {
-                int id = retailerMasterBO.getSubchannelid();
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(id + ""))
-                        id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
-                getIvyView().createSpinnerView(mNumber, mName, configCode, id);
-            } else if (configCode.equals(ProfileConstant.PROFILE_43) && flag == 1 && Order == 1) {
-                int id = retailerMasterBO.getContractLovid();
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(id + ""))
-                        id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
-                getIvyView().createSpinnerView(mNumber, mName, configCode, id);
-            } else if (configCode.equals(ProfileConstant.PROFILE_08) && flag == 1 && Order == 1) {
-                String textLat = retailerMasterBO.getLatitude() + "";
-                @NonNls String MenuName = "LatLong";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(textLat))
-                        textLat = mPreviousProfileChanges.get(configCode);
-                for (int j = 0; j < profileConfig.size(); j++) {
-                    if (profileConfig.get(j).getConfigCode().equals(ProfileConstant.PROFILE_31)
-                            && flag == 1 && profileConfig.get(mNumber).getModule_Order() == 1) {
-                        String textLong = retailerMasterBO.getLongitude() + "";
-                        if (mPreviousProfileChanges.get(profileConfig.get(j).getConfigCode()) != null)
-                            if (!mPreviousProfileChanges.get(profileConfig.get(j).getConfigCode()).equals(textLong))
-                                textLong = mPreviousProfileChanges.get(profileConfig.get(j).getConfigCode());
-                        String text = textLat + ", " + textLong;
-                        getIvyView().createLatlongTextView(mNumber, MenuName, text);
-                    }
-                }
-            } else if (configCode.equals(ProfileConstant.PROFILE_63) && flag == 1 && Order == 1) {
-                getIvyView().isLatLongCameravailable(true);
-            } else if (configCode.equals(ProfileConstant.PROFILE_13) && flag == 1 && Order == 1) {
-                try {
-                    String title = "";
-                    locid = retailerMasterBO.getLocationId();
-                    if (locid != 0) {
-                        String[] loc1 = retailerHelper.getParentLevelName(locid, false);
-                        title = loc1[2];
-                    }
-                    int id = retailerMasterBO.getLocationId();
-                    if (mPreviousProfileChanges.get(configCode) != null)
-                        if (mPreviousProfileChanges.get(configCode).equals(id + ""))
-                            id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
-                    getIvyView().createSpinnerView(mNumber, title, configCode, id, locid);
-
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-            } else if (configCode.equals(ProfileConstant.PROFILE_14) && flag == 1 && Order == 1) {
-                try {
-                    String title = "";
-                    String[] loc2 = retailerHelper.getParentLevelName(locid, true);
-                    if (loc2 != null) {
-                        loc2id = SDUtil.convertToInt(loc2[0]);
-                        title = loc2[2];
-                    }
-                    int id = retailerMasterBO.getLocationId();
-                    if (mPreviousProfileChanges.get(configCode) != null)
-                        if (mPreviousProfileChanges.get(configCode).equals(id + ""))
-                            id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
-                    getIvyView().createSpinnerView(mNumber, title, configCode, id);
-
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-            } else if (configCode.equals(ProfileConstant.PROFILE_15) && flag == 1 && Order == 1) {
-                try {
-                    String title = "";
-                    String[] loc3 = retailerHelper.getParentLevelName(loc2id, true);
-                    if (loc3 != null) {
-                        title = loc3[2];
-                    }
-                    int id = retailerMasterBO.getLocationId();
-                    if (mPreviousProfileChanges.get(configCode) != null)
-                        if (mPreviousProfileChanges.get(configCode).equals(id + ""))
-                            id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
-                    getIvyView().createSpinnerView(mNumber, title, configCode, id);
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-            } else if (configCode.equals(ProfileConstant.PROFILE_36)) {
-                if (!retailerMasterBO.getIsNew().equals("Y"))
-                    if (getNearByRetailers() != null)
-                        getNearByRetailers().clear();
-                getIvyView().createNearByRetailerView(mNumber, mName, true);
-            } else if (configCode.equals(ProfileConstant.PROFILE_25) && flag == 1 && Order == 1) {
-
-                String text = retailerMasterBO.getCreditDays() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_20) && flag == 1 && Order == 1) {
-                String text = retailerMasterBO.getRField1() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_26) && flag == 1 && Order == 1) {
-                String text = retailerMasterBO.getRfield2() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_27) && flag == 1 && Order == 1) {
-                String text = retailerMasterBO.getCredit_invoice_count() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                checkConfigrationForEditText(mNumber, configCode, mName, text);
-            } else if (configCode.equals(ProfileConstant.PROFILE_28) && flag == 1 && Order == 1) {
-                String text = retailerMasterBO.getRField4() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                if (profileConfig.get(mNumber).getHasLink() == 0)
-                    checkConfigrationForEditText(mNumber, configCode, mName, text);
-                else {
-                    if (text.equals(""))
-                        text = "0";
-                    getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
-                }
-            } else if (configCode.equals(ProfileConstant.PROFILE_53) && flag == 1 && Order == 1) {
-                String text = retailerMasterBO.getRField5() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                if (profileConfig.get(mNumber).getHasLink() == 0)
-                    checkConfigrationForEditText(mNumber, configCode, mName, text);
-                else {
-                    if (text.equals(""))
-                        text = "0";
-                    getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
-                }
-            } else if (configCode.equals(ProfileConstant.PROFILE_54) && flag == 1 && Order == 1) {
-                String text = retailerMasterBO.getRField6() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                if (profileConfig.get(mNumber).getHasLink() == 0)
-                    checkConfigrationForEditText(mNumber, configCode, mName, text);
-                else {
-                    if (text.equals(""))
-                        text = "0";
-                    getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
-                }
-            }
-            else if (configCode.equals(ProfileConstant.PROFILE_55) && flag == 1 && Order == 1) {
-                String text = retailerMasterBO.getRField7() + "";
-                if (mPreviousProfileChanges.get(configCode) != null)
-                    if (!mPreviousProfileChanges.get(configCode).equals(text))
-                        text = mPreviousProfileChanges.get(configCode);
-                if (profileConfig.get(mNumber).getHasLink() == 0)
-                    checkConfigrationForEditText(mNumber, configCode, mName, text);
-                else {
-                    if (text.equals(""))
-                        text = "0";
-                    getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
-                }
-            }
-            else if (configCode.equals(ProfileConstant.PROFILE_57) && flag == 1 && Order == 1) {
-                downloadPriority(mNumber, mName);
-            }
-            else if (configCode.equals(ProfileConstant.PROFILE_58) && flag == 1 && Order == 1) {
-
-                getIvyView().createAttributeView(0);
-            }
-
-        }
-    }
-
-
-    private void checkConfigrationForEditText(int mNumber, String configCode, String menuName,
-                                              String values) {
-
-        String mConfigCode = profileConfig.get(mNumber).getConfigCode();
-
-        if (!comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_78) ||
-                !comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_81) ||
-                !comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_61)) {   /*Email, PenNumber,GST*/
-            //regex
-            getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
-            getIvyView().checkRegex(profileConfig.get(mNumber).getRegex());
-        }
-        if (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_81)) {  /*PanNumber*/
-            getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
-            //checkPANRegex(mNumber);
-        }
-        if (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_61)) {   /*GST*/
-            getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
-            //checkGSTRegex(mNumber);
-        }
-        /* STORENAME,ADDRESS1,ADDRESS2,ADDRESS3,RetailerAddressCity,RFiled1,RField2
-         Contract Type,RField4,RFIELD5,RFIELD6,RFIELD7,STATE,PINCODE,GSTN Number
-         pan_number,FOOD_LICENCE_NUM,DRUG_LICENSE_NUM,Email,REGION,COUNTRY*/
-        if (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_02)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_03)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_04)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_05)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_39)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_20)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_26)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_27)
-                || (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_28) && profileConfig.get(mNumber).getHasLink() == 0)
-                || (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_53) && profileConfig.get(mNumber).getHasLink() == 0)
-                || (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_54) && profileConfig.get(mNumber).getHasLink() == 0)
-                || (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_55) && profileConfig.get(mNumber).getHasLink() == 0)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_40)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_38)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_61)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_81)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_82)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_84)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_78)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_87)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_88)) {
-
-            int Mandatory = profileConfig.get(mNumber).getMandatory();
-            int MAX_CREDIT_DAYS = configurationMasterHelper.MAX_CREDIT_DAYS;
-            getIvyView().createEditTextView(mNumber, configCode,
-                    menuName, values, IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS);
-        }
-
-         /*ContactNumber,PHNO1,PHNO2,MOBILE,FAX*/
-        if (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_30) ||
-                comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_79) ||
-                comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_86)) {
-            int Mandatory = profileConfig.get(mNumber).getMandatory();
-            int MAX_CREDIT_DAYS = configurationMasterHelper.MAX_CREDIT_DAYS;
-            getIvyView().createEditTextView(mNumber, configCode,
-                    menuName, values, IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS);
-        }
-
-        if (comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_25)) {
-            int Mandatory = profileConfig.get(mNumber).getMandatory();
-            int MAX_CREDIT_DAYS = configurationMasterHelper.MAX_CREDIT_DAYS;
-            getIvyView().createEditTextView(mNumber, configCode,
-                    menuName, values, IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS);
-        }
-
-    }
-
-
     private void prepareProfileImage() {
         final String imagePath = retailerMasterBO.getProfileImagePath();
         getCompositeDisposable().add(mProfileDataManager.checkProfileImagePath(retailerMasterBO)
@@ -1025,14 +728,14 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                            }, new Consumer<Throwable>() {
                                @Override
                                public void accept(Throwable throwable) throws Exception {
-
+                                   System.out.println("ProfileEditPrenterImp" + throwable.getMessage());
                                }
                            }
                 ));
     }
 
 
-    private void getProfileEditDownloadedList() {
+    private void downloadProfileEditList() {
         getIvyView().showLoading();
         getCompositeDisposable().add(Observable.zip(
                 mProfileDataManager.getContactTitle(),
@@ -1048,18 +751,18 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         Vector<RetailerMasterBO>,
                         Boolean, Boolean>() {
                     @Override
-                    public Boolean apply(ArrayList<NewOutletBO> ContactTitle,
-                                         ArrayList<NewOutletBO> ContactStatus,
-                                         LinkedHashMap<Integer, ArrayList<LocationBO>> LocationListByLevId,
-                                         HashMap<String, String> PreviousProfileChanges,
-                                         Vector<RetailerMasterBO> DownloadLinkRetailer,
+                    public Boolean apply(ArrayList<NewOutletBO> contactTitle,
+                                         ArrayList<NewOutletBO> contactStatus,
+                                         LinkedHashMap<Integer, ArrayList<LocationBO>> locationListByLevId,
+                                         HashMap<String, String> previousProfileChanges,
+                                         Vector<RetailerMasterBO> downloadLinkRetailer,
                                          Boolean aBoolean) throws Exception {
-                        ProfileEditPresenterImp.this.mContactTitle = ContactTitle;
-                        ProfileEditPresenterImp.this.mContactStatus = ContactStatus;
-                        ProfileEditPresenterImp.this.mLocationListByLevId = LocationListByLevId;
-                        ProfileEditPresenterImp.this.mPreviousProfileChanges = PreviousProfileChanges;
-                        ProfileEditPresenterImp.this.mDownloadLinkRetailer = DownloadLinkRetailer;
-                        getLocation(); //Get Location
+                        mContactTitle = contactTitle;
+                        mContactStatus = contactStatus;
+                        mLocationListByLevId = locationListByLevId;
+                        mPreviousProfileChanges = previousProfileChanges;
+                        mDownloadLinkRetailer = downloadLinkRetailer;
+
                         return true;
                     }
                 })
@@ -1069,28 +772,479 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     @Override
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
-                           /* System.out.println("mContactTitleSize-->"+mContactTitle.size());
-                            System.out.println("mContactStatusSize-->"+mContactStatus.size());
-                            System.out.println("mLocationListByLevIdize-->"+mLocationListByLevId.size());
-                            System.out.println("mPreviousProfileChangesSize-->"+mPreviousProfileChanges.size());
-                            System.out.println("mDownloadLinkRetailerSize-->"+mDownloadLinkRetailer.size());
-                          */
-                            downloadLinkRetailer();
+                           /* System.out.println("mContactTitleSize-->" + mContactTitle.size());
+                            System.out.println("mContactStatusSize-->" + mContactStatus.size());
+                            System.out.println("mLocationListByLevIdize-->" + mLocationListByLevId.size());
+                            System.out.println("mPreviousProfileChangesSize-->" + mPreviousProfileChanges.size());
+                            System.out.println("mDownloadLinkRetailerSize-->" + mDownloadLinkRetailer.size());*/
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Commons.print(e.getMessage());
                         getIvyView().hideLoading();
                     }
 
                     @Override
                     public void onComplete() {
-                        dataPreparation();
+                        prepareLayout();
+                        getLocation(); //Get Location
+                        downloadLinkRetailer();
                         getIvyView().hideLoading();
                     }
                 }));
+    }
 
+
+    private void checkConfigrationForEditText(int mNumber, String configCode, String menuName, String values) {
+        String mConfigCode = profileConfig.get(mNumber).getConfigCode();
+        if (!comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) ||
+                !comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER) ||
+                !comparConfigerCode(mConfigCode, ProfileConstant.GSTN)) {   /*EMAIL, PenNumber,GST*/
+            //regex
+            getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
+            getIvyView().checkRegex(profileConfig.get(mNumber).getRegex());
+        }
+        if (comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER)) {  /*PanNumber*/
+            getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
+            //checkPANRegex(mNumber);
+        }
+        if (comparConfigerCode(mConfigCode, ProfileConstant.GSTN)) {   /*GST*/
+            getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
+            //checkGSTRegex(mNumber);
+        }
+        if (comparConfigerCode(mConfigCode, ProfileConstant.STORENAME)
+                || comparConfigerCode(mConfigCode, ProfileConstant.ADDRESS1)
+                || comparConfigerCode(mConfigCode, ProfileConstant.ADDRESS2)
+                || comparConfigerCode(mConfigCode, ProfileConstant.ADDRESS3)
+                || comparConfigerCode(mConfigCode, ProfileConstant.CITY)
+                || comparConfigerCode(mConfigCode, ProfileConstant.RFiled1)
+                || comparConfigerCode(mConfigCode, ProfileConstant.RField2)
+                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_27)
+                || (comparConfigerCode(mConfigCode, ProfileConstant.RField4) && profileConfig.get(mNumber).getHasLink() == 0)
+                || (comparConfigerCode(mConfigCode, ProfileConstant.RFIELD5) && profileConfig.get(mNumber).getHasLink() == 0)
+                || (comparConfigerCode(mConfigCode, ProfileConstant.RFIELD6) && profileConfig.get(mNumber).getHasLink() == 0)
+                || (comparConfigerCode(mConfigCode, ProfileConstant.RFIELD7) && profileConfig.get(mNumber).getHasLink() == 0)
+                || comparConfigerCode(mConfigCode, ProfileConstant.STATE)
+                || comparConfigerCode(mConfigCode, ProfileConstant.PINCODE)
+                || comparConfigerCode(mConfigCode, ProfileConstant.GSTN)
+                || comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER)
+                || comparConfigerCode(mConfigCode, ProfileConstant.FOOD_LICENCE_NUM)
+                || comparConfigerCode(mConfigCode, ProfileConstant.DRUG_LICENSE_NUM)
+                || comparConfigerCode(mConfigCode, ProfileConstant.EMAIL)
+                || comparConfigerCode(mConfigCode, ProfileConstant.REGION)
+                || comparConfigerCode(mConfigCode, ProfileConstant.COUNTRY)
+                || comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER)
+                || comparConfigerCode(mConfigCode, ProfileConstant.MOBILE)
+                || comparConfigerCode(mConfigCode, ProfileConstant.FAX)
+                || comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
+
+            int Mandatory = profileConfig.get(mNumber).getMandatory();
+            int MAX_CREDIT_DAYS = configurationMasterHelper.MAX_CREDIT_DAYS;
+            getIvyView().createEditTextView(mNumber, configCode, menuName, values, IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS);
+        }
+
+
+    }
+
+    private int mNumber;
+    private String mName;
+    private String configCode;
+    private int flag;
+
+    private void prepareLayout() {
+
+        for (mNumber = 0; mNumber < profileConfig.size(); mNumber++) {
+            flag = profileConfig.get(mNumber).isFlag();
+            int order = profileConfig.get(mNumber).getModule_Order();
+            mName = profileConfig.get(mNumber).getMenuName();
+            configCode = profileConfig.get(mNumber).getConfigCode();
+
+            if (flag == 1 && order == 1) {
+                switch (configCode) {
+                    case ProfileConstant.STORENAME:
+                        prepareStorName();
+                        break;
+                    case ProfileConstant.ADDRESS1:
+                        prepareAddress1();
+                        break;
+                    case ProfileConstant.ADDRESS2:
+                        prepareAddress2();
+                        break;
+                    case ProfileConstant.ADDRESS3:
+                        prepareAddress3();
+                        break;
+                    case ProfileConstant.CITY:
+                        prepareCity();
+                        break;
+                    case ProfileConstant.STATE:
+                        prepareState();
+                        break;
+                    case ProfileConstant.PINCODE:
+                        preparePincode();
+                        break;
+                    case ProfileConstant.CONTACT_NUMBER:
+                        prepareContectNumber();
+                        break;
+                    case ProfileConstant.CHANNEL:
+                        prepareChennel();
+                        break;
+                    case ProfileConstant.SUBCHANNEL:
+                        prepareSubChennal();
+                        break;
+                    case ProfileConstant.CONTRACT:
+                        prepareContract();
+                        break;
+                    case ProfileConstant.LATTITUDE_LONGITUDE:
+                        prepareLatLong();
+                        break;
+                    case ProfileConstant.PHOTO_CAPTURE:
+                        getIvyView().isLatLongCameravailable(true);
+                        break;
+                    case ProfileConstant.LOCATION01:
+                        prepareLocation1();
+                        break;
+                    case ProfileConstant.LOCATION02:
+                        prepareLocation2();
+                        break;
+                    case ProfileConstant.LOCATION:
+                        prepareLocation();
+                        break;
+                    case ProfileConstant.NEARBYRET:
+                        prepareNearByRetailer();
+                        break;
+                    case ProfileConstant.CREDITPERIOD:
+                        prepareCrediPreriod();
+                        break;
+                    case ProfileConstant.RFiled1:
+                        prepareRfield1();
+                        break;
+                    case ProfileConstant.RField2:
+                        prepareRfield2();
+                        break;
+                    case ProfileConstant.RField4:
+                        prepareRfield4();
+                        break;
+                    case ProfileConstant.RFIELD5:
+                        prepareRfield5();
+                        break;
+                    case ProfileConstant.RFIELD6:
+                        prepareRfield6();
+                        break;
+                    case ProfileConstant.RFIELD7:
+                        prepareRfield7();
+                        break;
+                    case ProfileConstant.PROFILE_27:
+                        prepareProfile27();
+                        break;
+                    case ProfileConstant.PRIORITYPRODUCT:
+                        downloadPriority(mNumber, mName);
+                        break;
+                    case ProfileConstant.ATTRIBUTE:
+                        getIvyView().createAttributeView(0);
+                        break;
+                    case ProfileConstant.GSTN:
+                      prepareGSTN();
+                        break;
+                    case ProfileConstant.INSEZ:
+                        prepareSezCheckBox();
+                        break;
+                }
+            } else {
+                //write the code here  for without flag and order condition
+            }
+        }
+
+    }
+
+    private void prepareSezCheckBox() {
+    }
+
+
+    private void prepareStorName() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getRetailerName()))
+            retailerMasterBO.setRetailerName("");
+        String retailderName = retailerMasterBO.getRetailerName() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(retailderName))
+                retailderName = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, retailderName);
+    }
+
+    private void prepareAddress1() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getAddress1()))
+            retailerMasterBO.setAddress1("");
+        String text = retailerMasterBO.getAddress1() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareAddress2() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getAddress2()))
+            retailerMasterBO.setAddress2("");
+        String text = retailerMasterBO.getAddress2() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareAddress3() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getAddress3()))
+            retailerMasterBO.setAddress3("");
+        String text = retailerMasterBO.getAddress3() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareCity() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getCity()))
+            retailerMasterBO.setCity("");
+        String text = retailerMasterBO.getCity() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        Commons.print(ProfileConstant.CITY + "" + profileConfig.get(mNumber).getModule_Order());
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareState() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getState()))
+            retailerMasterBO.setState("");
+        String text = retailerMasterBO.getState() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        Commons.print(ProfileConstant.STATE + "" + profileConfig.get(mNumber).getModule_Order());
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void preparePincode() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getPincode()))
+            retailerMasterBO.setPincode("");
+        String text = retailerMasterBO.getPincode() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        Commons.print(ProfileConstant.PINCODE + "," + "" + profileConfig.get(mNumber).getModule_Order());
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareContectNumber() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getContactnumber()))
+            retailerMasterBO.setContactnumber("");
+        String text = retailerMasterBO.getContactnumber() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareChennel() {
+        int id = retailerMasterBO.getChannelID();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(id + ""))
+                id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
+        channelMaster = channelMasterHelper.getChannelMaster();
+        getIvyView().createSpinnerView(channelMaster, mNumber, mName, configCode, id);
+    }
+
+    private void prepareSubChennal() {
+        int id = retailerMasterBO.getSubchannelid();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(id + ""))
+                id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
+        getIvyView().createSpinnerView(mNumber, mName, configCode, id);
+    }
+
+    private void prepareContract() {
+        int id = retailerMasterBO.getContractLovid();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(id + ""))
+                id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
+        getIvyView().createSpinnerView(mNumber, mName, configCode, id);
+    }
+
+    private void prepareLatLong() {
+        String textLat = retailerMasterBO.getLatitude() + "";
+        @NonNls String MenuName = "LatLong";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(textLat))
+                textLat = mPreviousProfileChanges.get(configCode);
+        for (int j = 0; j < profileConfig.size(); j++) {
+            if (profileConfig.get(j).getConfigCode().equals(ProfileConstant.PROFILE_31)
+                    && flag == 1 && profileConfig.get(mNumber).getModule_Order() == 1) {
+                String textLong = retailerMasterBO.getLongitude() + "";
+                if (mPreviousProfileChanges.get(profileConfig.get(j).getConfigCode()) != null)
+                    if (!mPreviousProfileChanges.get(profileConfig.get(j).getConfigCode()).equals(textLong))
+                        textLong = mPreviousProfileChanges.get(profileConfig.get(j).getConfigCode());
+                String text = textLat + ", " + textLong;
+                getIvyView().createLatlongTextView(mNumber, MenuName, text);
+            }
+        }
+    }
+
+    private void prepareLocation1() {
+        try {
+            String title = "";
+            locid = retailerMasterBO.getLocationId();
+            if (locid != 0) {
+                String[] loc1 = retailerHelper.getParentLevelName(locid, false);
+                title = loc1[2];
+            }
+            int id = retailerMasterBO.getLocationId();
+            if (mPreviousProfileChanges.get(configCode) != null)
+                if (mPreviousProfileChanges.get(configCode).equals(id + ""))
+                    id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
+            getIvyView().createSpinnerView(mNumber, title, configCode, id, locid);
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    private void prepareLocation2() {
+        try {
+            String title = "";
+            String[] loc2 = retailerHelper.getParentLevelName(locid, true);
+            if (loc2 != null) {
+                loc2id = SDUtil.convertToInt(loc2[0]);
+                title = loc2[2];
+            }
+            int id = retailerMasterBO.getLocationId();
+            if (mPreviousProfileChanges.get(configCode) != null)
+                if (mPreviousProfileChanges.get(configCode).equals(id + ""))
+                    id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
+            getIvyView().createSpinnerView(mNumber, title, configCode, id);
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    private void prepareLocation() {
+        try {
+            String title = "";
+            String[] loc3 = retailerHelper.getParentLevelName(loc2id, true);
+            if (loc3 != null) {
+                title = loc3[2];
+            }
+            int id = retailerMasterBO.getLocationId();
+            if (mPreviousProfileChanges.get(configCode) != null)
+                if (mPreviousProfileChanges.get(configCode).equals(id + ""))
+                    id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
+            getIvyView().createSpinnerView(mNumber, title, configCode, id);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    private void prepareCrediPreriod() {
+        String text = retailerMasterBO.getCreditDays() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareNearByRetailer() {
+        if (!retailerMasterBO.getIsNew().equals("Y"))
+            if (getNearByRetailers() != null)
+                getNearByRetailers().clear();
+        getIvyView().createNearByRetailerView(mNumber, mName, true);
+    }
+
+    private void prepareRfield1() {
+        String text = retailerMasterBO.getRField1() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareRfield2() {
+        String text = retailerMasterBO.getRfield2() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareProfile27() {
+        String text = retailerMasterBO.getCredit_invoice_count() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
+    }
+
+    private void prepareRfield4() {
+        String text = retailerMasterBO.getRField4() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        if (profileConfig.get(mNumber).getHasLink() == 0)
+            checkConfigrationForEditText(mNumber, configCode, mName, text);
+        else {
+            if (text.equals(""))
+                text = "0";
+            getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
+        }
+    }
+
+    private void prepareRfield5() {
+        String text = retailerMasterBO.getRField5() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        if (profileConfig.get(mNumber).getHasLink() == 0)
+            checkConfigrationForEditText(mNumber, configCode, mName, text);
+        else {
+            if (text.equals(""))
+                text = "0";
+            getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
+        }
+    }
+
+    private void prepareRfield6() {
+        String text = retailerMasterBO.getRField6() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        if (profileConfig.get(mNumber).getHasLink() == 0)
+            checkConfigrationForEditText(mNumber, configCode, mName, text);
+        else {
+            if (text.equals(""))
+                text = "0";
+            getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
+        }
+    }
+
+    private void prepareRfield7() {
+        String text = retailerMasterBO.getRField7() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        if (profileConfig.get(mNumber).getHasLink() == 0)
+            checkConfigrationForEditText(mNumber, configCode, mName, text);
+        else {
+            if (text.equals(""))
+                text = "0";
+            getIvyView().createSpinnerView(mNumber, mName, configCode, SDUtil.convertToInt(text));
+        }
+    }
+
+    private void prepareGSTN() {
+        String text = retailerMasterBO.getGSTNumber() + "";
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
 
 
@@ -1214,5 +1368,11 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         return configCode.equalsIgnoreCase(configCodeFromDB);
     }
 
+    @Override
+    public void onDetach() {
+        mProfileDataManager.closeDB();
+        super.onDetach();
+
+    }
 }
 

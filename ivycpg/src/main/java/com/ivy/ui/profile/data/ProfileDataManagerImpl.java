@@ -33,11 +33,13 @@ import io.reactivex.functions.Function;
 
 public class ProfileDataManagerImpl implements IProfileDataManager {
 
-    DBUtil dbUtil;
+  private DBUtil dbUtil;
 
     @Inject
     public ProfileDataManagerImpl(@DataBaseInfo DBUtil dbUtil) {
         this.dbUtil = dbUtil;
+        dbUtil.openDataBase();
+
     }
 
 
@@ -49,7 +51,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                 ArrayList<NewOutletBO> contactTitleList = new ArrayList<>();
                 NewOutletBO contactTitle = null;
                 try {
-                    dbUtil.openDataBase();
+
                     Cursor c = dbUtil.selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTACT_TITLE_TYPE'");
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
@@ -60,7 +62,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         }
                         c.close();
                     }
-                    dbUtil.closeDB();
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -79,7 +80,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                 ArrayList<NewOutletBO> contractStatusList = new ArrayList<>();
                 NewOutletBO contactStatus;
                 try {
-                    dbUtil.openDataBase();
+
                     Cursor c = dbUtil.selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTRACT_STATUS'");
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
@@ -90,7 +91,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         }
                         c.close();
                     }
-                    dbUtil.closeDB();
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -112,7 +112,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                 LocationBO locationBo;
                 try {
                     dbUtil.createDataBase();
-                    dbUtil.openDataBase();
                     String sb = "select LM.LocId,LM.LocCode,LM.LocName,LM.LocParentId,LL.id  from LocationMaster LM " +
                             "inner join  (select distinct id from LocationLevel LL1 inner join LocationMaster LM1" +
                             " on  LL1.id=LM1.LocLevelId order by Sequence desc  limit 3) LL " +
@@ -154,8 +153,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                 } catch (Exception e) {
                     Commons.printException("" + e);
 
-                } finally {
-                    dbUtil.closeDB();
                 }
                 return mLocationListByLevelId;
             }
@@ -172,7 +169,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                 HashMap<String, String> mPreviousProfileChangesList = new HashMap<>();
                 try {
-                    dbUtil.openDataBase();
+
                     Cursor c, headerCursor;
                     String tid = "";
                     String currentDate;
@@ -191,10 +188,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             mPreviousProfileChangesList.put(c.getString(0), c.getString(1));
                         }
                     }
-                    dbUtil.closeDB();
+
                 } catch (Exception e) {
                     Commons.printException("" + e);
-                    dbUtil.closeDB();
+
                 }
 
                 return mPreviousProfileChangesList;
@@ -208,7 +205,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                dbUtil.openDataBase();
+
                 Cursor c = dbUtil
                         .selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" + ret.getRetailerID());
                 if (c != null) {
@@ -220,7 +217,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     }
                     c.close();
                 }
-                dbUtil.closeDB();
                 return false;
             }
         });
@@ -238,7 +234,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public Vector<RetailerMasterBO> call() throws Exception {
                 Vector<RetailerMasterBO> mLinkRetailerList = new Vector<>();
                 try {
-                    dbUtil.openDataBase();
+
                     String sb = "select Distributorid ,retailerid,name,latitude,longitude,pincode from linkretailermaster " +
                             "order by Distributorid ";
                     Cursor c = dbUtil.selectSQL(sb);
@@ -256,7 +252,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         }
                     }
                     c.close();
-                    dbUtil.closeDB();
+
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -274,7 +270,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<RetailerFlexBO> call() throws Exception {
                 ArrayList<RetailerFlexBO> flexValues = new ArrayList<>();
                 try {
-                    dbUtil.openDataBase();
                     String sql = "select id,name from RetailerFlexValues where type = " + AppUtils.QT(type);
                     Cursor c = dbUtil.selectSQL(sql);
                     RetailerFlexBO retailerFlexBO;
@@ -289,8 +284,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                 } catch (Exception e) {
                     Commons.printException(e);
-                } finally {
-                    dbUtil.closeDB();
                 }
                 return flexValues;
             }
@@ -303,14 +296,13 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     public void saveNearByRetailers(String id, Vector<RetailerMasterBO> NearByRetailers) {
         try {
             dbUtil.createDataBase();
-            dbUtil.openDataBase();
             String columnsNew = "rid,nearbyrid,upload";
             String values;
             for (int j = 0; j < NearByRetailers.size(); j++) {
                 values = AppUtils.QT(id) + "," + NearByRetailers.get(j).getRetailerID() + "," + AppUtils.QT("N");
                 dbUtil.insertSQL("NearByRetailers", columnsNew, values);
             }
-            dbUtil.closeDB();
+
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -325,7 +317,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<String> call() throws Exception {
                 ArrayList<String> lst = new ArrayList<>();
                 try {
-                    dbUtil.openDataBase();
                     Cursor c = dbUtil
                             .selectSQL("SELECT nearbyrid from NearByRetailers where rid='" + RetailerID + "' and upload='Y'");
                     if (c.getCount() > 0) {
@@ -334,7 +325,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         }
                     }
                     c.close();
-                    dbUtil.closeDB();
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -351,7 +341,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public HashMap<String, String> call() throws Exception {
                 HashMap<String, String> lstEditRequests = new HashMap<>();
                 try {
-                    dbUtil.openDataBase();
                     Cursor c = dbUtil
                             .selectSQL("SELECT nearbyrid,status from RrtNearByEditRequest where rid=" + retailerId + " and upload='N'");
                     if (c.getCount() > 0) {
@@ -361,7 +350,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                     }
                     c.close();
-                    dbUtil.closeDB();
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -378,7 +366,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<StandardListBO> call() throws Exception {
                 ArrayList<StandardListBO> priorityproductList = null;
                 try {
-                    dbUtil.openDataBase();
                     String sb = "select  priorityproductid,pname,ProductLevelId from PriorityProducts  pp inner join productmaster pm " +
                             " on pm.pid=pp.priorityproductid  and pm.plid=pp.productlevelid";
                     Cursor c = dbUtil.selectSQL(sb);
@@ -395,8 +382,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     }
                 } catch (Exception e) {
                     Commons.printException("" + e);
-                } finally {
-                    dbUtil.closeDB();
                 }
                 return priorityproductList;
             }
@@ -411,7 +396,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<String> call() throws Exception {
                 ArrayList<String> priorityproductList = null;
                 try {
-                    dbUtil.openDataBase();
                     String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + AppUtils.QT(retailerId);
                     Cursor c = dbUtil.selectSQL(sql);
                     if (c.getCount() > 0) {
@@ -422,8 +406,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     }
                 } catch (Exception e) {
                     Commons.printException("" + e);
-                } finally {
-                    dbUtil.closeDB();
                 }
                 return priorityproductList;
             }
@@ -437,7 +419,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         if (strings == null) {
                             ArrayList<String> priorityproductList = null;
                             try {
-                                dbUtil.openDataBase();
                                 String sql = "select ProductId from RetailerEditPriorityProducts where status = 'N' and retailerId=" + AppUtils.QT(retailerId);
                                 Cursor c = dbUtil.selectSQL(sql);
                                 if (c.getCount() > 0) {
@@ -448,8 +429,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                                 }
                             } catch (Exception e) {
                                 Commons.printException("" + e);
-                            } finally {
-                                dbUtil.closeDB();
                             }
                             return priorityproductList;
                         } else
@@ -467,9 +446,8 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         return Observable.fromCallable(new Callable<ArrayList<Integer>>() {
             @Override
             public ArrayList<Integer> call() throws Exception {
-                ArrayList<Integer> mCommonAttributeList = null;
+                ArrayList<Integer> mCommonAttributeList = new ArrayList<>();
                 try {
-                    dbUtil.openDataBase();
                     Cursor c = dbUtil
                             .selectSQL("SELECT attributeid FROM entityattributemaster where parentid =0 and attributeid not in(select attributeid from EntityCriteriaType) and IsSystemComputed=0 and IsCriteriaMapped=0 order by sequence");
                     if (c != null && c.getCount() > 0) {
@@ -479,7 +457,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         }
                         c.close();
                     }
-                    dbUtil.closeDB();
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -500,9 +477,8 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                 HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID = null;
                 HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID = null;
-                ChannelWiseAttributeList channelWiseAttributeList = null;
+                ChannelWiseAttributeList channelWiseAttributeList = new ChannelWiseAttributeList();
                 try {
-                    dbUtil.openDataBase();
                     Cursor c = dbUtil
                             .selectSQL("SELECT EAM.attributeid,CriteriaId,ECT.isMandatory,AttributeName FROM entityattributemaster EAM inner join EntityCriteriaType ECT ON EAM.attributeId=ECT.attributeId where parentid =0 and criteriaType='CHANNEL' and IsSystemComputed=0 order by sequence");
                     if (c != null && c.getCount() > 0) {
@@ -540,8 +516,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                     channelWiseAttributeList = new ChannelWiseAttributeList(mAttributeBOListByLocationID, mAttributeListByLocationID);
 
-                    dbUtil.closeDB();
-
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -560,9 +534,9 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
             @Override
             public ArrayList<NewOutletAttributeBO> call() throws Exception {
-                ArrayList<NewOutletAttributeBO> attributeBOArrayList=null;
+                ArrayList<NewOutletAttributeBO> attributeBOArrayList=new ArrayList<>();
                 try {
-                    dbUtil.openDataBase();
+
                     Cursor cursor = dbUtil.selectSQL("select RB.attributeid, RB.levelid from retailerattribute RB INNER JOIN " +
                             "EntityAttributeMaster  EAM  ON RB.attributeid=EAM.Attributeid  where RB.retailerid = " + RetailerID +
                             " order by EAM.ParentId");
@@ -580,7 +554,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         cursor.close();
                     }
 
-                    dbUtil.closeDB();
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -598,7 +571,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<NewOutletAttributeBO> call() throws Exception {
                 ArrayList<NewOutletAttributeBO> attributeBOArrayList = new ArrayList<>();
                 try {
-                    dbUtil.openDataBase();
                     Cursor cursor = dbUtil.selectSQL("select attributeid, levelid, status from retailereditattribute where retailerid = " + retailerID + " and upload='N'");
                     if (cursor != null) {
                         NewOutletAttributeBO tempBO;
@@ -610,10 +582,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             attributeBOArrayList.add(tempBO);
                         }
                         cursor.close();
-                        dbUtil.closeDB();
+
                     }
                 } catch (Exception e) {
-                    dbUtil.closeDB();
+
                     Commons.printException("" + e);
                     return new ArrayList<>();
                 }
@@ -630,12 +602,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public ArrayList<NewOutletAttributeBO> call() throws Exception {
 
-                ArrayList<NewOutletAttributeBO> attribListChild=null;
+                ArrayList<NewOutletAttributeBO> attribListChild=new ArrayList<>();
 
                 try {
                     NewOutletAttributeBO temp;
-                    dbUtil.openDataBase();
-
                     attribListChild = new ArrayList<>();
 
                     Cursor c = dbUtil
@@ -654,7 +624,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         }
                         c.close();
                     }
-                    dbUtil.closeDB();
+
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -676,7 +646,6 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     attributeParentList = new ArrayList<>();
                     NewOutletAttributeBO temp;
 
-                    dbUtil.openDataBase();
                     Cursor c = dbUtil
                             .selectSQL("SELECT attributeid, attributename, isSystemComputed,IsMandatory FROM entityattributemaster where parentid =0 order by sequence");
                     if (c != null) {
@@ -702,7 +671,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         }
                         c.close();
                     }
-                    dbUtil.closeDB();
+
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -765,5 +734,9 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
+    @Override
+    public void closeDB() {
+        dbUtil.closeDB();
+    }
 
 }

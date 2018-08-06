@@ -132,17 +132,17 @@ public class ProfileEditFragment extends IvyBaseFragment
     private static final String PROFILE_26 = "PROFILE26";//RField2,Has Edit=1 Note:-Only Profile Config
     private static final String PROFILE_27 = "PROFILE27";
     private static final String PROFILE_28 = "PROFILE28";//RField4,length validation=Y,Has Edit=1,RetailerMaster
-    private static final String PROFILE_30 = "PROFILE30";//ContactNumber Note:-Only Profile Config
+    private static final String PROFILE_30 = "PROFILE30";//CONTACT_NUMBER Note:-Only Profile Config
     private static final String PROFILE_31 = "PROFILE31";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerMaster
     private static final String PROFILE_36 = "PROFILE36";//NEARBYRET(retailers)length validation=Y,Has Edit=1,RetailerMaster
     private static final String PROFILE_38 = "PROFILE38";//PINCODE,length validation=Y,Has Edit=0, RetailerAddress
-    private static final String PROFILE_39 = "PROFILE39";//RetailerAddressCity :Note:-Only Profile Config,Has Edit=1
+    private static final String PROFILE_39 = "PROFILE39";//CITY :Note:-Only Profile Config,Has Edit=1
     private static final String PROFILE_40 = "PROFILE40";//STATE ,length validation=Y,Has Edit=0, RetailerAddress
 
     private static final String PROFILE_43 = "PROFILE43";//CONTRACT->contract status id,length validation=Y,Has Edit=0, ,RetailerMaster
-    private static final String PROFILE_47 = "PROFILE47";//outstanding :Note:-Only Profile Config,Has Edit=0
+    private static final String PROFILE_47 = "PROFILE47";//OUTSTANDING :Note:-Only Profile Config,Has Edit=0
     private static final String PROFILE_48 = "PROFILE48";//Return Credit Limit :Note:-Only Profile Config,Has Edit=0
-    private static final String PROFILE_49 = "PROFILE49";//Invoice Amount Calculation :Note:-Only Profile Config,Has Edit=0
+    private static final String PROFILE_49 = "PROFILE49";//INVOICE Amount Calculation :Note:-Only Profile Config,Has Edit=0
     private static final String PROFILE_50 = "PROFILE50";//location Name.Retailer Master : locationid :Note:-Only Profile Config,Has Edit=0
     private static final String PROFILE_51 = "PROFILE51";//TAXTYPE,length validation=Y,Has Edit=0, ,RetailerMaster
     private static final String PROFILE_53 = "PROFILE53";//RFIELD5-->RetailerMaster
@@ -150,12 +150,12 @@ public class ProfileEditFragment extends IvyBaseFragment
     private static final String PROFILE_55 = "PROFILE55";//RFIELD7-->RetailerMaster
     private static final String PROFILE_57 = "PROFILE57";//PRIORITYPRODUCT -->From  PriorityProducts Table
     private static final String PROFILE_58 = "PROFILE58";//ATTRIBUTE -->From RetailerAttribute Table
-    private static final String PROFILE_61 = "PROFILE61";//GSTN Number,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_61 = "PROFILE61";//GSTNNumber,length validation=Y,Has Edit=1,RetailerMaster;
     private static final String PROFILE_62 = "PROFILE62";//INSEZ,length validation=Y,Has Edit=0, ,RetailerMaster
     private static final String PROFILE_63 = "PROFILE63";//Photo Capture , lat and Long, Note:-Only Profile Config,Has Edit=0
-    private static final String PROFILE_78 = "PROFILE78";//Email,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_78 = "PROFILE78";//EMAIL,length validation=Y,Has Edit=1,RetailerMaster;
     private static final String PROFILE_79 = "PROFILE79";//MOBILE ,length validation=Y,Has Edit=1,RetailerMaster;
-    private static final String PROFILE_81 = "PROFILE81";//pan_number,length validation=Y,Has Edit=1,RetailerMaster;
+    private static final String PROFILE_81 = "PROFILE81";//PAN_NUMBER,length validation=Y,Has Edit=1,RetailerMaster;
     private static final String PROFILE_82 = "PROFILE82";//FOOD_LICENCE_NUM,length validation=Y,Has Edit=1,RetailerMaster;
     private static final String PROFILE_83 = "PROFILE83";//FOOD_LICENCE_EXP_DATE,length validation=Y,Has Edit=1,RetailerMaster;
     private static final String PROFILE_84 = "PROFILE84";//DRUG_LICENSE_NUM,length validation=Y,Has Edit=1,RetailerMaster;
@@ -387,8 +387,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }*/
 
             if (configureBO.getConfigCode().equalsIgnoreCase(PROFILE_58) && configureBO.isFlag() == 1) {
-
-
 
                 bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
 
@@ -1067,7 +1065,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                     LinearLayout baselayout = new LinearLayout(getActivity());
                     baselayout.setOrientation(LinearLayout.VERTICAL);
 
-
                     LinearLayout linearlayout = new LinearLayout(getActivity());
                     linearlayout.setOrientation(LinearLayout.VERTICAL);
 
@@ -1089,8 +1086,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     textLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                     if (profileConfig.get(i).getMandatory() == 1) {
-                        LinearLayout.LayoutParams weight0 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams weight0 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         TextView mn_textview = new TextView(getActivity());
                         mn_textview.setText("*");
                         mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
@@ -1446,7 +1442,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         editText[positionNumber].setText(values);
         editText[positionNumber].setHint(menuName);
 
-        if (!comparConfigerCode(configCode, PROFILE_78)) { //if not Email   //cmd for not apply inputfilter value for email id
+        if (!comparConfigerCode(configCode, PROFILE_78)) { //if not EMAIL   //cmd for not apply inputfilter value for email id
             getInputFilter(positionNumber);
         }
 
@@ -1496,7 +1492,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         if (!comparConfigerCode(mConfigCode, PROFILE_78) ||
                 !comparConfigerCode(mConfigCode, PROFILE_81) ||
-                !comparConfigerCode(mConfigCode, PROFILE_61)) {   /*Email, PenNumber,GST*/
+                !comparConfigerCode(mConfigCode, PROFILE_61)) {   /*EMAIL, PenNumber,GST*/
             //regex
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
@@ -1511,9 +1507,9 @@ public class ProfileEditFragment extends IvyBaseFragment
             //checkGSTRegex(mNumber);
         }
 
-      /*  STORENAME,ADDRESS1,ADDRESS2,ADDRESS3,RetailerAddressCity,RFiled1,RField2
+      /*  STORENAME,ADDRESS1,ADDRESS2,ADDRESS3,CITY,RFiled1,RField2
          Contract Type,RField4,RFIELD5,RFIELD6,RFIELD7,STATE,PINCODE,GSTN Number
-         pan_number,FOOD_LICENCE_NUM,DRUG_LICENSE_NUM,Email,REGION,COUNTRY*/
+         PAN_NUMBER,FOOD_LICENCE_NUM,DRUG_LICENSE_NUM,EMAIL,REGION,COUNTRY*/
         TextInputLayout editTextInputLayout;
         if (comparConfigerCode(mConfigCode, PROFILE_02) || comparConfigerCode(mConfigCode, PROFILE_03) ||
                 comparConfigerCode(mConfigCode, PROFILE_04) || comparConfigerCode(mConfigCode, PROFILE_05) ||
@@ -1552,7 +1548,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             });
 
 
-            //if  Email
+            //if  EMAIL
             if (comparConfigerCode(mConfigCode, PROFILE_78) && profileConfig.get(mNumber).getMandatory() == 1) {
 
                 LinearLayout emailLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
@@ -1587,7 +1583,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         }
 
 
-        /*ContactNumber,PHNO1,PHNO2,MOBILE,FAX*/
+        /*CONTACT_NUMBER,PHNO1,PHNO2,MOBILE,FAX*/
         if (comparConfigerCode(mConfigCode, PROFILE_30) ||
                 comparConfigerCode(mConfigCode, PROFILE_10) ||
                 comparConfigerCode(mConfigCode, PROFILE_12) ||

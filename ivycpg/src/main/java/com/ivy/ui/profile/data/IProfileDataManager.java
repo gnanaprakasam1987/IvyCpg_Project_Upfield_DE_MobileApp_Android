@@ -68,5 +68,7 @@ public interface IProfileDataManager {
             ArrayList<NewOutletAttributeBO> retailerAttribute,
             ArrayList<NewOutletAttributeBO> AttributeParentList);
 
+    void closeDB();
+
 
 }
