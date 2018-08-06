@@ -1,86 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/seller_list"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:background="#f6f9fc"/>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/_30sdp"
-        android:id="@+id/bottom_layout"
-        android:background="@drawable/curved_border_grey_bg"
-        android:paddingLeft="@dimen/_15sdp"
-        android:paddingRight="@dimen/_15sdp">
-
-        <LinearLayout
-            android:id="@+id/filter_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingLeft="@dimen/_10sdp"
-            android:paddingRight="@dimen/_25sdp">
-
-            <ImageView
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/ic_filter_icon"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/_35sdp"
-                style="@style/TextViewListItemPrimary"
-                android:textColor="@color/WHITE"
-                android:text="Filter"
-                android:gravity="center"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp"/>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="@dimen/_1sdp"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/seller_list"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#5effffff"/>
+            android:background="#f6f9fc"
+            android:scrollbars="none" />
 
-        <LinearLayout
-            android:id="@+id/sort_layout"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_action_filter"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/bottom_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/_30sdp"
+            android:background="@drawable/curved_border_grey_bg"
             android:gravity="center"
-            android:paddingLeft="@dimen/_25sdp"
-            android:paddingRight="@dimen/_10sdp">
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_15sdp"
+            android:paddingRight="@dimen/_15sdp"
+            android:visibility="gone">
 
-            <ImageView
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/ic_action_filter"/>
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/filter_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/_35sdp"
-                style="@style/TextViewListItemPrimary"
-                android:textColor="@color/WHITE"
-                android:text="Sort  "
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp"/>
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_10sdp"
+                android:paddingRight="@dimen/_25sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_filter_icon" />
+
+                <TextView
+                    style="@style/TextViewListItemPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:text="Filter"
+                    android:textColor="@color/WHITE"
+                    android:textSize="@dimen/_12sdp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#5effffff" />
+
+            <LinearLayout
+                android:id="@+id/sort_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_25sdp"
+                android:paddingRight="@dimen/_10sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_action_filter" />
+
+                <TextView
+                    style="@style/TextViewListItemPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:text="Sort  "
+                    android:textColor="@color/WHITE"
+                    android:textSize="@dimen/_12sdp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</RelativeLayout>
+    <include layout="@layout/sort_bottom_sheet_layout" />
+
+</android.support.design.widget.CoordinatorLayout>

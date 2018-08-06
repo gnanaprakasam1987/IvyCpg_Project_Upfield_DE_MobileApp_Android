@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,9 +42,12 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, OutletMapViewContractor.OutletMapView {
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, OutletMapViewContractor.OutletMapView,FilterScreenFragment.FilterItemSelectedListener {
 
     private GoogleMap mMap;
     private TabLayout tabLayout;
@@ -62,7 +66,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
     private FrameLayout drawer;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-
+    HashMap<Integer, Integer> mSelectedIdByLevelId = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,17 +134,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
-                switch (tab.getPosition()) {
-                    case 0:
-                        setScreenTitle("Total Outlet (" + outletListBos.size() + ")");
-                        break;
-                    case 1:
-                        setScreenTitle("Covered (" + outletListBos.size() + ")");
-                        break;
-                    case 2:
-                        setScreenTitle("UnBilled (" + outletListBos.size() + ")");
-                        break;
-                }
+                setScreenTitle();
 
                 outletMapViewPresenter.setTabPosition(tab.getPosition());
 
@@ -171,12 +165,11 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
                 R.string.close /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                setScreenTitle("");
                 supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                setScreenTitle(getResources().getString(R.string.filter));
+                setScreenTitle(getResources().getString(R.string.filter_by));
                 supportInvalidateOptionsMenu();
             }
         };
@@ -294,18 +287,22 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         outletListBos.addAll(retailerMasterList);
         outletInfoHorizontalAdapter.notifyDataSetChanged();
 
-        switch (tabLayout.getSelectedTabPosition()) {
-            case 0:
-                setScreenTitle("Total Outlet (" + outletListBos.size() + ")");
-                break;
-            case 1:
-                setScreenTitle("Covered (" + outletListBos.size() + ")");
-                break;
-            case 2:
-                setScreenTitle("UnBilled (" + outletListBos.size() + ")");
-                break;
-        }
+        setScreenTitle();
 
+    }
+
+    @Override
+    public void selectedChannels(HashMap<Integer, Integer> mSelectedIdByLevelId) {
+        mDrawerLayout.closeDrawers();
+        invalidateOptionsMenu();
+
+        if(mSelectedIdByLevelId!=null) {
+
+            outletMapViewPresenter.channelFilterIds(mSelectedIdByLevelId);
+            outletMapViewPresenter.setTabPosition(tabLayout.getSelectedTabPosition());
+
+            this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        }
     }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
@@ -365,6 +362,14 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_dashboard).setVisible(false);
         menu.findItem(R.id.menu_date).setVisible(false);
+
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+            menu.findItem(R.id.menu_search).setVisible(false);
+        }
+        else {
+            menu.findItem(R.id.menu_search).setVisible(true);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -374,6 +379,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         if (i == android.R.id.home) {
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout.closeDrawers();
+                setScreenTitle();
             } else {
                 finish();
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -501,9 +507,16 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
     }
 
     private void filterFragment() {
+        invalidateOptionsMenu();
         try {
-
             mDrawerLayout.openDrawer(GravityCompat.END);
+
+            Set<Integer> integers = new HashSet<>();
+            for(RetailerBo retailerBo : outletListBos){
+                integers.addAll(retailerBo.getProductIds());
+            }
+
+            String productIds = TextUtils.join(",", integers.toArray(new Integer[integers.size()])) ;
 
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             FilterScreenFragment frag = (FilterScreenFragment) fm
@@ -514,11 +527,30 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
                 ft.detach(frag);
 
             FilterScreenFragment fragobj = new FilterScreenFragment();
+            Bundle bundle =new Bundle();
+            bundle.putSerializable("ChannelId",mSelectedIdByLevelId);
+            bundle.putString("Date",outletMapViewPresenter.convertPlaneDateToGlobal(selectedDate));
+            bundle.putString("ProductId",productIds);
+            fragobj.setArguments(bundle);
 
             ft.replace(R.id.right_drawer, fragobj, "FilterScreen");
             ft.commit();
         } catch (Exception e) {
             Commons.printException(e);
+        }
+    }
+
+    private void setScreenTitle(){
+        switch (tabLayout.getSelectedTabPosition()) {
+            case 0:
+                setScreenTitle("Total Outlet (" + outletListBos.size() + ")");
+                break;
+            case 1:
+                setScreenTitle("Covered (" + outletListBos.size() + ")");
+                break;
+            case 2:
+                setScreenTitle("UnBilled (" + outletListBos.size() + ")");
+                break;
         }
     }
 

@@ -20,6 +20,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -260,19 +261,24 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     private void setSellerActivityValues(DocumentSnapshot document) {
 
         if (document.getData() != null) {
-            String timeIn = convertMillisToTime((long)document.getData().get("inTime"));
-            String retailerName = SupervisorActivityHelper.getInstance().retailerNameById((int)(long)document.getData().get("retailerId"));
-            String covered = String.valueOf((long)document.getData().get("covered"));
 
-            double latitude = (double)(long)document.getData().get("latitude");
-            double longitude = (double)(long)document.getData().get("longitude");
+            SellerBo sellerBo = document.toObject((SellerBo.class));
 
-            LatLng sellerCurrentLocation = null;
+            if (sellerBo != null) {
+                String timeIn = convertMillisToTime(sellerBo.getInTime());
+                String retailerName = SupervisorActivityHelper.getInstance().retailerNameById(sellerBo.getRetailerId());
+                String covered = String.valueOf(sellerBo.getCovered());
 
-            if(isRealTimeLocationOn)
-                sellerCurrentLocation = new LatLng(latitude,longitude);
+                double latitude = sellerBo.getLatitude();
+                double longitude = sellerBo.getLongitude();
 
-            sellerMapView.updateSellerInfo(timeIn,retailerName,totalOutletCount,covered,sellerCurrentLocation);
+                LatLng sellerCurrentLocation = null;
+
+                if (isRealTimeLocationOn)
+                    sellerCurrentLocation = new LatLng(latitude, longitude);
+
+                sellerMapView.updateSellerInfo(timeIn, retailerName, totalOutletCount, covered, sellerCurrentLocation);
+            }
         }
     }
 

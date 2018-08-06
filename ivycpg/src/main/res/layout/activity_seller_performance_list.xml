@@ -1,133 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity">
+    android:background="@color/white">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar" />
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_below="@+id/toolbar"
-        android:weightSum="1">
+        android:background="@color/white"
+        tools:context="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity">
 
-        <RelativeLayout
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/material_tool_bar" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.4"
-            android:id="@+id/chart_layout"
-            android:background="@drawable/total_outlet_bg_gradient">
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            android:orientation="vertical"
+            android:weightSum="1">
 
-            <com.github.mikephil.charting.charts.CombinedChart
-                android:id="@+id/combined_chart"
+            <RelativeLayout
+                android:id="@+id/chart_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/_10sdp"/>
+                android:layout_height="0dp"
+                android:layout_weight="0.4"
+                android:background="@drawable/total_outlet_bg_gradient">
 
-            <ImageView
+                <com.github.mikephil.charting.charts.CombinedChart
+                    android:id="@+id/combined_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_10sdp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:src="@drawable/ic_calendar"
+                    android:visibility="gone" />
+
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/seller_list_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_below="@+id/chart_layout"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_weight="0.6"
+                android:background="#f6f9fc"
+                android:scrollbars="none" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/_30sdp"
+            android:background="@drawable/curved_border_grey_bg"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:paddingRight="@dimen/_15sdp">
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_calendar"
-                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_10sdp"
                 android:visibility="gone"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"/>
+                android:paddingRight="@dimen/_25sdp">
 
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_filter_icon" />
 
-        </RelativeLayout>
+                <TextView
+                    style="@style/TextViewListItemPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:text="Filter"
+                    android:textColor="@color/WHITE"
+                    android:textSize="@dimen/_12sdp" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/seller_list_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.6"
-            android:scrollbars="none"
-            android:background="#f6f9fc"
-            android:layout_below="@+id/chart_layout"
-            android:layout_marginTop="@dimen/_5sdp"/>
+            </LinearLayout>
 
-    </LinearLayout>
+            <View
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="#5effffff" />
 
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/_30sdp"
-        android:id="@+id/bottom_layout"
-        android:background="@drawable/curved_border_grey_bg"
-        android:paddingLeft="@dimen/_15sdp"
-        android:paddingRight="@dimen/_15sdp">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingLeft="@dimen/_10sdp"
-            android:paddingRight="@dimen/_25sdp">
-
-            <ImageView
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/ic_filter_icon"/>
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/sort_view"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/_35sdp"
-                style="@style/TextViewListItemPrimary"
-                android:textColor="@color/WHITE"
-                android:text="Filter"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp"/>
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_25sdp"
+                android:paddingRight="@dimen/_10sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_action_filter" />
+
+                <TextView
+                    style="@style/TextViewListItemPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:text="Sort  "
+                    android:textColor="@color/WHITE"
+                    android:textSize="@dimen/_12sdp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <View
-            android:layout_width="@dimen/_1sdp"
-            android:layout_height="match_parent"
-            android:background="#5effffff"/>
-
-        <LinearLayout
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingLeft="@dimen/_25sdp"
-            android:paddingRight="@dimen/_10sdp">
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/ic_action_filter"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/fab_margin"
+            android:visibility="gone"/>
 
-            <ImageView
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/ic_action_filter"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/_35sdp"
-                style="@style/TextViewListItemPrimary"
-                android:textColor="@color/WHITE"
-                android:text="Sort  "
-                android:gravity="center"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp"/>
+    </RelativeLayout>
 
-        </LinearLayout>
+    <include
+        layout="@layout/sort_bottom_sheet_layout"/>
 
-    </LinearLayout>
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
 
     <!--<?xml version="1.0" encoding="utf-8"?>
 

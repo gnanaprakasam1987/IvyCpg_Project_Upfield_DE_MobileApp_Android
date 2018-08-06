@@ -15,6 +15,8 @@ public interface SellerPerformanceContractor {
 
         void updateChartInfo();
 
+        void notifyListChange();
+
     }
 
     interface SellerPerformancePresenter{

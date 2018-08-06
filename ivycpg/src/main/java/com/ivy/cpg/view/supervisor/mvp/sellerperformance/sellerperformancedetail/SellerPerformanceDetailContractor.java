@@ -16,6 +16,8 @@ public interface SellerPerformanceDetailContractor {
         void updateChartInfo();
 
         void updateSellerTabViewInfo(SellerBo sellerBo);
+
+        void initializeMethods();
     }
 
     interface SellerPerformancePresenter{
@@ -36,7 +38,7 @@ public interface SellerPerformanceDetailContractor {
 
         void downloadSellerKPI(int userId, String date, boolean isMTD);
 
-        void downloadSellerOutletAWS(int userId);
+        void downloadSellerOutletAWS(int userId,String date);
 
         void setSellerActivityDetailListener(int userId,String date);
 

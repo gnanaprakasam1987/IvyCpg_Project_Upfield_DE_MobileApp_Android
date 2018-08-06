@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LevelBO;
@@ -38,12 +39,18 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
     private RecyclerView levelFileteRV,listFilterRv;
     private Vector<LevelBO> channelMaster = new Vector<>();
     private FilterListAdapter filterListAdapter;
+    private String date;
 
     // Variable to pass back to calling activity to restore the last selected value.
     private HashMap<Integer, Integer> mSelectedIdByLevelId = new HashMap<>();
 
-    private ArrayList<String> levelList = new ArrayList<>(Arrays.asList("Channel"));
+    private ArrayList<String> levelList = new ArrayList<>(Arrays.asList("Channel","Brand"));
     private LevelBO mSelectedLevelBO = new LevelBO();
+
+    private FilterItemSelectedListener filterItemSelectedListener;
+    private int selectedLevelPosition;
+    private FilterLevelAdapter filterLevelAdapter;
+    private String productIds;
 
     public FilterScreenFragment() {
 
@@ -61,7 +68,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
         levelFileteRV = view.findViewById(R.id.filter_level_rv);
         listFilterRv = view.findViewById(R.id.filter_list_rv);
 
-        FilterLevelAdapter filterLevelAdapter = new FilterLevelAdapter();
+        filterLevelAdapter = new FilterLevelAdapter();
         levelFileteRV.setAdapter(filterLevelAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         levelFileteRV.setLayoutManager(mLayoutManager);
@@ -73,11 +80,42 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
         listFilterRv.setLayoutManager(mLayoutManager1);
         listFilterRv.setItemAnimator(new DefaultItemAnimator());
 
+        if(getArguments() != null){
+            mSelectedIdByLevelId = (HashMap<Integer, Integer>) getArguments().getSerializable("ChannelId");
+            date = getArguments().getString("Date");
+            productIds = getArguments().getString("ProductId");
+        }
+
+        if (mSelectedIdByLevelId == null)
+            mSelectedIdByLevelId = new HashMap<>();
+
         downloadChannel();
+
+        view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterItemSelectedListener.selectedChannels(mSelectedIdByLevelId);
+            }
+        });
+
+        view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSelectedIdByLevelId.clear();
+                filterListAdapter.notifyDataSetChanged();
+            }
+        });
 
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        filterItemSelectedListener = (FilterItemSelectedListener) context;
+
+    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -117,6 +155,31 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
             holder.text.setText(levelList.get(position));
+
+            if (selectedLevelPosition == holder.getAdapterPosition()){
+                holder.text.setTextColor(ContextCompat.getColor(getActivity(), R.color.WHITE));
+                holder.gridItem.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Black));
+            }else{
+                holder.text.setTextColor(Color.BLACK);
+                holder.gridItem.setBackgroundColor(Color.parseColor("#f7f7f7"));
+            }
+
+            holder.gridItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(holder.getAdapterPosition() == 0 && selectedLevelPosition != holder.getAdapterPosition()) {
+                        downloadChannel();
+                    }
+                    else if(holder.getAdapterPosition() == 1 && selectedLevelPosition != holder.getAdapterPosition()) {
+                        downloadProduct();
+                    }
+
+                    selectedLevelPosition = holder.getAdapterPosition();
+
+                    filterLevelAdapter.notifyDataSetChanged();
+                }
+            });
         }
 
         @Override
@@ -128,7 +191,6 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
     public class FilterListAdapter extends RecyclerView.Adapter<FilterListAdapter.MyViewHolder> {
 
         private Vector<LevelBO> filteritem;
-        private LevelBO levelBO;
 
         FilterListAdapter(Vector<LevelBO> channelMaster){
             this.filteritem = channelMaster;
@@ -163,27 +225,17 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-            levelBO = filteritem.get(position);
-
             holder.text.setText(channelMaster.get(position).getLevelName());
 
-            if (mSelectedIdByLevelId != null) {
+            holder.selectedfilters.setVisibility(View.GONE);
+            if (mSelectedIdByLevelId != null && mSelectedIdByLevelId.size() > 0) {
 
-                int selectedLevelId = 0;
-                if (mSelectedIdByLevelId.get(mSelectedLevelBO
-                        .getProductID()) != null) {
-                    selectedLevelId = mSelectedIdByLevelId.get(mSelectedLevelBO
-                            .getProductID());
-                }
-
-                if (selectedLevelId == levelBO.getProductID()) {
+                if(mSelectedIdByLevelId.get(channelMaster.get(position).getProductID()) != null)
                     holder.selectedfilters.setVisibility(View.VISIBLE);
-                } else {
-                    holder.selectedfilters.setVisibility(View.GONE);
-                }
-            } else {
-                holder.text.setTextColor(Color.BLACK);
+
             }
+
+            holder.text.setTextColor(Color.BLACK);
 
             holder.gridItem.setOnClickListener(new View.OnClickListener() {
 
@@ -191,7 +243,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
                 public void onClick(View v) {
 
                     if(mSelectedIdByLevelId.get(channelMaster.get(holder.getAdapterPosition()).getProductID()) == null) {
-                        mSelectedIdByLevelId.put(channelMaster.get(holder.getAdapterPosition()).getProductID(), 0);
+                        mSelectedIdByLevelId.put(channelMaster.get(holder.getAdapterPosition()).getProductID(), selectedLevelPosition);
                         holder.selectedfilters.setVisibility(View.VISIBLE);
                     }else{
                         mSelectedIdByLevelId.remove(channelMaster.get(holder.getAdapterPosition()).getProductID());
@@ -222,7 +274,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
                 }
             }
 
-            c = db.selectSQL("SELECT chid, chName FROM ChannelHierarchy where levelid=" + leveid +" and chId in("+getChannelToShow("2018/08/02")+")");
+            c = db.selectSQL("SELECT chid, chName FROM ChannelHierarchy where levelid=" + leveid +" and chId in("+getChannelToShow(date)+")");
             if (c != null) {
 
                 while (c.moveToNext()) {
@@ -239,6 +291,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
             Commons.printException(e);
         }
 
+        channelMaster.clear();
         channelMaster.addAll(channelBo);
         filterListAdapter.notifyDataSetChanged();
     }
@@ -264,8 +317,38 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
         return chIds;
     }
 
-    interface ItemSelectedListener{
-        void selectedChannels(ArrayList<String> ids);
+    private void downloadProduct(){
+        Vector<LevelBO> channelBo = new Vector<>();
+        try {
+            LevelBO temp;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("SELECT distinct pid,PName from ProductMaster where pid in( "+productIds+" ) and PLid ='103'");
+
+            if (c != null) {
+
+                while (c.moveToNext()) {
+                    temp = new LevelBO();
+                    temp.setProductID(c.getInt(0));
+                    temp.setLevelName(c.getString(1));
+                    channelBo.add(temp);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+
+            Commons.printException(e);
+        }
+
+        channelMaster.clear();
+        channelMaster.addAll(channelBo);
+        filterListAdapter.notifyDataSetChanged();
+    }
+
+    public interface FilterItemSelectedListener{
+        void selectedChannels(HashMap<Integer, Integer> mSelectedIdByLevelId);
     }
 
 }

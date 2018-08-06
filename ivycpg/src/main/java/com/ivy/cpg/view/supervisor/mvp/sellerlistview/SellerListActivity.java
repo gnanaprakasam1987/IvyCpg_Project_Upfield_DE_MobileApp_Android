@@ -3,6 +3,8 @@ package com.ivy.cpg.view.supervisor.mvp.sellerlistview;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.mvp.FilterScreenFragment;
@@ -33,6 +36,7 @@ import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 public class SellerListActivity extends IvyBaseActivityNoActionBar {
@@ -47,6 +51,9 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     private FrameLayout drawer;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private RadioGroup sortRadioGroup;
+    private PagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +93,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);//setting tab over viewpager
 
-        PagerAdapter adapter = new PagerAdapter
+        adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
 
         viewPager.setOffscreenPageLimit(1);
@@ -153,6 +160,55 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        sortRadioGroup = findViewById(R.id.sort_radio_group);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheetLayout));
+
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        bottomSheetBehavior.setHideable(true);
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        sortRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+                int radioButtonID = sortRadioGroup.getCheckedRadioButtonId();
+                View radioButton = sortRadioGroup.findViewById(radioButtonID);
+                int idx = sortRadioGroup.indexOfChild(radioButton);
+
+                if (tabLayout.getSelectedTabPosition() == 0)
+                    sortList(idx,sellersList);
+                else if (tabLayout.getSelectedTabPosition() == 1)
+                    sortList(idx,sellersInMarketList);
+                else if (tabLayout.getSelectedTabPosition() == 2)
+                    sortList(idx,sellersAbsentList);
+            }
+        });
     }
 
     @Override
@@ -191,6 +247,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_dashboard).setVisible(false);
         menu.findItem(R.id.menu_date).setVisible(false);
+        menu.findItem(R.id.menu_sort).setVisible(true);
         return true;
     }
 
@@ -206,6 +263,13 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
             }
 
             return true;
+        }else if(i == R.id.menu_sort){
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+                bottomSheetBehavior.setHideable(true);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+            else
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -244,6 +308,9 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         public CharSequence getPageTitle(int position) {
             return title[position];
         }
+
+        @Override
+        public int getItemPosition(Object object) { return POSITION_NONE; }
     }
 
     private ArrayList<SellerBo> prepareListValues(int position) {
@@ -307,6 +374,58 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+    public void sortList(int sortBy,ArrayList<SellerBo> sellerBos){
+
+        System.out.println("sortBy = " + sortBy);
+
+        if(sortBy == 0) {
+            Collections.sort(sellerBos, new Comparator<SellerBo>() {
+                @Override
+                public int compare(SellerBo fstr, SellerBo sstr) {
+                    return fstr.getUserName().compareTo(sstr.getUserName());
+
+                }
+            });
+        }else if(sortBy == 1){
+            Collections.sort(sellerBos, new Comparator<SellerBo>() {
+                @Override
+                public int compare(SellerBo fstr, SellerBo sstr) {
+                    return sstr.getUserName().compareTo(fstr.getUserName());
+                }
+            });
+        }
+        else if(sortBy == 2){
+            Collections.sort(sellerBos, new Comparator<SellerBo>() {
+                @Override
+                public int compare(SellerBo fstr, SellerBo sstr) {
+
+                    int target1 = fstr.getTarget();
+                    int billed1 = fstr.getBilled();
+                    int sellerProductive1 = 0;
+                    if (target1 != 0) {
+                        sellerProductive1 = (int)((float)billed1 / (float)target1 * 100);
+                    }
+
+                    int target2 = sstr.getTarget();
+                    int billed2 = sstr.getBilled();
+                    int sellerProductive2 = 0;
+
+                    if (target2 != 0) {
+                        sellerProductive2 = (int)((float)billed2 / (float)target2 * 100);
+                    }
+
+                    if(sellerProductive1 > sellerProductive2)
+                        return sellerProductive1;
+
+                    return sellerProductive2;
+
+                }
+            });
+        }
+
+        adapter.notifyDataSetChanged();
     }
 
 }

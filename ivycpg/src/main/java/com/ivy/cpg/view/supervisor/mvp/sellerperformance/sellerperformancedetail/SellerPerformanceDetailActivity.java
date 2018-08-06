@@ -23,7 +23,12 @@ import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import static android.graphics.Color.rgb;
 
@@ -70,15 +75,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         sellerPerformancePresenter.setDetailView(this,SellerPerformanceDetailActivity.this);
 
-        sellerPerformancePresenter.downloadSellerData(sellerId,selectedDate);
-
-        sellerPerformancePresenter.setSellerActivityListener(sellerId,selectedDate);
-
-        sellerPerformancePresenter.downloadSellerKPI(sellerId,selectedDate,false);
-
-        sellerPerformancePresenter.downloadSellerOutletAWS(sellerId);
-
-        sellerPerformancePresenter.setSellerActivityDetailListener(sellerId,selectedDate);
+        sellerPerformancePresenter.checkDownloadSelerKPIData(sellerId,convertPlaneDateToGlobal(selectedDate));
 
         findViewById(R.id.bottom_outlet_btn_layout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,6 +170,19 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         changeTabsFont(tabLayout);
     }
 
+    public void initializeMethods(){
+
+        sellerPerformancePresenter.downloadSellerData(sellerId,convertPlaneDateToGlobal(selectedDate));
+
+        sellerPerformancePresenter.setSellerActivityListener(sellerId,selectedDate);
+
+        sellerPerformancePresenter.downloadSellerKPI(sellerId,convertPlaneDateToGlobal(selectedDate),false);
+
+        sellerPerformancePresenter.downloadSellerOutletAWS(sellerId,convertPlaneDateToGlobal(selectedDate));
+
+        sellerPerformancePresenter.setSellerActivityDetailListener(sellerId,selectedDate);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
@@ -217,7 +227,6 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         sellerPerformPercentTv.setText(sellerProductive+"%");
     }
-
 
     @Override
     public void updateChartInfo(){
@@ -266,7 +275,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         plannedValueTv.setText(String.valueOf(sellerBo.getTarget()));
         deviatedTv.setText("0");
         durationTv.setText("0");
-        productiveTv.setText("0");
+        productiveTv.setText(String.valueOf(sellerBo.getBilled()));
     }
 
     private void combinedChart(){
@@ -281,6 +290,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
                 CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.BUBBLE, CombinedChart.DrawOrder.CANDLE, CombinedChart.DrawOrder.LINE, CombinedChart.DrawOrder.SCATTER
         });
 
+
         Legend l = mChart.getLegend();
         l.setWordWrapEnabled(true);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
@@ -292,15 +302,22 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         rightAxis.setDrawGridLines(false);
         rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 //        rightAxis.setPosition(YAxis.YAxisLabelPosition.);
+        rightAxis.setEnabled(false);
+
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        leftAxis.setEnabled(false);
+        leftAxis.setDrawAxisLine(false);
+
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAxisMinimum(0f);
         xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(true);
+        xAxis.setDrawAxisLine(true);
         xAxis.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
@@ -308,6 +325,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
                 return sellerPerformancePresenter.getChartDaysStr().get((int)value % sellerPerformancePresenter.getChartDaysStr().size());
             }
         });
+
 
         CombinedData data = new CombinedData();
 
@@ -356,5 +374,23 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         d.addDataSet(set1);
 
         return d;
+    }
+
+    private String convertPlaneDateToGlobal(String planeDate){
+        try {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
+            Date date = sdf.parse(planeDate);
+
+            sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            planeDate =sdf.format(date);
+
+            return planeDate;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return planeDate;
     }
 }

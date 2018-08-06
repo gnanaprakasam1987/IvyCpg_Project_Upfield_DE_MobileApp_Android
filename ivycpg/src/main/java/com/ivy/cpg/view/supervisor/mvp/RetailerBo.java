@@ -3,16 +3,20 @@ package com.ivy.cpg.view.supervisor.mvp;
 
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class RetailerBo {
 
-    private int retailerId,userId,visitedSequence,masterSequence,lastVisitedRetailer;
-    private String retailerName,date,address,imgPath,userName;
+    private int retailerId,userId,visitedSequence,masterSequence,lastVisitedRetailer,channelId;
+    private String retailerName,date,address,imgPath,userName,ParentHierarchy;
     private double latitude,longitude,masterLatitude,masterLongitude;
     private boolean isDeviated
-            ,isOrdered
+            ,isOrdered=false
             ,isSkipped = false,isVisited = false;
     private long totalOrderValue,orderValue, inTime, outTime;
     private Marker marker;
+    private Set<Integer> productIds = new HashSet<>();
 
     public int getRetailerId() {
         return retailerId;
@@ -196,5 +200,29 @@ public class RetailerBo {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public int getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(int channelId) {
+        this.channelId = channelId;
+    }
+
+    public String getParentHierarchy() {
+        return ParentHierarchy;
+    }
+
+    public void setParentHierarchy(String parentHierarchy) {
+        ParentHierarchy = parentHierarchy;
+    }
+
+    public Set<Integer> getProductIds() {
+        return productIds;
+    }
+
+    public void setProductIds(Set<Integer> productIds) {
+        this.productIds = productIds;
     }
 }

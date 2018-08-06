@@ -57,6 +57,9 @@ public class SupervisorActivityHelper {
     }
 
     public void downloadOutletListAws(Context context,String date) {
+
+        retailerMasterHashmap.clear();
+
         DBUtil db = null;
         try {
             db = new DBUtil(context, DataMembers.DB_NAME,
@@ -64,7 +67,7 @@ public class SupervisorActivityHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select retailerId, latitude,longitude,retailerName,address,username from SupRetailerMaster SRM " +
+            String queryStr = "select retailerId, latitude,longitude,retailerName,address,username,channelid from SupRetailerMaster SRM " +
                     "inner join usermaster um on um.userid = SRM.userId where date = '"+date+"'";
 
             Cursor c = db.selectSQL(queryStr);
@@ -77,6 +80,7 @@ public class SupervisorActivityHelper {
                     retailerBo.setRetailerName(c.getString(3));
                     retailerBo.setAddress(c.getString(4));
                     retailerBo.setUserName(c.getString(5));
+                    retailerBo.setChannelId(c.getInt(6));
 
                     retailerMasterHashmap.put(retailerBo.getRetailerId(),retailerBo);
                 }

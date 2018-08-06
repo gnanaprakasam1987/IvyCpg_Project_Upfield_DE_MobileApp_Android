@@ -22,10 +22,13 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -34,6 +37,7 @@ import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
+import static java.lang.String.CASE_INSENSITIVE_ORDER;
 
 public class SellerPerformancePresenter implements SellerPerformanceContractor.SellerPerformancePresenter {
 
@@ -42,6 +46,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListenerRegistration registration ;
     private int CHART_DAYS = 0;
+    private final int CHART_DAYS_COUNT = 4;
     private ArrayList<String> chartDaysStr = new ArrayList<>();
     private ArrayList<Entry> sellerCoveredEntry = new ArrayList<>();
     private ArrayList<Entry> sellerBilledEntry = new ArrayList<>();
@@ -94,6 +99,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
             if (db != null)
                 db.closeDB();
         }
+
     }
 
     private String loadUserLevel(){
@@ -151,7 +157,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
 
                             sellerPerformanceView.updateSellerPerformanceList(new ArrayList<>(sellerInfoHasMap.values()));
 
-                            prepareChartData(userId,getPreviousDays(date, -2));
+                            prepareChartData(userId,getPreviousDays(date, -CHART_DAYS_COUNT));
                         }
                     }
                 });
@@ -205,7 +211,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
         sellerBilledEntry.add(new Entry((float) CHART_DAYS,(float)billed));
 
 
-        if(CHART_DAYS == 2) {
+        if(CHART_DAYS == CHART_DAYS_COUNT) {
 
             sellerPerformanceView.updateChartInfo();
 
@@ -281,6 +287,63 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
         }
 
         return sdf.format(cal.getTime());
+    }
+
+    //0 : A-Z --- 1 : Z-A ---- 2 : Performance
+    public void sortList(int sortBy,ArrayList<SellerBo> sellerBos){
+
+        System.out.println("sortBy = " + sortBy);
+
+        if(sortBy == 0) {
+            Collections.sort(sellerBos, new Comparator<SellerBo>() {
+                @Override
+                public int compare(SellerBo fstr, SellerBo sstr) {
+                    return fstr.getUserName().compareTo(sstr.getUserName());
+
+                }
+            });
+        }else if(sortBy == 1){
+            Collections.sort(sellerBos, new Comparator<SellerBo>() {
+                @Override
+                public int compare(SellerBo fstr, SellerBo sstr) {
+                    return sstr.getUserName().compareTo(fstr.getUserName());
+                }
+            });
+        }
+        else if(sortBy == 2){
+            Collections.sort(sellerBos, new Comparator<SellerBo>() {
+                @Override
+                public int compare(SellerBo fstr, SellerBo sstr) {
+
+                    int target1 = fstr.getTarget();
+                    int billed1 = fstr.getBilled();
+                    int sellerProductive1 = 0;
+                    if (target1 != 0) {
+                        sellerProductive1 = (int)((float)billed1 / (float)target1 * 100);
+                    }
+                    fstr.setProductivityPercent(sellerProductive1);
+
+                    int target2 = sstr.getTarget();
+                    int billed2 = sstr.getBilled();
+                    int sellerProductive2 = 0;
+
+                    if (target2 != 0) {
+                        sellerProductive2 = (int)((float)billed2 / (float)target2 * 100);
+                    }
+
+                    sstr.setProductivityPercent(sellerProductive2);
+
+                    if(sellerProductive1 > sellerProductive2)
+                        return sellerProductive1;
+
+                    return sellerProductive2;
+
+                }
+            });
+        }
+
+        sellerPerformanceView.notifyListChange();
+
     }
 
     public void removeFirestoreListener() {

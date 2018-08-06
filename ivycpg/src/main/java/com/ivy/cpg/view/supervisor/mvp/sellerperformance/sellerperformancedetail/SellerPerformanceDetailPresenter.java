@@ -1,9 +1,16 @@
 package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.data.Entry;
 import com.google.android.gms.maps.model.LatLng;
@@ -23,9 +30,18 @@ import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
+import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.MyHttpConnectionNew;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.Format;
 import java.text.ParseException;
@@ -33,8 +49,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Vector;
 
 import javax.annotation.Nullable;
 
@@ -57,11 +75,16 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     private LinkedHashMap<Integer,ArrayList<RetailerBo>> retailerVisitDetailsByRId = new LinkedHashMap<>();
 
     private LinkedHashMap<Integer,RetailerBo> retailerMasterHashmap =  new LinkedHashMap<>();
+    private TextView messagetv;
+    private BusinessModel bmodel;
+    private JSONObject json = new JSONObject();
+    AlertDialog alertDialog;
 
     @Override
     public void setDetailView(SellerPerformanceDetailContractor.SellerPerformanceDetailView view, Context context) {
         this.sellerPerformanceView =view;
         this.context = context;
+        bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     @Override
@@ -223,38 +246,37 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select um.userId,um.userName,SKD.Target,SKD.Achievement,SLM.ListName from usermaster um " +
-                    "inner join SellerKPI SKP on SKP.UserId = um.userid " +
+            String queryStr = "select SKD.Target,SKD.Achievement,SLM.ListName,SLM.ListCode from SellerKPI SKP " +
                     "inner join SellerKPIDetail SKD on SKD.KPIId =  SKP.KPIId " +
                     "inner join StandardListMaster SLM on SLM.ListId = SKD.KPIParamLovId " +
-                    "where um.userId = '"+userId+"'";
+                    "where SKP.userId = '"+userId+"' and '"+date+"' between fromdate and todate";
 
             if (isMTD)
-                queryStr = queryStr + "and interval= 'MONTH'";
+                queryStr = queryStr + " and interval= 'MONTH'";
             else
-                queryStr = queryStr + "and interval= 'DAY'";
+                queryStr = queryStr + " and interval= 'DAY'";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null ){
                 while (c.moveToNext()) {
 
-                    if(c.getString(4).contains("Coverage")) {
-                        selectedSeller.setTargetCoverage(c.getInt(2));
+                    if(c.getString(3).equals("CM")) {
+                        selectedSeller.setTargetCoverage(c.getInt(0));
 
                         if (isMTD)
-                            selectedSeller.setAchievedCoverage(c.getInt(3));
+                            selectedSeller.setAchievedCoverage(c.getInt(1));
                     }
-                    else if(c.getString(4).contains("orderValue")) {
-                        selectedSeller.setTargetValue(c.getInt(2));
+                    else if(c.getString(3).equals("SV")) {
+                        selectedSeller.setTargetValue(c.getInt(0));
 
                         if (isMTD)
-                            selectedSeller.setAchievedValue(c.getInt(3));
+                            selectedSeller.setAchievedValue(c.getInt(1));
                     }
-                    else if(c.getString(4).contains("lines")) {
-                        selectedSeller.setTargetLines(c.getInt(2));
+                    else if(c.getString(3).equals("LPC")) {
+                        selectedSeller.setTargetLines(c.getInt(0));
 
                         if (isMTD)
-                            selectedSeller.setAchievedLines(c.getInt(3));
+                            selectedSeller.setAchievedLines(c.getInt(1));
                     }
                 }
                 c.close();
@@ -271,7 +293,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     }
 
     @Override
-    public void downloadSellerOutletAWS(int userId) {
+    public void downloadSellerOutletAWS(int userId,String date) {
         DBUtil db = null;
         try {
             db = new DBUtil(context, DataMembers.DB_NAME,
@@ -280,7 +302,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             db.openDataBase();
 
             String queryStr = "select retailerId,retailerName,sequence,latitude,longitude,address,imgpath,date from " +
-                    "SupRetailerMaster where userId ='" + userId + "' order by sequence ASC";
+                    "SupRetailerMaster where userId ='" + userId + "' and date ='"+date+"' order by sequence ASC";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {
@@ -346,8 +368,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
             if (documentSnapshotBo != null) {
-
-                LatLng destLatLng = new LatLng(documentSnapshotBo.getLatitude(), documentSnapshotBo.getLongitude());
 
                 //Update retailer info in master list
 
@@ -437,10 +457,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         return retailerVisitDetailsByRId.get(userId);
     }
 
-    public SellerBo getSellerData(){
-        return selectedSeller;
-    }
-
     private void setSellerData(SellerBo selectedSellerBo){
         this.selectedSeller = selectedSellerBo;
     }
@@ -473,5 +489,258 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         }
 
         return sdf.format(cal.getTime());
+    }
+
+    void checkDownloadSelerKPIData(int sellerId,String date){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String kpiParams ="";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+
+            String sb = "select interval from SellerKPI where userid ="+sellerId+" and '"+date+"' between fromdate and todate and interval in('DAY') group by interval";
+
+            Cursor c = db.selectSQL(sb);
+            if (c != null  && c.getCount() > 0) {
+                c.close();
+            }else
+                kpiParams = "DAY";
+
+
+            sb = "select interval from SellerKPI where userid ="+sellerId+" and '"+date+"' between fromdate and todate and interval in('MONTH') group by interval";
+
+            Cursor c1 = db.selectSQL(sb);
+            if (c1 != null  && c1.getCount() > 0) {
+                c1.close();
+            }else{
+                if (kpiParams.length() > 0)
+                    kpiParams = kpiParams+",MONTH";
+                else
+                    kpiParams = "MONTH";
+            }
+
+            if (kpiParams.length() > 0) {
+                prepareJson(sellerId,date,kpiParams);
+                new DownloadSupRetailMaster(date,"SELLERKPI",false).execute();
+            }else
+                sellerPerformanceView.initializeMethods();
+
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+    }
+
+    private void prepareJson(int sellerId, String date,String kpiParams){
+        try {
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
+            json.put("MobileDateTime",
+                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(sellerId);
+            json.put("UserIds", jsonArray);
+            json.put("key", kpiParams);
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+            json.put("RequestDate",date);
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+    }
+
+    class DownloadSupRetailMaster extends AsyncTask<String, Void, Boolean> {
+
+        private String selectedDate;
+        private String masterName;
+        private boolean isDetailDownLoad = false;
+
+        DownloadSupRetailMaster(String seletedDate,String masterName,boolean isDetailDownLoad){
+            this.selectedDate = seletedDate;
+            this.masterName = masterName;
+            this.isDetailDownLoad = isDetailDownLoad;
+        }
+
+        protected void onPreExecute() {
+
+            if (alertDialog == null) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                customProgressDialog(builder,
+                        context.getResources().getString(R.string.progress_dialog_title_downloading));
+                alertDialog = builder.create();
+                alertDialog.show();
+
+            }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            return isOnline() && prepareData(masterName);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+
+            if (result) {
+                if (!isDetailDownLoad)
+                    new DownloadSupRetailMaster(selectedDate,"SELLERKPIDETAIL",true).execute();
+                else {
+                    alertDialog.dismiss();
+                    sellerPerformanceView.initializeMethods();
+                }
+
+                Toast.makeText(context, masterName+" Download Successfull", Toast.LENGTH_SHORT).show();
+            }else
+                Toast.makeText(context, masterName+" Download Failed", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private boolean prepareData(String masterName) {
+
+        boolean isSuccess = false;
+        try {
+
+            String downloadurl = getDownloadUrl(masterName);
+
+            Commons.print("downloadUrl "+downloadurl);
+            System.out.println("json = " + json);
+
+            Vector<String> responseVector = getSupRetailerMasterResponse(json, downloadurl);
+
+            try {
+                if (responseVector.size() > 0) {
+
+                    for (String s : responseVector) {
+
+                        JSONObject jsonObject = new JSONObject(s);
+                        Iterator itr = jsonObject.keys();
+                        while (itr.hasNext()) {
+
+                            String key = (String) itr.next();
+                            if (key.equals("Master")) {
+                                bmodel.synchronizationHelper
+                                        .parseJSONAndInsert(jsonObject, false);
+                                isSuccess = true;
+
+                            } else if (key.equals("Errorcode")) {
+                                String tokenResponse = jsonObject.getString("Errorcode");
+                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+
+                                    isSuccess = false;
+
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+        return isSuccess;
+
+    }
+
+    private Vector<String> getSupRetailerMasterResponse(JSONObject data,
+                                                       String appendurl) {
+        // Update Security key
+        bmodel.synchronizationHelper.updateAuthenticateToken(false);
+        StringBuilder url = new StringBuilder();
+        url.append(DataMembers.SERVER_URL);
+        url.append(appendurl);
+        if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            try {
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                http.addHeader("SECURITY_TOKEN_KEY", bmodel.synchronizationHelper.getSecurityKey());
+                http.setParamsJsonObject(data);
+
+                http.connectMe();
+                Vector<String> result = http.getResult();
+                if (result == null) {
+                    return new Vector<>();
+                }
+                return result;
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return new Vector<>();
+            }
+        } else {
+            return new Vector<>();
+        }
+    }
+
+    private String getDownloadUrl(String masterName){
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        String downloadurl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            String sb = "select url from urldownloadmaster where " +
+                    "mastername='"+masterName+"' and typecode='SYNMAS'";
+
+            Cursor c = db.selectSQL(sb);
+            if (c != null) {
+                if (c.getCount() > 0 && c.moveToNext()) {
+                    downloadurl = c.getString(0);
+                }
+            }
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+        return downloadurl;
+    }
+
+//    SELLERKPI
+//    SELLERKPIDETAIL
+
+    public void customProgressDialog(AlertDialog.Builder builder, String message) {
+
+        try {
+            View view = View.inflate(context, R.layout.custom_alert_dialog, null);
+
+            TextView title = view.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            messagetv = view.findViewById(R.id.text);
+            messagetv.setText(message);
+
+            builder.setView(view);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private boolean isOnline() {
+
+        try {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+                    return true;
+                }
+            }
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+        return false;
+
     }
 }

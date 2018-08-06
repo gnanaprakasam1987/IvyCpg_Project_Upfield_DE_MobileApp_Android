@@ -59,7 +59,7 @@
 
             <Button
                 android:id="@+id/btn_ok"
-                style="?attr/roundedCustomButtonNormal"
+                style="@style/ButtonApplyFilter"
                 android:layout_margin="@dimen/dimen_4dp"
                 android:adjustViewBounds="true"
                 android:text="@string/apply"

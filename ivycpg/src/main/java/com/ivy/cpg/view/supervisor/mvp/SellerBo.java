@@ -11,7 +11,7 @@ public class SellerBo implements Parcelable {
     private int userId,billed,covered,target,retailerId,lpc;
     private String userName,retailerName;
     private boolean isAttendanceDone = false;
-    private double latitude,longitude;
+    private double latitude,longitude,productivityPercent;
     private long orderValue, inTime, outTime,totalOrderValue;
     private Marker marker;
 
@@ -225,6 +225,14 @@ public class SellerBo implements Parcelable {
 
     public void setLpc(int lpc) {
         this.lpc = lpc;
+    }
+
+    public double getProductivityPercent() {
+        return productivityPercent;
+    }
+
+    public void setProductivityPercent(double productivityPercent) {
+        this.productivityPercent = productivityPercent;
     }
 
     @Override

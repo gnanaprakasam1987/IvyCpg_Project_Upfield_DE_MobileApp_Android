@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity;
@@ -119,8 +120,10 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         selectedDate = SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN);
 
 
+
         sellerMapHomePresenter = new SellerMapHomePresenter();
         sellerMapHomePresenter.setView(this,getContext());
+        sellerMapHomePresenter.setSelectedDate(selectedDate);
 
         loginUserId = sellerMapHomePresenter.getLoginUserId();
 
@@ -283,7 +286,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 false);
         sellerListRecyclerView.setLayoutManager(layout);
 
-        inMarketSellerAdapter = new InMarketSellerAdapter(getContext().getApplicationContext(), inMarketSellerArrayList,selectedDate);
+        inMarketSellerAdapter = new InMarketSellerAdapter(getContext().getApplicationContext(), inMarketSellerArrayList,sellerMapHomePresenter);
         sellerListRecyclerView.setAdapter(inMarketSellerAdapter);
 
         sellerListRecyclerView.setHasFixedSize(true);
@@ -586,6 +589,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     public void updateSellerInfoByDate(String selectedDate) {
 
         this.selectedDate = selectedDate;
+        sellerMapHomePresenter.setSelectedDate(selectedDate);
 
         sellerMapHomePresenter.sellerAttendanceInfoListener(loginUserId,selectedDate);
 
@@ -670,11 +674,12 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 totalSeller.setText("0");
                 progressBar.setProgress(0);
 
-                sellerMapHomePresenter.getSellerListAWS(convertedDate);
+                SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(),convertedDate);
 
                 if (!sellerMapHomePresenter.checkSelectedDateExist(convertedDate))
                     sellerMapHomePresenter.downloadSupRetailerMaster(convertedDate);
                 else {
+                    sellerMapHomePresenter.getSellerListAWS(convertedDate);
                     updateSellerInfoByDate(convertGlobalDateToPlane(convertedDate));
                 }
             }

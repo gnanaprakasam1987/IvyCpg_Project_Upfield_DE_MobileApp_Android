@@ -80,7 +80,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     private boolean isZoomed = false;
     private int totalOutletCount = 0;
     private TextView messagetv;
-    BusinessModel bmodel;
+    private BusinessModel bmodel;
+    private String selectedDate;
 
 
     @Override
@@ -676,6 +677,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             if (result) {
                 Toast.makeText(context, "Download Successfull", Toast.LENGTH_SHORT).show();
 
+                getSellerListAWS(selectedDate);
                 sellerMapHomeView.updateSellerInfoByDate(convertGlobalDateToPlane(selectedDate));
 
             }else
@@ -847,4 +849,11 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         return globalDate;
     }
 
+    public String getSelectedDate() {
+        return selectedDate;
+    }
+
+    public void setSelectedDate(String selectedDate) {
+        this.selectedDate = selectedDate;
+    }
 }

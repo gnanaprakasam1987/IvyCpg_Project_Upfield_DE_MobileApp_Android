@@ -78,7 +78,7 @@
                             android:layout_toLeftOf="@+id/message_img"
                             android:gravity="center_vertical|left"
                             android:maxLines="1"
-                            android:text="Sandy"
+                            android:text=""
                             android:textColor="#de000000"
                             android:textSize="@dimen/_14sdp" />
 
@@ -101,7 +101,7 @@
                         android:layout_marginLeft="@dimen/_2sdp"
                         android:layout_marginRight="@dimen/_2sdp"
                         android:maxLines="1"
-                        android:text="Day start : 09:35 AM"
+                        android:text="Last Visit : "
                         android:textColor="#8b000000"
                         android:textSize="@dimen/_12sdp" />
 
@@ -114,7 +114,7 @@
                         android:layout_marginRight="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_1sdp"
                         android:maxLines="1"
-                        android:text="Last visit : ECR"
+                        android:text="Last visit : "
                         android:textColor="#8b000000"
                         android:textSize="@dimen/_12sdp" />
 
@@ -137,7 +137,7 @@
                             android:paddingLeft="@dimen/_10sdp"
                             android:paddingRight="@dimen/_10sdp"
                             android:paddingTop="@dimen/_5sdp"
-                            android:text="Targeted 05"
+                            android:text="Targeted "
                             android:textColor="@color/WHITE"
                             android:textSize="@dimen/_12sdp" />
 
@@ -153,7 +153,7 @@
                             android:paddingLeft="@dimen/_10sdp"
                             android:paddingRight="@dimen/_10sdp"
                             android:paddingTop="@dimen/_5sdp"
-                            android:text="Covered 05"
+                            android:text="Covered "
                             android:textColor="@color/WHITE"
                             android:textSize="@dimen/_12sdp" />
 

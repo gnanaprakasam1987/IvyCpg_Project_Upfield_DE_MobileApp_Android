@@ -4,6 +4,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +20,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -50,6 +55,9 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
     private String selectedDate;
     private int sellerId;
+    private FloatingActionButton sortView;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private RadioGroup sortRadioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +67,46 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         sellerPerformanceRecycler = findViewById(R.id.seller_list_recycler);
         bottomLayout = findViewById(R.id.bottom_layout);
 
+        sortView = findViewById(R.id.fab);
+
         slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.out_to_bottom);
         slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.bottom_layout_slideup);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+        sortRadioGroup = findViewById(R.id.sort_radio_group);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheetLayout));
+
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        bottomSheetBehavior.setHideable(true);
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -87,8 +129,25 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         sellerPerformancePresenter.getSellerListAWS();
         sellerPerformancePresenter.sellerActivityInfoListener(sellerId,selectedDate);
 
-//        sellerPerformanceHelper = new SellerPerformanceHelper();
-//        mMonths = sellerPerformanceHelper.getSellerPerformanceList();
+        sortView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+
+        sortRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+                int radioButtonID = sortRadioGroup.getCheckedRadioButtonId();
+                View radioButton = sortRadioGroup.findViewById(radioButtonID);
+                int idx = sortRadioGroup.indexOfChild(radioButton);
+
+                sellerPerformancePresenter.sortList(idx,sellerPerformanceList);
+            }
+        });
 
     }
 
@@ -156,6 +215,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_dashboard).setVisible(false);
         menu.findItem(R.id.menu_date).setVisible(false);
+        menu.findItem(R.id.menu_sort).setVisible(true);
         return true;
     }
 
@@ -167,6 +227,14 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         }
+        else if(i == R.id.menu_sort){
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+                bottomSheetBehavior.setHideable(true);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+            else
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -174,6 +242,11 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
     public void updateSellerPerformanceList(ArrayList<SellerBo> sellerList) {
         sellerPerformanceList.clear();
         sellerPerformanceList.addAll(sellerList);
+        sellerPerformanceListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyListChange(){
         sellerPerformanceListAdapter.notifyDataSetChanged();
     }
 
@@ -196,24 +269,30 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
         Legend l = mChart.getLegend();
         l.setWordWrapEnabled(true);
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setDrawGridLines(false);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-//        rightAxis.setPosition(YAxis.YAxisLabelPosition.);
+        rightAxis.setAxisMinimum(0f);
+        rightAxis.setDrawAxisLine(false);
+        rightAxis.setEnabled(false);
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        leftAxis.setEnabled(false);
+        leftAxis.setDrawAxisLine(false);
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAxisMinimum(0f);
         xAxis.setGranularity(1f);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(false);
+
         xAxis.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override

@@ -24,12 +24,12 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
 
     private Context context;
     private ArrayList<SellerBo> sellerArrayList = new ArrayList<>();
-    private String selectedDate;
+    private SellerMapHomePresenter sellerMapHomePresenter;
 
-    InMarketSellerAdapter(Context context, ArrayList<SellerBo> sellerArrayList,String selectedDate){
+    InMarketSellerAdapter(Context context, ArrayList<SellerBo> sellerArrayList,SellerMapHomePresenter sellerMapHomePresenter){
         this.context = context;
         this.sellerArrayList = sellerArrayList;
-        this.selectedDate = selectedDate;
+        this.sellerMapHomePresenter = sellerMapHomePresenter;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -76,7 +76,7 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
                 Intent intent = new Intent(context, SellerDetailMapActivity.class);
                 intent.putExtra("SellerId", sellerArrayList.get(position).getUserId());
                 intent.putExtra("screentitle", sellerArrayList.get(position).getUserName());
-                intent.putExtra("Date",selectedDate);
+                intent.putExtra("Date",sellerMapHomePresenter.getSelectedDate());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
