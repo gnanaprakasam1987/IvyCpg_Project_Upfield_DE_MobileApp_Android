@@ -407,7 +407,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         freeTitleTV.setWidth(150);
 
-                        LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         layoutParam_FreeTitle.setMargins(0, 10, 0, 10);
                         freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                         freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -445,7 +445,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                                 freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                                                 freeTitleTV.setWidth(150);
 
-                                                LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                                                LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                                                 layoutParam_FreeTitle.setMargins(0, 20, 0, 10);
                                                 freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                                                 freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -551,7 +551,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                 freeTitleTV.setText("GET Discount");
                                 freeTitleTV.setWidth(150);
                                 freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);
+                                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
                                 layoutParams1.setMargins(0, 20, 0, 10);
                                 freeTitleTV.setLayoutParams(layoutParams1);

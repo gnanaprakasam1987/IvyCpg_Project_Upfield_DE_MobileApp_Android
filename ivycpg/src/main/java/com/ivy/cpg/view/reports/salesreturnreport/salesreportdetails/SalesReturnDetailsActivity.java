@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.reports.salesreturnreport.SalesReturnReportHelper;
@@ -107,12 +108,12 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         }
 
 
-        /*if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+        if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
             findViewById(R.id.cqty).setVisibility(View.GONE);
         if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
             findViewById(R.id.piececqty).setVisibility(View.GONE);
         if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
-            findViewById(R.id.outercqty).setVisibility(View.GONE);*/
+            findViewById(R.id.outercqty).setVisibility(View.GONE);
     }
 
     private CompositeDisposable mCompositeDisposable;
@@ -218,4 +219,9 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        unbinder.unbind();
+        super.onDestroy();
+    }
 }
