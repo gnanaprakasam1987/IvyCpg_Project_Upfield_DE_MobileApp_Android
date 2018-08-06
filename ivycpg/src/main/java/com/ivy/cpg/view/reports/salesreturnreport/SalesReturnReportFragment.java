@@ -69,6 +69,7 @@ public class SalesReturnReportFragment extends Fragment implements ReCyclerViewI
         view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
         view.findViewById(R.id.btn_export).setVisibility(View.GONE);
         view.findViewById(R.id.view1).setVisibility(View.GONE);
+        view.findViewById(R.id.view0).setVisibility(View.GONE);
 
 
     }

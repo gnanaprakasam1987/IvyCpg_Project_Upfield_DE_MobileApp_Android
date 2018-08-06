@@ -52,18 +52,6 @@
             android:textSize="@dimen/list_item_primary_text_size" />
 
         <TextView
-            android:id="@+id/piececqty"
-            style="?attr/customListTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:tag="item_piece"
-            android:text="@string/item_piece"
-            android:textColor="@color/white"
-            android:textSize="@dimen/list_item_primary_text_size" />
-
-        <TextView
             android:id="@+id/outercqty"
             style="?attr/customListTitle"
             android:layout_width="0dp"
@@ -72,6 +60,18 @@
             android:layout_weight="1"
             android:tag="item_outer"
             android:text="@string/item_outer"
+            android:textColor="@color/white"
+            android:textSize="@dimen/list_item_primary_text_size" />
+
+        <TextView
+            android:id="@+id/piececqty"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:tag="item_piece"
+            android:text="@string/item_piece"
             android:textColor="@color/white"
             android:textSize="@dimen/list_item_primary_text_size" />
 

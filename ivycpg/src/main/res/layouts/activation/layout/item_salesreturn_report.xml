@@ -15,30 +15,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
-        <RelativeLayout
-            android:id="@+id/container_header"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/text_retailerName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:padding="8dp">
-
-            <TextView
-                android:id="@+id/text_retailerName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:padding="@dimen/dimen_8dp" />
-
-
-        </RelativeLayout>
+            android:padding="@dimen/dimen_8dp"
+            android:layout_marginTop="@dimen/list_margin"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_micro_small" />
 
         <View
             android:id="@+id/invoiceview_doted_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_2dp"
-            android:layout_below="@+id/container_header"
+            android:layout_below="@+id/text_retailerName"
             android:layout_marginBottom="@dimen/list_item_inter_margin"
             android:background="@drawable/line_dotted" />
 
@@ -60,9 +53,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:text="@string/id"
-                    android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/text_sz_small"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/font_micro_small" />
 
                 <TextView
                     android:layout_width="@dimen/list_item_width"
@@ -70,9 +61,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:text="@string/lpc"
-                    android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/text_sz_small"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/font_micro_small" />
 
                 <TextView
                     android:layout_width="@dimen/list_item_width"
@@ -80,9 +69,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:text="@string/return_value"
-                    android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/text_sz_small"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/font_micro_small" />
 
             </LinearLayout>
 
@@ -100,6 +87,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:padding="2dp"
+                    android:textColor="@color/kpi_value_text_color"
                     android:textSize="@dimen/font_small" />
 
                 <TextView
@@ -109,6 +97,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:padding="2dp"
+                    android:textColor="@color/kpi_value_text_color"
                     android:textSize="@dimen/font_small" />
 
 
@@ -119,6 +108,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:padding="2dp"
+                    android:textColor="@color/kpi_value_text_color"
                     android:textSize="@dimen/font_small" />
 
             </LinearLayout>
