@@ -47,7 +47,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -71,9 +70,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 
 public class PromotionTrackingFragment extends IvyBaseFragment implements BrandDialogInterface,
@@ -646,15 +643,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         mDrawerLayout.closeDrawers();
     }
 
-    @Override
-    public void loadStartVisit() {
-    }
-
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> filterName,
-                                          List<Integer> filterId) {
-    }
 
     /* Shows in store locations as dialog */
     private void showLocation() {
@@ -1189,10 +1177,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             }
 
         }
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
     }
 
     @Override

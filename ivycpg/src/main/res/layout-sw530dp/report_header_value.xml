@@ -207,6 +207,7 @@
             style="?attr/roundedCustomButtonSmall"
             android:layout_alignParentRight="true"
             android:text="@string/export"
+            android:visibility="gone"
             android:textAllCaps="false" />
     </RelativeLayout>
 </RelativeLayout>

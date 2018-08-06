@@ -26,7 +26,6 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by rajkumar.s on 12/30/2016.
@@ -172,16 +171,6 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
@@ -203,11 +192,6 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.fragment_content);
         asf.updateCancel();
-    }
-
-    @Override
-    public void loadStartVisit() {
-
     }
 
     @Override

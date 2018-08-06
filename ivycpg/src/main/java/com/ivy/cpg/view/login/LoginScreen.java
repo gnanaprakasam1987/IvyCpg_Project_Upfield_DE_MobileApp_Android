@@ -168,6 +168,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
         registerReceiver(receiver, filter);
 
         loginPresenter.assignServerUrl();
+
+
+        if(BuildConfig.DEBUG && BuildConfig.IS_AUTO_LOGIN_ENABLED){
+            editTextUserName.setText(BuildConfig.TEST_USER_NAME);
+            editTextPassword.setText(BuildConfig.TEST_PASSWORD);
+            onLoginClick(buttonLogin);
+        }
     }
 
     @Override

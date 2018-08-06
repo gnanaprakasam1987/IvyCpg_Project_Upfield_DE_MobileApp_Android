@@ -34,7 +34,6 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -244,16 +243,6 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int bid) {
 
 // Close the drawer
@@ -403,11 +392,6 @@ public class CurrentStockBatchViewFragment extends IvyBaseFragment implements Br
 
     @Override
     public void updateCancel() {
-
-    }
-
-    @Override
-    public void loadStartVisit() {
 
     }
 

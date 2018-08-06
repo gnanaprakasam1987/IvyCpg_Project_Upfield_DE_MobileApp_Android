@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
@@ -14,7 +13,6 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,CompetitorFilterInterface,FiveLevelFilterCallBack {
@@ -41,24 +39,6 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.numberPressed(v);
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PriceTrackFragment fragment = (PriceTrackFragment) fm
-                .findFragmentById(R.id.price_track_fragment);
-        fragment.updateMultiSelectionBrand(mFilterName, mFilterId);
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PriceTrackFragment fragment = (PriceTrackFragment) fm
-                .findFragmentById(R.id.price_track_fragment);
-        fragment.updateMultiSelectionCategory(mCategory);
     }
 
     @Override
@@ -91,14 +71,6 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
-    }
-
-    @Override
-    public void loadStartVisit() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PriceTrackFragment fragment = (PriceTrackFragment) fm
-                .findFragmentById(R.id.price_track_fragment);
-        fragment.loadStartVisit();
     }
 
     @Override

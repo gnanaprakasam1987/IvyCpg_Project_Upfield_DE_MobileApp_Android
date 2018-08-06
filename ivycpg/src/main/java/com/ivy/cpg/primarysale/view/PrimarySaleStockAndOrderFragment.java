@@ -34,7 +34,6 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -48,7 +47,6 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -545,16 +543,6 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int id) {
 
     }
@@ -566,11 +554,6 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
 
     @Override
     public void updateCancel() {
-
-    }
-
-    @Override
-    public void loadStartVisit() {
 
     }
 

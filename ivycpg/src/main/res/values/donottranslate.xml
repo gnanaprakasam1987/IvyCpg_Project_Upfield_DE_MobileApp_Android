@@ -176,4 +176,7 @@
     <string name="last_upload_on">Last Upload: </string>
     <string name="select_category">Select Category</string>
     <string name="answer_take_photo">Answer the question to take photo.</string>
+    <string name="retailer_contact_menu">Retailer Contact Menu not Available!</string>
+    <string name="retailer_contact_list">Contact data not Available!</string>
+    <string name="not_able_to_register_visit">Not able to register the visit</string>
 </resources>

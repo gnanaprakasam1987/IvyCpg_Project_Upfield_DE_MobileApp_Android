@@ -86,7 +86,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -691,16 +690,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     }
 
-    @Override
-    public void updateMultiSelectionBrand(List<String> filtername, List<Integer> filterid) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mcatgory) {
-
-    }
-
     private int checkStockValidation() {
         int flag;
 
@@ -948,11 +937,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
         //String filtertext = getResources().getString(R.string.product_name);
         /*if (!filter.equals(""))
@@ -1194,7 +1178,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             mDrawerLayout.openDrawer(GravityCompat.END);
 
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
+            SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("generalfilter");
             android.support.v4.app.FragmentTransaction ft = fm
                     .beginTransaction();
@@ -1203,12 +1187,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             Bundle bundle = new Bundle();
 
             bundle.putString("filterName", GENERAL);
-            bundle.putBoolean("isFormBrand", false);
             bundle.putSerializable("serilizeContent",
                     bmodel.configurationMasterHelper.getGenFilter());
 
             // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
+            SpecialFilterFragment fragobj = new SpecialFilterFragment(mSelectedFilterMap);
             fragobj.setArguments(bundle);
             ft.replace(R.id.right_drawer, fragobj, "generalfilter");
             ft.commit();
