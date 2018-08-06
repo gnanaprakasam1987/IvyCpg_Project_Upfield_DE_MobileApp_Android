@@ -360,6 +360,7 @@ public class BusinessModel extends Application {
     public double mSelectedRetailerLatitude;
     public double mSelectedRetailerLongitude;
     public ProductMasterBO selectedPdt;
+
     private ArrayList<NewOutletAttributeBO> attributeList;
 
     /**
@@ -2861,11 +2862,21 @@ public class BusinessModel extends Application {
     }
 
 
-
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getRetailerAttribute}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<NewOutletAttributeBO> getRetailerAttribute() {
         return attributeList;
     }
-
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#setRetailerAttribute }
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void setRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
         this.attributeList = list;
     }

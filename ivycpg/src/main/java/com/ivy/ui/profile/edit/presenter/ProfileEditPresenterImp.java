@@ -11,6 +11,7 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 
 import com.ivy.location.LocationUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -18,6 +19,7 @@ import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -104,7 +106,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private ArrayList<String> products = null;
     private ArrayList<StandardListBO> mPriorityProductList = null;
     private String selectedProductID;
-
+    private ArrayList<NewOutletAttributeBO> attributeList;
 
     private boolean isLatLong = false;
 
@@ -234,6 +236,11 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
 
+    private HashMap<Integer, ArrayList<NewOutletAttributeBO>> getAttributeBOListByLocationID(){
+      return   mAttributeBOListByLocationID;
+    }
+
+
     private void downloadAttributeParent() {
         getCompositeDisposable().add(mProfileDataManager.downloadAttributeParentList(mAttributeChildList)
                 .subscribeOn(getSchedulerProvider().io())
@@ -338,6 +345,19 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+
+    public ArrayList<NewOutletAttributeBO> getRetailerAttribute() {
+
+        if(attributeList==null){
+            attributeList=new ArrayList<>();
+        }
+        return attributeList;
+    }
+
+    public void setRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
+        this.attributeList = list;
     }
 
 
@@ -666,12 +686,120 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         return mAttributeChildList;
     }
 
+
     @Override
     public ArrayList<Integer> getChannelAttributeList() {
         if (mChannelAttributeList == null) {
             mChannelAttributeList = new ArrayList<>();
         }
         return mChannelAttributeList;
+    }
+
+   private boolean validate = true;
+    @Override
+    public boolean doValidateProdileEdit() {
+
+        for (int i = 0; i < profileConfig.size(); i++) {
+
+            String configCode = profileConfig.get(i).getConfigCode();
+
+            if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CHANNEL) && profileConfig.get(i).getModule_Order() == 1) {
+                try {
+                    if (getIvyView().getChennalSelectedItem().contains("select")) {
+                        getIvyView().setChennalFocus();
+                        getIvyView().showMessage("Choose " + profileConfig.get(i).getMenuName());
+                        validate = false;
+                        break;
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.SUBCHANNEL) && profileConfig.get(i).getModule_Order() == 1) {
+                try {
+                    if (getIvyView().getSubChennalSelectedItem().contains("select")) {
+                        getIvyView().setSubChennalFocus();
+                        getIvyView().showMessage("Choose " + profileConfig.get(i).getMenuName());
+                        validate = false;
+                        break;
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CONTACT_NUMBER)
+                    && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
+                try {
+                    if (getIvyView().getDynamicEditTextValues(i).length() == 0 ||
+                            getIvyView().getDynamicEditTextValues(i).length() < profileConfig.get(i).getMaxLengthNo()) {
+                        getIvyView().setDynamicEditTextFocus(i);
+                        getIvyView().showMessage(profileConfig.get(i).getMenuName() + " Length Must Be "
+                                + profileConfig.get(i).getMaxLengthNo());
+                        validate = false;
+                        break;
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }else if (configCode.equals(ProfileConstant.ATTRIBUTE) && profileConfig.get(i).getModule_Order() == 1) {
+
+                validateAttribute();
+            }
+        }
+        return validate;
+    }
+
+    private void validateAttribute(){
+
+        ArrayList<NewOutletAttributeBO> selectedAttributeLevel = new ArrayList<>();
+        boolean isAdded = true;
+        try {
+            // to check all common mandatory attributes selected
+            for (NewOutletAttributeBO attributeBO : getAttributeParentList()) {
+
+                if (getCommonAttributeList().contains(attributeBO.getAttrId())) {
+                    NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBO.getAttrId());
+                    if (attributeBO.getIsMandatory() == 1) {
+                        if (tempBO != null && tempBO.getAttrId() != -1) {
+                            selectedAttributeLevel.add(tempBO);
+                        } else {
+                            isAdded = false;
+                            getIvyView().showMessage(R.string.attribute + " " + attributeBO.getAttrName() + " is Mandatory");
+                            break;
+                        }
+                    } else {
+                        if (tempBO != null && tempBO.getAttrId() != -1)
+                            selectedAttributeLevel.add(tempBO);
+                    }
+                }
+            }
+            //to check all mandatory channel's attributes selected
+            if (isChannelAvailable() && isAdded) {
+
+                for (NewOutletAttributeBO attributeBo : getAttributeBOListByLocationID().get(getIvyView().subChannelGetSelectedItem())) {
+
+                    NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBo.getAttrId());
+
+                    if (attributeBo.getIsMandatory() == 1) {
+                        if (tempBO != null && tempBO.getAttrId() != -1) {
+                            selectedAttributeLevel.add(tempBO);
+                        } else {
+                            isAdded = false;
+                            getIvyView().showMessage(R.string.attribute + " " + attributeBo.getAttrName() + " is Mandatory");
+                            break;
+                        }
+                    } else {
+                        if (tempBO != null && tempBO.getAttrId() != -1)
+                            selectedAttributeLevel.add(tempBO);
+                    }
+                }
+            }
+            if (!isAdded) {
+                validate = false;
+                //break;
+            }
+            setRetailerAttribute(selectedAttributeLevel);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 
 
@@ -978,12 +1106,41 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.COUNTRY:
                         prepareCountry();
                         break;
+                    case ProfileConstant.FOOD_LICENCE_EXP_DATE:
+                        prepareFoodLiceneExpDate();
+                        break;
+                    case ProfileConstant.DRUG_LICENSE_EXP_DATE:
+                        prepareDrugLiceneExpDate();
+                        break;
+
+
                 }
             } else {
                 //write the code here  for without flag and order condition
             }
         }
 
+    }
+
+    private void prepareDrugLiceneExpDate() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getDLNoExpDate()))
+            retailerMasterBO.setDLNoExpDate("Select Date");
+        String text = retailerMasterBO.getDLNoExpDate();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        getIvyView().createDrugLicenseExpDate(mName, mNumber, text);
+        ;
+    }
+
+    private void prepareFoodLiceneExpDate() {
+        if (AppUtils.isEmptyString(retailerMasterBO.getFoodLicenceExpDate()))
+            retailerMasterBO.setFoodLicenceExpDate("Select Date");
+        String text = retailerMasterBO.getFoodLicenceExpDate();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        getIvyView().createFoodLicenceExpDate(mName, mNumber, text);
     }
 
 

@@ -2,11 +2,14 @@ package com.ivy.ui.profile.edit.view;
 
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
@@ -36,6 +40,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -62,11 +67,13 @@ import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
+import com.ivy.sd.png.view.profile.ProfileEditFragment;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
@@ -77,9 +84,13 @@ import com.ivy.utils.FontUtils;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
@@ -102,6 +113,10 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private LinearLayout.LayoutParams mcommonsparams = null, params5;
     private LinearLayout.LayoutParams params8;
     private LinearLayout.LayoutParams paramsAttrib, paramsAttribSpinner;
+    private LinearLayout.LayoutParams weight0wrap;
+    private LinearLayout.LayoutParams weight4;
+    private  LinearLayout.LayoutParams params6;
+
 
     private TextView latlongtextview;
     private TextView nearbyTextView;
@@ -149,6 +164,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private static final int LATLONG_CAMERA_REQUEST_CODE = 2;
     private String imageFileName, cameraFilePath = "";
 
+    @SuppressLint("StaticFieldLeak")
+    static TextView dlExpDateTextView = null, flExpDateTextView = null;
 
     @Inject
     IProfileEditContract.ProfileEditPresenter<IProfileEditContract.ProfileEditView> profileEditPresenter;
@@ -189,6 +206,16 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         paramsAttribSpinner = new LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
         paramsAttribSpinner.weight = 2.3f;
 
+        weight0wrap= new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        weight0wrap.setMargins(10, 0, 0, 5);
+
+        weight4 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        weight4.gravity = Gravity.CENTER;
+        weight4.setMargins(30, 0, 0, 0);
+
+        params6 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params6.setMargins(0, 0, 0, 0);
+        params6.gravity = Gravity.CENTER;
     }
 
     @Override
@@ -215,6 +242,10 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public void onDestroy() {
+        if (dlExpDateTextView != null)
+            dlExpDateTextView = null;
+        if (flExpDateTextView != null)
+            flExpDateTextView = null;
         super.onDestroy();
     }
 
@@ -354,6 +385,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         getmRootLinearLayout().addView(getEditTextView(mNumber, configCode, menuName,
                 values, IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS), getCommonsparams());
 
+
     }
 
     @Override
@@ -408,6 +440,63 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         LLParams.setMargins(10, 5, 10, 5);
         getmRootLinearLayout().addView(addAttributeView(flag), LLParams);
 
+    }
+
+
+    @Override
+    public void createDrugLicenseExpDate(String mName,int mNumber,String data) {
+        getmRootLinearLayout().addView(getDurgExpDateView(mName,mNumber,data), getCommonsparams());
+    }
+
+
+    @Override
+    public void createFoodLicenceExpDate(String mName,int mNumber,String data) {
+        getmRootLinearLayout().addView(getFoodExpDateView(mName,mNumber,data), getCommonsparams());
+    }
+
+
+    @Override
+    public String getChennalSelectedItem() {
+        return channel.getSelectedItem().toString().toLowerCase();
+    }
+
+    @Override
+    public void setChennalFocus() {
+        channel.requestFocus();
+    }
+
+    @Override
+    public String getSubChennalSelectedItem() {
+        return subchannel.getSelectedItem().toString().toLowerCase();
+    }
+
+    @Override
+    public void setSubChennalFocus() {
+        subchannel.requestFocus();
+    }
+
+    @Override
+    public String getDynamicEditTextValues(int mNumber) {
+        return editText[mNumber].getText().toString().trim();
+    }
+
+    @Override
+    public void setDynamicEditTextFocus(int mNumber) {
+        editText[mNumber].requestFocus();
+    }
+
+    @Override
+    public HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList() {
+        if(selectedAttribList!=null){
+            return  selectedAttribList;
+        }
+        else selectedAttribList =new HashMap<>();
+        return selectedAttribList;
+    }
+
+    @Override
+    public int subChannelGetSelectedItem() {
+        return ((SpinnerBO) subchannel.getSelectedItem()).getId();
     }
 
     @Override
@@ -849,6 +938,107 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         baselayout.addView(linearlayout);
 
         return baselayout;
+    }
+
+
+    @SuppressLint("RestrictedApi")
+    private LinearLayout getFoodExpDateView(String mName,int mNumber,String data){
+
+        LinearLayout secondlayout = new LinearLayout(getActivity());
+        LinearLayout firstlayout = new LinearLayout(getActivity());
+        LinearLayout linearlayout = new LinearLayout(getActivity());
+        linearlayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout finallayout = new LinearLayout(getActivity());
+        finallayout.setOrientation(LinearLayout.HORIZONTAL);
+        TextView tv_label = new TextView(getActivity());
+        tv_label.setText(mName);
+        tv_label.setTextColor(Color.BLACK);
+        tv_label.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+        tv_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity())) ;
+        firstlayout.addView(tv_label, params8);
+        flExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
+        flExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+        flExpDateTextView.setTextColor(Color.BLACK);
+        flExpDateTextView.setGravity(Gravity.CENTER);
+        flExpDateTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        flExpDateTextView.setId(mNumber);
+        flExpDateTextView.setTypeface(flExpDateTextView.getTypeface(), Typeface.NORMAL);
+        flExpDateTextView.setText(data);
+        secondlayout.addView(flExpDateTextView, weight0wrap);
+        finallayout.addView(firstlayout, params8);
+        finallayout.addView(secondlayout, weight4);
+        linearlayout.addView(finallayout, params6);
+        flExpDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                 String date = flExpDateTextView.getText().toString();
+                if (!date.equalsIgnoreCase("Select Date") && date.contains("/") && date.split("/").length == 3) {
+                    year = Integer.valueOf(date.split("/")[0]);
+                    month = Integer.valueOf(date.split("/")[1]) - 1;
+                    day = Integer.valueOf(date.split("/")[2]);
+                }
+                DialogFragment newFragment = new DatePickerFragment("FLEXPDATE", year, month, day);
+                newFragment.show(getActivity().getSupportFragmentManager(), "flDatePicker");
+            }
+        });
+
+        return linearlayout;
+    }
+
+
+    @SuppressLint("RestrictedApi")
+    private LinearLayout getDurgExpDateView(String mName, int mNumber, String data){
+        LinearLayout linearlayout = new LinearLayout(getActivity());
+        linearlayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        LinearLayout firstlayout = new LinearLayout(getActivity());
+        LinearLayout secondlayout = new LinearLayout(getActivity());
+
+        LinearLayout finallayout = new LinearLayout(getActivity());
+        finallayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        TextView tv_label = new TextView(getActivity());
+        tv_label.setText(mName);
+        tv_label.setTextColor(Color.BLACK);
+        tv_label.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+        tv_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        firstlayout.addView(tv_label, params8);
+        dlExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
+        dlExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+        dlExpDateTextView.setTextColor(Color.BLACK);
+        dlExpDateTextView.setGravity(Gravity.CENTER);
+        dlExpDateTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        dlExpDateTextView.setId(mNumber);
+        dlExpDateTextView.setTypeface(dlExpDateTextView.getTypeface(), Typeface.NORMAL);
+
+        dlExpDateTextView.setText(data);
+        secondlayout.addView(dlExpDateTextView, weight0wrap);
+        finallayout.addView(firstlayout, params8);
+        finallayout.addView(secondlayout, weight4);
+        linearlayout.addView(finallayout, params6);
+
+        dlExpDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                 String date = dlExpDateTextView.getText().toString();
+                if (!date.equalsIgnoreCase("Select Date") && date.contains("/") && date.split("/").length == 3) {
+                    year = Integer.valueOf(date.split("/")[0]);
+                    month = Integer.valueOf(date.split("/")[1]) - 1;
+                    day = Integer.valueOf(date.split("/")[2]);
+                }
+                 DialogFragment newFragment = new DatePickerFragment("DLEXPDATE", year, month, day);
+                newFragment.show(getActivity().getSupportFragmentManager(), "dlDatePicker");
+            }
+        });
+        return linearlayout;
     }
 
 
@@ -2131,6 +2321,47 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             editText[positionNumber].setFilters(stockArr);
             if (inputFilters.size() == 2)
                 editText[positionNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        }
+    }
+
+    @SuppressLint("ValidFragment")
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        int year;
+        int month;
+        int day;
+        @NonNls
+        String code;
+
+        public DatePickerFragment(String code, int year, int month, int day) {
+            this.code = code;
+            this.year = year;
+            this.month = month;
+            this.day = day;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+
+            Calendar selectedDate = new GregorianCalendar(year, month, day);
+            if (selectedDate.after(Calendar.getInstance())) {
+                @NonNls SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+                if (code.equalsIgnoreCase("DLEXPDATE"))
+                    dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+
+                else if (code.equalsIgnoreCase("FLEXPDATE"))
+                    flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                this.year = year;
+                this.day = day;
+                this.month = month;
+            } else {
+                Toast.makeText(getActivity(), "Select future date", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

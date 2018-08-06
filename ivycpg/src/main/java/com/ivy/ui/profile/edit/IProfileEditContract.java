@@ -26,6 +26,7 @@ import java.util.Vector;
 public interface IProfileEditContract {
 
     interface ProfileEditView extends BaseIvyView{
+
         void createImageView();
 
         void createImageView(String path);
@@ -79,8 +80,24 @@ public interface IProfileEditContract {
 
         void createAttributeView(int flag);
 
+        void createDrugLicenseExpDate(String mName,int mNumber,String data);
 
+        void createFoodLicenceExpDate(String mName,int mNumber,String data);
 
+        //Validation start from here
+
+        String getChennalSelectedItem();
+        void setChennalFocus();
+
+        String getSubChennalSelectedItem();
+        void setSubChennalFocus();
+
+        String getDynamicEditTextValues(int mNumber);
+        void setDynamicEditTextFocus(int mNumber);
+
+        HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList();
+
+        int  subChannelGetSelectedItem();
 
     }
 
@@ -152,6 +169,8 @@ public interface IProfileEditContract {
         ArrayList<Integer> getCommonAttributeList();
 
         ArrayList<Integer> getChannelAttributeList();
+
+        boolean doValidateProdileEdit();
 
     }
 }

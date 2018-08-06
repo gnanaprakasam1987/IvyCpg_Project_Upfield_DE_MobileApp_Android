@@ -310,10 +310,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 return;
                             }
                         }
-
                         new SaveEditAsyncTask().execute();
                     }
-
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -2722,11 +2720,11 @@ public class ProfileEditFragment extends IvyBaseFragment
             }
             else if (isFromChannel) {
 
-//                if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null
-//                        && (Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")) == ((SpinnerBO) subchannel.getSelectedItem()).getId())) {
-//                    isNewChannel = false;
-//                } else if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
-                // in case of user selecting new sub channel.. then view wil be updated here..
+             /*  if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07") != null
+                      && (Integer.parseInt(bmodel.newOutletHelper.getmPreviousProfileChangesList().get("PROFILE07")) == ((SpinnerBO) subchannel.getSelectedItem()).getId())) {
+                    isNewChannel = false;
+                } else if (((SpinnerBO) subchannel.getSelectedItem()).getId() != bmodel.getRetailerMasterBO().getSubchannelid()) {
+                // in case of user selecting new sub channel.. then view wil be updated here..*/
                 isNewChannel = true;
 
                 // getting existing attribute layout and clearig childs for loading attributes of current channel
@@ -4064,13 +4062,14 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     @SuppressLint("ValidFragment")
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
         int year;
         int month;
         int day;
         @NonNls
         String code;
 
-        DatePickerFragment(String code, int year, int month, int day) {
+        public DatePickerFragment(String code, int year, int month, int day) {
             this.code = code;
             this.year = year;
             this.month = month;
@@ -4105,12 +4104,10 @@ public class ProfileEditFragment extends IvyBaseFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == android.R.id.home) {
             bmodel.latlongImageFileName = "";
             getActivity().finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -4281,13 +4278,14 @@ public class ProfileEditFragment extends IvyBaseFragment
     } //Open the Image in Photo Gallery while onClick
 
     private boolean validateEditProfile() {
+
         boolean validate = true;
+
         try {
             int size = profileConfig.size();
             for (int i = 0; i < size; i++) {
                 String configCode = profileConfig.get(i).getConfigCode();
                 if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(PROFILE_06) && profileConfig.get(i).getModule_Order() == 1) {
-
                     try {
                         if (channel.getSelectedItem().toString().toLowerCase().contains("select")) {
                             channel.requestFocus();
@@ -4298,12 +4296,9 @@ public class ProfileEditFragment extends IvyBaseFragment
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase(PROFILE_07)
-                        && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(PROFILE_07) && profileConfig.get(i).getModule_Order() == 1) {
                     try {
-                        if (subchannel.getSelectedItem().toString().toLowerCase()
-                                .contains("select")) {
+                        if (subchannel.getSelectedItem().toString().toLowerCase().contains("select")) {
                             subchannel.requestFocus();
                             validate = false;
                             Toast.makeText(getActivity(),
@@ -4314,14 +4309,28 @@ public class ProfileEditFragment extends IvyBaseFragment
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase(PROFILE_30)
+                } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(PROFILE_30)
+                        && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
+                    try {
+                        if (editText[i].getText().toString().trim().length() == 0 ||
+                                editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()) {
+                            editText[i].requestFocus();
+                            validate = false;
+                            Toast.makeText(getActivity(),
+                                    profileConfig.get(i).getMenuName() + " Length Must Be "
+                                            + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+
+                } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(PROFILE_12)
                         && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
 
                     try {
                         if (editText[i].getText().toString().trim().length() == 0 ||
-                                editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                                ) {
+                                editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()) {
 
                             editText[i].requestFocus();
                             validate = false;
@@ -4334,36 +4343,13 @@ public class ProfileEditFragment extends IvyBaseFragment
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase(PROFILE_12)
+
+                } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(PROFILE_10)
                         && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
 
                     try {
                         if (editText[i].getText().toString().trim().length() == 0 ||
-                                editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                                ) {
-
-                            editText[i].requestFocus();
-                            validate = false;
-
-                            Toast.makeText(getActivity(),
-                                    profileConfig.get(i).getMenuName() + " Length Must Be "
-                                            + profileConfig.get(i).getMaxLengthNo(), Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-                    } catch (Exception e) {
-                        Commons.printException(e);
-                    }
-
-                } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase(PROFILE_10)
-                        && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
-
-                    try {
-                        if (editText[i].getText().toString().trim().length() == 0 ||
-                                editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                                ) {
-
+                                editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()) {
                             editText[i].requestFocus();
                             validate = false;
 
@@ -4402,7 +4388,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 }
                             }
                         }
-
                         //to check all mandatory channel's attributes selected
                         if (isChannelAvailable() && isAdded) {
                             for (NewOutletAttributeBO attributeBo : bmodel.newOutletAttributeHelper.getmAttributeBOListByLocationID().get(((SpinnerBO) subchannel.getSelectedItem()).getId())) {
@@ -4417,15 +4402,12 @@ public class ProfileEditFragment extends IvyBaseFragment
                                                 Toast.LENGTH_SHORT).show();
                                         break;
                                     }
-
                                 } else {
                                     if (tempBO != null && tempBO.getAttrId() != -1)
                                         selectedAttributeLevel.add(tempBO);
                                 }
-
                             }
                         }
-
                         if (!isAdded) {
                             validate = false;
                             break;
@@ -4513,7 +4495,6 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex()) ||
                                 !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
 
-
                             int length = editText[i].getText().toString().trim().length();
 
                             if (length > 0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
@@ -4590,6 +4571,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         String value = regx.replaceAll("\\<.*?\\>", "");
         return !TextUtils.isEmpty(target) && Pattern.compile(value).matcher(target).matches();
     }
+
 
     public boolean isValidGSTINWithPAN(CharSequence target) {
 
