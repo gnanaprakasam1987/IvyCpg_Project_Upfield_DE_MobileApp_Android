@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
@@ -273,7 +272,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
                 row = inflater
                         .inflate(R.layout.row_sales_volume_report, parent, false);
                 holder = new ViewHolder();
-                holder.PRDNAME = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.PRDNAME = (TextView) row.findViewById(R.id.prd_nameTv);
 
                 holder.pdt_total_qty = (TextView) row.findViewById(R.id.pdt_total_qty);
                 holder.pdt_total_value = (TextView) row.findViewById(R.id.pdt_total_value);

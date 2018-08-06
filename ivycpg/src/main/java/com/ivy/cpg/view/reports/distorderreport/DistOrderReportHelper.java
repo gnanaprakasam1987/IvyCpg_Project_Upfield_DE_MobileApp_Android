@@ -3,6 +3,7 @@ package com.ivy.cpg.view.reports.distorderreport;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -184,7 +185,6 @@ public class DistOrderReportHelper {
     }
 
 
-
     public Observable<ArrayList<DistOrderReportBo>> distOrderReportDetail(final Context context, final String orderId) {
         return Observable.create(new ObservableOnSubscribe<ArrayList<DistOrderReportBo>>() {
             @Override
@@ -309,6 +309,18 @@ public class DistOrderReportHelper {
 
         }
 
+
+    }
+
+    public void updateDistributor(String did, Context context) {
+        BusinessModel businessModel = (BusinessModel) context.getApplicationContext();
+        ArrayList<DistributorMasterBO> distributorList = businessModel.distributorMasterHelper.getDistributors();
+        for (DistributorMasterBO distributorMasterBO : distributorList) {
+            if (did.equals(distributorMasterBO.getDId())) {
+                businessModel.distributorMasterHelper.setDistributor(distributorMasterBO);
+                break;
+            }
+        }
 
     }
 

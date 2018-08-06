@@ -39,7 +39,7 @@ public class QuestionReportFragment extends IvyBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_questionreport, container, false);
 
-        unbinder = ButterKnife.bind(view);
+        unbinder = ButterKnife.bind(this,view);
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
@@ -190,7 +190,7 @@ public class QuestionReportFragment extends IvyBaseFragment {
         TextView Percentage;
 
         ViewHolder(View view) {
-            ButterKnife.bind(view);
+            ButterKnife.bind(this,view);
         }
     }
 

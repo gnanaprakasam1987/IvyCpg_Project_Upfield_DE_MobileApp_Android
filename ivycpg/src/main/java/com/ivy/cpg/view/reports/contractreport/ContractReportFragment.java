@@ -65,7 +65,6 @@ public class ContractReportFragment extends IvyBaseFragment {
         customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
         alertDialog = builder.create();
         alertDialog.show();
-
         compositeDisposable.add((Disposable) ContractReportHelper.getInstance().downloadContractReport(getActivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

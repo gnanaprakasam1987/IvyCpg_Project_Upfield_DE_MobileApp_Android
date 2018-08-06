@@ -1,5 +1,7 @@
 package com.ivy.cpg.view.reports.taskexcutionreport;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,11 +27,18 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 import java.util.Vector;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function3;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
@@ -46,24 +55,31 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
     LinearLayout headerLayout;
     private boolean is7InchTablet;
     private TaskReportHelper taskReportHelper;
+    private CompositeDisposable compositeDisposable;
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+        taskReportHelper =  TaskReportHelper.getInstance(getActivity());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_taskexecutionreport, container, false);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-        taskReportHelper = TaskReportHelper.getInstance(getActivity());
+
         sessionOut();
-        t_rname = (TextView) view.findViewById(R.id.t_rname);
+        t_rname = (TextView) view.findViewById(R.id.tv_rname);
         t_rname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         headerLayout = (LinearLayout) view.findViewById(R.id.ll_header);
         spinnerRetailer = (Spinner) view.findViewById(R.id.retailerSpinner);
         lvwplist = (ListView) view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
-        downloadReportData();
         hideAndShow();
+        downloadReportData();
         return view;
 
     }
@@ -77,7 +93,6 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        updateSbdSkuReportTable();
 
 
         adapter = new ArrayAdapter<BeatMasterBO>(getActivity(),
@@ -111,27 +126,65 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
         }
     }
 
+    private ArrayList<TaskReportBo> taskretailerinfo = new ArrayList<>();
+
     private void downloadReportData() {
-        try {
-            taskReportHelper.downloadTaskExecutionReport();
-            // Load the HHTTable
-            menuDB = bmodel.configurationMasterHelper
-                    .downloadNewActivityMenu("MENU_STORECHECK");
-            menuDB.addAll(bmodel.configurationMasterHelper
-                    .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY));
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(getActivity());
+        compositeDisposable = new CompositeDisposable();
+        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();
+        compositeDisposable.add((Disposable) Observable.zip(taskReportHelper.downloadTaskExecutionReport(),
+                taskReportHelper.downloadNewActivityMenu()
+                , taskReportHelper.downloadActMenus(), new Function3<ArrayList<TaskReportBo>, Vector<ConfigureBO>, Vector<ConfigureBO>, Boolean>() {
+                    @Override
+                    public Boolean apply(ArrayList<TaskReportBo> taskReportList,
+                                         Vector<ConfigureBO> storeCheckMenuList,
+                                         Vector<ConfigureBO> storeActivityMenuList) throws Exception {
 
-            //remove MENU_STORECHECK from menu db
-            Vector<ConfigureBO> tempMenus = new Vector<>();
-            for (ConfigureBO configureBO : menuDB) {
-                if (!configureBO.getConfigCode().equals("MENU_STORECHECK"))
-                    tempMenus.add(configureBO);
-            }
-            menuDB.clear();
-            menuDB.addAll(tempMenus);
+                        if (taskReportList.size() > 0) {
+                            taskretailerinfo = taskReportList;
+                            menuDB = storeCheckMenuList;
+                            menuDB.addAll(storeActivityMenuList);
 
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
+                            return true;
+                        } else
+                            return false;
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Boolean>() {
+                    @Override
+                    public void onNext(Boolean isFlag) {
+                        if (isFlag) {
+                            //remove MENU_STORECHECK from menu db
+                            Vector<ConfigureBO> tempMenus = new Vector<>();
+                            for (ConfigureBO configureBO : menuDB) {
+                                if (!configureBO.getConfigCode().equals("MENU_STORECHECK"))
+                                    tempMenus.add(configureBO);
+                            }
+                            menuDB.clear();
+                            menuDB.addAll(tempMenus);
+                        } else {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        alertDialog.dismiss();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        alertDialog.dismiss();
+                        updateSbdSkuReportTable(taskretailerinfo);
+                    }
+                })
+        );
 
     }
 
@@ -213,9 +266,7 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
 
     }
 
-    private void updateSbdSkuReportTable() {
-        ArrayList<TaskReportBo> items = taskReportHelper
-                .getTaskretailerinfo();
+    private void updateSbdSkuReportTable(ArrayList<TaskReportBo> items) {
 
         if (items == null || items.size() == 0) {
             bmodel.showAlert(getResources().getString(R.string.no_products_exists), 0);

@@ -20,8 +20,7 @@ import io.reactivex.ObservableOnSubscribe;
  */
 
 public class DeliveryStockHelper {
-    public static DeliveryStockHelper instance;
-    private BusinessModel bmodel;
+    private static DeliveryStockHelper instance;
 
     protected DeliveryStockHelper() {
     }

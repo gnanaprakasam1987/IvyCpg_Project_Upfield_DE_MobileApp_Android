@@ -46,6 +46,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
     private DistOrderReportBo mSelectedReportBO;
     private Unbinder unbinder;
     private CompositeDisposable compositeDisposable;
+    private DistOrderReportHelper distOrderReportHelper;
 
     @BindView(R.id.list)
     ListView lvwplist;
@@ -103,9 +104,9 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 
         updateViews();
 
-        DistOrderReportHelper distOrderReportHelper = DistOrderReportHelper.getInstance();
+        distOrderReportHelper = DistOrderReportHelper.getInstance();
 
-        getDistOrdReportData(distOrderReportHelper);
+        getDistOrdReportData();
 
         return view;
 
@@ -156,7 +157,8 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 
     double avgLine = 0, totOutlet = 0;
 
-    private void getDistOrdReportData(DistOrderReportHelper distOrderReportHelper) {
+    private void getDistOrdReportData() {
+        mylist = new ArrayList<>();
         final AlertDialog alertDialog;
         AlertDialog.Builder builder;
         builder = new AlertDialog.Builder(getActivity());
@@ -166,27 +168,30 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
         alertDialog.show();
         compositeDisposable.add((Disposable) Observable.zip(distOrderReportHelper.downloadDistributorOrderReport(getActivity()), distOrderReportHelper.getavglinesfororderbooking("OrderHeader", getActivity())
                 , distOrderReportHelper.getorderbookingCount("OrderHeader", getActivity())
-                , new Function3<ArrayList<DistOrderReportBo>, Double, Double, Object>() {
+                , new Function3<ArrayList<DistOrderReportBo>, Double, Double, Boolean>() {
 
                     @Override
-                    public Object apply(ArrayList<DistOrderReportBo> distOrderReportBos, Double avgLines, Double totOutlets) throws Exception {
+                    public Boolean apply(ArrayList<DistOrderReportBo> distOrderReportBos, Double avgLines, Double totOutlets) throws Exception {
                         mylist.addAll(distOrderReportBos);
                         avgLine = avgLines;
                         totOutlet = totOutlets;
-                        return true;
+                        if (mylist.size() == 0)
+                            return false;
+                        else
+                            return true;
                     }
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<Object>() {
+                .subscribeWith(new DisposableObserver<Boolean>() {
                     @Override
-                    public void onNext(Object o) {
+                    public void onNext(Boolean flag) {
                         // Show alert if no order exist.
-                        if (mylist.size() == 0) {
+                        if (!flag) {
                             Toast.makeText(getActivity(),
                                     getResources().getString(R.string.no_orders_available),
                                     Toast.LENGTH_SHORT).show();
-                        }
-                        updateOrderGrid(avgLine, totOutlet);
+                        } else
+                            updateOrderGrid(avgLine, totOutlet);
                     }
 
                     @Override
@@ -343,11 +348,11 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
     class ViewHolder {
         String ref;// product id
 
-        @BindView(R.id.PRDNAME)
+        @BindView(R.id.prd_nameTv)
         TextView tvwrname;
 
-        @BindView(R.id.PRDNAME)
-        TextView tvwvol;
+      /*  @BindView(R.id.prd_nameTv)
+        TextView tvwvol;*/
 
         @BindView(R.id.PRDMRP)
         TextView tvwvalue;
@@ -362,7 +367,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
         TextView tvOrderNo;
 
         ViewHolder(View view) {
-            ButterKnife.bind(view);
+            ButterKnife.bind(this,view);
         }
 
 
@@ -375,7 +380,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 
             DistOrderReportBo ret = (DistOrderReportBo) mylist
                     .get(arg2);
-            bmodel.reportHelper.updateDistributor(ret.getDistributorId() + "");
+            distOrderReportHelper.updateDistributor(ret.getDistributorId() + "",getActivity());
             bmodel.productHelper
                     .downloadDistributorProducts("MENU_PS_STKORD");
 

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,17 +39,12 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
     private TextView outletname, txttotal, productName, totalLines;
     private BusinessModel bmodel;
     private boolean isFromOrderReport;
-    private double TotalValue;
-    private String TotalLines;
+    private Bundle extras;
     private Toolbar toolbar;
     private CompositeDisposable compositeDisposable;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // requestWindowFeature(Window.FEATURE_NO_TITLE);
-        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        // WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_order_report_detail);
 
@@ -57,6 +53,22 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         totalLines = (TextView) findViewById(R.id.txttotallines);
+
+        setSupportActionBar(toolbar);
+        // Set title to toolbar
+        if (getSupportActionBar() != null)
+
+            getSupportActionBar().setTitle(null);
+        // Used to on / off the back arrow icon
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // Used to remove the app logo actionbar icon and set title as home
+        // (title support click)
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        // Used to hide the app logo icon from actionbar
+        // getSupportActionBar().setDisplayUseLogoEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        setScreenTitle(getResources().getString(R.string.order_report_details));
 
         try {
             back = (Button) findViewById(R.id.btnPersBack);
@@ -81,47 +93,25 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
             outletname = (TextView) findViewById(R.id.BtnBrandPrev);
             productName = (TextView) findViewById(R.id.productName);
 
-            Bundle extras = getIntent().getExtras();
+            extras = getIntent().getExtras();
             DistOrderReportBo obj = null;
             if (extras != null) {
                 if (extras.containsKey("OBJ")) {
                     obj = (DistOrderReportBo) extras
                             .getParcelable("OBJ");
-
-                }
-                if (extras.containsKey("isFromOrder")) {
-                    isFromOrderReport = extras.getBoolean("isFromOrder");
-
-                }
-                if (extras.containsKey("TotalValue")) {
-                    TotalValue = extras.getDouble("TotalValue");
-                }
-                if (extras.containsKey("TotalLines")) {
-                    TotalLines = extras.getString("TotalLines");
                 }
             }
 
             txttotal = (TextView) findViewById(R.id.txttotal);
             outletname.setText(getResources().getString(R.string.order_report)
                     + obj.getRetailerName());
+            ExpandableListView lv = (ExpandableListView) findViewById(R.id.elv);
+            lv.setVisibility(View.GONE);
 
             lvwplist = (ListView) findViewById(R.id.lvwplistorddet);
+            lvwplist.setVisibility(View.VISIBLE);
             lvwplist.setCacheColorHint(0);
 
-            setSupportActionBar(toolbar);
-            // Set title to toolbar
-
-            if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(
-                        getResources().getString(R.string.order_report_details));
-            getSupportActionBar().setIcon(R.drawable.icon_order);
-            // Used to on / off the back arrow icon
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            // Used to remove the app logo actionbar icon and set title as home
-            // (title support click)
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            // Used to hide the app logo icon from actionbar
-            // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
             /** on off case,piece,outer Title **/
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
@@ -180,24 +170,35 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
             return;
         }
 
-        // Calculate the total order value.
-        // for (DistOrderReportBo ret : mylist) {
-        // total = total + ret.getTot();
-        // }
 
         /**
          * set total lines value in textview
          * **/
 
-        double avglinesorderbooking;
+        // not used any where in this class
+      /*  double avglinesorderbooking;
 
         if (isFromOrderReport)
             avglinesorderbooking = bmodel.reportHelper
-                    .getavglinesfororderbooking("OrderHeader");
+                    .getavglinesfororderbooking("OrderHeader");*/
 
-        totalLines.setText(TotalLines + "");
+
+        String totLines = "";
+        double totalValue = 0;
+        if (extras != null) {
+
+            if (extras.containsKey("TotalValue")) {
+                totalValue = extras.getDouble("TotalValue");
+            }
+            if (extras.containsKey("TotalLines")) {
+                totLines = extras.getString("TotalLines");
+            }
+        }
+
+
+        totalLines.setText(totLines + "");
         // Format and set on the lable
-        txttotal.setText(bmodel.formatValue(TotalValue) + "");
+        txttotal.setText(bmodel.formatValue(totalValue) + "");
 
         // Load listview.
         MyAdapter mSchedule = new MyAdapter(mylist);
@@ -235,7 +236,7 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
                 row = inflater.inflate(R.layout.row_orderdetail_report, parent,
                         false);
                 holder = new ViewHolder();
-                holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.tvwpsname = (TextView) row.findViewById(R.id.PRDNAME1);
 
                 holder.tvwval = (TextView) row.findViewById(R.id.PRDVAL);
                 holder.tvwqty = (TextView) row.findViewById(R.id.PRDQTY);
@@ -328,9 +329,14 @@ public class DistOrderreportdetail extends IvyBaseActivityNoActionBar implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackButtonClick();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onBackButtonClick() {
+        finish();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 }

@@ -16,16 +16,15 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.ivy.core.base.view.BaseActivity;
-import com.ivy.cpg.view.reports.distorderreport.DistOrderReportFragment;
-import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
-import com.ivy.cpg.view.reports.performancereport.OutletPerformanceReportFragmnet;
-import com.ivy.cpg.view.reports.performancereport.SellerListFragment;
 import com.ivy.cpg.view.reports.asset.AssetTrackingReportFragment;
 import com.ivy.cpg.view.reports.attendancereport.AttendanceReport;
 import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportFragment;
 import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
+import com.ivy.cpg.view.reports.contractreport.ContractReportFragment;
 import com.ivy.cpg.view.reports.creditNoteReport.CreditNoteReportFragment;
 import com.ivy.cpg.view.reports.dayreport.DayReportFragment;
+import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockReport;
+import com.ivy.cpg.view.reports.distorderreport.DistOrderReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.reports.eodstockreport.EODStockReportFragmentRe;
@@ -33,14 +32,30 @@ import com.ivy.cpg.view.reports.inventoryreport.InventoryReportFragment;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportFragment;
 import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
 import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
+import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
+import com.ivy.cpg.view.reports.performancereport.OutletPerformanceReportFragmnet;
+import com.ivy.cpg.view.reports.performancereport.SellerListFragment;
+import com.ivy.cpg.view.reports.performancereport.SellerMapViewReportFragment;
+import com.ivy.cpg.view.reports.performancereport.SellerPerformanceReportFragment;
+import com.ivy.cpg.view.reports.piramal.BrandwisePerformance;
+import com.ivy.cpg.view.reports.piramal.OpportunitiesReport;
+import com.ivy.cpg.view.reports.piramal.ProductivityReport;
+import com.ivy.cpg.view.reports.piramal.TimeAndTravelReport;
+import com.ivy.cpg.view.reports.pndInvoiceReport.PndInvoiceReportFragment;
 import com.ivy.cpg.view.reports.promotion.PromotionTrackingReport;
+import com.ivy.cpg.view.reports.questionReport.QuestionReportFragment;
 import com.ivy.cpg.view.reports.retailerProperty.RetailerPropertyReportFragment;
 import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
-import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
 import com.ivy.cpg.view.reports.salesreturnreport.SalesReturnReportFragment;
+import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
+import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportFragment;
 import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportHelper;
+import com.ivy.cpg.view.reports.soho.SalesReturnReportFragmentSOHO;
+import com.ivy.cpg.view.reports.taskexcutionreport.TaskExecutionReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.cpg.view.reports.userlogreport.LogReportFragment;
+import com.ivy.cpg.view.reports.webviewreport.SOreportFragment;
+import com.ivy.cpg.view.reports.webviewreport.WebViewArchivalReportFragment;
 import com.ivy.cpg.view.reports.webviewreport.WebViewReportHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -51,23 +66,8 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.TaxGstHelper;
 import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.reports.contractreport.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.cpg.view.reports.pndInvoiceReport.PndInvoiceReportFragment;
-import com.ivy.cpg.view.reports.questionReport.QuestionReportFragment;
-import com.ivy.cpg.view.reports.webviewreport.SOreportFragment;
-import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportFragment;
-import com.ivy.cpg.view.reports.performancereport.SellerMapViewReportFragment;
-import com.ivy.cpg.view.reports.performancereport.SellerPerformanceReportFragment;
-import com.ivy.cpg.view.reports.taskexcutionreport.TaskExecutionReportFragment;
-import com.ivy.cpg.view.reports.webviewreport.WebViewArchivalReportFragment;
-import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockReport;
-import com.ivy.cpg.view.reports.piramal.BrandwisePerformance;
-import com.ivy.cpg.view.reports.piramal.OpportunitiesReport;
-import com.ivy.cpg.view.reports.piramal.ProductivityReport;
-import com.ivy.cpg.view.reports.piramal.TimeAndTravelReport;
-import com.ivy.cpg.view.reports.soho.SalesReturnReportFragmentSOHO;
 import com.ivy.ui.reports.beginstockreport.view.BeginningStockFragment;
 import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 
@@ -93,7 +93,7 @@ public class ReportActivity extends BaseActivity implements
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setTitle(null);
         // Set title to actionbar
         setScreenTitle(getResources().getString(R.string.report));
         // Used to on / off the back arrow icon
@@ -103,6 +103,7 @@ public class ReportActivity extends BaseActivity implements
         // getSupportActionBar().setDisplayShowHomeEnabled(true);
         // Used to hide the app logo icon from actionbar
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
         if (Build.VERSION.SDK_INT < 16) {
@@ -495,8 +496,9 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
-            bmodel.reportHelper.downloadUsers();
-            if (bmodel.reportHelper.getLstUsers().size() > 0) {
+            OutletPerfomanceHelper perfomanceHelper = OutletPerfomanceHelper.getInstance(this);
+            perfomanceHelper.downloadUsers();
+            if (perfomanceHelper.getLstUsers().size() > 0) {
 
                 SellerMapViewReportFragment mSellerMapviewReport = new SellerMapViewReportFragment();
                 transaction.replace(R.id.fragment_content, mSellerMapviewReport, StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);

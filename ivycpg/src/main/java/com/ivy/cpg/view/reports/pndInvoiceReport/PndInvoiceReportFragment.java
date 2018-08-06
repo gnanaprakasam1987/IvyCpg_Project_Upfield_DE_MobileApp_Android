@@ -43,7 +43,7 @@ public class PndInvoiceReportFragment extends IvyBaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_pnd_invoice_report,
                 container, false);
-        unbinder = ButterKnife.bind(view);
+        unbinder = ButterKnife.bind(this,view);
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
@@ -187,14 +187,14 @@ public class PndInvoiceReportFragment extends IvyBaseFragment {
         @BindView(R.id.tvpaidamtValue)
         TextView tvAmtPaid;
 
-        @BindView(R.id.tvbalamtValue)
+        @BindView(R.id.tvbalamt)
         TextView labelTvBalanceAmt;
 
         @BindView(R.id.tvbalamtValue)
         TextView tvBalance;
 
         ViewHolder(View view) {
-            ButterKnife.bind(view);
+            ButterKnife.bind(this,view);
         }
     }
 

@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.ivy.cpg.view.supervisor.CircleImageView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -59,7 +58,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
             row = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_order_report, parent, false);
             holder = new ViewHolder(row);
-            holder.text_retailerName = row.findViewById(R.id.PRDNAME);
+            holder.text_retailerName = row.findViewById(R.id.prd_nameTv);
             holder.label_orderNumber = row.findViewById(R.id.ordertxt);
             holder.text_delivery_date = row.findViewById(R.id.text_delivery_date);
             holder.tvFocusBrandCount = row.findViewById(R.id.focus_brand_count);

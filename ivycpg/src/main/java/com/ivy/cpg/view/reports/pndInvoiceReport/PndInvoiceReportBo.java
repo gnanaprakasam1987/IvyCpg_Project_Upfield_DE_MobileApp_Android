@@ -12,6 +12,41 @@ public class PndInvoiceReportBo {
     private double paidAmount;
     private double invoiceAmount;
     String retailerName;
+    private double appliedDiscountAmount;
+    private double remainingDiscountAmt;
+    private String dueDate,dueDays;
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public String getDueDays() {
+        return dueDays;
+    }
+
+    public void setDueDays(String dueDays) {
+        this.dueDays = dueDays;
+    }
+
+    public double getAppliedDiscountAmount() {
+        return appliedDiscountAmount;
+    }
+
+    public void setAppliedDiscountAmount(double appliedDiscountAmount) {
+        this.appliedDiscountAmount = appliedDiscountAmount;
+    }
+
+    public double getRemainingDiscountAmt() {
+        return remainingDiscountAmt;
+    }
+
+    public void setRemainingDiscountAmt(double remainingDiscountAmt) {
+        this.remainingDiscountAmt = remainingDiscountAmt;
+    }
 
     public String getInvoiceNo() {
         return invoiceNo;

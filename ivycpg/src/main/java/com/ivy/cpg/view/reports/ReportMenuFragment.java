@@ -25,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
-import com.ivy.cpg.view.reports.pndInvoiceReport.PendingInvoiceHelper;
+import com.ivy.cpg.view.reports.soho.SalesReturnReportHelperSOHO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -36,7 +36,6 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.reports.soho.SalesReturnReportHelperSOHO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,8 +85,6 @@ public class ReportMenuFragment extends IvyBaseFragment {
 
             menuIcons.put(StandardListMasterConstants.MENU_ORDER_REPORT,
                     R.drawable.icon_stock);
-            menuIcons.put(StandardListMasterConstants.MENU_PREVIOUS_ORDER_REPORT,
-                    R.drawable.icon_order);
             menuIcons.put(StandardListMasterConstants.MENU_DAY_REPORT,
                     R.drawable.icon_new_retailer);
             menuIcons.put(StandardListMasterConstants.MENU_INVOICE_REPORT,
@@ -115,8 +112,6 @@ public class ReportMenuFragment extends IvyBaseFragment {
             menuIcons.put(StandardListMasterConstants.MENU_DYN_REPORT,
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_LOG,
-                    R.drawable.icon_reports);
-            menuIcons.put(StandardListMasterConstants.MENU_CS_RPT,
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT,
                     R.drawable.icon_reports);
@@ -194,12 +189,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 break;
             case StandardListMasterConstants.MENU_PND_INVOICE_REPORT:
                 bmodel.collectionHelper.updateInvoiceDiscountAmount();
-                PendingInvoiceHelper.getInstance(getActivity()).downloadInvoice();
-                if (bmodel.getInvoiceHeaderBO().size() >= 1) {
-                    gotoReportActivity(config);
-                } else {
-                    showToast();
-                }
+                gotoReportActivity(config);
                 break;
             case StandardListMasterConstants.MENU_ORDER_REPORT:
 
@@ -232,7 +222,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 } else {
                     String Url = perfomanceHelper.getPerformRptUrl();
                     if (Url != null && Url.length() > 0) {
-                        new PerformRptDownloadData(config, Url,perfomanceHelper).execute();
+                        new PerformRptDownloadData(config, Url, perfomanceHelper).execute();
                     } else {
                         Toast.makeText(getActivity(), "Download Url Not Available", Toast.LENGTH_LONG).show();
                     }
@@ -406,7 +396,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
         OutletPerfomanceHelper outletPerfomanceHelper;
         private ProgressDialog progressDialogue;
 
-        PerformRptDownloadData(ConfigureBO config, String Url,OutletPerfomanceHelper perfomanceHelper) {
+        PerformRptDownloadData(ConfigureBO config, String Url, OutletPerfomanceHelper perfomanceHelper) {
             this.config = config;
             this.Url = Url;
             this.outletPerfomanceHelper = perfomanceHelper;

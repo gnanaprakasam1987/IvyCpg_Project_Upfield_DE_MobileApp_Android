@@ -21,7 +21,7 @@ public class OutletPerfomanceHelper {
 
     protected OutletPerfomanceHelper(Context context) {
         mContext = context;
-        bModel = (BusinessModel) context;
+        bModel = (BusinessModel) context.getApplicationContext();
     }
 
     public static OutletPerfomanceHelper getInstance(Context context) {

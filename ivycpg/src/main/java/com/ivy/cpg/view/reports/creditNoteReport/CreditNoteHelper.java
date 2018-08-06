@@ -15,16 +15,22 @@ import java.util.ArrayList;
  */
 
 public class CreditNoteHelper {
-    private Context mContext;
+    private static CreditNoteHelper instance;
 
-    public CreditNoteHelper(Context context) {
-        mContext = context;
+    protected CreditNoteHelper() {
     }
 
-    public ArrayList<CreditNoteListBO> loadCreditNote() {
+    public static CreditNoteHelper getInstance() {
+        if (instance == null) {
+            instance = new CreditNoteHelper();
+        }
+        return instance;
+    }
+
+    public ArrayList<CreditNoteListBO> loadCreditNote(Context context) {
         ArrayList<CreditNoteListBO> creditNoteList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();

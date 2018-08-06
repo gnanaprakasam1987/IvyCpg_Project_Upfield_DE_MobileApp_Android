@@ -47,7 +47,6 @@ public class StandardListMasterConstants {
 
 	public static final String REPORT_MENU = "MENU_REPORT";
 	public static final String MENU_ORDER_REPORT = "MENU_ORDER_REPORT";
-	public static final String MENU_PREVIOUS_ORDER_REPORT = "MENU_PREV_ORDER_REPORT";
 	public static final String MENU_DAY_REPORT = "MENU_DAY_REPORT";
 	public static final String MENU_INVOICE_REPORT = "MENU_INVOICE_REPORT";
 	public static final String MENU_PND_INVOICE_REPORT = "MENU_PND_INV_RPT";
@@ -81,7 +80,6 @@ public class StandardListMasterConstants {
 
 	public static final String VISITCONFIG_PLANNING = "MENU_PLANNING";
 	public static final String VISITCONFIG_COVERAGE = "MENU_VISIT";
-	public static final String MENU_CS_RPT = "MENU_CS_RPT";
 
 	public static final String MENU_INVENTORY_RPT = "MENU_INVPJ_RPT";
     public static final String MENU_RETAILER_ACTIVITY_REPORT = "MENU_RETACT_RPT";

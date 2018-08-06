@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/PRDNAME"
+            android:id="@+id/prd_nameTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/product_name"
@@ -25,7 +25,7 @@
             style="?attr/customListItemSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/PRDNAME"
+            android:layout_below="@+id/prd_nameTv"
             android:layout_marginRight="@dimen/dimens_2dp"
             android:gravity="center"
             android:text="@string/prod_code" />
@@ -35,7 +35,7 @@
             style="?attr/customListItemSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/PRDNAME"
+            android:layout_below="@+id/prd_nameTv"
             android:layout_marginLeft="@dimen/dimens_2dp"
             android:layout_toEndOf="@+id/product_code"
             android:layout_toRightOf="@+id/product_code"

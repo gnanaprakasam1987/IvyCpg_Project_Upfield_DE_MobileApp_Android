@@ -158,7 +158,7 @@ public class CreditNotePrintPreviewScreen extends IvyBaseActivityNoActionBar {
     private void doInitialize() {
         try {
 
-            mDetails = new CreditNoteHelper(this).loadCreditNote();
+            mDetails = CreditNoteHelper.getInstance().loadCreditNote(this);
             updateDetails();
 
             total.setText(bmodel.formatValue(totalColl));
