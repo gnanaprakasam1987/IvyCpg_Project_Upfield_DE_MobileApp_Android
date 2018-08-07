@@ -811,7 +811,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 row = inflater.inflate(R.layout.row_invoice_report_detail,
                         parent, false);
                 holder = new ViewHolder();
-                holder.productShortName = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.productShortName = (TextView) row.findViewById(R.id.prd_nameTv);
                 holder.productShortName.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.productCode = (TextView) row.findViewById(R.id.product_code);
                 holder.text_PcsQuantity = (TextView) row.findViewById(R.id.PRDPCSQTY);
@@ -948,7 +948,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 row = inflater.inflate(R.layout.row_invoice_report_detail,
                         parent, false);
                 holder = new ViewHolder();
-                holder.productShortName = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.productShortName = (TextView) row.findViewById(R.id.prd_nameTv);
                 holder.productCode = (TextView) row.findViewById(R.id.product_code);
                 holder.productShortName.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.tvBatchNo = (TextView) row.findViewById(R.id.batch_no);

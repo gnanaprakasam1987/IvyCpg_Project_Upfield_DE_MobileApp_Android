@@ -170,6 +170,20 @@
                         android:divider="@android:color/white"
                         android:dividerHeight="1dp"
                         android:groupIndicator="@null"/>
+
+                    <ListView
+                        android:id="@+id/lvwplistorddet"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:cacheColorHint="@null"
+                        android:divider="@android:color/white"
+                        android:dividerHeight="10dp"
+                        android:drawSelectorOnTop="false"
+                        android:visibility="gone"
+                        android:fitsSystemWindows="true"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"
+                        android:scrollbarAlwaysDrawVerticalTrack="true" />
+
                 </LinearLayout>
             </android.support.v7.widget.CardView>
             <!--</HorizontalScrollView>-->

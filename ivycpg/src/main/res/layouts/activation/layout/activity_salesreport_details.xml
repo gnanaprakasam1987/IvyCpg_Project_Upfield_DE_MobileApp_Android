@@ -18,7 +18,7 @@
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dimen_8dp"
         android:paddingRight="@dimen/dimen_8dp"
-        android:weightSum="8">
+        >
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -52,18 +52,6 @@
             android:textSize="@dimen/list_item_primary_text_size" />
 
         <TextView
-            android:id="@+id/piececqty"
-            style="?attr/customListTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:tag="item_piece"
-            android:text="@string/item_piece"
-            android:textColor="@color/white"
-            android:textSize="@dimen/list_item_primary_text_size" />
-
-        <TextView
             android:id="@+id/outercqty"
             style="?attr/customListTitle"
             android:layout_width="0dp"
@@ -75,6 +63,18 @@
             android:textColor="@color/white"
             android:textSize="@dimen/list_item_primary_text_size" />
 
+        <TextView
+            android:id="@+id/piececqty"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:tag="item_piece"
+            android:text="@string/item_piece"
+            android:textColor="@color/white"
+            android:textSize="@dimen/list_item_primary_text_size" />
+
 
         <TextView
             android:id="@+id/text_returnValue"
@@ -82,22 +82,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:text="@string/value"
             android:textColor="@color/white"
             android:textSize="@dimen/list_item_primary_text_size" />
 
-        <TextView
-            android:id="@+id/text_reasonType"
-            style="?attr/customListTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/type"
-            android:textColor="@color/white"
-            android:textSize="@dimen/list_item_primary_text_size"
-            android:visibility="gone" />
+
 
 
     </LinearLayout>

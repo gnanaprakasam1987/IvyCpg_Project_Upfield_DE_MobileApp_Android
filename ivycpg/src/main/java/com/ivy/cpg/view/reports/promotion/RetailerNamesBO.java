@@ -26,4 +26,12 @@ public class RetailerNamesBO {
     }
 
 
+    @Override
+    public String toString() {
+        if (retailerName != null)
+            return retailerName;
+        else
+            return "";
+    }
+
 }
