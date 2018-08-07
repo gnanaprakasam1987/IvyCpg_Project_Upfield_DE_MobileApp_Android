@@ -2,6 +2,7 @@ package com.ivy.cpg.view.supervisor.mvp.sellerlistview;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -114,6 +115,12 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                     case 2:
                         setScreenTitle("Absent Sellers (" + sellersAbsentList.size() + ")");
                         break;
+
+                }
+
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior.setHideable(true);
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
             }
 
@@ -201,12 +208,9 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                 View radioButton = sortRadioGroup.findViewById(radioButtonID);
                 int idx = sortRadioGroup.indexOfChild(radioButton);
 
-                if (tabLayout.getSelectedTabPosition() == 0)
-                    sortList(idx,sellersList);
-                else if (tabLayout.getSelectedTabPosition() == 1)
-                    sortList(idx,sellersInMarketList);
-                else if (tabLayout.getSelectedTabPosition() == 2)
-                    sortList(idx,sellersAbsentList);
+                sortList(idx,sellersList);
+                sortList(idx,sellersInMarketList);
+                sortList(idx,sellersAbsentList);
             }
         });
     }
@@ -395,8 +399,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                     return sstr.getUserName().compareTo(fstr.getUserName());
                 }
             });
-        }
-        else if(sortBy == 2){
+        }else if(sortBy == 2){
             Collections.sort(sellerBos, new Comparator<SellerBo>() {
                 @Override
                 public int compare(SellerBo fstr, SellerBo sstr) {
@@ -407,6 +410,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                     if (target1 != 0) {
                         sellerProductive1 = (int)((float)billed1 / (float)target1 * 100);
                     }
+                    fstr.setProductivityPercent(sellerProductive1);
 
                     int target2 = sstr.getTarget();
                     int billed2 = sstr.getBilled();
@@ -416,10 +420,42 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                         sellerProductive2 = (int)((float)billed2 / (float)target2 * 100);
                     }
 
-                    if(sellerProductive1 > sellerProductive2)
-                        return sellerProductive1;
+                    sstr.setProductivityPercent(sellerProductive2);
 
-                    return sellerProductive2;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        return Integer.compare(sstr.getProductivityPercent(),fstr.getProductivityPercent());
+                    }else
+                        return Integer.valueOf(sstr.getProductivityPercent()).compareTo(fstr.getProductivityPercent());
+
+                }
+            });
+        }else if(sortBy == 3){
+            Collections.sort(sellerBos, new Comparator<SellerBo>() {
+                @Override
+                public int compare(SellerBo fstr, SellerBo sstr) {
+
+                    int target1 = fstr.getTarget();
+                    int billed1 = fstr.getBilled();
+                    int sellerProductive1 = 0;
+                    if (target1 != 0) {
+                        sellerProductive1 = (int)((float)billed1 / (float)target1 * 100);
+                    }
+                    fstr.setProductivityPercent(sellerProductive1);
+
+                    int target2 = sstr.getTarget();
+                    int billed2 = sstr.getBilled();
+                    int sellerProductive2 = 0;
+
+                    if (target2 != 0) {
+                        sellerProductive2 = (int)((float)billed2 / (float)target2 * 100);
+                    }
+
+                    sstr.setProductivityPercent(sellerProductive2);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        return Integer.compare(fstr.getProductivityPercent(),sstr.getProductivityPercent());
+                    }else
+                        return Integer.valueOf(fstr.getProductivityPercent()).compareTo(sstr.getProductivityPercent());
 
                 }
             });

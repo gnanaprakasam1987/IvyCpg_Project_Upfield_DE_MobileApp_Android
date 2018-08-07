@@ -8,10 +8,10 @@ import com.google.android.gms.maps.model.Marker;
 
 public class SellerBo implements Parcelable {
 
-    private int userId,billed,covered,target,retailerId,lpc,totallpc;
+    private int userId,billed,covered,target,retailerId,lpc,totallpc,productivityPercent;
     private String userName,retailerName;
     private boolean isAttendanceDone = false;
-    private double latitude,longitude,productivityPercent;
+    private double latitude,longitude;
     private long orderValue, inTime, outTime,totalOrderValue;
     private Marker marker;
 
@@ -227,11 +227,11 @@ public class SellerBo implements Parcelable {
         this.lpc = lpc;
     }
 
-    public double getProductivityPercent() {
+    public int getProductivityPercent() {
         return productivityPercent;
     }
 
-    public void setProductivityPercent(double productivityPercent) {
+    public void setProductivityPercent(int productivityPercent) {
         this.productivityPercent = productivityPercent;
     }
 

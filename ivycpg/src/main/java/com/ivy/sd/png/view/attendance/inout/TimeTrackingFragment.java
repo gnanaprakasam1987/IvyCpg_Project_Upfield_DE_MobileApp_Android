@@ -34,6 +34,7 @@ import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonFieldTwoBo;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -107,11 +108,12 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         mAdapter = new MyAdapter();
         listview.setAdapter(mAdapter);
 
-
         loadListData();
 
-
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
+
+            ((IvyBaseActivityNoActionBar)getActivity()).checkAndRequestPermissionAtRunTime(3);
+
             if (!bmodel.locationUtil.isGPSProviderEnabled()) {
                 GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
                 int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(getContext());

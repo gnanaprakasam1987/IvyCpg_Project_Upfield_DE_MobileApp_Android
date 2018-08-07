@@ -519,7 +519,9 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             if (sellerInfoHasMap.get(userId) != null &&
                     !sellerInfoHasMap.get(userId).isAttendanceDone()) {
                 computeSellerAttendance(userId);
-                notifyAttendance();
+
+                if (isToday())
+                    notifyAttendance();
             }
         }
 
@@ -569,7 +571,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
                 if (!sellerBoHashmap.isAttendanceDone()) {
                     computeSellerAttendance(sellerBoDocumentSnapshot.getUserId());
-                    notifyAttendance();
+                    if (isToday())
+                        notifyAttendance();
                 }
 
                 if (!isRealTimeLocationOn) {
@@ -617,7 +620,9 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
                     if (!sellerHasmapBo.isAttendanceDone()) {
                         computeSellerAttendance(sellerHasmapBo.getUserId());
-                        notifyAttendance();
+
+                        if (isToday())
+                            notifyAttendance();
                     }
 
                     setMarkerHasMap(sellerHasmapBo, markerOptions);
@@ -683,6 +688,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             if (result) {
                 Toast.makeText(context, "Download Successfull", Toast.LENGTH_SHORT).show();
 
+                SupervisorActivityHelper.getInstance().downloadOutletListAws(context,selectedDate);
                 getSellerListAWS(selectedDate);
                 sellerMapHomeView.updateSellerInfoByDate(convertGlobalDateToPlane(selectedDate));
 
@@ -855,6 +861,24 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         return globalDate;
     }
 
+    private String convertPlaneDateToGlobal(String planeDate){
+        try {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
+            Date date = sdf.parse(planeDate);
+
+            sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            planeDate =sdf.format(date);
+
+            return planeDate;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return planeDate;
+    }
+
     public String getSelectedDate() {
         return selectedDate;
     }
@@ -871,5 +895,9 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isToday(){
+        return convertPlaneDateToGlobal(selectedDate).equals(SDUtil.now(SDUtil.DATE_GLOBAL));
     }
 }

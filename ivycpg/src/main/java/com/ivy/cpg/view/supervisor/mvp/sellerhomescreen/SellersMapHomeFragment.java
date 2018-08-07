@@ -688,13 +688,14 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 totalSeller.setText("0");
                 progressBar.setProgress(0);
 
-                SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(),convertedDate);
+                sellerMapHomePresenter.removeFirestoreListener();
 
                 getActivity().invalidateOptionsMenu();
 
                 if (!sellerMapHomePresenter.checkSelectedDateExist(convertedDate))
                     sellerMapHomePresenter.downloadSupRetailerMaster(convertedDate);
                 else {
+                    SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(),convertedDate);
                     sellerMapHomePresenter.getSellerListAWS(convertedDate);
                     updateSellerInfoByDate(convertGlobalDateToPlane(convertedDate));
                 }

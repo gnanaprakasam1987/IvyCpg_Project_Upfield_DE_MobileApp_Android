@@ -345,9 +345,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
                         String title = retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getInTime();
 
-                        retailerMasterBo.getMarker().setTitle(title);
-                        retailerMasterBo.getMarker().setIcon(icon);
-
                         if(documentSnapshotBo.getLatitude() == 0 || documentSnapshotBo.getLongitude() == 0){
                             retailerMasterBo.setLatitude(retailerMasterBo.getMasterLatitude());
                             retailerMasterBo.setLongitude(retailerMasterBo.getMasterLongitude());
@@ -359,6 +356,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                         LatLng newRetailLatlng = new LatLng(retailerMasterBo.getLatitude(),retailerMasterBo.getLongitude());
 
                         retailerMasterBo.getMarker().setPosition(newRetailLatlng);
+                        retailerMasterBo.getMarker().setTitle(title);
+                        retailerMasterBo.getMarker().setIcon(icon);
 
                         destLatLng = retailerMasterBo.getMarker().getPosition();
                     }

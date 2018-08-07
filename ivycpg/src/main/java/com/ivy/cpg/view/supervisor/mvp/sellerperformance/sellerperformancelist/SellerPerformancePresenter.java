@@ -3,6 +3,7 @@ package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.github.mikephil.charting.data.Entry;
@@ -333,10 +334,40 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
 
                     sstr.setProductivityPercent(sellerProductive2);
 
-                    if(sellerProductive1 > sellerProductive2)
-                        return sellerProductive1;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        return Integer.compare(sstr.getProductivityPercent(),fstr.getProductivityPercent());
+                    }else
+                        return Integer.valueOf(sstr.getProductivityPercent()).compareTo(fstr.getProductivityPercent());
 
-                    return sellerProductive2;
+                }
+            });
+        }else if(sortBy == 3){
+            Collections.sort(sellerBos, new Comparator<SellerBo>() {
+                @Override
+                public int compare(SellerBo fstr, SellerBo sstr) {
+
+                    int target1 = fstr.getTarget();
+                    int billed1 = fstr.getBilled();
+                    int sellerProductive1 = 0;
+                    if (target1 != 0) {
+                        sellerProductive1 = (int)((float)billed1 / (float)target1 * 100);
+                    }
+                    fstr.setProductivityPercent(sellerProductive1);
+
+                    int target2 = sstr.getTarget();
+                    int billed2 = sstr.getBilled();
+                    int sellerProductive2 = 0;
+
+                    if (target2 != 0) {
+                        sellerProductive2 = (int)((float)billed2 / (float)target2 * 100);
+                    }
+
+                    sstr.setProductivityPercent(sellerProductive2);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        return Integer.compare(fstr.getProductivityPercent(),sstr.getProductivityPercent());
+                    }else
+                        return Integer.valueOf(fstr.getProductivityPercent()).compareTo(sstr.getProductivityPercent());
 
                 }
             });
