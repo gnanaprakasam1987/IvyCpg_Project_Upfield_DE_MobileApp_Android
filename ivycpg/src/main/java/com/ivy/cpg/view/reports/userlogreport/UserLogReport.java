@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+
 /**
  * Created by abbas.a on 18/07/18.
  */
@@ -19,104 +23,119 @@ import java.util.Locale;
 public class UserLogReport {
 
     private Context mContext;
-    public UserLogReport(Context context){
-        mContext=context;
+
+    public UserLogReport(Context context) {
+        mContext = context;
     }
 
-    public ArrayList<LogReportBO> downloadLogReport() {
-        ArrayList<LogReportBO> mLogReportList = new ArrayList<>();
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
 
-            sb.append("SELECT TimeIn from AttendanceDetail ");
-            sb.append(" Where DateIn = '" + getTodayDate()+"'");
+    public Observable<ArrayList<LogReportBO>> downloadLogReport() {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<LogReportBO>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<LogReportBO>> subscribe) throws Exception {
+                ArrayList<LogReportBO> mLogReportList = new ArrayList<>();
+                DBUtil db = null;
+                try {
+                    db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    StringBuffer sb = new StringBuffer();
 
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    LogReportBO logReportBO = new LogReportBO();
-                    logReportBO.setRetailerName("Day Started");
-                    logReportBO.setInTime("");
-                    String time[] = c.getString(0).split(" ");
-                    logReportBO.setOutTime(time[1]);
-                    logReportBO.setInterval(false);
+                    sb.append("SELECT TimeIn from AttendanceDetail ");
+                    sb.append(" Where DateIn = '" + getTodayDate() + "'");
 
-                    mLogReportList.add(logReportBO);
+                    Cursor c = db.selectSQL(sb.toString());
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            LogReportBO logReportBO = new LogReportBO();
+                            logReportBO.setRetailerName("Day Started");
+                            logReportBO.setInTime("");
+                            String time[] = c.getString(0).split(" ");
+                            logReportBO.setOutTime(time[1]);
+                            logReportBO.setInterval(false);
+
+                            mLogReportList.add(logReportBO);
+                        }
+                    }
+
+                    c.close();
+
+                    // get Break details of the user
+                    sb = new StringBuffer();
+                    sb.append("select RM.ListName,AT.inTime,AT.outTime from AttendanceTimeDetails AT ");
+                    sb.append("inner join StandardListMaster RM on RM.ListId= AT.reasonid ");
+                    sb.append(" where AT.date = '" + getTodayDate() + "'");
+
+                    c = db.selectSQL(sb.toString());
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            LogReportBO logReportBO = new LogReportBO();
+                            logReportBO.setRetailerName(c.getString(0));
+                            String[] time1 = c.getString(1).split(" ");
+                            logReportBO.setInTime(time1[1]);
+                            String[] time2 = c.getString(2).split(" ");
+                            logReportBO.setOutTime(time2[1]);
+                            logReportBO.setInterval(true);
+
+                            mLogReportList.add(logReportBO);
+                        }
+                    }
+                    c.close();
+
+                    // get Retailer wise activity log of the of the user
+                    sb = new StringBuffer();
+                    sb.append("select distinct RM.RetailerName,OT.TimeIn,OT.TimeOut from OutletTimestamp OT ");
+                    sb.append("inner join RetailerMaster RM on RM.RetailerID= OT.RetailerID ");
+                    sb.append(" where OT.VisitDate = '" + getTodayDate() + "'");
+
+                    c = db.selectSQL(sb.toString());
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            LogReportBO logReportBO = new LogReportBO();
+                            logReportBO.setRetailerName(c.getString(0));
+                            String[] time1 = c.getString(1).split(" ");
+                            logReportBO.setInTime(time1[1]);
+                            String[] time2 = c.getString(2).split(" ");
+                            logReportBO.setOutTime(time2[1]);
+                            logReportBO.setInterval(false);
+
+                            mLogReportList.add(logReportBO);
+                        }
+                    }
+                    c.close();
+
+                    sb = new StringBuffer();
+                    sb.append("SELECT TimeOut from DayClose ");
+                    sb.append("where status = 1");
+
+                    c = db.selectSQL(sb.toString());
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            LogReportBO logReportBO = new LogReportBO();
+                            logReportBO.setRetailerName("Day Closed");
+                            logReportBO.setInTime("");
+                            String[] time = c.getString(0).split(" ");
+                            logReportBO.setOutTime(time[1]);
+                            logReportBO.setInterval(false);
+
+                            mLogReportList.add(logReportBO);
+                        }
+                    }
+                    c.close();
+
+                    subscribe.onNext(mLogReportList);
+                    subscribe.onComplete();
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    subscribe.onError(e);
+                    subscribe.onComplete();
+                } finally {
+                    if (db != null)
+                        db.closeDB();
                 }
             }
-
-            c.close();
-
-            // get Break details of the user
-            sb = new StringBuffer();
-            sb.append("select RM.ListName,AT.inTime,AT.outTime from AttendanceTimeDetails AT ");
-            sb.append("inner join StandardListMaster RM on RM.ListId= AT.reasonid ");
-            sb.append(" where AT.date = '" + getTodayDate()+"'");
-
-            c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    LogReportBO logReportBO = new LogReportBO();
-                    logReportBO.setRetailerName(c.getString(0));
-                    String[] time1 = c.getString(1).split(" ");
-                    logReportBO.setInTime(time1[1]);
-                    String[] time2 = c.getString(2).split(" ");
-                    logReportBO.setOutTime(time2[1]);
-                    logReportBO.setInterval(true);
-
-                    mLogReportList.add(logReportBO);
-                }
-            }
-            c.close();
-
-            // get Retailer wise activity log of the of the user
-            sb = new StringBuffer();
-            sb.append("select distinct RM.RetailerName,OT.TimeIn,OT.TimeOut from OutletTimestamp OT ");
-            sb.append("inner join RetailerMaster RM on RM.RetailerID= OT.RetailerID ");
-            sb.append(" where OT.VisitDate = '" + getTodayDate()+"'");
-
-            c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    LogReportBO logReportBO = new LogReportBO();
-                    logReportBO.setRetailerName(c.getString(0));
-                    String[] time1 = c.getString(1).split(" ");
-                    logReportBO.setInTime(time1[1]);
-                    String[] time2 = c.getString(2).split(" ");
-                    logReportBO.setOutTime(time2[1]);
-                    logReportBO.setInterval(false);
-
-                    mLogReportList.add(logReportBO);
-                }
-            }
-            c.close();
-
-            sb = new StringBuffer();
-            sb.append("SELECT TimeOut from DayClose ");
-            sb.append("where status = 1");
-
-            c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    LogReportBO logReportBO = new LogReportBO();
-                    logReportBO.setRetailerName("Day Closed");
-                    logReportBO.setInTime("");
-                    String[] time = c.getString(0).split(" ");
-                    logReportBO.setOutTime(time[1]);
-                    logReportBO.setInterval(false);
-
-                    mLogReportList.add(logReportBO);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return mLogReportList;
+        });
     }
 
     private String getTodayDate() {
