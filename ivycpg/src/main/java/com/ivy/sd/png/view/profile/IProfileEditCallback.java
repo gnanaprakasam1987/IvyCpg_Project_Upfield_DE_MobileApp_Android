@@ -10,5 +10,8 @@ import java.util.Vector;
 public interface IProfileEditCallback {
 
     void onVerifyOTPCompleted(Integer integer , String type);
-    void OnDownloadTaskCompleted(Vector<ChannelBO> channelMaster, ArrayList<LocationBO> mLocationMasterList1, ArrayList<LocationBO> mLocationMasterList2, ArrayList<LocationBO> mLocationMasterList3);
+    void OnDownloadTaskCompleted(Vector<ChannelBO> channelMaster,
+                                 ArrayList<LocationBO> mLocationMasterList1,
+                                 ArrayList<LocationBO> mLocationMasterList2,
+                                 ArrayList<LocationBO> mLocationMasterList3);
 }

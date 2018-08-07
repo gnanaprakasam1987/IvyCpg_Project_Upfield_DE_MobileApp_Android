@@ -1,9 +1,11 @@
 package com.ivy.ui.profile.edit.presenter;
 
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
 
+import android.content.res.Resources;
 import android.util.SparseArray;
 
 
@@ -19,7 +21,6 @@ import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -37,9 +38,6 @@ import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.Profile;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.rx.SchedulerProvider;
-
-
-import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,6 +115,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private String imageFileName;
     private boolean IS_UPPERCASE_LETTER;
     private int locid = 0, loc2id = 0;
+    private boolean validate = true;
+    private boolean isMobileNoVerfied = true, isEmailVerfied = true;
+    //byfault both mobile and email false. once otp verify will be become true. as of now i have used true.
 
 
     @Inject
@@ -224,7 +225,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
                     @Override
                     public void onError(Throwable e) {
-                        System.out.println("ProfileEditPresenterImp.." + e.getMessage());
+                       Commons.print(e.getMessage());
                     }
 
                     @Override
@@ -288,7 +289,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
                     @Override
                     public void onError(Throwable e) {
-                        System.out.println("ProfileEditPresenterImp.." + e.getMessage());
+                       Commons.print(e.getMessage());
                     }
 
                     @Override
@@ -619,6 +620,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
 
+    @SuppressLint("UseSparseArrays")
     @Override
     public HashMap<Integer, ArrayList<Integer>> getAttributeListByLocationId() {
         if (mAttributeListByLocationID == null) {
@@ -695,7 +697,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         return mChannelAttributeList;
     }
 
-   private boolean validate = true;
+
     @Override
     public boolean doValidateProdileEdit() {
 
@@ -703,7 +705,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
             String configCode = profileConfig.get(i).getConfigCode();
 
-            if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CHANNEL) && profileConfig.get(i).getModule_Order() == 1) {
+            if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CHANNEL)
+                    && profileConfig.get(i).getModule_Order() == 1) {
                 try {
                     if (getIvyView().getChennalSelectedItem().contains("select")) {
                         getIvyView().setChennalFocus();
@@ -714,7 +717,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.SUBCHANNEL) && profileConfig.get(i).getModule_Order() == 1) {
+            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.SUBCHANNEL)
+                    && profileConfig.get(i).getModule_Order() == 1) {
                 try {
                     if (getIvyView().getSubChennalSelectedItem().contains("select")) {
                         getIvyView().setSubChennalFocus();
@@ -725,7 +729,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CONTACT_NUMBER)
+            }
+            else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CONTACT_NUMBER)
                     && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
                 try {
                     if (getIvyView().getDynamicEditTextValues(i).length() == 0 ||
@@ -739,13 +744,155 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }else if (configCode.equals(ProfileConstant.ATTRIBUTE) && profileConfig.get(i).getModule_Order() == 1) {
+            }
+            else if (configCode.equals(ProfileConstant.ATTRIBUTE)
+                    && profileConfig.get(i).getModule_Order() == 1) {
 
                 validateAttribute();
+
+            }
+            else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.EMAIL)
+                    && profileConfig.get(i).getModule_Order() == 1
+                    && getIvyView().getDynamicEditTextValues(i).length() != 0) {
+                try {
+                    if (!AppUtils.isValidEmail(getIvyView().getDynamicEditTextValues(i))) {
+                        getIvyView().setDynamicEditTextFocus(i);
+                        getIvyView().showMessage(R.string.enter_valid_email_id);
+                        validate = false;
+                        break;
+                    }
+                    if (!isEmailVerfied) {
+                        getIvyView().setDynamicEditTextFocus(i);
+                        validate = false;
+                        getIvyView().showMessage(R.string.profile_edit_verify_email_id);
+                        break;
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+            else if (profileConfig.get(i).getConfigCode()
+                    .equalsIgnoreCase(ProfileConstant.MOBILE)
+                    && profileConfig.get(i).getModule_Order() == 1
+                    && getIvyView().getDynamicEditTextValues(i).length() != 0) {
+                try {
+                    if (!isMobileNoVerfied) {
+                        getIvyView().setDynamicEditTextFocus(i);
+                        getIvyView().showMessage(R.string.profile_edit_verify_mobile_no);
+                        validate = false;
+                        break;
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+            else if (profileConfig.get(i).getConfigCode()
+                    .equalsIgnoreCase(ProfileConstant.PAN_NUMBER)
+                    && profileConfig.get(i).getModule_Order() == 1) {
+                try {
+                    int length = getIvyView().getDynamicEditTextValues(i).length();
+                    if (length < profileConfig.get(i).getMaxLengthNo() ||
+                            !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
+                        if (length > 0 && length < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            getIvyView().setDynamicEditTextFocus(i);
+                            getIvyView().showMessage(profileConfig.get(i).getMenuName()+" Length Must Be"+profileConfig.get(i).getMaxLengthNo());
+                            break;
+                        } else if (length > 0 && !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
+                            validate = false;
+                            getIvyView().setDynamicEditTextFocus(i);
+                            String errorMessage=profileConfig.get(i).getMenuName();
+                            getIvyView().profileEditShowMessage(R.string.enter_valid,errorMessage);
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+            else if (profileConfig.get(i).getConfigCode()
+                    .equalsIgnoreCase(ProfileConstant.GSTN)
+                    && profileConfig.get(i).getModule_Order() == 1) {
+                int length = getIvyView().getDynamicEditTextValues(i).length();
+                try {
+                    if (length < profileConfig.get(i).getMaxLengthNo() ||
+                            !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex()) ||
+                            !isValidGSTINWithPAN(getIvyView().getDynamicEditTextValues(i))) {
+
+                        if (length > 0 && length < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            getIvyView().showMessage(profileConfig.get(i).getMenuName()
+                                    + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+                            break;
+                        } else if (length > 0 && !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i)
+                                , profileConfig.get(i).getRegex())) {
+                            validate = false;
+                            getIvyView().setDynamicEditTextFocus(i);
+                            String errorMessage=profileConfig.get(i).getMenuName();
+                            getIvyView().profileEditShowMessage(R.string.enter_valid,errorMessage);
+
+                            break;
+                        } else if (length > 0 && !isValidGSTINWithPAN(getIvyView().getDynamicEditTextValues(i))) {
+                            validate = false;
+                            getIvyView().setDynamicEditTextFocus(i);
+                            String errorMessage=profileConfig.get(i).getMenuName();
+                            getIvyView().profileEditShowMessage(R.string.enter_valid,errorMessage);
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+            else if (profileConfig.get(i).getModule_Order() == 1) {
+                try {
+                    int length = getIvyView().getDynamicEditTextValues(i).length();
+                    if (length < profileConfig.get(i).getMaxLengthNo() ||
+                            !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
+                        if (length > 0 && getIvyView().getDynamicEditTextValues(i).length() < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            getIvyView().setDynamicEditTextFocus(i);
+
+                            getIvyView().showMessage(profileConfig.get(i).getMenuName() + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+
+                            break;
+                        } else if (length > 0 && !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
+                            validate = false;
+                            getIvyView().setDynamicEditTextFocus(i);
+                            String errorMessage=profileConfig.get(i).getMenuName();
+                            getIvyView().profileEditShowMessage(R.string.enter_valid,errorMessage);
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
             }
         }
         return validate;
     }
+
+
+    private boolean isValidGSTINWithPAN(CharSequence target) {
+
+        for (int index = 0; index < profileConfig.size(); index++) {
+            if (profileConfig.get(index).getConfigCode()
+                    .equalsIgnoreCase(ProfileConstant.PAN_NUMBER)) {
+
+                String panNumber = getIvyView().getDynamicEditTextValues(index);
+                if (panNumber.length() > 0) {
+                    if (target.subSequence(2, target.length() - 3).equals(panNumber))
+                        return true;
+                    else
+                        return false;
+                } else
+                    return true;
+            }
+        }
+
+        return true;
+    }
+
 
     private void validateAttribute(){
 
@@ -762,7 +909,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                             selectedAttributeLevel.add(tempBO);
                         } else {
                             isAdded = false;
-                            getIvyView().showMessage(R.string.attribute + " " + attributeBO.getAttrName() + " is Mandatory");
+                            String errorMessage=attributeBO.getAttrName() + " is Mandatory";
+                            getIvyView().profileEditShowMessage(R.string.attribute ,errorMessage);
                             break;
                         }
                     } else {
@@ -783,7 +931,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                             selectedAttributeLevel.add(tempBO);
                         } else {
                             isAdded = false;
-                            getIvyView().showMessage(R.string.attribute + " " + attributeBo.getAttrName() + " is Mandatory");
+                            String errorMessage=attributeBo.getAttrName() + " is Mandatory";
+                            getIvyView().profileEditShowMessage(R.string.attribute ,errorMessage);
                             break;
                         }
                     } else {
@@ -802,6 +951,36 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
     }
 
+
+    @Override
+    public void verifyOTP(final String mType,final String mValue) {
+
+        getCompositeDisposable().add(mProfileDataManager.generateOtpUrl()
+        .subscribeOn(getSchedulerProvider().io())
+        .observeOn(getSchedulerProvider().ui())
+        .subscribe(new Consumer<String>() {
+            @Override
+            public void accept(String s) throws Exception {
+
+               /* if(!AppUtils.isEmptyString(s)){
+                        *//*switch (mType) {
+                            case "MOBILE":
+                                if (mValue != null && !mValue.isEmpty() && mValue.length() == 10)
+                                   // verifyOtpAsyncTask(mValue, mType); //Need to do later
+                                    break;
+                            case "EMAIL":
+                                if (AppUtils.isValidEmail(mValue))
+                                   // verifyOtpAsyncTask(mValue, mType); //Need to do later
+                                else
+                                    getIvyView().showMessage(R.string.invalid_email_address);
+                                break;
+                        }*//*
+                }else
+                    getIvyView().showMessage(R.string.otp_download_url_empty);*/
+            }
+        }));
+
+    }
 
     @Override
     public void imageOnClickListener() {
@@ -856,7 +1035,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                            }, new Consumer<Throwable>() {
                                @Override
                                public void accept(Throwable throwable) throws Exception {
-                                   System.out.println("ProfileEditPrenterImp" + throwable.getMessage());
+                                   Commons.print(throwable.getMessage());
                                }
                            }
                 ));
@@ -1365,7 +1544,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     private void prepareLatLong() {
         String textLat = retailerMasterBO.getLatitude() + "";
-        @NonNls String MenuName = "LatLong";
+         String MenuName = "LatLong";
         if (mPreviousProfileChanges.get(configCode) != null)
             if (!mPreviousProfileChanges.get(configCode).equals(textLat))
                 textLat = mPreviousProfileChanges.get(configCode);
@@ -1670,7 +1849,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     /*comparing two values with equalsIgnoreCase*/
-    private boolean comparConfigerCode(String configCode, @NonNls String configCodeFromDB) {
+    private boolean comparConfigerCode(String configCode,  String configCodeFromDB) {
         return configCode.equalsIgnoreCase(configCodeFromDB);
     }
 

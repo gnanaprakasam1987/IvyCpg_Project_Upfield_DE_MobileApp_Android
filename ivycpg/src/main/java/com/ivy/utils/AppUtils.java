@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.content.FileProvider;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
@@ -29,12 +30,26 @@ import com.ivy.sd.png.util.Commons;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.regex.Pattern;
 
 public class AppUtils {
 
 
     private AppUtils() {
 
+    }
+
+    public static boolean isValidRegx(CharSequence target, String regx) {
+
+        if (regx.equals("")) {
+            return true;
+        }
+        String value = regx.replaceAll("\\<.*?\\>", "");
+        return !TextUtils.isEmpty(target) && Pattern.compile(value).matcher(target).matches();
+    }
+
+    public static boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     public static  String latlongImageFileName;

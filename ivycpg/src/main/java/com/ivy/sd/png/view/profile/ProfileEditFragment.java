@@ -3381,6 +3381,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         }
     }
 
+
     @Override
     public void generateOTP() {
         verifyOtpAsyncTask("", "");
@@ -3394,7 +3395,6 @@ public class ProfileEditFragment extends IvyBaseFragment
             if (type.equals("EMAIL"))
                 isEmailVerfied = true;
         }
-
     }
 
     @SuppressLint("ValidFragment")
@@ -4128,10 +4128,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                 String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
                 if (errorMsg != null) {
                     Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), getActivity().getResources().
-                            getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
-                }
+                } else
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -4155,6 +4153,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         setUpDialog();
         new ProfileEditDownloadTask(bmodel, this).execute();
     }
+
 
     private void verifyOtpAsyncTask(String value, String type) {
         setUpDialog();
@@ -4193,6 +4192,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             Toast.makeText(getActivity(), getResources().getString(R.string.otp_download_url_empty), Toast.LENGTH_LONG).show();
     }
 
+
     private void takePhoto(RetailerMasterBO retailerMasterBO, boolean isForLatLong) {
         if (bmodel.isExternalStorageAvailable()) {
             if (!isForLatLong) {
@@ -4214,6 +4214,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     R.string.unable_to_access_the_sdcard), Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void setProfileImage() {
         String[] imgPaths = retailerObj.getProfileImagePath().split("/");
@@ -4420,11 +4421,11 @@ public class ProfileEditFragment extends IvyBaseFragment
                         && profileConfig.get(i).getModule_Order() == 1
                         && editText[i].getText().toString().trim().length() != 0) {
                     try {
+
                         if (!isValidEmail(editText[i].getText().toString())) {
                             editText[i].requestFocus();
                             validate = false;
-                            Toast.makeText(getActivity(),
-                                    getResources().getString(R.string.enter_valid_email_id), Toast.LENGTH_SHORT)
+                            Toast.makeText(getActivity(), getResources().getString(R.string.enter_valid_email_id), Toast.LENGTH_SHORT)
                                     .show();
                             break;
                         }
@@ -4525,13 +4526,10 @@ public class ProfileEditFragment extends IvyBaseFragment
                         Commons.printException(e);
                     }
                 } else if (profileConfig.get(i).getModule_Order() == 1) {
-
                     try {
                         if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
                                 !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
-
                             int length = editText[i].getText().toString().trim().length();
-
                             if (length > 0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
                                 validate = false;
                                 editText[i].requestFocus();
@@ -4548,13 +4546,10 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 break;
                             }
                         }
-
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
                 }
-
-
             }
 
         } catch (Exception e) {

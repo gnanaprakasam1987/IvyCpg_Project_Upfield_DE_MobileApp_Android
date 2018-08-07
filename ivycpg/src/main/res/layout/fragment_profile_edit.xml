@@ -39,7 +39,6 @@
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/profile_history_20dp"
             android:layout_marginTop="@dimen/profile_history_20dp"
-            android:onClick="onClick"
             android:text="@string/save" />
 
     </LinearLayout>

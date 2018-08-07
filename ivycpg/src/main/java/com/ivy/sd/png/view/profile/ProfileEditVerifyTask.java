@@ -23,7 +23,7 @@ public class ProfileEditVerifyTask extends AsyncTask<Integer,Integer,Integer> {
     private String type;
     private int downloadStatus = 0;
 
-    public ProfileEditVerifyTask(BusinessModel bmodel, String value, String type,IProfileEditCallback taskCompletedListener) {
+     ProfileEditVerifyTask(BusinessModel bmodel, String value, String type,IProfileEditCallback taskCompletedListener) {
         this.bmodel = bmodel;
         this.value = value;
         this.type = type;
@@ -50,22 +50,15 @@ public class ProfileEditVerifyTask extends AsyncTask<Integer,Integer,Integer> {
 
             @NonNls JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
 
-            jsonFormatter.addParameter("UserId", bmodel.userMasterHelper
-                    .getUserMasterBO().getUserid());
-            jsonFormatter.addParameter("VersionCode",
-                    bmodel.getApplicationVersionNumber());
+            jsonFormatter.addParameter("UserId", bmodel.userMasterHelper.getUserMasterBO().getUserid());
+            jsonFormatter.addParameter("VersionCode", bmodel.getApplicationVersionNumber());
             jsonFormatter.addParameter("LoginId", bmodel.userNameTemp.trim());
-            jsonFormatter.addParameter("MobileDateTime",
-                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-            jsonFormatter.addParameter("MobileUTCDateTime",
-                    Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-            jsonFormatter.addParameter("DeviceId",
-                    bmodel.activationHelper.getIMEINumber());
-            jsonFormatter.addParameter("VersionCode",
-                    bmodel.getApplicationVersionNumber());
+            jsonFormatter.addParameter("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonFormatter.addParameter("MobileUTCDateTime", Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+            jsonFormatter.addParameter("DeviceId", bmodel.activationHelper.getIMEINumber());
+            jsonFormatter.addParameter("VersionCode", bmodel.getApplicationVersionNumber());
             jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
-            jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
-                    .getUserMasterBO().getOrganizationId());
+            jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper.getUserMasterBO().getOrganizationId());
 
             String appendUrl = bmodel.synchronizationHelper.generateOtpUrl();
 

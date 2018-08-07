@@ -51,7 +51,7 @@ public interface IProfileEditContract {
 
         void navigateToProfileScreen();
 
-        void showMessage(String msg);
+        void profileEditShowMessage(int resouceId,String msg);
 
         void imageViewOnClick(int userId ,String path, boolean hasProfileImagePath);
 
@@ -84,15 +84,16 @@ public interface IProfileEditContract {
 
         void createFoodLicenceExpDate(String mName,int mNumber,String data);
 
-        //Validation start from here
-
         String getChennalSelectedItem();
+
         void setChennalFocus();
 
         String getSubChennalSelectedItem();
+
         void setSubChennalFocus();
 
         String getDynamicEditTextValues(int mNumber);
+
         void setDynamicEditTextFocus(int mNumber);
 
         HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList();
@@ -171,6 +172,8 @@ public interface IProfileEditContract {
         ArrayList<Integer> getChannelAttributeList();
 
         boolean doValidateProdileEdit();
+
+        void verifyOTP(String mType,String mValue);
 
     }
 }

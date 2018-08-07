@@ -201,13 +201,36 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
 
     @Override
+    public Single<String> generateOtpUrl() {
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                String downloadurl = "";
+                try {
+                    dbUtil.createDataBase();
+                    Cursor c = dbUtil.selectSQL("select url from urldownloadmaster where mastername='OTP_GENERATION'");
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext()) {
+                                downloadurl = c.getString(0);
+                            }
+                        }
+                    }
+                }catch (Exception e){
+                    Commons.printException(e);
+                }
+                return downloadurl;
+            }
+        });
+    }
+
+    @Override
     public Single<Boolean> checkProfileImagePath(final RetailerMasterBO ret) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-
                 Cursor c = dbUtil
-                        .selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" + ret.getRetailerID());
+                        .selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid="+ ret.getRetailerID());
                 if (c != null) {
                     if (c.getCount() > 0) {
                         if (c.moveToNext()) {

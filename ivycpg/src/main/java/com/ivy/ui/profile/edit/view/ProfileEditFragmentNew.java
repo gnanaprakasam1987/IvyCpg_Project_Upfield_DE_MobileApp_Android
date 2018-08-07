@@ -67,13 +67,12 @@ import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
-import com.ivy.sd.png.view.profile.ProfileEditFragment;
+import com.ivy.sd.png.view.RetailerOTPDialog;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
@@ -100,7 +99,7 @@ import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ProfileEditFragmentNew extends BaseFragment implements IProfileEditContract.ProfileEditView {
+public class ProfileEditFragmentNew extends BaseFragment implements IProfileEditContract.ProfileEditView ,RetailerOTPDialog.OTPListener {
 
     @BindView(R.id.profile_edit_scrollview)
     ScrollView mScrollView;
@@ -115,7 +114,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private LinearLayout.LayoutParams paramsAttrib, paramsAttribSpinner;
     private LinearLayout.LayoutParams weight0wrap;
     private LinearLayout.LayoutParams weight4;
-    private  LinearLayout.LayoutParams params6;
+    private LinearLayout.LayoutParams params6;
 
 
     private TextView latlongtextview;
@@ -485,6 +484,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         editText[mNumber].requestFocus();
     }
 
+    @SuppressLint("UseSparseArrays")
     @Override
     public HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList() {
         if(selectedAttribList!=null){
@@ -557,8 +557,10 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
 
     @Override
-    public void showMessage(String msg) {
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+    public void profileEditShowMessage(int resouceId,String msg) {
+
+        Toast.makeText(getActivity(),
+                getActivity().getResources().getString(R.string.attribute) + " " + msg, Toast.LENGTH_LONG).show();
     }
 
 
@@ -819,7 +821,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             verifyBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //verifyOTP("EMAIL", editText[mNumber].getText().toString());
+                    profileEditPresenter.verifyOTP("EMAIL", editText[mNumber].getText().toString());
                 }
             });
             emailLayout.addView(verifyBtn, verifyButtonParams);
@@ -856,7 +858,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 verifyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //verifyOTP("MOBILE", editText[mNumber].getText().toString());
+                        profileEditPresenter.verifyOTP("MOBILE", editText[mNumber].getText().toString());
                     }
                 });
 
@@ -1984,6 +1986,17 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 parentLayout.addView(layout);
             }
         }
+    }
+
+
+    @Override
+    public void generateOTP() {
+
+    }
+
+    @Override
+    public void dismissListener(String type, boolean isVerfied) {
+
     }
 
 
