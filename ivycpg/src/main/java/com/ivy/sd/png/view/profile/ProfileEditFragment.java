@@ -3591,14 +3591,12 @@ public class ProfileEditFragment extends IvyBaseFragment
         try {
             int size = profileConfig.size();
             for (int i = 0; i < size; i++) {
-                @NonNls String configCode = profileConfig.get(i).getConfigCode();
+                String configCode = profileConfig.get(i).getConfigCode();
                 if (configCode.equals(PROFILE_02) && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                bmodel.validateInput(editText[i].getText().toString()))
-                        );
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(bmodel.validateInput(editText[i].getText().toString())));
                     }
                 } else if (configCode.equals(PROFILE_03) && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
@@ -4004,7 +4002,15 @@ public class ProfileEditFragment extends IvyBaseFragment
     }
 
     class SaveEditAsyncTask extends AsyncTask<String, Integer, Boolean> {
+
         private ProgressDialog progressDialogue;
+
+        protected void onPreExecute() {
+            progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.saving),
+                    true, false);
+        }
+
 
         @Override
         protected Boolean doInBackground(String... arg0) {
@@ -4022,14 +4028,6 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         }
 
-        protected void onPreExecute() {
-            progressDialogue = ProgressDialog.show(getActivity(),
-                    DataMembers.SD, getResources().getString(R.string.saving),
-                    true, false);
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-        }
 
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground

@@ -697,8 +697,26 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         return mChannelAttributeList;
     }
 
-
     @Override
+    public void saveUpdatedProfileEdit() {
+        try {
+            if (doValidateProdileEdit()) {
+                if (configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
+                    if ((lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("")
+                            || SDUtil.convertToDouble(longitude) == 0)
+                            || (configurationMasterHelper.retailerLocAccuracyLvl != 0
+                            && LocationUtil.accuracy > configurationMasterHelper.retailerLocAccuracyLvl)) {
+                        getIvyView().showMessage(R.string.location_not_captured);
+                    }
+                }
+                //new SaveEditAsyncTask().execute();
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+
     public boolean doValidateProdileEdit() {
 
         for (int i = 0; i < profileConfig.size(); i++) {

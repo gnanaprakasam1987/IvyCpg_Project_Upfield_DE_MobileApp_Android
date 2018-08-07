@@ -96,6 +96,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -246,6 +247,11 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         if (flExpDateTextView != null)
             flExpDateTextView = null;
         super.onDestroy();
+    }
+
+    @OnClick(R.id.profile_edit_save)
+    public void seveUpdateProfile(){
+        profileEditPresenter.saveUpdatedProfileEdit();
     }
 
     @Override
@@ -549,16 +555,13 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     }
 
-
     @Override
     public void navigateToProfileScreen() {
 
     }
 
-
     @Override
     public void profileEditShowMessage(int resouceId,String msg) {
-
         Toast.makeText(getActivity(),
                 getActivity().getResources().getString(R.string.attribute) + " " + msg, Toast.LENGTH_LONG).show();
     }
@@ -671,7 +674,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         }
 
     }
-
 
     @Override
     public void isLatLongCameravailable(boolean b) {

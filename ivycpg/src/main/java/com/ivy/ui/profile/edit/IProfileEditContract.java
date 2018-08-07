@@ -171,7 +171,7 @@ public interface IProfileEditContract {
 
         ArrayList<Integer> getChannelAttributeList();
 
-        boolean doValidateProdileEdit();
+        void saveUpdatedProfileEdit();
 
         void verifyOTP(String mType,String mValue);
 
