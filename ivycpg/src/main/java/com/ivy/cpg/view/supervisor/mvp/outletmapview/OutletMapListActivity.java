@@ -63,9 +63,9 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
     private int sellerid;
     private String selectedDate;
 
-    private FrameLayout drawer;
     private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
+
+    @SuppressLint("UseSparseArrays")
     HashMap<Integer, Integer> mSelectedIdByLevelId = new HashMap<>();
 
     @Override
@@ -111,8 +111,8 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
         tvInfoVisitTime = mymarkerview.findViewById(R.id.tv_visit_time);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer = findViewById(R.id.right_drawer);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        FrameLayout drawer = findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
@@ -159,7 +159,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
                 mDrawerLayout, /* DrawerLayout object */
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */

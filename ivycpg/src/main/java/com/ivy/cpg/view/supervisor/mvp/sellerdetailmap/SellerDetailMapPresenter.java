@@ -429,6 +429,24 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         return new ArrayList<>(retailerVisitDetailsByRId.values());
     }
 
+    String convertPlaneDateToGlobal(String planeDate){
+        try {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
+            Date date = sdf.parse(planeDate);
+
+            sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            planeDate =sdf.format(date);
+
+            return planeDate;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return planeDate;
+    }
+
     ArrayList<RetailerBo> getVisitedRetailers(){
 
         ArrayList<RetailerBo> retailerBos = new ArrayList<>();

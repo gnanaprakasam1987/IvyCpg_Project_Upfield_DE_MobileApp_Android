@@ -423,7 +423,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
     }
 
-    public String convertPlaneDateToGlobal(String planeDate){
+    String convertPlaneDateToGlobal(String planeDate){
         try {
 
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);

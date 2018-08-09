@@ -8,8 +8,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -47,6 +45,7 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,7 +81,6 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     private int sellerCountFirestore = 0;
     private boolean isZoomed = false;
     private int totalOutletCount = 0;
-    private TextView messagetv;
     private BusinessModel bmodel;
     private String selectedDate;
 
@@ -397,7 +395,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         new DownloadSupRetailMaster(selectedDate).execute();
     }
 
-    public boolean checkSelectedDateExist(String date){
+    boolean checkSelectedDateExist(String date){
         boolean isExist = false;
         DBUtil db = null;
         try {
@@ -678,7 +676,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         @Override
         protected Boolean doInBackground(String... params) {
 
-            return isOnline() && prepareData(selectedDate);
+            return NetworkUtils.isNetworkConnected(context) && prepareHttpData(selectedDate);
         }
 
         @Override
@@ -698,7 +696,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     }
 
-    private boolean prepareData(String selectedDate) {
+    private boolean prepareHttpData(String selectedDate) {
 
         boolean isSuccess = false;
         try {
@@ -816,9 +814,9 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         try {
             View view = View.inflate(context, R.layout.custom_alert_dialog, null);
 
-            TextView title = (TextView) view.findViewById(R.id.title);
+            TextView title = view.findViewById(R.id.title);
             title.setText(DataMembers.SD);
-            messagetv = (TextView) view.findViewById(R.id.text);
+            TextView messagetv = view.findViewById(R.id.text);
             messagetv.setText(message);
 
             builder.setView(view);
@@ -829,22 +827,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         }
     }
 
-    private boolean isOnline() {
-
-        try {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                return true;
-            }
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-        return false;
-
-    }
-
-    private String convertGlobalDateToPlane(String globalDate){
+    String convertGlobalDateToPlane(String globalDate){
         try {
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
@@ -861,7 +844,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         return globalDate;
     }
 
-    private String convertPlaneDateToGlobal(String planeDate){
+    String convertPlaneDateToGlobal(String planeDate){
         try {
 
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
@@ -897,7 +880,20 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         }
     }
 
-    private boolean isToday(){
-        return convertPlaneDateToGlobal(selectedDate).equals(SDUtil.now(SDUtil.DATE_GLOBAL));
+    boolean isToday(){
+        return convertPlaneDateToGlobal(getSelectedDate()).equals(SDUtil.now(SDUtil.DATE_GLOBAL));
     }
+
+    boolean isSameDateSelected(String selectedDate){
+        boolean isSameDate = false;
+        try {
+            if (getSelectedDate().equals(convertGlobalDateToPlane(selectedDate)))
+                isSameDate = true;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+        return isSameDate;
+    }
+
 }

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,6 +52,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     private ArrayList<String> chartDaysStr = new ArrayList<>();
     private ArrayList<Entry> sellerCoveredEntry = new ArrayList<>();
     private ArrayList<Entry> sellerBilledEntry = new ArrayList<>();
+    private ArrayList<BarEntry> barChartEntry = new ArrayList<>();
 
     private LinkedHashMap<Integer,SellerBo> sellerInfoHasMap = new LinkedHashMap<>();
 
@@ -291,7 +293,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     }
 
     //0 : A-Z --- 1 : Z-A ---- 2 : Performance
-    public void sortList(int sortBy,ArrayList<SellerBo> sellerBos){
+    void sortList(int sortBy,ArrayList<SellerBo> sellerBos){
 
         System.out.println("sortBy = " + sortBy);
 
@@ -375,6 +377,10 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
 
         sellerPerformanceView.notifyListChange();
 
+    }
+
+    ArrayList<BarEntry> barChartData(){
+        return barChartEntry;
     }
 
     public void removeFirestoreListener() {

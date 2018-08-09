@@ -17,6 +17,8 @@ public interface SellerPerformanceDetailContractor {
 
         void updateSellerTabViewInfo(SellerBo sellerBo);
 
+        void updateSellerCallInfo(SellerBo sellerBo);
+
         void initializeMethods();
     }
 
@@ -45,6 +47,8 @@ public interface SellerPerformanceDetailContractor {
         String convertMillisToTime(Long time);
 
         String calculateDuration(long startTime,long endTime);
+
+        void removeFirestoreListener();
 
     }
 }

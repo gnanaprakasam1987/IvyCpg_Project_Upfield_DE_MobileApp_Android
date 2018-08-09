@@ -26,12 +26,10 @@ import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static android.graphics.Color.rgb;
 
@@ -49,6 +47,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
     private int sellerId=0;
     private String selectedDate="";
+    private CombinedChart mChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         sellerPerformancePresenter.setDetailView(this,SellerPerformanceDetailActivity.this);
 
-        sellerPerformancePresenter.checkDownloadSelerKPIData(sellerId,convertPlaneDateToGlobal(selectedDate));
+        sellerPerformancePresenter.checkDownloadSelerKPIData(sellerId,sellerPerformancePresenter.convertPlaneDateToGlobal(selectedDate));
 
         findViewById(R.id.bottom_outlet_btn_layout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +144,10 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         durationTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
         productiveTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
 
+        mChart = findViewById(R.id.combined_chart);
+        mChart.setNoDataText("Loading...");
+        mChart.setNoDataTextColor(ContextCompat.getColor(this,R.color.WHITE));
+
         tabLayout = findViewById(R.id.tab_layout);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -153,10 +156,10 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
                 switch (tab.getPosition()) {
                     case 0:
-                        sellerPerformancePresenter.downloadSellerKPI(sellerId,convertPlaneDateToGlobal(selectedDate),false);
+                        sellerPerformancePresenter.downloadSellerKPI(sellerId,sellerPerformancePresenter.convertPlaneDateToGlobal(selectedDate),false);
                         break;
                     case 1:
-                        sellerPerformancePresenter.downloadSellerKPI(sellerId,convertPlaneDateToGlobal(selectedDate),true);
+                        sellerPerformancePresenter.downloadSellerKPI(sellerId,sellerPerformancePresenter.convertPlaneDateToGlobal(selectedDate),true);
                         break;
                 }
             }
@@ -175,13 +178,13 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
     public void initializeMethods(){
 
-        sellerPerformancePresenter.downloadSellerData(sellerId,convertPlaneDateToGlobal(selectedDate));
+        sellerPerformancePresenter.downloadSellerData(sellerId,sellerPerformancePresenter.convertPlaneDateToGlobal(selectedDate));
 
         sellerPerformancePresenter.setSellerActivityListener(sellerId,selectedDate);
 
-        sellerPerformancePresenter.downloadSellerKPI(sellerId,convertPlaneDateToGlobal(selectedDate),false);
+        sellerPerformancePresenter.downloadSellerKPI(sellerId,sellerPerformancePresenter.convertPlaneDateToGlobal(selectedDate),false);
 
-        sellerPerformancePresenter.downloadSellerOutletAWS(sellerId,convertPlaneDateToGlobal(selectedDate));
+        sellerPerformancePresenter.downloadSellerOutletAWS(sellerId,sellerPerformancePresenter.convertPlaneDateToGlobal(selectedDate));
 
         sellerPerformancePresenter.setSellerActivityDetailListener(sellerId,selectedDate);
     }
@@ -279,17 +282,28 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
 
         plannedValueTv.setText(String.valueOf(sellerBo.getTarget()));
-        deviatedTv.setText("0");
-        durationTv.setText("0");
         productiveTv.setText(String.valueOf(sellerBo.getBilled()));
     }
 
+    @Override
+    public void updateSellerCallInfo(SellerBo sellerBo){
+        deviatedTv.setText(String.valueOf(sellerBo.getDeviationCount()));
+
+        String hms = sellerPerformancePresenter.convertSecondsToHMmSs(sellerBo.getTotalCallDuration());
+
+        durationTv.setText(hms);
+    }
+
     private void combinedChart(){
-        CombinedChart mChart = findViewById(R.id.combined_chart);
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
         mChart.setDrawBarShadow(false);
         mChart.setHighlightFullBarEnabled(false);
+
+        if (sellerPerformancePresenter.getChartDaysStr().size() == 0)
+            mChart.setNoDataText("No chart data available");
+
+        mChart.setNoDataTextColor(ContextCompat.getColor(this,R.color.WHITE));
 
         // draw bars behind lines
         mChart.setDrawOrder(new CombinedChart.DrawOrder[]{
@@ -303,6 +317,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
+        l.setTextSize(getResources().getDimension(R.dimen._10sdp));
         l.setDrawInside(false);
 
         YAxis rightAxis = mChart.getAxisRight();
@@ -359,13 +374,12 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         LineDataSet set = new LineDataSet(sellerPerformancePresenter.getSellerCoveredEntry(), "Covered");
         set.setColor((ContextCompat.getColor(this,R.color.colorPrimary)));
-        set.setLineWidth(2.5f);
-        set.setCircleColor(rgb(240, 238, 70));
-        set.setCircleRadius(5f);
-        set.setFillColor(rgb(240, 238, 70));
+        set.setLineWidth(getResources().getDimension(R.dimen._3sdp));
+        set.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
+        set.setCircleRadius(getResources().getDimension(R.dimen._3sdp));
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(true);
-        set.setValueTextSize(10f);
+        set.setValueTextSize(getResources().getDimension(R.dimen._10sdp));
         set.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -376,14 +390,13 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         set.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
 
         LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
-        set1.setColor((ContextCompat.getColor(this,R.color.GREEN)));
-        set1.setLineWidth(2.5f);
-        set1.setCircleColor(rgb(240, 238, 70));
-        set1.setCircleRadius(5f);
-        set1.setFillColor(rgb(240, 238, 70));
+        set1.setColor(ContextCompat.getColor(this,R.color.GREEN));
+        set1.setLineWidth(getResources().getDimension(R.dimen._3sdp));
+        set1.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
+        set1.setCircleRadius(getResources().getDimension(R.dimen._3sdp));
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setDrawValues(true);
-        set1.setValueTextSize(10f);
+        set1.setValueTextSize(getResources().getDimension(R.dimen._10sdp));
         set1.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -402,21 +415,19 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         return d;
     }
 
-    private String convertPlaneDateToGlobal(String planeDate){
-        try {
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
-            SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
-            Date date = sdf.parse(planeDate);
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
-            sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
-            planeDate =sdf.format(date);
-
-            return planeDate;
-
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-
-        return planeDate;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sellerPerformancePresenter.removeFirestoreListener();
     }
 }

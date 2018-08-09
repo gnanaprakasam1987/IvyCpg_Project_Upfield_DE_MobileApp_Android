@@ -28,6 +28,9 @@ import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -61,6 +64,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
     private FloatingActionButton sortView;
     private BottomSheetBehavior bottomSheetBehavior;
     private RadioGroup sortRadioGroup;
+    private CombinedChart mChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,10 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
                 R.anim.bottom_layout_slideup);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+        mChart = findViewById(R.id.combined_chart);
+        mChart.setNoDataText("Loading...");
+        mChart.setNoDataTextColor(ContextCompat.getColor(this,R.color.WHITE));
 
         sortRadioGroup = findViewById(R.id.sort_radio_group);
 
@@ -258,11 +266,14 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
     }
 
     private void combinedChart(){
-        CombinedChart mChart = findViewById(R.id.combined_chart);
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
         mChart.setDrawBarShadow(false);
         mChart.setHighlightFullBarEnabled(false);
+        mChart.setNoDataText("Loading...");
+
+        if (sellerPerformancePresenter.getChartDaysStr().size() == 0)
+            mChart.setNoDataText("No chart data available");
 
         // draw bars behind lines
         mChart.setDrawOrder(new CombinedChart.DrawOrder[]{
@@ -271,6 +282,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
         Legend l = mChart.getLegend();
         l.setWordWrapEnabled(true);
+        l.setTextSize(getResources().getDimension(R.dimen._10sdp));
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
@@ -330,13 +342,12 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
         LineDataSet set = new LineDataSet(sellerPerformancePresenter.getSellerCoveredEntry(), "Covered");
         set.setColor((ContextCompat.getColor(this,R.color.colorPrimary)));
-        set.setLineWidth(2.5f);
-        set.setCircleColor(rgb(240, 238, 70));
-        set.setCircleRadius(5f);
-        set.setFillColor(rgb(240, 238, 70));
+        set.setLineWidth(getResources().getDimension(R.dimen._3sdp));
+        set.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
+        set.setCircleRadius(getResources().getDimension(R.dimen._3sdp));
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(true);
-        set.setValueTextSize(10f);
+        set.setValueTextSize(getResources().getDimension(R.dimen._10sdp));
         set.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -347,14 +358,13 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         set.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
 
         LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
-        set1.setColor((ContextCompat.getColor(this,R.color.GREEN)));
-        set1.setLineWidth(2.5f);
-        set1.setCircleColor(rgb(240, 238, 70));
-        set1.setCircleRadius(5f);
-        set1.setFillColor(rgb(240, 238, 70));
+        set1.setColor(ContextCompat.getColor(this,R.color.GREEN));
+        set1.setLineWidth(getResources().getDimension(R.dimen._3sdp));
+        set1.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
+        set1.setCircleRadius(getResources().getDimension(R.dimen._3sdp));
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setDrawValues(true);
-        set1.setValueTextSize(10f);
+        set1.setValueTextSize(getResources().getDimension(R.dimen._10sdp));
         set1.setValueFormatter(new IValueFormatter() {
 
             @Override
@@ -364,7 +374,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
             }
         });
 
-        set1.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
+        set1.setValueTextColor(ContextCompat.getColor(this,R.color.WHITE));
 
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
@@ -375,26 +385,26 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         return d;
     }
 
-//    private BarData generateBarData() {
-//
-//        BarDataSet set1 = new BarDataSet(sellerPerformanceHelper.getBarEntries(), "Bar 1");
-//        set1.setColor(ContextCompat.getColor(this,R.color.white_trans));
-//        set1.setValueTextColor((ContextCompat.getColor(this,R.color.white_trans)));
-//        set1.setValueTextSize(10f);
-//        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-//
-//
-//        float barWidth = 0.45f; // x2 dataset
-//        // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
-//
-//        BarData d = new BarData(set1);
-//        d.setBarWidth(barWidth);
-//
-//        // make this BarData object grouped
-////        d.groupBars(0, groupSpace, barSpace); // start at x = 0
-//
-//        return d;
-//    }
+    private BarData generateBarData() {
+
+        BarDataSet set1 = new BarDataSet(sellerPerformancePresenter.barChartData(), "Bar 1");
+        set1.setColor(ContextCompat.getColor(this,R.color.white_trans));
+        set1.setValueTextColor((ContextCompat.getColor(this,R.color.white_trans)));
+        set1.setValueTextSize(10f);
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+
+        float barWidth = 0.45f; // x2 dataset
+        // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
+
+        BarData d = new BarData(set1);
+        d.setBarWidth(barWidth);
+
+        // make this BarData object grouped
+//        d.groupBars(0, groupSpace, barSpace); // start at x = 0
+
+        return d;
+    }
 
     private float getRandom(float range, float startsfrom) {
         return (float) (Math.random() * range) + startsfrom;
@@ -407,5 +417,21 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         intent.putExtra("Date",selectedDate);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sellerPerformancePresenter.removeFirestoreListener();
     }
 }

@@ -7,17 +7,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,6 +39,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.ivy.cpg.view.supervisor.mvp.FilterScreenFragment;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity;
 import com.ivy.lib.DialogFragment;
@@ -44,9 +50,12 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implements SellerDetailMapContractor.SellerDetailMapView,
-        OnMapReadyCallback,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener  {
+        OnMapReadyCallback,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener,FilterScreenFragment.FilterItemSelectedListener  {
 
     private GoogleMap mMap;
     private int userId;
@@ -60,10 +69,11 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     private OutletListAdapter outletListAdapter;
     private ArrayList<RetailerBo> outletListBos = new ArrayList<>();
 
-    private Polyline mapPolyLine = null;
-    private PolylineOptions lineOptions = null;
     private Marker sellerMarker;
+    private DrawerLayout mDrawerLayout;
 
+    @SuppressLint("UseSparseArrays")
+    HashMap<Integer, Integer> mSelectedIdByLevelId = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -170,6 +180,43 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        FrameLayout drawer = findViewById(R.id.right_drawer);
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
+
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.END);
+
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+                mDrawerLayout, /* DrawerLayout object */
+                R.string.ok, /* "open drawer" description for accessibility */
+                R.string.close /* "close drawer" description for accessibility */
+        ) {
+            public void onDrawerClosed(View view) {
+                supportInvalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                setScreenTitle(getResources().getString(R.string.filter_by));
+                supportInvalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        findViewById(R.id.filter_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterFragment();
+            }
+        });
     }
 
     private void setViewValues(){
@@ -197,6 +244,16 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -328,7 +385,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
 //        if (lineOptions == null) {
 
-            lineOptions = new PolylineOptions();
+        PolylineOptions lineOptions = new PolylineOptions();
 
             lineOptions.addAll(points);
             lineOptions.width(8);
@@ -336,12 +393,22 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             lineOptions.zIndex(10000000);
             lineOptions.geodesic(true);
 
-            mapPolyLine = mMap.addPolyline(lineOptions);
+        Polyline mapPolyLine = mMap.addPolyline(lineOptions);
             mapPolyLine.setClickable(true);
 
 //        } else {
 //            mapPolyLine.setPoints(points);
 //        }
+    }
+
+    @Override
+    public void selectedChannels(HashMap<Integer, Integer> mSelectedIdByLevelId) {
+        mDrawerLayout.closeDrawers();
+        invalidateOptionsMenu();
+
+        if(mSelectedIdByLevelId!=null) {
+            this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+        }
     }
 
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
@@ -400,6 +467,14 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_dashboard).setVisible(false);
         menu.findItem(R.id.menu_date).setVisible(false);
+
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+            menu.findItem(R.id.menu_search).setVisible(false);
+        }
+        else {
+            menu.findItem(R.id.menu_search).setVisible(true);
+        }
+
         return true;
     }
 
@@ -410,16 +485,14 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         if (i == android.R.id.home) {
             if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            else if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                mDrawerLayout.closeDrawers();
+            }
             else{
                 finish();
                 sellerMapViewPresenter.removeFirestoreListener();
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
-
-//        }else if(i == R.userId.menu_route){
-//            drawRoute();
-//        }else if(i == R.userId.menu_navigate){
-//            moveMarkerInPath();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -470,20 +543,20 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, final int position) {
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-            if(position%2 == 0)
+            if(holder.getAdapterPosition()%2 == 0)
                 holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.white));
             else
                 holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.outlet_item_bg));
 
-            holder.tvSerialNumber.setText(String.valueOf(outletListBos.get(position).getMasterSequence()));
-            holder.tvStoreName.setText(outletListBos.get(position).getRetailerName());
-            holder.tvTimeIn.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getInTime()));
-            holder.tvTimeOut.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(position).getOutTime()));
+            holder.tvSerialNumber.setText(String.valueOf(outletListBos.get(holder.getAdapterPosition()).getMasterSequence()));
+            holder.tvStoreName.setText(outletListBos.get(holder.getAdapterPosition()).getRetailerName());
+            holder.tvTimeIn.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(holder.getAdapterPosition()).getInTime()));
+            holder.tvTimeOut.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(holder.getAdapterPosition()).getOutTime()));
 
-            if(sellerMapViewPresenter.getLastVisited() != 0 && sellerMapViewPresenter.getLastVisited() > outletListBos.get(position).getMasterSequence()
-                    && !outletListBos.get(position).isVisited()){
+            if(sellerMapViewPresenter.getLastVisited() != 0 && sellerMapViewPresenter.getLastVisited() > outletListBos.get(holder.getAdapterPosition()).getMasterSequence()
+                    && !outletListBos.get(holder.getAdapterPosition()).isVisited()){
                 holder.tvTimeIn.setVisibility(View.GONE);
                 holder.tvTimeOut.setVisibility(View.GONE);
                 holder.tvSkipped.setVisibility(View.VISIBLE);
@@ -493,11 +566,64 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 holder.tvSkipped.setVisibility(View.GONE);
             }
 
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    double angle = 130.0;
+                    double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
+                    double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.outlet_map_info_y));
+                    outletListBos.get(holder.getAdapterPosition()).getMarker().setInfoWindowAnchor((float)x, (float)y);
+
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(outletListBos.get(holder.getAdapterPosition()).getMarker().getPosition()));
+                    outletListBos.get(holder.getAdapterPosition()).getMarker().showInfoWindow();
+
+
+                    if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                }
+            });
+
         }
 
         @Override
         public int getItemCount() {
             return outletListBos.size();
+        }
+    }
+
+    private void filterFragment() {
+        invalidateOptionsMenu();
+        try {
+            mDrawerLayout.openDrawer(GravityCompat.END);
+
+            Set<Integer> integers = new HashSet<>();
+            for(RetailerBo retailerBo : outletListBos){
+                integers.addAll(retailerBo.getProductIds());
+            }
+
+            String productIds = TextUtils.join(",", integers.toArray(new Integer[integers.size()])) ;
+
+            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FilterScreenFragment frag = (FilterScreenFragment) fm
+                    .findFragmentByTag("FilterScreen");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+
+            FilterScreenFragment fragobj = new FilterScreenFragment();
+            Bundle bundle =new Bundle();
+            bundle.putSerializable("ChannelId",mSelectedIdByLevelId);
+            bundle.putString("Date",sellerMapViewPresenter.convertPlaneDateToGlobal(seletedDate));
+            bundle.putString("ProductId",productIds);
+            fragobj.setArguments(bundle);
+
+            ft.replace(R.id.right_drawer, fragobj, "FilterScreen");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException(e);
         }
     }
 

@@ -3,8 +3,6 @@ package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetai
 import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.data.Entry;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -26,7 +23,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
@@ -38,6 +34,7 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +61,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
     private Context context;
     private SellerPerformanceDetailContractor.SellerPerformanceDetailView sellerPerformanceView;
-    SellerBo selectedSeller;
+    private SellerBo selectedSeller;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListenerRegistration registration ;
     private int CHART_DAYS = 0;
@@ -76,10 +73,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     private LinkedHashMap<Integer,ArrayList<RetailerBo>> retailerVisitDetailsByRId = new LinkedHashMap<>();
 
     private LinkedHashMap<Integer,RetailerBo> retailerMasterHashmap =  new LinkedHashMap<>();
-    private TextView messagetv;
     private BusinessModel bmodel;
     private JSONObject json = new JSONObject();
-    AlertDialog alertDialog;
+    private AlertDialog alertDialog;
 
     @Override
     public void setDetailView(SellerPerformanceDetailContractor.SellerPerformanceDetailView view, Context context) {
@@ -128,120 +124,18 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     }
 
     @Override
-    public void setSellerActivityListener(final int userId, final String date) {
-
-        DocumentReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
-                .document(TIME_STAMP_PATH)
-                .collection(date).document(userId+"");
-
-        registration = queryRef
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-
-                        if(documentSnapshot != null) {
-
-                            SellerBo documentSnapshotBo = documentSnapshot.toObject((SellerBo.class));
-
-                            if(documentSnapshotBo != null) {
-                                selectedSeller.setCovered(documentSnapshotBo.getCovered());
-                                selectedSeller.setBilled((documentSnapshotBo.getBilled()));
-                                selectedSeller.setTotalOrderValue(documentSnapshotBo.getTotalOrderValue());
-                                selectedSeller.setLpc(documentSnapshotBo.getLpc());
-                                selectedSeller.setTotallpc(documentSnapshotBo.getTotallpc());
-                                sellerPerformanceView.updateSellerPerformanceData(selectedSeller);
-
-                                prepareChartData(userId, getPreviousDays(date, -CHART_DAYS_COUNT));
-
-                                sellerPerformanceView.updateSellerTabViewInfo(selectedSeller);
-                            }
-
-                        }
-
-                    }
-                });
-    }
-
-    @Override
-    public void prepareChartData(final int userId,final String date){
-
-        DocumentReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
-                .document(TIME_STAMP_PATH)
-                .collection(date).document(userId+"");
-
-        queryRef
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
-                        if(task.getResult() != null) {
-
-                            int covered = 0;
-                            int billed = 0;
-
-                            DocumentSnapshot snapshot = task.getResult() ;
-
-                            try {
-                                SellerBo sellerBoDocumentSnapshot = snapshot.toObject((SellerBo.class));
-
-                                if (sellerBoDocumentSnapshot != null) {
-                                    covered = sellerBoDocumentSnapshot.getCovered();
-                                    billed = sellerBoDocumentSnapshot.getBilled();
-                                }
-
-                                setChartData(date, covered, billed, userId);
-                            }catch(Exception e){
-                                Commons.printException(e);
-                            }
-                        }
-
-                    }
-                });
-    }
-
-    private void setChartData(String date, int covered, int billed,int userId){
-
-        chartDaysStr.add(convertDateStrShort(date));
-        sellerCoveredEntry.add(new Entry( CHART_DAYS,covered));
-        sellerBilledEntry.add(new Entry(CHART_DAYS,billed));
-
-
-        if(CHART_DAYS == CHART_DAYS_COUNT) {
-
-            sellerPerformanceView.updateChartInfo();
-
-            return;
-        }
-
-        CHART_DAYS = CHART_DAYS  + 1;
-
-        prepareChartData(userId,getPreviousDays(date , 1));
-
-    }
-
-    @Override
-    public ArrayList<String> getChartDaysStr() {
-        return chartDaysStr;
-    }
-
-    @Override
-    public ArrayList<Entry> getSellerCoveredEntry(){
-        return sellerCoveredEntry;
-    }
-
-    @Override
-    public ArrayList<Entry> getSellerBilledEntry(){
-        return sellerBilledEntry;
-    }
-
-    @Override
     public void downloadSellerKPI(int userId, String date, boolean isMTD){
-
         DBUtil db = null;
         try {
+
+            selectedSeller.setTargetCoverage(0);
+            selectedSeller.setAchievedCoverage(0);
+
+            selectedSeller.setTargetValue(0);
+            selectedSeller.setAchievedValue(0);
+
+            selectedSeller.setTargetLines(0);
+            selectedSeller.setAchievedLines(0);
 
             db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -334,6 +228,43 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     }
 
     @Override
+    public void setSellerActivityListener(final int userId, final String date) {
+
+        DocumentReference queryRef = db
+                .collection(FIRESTORE_BASE_PATH)
+                .document(TIME_STAMP_PATH)
+                .collection(date).document(userId+"");
+
+        registration = queryRef
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                        if(documentSnapshot != null) {
+
+                            SellerBo documentSnapshotBo = documentSnapshot.toObject((SellerBo.class));
+
+                            if(documentSnapshotBo != null) {
+                                selectedSeller.setCovered(documentSnapshotBo.getCovered());
+                                selectedSeller.setBilled((documentSnapshotBo.getBilled()));
+                                selectedSeller.setTotalOrderValue(documentSnapshotBo.getTotalOrderValue());
+                                selectedSeller.setLpc(documentSnapshotBo.getLpc());
+                                selectedSeller.setTotallpc(documentSnapshotBo.getTotallpc());
+
+                                sellerPerformanceView.updateSellerPerformanceData(selectedSeller);
+
+                                sellerPerformanceView.updateSellerTabViewInfo(selectedSeller);
+                            }
+
+                            prepareChartData(userId, getPreviousDays(date, -CHART_DAYS_COUNT));
+
+                        }
+
+                    }
+                });
+    }
+
+    @Override
     public void setSellerActivityDetailListener(int userId,String date) {
 
         CollectionReference queryRef = db
@@ -361,6 +292,60 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                 });
     }
 
+    @Override
+    public void prepareChartData(final int userId,final String date){
+
+        DocumentReference queryRef = db
+                .collection(FIRESTORE_BASE_PATH)
+                .document(TIME_STAMP_PATH)
+                .collection(date).document(userId+"");
+
+        queryRef
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                        if(task.getResult() != null) {
+
+                            int covered = 0;
+                            int billed = 0;
+
+                            DocumentSnapshot snapshot = task.getResult() ;
+
+                            try {
+                                SellerBo sellerBoDocumentSnapshot = snapshot.toObject((SellerBo.class));
+
+                                if (sellerBoDocumentSnapshot != null) {
+                                    covered = sellerBoDocumentSnapshot.getCovered();
+                                    billed = sellerBoDocumentSnapshot.getBilled();
+                                }
+
+                                setChartData(date, covered, billed, userId);
+                            }catch(Exception e){
+                                Commons.printException(e);
+                            }
+                        }
+
+                    }
+                });
+    }
+
+    @Override
+    public ArrayList<String> getChartDaysStr() {
+        return chartDaysStr;
+    }
+
+    @Override
+    public ArrayList<Entry> getSellerCoveredEntry(){
+        return sellerCoveredEntry;
+    }
+
+    @Override
+    public ArrayList<Entry> getSellerBilledEntry(){
+        return sellerBilledEntry;
+    }
+
     private void setSellerDetailValues(DocumentSnapshot documentSnapshot) {
 
         try {
@@ -382,6 +367,13 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                     } else {
                         retailerMasterBo.setIsOrdered(false);
                     }
+
+                    if (!retailerMasterBo.getIsDeviated() && documentSnapshotBo.getIsDeviated()){
+                        retailerMasterBo.setIsDeviated(true);
+                        selectedSeller.setDeviationCount(selectedSeller.getDeviationCount() + 1);
+                    }
+
+                    selectedSeller.setTotalCallDuration(selectedSeller.getTotalCallDuration()+(retailerMasterBo.getOutTime() - retailerMasterBo.getInTime()));
 
                     documentSnapshotBo.setIsOrdered(retailerMasterBo.getIsOrdered());
                     retailerMasterBo.setSkipped(false);
@@ -415,6 +407,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                         retailerVisitDetailsByRId.put(documentSnapshotBo.getRetailerId(), visitedRetailerList);
                     }
 
+                    sellerPerformanceView.updateSellerCallInfo(selectedSeller);
                     //ends
                 }
             }
@@ -444,6 +437,12 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         return duratingStr;
     }
 
+    @Override
+    public void removeFirestoreListener() {
+        if(registration != null)
+            registration.remove();
+    }
+
     ArrayList<RetailerBo> getVisitedRetailers(){
 
         ArrayList<RetailerBo> retailerBos = new ArrayList<>();
@@ -462,6 +461,26 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         this.selectedSeller = selectedSellerBo;
     }
 
+    private void setChartData(String date, int covered, int billed,int userId){
+
+        chartDaysStr.add(convertDateStrShort(date));
+        sellerCoveredEntry.add(new Entry( CHART_DAYS,covered));
+        sellerBilledEntry.add(new Entry(CHART_DAYS,billed));
+
+
+        if(CHART_DAYS == CHART_DAYS_COUNT) {
+
+            sellerPerformanceView.updateChartInfo();
+
+            return;
+        }
+
+        CHART_DAYS = CHART_DAYS  + 1;
+
+        prepareChartData(userId,getPreviousDays(date , 1));
+
+    }
+
     private String convertDateStrShort(String dateStr){
 
         try {
@@ -473,6 +492,24 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             e.printStackTrace();
         }
         return dateStr;
+    }
+
+    String convertPlaneDateToGlobal(String planeDate){
+        try {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
+            Date date = sdf.parse(planeDate);
+
+            sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            planeDate =sdf.format(date);
+
+            return planeDate;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return planeDate;
     }
 
     private String getPreviousDays(String dateStr, int add){
@@ -523,7 +560,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
             if (kpiParams.length() > 0) {
                 prepareJson(sellerId,date,kpiParams);
-                new DownloadSupRetailMaster(date,"SELLERKPI",false).execute();
+                new DownloadKPIMaster(date,"SELLERKPI",false).execute();
             }else
                 sellerPerformanceView.initializeMethods();
 
@@ -533,32 +570,13 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
     }
 
-    private void prepareJson(int sellerId, String date,String kpiParams){
-        try {
-            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
-            json.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
-            json.put("MobileDateTime",
-                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-            json.put("VersionCode", bmodel.getApplicationVersionNumber());
-            JSONArray jsonArray = new JSONArray();
-            jsonArray.put(sellerId);
-            json.put("UserIds", jsonArray);
-            json.put("key", kpiParams);
-            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
-            json.put("RequestDate",date);
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-    }
-
-    class DownloadSupRetailMaster extends AsyncTask<String, Void, Boolean> {
+    class DownloadKPIMaster extends AsyncTask<String, Void, Boolean> {
 
         private String selectedDate;
         private String masterName;
         private boolean isDetailDownLoad = false;
 
-        DownloadSupRetailMaster(String seletedDate,String masterName,boolean isDetailDownLoad){
+        DownloadKPIMaster(String seletedDate,String masterName,boolean isDetailDownLoad){
             this.selectedDate = seletedDate;
             this.masterName = masterName;
             this.isDetailDownLoad = isDetailDownLoad;
@@ -582,7 +600,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         @Override
         protected Boolean doInBackground(String... params) {
 
-            return isOnline() && prepareData(masterName);
+            return NetworkUtils.isNetworkConnected(context) && prepareKPIData(masterName);
         }
 
         @Override
@@ -591,7 +609,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
             if (result) {
                 if (!isDetailDownLoad)
-                    new DownloadSupRetailMaster(selectedDate,"SELLERKPIDETAIL",true).execute();
+                    new DownloadKPIMaster(selectedDate,"SELLERKPIDETAIL",true).execute();
                 else {
                     alertDialog.dismiss();
                     sellerPerformanceView.initializeMethods();
@@ -604,7 +622,26 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
     }
 
-    private boolean prepareData(String masterName) {
+    private void prepareJson(int sellerId, String date,String kpiParams){
+        try {
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("LoginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
+            json.put("MobileDateTime",
+                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(sellerId);
+            json.put("UserIds", jsonArray);
+            json.put("key", kpiParams);
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+            json.put("RequestDate",date);
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+    }
+
+    private boolean prepareKPIData(String masterName) {
 
         boolean isSuccess = false;
         try {
@@ -614,7 +651,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             Commons.print("downloadUrl "+downloadurl);
             System.out.println("json = " + json);
 
-            Vector<String> responseVector = getSupRetailerMasterResponse(json, downloadurl);
+            Vector<String> responseVector = getKPIMasterResponse(json, downloadurl);
 
             try {
                 if (responseVector.size() > 0) {
@@ -656,7 +693,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
     }
 
-    private Vector<String> getSupRetailerMasterResponse(JSONObject data,
+    private Vector<String> getKPIMasterResponse(JSONObject data,
                                                        String appendurl) {
         // Update Security key
         bmodel.synchronizationHelper.updateAuthenticateToken(false);
@@ -707,9 +744,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         return downloadurl;
     }
 
-//    SELLERKPI
-//    SELLERKPIDETAIL
-
     public void customProgressDialog(AlertDialog.Builder builder, String message) {
 
         try {
@@ -717,7 +751,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
             TextView title = view.findViewById(R.id.title);
             title.setText(DataMembers.SD);
-            messagetv = view.findViewById(R.id.text);
+            TextView messagetv = view.findViewById(R.id.text);
             messagetv.setText(message);
 
             builder.setView(view);
@@ -728,20 +762,11 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         }
     }
 
-    private boolean isOnline() {
-
-        try {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (cm != null) {
-                NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                    return true;
-                }
-            }
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-        return false;
-
+    String convertSecondsToHMmSs(long seconds) {
+        long s = seconds % 60;
+        long m = (seconds / 60) % 60;
+        long h = (seconds / (60 * 60)) % 24;
+        return String.format(Locale.US,"%02d:%02d", h,m);
     }
+
 }

@@ -11,7 +11,7 @@ public class RetailerBo {
     private int retailerId,userId,visitedSequence,masterSequence,lastVisitedRetailer,channelId;
     private String retailerName,date,address,imgPath,userName,ParentHierarchy;
     private double latitude,longitude,masterLatitude,masterLongitude;
-    private boolean isDeviated
+    private boolean isDeviated=false
             ,isOrdered=false
             ,isSkipped = false,isVisited = false;
     private long totalOrderValue,orderValue, inTime, outTime;

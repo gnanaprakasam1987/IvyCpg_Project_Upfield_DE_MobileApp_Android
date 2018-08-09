@@ -46,7 +46,6 @@ import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity;
-import com.ivy.lib.Utils;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -58,7 +57,6 @@ import com.ivy.utils.FontUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -401,8 +399,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if (!isToday())
-            menu.findItem(R.id.menu_date).setTitle(convertPlaneDateToGlobal(selectedDate));
+        if (!sellerMapHomePresenter.isToday())
+            menu.findItem(R.id.menu_date).setTitle(sellerMapHomePresenter.convertPlaneDateToGlobal(selectedDate));
         else
             menu.findItem(R.id.menu_date).setTitle("Today");
     }
@@ -444,6 +442,10 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     @Override
     public void onInfoWindowClick(Marker marker) {
 
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheetBehavior.setHideable(true);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
     }
 
     @Override
@@ -491,7 +493,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
         mMap.setOnMarkerClickListener(this);
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
-//        mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
@@ -641,7 +643,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
     private void showDatePicker(){
 
-        String[] splitDate = convertPlaneDateToGlobal(selectedDate).split("/");
+        String[] splitDate = sellerMapHomePresenter.convertPlaneDateToGlobal(selectedDate).split("/");
 
         int day = SDUtil.convertToInt(splitDate[2]);
         int month = SDUtil.convertToInt(splitDate[1]);
@@ -673,7 +675,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             picker.hide();
 
 
-            if(!isSameDateSelected(convertedDate)) {
+            if(!sellerMapHomePresenter.isSameDateSelected(convertedDate)) {
 
                 if (mMap != null)
                     mMap.clear();
@@ -697,62 +699,12 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 else {
                     SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(),convertedDate);
                     sellerMapHomePresenter.getSellerListAWS(convertedDate);
-                    updateSellerInfoByDate(convertGlobalDateToPlane(convertedDate));
+                    updateSellerInfoByDate(sellerMapHomePresenter.convertGlobalDateToPlane(convertedDate));
                 }
             }
         }
     };
 
-    private boolean isSameDateSelected(String selectedDate){
-        boolean isSameDate = false;
-        try {
-            if (this.selectedDate.equals(convertGlobalDateToPlane(selectedDate)))
-                isSameDate = true;
-
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-        return isSameDate;
-    }
-
-    private String convertPlaneDateToGlobal(String planeDate){
-        try {
-
-            SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
-            Date date = sdf.parse(planeDate);
-
-            sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
-            planeDate =sdf.format(date);
-
-            return planeDate;
-
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-
-        return planeDate;
-    }
-
-    private String convertGlobalDateToPlane(String globalDate){
-        try {
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-            Date date = sdf.parse(globalDate);
-
-            sdf = new SimpleDateFormat("MMddyyyy",Locale.ENGLISH);
-            globalDate =sdf.format(date);
-            return globalDate;
-
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-
-        return globalDate;
-    }
-
-    private boolean isToday(){
-        return convertPlaneDateToGlobal(selectedDate).equals(SDUtil.now(SDUtil.DATE_GLOBAL));
-    }
 
     @Override
     public void onDetach() {
