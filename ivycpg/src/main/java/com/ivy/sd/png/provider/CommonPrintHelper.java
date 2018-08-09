@@ -1481,6 +1481,8 @@ public class CommonPrintHelper {
 
 
                     if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
+                        if(mAttrList.size()>0)
+                            sb.append("\n");
                         for (AttributeListBO attr : mAttrList) {
                             mProductValue = "";
                             if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
