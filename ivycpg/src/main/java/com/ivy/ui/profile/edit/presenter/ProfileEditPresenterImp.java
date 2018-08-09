@@ -767,10 +767,11 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     private String tid;
     boolean isData=false;
+    String currentDate;
 
     private void updateProfileEdit() {
 
-        String currentDate= SDUtil.now(SDUtil.DATE_GLOBAL);
+        currentDate= SDUtil.now(SDUtil.DATE_GLOBAL);
         tid = userMasterHelper.getUserMasterBO().getUserid()
                 + "" + retailerMasterBO.getRetailerID()
                 + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
@@ -808,9 +809,34 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
             }
         }
+        updateHeaderList();
 
+    }
 
+    private void updateHeaderList(){
+        getIvyView().showLoading();
+        getCompositeDisposable().add(mProfileDataManager.updateRetailer(tid,retailerMasterBO.getRetailerID(),currentDate)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                               @Override
+                               public void accept(Boolean response) throws Exception {
+                                   if(response){
+                                       AppUtils.latlongImageFileName = "";
+                                       lat = "";
+                                       longitude = "";
+                                   }
+                                   getIvyView().hideLoading();
+                               }
+                           }, new Consumer<Throwable>() {
+                               @Override
+                               public void accept(Throwable throwable) throws Exception {
+                                   Commons.print(throwable.getMessage());
+                                   getIvyView().hideLoading();
 
+                               }
+                           }
+                ));
     }
 
     private void updateStoreName(ConfigureBO configBO){
