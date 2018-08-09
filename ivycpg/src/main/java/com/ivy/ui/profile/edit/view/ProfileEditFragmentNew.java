@@ -125,6 +125,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private AppCompatCheckBox inSEZcheckBox = null;
 
 
+
     private TextView textview[] = new TextView[100];
     private AppCompatEditText editText[] = new AppCompatEditText[100];
 
@@ -466,6 +467,69 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
     @Override
+    public ArrayList<NewOutletBO> getContractStatusList() {
+        return mcontractStatusList;
+    }
+
+    @Override
+    public int getContractSpinnerSelectedItemListId() {
+        return ((NewOutletBO) contractSpinner.getSelectedItem()).getListId();
+    }
+
+    @Override
+    public int getLocation1SelectedItemLocId() {
+        return ((LocationBO) location1.getSelectedItem()).getLocId();
+    }
+
+
+
+    @Override
+    public int getLocation2SelectedItemLocId() {
+        return ((LocationBO) location2.getSelectedItem()).getLocId();
+    }
+
+
+    @Override
+    public int getLocation3SelectedItemLocId() {
+        return ((LocationBO) location3.getSelectedItem()).getLocId();
+    }
+
+    @Override
+    public RetailerFlexBO getRField4SpinnerSelectedItem() {
+        return (RetailerFlexBO) rField4Spinner.getSelectedItem();
+    }
+
+    @Override
+    public RetailerFlexBO getRField5SpinnerSelectedItem() {
+        return (RetailerFlexBO) rField5Spinner.getSelectedItem();
+    }
+
+    @Override
+    public boolean getSEZcheckBoxCheckedValues() {
+        return inSEZcheckBox.isChecked();
+    }
+
+    @Override
+    public RetailerFlexBO getRField6SpinnerSelectedItem() {
+        return (RetailerFlexBO) rField6Spinner.getSelectedItem();
+    }
+
+    @Override
+    public RetailerFlexBO getRField7SpinnerSelectedItem() {
+        return (RetailerFlexBO) rField7Spinner.getSelectedItem();
+    }
+
+    @Override
+    public String getFoodLicenceExpDateValue() {
+        return flExpDateTextView.getText().toString();
+    }
+
+    @Override
+    public String getDrugLicenceExpDateValue() {
+        return dlExpDateTextView.getText().toString();
+    }
+
+    @Override
     public void setChennalFocus() {
         channel.requestFocus();
     }
@@ -476,8 +540,18 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
     @Override
+    public int getSubChennalSelectedItemId() {
+        return ((SpinnerBO) subchannel.getSelectedItem()).getId();
+    }
+
+    @Override
     public void setSubChennalFocus() {
         subchannel.requestFocus();
+    }
+
+    @Override
+    public ArrayList<StandardListBO> getSelectedPriorityProductList() {
+        return selectedPriorityProductList;
     }
 
     @Override
@@ -503,6 +577,16 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @Override
     public int subChannelGetSelectedItem() {
         return ((SpinnerBO) subchannel.getSelectedItem()).getId();
+    }
+
+    @Override
+    public Vector<RetailerMasterBO> getSelectedIds() {
+        return mSelectedIds;
+    }
+
+    @Override
+    public ChannelBO getChennalSelectedItemBO() {
+        return   (ChannelBO) channel.getSelectedItem();
     }
 
     @Override

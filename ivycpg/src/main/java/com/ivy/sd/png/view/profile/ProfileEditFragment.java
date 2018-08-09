@@ -3557,6 +3557,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     //handled only for single selection products
     private ArrayList<StandardListBO> computeSelectedPriorityList() {
+
         ArrayList<StandardListBO> tempList = new ArrayList<>();
         ArrayList<String> products = bmodel.newOutletHelper.downloadPriorityProductsForRetailer(retailerObj.getRetailerID());
 
@@ -3564,7 +3565,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             products = new ArrayList<String>();
 
         if (selectedPriorityProductList != null) {
-            for (@NonNls StandardListBO bo : selectedPriorityProductList) {
+            for ( StandardListBO bo : selectedPriorityProductList) {
                 if (!products.contains(bo.getListID())) {
                     bo.setStatus("N");
                     tempList.add(bo);
@@ -3638,13 +3639,11 @@ public class ProfileEditFragment extends IvyBaseFragment
                 } else if (configCode.equals(PROFILE_07) && profileConfig.get(i).getModule_Order() == 1) {
                     profileConfig.get(i).setMenuNumber("0");
                     if (channelMaster != null)
-                        profileConfig.get(i).setMenuNumber(((SpinnerBO) subchannel
-                                .getSelectedItem()).getId() + "");
+                        profileConfig.get(i).setMenuNumber(((SpinnerBO) subchannel.getSelectedItem()).getId() + "");
                 } else if (configCode.equals(PROFILE_43) && profileConfig.get(i).getModule_Order() == 1) {
                     profileConfig.get(i).setMenuNumber("0");
                     if (mcontractStatusList != null)
-                        profileConfig.get(i).setMenuNumber(((NewOutletBO) contractSpinner
-                                .getSelectedItem()).getListId() + "");
+                        profileConfig.get(i).setMenuNumber(((NewOutletBO) contractSpinner.getSelectedItem()).getListId() + "");
                 } else if (configCode.equals(PROFILE_08) && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(lat)) {
                         profileConfig.get(i).setMenuNumber("0.0");
@@ -3758,8 +3757,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (mLocationMasterList1 != null) {
                         if (mLocationMasterList1.size() > 0) {
                             try {
-                                profileConfig.get(i).setMenuNumber(((LocationBO) location1
-                                        .getSelectedItem()).getLocId() + "");
+                                profileConfig.get(i).setMenuNumber(((LocationBO) location1.getSelectedItem()).getLocId() + "");
                             } catch (Exception e) {
                                 profileConfig.get(i).setMenuNumber("0");
                             }
@@ -3770,8 +3768,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (mLocationMasterList2 != null) {
                         if (mLocationMasterList2.size() > 0) {
                             try {
-                                profileConfig.get(i).setMenuNumber(((LocationBO) location2
-                                        .getSelectedItem()).getLocId() + "");
+                                profileConfig.get(i).setMenuNumber(((LocationBO) location2.getSelectedItem()).getLocId() + "");
                             } catch (Exception e) {
                                 profileConfig.get(i).setMenuNumber("0");
                             }

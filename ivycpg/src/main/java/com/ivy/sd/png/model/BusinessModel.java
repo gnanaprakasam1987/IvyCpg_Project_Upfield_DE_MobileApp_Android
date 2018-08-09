@@ -7304,6 +7304,11 @@ public class BusinessModel extends Application {
         }
     }
 
+     /* @See {@link com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#validateInput}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public String validateInput(String input) {
         String str = "";
         if (input != null && input != "") {

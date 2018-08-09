@@ -21,6 +21,7 @@ import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -99,6 +100,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private ArrayList<NewOutletAttributeBO> mAttributeList = null;
     private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap = null;
     private ArrayList<Integer> mChannelAttributeList = null;// attributes for selected channel already(from DB)..
+    private ArrayList<StandardListBO> selectedPrioProducts = new ArrayList<>();
 
     //PriorityProduct
     private ArrayList<String> products = null;
@@ -107,8 +109,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private ArrayList<NewOutletAttributeBO> attributeList;
 
     private boolean isLatLong = false;
-
-
     private String path;
     private String[] imgPaths;
     private String lat = "", longitude = "";
@@ -709,15 +709,179 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         getIvyView().showMessage(R.string.location_not_captured);
                     }
                 }
-                //new SaveEditAsyncTask().execute();
+                 saveEditProfile();
             }
         } catch (Exception e) {
             Commons.printException(e);
         }
     }
 
+    private void saveEditProfile() {
+        getCompositeDisposable().add(mProfileDataManager.downloadPriorityProductsForRetailerUpdate(retailerHelper.getContractID())
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
+                    @Override
+                    public void onNext(ArrayList<String> mProducts) {
 
-    public boolean doValidateProdileEdit() {
+                        ArrayList<StandardListBO> tempList = new ArrayList<>();
+                        ArrayList<String> products = mProducts;
+                        if (products == null)
+                            products = new ArrayList<String>();
+                        if (getIvyView().getSelectedPriorityProductList() != null) {
+                            for ( StandardListBO bo : getIvyView().getSelectedPriorityProductList()) {
+                                if (!products.contains(bo.getListID())) {
+                                    bo.setStatus("N");
+                                    tempList.add(bo);
+                                }
+                            }
+                        }
+                        if (mPriorityProductList != null) {
+                            if (tempList.size() > 0) {
+                                for (StandardListBO bo : mPriorityProductList) {
+                                    if (products.contains(bo.getListID())) {
+                                        bo.setStatus(ProfileConstant.D);
+                                        tempList.add(bo);
+                                    }
+                                }
+                            }
+                        }
+
+                        setSelectedPrioProducts(tempList); //step 2
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Commons.print(e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        setNearByRetailers(getIvyView().getSelectedIds()); //step 1
+                        setValues();//step3
+                        updateProfileEdit();//step4
+
+                    }
+                }));
+    }
+
+    private String tid;
+    boolean isData=false;
+
+    private void updateProfileEdit() {
+
+        String currentDate= SDUtil.now(SDUtil.DATE_GLOBAL);
+        tid = userMasterHelper.getUserMasterBO().getUserid()
+                + "" + retailerMasterBO.getRetailerID()
+                + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+        getCompositeDisposable().add(mProfileDataManager.checkHeaderAvailablility(retailerMasterBO.getRetailerID(),currentDate)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<String>() {
+                               @Override
+                               public void accept(String response) throws Exception {
+                                   if(!AppUtils.isEmptyString(response))
+                                       tid=response;
+                                   prepareProfileEditValues();
+                               }
+                           }, new Consumer<Throwable>() {
+                               @Override
+                               public void accept(Throwable throwable) throws Exception {
+                                   Commons.print(throwable.getMessage());
+                                   prepareProfileEditValues();
+                               }
+                           }
+                ));
+    }
+
+    private void prepareProfileEditValues(){
+
+        for (ConfigureBO configBO : profileConfig) {
+            if(configBO.getModule_Order() == 1) {
+                String conficCode=configBO.getConfigCode();
+                switch (conficCode){
+                    case ProfileConstant.STORENAME:
+                        updateStoreName(configBO);
+                        break;
+                }
+
+            }
+        }
+
+
+
+    }
+
+    private void updateStoreName(ConfigureBO configBO){
+
+        if (!configBO.getMenuNumber().equals("")) {
+            if (retailerMasterBO.getRetailerName().equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+               // isData = true;
+            } else if ((!retailerMasterBO.getRetailerName().equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(),mCustomquery);
+                //isData = true;
+            }
+        }
+    }
+
+    private void deletePreviousRow(String configCode,String RetailerId){
+        getCompositeDisposable().add(mProfileDataManager.deleteQuery(configCode,RetailerId)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                               @Override
+                               public void accept(Boolean response) throws Exception {
+                                   isData=response;
+                               }
+                           }, new Consumer<Throwable>() {
+                               @Override
+                               public void accept(Throwable throwable) throws Exception {
+                                   Commons.print(throwable.getMessage());
+                               }
+                           }
+                ));
+    }
+
+
+    private void insertRow(String configCode,String RetailerId, String mCustomquery){
+        getCompositeDisposable().add(mProfileDataManager.insertNewRow( configCode, RetailerId,tid,mCustomquery)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                               @Override
+                               public void accept(Boolean response) throws Exception {
+                                   isData=response;
+                               }
+                           }, new Consumer<Throwable>() {
+                               @Override
+                               public void accept(Throwable throwable) throws Exception {
+                                   Commons.print(throwable.getMessage());
+                               }
+                           }
+                ));
+    }
+
+
+    public void setSelectedPrioProducts(ArrayList<StandardListBO> selectedPrioProducts) {
+        this.selectedPrioProducts = selectedPrioProducts;
+    }
+
+    public ArrayList<StandardListBO> getSelectedPrioProducts() {
+        return selectedPrioProducts;
+    }
+
+    private boolean doValidateProdileEdit() {
 
         for (int i = 0; i < profileConfig.size(); i++) {
 
@@ -888,6 +1052,303 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
         }
         return validate;
+    }
+
+    private void setValues() {
+
+        try {
+            int size = profileConfig.size();
+            for (int i = 0; i < size; i++) {
+                String configCode = profileConfig.get(i).getConfigCode();
+                if (configCode.equals(ProfileConstant.STORENAME) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.ADDRESS1) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.ADDRESS2) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.ADDRESS3) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.CONTACT_NUMBER) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.CHANNEL) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    ChannelBO cBo = (ChannelBO) getIvyView().getChennalSelectedItemBO();
+                    if (channelMaster != null)
+                        profileConfig.get(i).setMenuNumber(cBo.getChannelId() + "");
+                } else if (configCode.equals(ProfileConstant.SUBCHANNEL) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (channelMaster != null)
+                        profileConfig.get(i).setMenuNumber(getIvyView().getSubChennalSelectedItemId() + "");
+
+                } else if (configCode.equals(ProfileConstant.CONTRACT) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (getIvyView().getContractStatusList() != null)
+                        profileConfig.get(i).setMenuNumber(getIvyView().getContractSpinnerSelectedItemListId() + "");
+
+                } else if (configCode.equals(ProfileConstant.LATTITUDE_LONGITUDE) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString(lat)) {
+                        profileConfig.get(i).setMenuNumber("0.0");
+                    } else {
+                        //converting big decimal value while Exponential value occur
+                        String lattiTude = (lat).contains("E")
+                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(lat), -1) + "").substring(0, 20)
+                                : (lat.length() > 20 ? lat.substring(0, 20) : lat);
+
+                        profileConfig.get(i).setMenuNumber(lattiTude);
+                    }
+                } else if (configCode.equals(ProfileConstant.PROFILE_31) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString(longitude)) {
+                        profileConfig.get(i).setMenuNumber("0.0");
+                    } else {
+                        //converting big decimal value while Exponential value occur
+                        String longiTude = (longitude).contains("E")
+                                ? (SDUtil.truncateDecimal(SDUtil.convertToDouble(longitude), -1) + "").substring(0, 20)
+                                : (longitude.length() > 20 ? longitude.substring(0, 20) : longitude);
+
+                        profileConfig.get(i).setMenuNumber(longiTude);
+                    }
+                } else if (configCode.equals(ProfileConstant.PHOTO_CAPTURE) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.latlongImageFileName == null || "".equals(AppUtils.latlongImageFileName)) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(AppUtils.latlongImageFileName);
+                    }
+                } else if (configCode.equals(ProfileConstant.LOCATION01) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (mLocationMasterList1 != null) {
+                        if (mLocationMasterList1.size() > 0) {
+                            try {
+                                profileConfig.get(i).setMenuNumber(getIvyView().getLocation1SelectedItemLocId() + "");
+                            } catch (Exception e) {
+                                profileConfig.get(i).setMenuNumber("0");
+                            }
+                        }
+                    }
+                } else if (configCode.equals(ProfileConstant.LOCATION02) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (mLocationMasterList2 != null) {
+                        if (mLocationMasterList2.size() > 0) {
+                            try {
+                                profileConfig.get(i).setMenuNumber(getIvyView().getLocation2SelectedItemLocId() + "");
+                            } catch (Exception e) {
+                                profileConfig.get(i).setMenuNumber("0");
+                            }
+                        }
+                    }
+                } else if (configCode.equals(ProfileConstant.LOCATION) && profileConfig.get(i).getModule_Order() == 1) {
+                    profileConfig.get(i).setMenuNumber("0");
+                    if (mLocationMasterList3 != null) {
+                        if (mLocationMasterList3.size() > 0) {
+                            try {
+                                profileConfig.get(i).setMenuNumber(getIvyView().getLocation3SelectedItemLocId() + "");
+                            } catch (Exception e) {
+                                profileConfig.get(i).setMenuNumber("0");
+                            }
+                        }
+                    }
+                } else if (configCode.equals(ProfileConstant.CITY) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                    }
+                } else if (configCode.equals(ProfileConstant.STATE) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i) )) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                    }
+                } else if (configCode.equals(ProfileConstant.CREDITPERIOD) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        profileConfig.get(i).setMenuNumber("0");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(getIvyView().getDynamicEditTextValues(i));
+                    }
+                } else if (configCode.equals(ProfileConstant.RFiled1) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                    }
+                } else if (configCode.equals(ProfileConstant.RField2) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                    }
+                } else if (configCode.equals(ProfileConstant.PROFILE_27) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                    }
+                } else if (configCode.equals(ProfileConstant.RField4) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = getIvyView().getRField4SpinnerSelectedItem();
+                        if (retailerFlexBO != null)
+                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
+                        else
+                            profileConfig.get(i).setMenuNumber("0");
+                    }
+                } else if (configCode.equals(ProfileConstant.RFIELD5) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = getIvyView().getRField5SpinnerSelectedItem();
+                        if (retailerFlexBO != null)
+                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
+                        else
+                            profileConfig.get(i).setMenuNumber("0");
+                    }
+                } else if (configCode.equals(ProfileConstant.RFIELD6) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = getIvyView().getRField6SpinnerSelectedItem();
+                        if (retailerFlexBO != null)
+                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
+                        else
+                            profileConfig.get(i).setMenuNumber("0");
+                    }
+                } else if (configCode.equals(ProfileConstant.RFIELD7) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (profileConfig.get(i).getHasLink() == 0) {
+                        if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                            profileConfig.get(i).setMenuNumber("");
+                        } else {
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        }
+                    } else {
+                        RetailerFlexBO retailerFlexBO = getIvyView().getRField7SpinnerSelectedItem();
+                        if (retailerFlexBO != null)
+                            profileConfig.get(i).setMenuNumber(retailerFlexBO.getId());
+                        else
+                            profileConfig.get(i).setMenuNumber("0");
+                    }
+                } else if (configCode.equals(ProfileConstant.PROFILE_60) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (imageFileName == null || "".equals(imageFileName)) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(imageFileName);
+                    }
+                } else if (configCode.equals(ProfileConstant.GSTN) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                    }
+                } else if (configCode.equals(ProfileConstant.INSEZ) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (!getIvyView().getSEZcheckBoxCheckedValues()) {
+                        profileConfig.get(i).setMenuNumber("0");
+                    } else {
+                        profileConfig.get(i).setMenuNumber("1");
+                    }
+                } else if (configCode.equals(ProfileConstant.PAN_NUMBER) && profileConfig.get(i).getModule_Order() == 1) {
+
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.FOOD_LICENCE_NUM) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.DRUG_LICENSE_NUM) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.FOOD_LICENCE_EXP_DATE) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) )  ||
+                            getIvyView().getFoodLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                AppUtils.validateInput( getIvyView().getFoodLicenceExpDateValue())));
+                    }
+                } else if (configCode.equals(ProfileConstant.DRUG_LICENSE_EXP_DATE) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) )  ||
+                            getIvyView().getDrugLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                                AppUtils.validateInput( getIvyView().getDrugLicenceExpDateValue())));
+                    }
+
+                } else if (configCode.equals(ProfileConstant.EMAIL) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.MOBILE) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.FAX) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.REGION) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                } else if (configCode.equals(ProfileConstant.COUNTRY) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
+                }
+            }
+
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 
 

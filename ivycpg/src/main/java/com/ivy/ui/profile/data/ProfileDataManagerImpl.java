@@ -29,11 +29,13 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Function4;
 
 public class ProfileDataManagerImpl implements IProfileDataManager {
 
-  private DBUtil dbUtil;
+    private DBUtil dbUtil;
 
     @Inject
     public ProfileDataManagerImpl(@DataBaseInfo DBUtil dbUtil) {
@@ -216,7 +218,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             }
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     Commons.printException(e);
                 }
                 return downloadurl;
@@ -230,7 +232,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Boolean call() throws Exception {
                 Cursor c = dbUtil
-                        .selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid="+ ret.getRetailerID());
+                        .selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" + ret.getRetailerID());
                 if (c != null) {
                     if (c.getCount() > 0) {
                         if (c.moveToNext()) {
@@ -411,6 +413,28 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
+    @Override
+    public Observable<ArrayList<String>> downloadPriorityProductsForRetailerUpdate(final String retailerId) {
+        return Observable.fromCallable(new Callable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> call() throws Exception {
+                ArrayList<String> priorityproductList = new ArrayList<>();
+                try {
+                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + AppUtils.QT(retailerId);
+                    Cursor c = dbUtil.selectSQL(sql);
+                    if (c.getCount() > 0) {
+                        priorityproductList = new ArrayList<>();
+                        while (c.moveToNext()) {
+                            priorityproductList.add(c.getString(0));
+                        }
+                    }
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return priorityproductList;
+            }
+        });
+    }
 
     @Override
     public Observable<ArrayList<String>> downloadPriorityProductsForRetailer(final String retailerId) {
@@ -435,6 +459,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         }).flatMap(new Function<ArrayList<String>, ObservableSource<ArrayList<String>>>() {
             @Override
             public ObservableSource<ArrayList<String>> apply(final ArrayList<String> strings) throws Exception {
+
                 return Observable.fromCallable(new Callable<ArrayList<String>>() {
                     @Override
                     public ArrayList<String> call() throws Exception {
@@ -557,7 +582,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
             @Override
             public ArrayList<NewOutletAttributeBO> call() throws Exception {
-                ArrayList<NewOutletAttributeBO> attributeBOArrayList=new ArrayList<>();
+                ArrayList<NewOutletAttributeBO> attributeBOArrayList = new ArrayList<>();
                 try {
 
                     Cursor cursor = dbUtil.selectSQL("select RB.attributeid, RB.levelid from retailerattribute RB INNER JOIN " +
@@ -625,7 +650,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public ArrayList<NewOutletAttributeBO> call() throws Exception {
 
-                ArrayList<NewOutletAttributeBO> attribListChild=new ArrayList<>();
+                ArrayList<NewOutletAttributeBO> attribListChild = new ArrayList<>();
 
                 try {
                     NewOutletAttributeBO temp;
@@ -664,7 +689,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public ArrayList<NewOutletAttributeBO> call() throws Exception {
 
-                ArrayList<NewOutletAttributeBO> attributeParentList=null;
+                ArrayList<NewOutletAttributeBO> attributeParentList = null;
                 try {
                     attributeParentList = new ArrayList<>();
                     NewOutletAttributeBO temp;
@@ -706,9 +731,9 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
     @Override
     public Observable<ArrayList<NewOutletAttributeBO>> updateRetailerMasterAttribute(
-           final ArrayList<NewOutletAttributeBO> list,
-           final ArrayList<NewOutletAttributeBO> childList,
-           final ArrayList<NewOutletAttributeBO> parentList) {
+            final ArrayList<NewOutletAttributeBO> list,
+            final ArrayList<NewOutletAttributeBO> childList,
+            final ArrayList<NewOutletAttributeBO> parentList) {
         return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
             @Override
             public ArrayList<NewOutletAttributeBO> call() throws Exception {
@@ -753,6 +778,212 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     tempList.add(tempBO);
                 }
                 return tempList;
+            }
+        });
+    }
+
+
+    @Override
+    public Single<String> checkHeaderAvailablility(final String RetailerID, final String currentDate) {
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                Cursor headerCursor;
+                String tid = "";
+                try {
+                    // delete Header if exist
+                    headerCursor = dbUtil.selectSQL("SELECT Tid FROM RetailerEditHeader"
+                            + " WHERE RetailerId = "
+                            + RetailerID
+                            + " AND Date = "
+                            + AppUtils.QT(currentDate)
+                            + " AND Upload = "
+                            + AppUtils.QT("N"));
+
+                    if (headerCursor.getCount() > 0) {
+                        headerCursor.moveToNext();
+                        tid = headerCursor.getString(0);
+                        headerCursor.close();
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return tid;
+            }
+        });
+    }
+
+
+    @Override
+    public Single<Boolean> deleteQuery(final String configCode, final String RetailerID) {
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + AppUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return false;
+            }
+        });
+    }
+
+
+    @Override
+    public Single<Boolean> insertNewRow(final String configCode, final String RetailerID, String mTid, String mCustomQuery) {
+
+        final String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" + "values (" + AppUtils.QT(mTid) + "," + mCustomQuery;
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + AppUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return false;
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(final Boolean aBoolean) throws Exception {
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        try {
+                            // if(aBoolean) if we want we can add condition. it will return the deleted row response .
+                            dbUtil.executeQ(insertquery);
+                            return true;
+                        } catch (Exception e) {
+                            Commons.printException("" + e);
+                        }
+                        return false;
+                    }
+                });
+            }
+        });
+
+    }
+
+    @Override
+    public Single<Boolean> updateRetailer(final String tid, final String RetailerID, final String currentDate) {
+
+        final String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
+                "values (" + AppUtils.QT(tid)
+                + "," + RetailerID
+                + "," + AppUtils.QT(currentDate) + ")";
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditHeader, " Tid=" + AppUtils.QT(tid), false);
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return false;
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+
+                return Single.zip(getRetailerEditDetailCount(tid),
+                        getnearbyEditRequestCount(tid),
+                        getRetailerEditPriorityProductsCount(tid),
+                        getRetailerEditAttributeCount(tid), new Function4<Integer, Integer, Integer, Integer, Boolean>() {
+                            @Override
+                            public Boolean apply(Integer integer, Integer integer2, Integer integer3, Integer integer4) throws Exception {
+                                return integer > 0 || integer2 > 0 || integer3 > 0 || integer4 > 0;
+                            }
+                        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+                    @Override
+                    public SingleSource<? extends Boolean> apply(final Boolean aBoolean) throws Exception {
+
+                        return Single.fromCallable(new Callable<Boolean>() {
+                            @Override
+                            public Boolean call() throws Exception {
+                                try {
+                                    if(aBoolean)
+                                    dbUtil.executeQ(insertHeader);
+                                    return true;
+                                } catch (Exception e) {
+                                    Commons.printException("" + e);
+                                }
+                                return false;
+                            }
+                        });
+
+                    }
+                });
+            }
+        });
+    }
+
+    private Single<Integer> getRetailerEditDetailCount(final String tid) {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                try {
+                    Cursor c = dbUtil.selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail + " where Tid=" + AppUtils.QT(tid));
+                    if (c != null)
+                        return c.getCount();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return 0;
+            }
+        });
+    }
+
+    private Single<Integer> getnearbyEditRequestCount(final String tid) {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                try {
+                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest + " where Tid=" + AppUtils.QT(tid));
+                    if (c != null)
+                        return c.getCount();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return 0;
+            }
+        });
+    }
+
+    private Single<Integer> getRetailerEditPriorityProductsCount(final String tid) {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                try {
+                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts + " where Tid=" + AppUtils.QT(tid));
+                    if (c != null)
+                        return c.getCount();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return 0;
+            }
+        });
+    }
+
+    private Single<Integer> getRetailerEditAttributeCount(final String tid) {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                try {
+                    Cursor c = dbUtil.selectSQL("SELECT status FROM RetailerEditAttribute" + " where Tid=" + AppUtils.QT(tid));
+                    if (c != null)
+                        return c.getCount();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return 0;
             }
         });
     }

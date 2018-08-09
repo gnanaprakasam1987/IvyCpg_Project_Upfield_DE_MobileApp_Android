@@ -43,6 +43,8 @@ public interface IProfileDataManager {
 
     Observable<ArrayList<String>> downloadPriorityProductsForRetailer(String retailerId);
 
+    Observable<ArrayList<String>> downloadPriorityProductsForRetailerUpdate(String retailerId);
+
     Observable<ArrayList<Integer>> downloadCommonAttributeList();
 
     Observable<ArrayList<NewOutletAttributeBO>> downloadEditAttributeList(String retailerID);
@@ -61,6 +63,14 @@ public interface IProfileDataManager {
             ArrayList<NewOutletAttributeBO> AttributeParentList);
 
     Single<String> generateOtpUrl();
+
+    Single<String>checkHeaderAvailablility(String RetailerID, String currentDate);
+
+    Single<Boolean>deleteQuery (String configCode,String RetailerID);
+
+    Single<Boolean> insertNewRow( String configCode, String RetailerID, String mTid, String mCustomQuery);
+
+    Single<Boolean> updateRetailer(String mTid, String RetailerID,String currentDate);
 
     void closeDB();
 

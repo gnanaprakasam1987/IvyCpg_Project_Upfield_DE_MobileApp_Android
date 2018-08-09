@@ -90,6 +90,8 @@ public interface IProfileEditContract {
 
         String getSubChennalSelectedItem();
 
+        int getSubChennalSelectedItemId();
+
         void setSubChennalFocus();
 
         String getDynamicEditTextValues(int mNumber);
@@ -99,6 +101,40 @@ public interface IProfileEditContract {
         HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList();
 
         int  subChannelGetSelectedItem();
+
+
+       Vector<RetailerMasterBO> getSelectedIds();
+
+       ChannelBO getChennalSelectedItemBO();
+
+       ArrayList<NewOutletBO> getContractStatusList();
+
+       int  getContractSpinnerSelectedItemListId();
+
+       int getLocation1SelectedItemLocId();
+
+       int getLocation2SelectedItemLocId();
+
+       int getLocation3SelectedItemLocId();
+
+       RetailerFlexBO getRField4SpinnerSelectedItem();
+
+       RetailerFlexBO getRField5SpinnerSelectedItem();
+
+       RetailerFlexBO getRField6SpinnerSelectedItem();
+
+       RetailerFlexBO getRField7SpinnerSelectedItem();
+
+       boolean getSEZcheckBoxCheckedValues();
+
+       String getFoodLicenceExpDateValue();
+
+       String getDrugLicenceExpDateValue();
+
+       ArrayList<StandardListBO> getSelectedPriorityProductList();
+
+
+
 
     }
 
@@ -174,6 +210,8 @@ public interface IProfileEditContract {
         void saveUpdatedProfileEdit();
 
         void verifyOTP(String mType,String mValue);
+
+
 
     }
 }

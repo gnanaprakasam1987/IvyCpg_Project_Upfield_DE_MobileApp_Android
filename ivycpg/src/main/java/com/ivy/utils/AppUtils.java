@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.content.FileProvider;
+import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -37,6 +38,14 @@ public class AppUtils {
 
     private AppUtils() {
 
+    }
+
+    public static String validateInput(String input) {
+        String str = "";
+        if (input != null && input != "") {
+            str = Html.fromHtml(input).toString();
+        }
+        return str;
     }
 
     public static boolean isValidRegx(CharSequence target, String regx) {

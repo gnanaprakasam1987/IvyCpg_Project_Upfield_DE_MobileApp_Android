@@ -85,10 +85,22 @@ public class NewOutletHelper {
     private MaterialSpinner materialSpinner[] = null;
 
 
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getSelectedPrioProducts}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     private ArrayList<StandardListBO> getSelectedPrioProducts() {
         return selectedPrioProducts;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#setSelectedPrioProducts}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void setSelectedPrioProducts(ArrayList<StandardListBO> selectedPrioProducts) {
         this.selectedPrioProducts = selectedPrioProducts;
     }
@@ -225,7 +237,7 @@ public class NewOutletHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getContactTitle()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -254,7 +266,7 @@ public class NewOutletHelper {
     }
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getContactStatus}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -287,15 +299,14 @@ public class NewOutletHelper {
      */
     public void updateRetailer() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
+
             boolean isData;
             String tid;
+            String currentDate= SDUtil.now(SDUtil.DATE_GLOBAL);
             Cursor headerCursor;
-            String currentDate;
-            currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
 
 
             tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -303,8 +314,7 @@ public class NewOutletHelper {
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             // delete Header if exist
-            headerCursor = db
-                    .selectSQL("SELECT Tid FROM RetailerEditHeader"
+            headerCursor = db.selectSQL("SELECT Tid FROM RetailerEditHeader"
                             + " WHERE RetailerId = "
                             + bmodel.getRetailerMasterBO().getRetailerID()
                             + " AND Date = "
@@ -314,29 +324,25 @@ public class NewOutletHelper {
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
-
                 tid = headerCursor.getString(0);
                 headerCursor.close();
-
             }
 
             String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
                     "values (" + bmodel.QT(tid)
                     + "," + bmodel.getRetailerMasterBO().getRetailerID()
                     + "," + bmodel.QT(currentDate) + ")";
-            String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" +
-                    "values (" + bmodel.QT(tid)
-                    + ",";
+
+            String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" + "values (" + bmodel.QT(tid) + ",";
 
             String queryInsert = "";
-            String temRouteQuery = "";
 
             profileEditConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
-            Commons.print("Profile Fragment, " + " Update Retailer List size :"
-                    + profileEditConfig.size());
+            Commons.print("Profile Fragment, " + " Update Retailer List size :" + profileEditConfig.size());
 
             isData = false;
+
             for (ConfigureBO configBO : profileEditConfig) {
 
                 if (configBO.getConfigCode().equalsIgnoreCase("PROFILE02") && configBO.getModule_Order() == 1) {
@@ -351,10 +357,7 @@ public class NewOutletHelper {
                             queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
-
                     }
-
-
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE03") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
                         if (bmodel.getRetailerMasterBO().getAddress1().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
@@ -1190,31 +1193,28 @@ public class NewOutletHelper {
                         }
 
                     }
-
-
                 }
 
                 if (!queryInsert.equals(""))
                     db.executeQ(queryInsert);
 
-
                 queryInsert = "";
 
             }
+
+
             if (isData) {
+
                 db.deleteSQL(DataMembers.tbl_RetailerEditHeader, " Tid=" + bmodel.QT(tid), false);
-                Cursor c = db
-                        .selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail
-                                + " where Tid=" + bmodel.QT(tid));
-                Cursor c1 = db
-                        .selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest
-                                + " where Tid=" + bmodel.QT(tid));
-                Cursor c2 = db
-                        .selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts
-                                + " where Tid=" + bmodel.QT(tid));
-                Cursor c3 = db
-                        .selectSQL("SELECT status FROM RetailerEditAttribute"
-                                + " where Tid=" + bmodel.QT(tid));
+
+                Cursor c = db.selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail + " where Tid=" + bmodel.QT(tid));
+
+                Cursor c1 = db.selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest + " where Tid=" + bmodel.QT(tid));
+
+                Cursor c2 = db.selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts + " where Tid=" + bmodel.QT(tid));
+
+                Cursor c3 = db.selectSQL("SELECT status FROM RetailerEditAttribute" + " where Tid=" + bmodel.QT(tid));
+
                 if (c.getCount() > 0 || c1.getCount() > 0 || c2.getCount() > 0 || c3.getCount() > 0) {
                     db.executeQ(insertHeader);
                     c.close();
@@ -1222,7 +1222,6 @@ public class NewOutletHelper {
                     c2.close();
                     c3.close();
                 }
-
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1233,7 +1232,7 @@ public class NewOutletHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#updateRetailerMasterAttribute(ArrayList, ArrayList, ArrayList)}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -1502,10 +1501,15 @@ public class NewOutletHelper {
     }
 
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#deleteQuery(String, String)}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     private void deleteQuery(String query, String rid) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + bmodel.QT(query) + "and RetailerId=" + rid, false);
             db.closeDB();
@@ -1923,6 +1927,12 @@ public class NewOutletHelper {
         return priorityproductList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadPriorityProductsForRetailerUpdate}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<String> downloadPriorityProductsForRetailer(String retailerId) {
         ArrayList<String> priorityproductList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
