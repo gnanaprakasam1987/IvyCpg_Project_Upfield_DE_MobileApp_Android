@@ -1183,7 +1183,7 @@ public class CollectionHelper {
                 creditNoteListBO.setAmount(creditNoteListBO.getAmount() - collectedAmount);
             }
         }
-        paymentBO.setUpdatePayableamt(paymentBO.getUpdatePayableamt() - collectedAmount);
+        paymentBO.setUpdatePayableamt(BigDecimal.valueOf(paymentBO.getUpdatePayableamt()).subtract(BigDecimal.valueOf(collectedAmount)).doubleValue());
 
         String modeID = bmodel.getStandardListIdAndType(
                 StandardListMasterConstants.CREDIT_NOTE,

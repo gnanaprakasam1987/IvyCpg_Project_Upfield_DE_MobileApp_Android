@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.reports.attendancereport;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -14,13 +15,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.attendancereport.AttendanceReportHelper;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AttendanceReportBo;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Screen to view attendance
@@ -28,16 +38,30 @@ import java.util.ArrayList;
  */
 public class AttendanceReport extends IvyBaseFragment {
 
-    private ListView lvwplist;
-    private Spinner monthSpinner;
-    private TextView tvTotalDays, tvActualDays;
+
     private ArrayList<AttendanceReportBo> attendanceReportBos;
+    private Unbinder unbinder;
+    CompositeDisposable compositeDisposable;
+
+    @BindView(R.id.list)
+    ListView lvwplist;
+
+    @BindView(R.id.monthSpinner)
+    Spinner monthSpinner;
+
+    @BindView(R.id.tvTotalDays)
+    TextView tvTotalDays;
+
+    @BindView(R.id.tvActualDays)
+    TextView tvActualDays;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_attendance_report, container,
                 false);
+        unbinder = ButterKnife.bind(this, view);
 
         BusinessModel bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
@@ -50,17 +74,75 @@ public class AttendanceReport extends IvyBaseFragment {
             getActivity().finish();
         }
 
-        monthSpinner = view.findViewById(R.id.monthSpinner);
-        tvTotalDays = view.findViewById(R.id.tvTotalDays);
-        tvActualDays = view.findViewById(R.id.tvActualDays);
-
-        lvwplist = view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
+        getAttendanceRptData(bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
-        AttendanceReportHelper attendanceReportHelper =new AttendanceReportHelper(getContext());
-        ArrayList<String> attendanceMonths = attendanceReportHelper.downloadAttendanceMonth(bmodel.userMasterHelper.getUserMasterBO().getUserid());
-        attendanceReportBos = attendanceReportHelper.downloadAttendanceReport(bmodel.userMasterHelper.getUserMasterBO().getUserid());
+        return view;
+    }
 
+    /**
+     * get Attendance Report data from DB
+     *
+     * @param userId
+     */
+    private void getAttendanceRptData(int userId) {
+        final ArrayList<String> attendanceMonths = new ArrayList<>();
+        attendanceReportBos = new ArrayList<>();
+        AttendanceReportHelper attendanceReportHelper = new AttendanceReportHelper();
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(getActivity());
+        compositeDisposable = new CompositeDisposable();
+        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        compositeDisposable.add((Disposable) Observable.zip(attendanceReportHelper.downloadAttendanceMonth(userId, getActivity()),
+                attendanceReportHelper.downloadAttendanceReport(userId, getActivity())
+                , new BiFunction<ArrayList<String>, ArrayList<AttendanceReportBo>, Boolean>() {
+                    @Override
+                    public Boolean apply(ArrayList<String> monthList, ArrayList<AttendanceReportBo> attendanceReportList) throws Exception {
+
+                        if (monthList.size() > 0
+                                && attendanceReportList.size() > 0) {
+                            attendanceMonths.addAll(monthList);
+                            attendanceReportBos = attendanceReportList;
+                            return true;
+                        }
+                        return false;
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Boolean>() {
+                    @Override
+                    public void onNext(Boolean isFlag) {
+
+                        if (isFlag) {
+                            setUpMonthSpinner(attendanceMonths);
+                        } else
+                            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        alertDialog.dismiss();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        alertDialog.dismiss();
+                    }
+                }));
+
+    }
+
+    /**
+     * load data into list view
+     *
+     * @param attendanceMonths
+     */
+    private void setUpMonthSpinner(ArrayList<String> attendanceMonths) {
         if (attendanceMonths.size() > 1) {
             ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
@@ -88,9 +170,17 @@ public class AttendanceReport extends IvyBaseFragment {
             getAttendance(attendanceMonths.get(0));
         } else if (attendanceMonths.size() == 0 && attendanceMonths.size() == 0)
             monthSpinner.setVisibility(View.INVISIBLE);
+    }
 
-        return view;
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (compositeDisposable != null
+                && !compositeDisposable.isDisposed()) {
+            compositeDisposable.dispose();
+        }
+        unbinder.unbind();
     }
 
     private class MyAdapter extends ArrayAdapter<AttendanceReportBo> {
@@ -124,12 +214,7 @@ public class AttendanceReport extends IvyBaseFragment {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 row = inflater.inflate(R.layout.row_attendance_report,
                         parent, false);
-                holder = new ViewHolder();
-                holder.date = row.findViewById(R.id.tvDate);
-                holder.day = row.findViewById(R.id.tvDay);
-                holder.status = row.findViewById(R.id.tvStatus);
-
-
+                holder = new ViewHolder(row);
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -159,7 +244,19 @@ public class AttendanceReport extends IvyBaseFragment {
     }
 
     class ViewHolder {
-        TextView date, day, status;
+
+        @BindView(R.id.tvDate)
+        TextView date;
+
+        @BindView(R.id.tvDay)
+        TextView day;
+
+        @BindView(R.id.tvStatus)
+        TextView status;
+
+        ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
     @SuppressLint("SetTextI18n")

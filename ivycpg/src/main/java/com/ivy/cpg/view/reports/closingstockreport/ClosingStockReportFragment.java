@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.reports.closingstockreport;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +14,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportsHelper;
 import com.ivy.cpg.view.reports.promotion.RetailerNamesBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -26,13 +24,22 @@ import com.ivy.sd.png.util.Commons;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
 public class ClosingStockReportFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
     private ListView lvwplist;
     private LinearLayout linearLayout;
     ClosingStockReportsHelper closingStockReportsHelper;
-    HashMap<String, ArrayList<ProductMasterBO>> retailerWiseClosingStock;
+    HashMap<String, ArrayList<ClosingStockReportBo>> retailerWiseClosingStock;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,25 +52,8 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-
         closingStockReportsHelper = new ClosingStockReportsHelper(getContext());
-        ArrayList<RetailerNamesBO> items = closingStockReportsHelper.downloadClosingStockRetailers();
 
-        int siz = 0;
-        try {
-            siz = items.size();
-            if (siz == 0) {
-                Toast.makeText(getActivity(), R.string.no_data_exists, Toast.LENGTH_LONG).show();
-                getActivity().finish();
-                return view;
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        retailerWiseClosingStock = closingStockReportsHelper.downloadClosingStock();
-
-        Spinner spinnerbrand = view.findViewById(R.id.spn_retailer_closing_stk);
 
         linearLayout = view.findViewById(R.id.orderScreenListRow);
 
@@ -74,29 +64,86 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
 
         setUpLabelConfig(view);
 
+        getClosingSTKReportData(view);
 
+        return view;
+    }
+
+    private void getClosingSTKReportData(final View view) {
+        final ArrayList<RetailerNamesBO> items = new ArrayList<>();
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(getActivity());
+        compositeDisposable = new CompositeDisposable();
+        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();
+        compositeDisposable.add((Disposable) Observable.
+                zip(closingStockReportsHelper.downloadClosingStockRetailers(),
+                        closingStockReportsHelper.downloadClosingStock(),
+                        new BiFunction<ArrayList<RetailerNamesBO>,
+                                HashMap<String, ArrayList<ClosingStockReportBo>>, Boolean>() {
+                            @Override
+                            public Boolean apply(ArrayList<RetailerNamesBO> retailerNamesList,
+                                                 HashMap<String, ArrayList<ClosingStockReportBo>> retailerArrayListHashMap) throws Exception {
+                                if (retailerNamesList.size() > 0
+                                        && retailerArrayListHashMap.size() > 0) {
+                                    items.clear();
+                                    items.addAll(retailerNamesList);
+                                    retailerWiseClosingStock = retailerArrayListHashMap;
+                                    return true;
+                                } else
+                                    return false;
+                            }
+                        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Boolean>() {
+                    @Override
+                    public void onNext(Boolean isFlag) {
+                        if (isFlag) {
+                            loadSpinnerView(view, items);
+                        } else {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        alertDialog.dismiss();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        alertDialog.dismiss();
+                    }
+                }));
+
+    }
+
+
+    private void loadSpinnerView(View view, ArrayList<RetailerNamesBO> items) {
+        Spinner spinnerbrand = view.findViewById(R.id.spn_retailer_closing_stk);
         ArrayAdapter<RetailerNamesBO> retailerAdapter = new ArrayAdapter<>(
                 getActivity(), android.R.layout.simple_spinner_item);
         retailerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        for (int i = 0; i < siz; ++i) {
-            retailerAdapter.add(items.get(i));
+        for (RetailerNamesBO namesBO : items) {
+            retailerAdapter.add(namesBO);
         }
         spinnerbrand.setAdapter(retailerAdapter);
 
-        spinnerbrand.setAdapter(retailerAdapter);
         spinnerbrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                RetailerMasterBO reBo = (RetailerMasterBO) parent.getSelectedItem();
-                updateStockReportGrid(reBo.getTretailerId());
+                RetailerNamesBO reBo = (RetailerNamesBO) parent.getSelectedItem();
+                updateStockReportGrid(reBo.getRetailerId());
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
-        return view;
     }
 
     private void hideAndSeek(View view) {
@@ -149,9 +196,9 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
 
     private void updateStockReportGrid(int retailerId) {
 
-        ArrayList<ProductMasterBO> closingStkList = new ArrayList<>();
+        ArrayList<ClosingStockReportBo> closingStkList = new ArrayList<>();
         try {
-            closingStkList = retailerWiseClosingStock.get(retailerId+"");
+            closingStkList = retailerWiseClosingStock.get(retailerId + "");
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -170,18 +217,28 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
         lvwplist.setAdapter(listDatas);
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (compositeDisposable != null
+                && !compositeDisposable.isDisposed()) {
+            compositeDisposable.dispose();
+        }
+    }
+
     class MyAdapter extends ArrayAdapter {
 
-        private ArrayList<ProductMasterBO> items;
+        private ArrayList<ClosingStockReportBo> items;
 
-        public MyAdapter(ArrayList<ProductMasterBO> items) {
+        public MyAdapter(ArrayList<ClosingStockReportBo> items) {
             super(getActivity(), R.layout.row_closing_stk_report, items);
             this.items = items;
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
-            ProductMasterBO product = items.get(position);
+            ClosingStockReportBo product = items.get(position);
             View row = convertView;
             if (row == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -230,7 +287,7 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
             if (product.getCsPiece() > 0)
                 total = product.getCsPiece();
             if (product.getCsCase() > 0)
-                total = total + (product.getCsCase() * product.getCaseSize());
+                total = total + (product.getCsCase() * product.getCasesize());
             if (product.getCsOuter() > 0)
                 total = total + (product.getCsOuter() * product.getOutersize());
 
@@ -239,7 +296,7 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
             return (row);
         }
 
-        public ProductMasterBO getItem(int position) {
+        public ClosingStockReportBo getItem(int position) {
             return items.get(position);
         }
 

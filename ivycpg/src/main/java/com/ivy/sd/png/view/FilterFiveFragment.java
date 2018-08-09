@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sf.SalesFundamentalHelper;
 import com.ivy.sd.png.asean.view.R;
@@ -28,7 +29,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
+import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -214,8 +215,8 @@ public class FilterFiveFragment<E> extends Fragment {
                         filterProductLevels.addAll(mSFHelper.getSequenceValues());
                         break;
                     case "SVR":
-                        filterProductsByLevelId.putAll(bmodel.reportHelper.getMfilterlevelBo());
-                        filterProductLevels.addAll(bmodel.reportHelper.getSequencevalues());
+                        filterProductsByLevelId.putAll(new SalesVolumeReportHelper(getActivity()).getMfilterlevelBo());
+                        filterProductLevels.addAll(new SalesVolumeReportHelper(getActivity()).getSequencevalues());
                     case "SR":
                         filterProductsByLevelId.putAll(SalesReturnHelper.getInstance(getActivity()).getFilterProductsByLevelId());
                         filterProductLevels.addAll(SalesReturnHelper.getInstance(getActivity()).getFilterProductLevels());
