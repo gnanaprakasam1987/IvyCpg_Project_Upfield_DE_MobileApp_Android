@@ -63,7 +63,8 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
 
         tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.outlet)));
-        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.contact)));
+        if (bmodel.configurationMasterHelper.IS_CONTACT_TAB)
+            tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.contact)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
 
@@ -81,8 +82,7 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
                     transaction.replace(R.id.fragment_container, new NewOutletFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
-                }
-                else if (tab.getPosition() == 1) {
+                } else if (tab.getPosition() == 1) {
                     transaction.replace(R.id.fragment_container, new ContactCreationFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();

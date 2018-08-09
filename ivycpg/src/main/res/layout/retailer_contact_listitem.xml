@@ -19,19 +19,31 @@
         android:orientation="horizontal"
         android:padding="@dimen/dimen_10dp">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:padding="@dimen/dimen_5dp">
 
             <ImageView
                 android:id="@+id/ivIsPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_tick_enable" />
-        </LinearLayout>
+                android:src="@drawable/ic_tick_enable"
+                card_view:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivIsdelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete"
+                android:visibility="gone"
+                card_view:layout_constraintBottom_toBottomOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
 
         <LinearLayout
+            android:id="@+id/llItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"

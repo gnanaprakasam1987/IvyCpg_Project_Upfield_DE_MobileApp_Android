@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -28,25 +27,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/tvTitlePrimary"
-                    style="?attr/customListItemPrimary"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/isprimary"
-                    android:textColor="@color/Black"
-                    android:textSize="@dimen/font_nano_small"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <CheckBox
-                    android:id="@+id/cbIsPrimary"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/card_margin"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvTitlePrimary" />
 
                 <TextView
                     android:id="@+id/tvTitle"
@@ -59,7 +39,7 @@
                     android:textColor="@color/Black"
                     android:textSize="@dimen/font_nano_small"
                     app:layout_constraintEnd_toStartOf="@id/tvTitleFirstName"
-                    app:layout_constraintStart_toEndOf="@id/tvTitlePrimary"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
@@ -70,6 +50,19 @@
                     app:layout_constraintEnd_toEndOf="@id/tvTitle"
                     app:layout_constraintStart_toStartOf="@id/tvTitle"
                     app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+                <EditText
+                    android:id="@+id/etOthers"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:inputType="textPersonName"
+                    android:maxLength="10"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="@id/sp_reason"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sp_reason" />
 
                 <TextView
                     android:id="@+id/tvTitleFirstName"
@@ -126,23 +119,45 @@
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="@dimen/list_margin"
                 app:layout_constraintTop_toBottomOf="@+id/cl1">
+
+                <TextView
+                    android:id="@+id/tvTitlePrimary"
+                    style="?attr/customListItemPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/isprimary"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/font_nano_small"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <CheckBox
+                    android:id="@+id/cbIsPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/card_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitlePrimary" />
 
                 <TextView
                     android:id="@+id/tvTitlePhno"
                     style="?attr/customListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/card_margin"
                     android:maxLength="20"
                     android:maxLines="1"
                     android:text="@string/contact_no"
                     android:textColor="@color/Black"
                     android:textSize="@dimen/font_nano_small"
                     app:layout_constraintEnd_toStartOf="@+id/tvTitleEmail"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toEndOf="@id/tvTitlePrimary" />
 
                 <EditText
                     android:id="@+id/etPhno"
@@ -154,7 +169,7 @@
                     android:maxLength="20"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/etEmail"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="@id/tvTitlePhno" />
 
                 <TextView
                     android:id="@+id/tvTitleEmail"
@@ -182,6 +197,17 @@
                     app:layout_constraintStart_toEndOf="@id/etPhno"
                     app:layout_constraintTop_toBottomOf="@+id/tvTitleEmail" />
             </android.support.constraint.ConstraintLayout>
+
+            <Button
+                android:id="@+id/addbutton"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_marginTop="@dimen/list_margin"
+                android:text="@string/add_label"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl2" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
@@ -193,6 +219,7 @@
         android:cacheColorHint="@null"
         android:drawSelectorOnTop="false"
         android:fitsSystemWindows="true"
+        android:padding="@dimen/card_margin"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbars="none"
