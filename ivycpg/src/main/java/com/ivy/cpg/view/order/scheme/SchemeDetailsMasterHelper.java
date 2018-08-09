@@ -2813,10 +2813,9 @@ public class SchemeDetailsMasterHelper {
         double totalValue = 0;
 
         for (ProductMasterBO productMasterBO : mOrderedProductList) {
-            if (productMasterBO.getProductID().equals(productId)) {
+            if (productMasterBO.getProductID().equals(productId)|| productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
 
-                if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0
-                        || productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
+                if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0) {
                     if (mBatchListByProductId != null) {
 
                         ArrayList<ProductMasterBO> batchWiseList = mBatchListByProductId.get(productMasterBO.getProductID());

@@ -720,7 +720,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         mActivityTotalCount.setText(String.valueOf("/" + ((isStoreCheckMenu ? mTempMenuList.size() - 1 : mTempMenuList.size()) + mTempMenuStoreList.size())));
 
         // this dialog will return when mandatory module is not completed otherwise not show
-        if (isMandatoryDialogShow)
+        if (isMandatoryDialogShow && bmodel.configurationMasterHelper.IS_CHECK_MODULE_MANDATORY)
             onCreateDialog(6);
     }
 
