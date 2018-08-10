@@ -319,6 +319,7 @@ public class ProductHelper {
             HashMap<String, String> hashMap = new HashMap<>();
             HashMap<String, String> hashMap1 = new HashMap<>();
             HashMap<String, Integer> oosMap = new HashMap<>();
+            ArrayList<String> deadProductList = new ArrayList<>();
 
             String sql = "select pid,Ordp4,Stkp4,OOS from RtrWiseP4OrderAndStockMaster where rid="
                     + QT(bmodel.retailerMasterBO.getRetailerID()) + "";
@@ -333,11 +334,27 @@ public class ProductHelper {
                 }
                 c.close();
             }
+
+            sql = "select pid from RtrWiseDeadProducts where rid=" + QT(bmodel.retailerMasterBO.getRetailerID());
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    deadProductList.add(c.getString(0));
+                }
+                c.close();
+            }
             db.closeDB();
-            if (hashMap.size() > 0 || hashMap1.size() > 0 || oosMap.size() > 0) {
+            if (hashMap.size() > 0 || hashMap1.size() > 0 || oosMap.size() > 0 || !deadProductList.isEmpty()) {
                 for (ProductMasterBO p : productMaster) {
+
+                    if (deadProductList.contains(p.getProductID()))
+                        p.setmDeadProduct(1);
+                    else
+                        p.setmDeadProduct(0);
+
                     String value = hashMap
                             .get(p.getProductID());
+
                     if (value != null) {
                         p.setRetailerWiseProductWiseP4Qty(value);
                         p.setRetailerWiseP4StockQty(hashMap1.get(p.getProductID()));
