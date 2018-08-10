@@ -4445,6 +4445,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                         .show();
                                 break;
                             }
+                            else if (length > 0 && !isValidComposition()) {
+                                validate = false;
+                                break;
+                            }
 
                         }
                     } catch (Exception e) {
@@ -4517,6 +4521,24 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
         }
 
+        return true;
+    }
+
+    public boolean isValidComposition() {
+        for (int index = 0; index < profileConfig.size(); index++) {
+            if (profileConfig.get(index).getConfigCode()
+                    .equalsIgnoreCase("PROFILE28")) {
+
+                if (rField4Spinner.getSelectedItem().toString().toLowerCase()
+                        .contains("select")) {
+                    rField4Spinner.requestFocus();
+                    Toast.makeText(getActivity(), getActivity().getResources()
+                            .getString(R.string.select_str) + " " + profileConfig.get(index).getMenuName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                return true;
+            }
+        }
         return true;
     }
 
