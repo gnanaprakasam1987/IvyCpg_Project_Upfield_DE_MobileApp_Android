@@ -5139,6 +5139,7 @@ public class ProductHelper {
         this.globalCategory = globalCategory;
     }
 
+
     public boolean isFilterAvaiable(String menuCode) {
         DBUtil db = null;
         boolean isAvailable = false;
@@ -5430,9 +5431,10 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor cur = db
-                    .selectSQL("select HHTCode,MName,RField1  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                    .selectSQL("select HHTCode,MName,RField1,RField  from HhtMenuMaster where flag=1 and lower(MenuType)="
                             + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
-                            + " and lang=" + bmodel.QT(language));
+                            + " and lang=" + bmodel.QT(language)
+                            + " Order By MNumber");
 
             if (cur != null && cur.getCount() > 0) {
                 ConfigureBO configureBO;
@@ -5441,6 +5443,7 @@ public class ProductHelper {
                     configureBO.setConfigCode(cur.getString(0));
                     configureBO.setMenuName(cur.getString(1));
                     configureBO.setMandatory(cur.getInt(2));
+                    configureBO.setRField(cur.getString(3));
                     list.add(configureBO);
                 }
                 cur.close();

@@ -32,7 +32,7 @@ public class SalesReturnReportHelperSOHO {
             Cursor c = db
                     .selectSQL("select distinct srd.ProductId as ProductId,srd.retailerId as RetailerID," +
                             "pm.pname as ProductName, pm.pcode as ProductCode from SalesReturnDetails srd inner join " +
-                            "ProductMaster pm ON srd.ProductID = pm.pid where sr.upload!='X' and srd.status = 2");
+                            "ProductMaster pm ON srd.ProductID = pm.pid where srd.upload!='X' and srd.status = 2");
             if (c != null) {
                 while (c.moveToNext()) {
                     SalesReturnReasonBO reasonBO = new SalesReturnReasonBO();

@@ -713,8 +713,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         retailerObj = bmodel.getRetailerMasterBO();
 
         upArrow = ContextCompat.getDrawable(this, R.drawable.ic_home_arrow);
-        upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
+        upArrow.setColorFilter(ContextCompat.getColor(this, R.color.FullBlack), PorterDuff.Mode.SRC_ATOP);
 
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        }
 
         try {
             if (bmodel.retailerMasterBO.getRetailerName() != null) {

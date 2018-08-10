@@ -1178,6 +1178,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             i.putExtra("tempOrdImg",
                     (bModel.getOrderHeaderBO().getOrderImageName() == null ? ""
                             : bModel.getOrderHeaderBO().getOrderImageName()));
+            i.putExtra("tempAddressId",
+                    bModel.getOrderHeaderBO().getAddressID());
         }
 
         bModel.setOrderHeaderBO(null);

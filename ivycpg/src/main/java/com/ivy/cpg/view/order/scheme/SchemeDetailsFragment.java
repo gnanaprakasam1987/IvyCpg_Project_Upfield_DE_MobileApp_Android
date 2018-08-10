@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -285,6 +286,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                 slab.setLayoutParams(layoutParams_slab);
                                 slab.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                                 slab.setTextSize(mTextViewSize);
+                                slab.setEllipsize(TextUtils.TruncateAt.END);
+                                slab.setMaxLines(2);
                                 if (schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme() != null) {
                                     slab.setText(schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme());
                                     slab.setTag(schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme());
