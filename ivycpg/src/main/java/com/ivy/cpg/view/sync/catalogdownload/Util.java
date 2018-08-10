@@ -195,7 +195,7 @@ public class Util {
 
 
 
-    static String nopath = "";
+
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint("NewApi")
@@ -264,7 +264,7 @@ public class Util {
             return uri.getPath();
         }
 
-        return nopath;
+        return "";
     }
 
     /**
@@ -300,7 +300,7 @@ public class Util {
             if (cursor != null)
                 cursor.close();
         }
-        return nopath;
+        return "";
     }
 
     /**

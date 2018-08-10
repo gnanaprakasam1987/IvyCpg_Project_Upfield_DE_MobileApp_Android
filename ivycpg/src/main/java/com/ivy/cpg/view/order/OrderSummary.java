@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -929,6 +930,24 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         menu.findItem(R.id.menu_capture).
                 setVisible(bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE);
 
+
+        /*
+        * enable attach file option
+        * */
+
+        if (bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
+            if (bModel.getOrderHeaderBO().getAttachedFileName().length() > 0) {
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.icon_save);
+                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
+                menu.findItem(R.id.menu_attach_file).setIcon(drawable);
+            } else {
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.icon_save);
+                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
+                menu.findItem(R.id.menu_attach_file).setIcon(drawable);
+            }
+
+        }
+
         menu.findItem(R.id.menu_attach_file).setVisible(bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE);
 
         return super.onPrepareOptionsMenu(menu);
@@ -1091,7 +1110,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 target.setDataAndType(Uri.fromFile(file), "application/pdf");
                 target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 Intent intent = Intent.createChooser(target, "Open File");
-                startActivity(intent);
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    e.printStackTrace();
+                }
+
             } else {
                 String path = HomeScreenFragment.photoPath + "/"
                         + attachedFilePath;
@@ -3397,7 +3421,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
                 break;
             case FILE_SELECTION:
-                if (requestCode == 12) {
+                if (requestCode == 12 && data != null) {
+
 
                     String realPath = Util.getPath(this, data.getData());
                     Util.copyFile(new File(realPath), HomeScreenFragment.photoPath, attachedFilePath);
