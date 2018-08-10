@@ -137,7 +137,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private BusinessModel bmodel;
 
     private RecyclerView pdt_recycler_view;
-    private String tempPo, tempRemark, tempRField1, tempRField2;
+    private String tempPo, tempRemark, tempRField1, tempRField2, tempOrdImg;
+    ;
+    private int tempAddressId;
     private MustSellReasonDialog dialog;
     private Vector<ProductMasterBO> mylist;
     private String brandbutton, generalbutton;
@@ -263,6 +265,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         : extras.getString("tempRField1"));
                 tempRField2 = (extras.getString("tempRField2") == null ? ""
                         : extras.getString("tempRField2"));
+                tempOrdImg = (extras.getString("tempOrdImg") == null ? ""
+                        : extras.getString("tempOrdImg"));
+                tempAddressId = (extras.getInt("tempAddressId"));
             }
 
         } else {
@@ -283,6 +288,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             tempRField2 = (String) (savedInstanceState
                     .getSerializable("tempRField2") == null ? ""
                     : savedInstanceState.getSerializable("tempRField2"));
+            tempOrdImg = (String) (savedInstanceState
+                    .getSerializable("tempOrdImg") == null ? ""
+                    : savedInstanceState.getSerializable("tempOrdImg"));
+            tempAddressId = (int) savedInstanceState.getSerializable("tempAddressId");
 
         }
 
@@ -1255,11 +1264,16 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     .getString("tempRField1"));
             tempRField2 = (extras.getString("tempRField2") == null ? "" : extras
                     .getString("tempRField2"));
+            tempOrdImg = (extras.getString("tempOrdImg") == null ? "" : extras
+                    .getString("tempOrdImg"));
+            tempAddressId = (extras.getInt("tempAddressId"));
             savedInstanceState.putSerializable("OrderFlag", OrderedFlag);
             savedInstanceState.putSerializable("tempPo", tempPo);
             savedInstanceState.putSerializable("tempRemark", tempRemark);
             savedInstanceState.putSerializable("tempRField1", tempRField1);
             savedInstanceState.putSerializable("tempRField2", tempRField2);
+            savedInstanceState.putString("tempOrdImg", tempOrdImg);
+            savedInstanceState.putSerializable("tempAddressId", tempAddressId);
             savedInstanceState.putSerializable("ScreenCode", screenCode);
 
         }
@@ -1442,6 +1456,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         tempRField1 == null ? "" : tempRField1);
                 bmodel.getOrderHeaderBO().setRField2(
                         tempRField2 == null ? "" : tempRField2);
+                bmodel.getOrderHeaderBO().setOrderImageName(
+                        tempOrdImg == null ? "" : tempOrdImg);
+                bmodel.getOrderHeaderBO().setAddressID(tempAddressId);
 
                 if (bmodel.configurationMasterHelper.IS_MUST_SELL
                         && !bmodel.productHelper.isMustSellFilled()) {
