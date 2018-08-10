@@ -24,6 +24,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
@@ -5837,10 +5838,27 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         startActivity(new Intent(getActivity(),
                                 HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));
 //                        getActivity().finish();
-                    } /*else {
-                        startActivity(new Intent(getActivity(), HomeScreenActivity.class));
-                        getActivity().finish();
-                    }*/
+                    } else {
+                       /* startActivity(new Intent(getActivity(), HomeScreenActivity.class));
+                        getActivity().finish();*/
+
+                       try {
+                           HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                           if (currentFragment != null) {
+                               currentFragment.refreshList(true);
+                           /* android.support.v4.app.FragmentManager fm = currentFragment.getFragmentManager();
+
+                            NewOutletFragment mNewOutletFragment = (NewOutletFragment) fm
+                                    .findFragmentByTag(MENU_NEW_RETAILER);
+                            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+
+                            if (mNewOutletFragment != null)
+                                ft.remove(mNewOutletFragment);*/
+                           }
+                       }catch(Exception e){
+                           Commons.printException(e);
+                       }
+                    }
 
                 }
 
