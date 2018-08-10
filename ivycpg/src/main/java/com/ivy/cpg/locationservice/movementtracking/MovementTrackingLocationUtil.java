@@ -24,7 +24,6 @@ import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 
-import org.jetbrains.annotations.NotNull;
 
 public class MovementTrackingLocationUtil implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -214,7 +213,7 @@ public class MovementTrackingLocationUtil implements LocationListener, GoogleApi
     }
 
     @Override
-    public void onConnectionFailed(@NotNull ConnectionResult connectionResult) {
+    public void onConnectionFailed( ConnectionResult connectionResult) {
 
     }
 

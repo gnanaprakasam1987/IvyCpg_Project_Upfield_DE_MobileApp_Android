@@ -7,8 +7,6 @@ import android.preference.PreferenceManager;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.PreferenceInfo;
 
-import org.jetbrains.annotations.NotNull;
-
 import javax.inject.Inject;
 
 import static com.ivy.sd.png.model.ApplicationConfigs.LANGUAGE;
