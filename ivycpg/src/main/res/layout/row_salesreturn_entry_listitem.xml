@@ -43,15 +43,15 @@
                     android:textColor="@color/GRAY_TEXT"
                     android:textSize="@dimen/greyed_text_size" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/invoiceno"
                     style="@style/EditText_ListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789$&amp;*/-"
                     android:gravity="start|center_vertical"
-                    android:maxLength="25"
-                    android:text="" />
+                    android:maxLength="30"
+                    android:text="" >
+                </AutoCompleteTextView>
 
             </LinearLayout>
 
