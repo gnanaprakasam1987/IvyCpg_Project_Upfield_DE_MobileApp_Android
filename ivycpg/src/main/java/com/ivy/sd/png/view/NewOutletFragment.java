@@ -5837,10 +5837,10 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         startActivity(new Intent(getActivity(),
                                 HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));
 //                        getActivity().finish();
-                    } else {
+                    } /*else {
                         startActivity(new Intent(getActivity(), HomeScreenActivity.class));
                         getActivity().finish();
-                    }
+                    }*/
 
                 }
 
