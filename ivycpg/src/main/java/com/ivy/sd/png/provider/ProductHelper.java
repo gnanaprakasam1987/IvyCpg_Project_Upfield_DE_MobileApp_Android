@@ -3561,7 +3561,7 @@ public class ProductHelper {
             sb.append(" locationid in(" + bmodel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + bmodel.getRetailerMasterBO().getAccountid() + " AND Accountid != 0" + ") OR ");
             sb.append(" (Retailerid=0 AND distributorid=0 AND Channelid=0 AND locationid =0 AND Accountid =0))");
-            sb.append(" and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE') ");
+            sb.append(" and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE' and ListType = 'DISCOUNT_MODULE_TYPE') ");
             sb.append(" and dm.ApplyLevelid=(select ListId from StandardListMaster ");
             sb.append(" where ListCode='ITEM' and ListType='DISCOUNT_APPLY_TYPE') ");
             sb.append(" and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE')");
