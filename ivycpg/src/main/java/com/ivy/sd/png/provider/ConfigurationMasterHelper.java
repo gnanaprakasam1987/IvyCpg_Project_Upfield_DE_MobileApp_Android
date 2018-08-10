@@ -1469,6 +1469,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
 
+
+
+    //132 --- task 45
+    private static final String CODE_SHOW_ORDER_ATTACH_FILE = "ORDF01";
+    public boolean IS_SHOW_ORDER_ATTACH_FILE = true;
+
     private static final String CODE_SHOW_ALL_SKU_ON_EDIT = "ORDB75";
     public boolean IS_SHOW_ALL_SKU_ON_EDIT;
 

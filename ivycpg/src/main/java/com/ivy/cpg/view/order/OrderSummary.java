@@ -16,6 +16,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,6 +48,7 @@ import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+import com.ivy.cpg.view.sync.catalogdownload.Util;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
@@ -96,6 +98,8 @@ import com.zebra.sdk.printer.PrinterLanguage;
 import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -132,6 +136,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int DIALOG_INVOICE_SAVED = 9;
     private static final int DIALOG_SIGNATURE_AVAILABLE = 8;
     private static final int CAMERA_REQUEST_CODE = 7;
+
+
+    private static final int FILE_SELECTION = 12;
 
     private Button button_order;
     private Button button_invoice;
@@ -190,7 +197,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean isEditMode = false;
     private Calendar mCalendar = null;
-    private String mImageName;
+    private String mImageName, attachedFilePath = "";
     private Toolbar toolbar;
 
 
@@ -922,6 +929,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         menu.findItem(R.id.menu_capture).
                 setVisible(bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE);
 
+        menu.findItem(R.id.menu_attach_file).setVisible(bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -1061,6 +1069,40 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         R.string.sdcard_is_not_ready_to_capture_img,
                         Toast.LENGTH_SHORT).show();
             }
+        } else if (i1 == R.id.menu_attach_file) {
+
+            attachedFilePath = "ORD_"
+                    + Commons.now(Commons.DATE_TIME) + "_"
+                    + bModel.getRetailerMasterBO()
+                    .getRetailerID() + "_"
+                    + bModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "_file.pdf";
+
+
+            String mFirstName = bModel.getOrderHeaderBO().getAttachedFileName();
+
+            boolean nFilesThere = bModel
+                    .checkForNFilesInFolder(
+                            HomeScreenFragment.photoPath,
+                            1, mFirstName);
+            if (nFilesThere) {
+                File file = new File(HomeScreenFragment.photoPath + "/" + mFirstName);
+                Intent target = new Intent(Intent.ACTION_VIEW);
+                target.setDataAndType(Uri.fromFile(file), "application/pdf");
+                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                Intent intent = Intent.createChooser(target, "Open File");
+                startActivity(intent);
+            } else {
+                String path = HomeScreenFragment.photoPath + "/"
+                        + attachedFilePath;
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("application/pdf");
+                intent.putExtra("path", path);
+                startActivityForResult(intent, FILE_SELECTION);
+
+            }
+
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -3354,10 +3396,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         bModel.getOrderHeaderBO().setOrderImageName(mImageName);
                 }
                 break;
+            case FILE_SELECTION:
+                if (requestCode == 12) {
+
+                    String realPath = Util.getPath(this, data.getData());
+                    Util.copyFile(new File(realPath), HomeScreenFragment.photoPath, attachedFilePath);
+                    if (bModel.getOrderHeaderBO() != null)
+                        bModel.getOrderHeaderBO().setAttachedFileName(attachedFilePath);
+                }
+                break;
             default:
                 break;
         }
     }
+
 
     @Override
     protected void onDestroy() {

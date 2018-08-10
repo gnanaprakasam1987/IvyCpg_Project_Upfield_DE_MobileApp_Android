@@ -257,4 +257,14 @@ public class OrderHeader {
     public String getOrderImageName() {
         return orderImageName;
     }
+
+    private String attachedFileName = "";
+
+    public String getAttachedFileName() {
+        return attachedFileName;
+    }
+
+    public void setAttachedFileName(String attachedFileName) {
+        this.attachedFileName = attachedFileName;
+    }
 }
