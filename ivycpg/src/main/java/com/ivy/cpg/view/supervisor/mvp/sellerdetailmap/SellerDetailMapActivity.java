@@ -217,6 +217,13 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 filterFragment();
             }
         });
+
+        findViewById(R.id.recenter_location).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sellerMapViewPresenter.getMarkerForFocus();
+            }
+        });
     }
 
     private void setViewValues(){
@@ -372,8 +379,10 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker))
                         .title("SELLER");
                 sellerMarker = mMap.addMarker(markerOptions);
-            } else
-                sellerMarker.setPosition(sellerLatLng);
+            } else {
+//                sellerMarker.setPosition(sellerLatLng);
+                sellerMapViewPresenter.animateSellerMarker(sellerLatLng,sellerMarker);
+            }
         }
 
     }

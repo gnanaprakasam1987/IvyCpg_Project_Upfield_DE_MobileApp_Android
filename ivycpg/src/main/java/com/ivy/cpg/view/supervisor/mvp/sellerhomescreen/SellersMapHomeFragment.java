@@ -275,6 +275,13 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             }
         });
 
+        view.findViewById(R.id.recenter_location).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sellerMapHomePresenter.getMarkerValuesToFocus();
+            }
+        });
+
     }
 
     private void initViewPager(final View view) {
@@ -483,7 +490,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             Toast.makeText(getContext().getApplicationContext(), "Enable location permission from App Settings", Toast.LENGTH_SHORT).show();
 
         }else{
-            mMap.setMyLocationEnabled(true);
+            mMap.setMyLocationEnabled(false);
         }
 
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -547,9 +554,14 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void focusMarker(LatLngBounds.Builder builder) {
+    public void focusMarker(final LatLngBounds.Builder builder) {
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 20));
+            }
+        });
     }
 
     @Override

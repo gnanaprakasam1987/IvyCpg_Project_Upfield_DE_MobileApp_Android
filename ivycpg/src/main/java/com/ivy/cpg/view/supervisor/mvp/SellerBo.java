@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.Marker;
 public class SellerBo implements Parcelable {
 
     private int userId,billed,covered,target,retailerId,lpc,totallpc,productivityPercent,deviationCount;
-    private String userName,retailerName;
+    private String userName,retailerName,imagePath;
     private boolean isAttendanceDone = false;
     private double latitude,longitude;
     private long orderValue, inTime, outTime,totalOrderValue,totalCallDuration;
@@ -257,6 +257,14 @@ public class SellerBo implements Parcelable {
 
     public void setTotallpc(int totallpc) {
         this.totallpc = totallpc;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override

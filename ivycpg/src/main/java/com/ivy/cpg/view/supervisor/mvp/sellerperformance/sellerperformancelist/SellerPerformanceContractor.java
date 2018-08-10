@@ -23,7 +23,7 @@ public interface SellerPerformanceContractor {
 
         void setView(SellerPerformanceContractor.SellerPerformanceView sellerPerformanceView, Context context);
 
-        void getSellerListAWS();
+        void getSellerListAWS(String date);
 
         void sellerActivityInfoListener(int userId,String date);
 

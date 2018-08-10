@@ -3,7 +3,6 @@ package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 import android.os.AsyncTask;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.ivy.cpg.view.supervisor.customviews.DataParser;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 

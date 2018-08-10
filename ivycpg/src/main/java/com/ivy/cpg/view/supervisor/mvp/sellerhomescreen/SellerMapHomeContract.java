@@ -7,7 +7,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
-import com.ivy.cpg.view.supervisor.mvp.SupervisorModelBo;
 
 import java.util.ArrayList;
 

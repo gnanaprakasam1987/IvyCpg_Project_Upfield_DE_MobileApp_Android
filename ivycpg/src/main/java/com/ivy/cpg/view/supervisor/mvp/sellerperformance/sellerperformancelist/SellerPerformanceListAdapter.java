@@ -1,17 +1,23 @@
 package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPerformanceListAdapter.MyViewHolder> {
@@ -30,6 +36,7 @@ public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPer
 
         private TextView sellerNameTv,sellerPositionTv,sellerPerformancePercentTv;
         private ProgressBar progressBar;
+        private ImageView userImage;
 
         public MyViewHolder(View view) {
             super(view);
@@ -37,6 +44,7 @@ public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPer
             sellerPositionTv = view.findViewById(R.id.seller_position);
             sellerPerformancePercentTv = view.findViewById(R.id.seller_perform_percent);
             progressBar = view.findViewById(R.id.progressBar);
+            userImage = view.findViewById(R.id.user_image);
 
             sellerNameTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             sellerPositionTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
@@ -77,6 +85,10 @@ public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPer
 
             }
         });
+
+        setProfileImage(holder.userImage,
+                sellerList.get(holder.getAdapterPosition()).getImagePath(),
+                sellerList.get(holder.getAdapterPosition()).getUserId());
     }
 
     @Override
@@ -86,5 +98,44 @@ public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPer
 
     interface ItemClickedListener{
         void itemclicked(SellerBo sellerBo);
+    }
+
+    private void setProfileImage(ImageView userView, String imagePath, int userId) {
+        try {
+            if (imagePath != null && !"".equals(imagePath)) {
+                String[] imgPaths = imagePath.split("/");
+                String path = imgPaths[imgPaths.length - 1];
+                File imgFile = new File(context.getExternalFilesDir(
+                        Environment.DIRECTORY_DOWNLOADS)
+                        + "/"
+                        + userId
+                        + DataMembers.DIGITAL_CONTENT
+                        + "/"
+                        + DataMembers.USER + "/"
+                        + path);
+                if (imgFile.exists()) {
+                    try {
+                        userView.setScaleType(ImageView.ScaleType.FIT_XY);
+                        userView.setAdjustViewBounds(true);
+                        //  profileImageView.setImageBitmap(getCircularBitmapFrom(myBitmap));
+
+                        Glide.with(context)
+                                .load(imgFile)
+                                .centerCrop()
+                                .placeholder(R.drawable.ic_default_user)
+                                .error(R.drawable.ic_default_user)
+                                .into(userView);
+
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                } else {
+                    userView
+                            .setImageResource(R.drawable.ic_default_user);
+                }
+            }
+        }catch(Exception e){
+            Commons.printException(e);
+        }
     }
 }

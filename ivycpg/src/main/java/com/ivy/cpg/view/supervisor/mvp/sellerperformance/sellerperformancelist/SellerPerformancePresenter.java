@@ -18,7 +18,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.ivy.cpg.view.supervisor.Seller;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
@@ -63,7 +62,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     }
 
     @Override
-    public void getSellerListAWS(){
+    public void getSellerListAWS(String date){
 
         int totalSellerCount = 0;
 
@@ -75,8 +74,8 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select um.userId,um.userName,count(sm.userId) from usermaster um " +
-                    "left join SupRetailerMaster sm on sm.userId = um.userid where isDeviceuser!=1 and userlevel = '"+loadUserLevel()+"'  group by um.userid";
+            String queryStr = "select um.userId,um.userName,count(sm.userId),um.ProfileImagePath from usermaster um " +
+                    "left join SupRetailerMaster sm on sm.userId = um.userid where isDeviceuser!=1 and userlevel = '"+loadUserLevel()+"' and sm.date ='"+date+"'  group by um.userid";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {
@@ -87,6 +86,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
                     sellerBo.setUserId(c.getInt(0));
                     sellerBo.setUserName(c.getString(1));
                     sellerBo.setTarget(c.getInt(2));
+                    sellerBo.setImagePath(c.getString(3));
 
                     if (sellerInfoHasMap.get(sellerBo.getUserId()) == null) {
                         sellerInfoHasMap.put(sellerBo.getUserId(), sellerBo);
@@ -102,31 +102,6 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
             if (db != null)
                 db.closeDB();
         }
-
-    }
-
-    private String loadUserLevel(){
-
-        String code = "";
-        try {
-            String sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode='REALTIME03' and flag = 1";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                while (c.moveToNext()) {
-                    code = c.getString(0);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return code;
 
     }
 
@@ -242,6 +217,31 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
         return sellerBilledEntry;
     }
 
+    private String loadUserLevel(){
+
+        String code = "";
+        try {
+            String sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='REALTIME03' and flag = 1";
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                while (c.moveToNext()) {
+                    code = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return code;
+
+    }
+
     private void setValues(DocumentSnapshot documentSnapshot){
 
         try {
@@ -290,6 +290,24 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
         }
 
         return sdf.format(cal.getTime());
+    }
+
+    String convertPlaneDateToGlobal(String planeDate){
+        try {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
+            Date date = sdf.parse(planeDate);
+
+            sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            planeDate =sdf.format(date);
+
+            return planeDate;
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
+        return planeDate;
     }
 
     //0 : A-Z --- 1 : Z-A ---- 2 : Performance

@@ -97,7 +97,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select um.userId,um.userName,count(sm.userId) from usermaster um " +
+            String queryStr = "select um.userId,um.userName,count(sm.userId),um.ProfileImagePath from usermaster um " +
                     "left join SupRetailerMaster sm on sm.userId = um.userid where um.userId = '"+userId
                     +"' and date ='"+date+"'";
 
@@ -107,6 +107,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                 selectedSeller.setUserId(c.getInt(0));
                 selectedSeller.setUserName(c.getString(1));
                 selectedSeller.setTarget(c.getInt(2));
+                selectedSeller.setImagePath(c.getString(3));
 
                 c.close();
             }
@@ -373,8 +374,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                         selectedSeller.setDeviationCount(selectedSeller.getDeviationCount() + 1);
                     }
 
-                    selectedSeller.setTotalCallDuration(selectedSeller.getTotalCallDuration()+(retailerMasterBo.getOutTime() - retailerMasterBo.getInTime()));
-
                     documentSnapshotBo.setIsOrdered(retailerMasterBo.getIsOrdered());
                     retailerMasterBo.setSkipped(false);
                     retailerMasterBo.setVisited(true);
@@ -385,6 +384,8 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                     retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());
                     retailerMasterBo.setInTime(documentSnapshotBo.getInTime());
                     retailerMasterBo.setOutTime(documentSnapshotBo.getOutTime());
+
+                    selectedSeller.setTotalCallDuration(selectedSeller.getTotalCallDuration()+(retailerMasterBo.getOutTime() - retailerMasterBo.getInTime()));
 
                     // Set Visited Retailer details in HashMap with retailer id as key
 

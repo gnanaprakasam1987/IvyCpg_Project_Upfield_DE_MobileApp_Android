@@ -112,7 +112,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select um.userId,um.userName,count(sm.userId) from usermaster um " +
+            String queryStr = "select um.userId,um.userName,count(sm.userId),um.ProfileImagePath from usermaster um " +
                     "left join SupRetailerMaster sm on sm.userId = um.userid and sm.date = '"+date+"' " +
                     "where isDeviceuser!=1 and userlevel in( '"+loadUserLevel()+"')  group by um.userid";
 
@@ -126,6 +126,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                     sellerBo.setUserId(c.getInt(0));
                     sellerBo.setUserName(c.getString(1));
                     sellerBo.setTarget(c.getInt(2));
+                    sellerBo.setImagePath(c.getString(3));
 
                     if (sellerInfoHasMap.get(sellerBo.getUserId()) == null) {
                         sellerInfoHasMap.put(sellerBo.getUserId(), sellerBo);
@@ -334,18 +335,23 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     public void getMarkerValuesToFocus() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
+        boolean isFocus = false;
+
         for(Integer sellerId : sellerIdHashSet) {
 
             if(sellerInfoHasMap.get(sellerId).getMarker() != null) {
 
                 LatLng builderLatLng = sellerInfoHasMap.get(sellerId).getMarker().getPosition();
 
-                if (builderLatLng != null && builderLatLng.latitude > 0 && builderLatLng.longitude > 0)
+                if (builderLatLng != null && builderLatLng.latitude > 0 && builderLatLng.longitude > 0) {
                     builder.include(builderLatLng);
+
+                    isFocus = true;
+                }
             }
         }
-
-        sellerMapHomeView.focusMarker(builder);
+        if (isFocus)
+            sellerMapHomeView.focusMarker(builder);
     }
 
     @Override

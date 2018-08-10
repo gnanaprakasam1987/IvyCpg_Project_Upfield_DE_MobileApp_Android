@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -16,12 +17,16 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ivy.cpg.view.supervisor.customviews.tooltip.Tooltip;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
 
+import java.io.File;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,7 +50,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView userName,routeText,statusTextview,performancePercent,outletCoveredTxt,messageText;
         private RelativeLayout statusLayout;
-        private ImageView infoIconImg;
+        private ImageView infoIconImg,userImage;
         private ProgressBar progressBar;
         private LinearLayout routeLayout;
 
@@ -61,6 +66,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
             infoIconImg = view.findViewById(R.id.info_icon);
             progressBar = view.findViewById(R.id.progress_bar);
             routeLayout = view.findViewById(R.id.route_layout);
+            userImage = view.findViewById(R.id.user_img);
 
             userName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             routeText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
@@ -146,6 +152,10 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
                 context.startActivity(intent);
             }
         });
+
+        setProfileImage(holder.userImage,
+                sellerListBos.get(holder.getAdapterPosition()).getImagePath(),
+                sellerListBos.get(holder.getAdapterPosition()).getUserId());
     }
 
     @Override
@@ -153,7 +163,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
         return sellerListBos.size();
     }
 
-    public String convertTime(Long time){
+    private String convertTime(Long time){
 
         if(time !=null && time != 0) {
             Date date = new Date(time);
@@ -161,6 +171,45 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
             return format.format(date);
         }else
             return "";
+    }
+
+    private void setProfileImage(ImageView userView,String imagePath,int userId) {
+        try {
+            if (imagePath != null && !"".equals(imagePath)) {
+                String[] imgPaths = imagePath.split("/");
+                String path = imgPaths[imgPaths.length - 1];
+                File imgFile = new File(context.getExternalFilesDir(
+                        Environment.DIRECTORY_DOWNLOADS)
+                        + "/"
+                        + userId
+                        + DataMembers.DIGITAL_CONTENT
+                        + "/"
+                        + DataMembers.USER + "/"
+                        + path);
+                if (imgFile.exists()) {
+                    try {
+                        userView.setScaleType(ImageView.ScaleType.FIT_XY);
+                        userView.setAdjustViewBounds(true);
+                        //  profileImageView.setImageBitmap(getCircularBitmapFrom(myBitmap));
+
+                        Glide.with(context)
+                                .load(imgFile)
+                                .centerCrop()
+                                .placeholder(R.drawable.ic_default_user)
+                                .error(R.drawable.ic_default_user)
+                                .into(userView);
+
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                } else {
+                    userView
+                            .setImageResource(R.drawable.ic_default_user);
+                }
+            }
+        }catch(Exception e){
+            Commons.printException(e);
+        }
     }
 }
 

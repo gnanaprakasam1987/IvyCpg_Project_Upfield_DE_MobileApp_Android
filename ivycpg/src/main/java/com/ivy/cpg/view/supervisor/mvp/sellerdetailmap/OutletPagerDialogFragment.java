@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,16 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.Marker;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.customviews.scrollingpagerindicator.ScrollingPagerIndicator;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 
 @SuppressLint("ValidFragment")
@@ -199,6 +205,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
             private TextView tvStoreName,tvStoreAddress,tvVisitStatus,tvOrderValue,tvOrderValueText;
             private RecyclerView retailerVisitedRVP;
             private View visitedStatusView;
+            private ImageView retailImage;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -210,6 +217,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 tvOrderValueText = view.findViewById(R.id.tv_total_value_txt);
                 visitedStatusView = view.findViewById(R.id.status_color_view);
                 retailerVisitedRVP = view.findViewById(R.id.visited_retailer_items);
+                retailImage = view.findViewById(R.id.outlet_image);
 
                 ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
                 ((TextView)view.findViewById(R.id.tv_outtime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
@@ -265,6 +273,10 @@ public class OutletPagerDialogFragment extends DialogFragment {
                         holder.visitedStatusView.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.covered_green));
                 }
             }
+
+            setProfileImage(holder.retailImage,
+                    visitedRetailers.get(position).getImgPath(),
+                    visitedRetailers.get(position).getRetailerId());
         }
 
         @Override
@@ -336,6 +348,44 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @Override
         public int getItemCount() {
             return visitedRetailers.size();
+        }
+    }
+
+    private void setProfileImage(ImageView userView, String imagePath, int userId) {
+        try {
+            if (imagePath != null && !"".equals(imagePath)) {
+                String[] imgPaths = imagePath.split("/");
+                String path = imgPaths[imgPaths.length - 1];
+                File imgFile = new File(getContext().getExternalFilesDir(
+                        Environment.DIRECTORY_DOWNLOADS)
+                        + "/"
+                        + userId
+                        + DataMembers.DIGITAL_CONTENT
+                        + "/"
+                        + DataMembers.USER + "/"
+                        + path);
+                if (imgFile.exists()) {
+                    try {
+                        userView.setScaleType(ImageView.ScaleType.FIT_XY);
+                        userView.setAdjustViewBounds(true);
+
+                        Glide.with(getContext())
+                                .load(imgFile)
+                                .centerCrop()
+                                .placeholder(R.drawable.unbilled_bg_gradient)
+                                .error(R.drawable.unbilled_bg_gradient)
+                                .into(userView);
+
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                } else {
+                    userView
+                            .setImageResource(R.drawable.unbilled_bg_gradient);
+                }
+            }
+        }catch(Exception e){
+            Commons.printException(e);
         }
     }
 

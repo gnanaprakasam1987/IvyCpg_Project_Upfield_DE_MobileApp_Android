@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -86,6 +87,8 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         mChart = findViewById(R.id.combined_chart);
         mChart.setNoDataText("Loading...");
         mChart.setNoDataTextColor(ContextCompat.getColor(this,R.color.WHITE));
+        mChart.animateXY(3000,3000,
+                Easing.EasingOption.EaseInBack, Easing.EasingOption.EaseOutBack);
 
         sortRadioGroup = findViewById(R.id.sort_radio_group);
 
@@ -137,7 +140,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
         sellerPerformancePresenter = new SellerPerformancePresenter();
         sellerPerformancePresenter.setView(this,SellerPerformanceListActivity.this);
-        sellerPerformancePresenter.getSellerListAWS();
+        sellerPerformancePresenter.getSellerListAWS(sellerPerformancePresenter.convertPlaneDateToGlobal(selectedDate));
         sellerPerformancePresenter.sellerActivityInfoListener(sellerId,selectedDate);
 
         sortView.setOnClickListener(new View.OnClickListener() {
@@ -282,7 +285,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
         Legend l = mChart.getLegend();
         l.setWordWrapEnabled(true);
-        l.setTextSize(getResources().getDimension(R.dimen._10sdp));
+        l.setTextSize(getResources().getDimension(R.dimen._6sdp));
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
@@ -342,12 +345,12 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
         LineDataSet set = new LineDataSet(sellerPerformancePresenter.getSellerCoveredEntry(), "Covered");
         set.setColor((ContextCompat.getColor(this,R.color.colorPrimary)));
-        set.setLineWidth(getResources().getDimension(R.dimen._3sdp));
+        set.setLineWidth(getResources().getDimension(R.dimen._2sdp));
         set.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
-        set.setCircleRadius(getResources().getDimension(R.dimen._3sdp));
+        set.setCircleRadius(getResources().getDimension(R.dimen._2sdp));
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(true);
-        set.setValueTextSize(getResources().getDimension(R.dimen._10sdp));
+        set.setValueTextSize(getResources().getDimension(R.dimen._6sdp));
         set.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -359,12 +362,12 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
         LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
         set1.setColor(ContextCompat.getColor(this,R.color.GREEN));
-        set1.setLineWidth(getResources().getDimension(R.dimen._3sdp));
+        set1.setLineWidth(getResources().getDimension(R.dimen._2sdp));
         set1.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
-        set1.setCircleRadius(getResources().getDimension(R.dimen._3sdp));
+        set1.setCircleRadius(getResources().getDimension(R.dimen._2sdp));
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setDrawValues(true);
-        set1.setValueTextSize(getResources().getDimension(R.dimen._10sdp));
+        set1.setValueTextSize(getResources().getDimension(R.dimen._6sdp));
         set1.setValueFormatter(new IValueFormatter() {
 
             @Override

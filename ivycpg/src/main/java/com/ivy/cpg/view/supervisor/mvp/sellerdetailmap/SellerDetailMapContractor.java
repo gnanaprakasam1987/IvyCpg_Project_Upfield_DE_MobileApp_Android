@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
 
@@ -41,6 +42,8 @@ public interface SellerDetailMapContractor {
         String convertMillisToTime(Long millis);
 
         String calculateDuration(long startTime,long endTime);
+
+        void animateSellerMarker(final LatLng destination, final Marker marker);
 
         void drawRoute(ArrayList<LatLng> points);
 

@@ -6,10 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-/**
- * @author Nikita Olifer
- * Attacher for RecyclerView. Supports only LinearLayoutManager with HORIZONTAL orientation.
- */
+
 public class RecyclerViewAttacher implements ScrollingPagerIndicator.PagerAttacher<RecyclerView> {
 
     private ScrollingPagerIndicator indicator;
@@ -28,14 +25,8 @@ public class RecyclerViewAttacher implements ScrollingPagerIndicator.PagerAttach
     /**
      * Default constructor. Use this if current page in recycler is centered.
      * All pages must have the same width.
-     * Like this:
+     * Like this:     *
      *
-     * +------------------------------+
-     * |---+  +----------------+  +---|
-     * |   |  |     current    |  |   |
-     * |   |  |      page      |  |   |
-     * |---+  +----------------+  +---|
-     * +------------------------------+
      */
     public RecyclerViewAttacher() {
         currentPageLeftCornerX = 0; // Unused when centered
@@ -47,14 +38,6 @@ public class RecyclerViewAttacher implements ScrollingPagerIndicator.PagerAttach
      * All pages must have the same width.
      * Like this:
      *
-     * +-|----------------------------+
-     * | +--------+  +--------+  +----|
-     * | | current|  |        |  |    |
-     * | |  page  |  |        |  |    |
-     * | +--------+  +--------+  +----|
-     * +-|----------------------------+
-     *   | currentPageLeftCornerX
-     *   |
      * @param currentPageLeftCornerX x coordinate of current view left corner relative to recycler view.
      */
     public RecyclerViewAttacher(int currentPageLeftCornerX) {

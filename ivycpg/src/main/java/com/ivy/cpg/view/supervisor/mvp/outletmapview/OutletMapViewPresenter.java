@@ -216,7 +216,12 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         boolean isFocus = false;
 
         for (RetailerBo retailerBo : retailerList) {
-            if (retailerBo.getMasterLatitude() > 0 && retailerBo.getMasterLatitude() > 0) {
+//            if (retailerBo.getLatitude() > 0 && retailerBo.getLongitude() > 0) {
+//                LatLng builderLatLng = new LatLng(retailerBo.getLatitude(),retailerBo.getLongitude());
+//                builder.include(builderLatLng);
+//                isFocus = true;
+//            }else
+                if (retailerBo.getMasterLatitude() > 0 && retailerBo.getMasterLatitude() > 0) {
                 LatLng builderLatLng = new LatLng(retailerBo.getMasterLatitude(),retailerBo.getMasterLongitude());
                 builder.include(builderLatLng);
                 isFocus = true;

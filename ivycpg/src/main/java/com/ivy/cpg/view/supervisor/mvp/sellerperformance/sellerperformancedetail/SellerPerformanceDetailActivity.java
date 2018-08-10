@@ -1,15 +1,19 @@
 package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -26,8 +30,11 @@ import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +47,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
     private TextView sellerNameTv,sellerPerformPercentTv,valueTargetTv,valueActualTv,valuePercentTv,
             coverageTargetTv,coverageActualtv,coveragePercenttv,linesTargetTv,linesActualTv,linesPercentTv,
             plannedValueTv,deviatedTv,durationTv,productiveTv;
+    private ImageView userImage;
 
     private ProgressBar progressBar;
 
@@ -110,6 +118,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         sellerNameTv = findViewById(R.id.seller_name);
         TextView sellerPositionTv = findViewById(R.id.seller_position);
         sellerPerformPercentTv = findViewById(R.id.seller_perform_percent);
+        userImage = findViewById(R.id.user_image);
 
         valueTargetTv = findViewById(R.id.value_target);
         valueActualTv = findViewById(R.id.value_actual);
@@ -147,12 +156,18 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         mChart = findViewById(R.id.combined_chart);
         mChart.setNoDataText("Loading...");
         mChart.setNoDataTextColor(ContextCompat.getColor(this,R.color.WHITE));
+        mChart.animateXY(3000,3000,
+                Easing.EasingOption.EaseInBack, Easing.EasingOption.EaseOutBack);
 
         tabLayout = findViewById(R.id.tab_layout);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+
+                coveragePercenttv.setText("0%");
+                valuePercentTv.setText("0%");
+                linesPercentTv.setText("0%");
 
                 switch (tab.getPosition()) {
                     case 0:
@@ -235,6 +250,8 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         progressBar.setProgress(sellerProductive);
 
         sellerPerformPercentTv.setText(sellerProductive+"%");
+
+        setProfileImage(sellerBo.getImagePath(),sellerBo.getUserId());
     }
 
     @Override
@@ -317,7 +334,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
-        l.setTextSize(getResources().getDimension(R.dimen._10sdp));
+        l.setTextSize(getResources().getDimension(R.dimen._6sdp));
         l.setDrawInside(false);
 
         YAxis rightAxis = mChart.getAxisRight();
@@ -374,12 +391,12 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         LineDataSet set = new LineDataSet(sellerPerformancePresenter.getSellerCoveredEntry(), "Covered");
         set.setColor((ContextCompat.getColor(this,R.color.colorPrimary)));
-        set.setLineWidth(getResources().getDimension(R.dimen._3sdp));
+        set.setLineWidth(getResources().getDimension(R.dimen._2sdp));
         set.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
-        set.setCircleRadius(getResources().getDimension(R.dimen._3sdp));
+        set.setCircleRadius(getResources().getDimension(R.dimen._2sdp));
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(true);
-        set.setValueTextSize(getResources().getDimension(R.dimen._10sdp));
+        set.setValueTextSize(getResources().getDimension(R.dimen._6sdp));
         set.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -391,12 +408,12 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
         set1.setColor(ContextCompat.getColor(this,R.color.GREEN));
-        set1.setLineWidth(getResources().getDimension(R.dimen._3sdp));
+        set1.setLineWidth(getResources().getDimension(R.dimen._2sdp));
         set1.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
-        set1.setCircleRadius(getResources().getDimension(R.dimen._3sdp));
+        set1.setCircleRadius(getResources().getDimension(R.dimen._2sdp));
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setDrawValues(true);
-        set1.setValueTextSize(getResources().getDimension(R.dimen._10sdp));
+        set1.setValueTextSize(getResources().getDimension(R.dimen._6sdp));
         set1.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -429,5 +446,42 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
     protected void onDestroy() {
         super.onDestroy();
         sellerPerformancePresenter.removeFirestoreListener();
+    }
+
+    private void setProfileImage(String imagePath, int userId) {
+        try {
+            if (imagePath != null && !"".equals(imagePath)) {
+                String[] imgPaths = imagePath.split("/");
+                String path = imgPaths[imgPaths.length - 1];
+                File imgFile = new File(SellerPerformanceDetailActivity.this.getExternalFilesDir(
+                        Environment.DIRECTORY_DOWNLOADS)
+                        + "/"
+                        + userId
+                        + DataMembers.DIGITAL_CONTENT
+                        + "/"
+                        + DataMembers.USER + "/"
+                        + path);
+                if (imgFile.exists()) {
+                    try {
+                        userImage.setScaleType(ImageView.ScaleType.FIT_XY);
+                        userImage.setAdjustViewBounds(true);
+
+                        Glide.with(SellerPerformanceDetailActivity.this)
+                                .load(imgFile)
+                                .centerCrop()
+                                .placeholder(R.drawable.ic_default_user)
+                                .error(R.drawable.ic_default_user)
+                                .into(userImage);
+
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                } else {
+                    userImage.setImageResource(R.drawable.ic_default_user);
+                }
+            }
+        }catch(Exception e){
+            Commons.printException(e);
+        }
     }
 }

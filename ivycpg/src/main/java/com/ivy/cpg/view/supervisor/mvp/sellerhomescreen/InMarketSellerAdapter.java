@@ -3,17 +3,25 @@ package com.ivy.cpg.view.supervisor.mvp.sellerhomescreen;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
+import java.io.File;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +44,7 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
 
         private TextView userName, retailerName,retailerVisit,target,covered;
         private LinearLayout routeLayout;
+        private ImageView userImage;
 
         public MyViewHolder(View view) {
             super(view);
@@ -44,8 +53,18 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
             retailerVisit = view.findViewById(R.id.tv_start_time);
             target = view.findViewById(R.id.tv_target_outlet);
             covered = view.findViewById(R.id.tv_outlet_covered);
+            userImage = view.findViewById(R.id.usr_img);
 
             routeLayout = view.findViewById(R.id.route_layout);
+
+            userName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+            retailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+            retailerVisit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+            target.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+            covered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+
+            ((TextView) view.findViewById(R.id.tv_message)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+            ((TextView) view.findViewById(R.id.tv_route)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
         }
     }
 
@@ -81,6 +100,11 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
                 context.startActivity(intent);
             }
         });
+
+        setProfileImage(holder.userImage,
+                sellerArrayList.get(position).getImagePath(),
+                sellerArrayList.get(position).getUserId());
+
     }
 
     @Override
@@ -101,5 +125,43 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
             return format.format(date);
         }else
             return "";
+    }
+
+    private void setProfileImage(ImageView userView,String imagePath,int userId) {
+        try {
+            if (imagePath != null && !"".equals(imagePath)) {
+                String[] imgPaths = imagePath.split("/");
+                String path = imgPaths[imgPaths.length - 1];
+                File imgFile = new File(context.getExternalFilesDir(
+                        Environment.DIRECTORY_DOWNLOADS)
+                        + "/"
+                        + userId
+                        + DataMembers.DIGITAL_CONTENT
+                        + "/"
+                        + DataMembers.USER + "/"
+                        + path);
+                if (imgFile.exists()) {
+                    try {
+                        userView.setScaleType(ImageView.ScaleType.FIT_XY);
+                        userView.setAdjustViewBounds(true);
+
+                        Glide.with(context)
+                                .load(imgFile)
+                                .centerCrop()
+                                .placeholder(R.drawable.ic_default_user)
+                                .error(R.drawable.ic_default_user)
+                                .into(userView);
+
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                } else {
+                    userView
+                            .setImageResource(R.drawable.ic_default_user);
+                }
+            }
+        }catch(Exception e){
+            Commons.printException(e);
+        }
     }
 }

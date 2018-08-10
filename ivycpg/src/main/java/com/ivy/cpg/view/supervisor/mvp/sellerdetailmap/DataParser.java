@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.customviews;
+package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 
 
 import com.google.android.gms.maps.model.LatLng;

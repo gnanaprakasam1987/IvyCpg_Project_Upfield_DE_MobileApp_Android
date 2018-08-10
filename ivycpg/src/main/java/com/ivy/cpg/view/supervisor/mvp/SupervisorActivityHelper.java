@@ -67,7 +67,7 @@ public class SupervisorActivityHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String queryStr = "select retailerId, latitude,longitude,retailerName,address,username,channelid from SupRetailerMaster SRM " +
+            String queryStr = "select retailerId, latitude,longitude,retailerName,address,username,channelid,imgpath from SupRetailerMaster SRM " +
                     "inner join usermaster um on um.userid = SRM.userId where date = '"+date+"'";
 
             Cursor c = db.selectSQL(queryStr);
@@ -81,6 +81,7 @@ public class SupervisorActivityHelper {
                     retailerBo.setAddress(c.getString(4));
                     retailerBo.setUserName(c.getString(5));
                     retailerBo.setChannelId(c.getInt(6));
+                    retailerBo.setImgPath(c.getString(7));
 
                     retailerMasterHashmap.put(retailerBo.getRetailerId(),retailerBo);
                 }

@@ -182,6 +182,13 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             }
         });
 
+        findViewById(R.id.recenter_location).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                outletMapViewPresenter.getMarkerForFocus();
+            }
+        });
+
     }
 
     @Override
