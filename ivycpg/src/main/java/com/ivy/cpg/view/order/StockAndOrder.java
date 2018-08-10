@@ -108,7 +108,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.MOQHighlightDialog;
@@ -118,6 +117,7 @@ import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -213,6 +213,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String TEMP_RFIELD1 = "tempRField1";
     private final String TEMP_RFIELD2 = "tempRField2";
     private final String TEMP_ORDDERIMG = "tempOrdImg";
+    private final String TEMP_ADDRESSID = "tempAddressId";
     private double totalvalue = 0;
     private final String FROM_HOME_SCREEN = "IsFromHomeScreen";
 
@@ -228,6 +229,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String tempRField1;
     private String tempRField2;
     private String tempOrdImg;
+    private int tempAddressId;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private LevelBO mSelectedLevelBO = new LevelBO();
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
@@ -307,6 +309,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         : extras.getString(TEMP_RFIELD2);
                 tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? ""
                         : extras.getString(TEMP_ORDDERIMG);
+                tempAddressId = extras.getInt(TEMP_ADDRESSID);
                 isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
             }
         } else {
@@ -330,6 +333,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tempOrdImg = (String) (savedInstanceState
                     .getSerializable(TEMP_ORDDERIMG) == null ? ""
                     : savedInstanceState.getSerializable(TEMP_ORDDERIMG));
+            tempAddressId = (int) (savedInstanceState
+                    .getSerializable(TEMP_ADDRESSID));
             isFromHomeScreen = savedInstanceState.getBoolean(FROM_HOME_SCREEN, false);
         }
 
@@ -949,6 +954,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .getString(TEMP_RFIELD2);
             tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? "" : extras
                     .getString(TEMP_ORDDERIMG);
+            tempAddressId = extras.getInt(TEMP_ADDRESSID);
             isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
             savedInstanceState.putSerializable(ORDER_FLAG, OrderedFlag);
             savedInstanceState.putSerializable(TEMP_PO, tempPo);
@@ -956,6 +962,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             savedInstanceState.putSerializable(TEMP_RFIELD1, tempRField1);
             savedInstanceState.putSerializable(TEMP_RFIELD2, tempRField2);
             savedInstanceState.putString(TEMP_ORDDERIMG, tempOrdImg);
+            savedInstanceState.putSerializable(TEMP_ADDRESSID, tempAddressId);
             savedInstanceState.putSerializable(SCREEN_CODE, screenCode);
             savedInstanceState.putSerializable(FROM_HOME_SCREEN, isFromHomeScreen);
         }
@@ -4272,6 +4279,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         tempRField2 == null ? "" : tempRField2);
                 bmodel.getOrderHeaderBO().setOrderImageName(
                         tempOrdImg == null ? "" : tempOrdImg);
+                bmodel.getOrderHeaderBO().setAddressID(tempAddressId);
 
                 if (bmodel.configurationMasterHelper.IS_MUST_SELL
                         && !bmodel.productHelper.isMustSellFilled()) {
@@ -4357,8 +4365,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void moveToNextScreen() {
 
 
-
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
 
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
@@ -4380,7 +4387,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Toast.LENGTH_SHORT).show();
             }
 
-        }else if (schemeHelper.IS_SCHEME_ON
+        } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
             init.putExtra("ScreenCode", screenCode);
@@ -5853,7 +5860,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         Vector<ProductMasterBO> items = productList;
         if (mAttributeProducts != null) {
             count = 0;
-            if (mProductId!=0) {
+            if (mProductId != 0) {
                 if (mFilterText.length() > 0) {
                     count++;
                     for (ProductMasterBO productBO : items) {
@@ -5862,7 +5869,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
-                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mProductId+"/")) {
+                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mProductId + "/")) {
                                     // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                                     if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
 
@@ -5919,7 +5926,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
         } else {
             if (mFilterText.length() > 0) {
-                if (mProductId!=0) {
+                if (mProductId != 0) {
                     count++;
                     for (ProductMasterBO productBO : items) {
 
@@ -5929,7 +5936,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                     || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                     && productBO.getIndicativeOrder_oc() > 0)) {
-                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mProductId+"/")) {
+                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mProductId + "/")) {
                                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                         continue;
                                     mylist.add(productBO);
@@ -6335,7 +6342,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                     updateSelectedID();
 
-                    int mFilteredPId =0;
+                    int mFilteredPId = 0;
                     int size = sequence.size();
                     for (int i = size - 1; i >= 0; i--) {
                         if (mSelectedIdByLevelId.get(sequence.get(i).getProductID()) != null && mSelectedIdByLevelId.get(sequence.get(i).getProductID()) > 0) {
@@ -6353,7 +6360,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (isAttributeFilterSelected()) {
                             //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
                             if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
-                               // mFilteredPId = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
+                                // mFilteredPId = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
                             }
 
                             ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
@@ -6497,6 +6504,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
     }
+
     private ArrayList<Integer> getParenIdList(int selectedGridLevelID,
                                               ArrayList<Integer> list, LevelBO levelBO) {
         ArrayList<Integer> parentIdList = new ArrayList<>();

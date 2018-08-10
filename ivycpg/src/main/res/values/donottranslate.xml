@@ -179,4 +179,5 @@
     <string name="retailer_contact_menu">Retailer Contact Menu not Available!</string>
     <string name="retailer_contact_list">Contact data not Available!</string>
     <string name="not_able_to_register_visit">Not able to register the visit</string>
+    <string name="please_choose_address">Please choose any one address</string>
 </resources>
