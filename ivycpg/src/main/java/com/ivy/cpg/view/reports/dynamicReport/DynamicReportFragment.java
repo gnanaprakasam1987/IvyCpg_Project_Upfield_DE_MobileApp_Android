@@ -86,8 +86,13 @@ public class DynamicReportFragment extends Fragment {
 
         if (isFrom.equals("Expense"))
             ll_item.setBackgroundResource(R.color.WHITE);
-        else
+        else if ("Profile".equalsIgnoreCase(isFrom)) {
+            ll_item.setBackgroundResource(R.color.WHITE);
+            dynamicReportHelper.setRep_retailer(false);
+            dynamicReportHelper.downloadRetailerReport(Integer.parseInt(bmodel.getRetailerMasterBO().getRetailerID()));
+        } else
             ll_item.setBackgroundResource(R.drawable.background_item);
+
 
         if (dynamicReportHelper.isRep_retailer()) {
             ll_report_retailer.setVisibility(View.VISIBLE);
@@ -135,8 +140,10 @@ public class DynamicReportFragment extends Fragment {
         headers = dynamicReportHelper.getDynamicReportHeaderBOs();
         details = dynamicReportHelper.getDynamicReportDetailBO();
 
-        detailsSparseArray = details.getDetailsSparseArray();
-        recordSet = details.getRecordSet();
+        if (details != null) {
+            detailsSparseArray = details.getDetailsSparseArray();
+            recordSet = details.getRecordSet();
+        }
 
         if (headerLayout != null)
             headerLayout.removeAllViews();
@@ -179,9 +186,9 @@ public class DynamicReportFragment extends Fragment {
                          *    given value should be text and should like left,right else part always work center alignment
                          */
                         if (dynamicReportHeaderBO.getColumnAlignment().equalsIgnoreCase("LEFT"))
-                            textView.setGravity(Gravity.LEFT);
+                            textView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
                         else if (dynamicReportHeaderBO.getColumnAlignment().equalsIgnoreCase("RIGHT"))
-                            textView.setGravity(Gravity.RIGHT);
+                            textView.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                         else
                             textView.setGravity(Gravity.CENTER);
 
@@ -209,9 +216,9 @@ public class DynamicReportFragment extends Fragment {
                      *    given value should be text and should like left,right else part always work center alignment
                      */
                     if (dynamicReportHeaderBO.getColumnAlignment().equalsIgnoreCase("LEFT"))
-                        textViewF.setGravity(Gravity.LEFT);
+                        textViewF.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
                     else if (dynamicReportHeaderBO.getColumnAlignment().equalsIgnoreCase("RIGHT"))
-                        textViewF.setGravity(Gravity.RIGHT);
+                        textViewF.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                     else
                         textViewF.setGravity(Gravity.CENTER);
 
@@ -235,7 +242,7 @@ public class DynamicReportFragment extends Fragment {
 
                 View dividerView = new View(getActivity());
                 dividerView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, ReportUtil.dpToPixel(getActivity(), 1)));
-                dividerView.setBackgroundColor(Color.rgb(51, 51, 51));
+                dividerView.setBackgroundColor(Color.rgb(168, 168, 168));
                 detailsLayout.addView(dividerView);
 
                 firstIteration = false;
