@@ -52,9 +52,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
-import java.util.concurrent.Callable;
-
-import io.reactivex.Single;
 
 public class ProductHelper {
 
@@ -5125,12 +5122,7 @@ public class ProductHelper {
         this.globalCategory = globalCategory;
     }
 
-    /**
-     * @See {@link  com.ivy.sd.png.provider.ProductHelper;}
-     * @since CPG132 replaced by {@link com.ivy.sd.png.provider.ProductHelper#isFilterAvaiable}
-     * Will be removed from @version CPG133 Release
-     * @deprecated This has been Migrated to MVP pattern
-     */
+
     public boolean isFilterAvaiable(String menuCode) {
         DBUtil db = null;
         boolean isAvailable = false;
@@ -5157,44 +5149,6 @@ public class ProductHelper {
         }
         db.closeDB();
         return isAvailable;
-    }
-
-
-    public Single<Boolean> isFilterAvailable(final String menuCode) {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-
-                DBUtil db = null;
-                boolean isAvailable = false;
-                int productFilter1 = 0;
-                try {
-                    db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-                    db.createDataBase();
-                    db.openDataBase();
-                    String query = "select ProductFilter1 from ConfigActivityFilter where ActivityCode ="
-                            + QT(menuCode);
-                    Cursor c = db.selectSQL(query);
-
-                    if (c != null) {
-                        while (c.moveToNext()) {
-                            productFilter1 = c.getInt(0);
-                        }
-                        if (productFilter1 != 0)
-                            isAvailable = true;
-
-                        c.close();
-                    }
-                    return isAvailable;
-                } catch (Exception e) {
-                    Commons.printException(e);
-                } finally {
-                    if (db != null)
-                        db.closeDB();
-                }
-                return false;
-            }
-        });
     }
 
 

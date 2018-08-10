@@ -24,9 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.concurrent.Callable;
-
-import io.reactivex.Single;
 
 public class SalesReturnHelper {
 
@@ -274,7 +271,7 @@ public class SalesReturnHelper {
             SHOW_SALES_RET_OUTER_CASE = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
             SHOW_SR_CATEGORY = false;
-            IS_SHOW_SR_INVOICE_NO_HISTORY=false;
+            IS_SHOW_SR_INVOICE_NO_HISTORY = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -1676,36 +1673,4 @@ public class SalesReturnHelper {
         return count;
     }
 
-
-    public Single<Integer> isSameContentLevel1(final Context mContext) {
-        return Single.fromCallable(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                int count = 0;
-                DBUtil db = null;
-                try {
-                    db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
-                    db.openDataBase();
-
-                    String sb = "Select count(*) from ConfigActivityFilter CF Inner Join ConfigActivityFilter CF1 on " +
-                            " CF1.ProductContent = CF.ProductContent and CF1.ActivityCode = 'MENU_SALES_RET' " +
-                            "Where CF.ActivityCode ='MENU_STK_ORD'";
-                    Cursor c = db.selectSQL(sb);
-                    if (c.getCount() > 0) {
-                        if (c.moveToFirst()) {
-                            count = c.getInt(0);
-                        }
-                    }
-                    return count;
-                } catch (Exception e) {
-                    Commons.printException(e);
-                } finally {
-                    if (db != null)
-                        db.closeDB();
-                }
-                return 0;
-            }
-        });
-    }
 }
