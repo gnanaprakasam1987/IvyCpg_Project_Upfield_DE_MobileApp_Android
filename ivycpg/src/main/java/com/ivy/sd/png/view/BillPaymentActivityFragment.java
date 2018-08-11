@@ -334,6 +334,10 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             fragment.setTargetFragment(BillPaymentActivityFragment.this, 1);//dialog dismiss call back to save collection after getting receipt number
             fragment.show(getFragmentManager(), getResources().getString(R.string.receipt_fragment));
 
+        }else if(bmodel.configurationMasterHelper.IS_FULL_PAYMENT&&!isFullAmountCollected()){
+            Toast.makeText(getActivity(), getResources()
+                    .getString(
+                            R.string.Partial_payment_not_allowed), Toast.LENGTH_SHORT).show();
         } else {
             new SaveCollection().execute();
         }
@@ -347,6 +351,30 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 new SaveCollection().execute();
             }
         }
+    }
+
+    private boolean isFullAmountCollected() {
+        double totalCollected = 0;
+        double totalPayableAmt = 0;
+        boolean flag = false;
+        if (mPaymentList != null && mPaymentList.size() > 0) {
+            for (PaymentBO paymentBO : mPaymentList) {
+                totalCollected = totalCollected + paymentBO.getAmount();
+            }
+        }
+
+        if (mInvioceList != null && mInvioceList.size() > 0) {
+            for (InvoiceHeaderBO invoiceHeaderBO : mInvioceList) {
+                if (invoiceHeaderBO.isChkBoxChecked()) {
+                    totalPayableAmt = totalPayableAmt + invoiceHeaderBO.getBalance();
+                }
+            }
+        }
+        totalPayableAmt = Double.parseDouble(bmodel.formatValueBasedOnConfig(totalPayableAmt));
+        if (totalCollected == totalPayableAmt) {
+            flag = true;
+        }
+        return flag;
     }
 
     //Validate if totalamount exceed invoice amount
@@ -665,7 +693,12 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
     public void onClick(View v) {
         Button btn = (Button) v;
         if (btn == payBtn) {
-            saveCollection();
+            try {
+                saveCollection();
+            }
+            catch (Exception ex){
+                Commons.printException(ex);
+            }
         }
     }
 

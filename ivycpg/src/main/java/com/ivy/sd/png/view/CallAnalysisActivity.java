@@ -969,9 +969,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     bmodel.outletTimeStampHelper.deleteTimeStampModuleWise("MENU_STK_ORD");
                     showCollectionReasonOrDialog();
                 }
-            } else if (bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH") &&
-                    bmodel.configurationMasterHelper.IS_COLLECTION_MANDATE && hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL))) {
+            }  else if (bmodel.configurationMasterHelper.IS_COLLECTION_MANDATE
+                    &&bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH")
+                    &&bmodel.getRetailerMasterBO().getIsOrdered().equals("Y")
+                    &&(!bmodel.isModuleCompleted("MENU_COLLECTION")
+                    ||hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL)))) {
+
                 Toast.makeText(this, getResources().getString(R.string.collection_mandatory), Toast.LENGTH_SHORT).show();
+
             } else if (!hasActivityDone() && bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL) {
                 showFeedbackReasonOrDialog();
             } else {
