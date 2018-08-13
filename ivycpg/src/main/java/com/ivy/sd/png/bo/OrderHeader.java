@@ -23,6 +23,7 @@ public class OrderHeader {
     private double discountValue;
     private String orderDate;
     private int invoiceStatus;
+    private int addressID = 0;
 
     public int getInvoiceStatus() {
         return invoiceStatus;
@@ -256,6 +257,14 @@ public class OrderHeader {
 
     public String getOrderImageName() {
         return orderImageName;
+    }
+
+    public void setAddressID(int addressID) {
+        this.addressID = addressID;
+    }
+
+    public int getAddressID() {
+        return addressID;
     }
 
     private String attachedFileName = "";
