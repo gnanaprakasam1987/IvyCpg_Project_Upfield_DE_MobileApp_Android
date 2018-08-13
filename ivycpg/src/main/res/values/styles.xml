@@ -125,6 +125,18 @@ negative button and neutral button -->
         <item name="buttonBarNeutralButtonStyle">@color/colorAccent</item>
     </style>
 
+    <style name="SellerDatePickerStyle" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- Color palette -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="buttonBarPositiveButtonStyle">@color/colorPrimary</item>
+        <item name="buttonBarNegativeButtonStyle">@color/colorPrimary</item>
+        <item name="buttonBarNeutralButtonStyle">@color/colorPrimary</item>
+    </style>
+
     <style name="AppTabLayout.Blue" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@color/colorAccent</item>
         <item name="tabIndicatorHeight">@dimen/tab_indicator_height</item>

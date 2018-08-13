@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,7 +138,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
                 text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
 
                 text.setTextColor(ContextCompat.getColor(getActivity(), R.color.WHITE));
-                gridItem.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Black));
+                gridItem.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.total_seller_bg));
             }
         }
 
@@ -156,7 +157,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
 
             if (selectedLevelPosition == holder.getAdapterPosition()){
                 holder.text.setTextColor(ContextCompat.getColor(getActivity(), R.color.WHITE));
-                holder.gridItem.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Black));
+                holder.gridItem.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.total_seller_bg));
             }else{
                 holder.text.setTextColor(Color.BLACK);
                 holder.gridItem.setBackgroundColor(Color.parseColor("#f7f7f7"));
@@ -209,6 +210,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
                 gridItem = view.findViewById(R.id.GridItem);
 
                 text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,context));
+                selectedfilters.setImageResource(R.drawable.ic_action_selected_filter);
             }
         }
 

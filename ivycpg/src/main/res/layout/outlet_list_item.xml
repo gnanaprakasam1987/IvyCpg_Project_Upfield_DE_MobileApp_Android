@@ -32,7 +32,7 @@
         android:maxLines="1"
         android:text=""
         android:textColor="#8b000000"
-        android:textSize="@dimen/_10sdp" />
+        android:textSize="@dimen/_12sdp" />
 
     <TextView
         android:id="@+id/time_in_text"

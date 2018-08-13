@@ -50,7 +50,7 @@ public class OutletInfoHorizontalAdapter extends RecyclerView.Adapter<OutletInfo
             userName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             statusText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             retailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
-            retailerAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,context));
+            retailerAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             totalOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
             ((TextView) view.findViewById(R.id.tv_order_val_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             ((TextView) view.findViewById(R.id.tv_assigned_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));

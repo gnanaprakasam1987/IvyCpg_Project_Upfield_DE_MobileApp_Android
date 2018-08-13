@@ -31,7 +31,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="0.36"
                 android:id="@+id/chart_layout"
-                android:background="@drawable/total_outlet_bg_gradient">
+                android:background="@drawable/chart_bg_color_gradient">
 
                 <com.github.mikephil.charting.charts.CombinedChart
                     android:id="@+id/combined_chart"
@@ -61,9 +61,6 @@
                     android:id="@+id/seller_performance_layout"/>
 
             </RelativeLayout>
-
-
-
 
         </LinearLayout>
 

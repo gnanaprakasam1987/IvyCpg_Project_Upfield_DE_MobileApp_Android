@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -175,6 +176,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         tvTotalOutlet.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
         tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
         tvSellerProductivePercent.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+
+        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
 
 
         mapWrapperLayout = view.findViewById(R.id.map_wrap_layout);
@@ -559,7 +562,13 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 20));
+
+                if (sellerMapHomePresenter.areaBoundsTooSmall(builder.build(), 300)) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 17));
+                } else {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+                }
+
             }
         });
     }
@@ -665,7 +674,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         Calendar cal = Calendar.getInstance();
         cal.set(day, month, year);
 
-        picker = new DatePickerDialog(getContext(),R.style.DatePickerDialogStyle,mDateSetListener,day,month,year);
+        picker = new DatePickerDialog(getContext(),R.style.SellerDatePickerStyle,mDateSetListener,day,month,year);
 
         picker.updateDate(year, month - 1, day);
 
@@ -703,6 +712,9 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 progressBar.setProgress(0);
 
                 sellerMapHomePresenter.removeFirestoreListener();
+
+                selectedDate = sellerMapHomePresenter.convertGlobalDateToPlane(convertedDate);
+                sellerMapHomePresenter.setSelectedDate(selectedDate);
 
                 getActivity().invalidateOptionsMenu();
 

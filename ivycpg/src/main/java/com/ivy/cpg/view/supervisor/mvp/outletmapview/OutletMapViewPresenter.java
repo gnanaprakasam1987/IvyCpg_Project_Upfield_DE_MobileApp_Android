@@ -149,6 +149,100 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         getMarkerForFocus();
     }
 
+    @Override
+    public void setCoveredOutlet(){
+
+        outletMapView.clearMap();
+        retailerList.clear();
+
+        for (RetailerBo retailerBo : retailerMasterHashmap.values()){
+            if(mSelectedIdByChannelId.size() > 0){
+                if(( isChannelFilterClicked() && isProductFilterClicked())){
+
+                    if(mSelectedIdByChannelId.get(retailerBo.getChannelId()) != null
+                            && checkProductAvail(retailerBo) && (retailerBo.getIsOrdered() || retailerBo.isVisited()) ) {
+                        retailerList.add(retailerBo);
+                        setMarker(retailerBo);
+                    }
+
+                }
+                else if(!isChannelFilterClicked() && isProductFilterClicked()){
+
+                    if(checkProductAvail(retailerBo) && (retailerBo.getIsOrdered() || retailerBo.isVisited())) {
+                        retailerList.add(retailerBo);
+                        setMarker(retailerBo);
+                    }
+
+                }
+                else if(isChannelFilterClicked() && !isProductFilterClicked()){
+                    if(mSelectedIdByChannelId.get(retailerBo.getChannelId()) != null && (retailerBo.getIsOrdered() || retailerBo.isVisited())) {
+
+                        retailerList.add(retailerBo);
+                        setMarker(retailerBo);
+                    }
+
+                }
+            }else{
+                if (retailerBo.getIsOrdered() || retailerBo.isVisited()) {
+                    retailerList.add(retailerBo);
+                    setMarker(retailerBo);
+                }
+            }
+        }
+
+        outletMapView.setOutletListAdapter(retailerList);
+
+        //Focus all the retailer location in map
+        getMarkerForFocus();
+    }
+
+    @Override
+    public void setUnbilledOutlet(){
+
+        outletMapView.clearMap();
+        retailerList.clear();
+
+        for (RetailerBo retailerBo : retailerMasterHashmap.values()){
+            if(mSelectedIdByChannelId.size() > 0){
+                if(( isChannelFilterClicked() && isProductFilterClicked())){
+
+                    if(mSelectedIdByChannelId.get(retailerBo.getChannelId()) != null && checkProductAvail(retailerBo)
+                            && (!retailerBo.getIsOrdered() && retailerBo.isVisited())) {
+                        retailerList.add(retailerBo);
+                        setMarker(retailerBo);
+                    }
+
+                }
+                else if(!isChannelFilterClicked() && isProductFilterClicked()){
+
+                    if(checkProductAvail(retailerBo) && (!retailerBo.getIsOrdered() && retailerBo.isVisited())) {
+                        retailerList.add(retailerBo);
+                        setMarker(retailerBo);
+                    }
+
+                }
+                else if(isChannelFilterClicked() && !isProductFilterClicked()){
+                    if(mSelectedIdByChannelId.get(retailerBo.getChannelId()) != null && (!retailerBo.getIsOrdered() && retailerBo.isVisited())) {
+
+                        retailerList.add(retailerBo);
+                        setMarker(retailerBo);
+                    }
+
+                }
+            }else{
+                if(!retailerBo.getIsOrdered() && retailerBo.isVisited()) {
+                    retailerList.add(retailerBo);
+                    setMarker(retailerBo);
+                }
+            }
+        }
+
+        outletMapView.setOutletListAdapter(retailerList);
+
+        //Focus all the retailer location in map
+        getMarkerForFocus();
+    }
+
     private boolean isProductFilterClicked(){
 
         if (mSelectedIdByChannelId.values().contains(1))
@@ -171,42 +265,6 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
             }
         }
         return false;
-    }
-
-    @Override
-    public void setCoveredOutlet(){
-
-        outletMapView.clearMap();
-        retailerList.clear();
-        for(RetailerBo retailerBo : retailerMasterHashmap.values()){
-            if(retailerBo.getIsOrdered() || retailerBo.isVisited()) {
-                retailerList.add(retailerBo);
-                setMarker(retailerBo);
-            }
-        }
-
-        outletMapView.setOutletListAdapter(retailerList);
-
-        //Focus all the retailer location in map
-        getMarkerForFocus();
-    }
-
-    @Override
-    public void setUnbilledOutlet(){
-
-        outletMapView.clearMap();
-        retailerList.clear();
-        for(RetailerBo retailerBo : retailerMasterHashmap.values()){
-            if(!retailerBo.getIsOrdered() && retailerBo.isVisited()) {
-                retailerList.add(retailerBo);
-                setMarker(retailerBo);
-            }
-        }
-
-        outletMapView.setOutletListAdapter(retailerList);
-
-        //Focus all the retailer location in map
-        getMarkerForFocus();
     }
 
     @Override

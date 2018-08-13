@@ -55,6 +55,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
     private BottomSheetBehavior bottomSheetBehavior;
     private RadioGroup sortRadioGroup;
     private PagerAdapter adapter;
+    private View transparentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
         params.width = width;
         drawer.setLayoutParams(params);
 
+        transparentView = findViewById(R.id.transparen_view);
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);//setting tab over viewpager
 
@@ -184,8 +186,10 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                     case BottomSheetBehavior.STATE_DRAGGING:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
+                        transparentView.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
+                        transparentView.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;

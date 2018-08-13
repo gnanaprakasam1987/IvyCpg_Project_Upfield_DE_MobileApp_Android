@@ -66,6 +66,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
     private BottomSheetBehavior bottomSheetBehavior;
     private RadioGroup sortRadioGroup;
     private CombinedChart mChart;
+    private View transparentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
                 Easing.EasingOption.EaseInBack, Easing.EasingOption.EaseOutBack);
 
         sortRadioGroup = findViewById(R.id.sort_radio_group);
+        transparentView = findViewById(R.id.transparen_view);
 
         bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheetLayout));
 
@@ -106,8 +108,10 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
                     case BottomSheetBehavior.STATE_DRAGGING:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
+                        transparentView.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
+                        transparentView.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;

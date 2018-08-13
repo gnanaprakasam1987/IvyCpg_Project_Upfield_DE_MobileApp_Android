@@ -80,6 +80,13 @@
 
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#b1000000"
+        android:visibility="gone"
+        android:id="@+id/transparen_view"/>
+
     <include layout="@layout/sort_bottom_sheet_layout" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -74,7 +74,7 @@
                     android:layout_gravity="right|end"
                     android:layout_margin="@dimen/_10sdp"
                     android:padding="@dimen/_5sdp"
-                    android:src="@drawable/ic_my_location"/>
+                    android:src="@drawable/focus_all"/>
 
             </com.ivy.maplib.MapWrapperLayout>
 
@@ -250,8 +250,10 @@
                 android:background="@drawable/curved_border_grey_bg"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginLeft="@dimen/_5sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
                 android:paddingLeft="@dimen/_10sdp"
-                android:paddingRight="@dimen/_25sdp"
+                android:paddingRight="@dimen/_10sdp"
                 android:layout_below="@+id/tab_layout">
 
                 <ImageView
@@ -261,7 +263,7 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_35sdp"
+                    android:layout_height="wrap_content"
                     style="@style/TextViewListItemPrimary"
                     android:textColor="@color/WHITE"
                     android:text="Filter"

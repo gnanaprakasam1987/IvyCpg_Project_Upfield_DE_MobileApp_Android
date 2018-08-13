@@ -54,9 +54,9 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
                     android:maxLines="1"
-                    android:paddingLeft="@dimen/_8sdp"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
                     android:text=""
                     android:textColor="#de000000"
                     android:textSize="@dimen/_14sdp" />
@@ -66,9 +66,9 @@
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
                     android:maxLines="1"
-                    android:paddingLeft="@dimen/_8sdp"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
                     android:text="Productivity"
                     android:textColor="#8b000000"
                     android:textSize="@dimen/_12sdp" />
@@ -218,10 +218,10 @@
             android:layout_below="@+id/outlet_header_layout"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_7sdp"
             android:paddingLeft="@dimen/_4sdp"
             android:paddingRight="@dimen/_4sdp"
-            android:paddingTop="@dimen/_12sdp"
+            android:paddingTop="@dimen/_14sdp"
             android:weightSum="1">
 
             <TextView
@@ -281,10 +281,10 @@
             android:layout_below="@+id/value_layout"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_7sdp"
             android:paddingLeft="@dimen/_4sdp"
             android:paddingRight="@dimen/_4sdp"
-            android:paddingTop="@dimen/_6sdp"
+            android:paddingTop="@dimen/_7sdp"
             android:weightSum="1">
 
             <TextView
@@ -344,10 +344,10 @@
             android:layout_below="@+id/coverage_layout"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/_12sdp"
+            android:paddingBottom="@dimen/_14sdp"
             android:paddingLeft="@dimen/_4sdp"
             android:paddingRight="@dimen/_4sdp"
-            android:paddingTop="@dimen/_6sdp"
+            android:paddingTop="@dimen/_7sdp"
             android:weightSum="1">
 
             <TextView
@@ -424,9 +424,10 @@
             android:orientation="horizontal"
             android:paddingLeft="@dimen/_12sdp"
             android:paddingRight="@dimen/_12sdp"
-            android:paddingTop="@dimen/_12sdp"
-            android:paddingBottom="@dimen/_12sdp"
-            android:weightSum="1">
+            android:paddingTop="@dimen/_14sdp"
+            android:paddingBottom="@dimen/_14sdp"
+            android:weightSum="1"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:layout_width="0dp"
