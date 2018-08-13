@@ -171,12 +171,15 @@ public class DigitalContentHelper {
             if ("SELLER".equals(value))
 
             {
-                sBuffer.append("SELECT DISTINCT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,IFNULL(DCPM.Pid,0),IFNULL(PM.psname,''),IFNULL(SLM.ListName,'NA'),IFNULL(DC.GroupSequence,0) ");
+                sBuffer.append("SELECT DISTINCT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,");
+                sBuffer.append(" IFNULL(DCPM.Pid,0),IFNULL(PM.psname,''),IFNULL(SLM.ListName,'NA'),");
+                sBuffer.append(" IFNULL(DC.GroupSequence,0),IFNULL(PM.ParentHierarchy,'')");
                 sBuffer.append(" FROM  DigitalContentMaster DC");
-                sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON DC.Imageid = DCM.Imgid  ");
-                sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid ");
-                sBuffer.append(" LEFT JOIN ProductMaster PM on PM.pid=DCPM.pid LEFT JOIN StandardListMaster SLM ON SLM.ListId = DC.GroupLovID");
-                sBuffer.append(" where mappingid=0 and DCM.mappingtype='SELLER'  ORDER BY GroupSequence asc ");
+                sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON DC.Imageid = DCM.Imgid");
+                sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid");
+                sBuffer.append(" LEFT JOIN ProductMaster PM on PM.pid=DCPM.pid");
+                sBuffer.append(" LEFT JOIN StandardListMaster SLM ON SLM.ListId = DC.GroupLovID");
+                sBuffer.append(" where mappingid=0 and DCM.mappingtype='SELLER'  ORDER BY GroupSequence asc");
 
                 Cursor c = db.selectSQL(sBuffer.toString());
                 if (c != null) {
@@ -191,6 +194,7 @@ public class DigitalContentHelper {
                         product.setProductName(c.getString(5));
                         product.setGroupName(c.getString(6));
                         product.setSequenceNo(c.getInt(7));
+                        product.setParentHierarchy(c.getString(8));
                         digitalMaster.add(product);
                     }
                     c.close();
@@ -198,14 +202,17 @@ public class DigitalContentHelper {
 
             } else {
 
-                sBuffer.append("SELECT DISTINCT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,IFNULL(DCPM.Pid,0),PM.psname,IFNULL(SLM.ListName,'NA'),IFNULL(DC.GroupSequence,0) ");
+                sBuffer.append("SELECT DISTINCT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,");
+                sBuffer.append(" IFNULL(DCPM.Pid,0),PM.psname,IFNULL(SLM.ListName,'NA'),");
+                sBuffer.append(" IFNULL(DC.GroupSequence,0),IFNULL(PM.ParentHierarchy,'')");
                 sBuffer.append(" FROM  DigitalContentMaster DC");
-                sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON (DC.Imageid = DCM.Imgid ) ");
-                sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid ");
-                sBuffer.append(" LEFT JOIN ProductMaster PM on PM.pid=DCPM.pid LEFT JOIN StandardListMaster SLM ON SLM.ListId = DC.GroupLovID");
+                sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON (DC.Imageid = DCM.Imgid )");
+                sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid");
+                sBuffer.append(" LEFT JOIN ProductMaster PM on PM.pid=DCPM.pid");
+                sBuffer.append(" LEFT JOIN StandardListMaster SLM ON SLM.ListId = DC.GroupLovID");
                 sBuffer.append(" where DC.Imageid IN(");
                 sBuffer.append(mMappedImageIds);
-                sBuffer.append(") and DCM.mappingtype!='SELLER' ORDER BY GroupSequence asc ");
+                sBuffer.append(") and DCM.mappingtype!='SELLER' ORDER BY GroupSequence asc");
 
                 Cursor c = db.selectSQL(sBuffer.toString());
                 if (c != null) {
@@ -220,6 +227,7 @@ public class DigitalContentHelper {
                         product.setProductName(c.getString(5));
                         product.setGroupName(c.getString(6));
                         product.setSequenceNo(c.getInt(7));
+                        product.setParentHierarchy(c.getString(8));
 
                         digitalMaster.add(product);
                     }

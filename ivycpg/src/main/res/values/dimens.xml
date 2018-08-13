@@ -63,8 +63,6 @@
     <dimen name="spinner_width">160dp</dimen>
 
     <!-- Order Summary Screen -->
-    <dimen name="sku_text_product_name">250dp</dimen>
-    <dimen name="sku_text_qty">80dp</dimen>
     <dimen name="stock_screen_txtview_height">35dp</dimen>
 
     <!-- Visit Targe Screen -->
@@ -158,7 +156,6 @@
 
     <!-- sku wise target -->
 
-    <dimen name="crown_header_height">22dp</dimen>
     <dimen name="crown_list_title_height">45dp</dimen>
 
     <!-- OTR - Non Field-->
@@ -210,7 +207,6 @@
     <dimen name="mvprankpaddingtop">4dp</dimen>
     <dimen name="mvprankpaddingright">4dp</dimen>
 
-    <dimen name="dashreportnamewidth">90dp</dimen>
     <dimen name="homescreenlist_view_width">300dp</dimen>
     <dimen name="mvpbadge_more_icon_width">40dp</dimen>
     <dimen name="mvp_field_margin">3dp</dimen>
@@ -817,4 +813,7 @@
     <dimen name="score_card_height">120dp</dimen>
     <dimen name="qn_text_margin_left">5dp</dimen>
     <dimen name="web_view_width">180dp</dimen>
+
+
+    <dimen name="padding_normal">8dp</dimen>
 </resources>

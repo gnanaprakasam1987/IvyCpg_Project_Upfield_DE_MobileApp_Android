@@ -362,7 +362,7 @@ public class DiscountHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
+            sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" distributorid=" + businessModel.getRetailerMasterBO().getDistributorId() + " OR ");
@@ -662,7 +662,7 @@ public class DiscountHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
+            sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
@@ -733,7 +733,7 @@ public class DiscountHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
+            sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
@@ -1140,13 +1140,13 @@ public class DiscountHelper {
         return totalSchemeDiscountValue;
     }
 
-
     /**
      * Clear scheme free products
      *
+     * @param context
      * @param mOrderedProductList Ordered product list
      */
-    public void clearSchemeFreeProduct(LinkedList<ProductMasterBO> mOrderedProductList) {
+    public void clearSchemeFreeProduct(Context context, LinkedList<ProductMasterBO> mOrderedProductList) {
         if (mOrderedProductList != null)
             for (ProductMasterBO productB0 : mOrderedProductList) {
                 if (productB0.getSchemeProducts() != null) {
@@ -1157,8 +1157,19 @@ public class DiscountHelper {
                 productB0.setSoreasonId(0);
 
             }
+        //Mansoor Clear Applied Scheme List
+        SchemeDetailsMasterHelper schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(context);
+        if (schemeDetailsMasterHelper.getSchemeList() != null) {
+            for (SchemeBO schemeBO : schemeDetailsMasterHelper.getSchemeList()) {
+                schemeBO.setChecked(false);
+                for (SchemeProductBO schemeProductBO : schemeBO.getFreeProducts())
+                    schemeProductBO.setQuantitySelected(0);
+            }
+        }
+
 
     }
+
 
     /**
      * clear discount values product wise

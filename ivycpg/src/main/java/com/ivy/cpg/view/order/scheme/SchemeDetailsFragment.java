@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -285,6 +286,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                 slab.setLayoutParams(layoutParams_slab);
                                 slab.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                                 slab.setTextSize(mTextViewSize);
+                                slab.setEllipsize(TextUtils.TruncateAt.END);
+                                slab.setMaxLines(2);
                                 if (schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme() != null) {
                                     slab.setText(schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme());
                                     slab.setTag(schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme());
@@ -407,7 +410,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         freeTitleTV.setWidth(150);
 
-                        LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         layoutParam_FreeTitle.setMargins(0, 10, 0, 10);
                         freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                         freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -445,7 +448,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                                 freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                                                 freeTitleTV.setWidth(150);
 
-                                                LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                                                LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                                                 layoutParam_FreeTitle.setMargins(0, 20, 0, 10);
                                                 freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                                                 freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -551,7 +554,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                 freeTitleTV.setText("GET Discount");
                                 freeTitleTV.setWidth(150);
                                 freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (mTotalScreenWidth * 6) / 100);
+                                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
                                 layoutParams1.setMargins(0, 20, 0, 10);
                                 freeTitleTV.setLayoutParams(layoutParams1);

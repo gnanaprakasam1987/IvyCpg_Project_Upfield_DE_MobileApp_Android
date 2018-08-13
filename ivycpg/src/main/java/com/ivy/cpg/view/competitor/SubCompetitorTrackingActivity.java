@@ -252,7 +252,6 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
 
             menu.findItem(R.id.menu_photo).setVisible(!bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_add).setVisible(false);
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
             menu.findItem(R.id.menu_loc_filter).setVisible(false);
@@ -366,6 +365,12 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
                 if (!bmodel.configurationMasterHelper.SHOW_SPINNER) {
                     ((Spinner) convertView.findViewById(R.id.spn_reason)).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_COMP_FEEDBACK) {
+                    convertView.findViewById(R.id.ll_hg).setVisibility(View.GONE);
+                }
+                if (!bmodel.configurationMasterHelper.SHOW_COMP_QTY) {
+                    convertView.findViewById(R.id.LL_qty).setVisibility(View.GONE);
                 }
 
                 holder.checkBox

@@ -4,17 +4,15 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 public class PlanoGramActivity extends IvyBaseActivityNoActionBar implements
-        BrandDialogInterface {
+        BrandDialogInterface,FiveLevelFilterCallBack {
 
 
     @Override
@@ -63,35 +61,11 @@ public class PlanoGramActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PlanoGramFragment asf = (PlanoGramFragment) fm
                 .findFragmentById(R.id.planogram_fragment);
-        asf.updateFromFiveLevelFilter(mParentIdList);
-
+        asf.updateFromFiveLevelFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PlanoGramFragment asf = (PlanoGramFragment) fm
-                .findFragmentById(R.id.planogram_fragment);
-        asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
-    }
 }

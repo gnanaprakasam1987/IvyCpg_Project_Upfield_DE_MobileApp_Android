@@ -112,7 +112,7 @@
             android:layout_gravity="bottom"
             android:layout_marginEnd="@dimen/dimen_10dp"
             android:layout_weight="1"
-            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
             android:hint="@string/zero"
             android:maxLength="@null"
             android:paddingBottom="10dp"

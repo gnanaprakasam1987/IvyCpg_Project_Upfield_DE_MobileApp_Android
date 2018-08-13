@@ -389,4 +389,14 @@ public class AssetTrackingBO {
     public void setImageList(ArrayList<String> imageList) {
         this.imageList = imageList;
     }
+
+    private String parentHierarchy;
+
+    public String getParentHierarchy() {
+        return parentHierarchy;
+    }
+
+    public void setParentHierarchy(String parentHierarchy) {
+        this.parentHierarchy = parentHierarchy;
+    }
 }

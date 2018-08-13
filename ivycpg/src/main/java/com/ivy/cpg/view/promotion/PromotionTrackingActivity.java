@@ -1,6 +1,5 @@
 package com.ivy.cpg.view.promotion;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -8,22 +7,19 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.CheckModeFragment;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implements
-		BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface {
+		BrandDialogInterface, DataPickerDialogFragment.UpdateDateInterface,FiveLevelFilterCallBack {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,32 +92,11 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 	}
 
 	@Override
-	public void loadStartVisit() {
-	}
-
-	@Override
-	public void updateMultiSelectionCategory(List<Integer> mCategory) {
-	}
-
-	@Override
-	public void updateMultiSelectionBrand(List<String> mFilterName,
-										  List<Integer> mFilterId) {
-	}
-
-	@Override
-	public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+	public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm
 				.findFragmentById(R.id.promotion_tracking_fragment);
-		asf.updateFromFiveLevelFilter(mParentIdList);
-
-	}
-	@Override
-	public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm
-				.findFragmentById(R.id.promotion_tracking_fragment);
-		asf.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+		asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
 	}
 
 	public void numberPressed(View vw) {

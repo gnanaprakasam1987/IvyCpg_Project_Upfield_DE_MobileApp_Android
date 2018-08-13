@@ -31,28 +31,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.FilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 public class NearExpiryTrackingFragment extends IvyBaseFragment implements
-        BrandDialogInterface {
+        BrandDialogInterface, FiveLevelFilterCallBack {
 
 
     private static final String BRAND = "Brand";
@@ -205,10 +203,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 String.valueOf(mBModel.mSFSelectedFilter));*/
         updateGeneralText(GENERAL);
         updateBrandText(BRAND, -1);
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-            FiveFilterFragment();
-        else
-            productFilterClickedFragment();
+        FiveFilterFragment();
+
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
         Button btn_save = (Button) getView().findViewById(R.id.btn_save);
@@ -265,15 +261,13 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_remarks).setVisible(false);
 
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_next).setVisible(false);
 
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
+            if (mBModel.productHelper.isFilterAvaiable("MENU_STK_ORD"))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
-          /*else
-                menu.findItem(R.id.menu_product_filter).setVisible(true);*/
 
-            if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+
+            if (mSelectedIdByLevelId != null) {
                 for (Integer id : mSelectedIdByLevelId.keySet()) {
                     if (mSelectedIdByLevelId.get(id) > 0) {
                         menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -312,9 +306,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             return true;
         } else if (i == R.id.menu_next) {
             nextButtonClick();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         } else if (i == R.id.menu_remarks) {
             android.support.v4.app.FragmentManager ft = getActivity()
@@ -366,58 +357,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         mBModel.applyAlertDialogTheme(builder);
     }
 
-
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-
-            if (frag != null)
-                ft.detach(frag);
-
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", BRAND);
-            bundle.putString("isFrom", "NearExpiry");
-
-            if (mBModel.productHelper.getRetailerModuleChildLevelBO().size() > 0)
-                bundle.putString("filterHeader", mBModel.productHelper
-                        .getRetailerModuleChildLevelBO().get(0).getProductLevel());
-            else
-                bundle.putString("filterHeader", mBModel.productHelper
-                        .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
-
-            bundle.putSerializable("serilizeContent",
-                    mBModel.productHelper.getRetailerModuleChildLevelBO());
-
-            if (mBModel.productHelper.getRetailerModuleParentLeveBO() != null
-                    && mBModel.productHelper.getRetailerModuleChildLevelBO().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", mBModel.productHelper
-                        .getRetailerModuleParentLeveBO().get(0).getPl_productLevel());
-
-                mBModel.productHelper.setPlevelMaster(mBModel.productHelper
-                        .getRetailerModuleParentLeveBO());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
     class ViewHolder {
         ProductMasterBO mSKUBO;
@@ -816,7 +755,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         }
     }
 
-    private void updatebrandtext(Vector<LevelBO> parentidList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts) {
+    private void updatebrandtext(int productId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts) {
         try {
             Vector<ProductMasterBO> items = mBModel.productHelper
                     .getProductMaster();
@@ -830,15 +769,13 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             myList = new Vector<>();
             // Add the products into list
             if (mAttributeProducts != null) {
-                if (!parentidList.isEmpty()) {
-                    for (LevelBO levelBO : parentidList) {
-                        for (ProductMasterBO productBO : items) {
-                            if (productBO.getIsSaleable() == 1
-                                    && levelBO.getProductID() == productBO.getParentid()
-                                    && mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                myList.add(productBO);
-                            }
+                if (productId != 0) {
+                    for (ProductMasterBO productBO : items) {
+                        if (productBO.getIsSaleable() == 1
+                                && productBO.getParentHierarchy().contains("/" + productId + "/")
+                                && mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                            myList.add(productBO);
                         }
                     }
                 } else {
@@ -851,17 +788,15 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     }
                 }
             } else {
-                for (LevelBO levelBO : parentidList) {
-                    for (ProductMasterBO ret : items) {
+                for (ProductMasterBO ret : items) {
 
-                        if (ret.getBarCode().equals(strBarCodeSearch)
-                                || ret.getCasebarcode().equals(strBarCodeSearch)
-                                || ret.getOuterbarcode().equals(strBarCodeSearch)
-                                || "ALL".equals(strBarCodeSearch)
-                                && (levelBO.getProductID() == ret.getParentid())
-                                && ret.getIsSaleable() == 1) {
-                            myList.add(ret);
-                        }
+                    if (ret.getBarCode().equals(strBarCodeSearch)
+                            || ret.getCasebarcode().equals(strBarCodeSearch)
+                            || ret.getOuterbarcode().equals(strBarCodeSearch)
+                            || "ALL".equals(strBarCodeSearch)
+                            && (ret.getParentHierarchy().contains("/" + productId + "/"))
+                            && ret.getIsSaleable() == 1) {
+                        myList.add(ret);
                     }
                 }
             }
@@ -917,29 +852,9 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int productId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         mDrawerLayout.closeDrawers();
-        updatebrandtext(mParentIdList, mSelectedIdByLevelId, mAttributeProducts);
+        updatebrandtext(productId, mSelectedIdByLevelId, mAttributeProducts);
     }
 
 

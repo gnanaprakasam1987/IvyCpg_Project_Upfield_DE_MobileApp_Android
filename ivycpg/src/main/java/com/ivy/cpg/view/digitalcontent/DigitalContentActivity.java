@@ -4,14 +4,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * The Class DigitalContentActivity is used to show digital images Two types of
@@ -21,7 +19,7 @@ import java.util.Vector;
  *
  * @author gnanaprakasam.d
  */
-public class DigitalContentActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface {
+public class DigitalContentActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,FiveLevelFilterCallBack {
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -66,35 +64,11 @@ public class DigitalContentActivity extends IvyBaseActivityNoActionBar implement
     }
 
     @Override
-    public void loadStartVisit() {
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
-        mFragment.updateFromFiveLevelFilter(mParentIdList);
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        DigitalContentFragment mFragment = (DigitalContentFragment) fm
-                .findFragmentById(R.id.digital_content_fragment);
-        mFragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+        mFragment.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
 }

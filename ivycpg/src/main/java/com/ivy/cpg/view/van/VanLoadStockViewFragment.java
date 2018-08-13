@@ -32,8 +32,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyBO;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -743,6 +743,7 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                 holder.listBgLayout = (LinearLayout) row.findViewById(R.id.header_listlty);
                 holder.psname = (TextView) row.findViewById(R.id.productname);
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+                holder.productCode = (TextView) row.findViewById(R.id.product_code);
                 holder.caseqty = (TextView) row.findViewById(R.id.caseqty);
                 holder.pcsqty = (TextView) row.findViewById(R.id.pieceqty);
                 holder.unitprice = (TextView) row.findViewById(R.id.unitprice);
@@ -750,6 +751,7 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                 holder.batchid = (TextView) row.findViewById(R.id.batchid);
 
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.productCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.caseqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.pcsqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.unitprice.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -769,6 +771,8 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                     holder.pcsqty.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.SHOW_VAN_STK_OU)
                     holder.outerqty.setVisibility(View.GONE);
+                if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+                    holder.productCode.setVisibility(View.GONE);
 
                 row.setTag(holder);
             } else {
@@ -798,6 +802,12 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
             } else {
                 holder.batchid.setText("");
             }
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code)
+                        + ": " + product.getProductCode() + " ";
+                holder.productCode.setText(prodCode);
+            }
+
 
             if (position % 2 == 0) {
                 row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_even_item_bg));
@@ -810,7 +820,7 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
 
     class ViewHolder {
         LinearLayout listBgLayout;
-        TextView psname;
+        TextView psname, productCode;
         TextView caseqty;
         TextView pcsqty;
         TextView unitprice;

@@ -7,20 +7,18 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by vinodh.r on 28-09-2015.
  */
-public class PrimarySaleStockAndOrderFragmentActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface {
+public class PrimarySaleStockAndOrderFragmentActivity extends IvyBaseActivityNoActionBar implements BrandDialogInterface,FiveLevelFilterCallBack {
     BusinessModel bmodel;
 
     private Toolbar toolbar;
@@ -85,16 +83,6 @@ public class PrimarySaleStockAndOrderFragmentActivity extends IvyBaseActivityNoA
 
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int id) {
 
     }
@@ -110,20 +98,10 @@ public class PrimarySaleStockAndOrderFragmentActivity extends IvyBaseActivityNoA
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         PrimarySaleStockAndOrderFragment asf = (PrimarySaleStockAndOrderFragment) fm
                 .findFragmentById(R.id.distributor_stock_and_order_fragment);
-        asf.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+        asf.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 }

@@ -186,6 +186,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             appbar = findViewById(R.id.appbar);
             nestedScrollView = findViewById(R.id.scrollView);
             nestedScrollView.setFillViewport (true);
+
             appImageFolderPath = bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name));
             if (pdt_image != null) {
                 Uri path;

@@ -33,7 +33,7 @@ public class CurrentReportManagerImpl implements CurrentReportManager {
 
 
                 try {
-                    Vector<LoadManagementBO> item = productHelper.loadProducts("MENU_LOAD_MANAGEMENT", "");
+                    Vector<LoadManagementBO> item = productHelper.downloadLoadMgmtProductsWithFiveLevel("MENU_LOAD_MANAGEMENT", "");
                     if (item != null) {
                         currentStock = new Vector<>();
                         for (LoadManagementBO load : item) {

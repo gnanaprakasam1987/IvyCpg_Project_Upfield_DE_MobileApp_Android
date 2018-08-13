@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceReportBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -32,6 +34,7 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -258,6 +261,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
     /**
      * Alert dialog for delete
+     *
      * @return return dialog instance
      */
     protected Dialog deleteAlertDialog() {
@@ -326,7 +330,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 row = inflater.inflate(R.layout.row_invoice_report_new, parent, false);
                 holder = new ViewHolder();
-                holder.text_retailerName = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.text_retailerName = (TextView) row.findViewById(R.id.prd_nameTv);
 
                 holder.text_value = (TextView) row.findViewById(R.id.PRDMRP);
                 holder.text_LPC = (TextView) row.findViewById(R.id.lpc);
@@ -453,13 +457,16 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     orderHelper.setOrderId(inv.getOrderID());
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
-                      businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(),mRetailerId);
-                    if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                        businessModel.productHelper.downloadProductsWithFiveLevelFilter("MENU_STK_ORD");
-                    else businessModel.productHelper.downloadProducts("MENU_STK_ORD");
+                    businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
+                    businessModel.productHelper.downloadProducts("MENU_STK_ORD");
+                    GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = businessModel.productHelper.downloadProducts("MENU_STK_ORD");
+                    if (genericObjectPair != null) {
+                        businessModel.productHelper.setProductMaster(genericObjectPair.object1);
+                        businessModel.productHelper.setProductMasterById(genericObjectPair.object2);
+                    }
 
-                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getContext());
-                    schemeHelper.initializeScheme(getActivity().getApplicationContext(),businessModel.userMasterHelper.getUserMasterBO().getUserid(),businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
+                    SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getContext());
+                    schemeHelper.initializeScheme(getActivity().getApplicationContext(), businessModel.userMasterHelper.getUserMasterBO().getUserid(), businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
 
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
@@ -467,7 +474,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     orderHelper.loadInvoiceProducts(getActivity(), inv.getInvoiceNumber());
 
                     mInvoiceId = inv.getInvoiceNumber();
-                    schemeHelper.loadSchemeReportDetails(getActivity().getApplicationContext(),inv.getInvoiceNumber(), true);
+                    schemeHelper.loadSchemeReportDetails(getActivity().getApplicationContext(), inv.getInvoiceNumber(), true);
                     businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
                     businessModel.batchAllocationHelper.loadOrderedBatchProducts(inv.getInvoiceNumber());
                     businessModel.batchAllocationHelper.downloadProductBatchCount();
@@ -479,7 +486,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     if (businessModel.configurationMasterHelper.SHOW_TAX_MASTER) {
 
                         businessModel.productHelper.taxHelper.downloadProductTaxDetails();
-                        if(businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
+                        if (businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
                             businessModel.productHelper.taxHelper.updateProductWiseExcludeTax();
 //                        else
 //                            businessModel.productHelper.taxHelper.updateProductWiseIncludeTax()

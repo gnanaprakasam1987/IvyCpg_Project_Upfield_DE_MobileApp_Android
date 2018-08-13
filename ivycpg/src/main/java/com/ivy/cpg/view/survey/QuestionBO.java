@@ -313,4 +313,14 @@ public class QuestionBO {
     public void setPrecision(int precision) {
         this.precision = precision;
     }
+
+    private String parentHierarchy;
+
+    public String getParentHierarchy() {
+        return parentHierarchy;
+    }
+
+    public void setParentHierarchy(String parentHierarchy) {
+        this.parentHierarchy = parentHierarchy;
+    }
 }

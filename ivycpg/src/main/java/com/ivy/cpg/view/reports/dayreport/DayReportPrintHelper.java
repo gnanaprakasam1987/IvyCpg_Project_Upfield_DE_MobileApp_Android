@@ -37,7 +37,7 @@ public class DayReportPrintHelper {
 
     public void doConnection(String printerName) {
         try {
-            bModel.vanmodulehelper.downloadSubDepots();
+            bModel.loadManagementHelper.downloadSubDepots();
             ZebraPrinter printer = connect();
             if (printer != null) {
                 printInvoice(printerName);

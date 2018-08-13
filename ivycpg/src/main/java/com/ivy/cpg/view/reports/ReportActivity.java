@@ -1,17 +1,11 @@
 package com.ivy.cpg.view.reports;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -19,75 +13,70 @@ import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.cpg.view.reports.asset.AssetTrackingReportFragment;
+import com.ivy.cpg.view.reports.attendancereport.AttendanceReport;
+import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportFragment;
+import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
+import com.ivy.cpg.view.reports.contractreport.ContractReportFragment;
+import com.ivy.cpg.view.reports.creditNoteReport.CreditNoteReportFragment;
+import com.ivy.cpg.view.reports.dayreport.DayReportFragment;
+import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockReport;
+import com.ivy.cpg.view.reports.distorderreport.DistOrderReportFragment;
+import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
+import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
+import com.ivy.cpg.view.reports.eodstockreport.EODStockReportFragmentRe;
+import com.ivy.cpg.view.reports.inventoryreport.InventoryReportFragment;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportFragment;
+import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
+import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
+import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
+import com.ivy.cpg.view.reports.performancereport.OutletPerformanceReportFragmnet;
+import com.ivy.cpg.view.reports.performancereport.SellerListFragment;
+import com.ivy.cpg.view.reports.performancereport.SellerMapViewReportFragment;
+import com.ivy.cpg.view.reports.performancereport.SellerPerformanceReportFragment;
+import com.ivy.cpg.view.reports.piramal.BrandwisePerformance;
+import com.ivy.cpg.view.reports.piramal.OpportunitiesReport;
+import com.ivy.cpg.view.reports.piramal.ProductivityReport;
+import com.ivy.cpg.view.reports.piramal.TimeAndTravelReport;
+import com.ivy.cpg.view.reports.pndInvoiceReport.PndInvoiceReportFragment;
+import com.ivy.cpg.view.reports.promotion.PromotionTrackingReport;
+import com.ivy.cpg.view.reports.questionReport.QuestionReportFragment;
 import com.ivy.cpg.view.reports.retailerProperty.RetailerPropertyReportFragment;
 import com.ivy.cpg.view.reports.retaileractivity.RetailerActivityReportFragment;
-
-import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
-
-import com.ivy.cpg.view.reports.dayreport.DayReportFragment;
-import com.ivy.cpg.view.reports.eodstockreport.EODStockReportFragmentRe;
-import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
+import com.ivy.cpg.view.reports.salesreturnreport.SalesReturnReportFragment;
+import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
+import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportFragment;
+import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportHelper;
+import com.ivy.cpg.view.reports.soho.SalesReturnReportFragmentSOHO;
+import com.ivy.cpg.view.reports.taskexcutionreport.TaskExecutionReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
+import com.ivy.cpg.view.reports.userlogreport.LogReportFragment;
+import com.ivy.cpg.view.reports.webviewreport.SOreportFragment;
+import com.ivy.cpg.view.reports.webviewreport.WebViewArchivalReportFragment;
+import com.ivy.cpg.view.reports.webviewreport.WebViewReportHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
-import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.TaxGstHelper;
 import com.ivy.sd.png.provider.TaxHelper;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.ContractReportFragment;
 import com.ivy.sd.png.view.CurrentStockBatchViewFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.SellerListFragment;
-import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
-import com.ivy.sd.png.view.reports.AssetTrackingReportFragment;
-import com.ivy.sd.png.view.reports.AttendanceReport;
-import com.ivy.sd.png.view.reports.BrandwisePerformance;
-import com.ivy.sd.png.view.reports.ClosingStockReportFragment;
-import com.ivy.sd.png.view.reports.CreditNoteReportFragment;
-import com.ivy.sd.png.view.reports.DashboardReportFragment;
-import com.ivy.sd.png.view.reports.DeliveryStockReport;
-import com.ivy.sd.png.view.reports.DistOrderReportFragment;
-import com.ivy.sd.png.view.reports.DynamicReportFragment;
-import com.ivy.sd.png.view.reports.InventoryReportFragment;
-import com.ivy.sd.png.view.reports.LogReportFragment;
-import com.ivy.sd.png.view.reports.OpportunitiesReport;
-import com.ivy.sd.png.view.reports.OutletPerformanceReportFragmnet;
-import com.ivy.sd.png.view.reports.PndInvoiceReportFragment;
-import com.ivy.sd.png.view.reports.ProductivityReport;
-import com.ivy.sd.png.view.reports.PromotionTrackingReport;
-import com.ivy.sd.png.view.reports.QuestionReportFragment;
-import com.ivy.sd.png.view.reports.SOreportFragment;
-import com.ivy.sd.png.view.reports.SalesFundamentalGapReportFragment;
-import com.ivy.sd.png.view.reports.SalesReturnReportFragment;
-import com.ivy.sd.png.view.reports.SalesVolumeReportFragment;
-import com.ivy.sd.png.view.reports.SellerMapViewReportFragment;
-import com.ivy.sd.png.view.reports.SellerPerformanceReportFragment;
-import com.ivy.sd.png.view.reports.TaskExecutionReportFragment;
-import com.ivy.sd.png.view.reports.TimeAndTravelReport;
-import com.ivy.sd.png.view.reports.WebViewArchivalReportFragment;
 import com.ivy.ui.reports.beginstockreport.view.BeginningStockFragment;
 import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 public class ReportActivity extends BaseActivity implements
-        BrandDialogInterface, SellerListFragment.SellerSelectionInterface {
+        BrandDialogInterface, SellerListFragment.SellerSelectionInterface, FiveLevelFilterCallBack {
 
     private BusinessModel bmodel;
     private String fromMenu;
@@ -102,40 +91,9 @@ public class ReportActivity extends BaseActivity implements
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        Toolbar  toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        try {
-            LinearLayout rootBg = (LinearLayout) findViewById(R.id.root);
-            File f = new File(
-                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                            + "/"
-                            + bmodel.userMasterHelper.getUserMasterBO()
-                            .getUserid() + "APP");
-            if (f.isDirectory()) {
-                File files[] = f.listFiles(new FilenameFilter() {
-                    public boolean accept(File directory, String fileName) {
-                        return fileName.startsWith("bg_menu");
-                    }
-                });
-                for (File temp : files) {
-                    Bitmap bitmapImage = BitmapFactory.decodeFile(temp
-                            .getAbsolutePath());
-                    Drawable bgrImage1 = new BitmapDrawable(this.getResources(), bitmapImage);
-                    int sdk = android.os.Build.VERSION.SDK_INT;
-                    if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        rootBg.setBackgroundDrawable(bgrImage1);
-                    } else {
-                        rootBg.setBackground(bgrImage1);
-                    }
-                    break;
-                }
-
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
+        getSupportActionBar().setTitle(null);
         // Set title to actionbar
         setScreenTitle(getResources().getString(R.string.report));
         // Used to on / off the back arrow icon
@@ -145,6 +103,7 @@ public class ReportActivity extends BaseActivity implements
         // getSupportActionBar().setDisplayShowHomeEnabled(true);
         // Used to hide the app logo icon from actionbar
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         // getSupportActionBar().setDisplayUseLogoEnabled(false);
 
         if (Build.VERSION.SDK_INT < 16) {
@@ -177,14 +136,6 @@ public class ReportActivity extends BaseActivity implements
 
     }
 
-    /*@SuppressLint("NewApi")
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.report_menu_fragment_activity_layout);
-
-    }*/
-
     private void setLanguage() {
         SharedPreferences sharedPrefs = PreferenceManager.
                 getDefaultSharedPreferences(this);
@@ -210,7 +161,7 @@ public class ReportActivity extends BaseActivity implements
                     .findFragmentByTag(StandardListMasterConstants.MENU_SKU_REPORT);
             if (currentStockBatchViewFragment != null) {
                 currentStockBatchViewFragment.onBackButtonClick();
-            }else if(salesVolumeReportFragment!=null){
+            } else if (salesVolumeReportFragment != null) {
                 salesVolumeReportFragment.onBackButtonClick();
             } else {
                 if (fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
@@ -250,7 +201,7 @@ public class ReportActivity extends BaseActivity implements
 
         if (config.getConfigCode().contains(
                 StandardListMasterConstants.MENU_DYN_REPORT)) {
-            bmodel.dynamicReportHelper.downloadDynamicReport(config.getConfigCode());
+            DynamicReportHelper.getInstance(this).downloadDynamicReport(config.getConfigCode());
 
             DynamicReportFragment dynamicReportFragment = new DynamicReportFragment();
             Bundle bundle = new Bundle();
@@ -262,7 +213,6 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_ATTENDANCE_REPORT)) {
-            bmodel.reportHelper.downloadAttendanceReport();
 
             AttendanceReport attendanceReport = new AttendanceReport();
             transaction.replace(R.id.fragment_content, attendanceReport);
@@ -297,12 +247,13 @@ public class ReportActivity extends BaseActivity implements
             mDeliveryStockReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mDeliveryStockReport);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_DAY_REPORT)) {
 
             //DailyReportFragmentNew dayFragment = new DailyReportFragmentNew();
+
             DayReportFragment dayFragment = new DayReportFragment();
             dayFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, dayFragment);
@@ -330,22 +281,16 @@ public class ReportActivity extends BaseActivity implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SKU_REPORT)) {
 
-            bmodel.reportHelper.downloadProductReportsWithFiveLevelFilter();
+            new SalesVolumeReportHelper(this).downloadProductReportsWithFiveLevelFilter();
 
             SalesVolumeReportFragment salesVolumeReportFragment = new SalesVolumeReportFragment();
             salesVolumeReportFragment.setArguments(getIntent().getExtras());
-            transaction.replace(R.id.fragment_content, salesVolumeReportFragment,StandardListMasterConstants.MENU_SKU_REPORT);
+            transaction.replace(R.id.fragment_content, salesVolumeReportFragment, StandardListMasterConstants.MENU_SKU_REPORT);
 
             commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT)) {
-            bmodel.productHelper
-                    .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-
-
-            //CurrentStockView stockReportFragment = new CurrentStockView();
-
             CurrentReportViewFragment stockReportFragment = new CurrentReportViewFragment();
             stockReportFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, stockReportFragment);
@@ -427,31 +372,15 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT)) {
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER) {
-                bmodel.productHelper
-                        .downloadFiveFilterLevels("MENU_LOAD_MANAGEMENT");
-            } else {
-                bmodel.productHelper
-                        .downloadProductFilter("MENU_LOAD_MANAGEMENT");
-            }
+            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                    bmodel.productHelper.getFilterProductLevels()));
+            bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
+                    "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 
-            if (bmodel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER)
-                bmodel.productHelper.loadProductsWithFiveLevel(
-                        "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
-            else
-                bmodel.productHelper.loadProducts("MENU_LOAD_MANAGEMENT",
-                        "MENU_CUR_STK_BATCH");
 
             CurrentStockBatchViewFragment currentStockBatchViewFragment = new CurrentStockBatchViewFragment();
             transaction.replace(R.id.fragment_content, currentStockBatchViewFragment, StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
-
-            commitFragment(transaction, config);
-
-        } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_SUP_TEST_SCORE)) {
-
-            DashboardReportFragment dashboardReportFragment = new DashboardReportFragment();
-            transaction.replace(R.id.fragment_content, dashboardReportFragment);
 
             commitFragment(transaction, config);
 
@@ -469,7 +398,7 @@ public class ReportActivity extends BaseActivity implements
             brandwisePerformanceFragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, brandwisePerformanceFragment);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_OPPORTUNITIES_REPORT)) {
@@ -478,7 +407,7 @@ public class ReportActivity extends BaseActivity implements
             mOpportunitiesReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mOpportunitiesReport);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_TIMEANDTRAVEL_REPORT)) {
@@ -496,7 +425,7 @@ public class ReportActivity extends BaseActivity implements
             mProductivityReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, mProductivityReport);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_LOG)) {
@@ -508,10 +437,10 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_WEBVIEW_RPT01) ||
                 config.getConfigCode().equals(StandardListMasterConstants.MENU_WEBVIEW_RPT02)) {
-
+            WebViewReportHelper webViewReportHelper = WebViewReportHelper.getInstance(this);
             if (bmodel.isOnline()) {
-                bmodel.reportHelper.downloadWebViewReportUrl(config.getConfigCode());
-                if (!bmodel.reportHelper.getWebReportUrl().equals("")) {
+                webViewReportHelper.downloadWebViewReportUrl(config.getConfigCode());
+                if (!webViewReportHelper.getWebReportUrl().equals("")) {
 
                     SOreportFragment sOreportFragment = new SOreportFragment();
                     transaction.replace(R.id.fragment_content, sOreportFragment);
@@ -530,7 +459,7 @@ public class ReportActivity extends BaseActivity implements
             ContractReportFragment mContractReport = new ContractReportFragment();
             transaction.replace(R.id.fragment_content, mContractReport);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SFG_REPORT)) {
 
@@ -563,12 +492,13 @@ public class ReportActivity extends BaseActivity implements
             transaction.replace(R.id.fragment_content, mInventoryReport);
             bmodel.mSelectedActivityName = config.getMenuName();
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT)) {
-            bmodel.reportHelper.downloadUsers();
-            if (bmodel.reportHelper.getLstUsers().size() > 0) {
+            OutletPerfomanceHelper perfomanceHelper = OutletPerfomanceHelper.getInstance(this);
+            perfomanceHelper.downloadUsers();
+            if (perfomanceHelper.getLstUsers().size() > 0) {
 
                 SellerMapViewReportFragment mSellerMapviewReport = new SellerMapViewReportFragment();
                 transaction.replace(R.id.fragment_content, mSellerMapviewReport, StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
@@ -589,12 +519,13 @@ public class ReportActivity extends BaseActivity implements
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_RETPERFO_RPT)) {
-            bmodel.reportHelper.downloadUsers();
-            if (bmodel.reportHelper.getLstUsers().size() > 0) {
+            OutletPerfomanceHelper outletPerfomanceHelper = OutletPerfomanceHelper.getInstance(this);
+            outletPerfomanceHelper.downloadUsers();
+            if (outletPerfomanceHelper.getLstUsers().size() > 0) {
 
                 OutletPerformanceReportFragmnet mOutletPerformanceReportFragmnet = new OutletPerformanceReportFragmnet();
                 transaction.replace(R.id.fragment_content, mOutletPerformanceReportFragmnet, StandardListMasterConstants.MENU_RETPERFO_RPT);
-                bmodel.mSelectedActivityName = config.getMenuName();
+                outletPerfomanceHelper.mSelectedActivityName = config.getMenuName();
 
                 commitFragment(transaction, config);
 
@@ -604,7 +535,7 @@ public class ReportActivity extends BaseActivity implements
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SALES_REPORT)) {
 
-            SalesReturnReportFragment salesReturnReport = new SalesReturnReportFragment();
+            SalesReturnReportFragmentSOHO salesReturnReport = new SalesReturnReportFragmentSOHO();
             salesReturnReport.setArguments(getIntent().getExtras());
             transaction.replace(R.id.fragment_content, salesReturnReport);
 
@@ -616,7 +547,7 @@ public class ReportActivity extends BaseActivity implements
             WebViewArchivalReportFragment webViewArchivalReportFragment = new WebViewArchivalReportFragment();
             transaction.replace(R.id.fragment_content, webViewArchivalReportFragment);
 
-            setSubTitle(transaction, config);
+            commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
@@ -644,16 +575,13 @@ public class ReportActivity extends BaseActivity implements
             OrderStatusReportFragment orderStatusReportFragment = OrderStatusReportFragment.newInstance(false);
             transaction.replace(R.id.fragment_content, orderStatusReportFragment);
             commitFragment(transaction, config);
+        } else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_INV_SALES_RETURN_REPORT)) {
+
+            SalesReturnReportFragment salesReturnReportFragment = new SalesReturnReportFragment();
+            transaction.replace(R.id.fragment_content, salesReturnReportFragment);
+            commitFragment(transaction, config);
         }
-
-
-    }
-
-    private void setSubTitle(FragmentTransaction transaction, ConfigureBO config) {
-        transaction.addToBackStack(null);
-        getSupportActionBar().setSubtitle(config.getMenuName());
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        transaction.commit();
     }
 
     private void commitFragment(FragmentTransaction transaction, ConfigureBO config) {
@@ -669,16 +597,6 @@ public class ReportActivity extends BaseActivity implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         CurrentStockBatchViewFragment currentStockBatchViewFragment = (CurrentStockBatchViewFragment) fm
@@ -691,21 +609,12 @@ public class ReportActivity extends BaseActivity implements
     }
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         CurrentStockBatchViewFragment currentStockBatchViewFragment = (CurrentStockBatchViewFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
         if (currentStockBatchViewFragment != null)
-            currentStockBatchViewFragment.updateFromFiveLevelFilter(mParentIdList);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        CurrentStockBatchViewFragment currentStockBatchViewFragment = (CurrentStockBatchViewFragment) fm
-                .findFragmentByTag(StandardListMasterConstants.MENU_CURRENT_STOCK_BATCH_REPORT);
-        if (currentStockBatchViewFragment != null)
-            currentStockBatchViewFragment.updateFromFiveLevelFilter(mParentIdList, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
+            currentStockBatchViewFragment.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
     }
 
 
@@ -716,11 +625,6 @@ public class ReportActivity extends BaseActivity implements
 
     @Override
     public void updateCancel() {
-
-    }
-
-    @Override
-    public void loadStartVisit() {
 
     }
 

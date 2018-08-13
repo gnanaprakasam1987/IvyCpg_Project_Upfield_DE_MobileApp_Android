@@ -29,20 +29,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
-public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogInterface {
+public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack {
 
     private BusinessModel bmodel;
     private DrawerLayout mDrawerLayout;
@@ -95,7 +94,6 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
             if (mDrawerLayout != null)
                 drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
 
-            menu.findItem(R.id.menu_product_filter).setVisible(!drawerOpen);
             menu.findItem(R.id.menu_next).setVisible(!drawerOpen);
             menu.findItem(R.id.menu_location_filter).setVisible(!drawerOpen);
 
@@ -103,8 +101,6 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
             menu.findItem(R.id.menu_remarks).setVisible(false);
 
-            if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
-                menu.findItem(R.id.menu_product_filter).setVisible(false);
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -127,9 +123,6 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
             return true;
         } else if (i == R.id.menu_next) {
             nextButtonClick();
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-            productFilterClickedFragment();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -395,49 +388,6 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
 
     }
 
-    private void productFilterClickedFragment() {
-        try {
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-
-            if (frag != null)
-                ft.detach(frag);
-
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", "Brand");
-            bundle.putString("filterHeader", bmodel.productHelper
-                    .getChildLevelBo().get(0).getProductLevel());
-            bundle.putSerializable("serilizeContent",
-                    bmodel.productHelper.getChildLevelBo());
-            if (bmodel.productHelper.getParentLevelBo() != null
-                    && bmodel.productHelper.getParentLevelBo().size() > 0) {
-
-                bundle.putBoolean("isFormBrand", true);
-
-                bundle.putString("pfilterHeader", bmodel.productHelper
-                        .getParentLevelBo().get(0).getPl_productLevel());
-
-                bmodel.productHelper.setPlevelMaster(bmodel.productHelper
-                        .getParentLevelBo());
-            } else {
-                bundle.putBoolean("isFormBrand", false);
-                bundle.putString("isFrom", "STK");
-            }
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
 
     @SuppressLint("ResourceType")
     public void numberPressed(View vw) {
@@ -487,17 +437,6 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int id) {
         bmodel.mEmptyReturnHelper.mSelectedFilter = id;
         mDrawerLayout.closeDrawers();
@@ -516,16 +455,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer>mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer>mAttributeProducts, String mFilterText) {
 
     }
 }

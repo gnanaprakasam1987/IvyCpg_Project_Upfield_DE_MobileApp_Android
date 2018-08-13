@@ -33,19 +33,18 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -53,7 +52,7 @@ import java.util.Vector;
  */
 public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
         TextView.OnEditorActionListener,
-        BrandDialogInterface, View.OnClickListener {
+        BrandDialogInterface, View.OnClickListener, FiveLevelFilterCallBack {
 
 
     public ArrayList<ProductMasterBO> stockSkuList;
@@ -303,11 +302,11 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                 }
                 /*
                  * else if (mSelectedFilter.equals(getResources().getString(
-				 * R.string.product_short_name))) { if
-				 * (ret.getProductShortName() .toLowerCase() .contains(
-				 * mEdt_searchproductName.getText().toString() .toLowerCase()))
-				 * { mylist.add(ret); } }
-				 */
+                 * R.string.product_short_name))) { if
+                 * (ret.getProductShortName() .toLowerCase() .contains(
+                 * mEdt_searchproductName.getText().toString() .toLowerCase()))
+                 * { mylist.add(ret); } }
+                 */
             }
 
 
@@ -352,7 +351,6 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
         super.onPrepareOptionsMenu(menu);
         try {
             menu.findItem(R.id.menu_remarks).setVisible(false);
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
             menu.findItem(R.id.menu_remarks).setVisible(false);
             menu.findItem(R.id.menu_scheme).setVisible(false);
@@ -410,8 +408,8 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
             if (id == R.id.calcdel) {
                 /*
                  * int s = SDUtil.convertToInt((String) QUANTITY.getText()
-				 * .toString()); s = s / 10; QUANTITY.setText(s + ""); val = s;
-				 */
+                 * .toString()); s = s / 10; QUANTITY.setText(s + ""); val = s;
+                 */
 
                 String s = QUANTITY.getText().toString();
                 if (s != null) {
@@ -441,16 +439,6 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName, List<Integer> mFilterId) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
     public void updateBrandText(String mFilterText, int id) {
 
     }
@@ -466,28 +454,16 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        stockSkuList = new ArrayList<ProductMasterBO>();
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        stockSkuList = new ArrayList<>();
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         if (mAttributeProducts != null) {
-            if (mParentIdList.size() > 0) {
-                for (LevelBO levelBO : mParentIdList) {
-                    for (ProductMasterBO productBO : items) {
-                        if (productBO.getIsSaleable() == 1 && levelBO.getProductID() == productBO.getParentid()) {
-                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                stockSkuList.add(productBO);
-                            }
+            if (mFilteredPid != 0) {
+                for (ProductMasterBO productBO : items) {
+                    if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                        if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                            stockSkuList.add(productBO);
                         }
                     }
                 }
@@ -503,12 +479,10 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
             }
         } else {
 
-            for (LevelBO levelBO : mParentIdList) {
-                for (ProductMasterBO productBO : items) {
-                    if (productBO.getIsSaleable() == 1) {
-                        if (levelBO.getProductID() == productBO.getParentid()) {
-                            stockSkuList.add(productBO);
-                        }
+            for (ProductMasterBO productBO : items) {
+                if (productBO.getIsSaleable() == 1) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        stockSkuList.add(productBO);
                     }
                 }
             }

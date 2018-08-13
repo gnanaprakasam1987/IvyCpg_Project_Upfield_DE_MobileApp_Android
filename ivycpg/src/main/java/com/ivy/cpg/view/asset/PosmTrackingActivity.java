@@ -11,21 +11,19 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
-        OnEditorActionListener, BrandDialogInterface,DataPickerDialogFragment.UpdateDateInterface {
+        OnEditorActionListener, BrandDialogInterface,DataPickerDialogFragment.UpdateDateInterface,FiveLevelFilterCallBack{
     BusinessModel mBModel;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,40 +118,16 @@ public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
     }
 
     @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        PosmTrackingFragment asf = (PosmTrackingFragment) fm
+                .findFragmentById(R.id.posm_tracking);
+        asf.updateFromFiveLevelFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
 
     @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
         return false;
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PosmTrackingFragment asf = (PosmTrackingFragment) fm
-                .findFragmentById(R.id.posm_tracking);
-        asf.updateFromFiveLevelFilter(mParentIdList);
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        PosmTrackingFragment asf = (PosmTrackingFragment) fm
-                .findFragmentById(R.id.posm_tracking);
-        asf.updateFromFiveLevelFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts, mFilterText);
     }
 
     @Override

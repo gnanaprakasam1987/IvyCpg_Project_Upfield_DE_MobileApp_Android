@@ -136,7 +136,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         }
 
         if (isFromMenuClick) {
-            mBModel.productHelper.getLocations();
+            mBModel.productHelper.downloadInStoreLocationsForStockCheck();
             mBModel.productHelper.getInStoreLocation();
             mPhotoCaptureHelper.downloadLocations(getApplicationContext());
             mPhotoCaptureHelper.downloadPhotoCaptureProducts(getApplicationContext());

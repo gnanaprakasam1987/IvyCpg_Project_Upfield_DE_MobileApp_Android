@@ -175,7 +175,6 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.productHelper.downloadProductFilter("MENU_DASH");
                 dashBoardHelper.findMinMaxProductLevel(rid);
                 dashBoardHelper.downloadSKUWiseTarget(rid, type, code);
                 dashBoardHelper.downloadDashboardLevelSkip(1);
@@ -435,8 +434,6 @@ public class SkuWiseTargetFragment extends IvyBaseFragment {
         menu.findItem(R.id.menu_remarks).setVisible(false);
         menu.findItem(R.id.menu_spl_filter).setVisible(false);
         menu.findItem(R.id.menu_next).setVisible(false);
-        if (isFromDash)
-            menu.findItem(R.id.menu_product_filter).setVisible(false);
     }
 
     @Override

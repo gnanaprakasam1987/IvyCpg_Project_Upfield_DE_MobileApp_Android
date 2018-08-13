@@ -16,6 +16,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 
@@ -469,6 +470,37 @@ public class ReasonHelper {
         return reasonSalesReturnMaster;
     }
 
+    public ArrayList<StandardListBO> getReasonSalesReturnCategory() {
+        ArrayList<StandardListBO> categoryList = new ArrayList<>();
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT A.ListId, A.ListName, A.ListCode FROM StandardListMaster A"
+                    + "  Where (A.ListCode = '" + StandardListMasterConstants.SALES_RETURN_NONSALABLE_REASON_TYPE
+                    + "' OR A.ListCode = '" + StandardListMasterConstants.SALES_RETURN_SALABLE_REASON_TYPE + "') and A.ListType = 'REASON_TYPE' ";
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                categoryList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    StandardListBO category = new StandardListBO();
+                    category.setListID(c.getString(0));
+                    category.setListName(c.getString(1));
+                    category.setListCode(c.getString(2));
+                    categoryList.add(new StandardListBO(category));
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+
+        return categoryList;
+    }
+
+
     public void downloadClosecallReasonList() {
         try {
             clcrReason = new ArrayList<>();
@@ -717,8 +749,8 @@ public class ReasonHelper {
 
 
     public ArrayList<ReasonMaster> getRemarksType() {
-        if(remarksType==null){
-            remarksType=new ArrayList<>();
+        if (remarksType == null) {
+            remarksType = new ArrayList<>();
         }
         return remarksType;
     }
@@ -748,8 +780,8 @@ public class ReasonHelper {
     }
 
     public ArrayList<ReasonMaster> getShipMentType() {
-        if(shipmentType==null){
-            shipmentType=new ArrayList<>();
+        if (shipmentType == null) {
+            shipmentType = new ArrayList<>();
         }
         return shipmentType;
     }
@@ -780,8 +812,8 @@ public class ReasonHelper {
 
 
     public ArrayList<ReasonMaster> getPayTermType() {
-        if(paymentType==null){
-            paymentType=new ArrayList<>();
+        if (paymentType == null) {
+            paymentType = new ArrayList<>();
         }
         return paymentType;
     }
@@ -811,10 +843,58 @@ public class ReasonHelper {
     }
 
     public ArrayList<ReasonMaster> getDistributionChannelType() {
-        if(distributionChannelType==null){
-            distributionChannelType=new ArrayList<>();
+        if (distributionChannelType == null) {
+            distributionChannelType = new ArrayList<>();
         }
         return distributionChannelType;
+    }
+
+
+    public ArrayList<ReasonMaster> getRetailerAddress(String retailerId,
+                                                      String addressCode) {
+        DBUtil db = null;
+        ArrayList<ReasonMaster> addressList = new ArrayList<>();
+        StringBuilder addressSB = new StringBuilder();
+        if (addressCode.contains(",")) {
+            String[] addressArray = addressCode.split(",");
+            int i = 0;
+            for (String addCodes : addressArray) {
+                if (addressSB.length() > 0)
+                    addressSB.append(",");
+
+                addressSB.append(AppUtils.QT(addCodes));
+                i = i + 1;
+            }
+        } else
+            addressSB.append(addressCode);
+        try {
+            ReasonMaster reason;
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT RA.AddressId,(RA.Address1|| \",\" ||RA.Address2|| \",\" ||RA.Address3) as Address  FROM StandardListMaster SLM"
+                    + " LEFT JOIN RetailerAddress RA ON SLM.ListId = RA.AddressTypeID"
+                    + " WHERE RA.RetailerId =" + retailerId
+                    + " AND SLM.ListCode in(" + addressSB.toString() + ")"
+                    + " AND ListType = 'ADDRESS_TYPE'";
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    reason = new ReasonMaster();
+                    reason.setReasonID(c.getString(0));
+                    reason.setReasonDesc(c.getString(1));
+                    addressList.add(reason);
+                }
+                c.close();
+            }
+            return addressList;
+        } catch (SQLException e) {
+            Commons.printException(e);
+        } finally {
+            if (db != null)
+                db.closeDB();
+        }
+        return new ArrayList<>();
     }
 
 }

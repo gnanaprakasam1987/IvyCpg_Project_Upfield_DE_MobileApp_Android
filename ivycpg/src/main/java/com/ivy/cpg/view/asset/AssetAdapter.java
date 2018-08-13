@@ -428,7 +428,7 @@ public class AssetAdapter extends BaseAdapter {
                         mAssetPresenter.getAssetReasonList(),true));
 
         String serialNo = mContext.getResources().getString(R.string.serial_no)
-                + ":" + holder.assetBO.getSerialNo();
+                + ": " + holder.assetBO.getSerialNo();
         holder.serialNoTV.setText(serialNo);
 
         holder.mInstallDate

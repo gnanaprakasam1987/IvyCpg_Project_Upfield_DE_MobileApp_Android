@@ -38,13 +38,13 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.DateWisePlanBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.profile.CommonReasonDialog;
@@ -54,11 +54,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Vector;
 
 public class NonVisitFragment extends Fragment implements BrandDialogInterface,
-        SearchView.OnQueryTextListener {
+        SearchView.OnQueryTextListener,FiveLevelFilterCallBack {
 
     private final String MENU_PLANNING = "Day Planning";
     private final String MENU_VISIT = "Trade Coverage";
@@ -924,25 +922,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     }
 
     @Override
-    public void loadStartVisit() {
-        // TO DO Auto-generated method stub
-
-    }
-
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-        // TO DO Auto-generated method stub
-
-    }
-
-    @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-        // TO DO Auto-generated method stub
-
-    }
-
-    @Override
     public boolean onQueryTextChange(String s) {
         loadData(s);
         return true;
@@ -956,15 +935,9 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         return false;
     }
 
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-        // TO DO Auto-generated method stub
-
-    }
-
 
     @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
         // TO DO Auto-generated method stub
     }

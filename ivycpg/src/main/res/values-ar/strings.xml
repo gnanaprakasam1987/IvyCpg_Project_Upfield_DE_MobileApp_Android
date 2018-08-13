@@ -36,7 +36,6 @@
     <string name="no_products_exists">لا توجد منتجات موجودة.</string>
     <string name="Noorderreason">لا يوجد سبب للطلب.</string>
     <string name="no_unsubmitted_orders">لا توجد طلبات غير مقدمة.</string>
-    <string name="nodatadownload">لا يوجد تنزيل للبيانات.</string>
     <string name="no_network_connection">لا توجد وصلة إنترنت.</string>
     <string name="successfully_activated">تم التنشيط بنجاح.</string>
     <string name="invoice_created_successfully">تم إنشاء الفاتورة بنجاح.</string>
@@ -63,7 +62,6 @@
     <string name="amount_exeeds_the_balance_please_check">القيمة تتجاوز الرصيد نرجو الفحص.</string>
     <string name="its_highly_recommend_you_to_upload_the_images_before_capturing_new_image">إننا نؤكد التوصية لكم بتحميل الصور قبل التقاط صورة جديدة.</string>
     <string name="maximum_number_of_images_has_been_captured_without_upload_Do_upload_or_delete_images">تم التقاط العدد الأقصى من الصور بدون تحميل. عليك التحميل أو اضغط مجلد الصور لحذف صور.</string>
-    <string name="wits_merchandising_already_done_Do_you_want_do_again">تم أداء التسويق بالفعل هل ترغب في التكرار مرة أخرى ؟</string>
     <string name="order_exist_without_invoice">الأوامر موجودة بدون إنشاء فاتورة. </string>
     <string name="password_does_not_match">كلمة السر غير متوافقة.</string>
     <string name="its_not_possible_to_upload_without_img">ليس من الممكن التحميل بدون صور. </string>
@@ -196,7 +194,6 @@
     <string name="saving_sales_return">حفظ </string>
     <string name="uploading_data">تحميل البيانات.</string>
     <string name="image_uploading">تحميل الصورة </string>
-    <string name="saving_merchandising">حفظ التسويق.</string>
     <string name="successfully_uploaded">تم التحميل بنجاح.</string>
     <string name="upload_failed_please_try_again">فشل التحميل نرجو المحاولة مرة أخرى.</string>
     <string name="images_sucessfully_uploaded">تم تحميل الصور بنجاح.</string>
@@ -249,7 +246,7 @@
     <string name="no_visit_Planning">التخطيط </string>
     <string name="order_gcas">الكود GCAS</string>
     <string name="choose_date">اختيار التاريخ </string>
-    <string name="exceed">لقد تجاوزت المخصص. والباقي فقط % 1SD"</string>
+    <string name="exceed">لقد تجاوزت المخصص. والباقي فقط "%1$d"</string>
     <string name="d1">D1</string>
     <string name="dist_inv">فاتورة عن بُعد </string>
     <string name="pre_post">قبل / بعد </string>
@@ -519,7 +516,6 @@
     <string name="vanno">فان التحميل.</string>
     <string name="BATCH_NO">التشغيلة </string>
     <string name="select_reason_skip_seq">اختيار سبب لتخطي التسلسل.</string>
-    <string name="enter_three_char">أدخل 3 حروف على الأقل.</string>
     <string name="loading_stock">مخزون الشحن.</string>
     <string name="sold_stock">مخزون المبيعات.</string>
     <string name="free_issued">الإصدار مجاناً.</string>
@@ -599,7 +595,7 @@
     <string name="enddate">تاريخ النهاية.</string>
     <string name="segment">القطاع </string>
     <string name="volume_cases">كميات الصناديق.</string>
-    <string name="You_have_already_taken_max_images">لقد وصلت بالفعل إلى الحد الأقصى للصور %1SD.</string>
+    <string name="You_have_already_taken_max_images">لقد وصلت بالفعل إلى الحد الأقصى للصور “%1$d”.</string>
     <string name="plannedoutlet_month">المنفذ حسب التخطيط (للشهر).</string>
     <string name="plannedoutlet_mtd">المنفذ حسب التخطيط (MTD).</string>
     <string name="visited_outlets">المنافذ التي تمت زيارتها.</string>
@@ -631,10 +627,10 @@
     <string name="distributor">الموزعين </string>
     <string name="select_delivery_date">اختيار تاريخ التسليم.</string>
     <string name="please_save_partial_details">نرجو حفظ تفاصيل الاستيفاء الجزئي.</string>
-    <string name="kindlyuploadorsync">نرجو التفضل بتحميل أو حذف بعض الصور قبل التقاط أخرى لأنك وصلت إلى الحد الأقصى للصور %1SD.</string>
+    <string name="kindlyuploadorsync">نرجو التفضل بتحميل أو حذف بعض الصور قبل التقاط أخرى لأنك وصلت إلى الحد الأقصى للصور “%1$d”.</string>
     <string name="data_not_mapped_correctly">البيانات لم يتم تخطيطها.</string>
     <string name="cant_save_inovice_zero_tax_applied">لا يمكن حفظ الفاتورة تطبيق الضريبة 0.</string>
-    <string name="you_reached_limit">لقد وصلت للحد الأقصى للصور %1SD.</string>
+    <string name="you_reached_limit">لقد وصلت للحد الأقصى للصور “%1$d”.</string>
     <string name="title_chage_password">تغيير كلمة السر.</string>
     <string name="password_expired">كلمة السر انتهى مفعولها.</string>
     <string name="priceoff">خارج السعر.</string>
@@ -718,9 +714,9 @@
     <string name="text_mdate">تاريخ التخطي.</string>
     <string name="menu_not_available">القوائم غير متوافرة. </string>
     <string name="download_url_empty">عنوان  URL للتنزيل فارغ.</string>
-    <string name="out_of">تنزيل الماستر خارج الحدود %1SD</string>
-    <string name="still_you_can">مازال بإمكانك التقاط المزيد من الصور %1SD هل ترغب في الاستمرار؟ </string>
-    <string name="table_downloaded">الجدول   %1SD تم تنزيله.</string>
+    <string name="out_of">تنزيل الماستر خارج الحدود “%1$d”</string>
+    <string name="still_you_can">مازال بإمكانك التقاط المزيد من الصور “%1$d” هل ترغب في الاستمرار؟ </string>
+    <string name="table_downloaded">الجدول   “%1$d” تم تنزيله.</string>
     <string name="error">خطأ : </string>
     <string name="data_not_downloaded">البيانات لم يتم تنزيلها </string>
     <string name="batch_created_successfully">Batch created successfully.</string>
@@ -910,7 +906,7 @@
     <string name="non_visit">لا توجد زيارة </string>
     <string name="are_you_sure_you_want_to_logout">هل أنت متأكد من أنك ترغب في الخروج ؟</string>
     <string name="vaload_heder_text">اختيار الجودة لكل تشغيلة.</string>
-    <string name="total_items">إجمالي البنود المرتجعة %1SD.</string>
+    <string name="total_items">إجمالي البنود المرتجعة “%1$d”. </string>
     <string name="srp_text">SRP</string>
     <string name="loading_no">رقم التحميل </string>
     <string name="dateend">تاريخ النهاية </string>
@@ -1141,8 +1137,6 @@
     <string name="coupon_amount">Coupon Amount</string>
     <string name="crown">Crown Management</string>
     <string name="crown_count">Crown Count</string>
-    <string name="crown_count_mismatch">Crown Qty mismatch from Product Qty</string>
-    <string name="crown_product">Crown Product</string>
     <string name="do_u_want_directly_go_or_redownload">Do you want to directly go or redownlod?</string>
     <string name="do_u_want_remove_retailer">Do you want to Remove Retailer?</string>
     <string name="do_u_want_to_delete_tran">Do you want to delete Transaction?</string>
@@ -1159,7 +1153,6 @@
     <string name="expense_title">Expense Sheet</string>
     <string name="fivefilter">Fivefilter</string>
     <string name="foc">FfoOC</string>
-    <string name="focus_merchandising">ترويج SBD</string>
     <string name="focus_show_1">You have not ordered\u0020</string>
     <string name="focus_show_2">\u0020focus product(s) out of\u0020</string>
     <string name="focus_show_3">\u0020focus product(s)</string>
@@ -1174,7 +1167,6 @@
     <string name="liableqty">LiableQty</string>
     <string name="lower_case_mandatory">Lower Case is mandatory</string>
     <string name="mark_attendance">Please Mark Attendance To Proceed</string>
-    <string name="merch_initiative">الترويج المبدئي</string>
     <string name="moq">MOQ</string>
     <string name="moveAsset">Move Asset</string>
     <string name="multiple">Multiple</string>
@@ -1208,7 +1200,6 @@
     <string name="rfield1">Enter Field1</string>
     <string name="rfield2">Enter Field2</string>
     <string name="save_advance_payment">Advance payment saved successfully</string>
-    <string name="saving_init_merchandising">جارٍ حفظ الترويج المبدئي</string>
     <string name="scheme_ucp">Scheme UCP</string>
     <string name="secondary_supplier">Secondary Supplier</string>
     <string name="self">Self</string>
@@ -1269,7 +1260,5 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
-
-    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
 
 </resources>

@@ -2,24 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/dimen_10dp"
     android:background="@color/windowBackground">
     <EditText
         android:id="@+id/et_receipno"
+        android:hint="@string/enter_receipt_no"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="@dimen/dimen_20dp"
         android:layout_marginBottom="@dimen/dimen_40dp"/>
     <LinearLayout
         android:layout_width="match_parent"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
             android:id="@+id/btn_ok"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_width="@dimen/dimens_100dp"
+            android:layout_height="@dimen/dimens_40dp"
             android:text="@string/ok"
-            android:layout_weight="1"
-            android:layout_margin="3dp" />
+            android:textSize="@dimen/font_micro_small"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

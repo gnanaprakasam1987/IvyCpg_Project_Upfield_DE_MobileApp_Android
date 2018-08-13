@@ -65,6 +65,20 @@
                             tools:text="seg rstfsdrfdgf bfdg fdg d rsdg dfg dg \n fghfdkl ghdfkgdklfgdkflgdfkgkdflg kdfgk " />
 
                         <TextView
+                            android:id="@+id/catalog_order_listview_pCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="1dp"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
+                            android:paddingTop="1dp"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/text_sz_small"
+                            tools:text="@string/prod_code" />
+
+                        <TextView
                             android:id="@+id/catalog_order_listview_ppq"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -137,37 +151,33 @@
                             android:visibility="visible"
                             tools:text="Allocation Qty : 0" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/catalog_order_listview_srp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
+                            android:fontFamily="sans-serif"
                             android:paddingBottom="1dp"
                             android:paddingStart="1dp"
                             android:paddingEnd="1dp"
-                            android:paddingTop="1dp">
+                            android:paddingTop="1dp"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/font_small"
+                            tools:text="$150"
 
-                            <TextView
-                                android:id="@+id/catalog_order_listview_srp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-medium"
-                                android:textColor="@color/Black"
-                                android:textSize="@dimen/font_small"
-                                tools:text="$150"
+                            />
 
-                                />
-
-                            <TextView
-                                android:id="@+id/catalog_order_listview_mrp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:paddingStart="2dp"
-                                android:paddingLeft="2dp"
-                                android:textColor="@color/GRAY_TEXT"
-                                android:textSize="@dimen/text_sz_small"
-                                tools:text="MRP :" />
-                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/catalog_order_listview_mrp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:paddingBottom="1dp"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
+                            android:paddingTop="1dp"
+                            android:textColor="@color/GRAY_TEXT"
+                            android:textSize="@dimen/text_sz_small"
+                            tools:text="MRP :" />
 
                         <LinearLayout
                             android:layout_width="match_parent"

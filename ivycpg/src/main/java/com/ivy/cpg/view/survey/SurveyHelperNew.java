@@ -398,7 +398,7 @@ public class SurveyHelperNew {
             sb.append(" SMP.Weight,ifnull(SMP.GroupName,''), SMP.isScore, A.isPhotoReq, A.minPhoto,");
             sb.append(" A.maxPhoto,A.isBonus, IFNULL(OM.OptionId,0), OM.OptionText, OSM.Score,");
             sb.append(" CASE OSM.isExcluded WHEN '1' THEN 'true' ELSE 'false' END as isExcluded,");
-            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq,SMP.maxScore FROM SurveyCriteriaMapping SCM");
+            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq,SMP.maxScore,PM.ParentHierarchy as ParentHierarchy FROM SurveyCriteriaMapping SCM");
             sb.append(" INNER JOIN StandardListMaster SL On SL.Listid=SCM.CriteriaType and SL.listtype='SURVEY_CRITERIA_TYPE'");
             sb.append(" INNER JOIN SurveyMapping SMP ON SMP.SurveyId = SCM.SurveyId");
             sb.append(" INNER JOIN SurveyMaster SM ON SM.SurveyId = SCM.SurveyId");
@@ -409,6 +409,7 @@ public class SurveyHelperNew {
             sb.append(" LEFT JOIN OptionScoreMapping OSM ON OSM.optionid = OM.optionid AND OSM.SurveyId = SM.SurveyId");
             sb.append(" LEFT JOIN OptionDQM OD ON OD.OptionId = OM.OptionId");
             sb.append(" LEFT JOIN SurveyCriteriaMapping SCM1 ON SCM1.SurveyId = SCM.SurveyId AND SCM1.Groupid = SCM.Groupid");
+            sb.append(" LEFT JOIN ProductMaster PM ON PM.PID = A.BrandID");
             sb.append(" WHERE Module=");
             sb.append(QT(surveyTypeStandardListId));
             sb.append(" AND SM.menuCode=");
@@ -473,6 +474,7 @@ public class SurveyHelperNew {
                         questionBO.setIsBonus(c.getInt(15));
                         questionBO.setIsSubQuestion(0);
                         questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
+                        questionBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
 
 
                         sb1.append("Select IFNULL(AID.ImgName,'') FROM AnswerImageDetail AID INNER JOIN AnswerHeader AH  ON AH.uid=AID.Uid " +
@@ -571,6 +573,7 @@ public class SurveyHelperNew {
                             questionBO.setIsBonus(c.getInt(15));
                             questionBO.setIsSubQuestion(0);
                             questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
+                            questionBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
 
                             sb1.append("Select IFNULL(AID.ImgName,'') FROM AnswerImageDetail AID INNER JOIN AnswerHeader AH  ON AH.uid=AID.Uid " +
                                     "AND AH.surveyid='" + questionBO.getSurveyid() + "' " +
@@ -936,6 +939,9 @@ public class SurveyHelperNew {
 
                                 }
                             }
+                            //To Check all the subquestions
+                            if (returnFlag)
+                                returnFlag = isMandatorySubQuestionsAnswered(subQBO, surveyBO);
                         }
                     }
                 }
@@ -960,23 +966,24 @@ public class SurveyHelperNew {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
-                    if (qus.getSelectedAnswer() != null && (!qus.getSelectedAnswer().isEmpty() && !qus.getSelectedAnswer().
-                            contains(context.getResources().
-                                    getString(R.string.plain_select))) && qus.getSelectedAnswerIDs() != null
-                            && (!qus.getSelectedAnswerIDs().isEmpty() &&
+                    if ((qus.getSelectedAnswer() != null && !qus.getSelectedAnswer().isEmpty()
+                            && !qus.getSelectedAnswer().contains(context.getResources().
+                                    getString(R.string.plain_select)))
+                            || (qus.getSelectedAnswerIDs() != null && !qus.getSelectedAnswerIDs().isEmpty() &&
                             !qus.getSelectedAnswerIDs().contains(-1)) && !qus.getQuestionType().equals("EMAIL")) {
                         return true;
                     }
-                    if (qus.getQuestionType().equals("EMAIL")) {
+                    if (qus.getQuestionType().equals("EMAIL") && qus.getSelectedAnswer().size() > 0) {
                         isEmail = true;
-                        if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
+                        if (!isValidEmail(qus.getSelectedAnswer().get(0))) {
                             invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                             invalidEmails.append("\n");
                         }
                     }
-                    if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
+                    if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")
+                            && qus.getSelectedAnswer().size() > 0) {
                         isNum = true;
-                        if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
+                        if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty()) {
                             if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
                                 if (!isInRange(SDUtil.convertToFloat(qus.getFromValue()), SDUtil.convertToFloat(qus.getToValue()),
                                         SDUtil.convertToFloat(qus.getSelectedAnswer().get(0)))) {
@@ -1143,11 +1150,13 @@ public class SurveyHelperNew {
                                 else
                                     optionScore = questionBO.getQuestScore();
 
-                                if ("TEXT".equals(questionBO.getQuestionType()) ||
-                                        "NUM".equals(questionBO.getQuestionType()) ||
-                                        "PERC".equals(questionBO.getQuestionType()) || "OPT".equals(questionBO.getQuestionType())
-                                        && !questionBO
-                                        .getSelectedAnswer().isEmpty()) {
+                                if ("TEXT".equals(questionBO.getQuestionType())
+                                        || "NUM".equals(questionBO.getQuestionType())
+                                        || "PERC".equals(questionBO.getQuestionType())
+                                        || "EMAIL".equals(questionBO.getQuestionType())
+                                        || "DATE".equals(questionBO.getQuestionType())
+                                        || "PH_NO".equals(questionBO.getQuestionType())
+                                        && !questionBO.getSelectedAnswer().isEmpty()) {
                                     String detailvalues = values1
                                             + ","
                                             + questionBO.getSelectedAnswerIDs()
@@ -1166,7 +1175,7 @@ public class SurveyHelperNew {
                                     isData = true;
                                     isAnswered = true;
 
-                                } else {
+                                } else if (questionBO.getSelectedAnswerIDs().get(j) > 0) {
                                     String detailvalues = values1
                                             + ","
                                             + questionBO.getSelectedAnswerIDs()
@@ -1332,10 +1341,13 @@ public class SurveyHelperNew {
                                     else
                                         optionScore = questionBO.getQuestScore();
 
-                                    if ("TEXT".equals(questionBO.getQuestionType()) ||
-                                            "NUM".equals(questionBO.getQuestionType()) ||
-                                            "PERC".equals(questionBO.getQuestionType()) && !questionBO
-                                                    .getSelectedAnswer().isEmpty()) {
+                                    if ("TEXT".equals(questionBO.getQuestionType())
+                                            || "NUM".equals(questionBO.getQuestionType())
+                                            || "PERC".equals(questionBO.getQuestionType())
+                                            || "EMAIL".equals(questionBO.getQuestionType())
+                                            || "DATE".equals(questionBO.getQuestionType())
+                                            || "PH_NO".equals(questionBO.getQuestionType())
+                                            && !questionBO.getSelectedAnswer().isEmpty()) {
                                         String detailvalues = values1
                                                 + ","
                                                 + questionBO.getSelectedAnswerIDs()
@@ -1354,7 +1366,7 @@ public class SurveyHelperNew {
                                         isData = true;
                                         isAnswered = true;
 
-                                    } else {
+                                    } else if (questionBO.getSelectedAnswerIDs().get(j) > 0) {
                                         String detailvalues = values1
                                                 + ","
                                                 + questionBO.getSelectedAnswerIDs()
@@ -1434,7 +1446,7 @@ public class SurveyHelperNew {
 
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
     }
 

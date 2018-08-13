@@ -16,6 +16,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -1056,7 +1057,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     public void applyOutletPerformancePref() {
         //outlet Performance
-        if (businessModel.reportHelper.getPerformRptUrl().length() > 0) {
+        if (OutletPerfomanceHelper.getInstance(context).getPerformRptUrl().length() > 0) {
             SharedPreferences.Editor editor = PreferenceManager
                     .getDefaultSharedPreferences(context.getApplicationContext())
                     .edit();

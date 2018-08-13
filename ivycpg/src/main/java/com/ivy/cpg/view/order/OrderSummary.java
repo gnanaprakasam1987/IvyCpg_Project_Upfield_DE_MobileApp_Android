@@ -569,7 +569,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 if (productBO.getOrderedCaseQty() > 0
                         || productBO.getOrderedPcsQty() > 0
-                        || productBO.getOrderedOuterQty() > 0) {
+                        || productBO.getOrderedOuterQty() > 0
+                        || (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))) {
 
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
@@ -737,6 +738,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (remReturnValue > 0) {
                     double creditNoteAmt = orderHelper.getCreditNoteValue(OrderSummary.this, remReturnValue);
                     text_creditNote.setText(getResources().getString(R.string.credit_note) + " : " + bModel.formatValue(creditNoteAmt));
+                    text_creditNote.setVisibility(View.VISIBLE);
                 } else
                     text_creditNote.setVisibility(View.GONE);
             } else
@@ -1136,7 +1138,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private void editOrder() {
 
         isEditMode = true;
-        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+        discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
 
         if (bModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT)
             discountHelper.clearDiscountQuantity();
@@ -1176,6 +1178,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             i.putExtra("tempOrdImg",
                     (bModel.getOrderHeaderBO().getOrderImageName() == null ? ""
                             : bModel.getOrderHeaderBO().getOrderImageName()));
+            i.putExtra("tempAddressId",
+                    bModel.getOrderHeaderBO().getAddressID());
         }
 
         bModel.setOrderHeaderBO(null);
@@ -1339,8 +1343,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         finish();
                                     }
                                 })
-                        .setPositiveButton(
-                                getResources().getString(R.string.print_order),
+                        .setPositiveButton(bModel.labelsMasterHelper
+                                        .applyLabels((Object) "Ord_Sum_Print_Order") != null ? bModel.labelsMasterHelper
+                                        .applyLabels((Object) "Ord_Sum_Print_Order") :
+                                        getResources().getString(R.string.print_order),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
@@ -1386,7 +1392,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         if (!bModel.hasStockInOrder())
                                             bModel.deleteModuleCompletion("MENU_STK_ORD");
                                         // clear scheme free products
-                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+                                        discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
 
                                         new MyThread(OrderSummary.this,
                                                 DataMembers.DELETE_ORDER).start();
@@ -1418,7 +1424,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                 bModel.synchronizationHelper.deleteFiles(
                                                         PHOTO_PATH, bModel.getOrderHeaderBO().getSignatureName());
                                         }
-                                        discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+                                        discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
                                         bModel.deleteModuleCompletion("MENU_STK_ORD");
                                         new MyThread(OrderSummary.this,
                                                 DataMembers.DELETE_STOCK_AND_ORDER).start();
@@ -2333,6 +2339,23 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                 }
 
+                if (!bModel.configurationMasterHelper.SHOW_FOC) {
+                    (row.findViewById(R.id.llfoc)).setVisibility(View.GONE);
+                } else {
+                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.foc.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    try {
+                        if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.focTitle).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.focTitle))
+                                    .setText(bModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.focTitle).getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(" " + e);
+                    }
+                }
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -3134,7 +3157,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             printer = InitializeZebraPrinter();
 
             if (printer != null) {
-                bModel.vanmodulehelper.downloadSubDepots();
+                bModel.loadManagementHelper.downloadSubDepots();
                 projectSpecificPrinterCall(printerName);
             } else {
                 bModel.productHelper.clearOrderTable();
@@ -3348,7 +3371,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
         if (!isEditMode) {
             bModel.productHelper.clearOrderTable();
-            discountHelper.clearSchemeFreeProduct(mOrderedProductList);
+            discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
         }
         unbindDrawables(findViewById(R.id.root));
     }
@@ -3459,6 +3482,25 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         });
         commonDialog.show();
         commonDialog.setCancelable(false);
+    }
+
+    private boolean isReturnDoneForProduct(ProductMasterBO productMasterBO) {
+        try {
+            for (SalesReturnReasonBO bo : productMasterBO.getSalesReturnReasonList()) {
+                if (bo.getPieceQty() != 0 || bo.getCaseQty() != 0
+                        || bo.getOuterQty() > 0)
+                    return true;
+
+            }
+
+            if (productMasterBO.getRepPieceQty() > 0
+                    || productMasterBO.getRepOuterQty() > 0 || productMasterBO.getRepCaseQty() > 0)
+                return true;
+
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        return false;
     }
 
 }

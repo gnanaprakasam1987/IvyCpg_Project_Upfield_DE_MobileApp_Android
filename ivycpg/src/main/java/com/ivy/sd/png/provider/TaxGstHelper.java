@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by mansoor on 19/1/18.
@@ -96,6 +95,16 @@ public class TaxGstHelper implements TaxInterface {
 
     /**
      * @author rajesh.k Method to use download product wise tax details
+     * 1. IS_TAX_LOC - true
+     * Check location wise tax
+     * LocationId (RetailerLocation)
+     * sourceLocId(SupplierLocation)
+     * isSameZone - Both LocationID are same
+     * isDifferentZone - Both LocationID are not same
+     * 2. IS_TAX_LOC - false
+     * Check isSameZone
+     * isSameZone - true means same location
+     * isSameZone - false measn different location
      */
 
     public void downloadProductTaxDetails() {
@@ -113,7 +122,7 @@ public class TaxGstHelper implements TaxInterface {
             sb.append("select distinct A.pid,TM.TaxDesc,TM.taxrate,SLM.ListName,TM.TaxType,TM.minvalue,TM.maxValue,TM.applyRange,TM.groupid,ifnull(TM.parentType,0) from  productmaster A ");
             if (mBusinessModel.configurationMasterHelper.IS_GST)
                 sb.append("inner JOIN ProductTaxMaster PTM on  PTM.pid = A.pid ");
-            if(mBusinessModel.configurationMasterHelper.IS_GST_HSN)
+            if (mBusinessModel.configurationMasterHelper.IS_GST_HSN)
                 sb.append("inner JOIN ProductTaxMaster PTM on  PTM.HSNId = A.HSNId ");
             sb.append("inner JOIN TaxMaster TM on  PTM.groupid = TM.groupid ");
             sb.append("INNER JOIN StandardListMaster SLM ON SLM.Listid = TM.TaxType ");
@@ -122,8 +131,14 @@ public class TaxGstHelper implements TaxInterface {
 
             sb.append("where PTM.TaxTypeId = "
                     + mBusinessModel.getRetailerMasterBO().getTaxTypeId());
-            sb.append(" AND PTM.isSameZone = " + mBusinessModel.getRetailerMasterBO().isSameZone());
-            sb.append("  order by A.pid");
+
+            if (mBusinessModel.configurationMasterHelper.IS_TAX_LOC) {
+                sb.append(" AND PTM.LocationId = " + mBusinessModel.getRetailerMasterBO().getRetailerTaxLocId());
+                sb.append(" AND PTM.sourceLocId = " + mBusinessModel.getRetailerMasterBO().getSupplierTaxLocId());
+            } else
+                sb.append(" AND PTM.isSameZone = " + mBusinessModel.getRetailerMasterBO().isSameZone());
+
+            sb.append(" order by A.pid");
 
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -235,7 +250,7 @@ public class TaxGstHelper implements TaxInterface {
                         .getRetailerID()) + ",");
                 sb.append(mBusinessModel.QT(invoiceid) + "," + taxBO.getTaxRate() + ",");
                 sb.append(mBusinessModel.QT(taxBO.getTaxType()) + ","
-                        + SDUtil.format(taxBO.getTotalTaxAmount(), 2, mBusinessModel.configurationMasterHelper.VALUE_COMMA_COUNT));
+                        + SDUtil.format(taxBO.getTotalTaxAmount(), 2, 0));
                 db.insertSQL("InvoiceTaxDetails", columns, sb.toString());
 
             }
@@ -283,10 +298,10 @@ public class TaxGstHelper implements TaxInterface {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from invoicetaxdetails IT");
+            sb.append("select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from OrderTaxDetails IT");
             sb.append(" inner join taxmaster TM on IT.groupid=TM.Groupid and IT.TaxType=TM.taxtype ");
             sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
-            sb.append(" where invoiceid=" + mBusinessModel.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc");
+            sb.append(" where orderid=" + mBusinessModel.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 int groupid = 0;
@@ -367,10 +382,10 @@ public class TaxGstHelper implements TaxInterface {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from invoicetaxdetails IT");
+            sb.append("select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from OrderTaxDetails IT");
             sb.append(" left join taxmaster TM on IT.groupid=TM.Groupid");
             sb.append(" left join standardlistmaster slm on TM.taxtype=slm.listid ");
-            sb.append(" where invoiceid=" + mBusinessModel.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate");
+            sb.append(" where orderid=" + mBusinessModel.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 String groupid = "";
@@ -817,11 +832,12 @@ public class TaxGstHelper implements TaxInterface {
         values.append(taxBO.getTaxType() + "," + taxvalue
                 + "," + mBusinessModel.getRetailerMasterBO().getRetailerID());
         values.append("," + taxBO.getGroupId() + ",0");
-        db.insertSQL("InvoiceTaxDetails", columns, values.toString());
+
         db.insertSQL("OrderTaxDetails", columns, values.toString());
-        values = null;
 
-
+        if (mBusinessModel.getRetailerMasterBO().getIsVansales() == 1
+                || mBusinessModel.configurationMasterHelper.IS_INVOICE)
+            db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 
     public void insertProductLevelTaxForFreeProduct(String orderId, DBUtil db,
@@ -834,9 +850,12 @@ public class TaxGstHelper implements TaxInterface {
         values.append(taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
                 + "," + mBusinessModel.getRetailerMasterBO().getRetailerID());
         values.append("," + taxBO.getGroupId() + ",1");
-        db.insertSQL("InvoiceTaxDetails", columns, values.toString());
+
         db.insertSQL("OrderTaxDetails", columns, values.toString());
-        values = null;
+
+        if (mBusinessModel.getRetailerMasterBO().getIsVansales() == 1
+                || mBusinessModel.configurationMasterHelper.IS_INVOICE)
+            db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 
     /**
@@ -847,7 +866,7 @@ public class TaxGstHelper implements TaxInterface {
     public double applyBillWiseTax(double totalOrderValue) {
         double totalExclusiveOrderAmount = SDUtil.convertToDouble(SDUtil.format(totalOrderValue,
                 mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, mBusinessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+                0, false));
         double totalTaxValue = 0.0;
         if (!mBusinessModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
             double totalTaxRate = 0;
@@ -907,7 +926,7 @@ public class TaxGstHelper implements TaxInterface {
     @Override
     public float updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS) {
         float totalTaxAmount = 0;
-        if (productMasterBOS != null && productMasterBOS.size()>0) {
+        if (productMasterBOS != null && productMasterBOS.size() > 0) {
             for (ProductMasterBO productMasterBO : productMasterBOS) {
                 ProductMasterBO productBo = productMasterBO;
                 if (productBo != null) {
@@ -921,7 +940,7 @@ public class TaxGstHelper implements TaxInterface {
 
                         productBo.setDiscount_order_value(temp);
 
-                        if(mTaxListByProductId!=null && mTaxListByProductId.get(productBo.getProductID())!=null) {
+                        if (mTaxListByProductId != null && mTaxListByProductId.get(productBo.getProductID()) != null) {
 
                             ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());
                             if (taxList != null) {
@@ -936,6 +955,8 @@ public class TaxGstHelper implements TaxInterface {
                                 }
 
                                 totalTaxAmount = totalTaxAmount + taxAmount;
+                                productBo.setTaxApplyvalue(taxAmount);
+                                productBo.setTaxValue(productBo.getDiscount_order_value());
 
                                 productBo.setDiscount_order_value(productBo.getDiscount_order_value() + taxAmount);
                             }

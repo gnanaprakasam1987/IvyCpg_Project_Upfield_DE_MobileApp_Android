@@ -55,7 +55,7 @@ public class DeliveryManagementHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select invoiceno,invoicedate,invNetamount,linespercall from invoicemaster ");
+            sb.append("select invoiceno,invoicedate,invNetamount,linespercall from InvoiceDeliveryMaster ");
             sb.append(" where retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             sb.append(" and invoiceno not in(select vh.invoiceid from vandeliveryheader vh)");
             Cursor c = db.selectSQL(sb.toString());
@@ -311,10 +311,9 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
     }
 
     public ArrayList<ProductMasterBO> getmInvoiceDetailsList() {
-        if (mInvoiceDetailsList != null) {
-            return mInvoiceDetailsList;
-        }
-        return new ArrayList<ProductMasterBO>();
+        if (mInvoiceDetailsList == null)
+            mInvoiceDetailsList = new ArrayList<>();
+        return mInvoiceDetailsList;
     }
 
     public void saveDeliveryManagement(String invoiceno, String selectedItem, String SignName, String SignPath, String contactName, String contactNo) {
@@ -731,85 +730,6 @@ left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where i
         }
 
     }
-
-
-    ArrayList<ProductMasterBO> mDeliveryStocks;
-
-    public ArrayList<ProductMasterBO> getmDeliveryStocks() {
-        if (mDeliveryStocks == null) {
-            return new ArrayList<>();
-        }
-        return mDeliveryStocks;
-    }
-
-    HashMap<String, ProductMasterBO> mDeliveryProductsBObyId;
-
-    public void downloadDeliveryStock() {
-
-        DBUtil db = null;
-        try {
-            String retailerIds = "";
-            for (RetailerMasterBO retailer : bmodel.getRetailerMaster()) {
-                if (retailer.getIsToday() == 1 || retailer.getIsDeviated().equalsIgnoreCase("Y")) {
-                    if (retailerIds.length() > 1)
-                        retailerIds += "," + retailer.getRetailerID();
-                    else
-                        retailerIds += retailer.getRetailerID();
-                }
-            }
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String sql = "select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid"
-                    + ",uomid as orderedUomId,qty as orderedQty from InvoiceDetailUOMWise ID"
-                    + " Left join ProductMaster pm on pm.pid=ID.productid"
-                    + " where invoiceid in(select invoiceno from invoicemaster where retailerid in (" + retailerIds + "))";
-
-            Cursor c = db.selectSQL(sql);
-            if (c.getCount() > 0) {
-                mDeliveryProductsBObyId = new HashMap<>();
-                mDeliveryStocks = new ArrayList<>();
-                ProductMasterBO bo;
-                while (c.moveToNext()) {
-                    if (mDeliveryProductsBObyId.get(c.getString(0)) != null) {
-                        ProductMasterBO productMasterBO = mDeliveryProductsBObyId.get(c.getString(0));
-                        if (productMasterBO.getPcUomid() == c.getInt(6))
-                            productMasterBO.setOrderedPcsQty((productMasterBO.getOrderedPcsQty() + c.getInt(7)));
-                        if (productMasterBO.getCaseUomId() == c.getInt(6))
-                            productMasterBO.setOrderedCaseQty((productMasterBO.getOrderedCaseQty() + c.getInt(7)));
-                        if (productMasterBO.getOuUomid() == c.getInt(6))
-                            productMasterBO.setOrderedOuterQty((productMasterBO.getOrderedOuterQty() + c.getInt(7)));
-                    } else {
-                        bo = new ProductMasterBO();
-                        bo.setProductID(c.getString(0));
-                        bo.setProductName(c.getString(1));
-                        bo.setProductShortName(c.getString(2));
-
-                        bo.setPcUomid(c.getInt(3));
-                        bo.setCaseUomId(c.getInt(4));
-                        bo.setOuUomid(c.getInt(5));
-
-                        if (bo.getPcUomid() == c.getInt(6))
-                            bo.setOrderedPcsQty(c.getInt(7));
-                        if (bo.getCaseUomId() == c.getInt(6))
-                            bo.setOrderedCaseQty(c.getInt(7));
-                        if (bo.getOuUomid() == c.getInt(6))
-                            bo.setOrderedOuterQty(c.getInt(7));
-
-                        mDeliveryProductsBObyId.put(bo.getProductID(), bo);
-                        mDeliveryStocks.add(bo);
-                    }
-
-                }
-            }
-        } catch (Exception ex) {
-            Commons.printException(ex);
-        } finally {
-            mDeliveryProductsBObyId = null;
-            db.closeDB();
-        }
-    }
-
 
     public String getUserName() {
         return userName;

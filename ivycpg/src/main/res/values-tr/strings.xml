@@ -36,7 +36,6 @@
     <string name="no_products_exists">Herhangi bir ürün yok.</string>
     <string name="Noorderreason">Sipariş gerekçesi yok</string>
     <string name="no_unsubmitted_orders">Bildirilmemiş sipariş yok.</string>
-    <string name="nodatadownload">Herhangi bir veri indirilmedi.</string>
     <string name="no_network_connection">İnternet bağlantısı yok.</string>
     <string name="successfully_activated">Aktivasyon başarılı.</string>
     <string name="invoice_created_successfully">Fatura oluşturma başarılı.</string>
@@ -63,7 +62,6 @@
     <string name="amount_exeeds_the_balance_please_check">Amount exceeds the balance,  please check.</string>
     <string name="its_highly_recommend_you_to_upload_the_images_before_capturing_new_image">Yeni fotoğraf çekmeden önce eski fotoğrafları yüklemen şiddetle tavsiye edilir.</string>
     <string name="maximum_number_of_images_has_been_captured_without_upload_Do_upload_or_delete_images">Yükleme yapılmadan çekilebilecek maximum fotoğraf sayısına ulaştın. Yükleme yap ve ya fotoğraf silmek için galeriye git.</string>
-    <string name="wits_merchandising_already_done_Do_you_want_do_again">Merchandising yapıldı. Tekrar yapmak mı istiyorsun?</string>
     <string name="order_exist_without_invoice">Fatura oluşturulmadan alınmış siparişler mevcut.</string>
     <string name="password_does_not_match">Şifre hatalı.</string>
     <string name="its_not_possible_to_upload_without_img">Fotoğraf eklemeden yükleyemezsin!</string>
@@ -197,10 +195,6 @@
     <string name="saving_sales_return">Kaydediliyor...</string>
     <string name="uploading_data">Bilgiler yükleniyor...</string>
     <string name="image_uploading">Fotoğraf yükleniyor...</string>
-    <string name="saving_init_merchandising">Saving Initiative Merchandising…</string>
-    <string name="saving_merchandising">Merchandising kaydediliyor.</string>
-    <string name="focus_merchandising">SBD Merchandising</string>
-    <string name="merch_initiative">Merch. Initiative</string>
     <string name="successfully_uploaded">Başarıyla Yüklendi</string>
     <string name="upload_failed_please_try_again">Yükleme hatalı. Lütfen tekrar deneyin.</string>
     <string name="images_sucessfully_uploaded">Fotoğraflar başarıyla yüklendi.</string>
@@ -534,11 +528,9 @@
     <string name="BATCH_NO">BATCH</string>
     <string name="select_reason_skip_seq">Sırayı bozmak için sebep seçin</string>
     <string name="crown">Crown Management</string>
-    <string name="crown_count_mismatch">Crown Qty mismatch from Product Qty</string>
     <string name="crown_count">Crown Count</string>
     <string name="liableqty">Liable Qty</string>
     <string name="returnqty">İade Adedi</string>
-    <string name="enter_three_char">En az 3 harf girin.</string>
     <string name="loading_stock">Yüklenen Stok</string>
     <string name="sold_stock">Satılan Stok</string>
     <string name="free_issued">Free Issued</string>
@@ -555,7 +547,6 @@
     <string name="vanload_productprice">Yüklenen Ürün Fiyatı :</string>
     <string name="vanunload_productprice">Boşaltılan Ürün Fiyatı :</string>
     <string name="batch_no_already_exist">Batch No. already exist</string>
-    <string name="crown_product">Crown Product</string>
     <string name="select_sub_depot">Select Sub Depot to Save</string>
     <string name="enter">Gir</string>
     <string name="code">Kod</string>
@@ -1269,7 +1260,5 @@
         <item>Cum</item>
         <item>Cts</item>
     </string-array>
-
-    <string name="sales_return_allowed_only_for_ordered_products">Sales return allowed only for ordered products.</string>
 
 </resources>

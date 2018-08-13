@@ -895,13 +895,8 @@ public class CommonPrintHelper {
             if (productBO.getOrderedCaseQty() > 0
                     || productBO.getOrderedPcsQty() > 0
                     || productBO.getOrderedOuterQty() > 0
-                    ) {
+                    || (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))) {
                 mOrderedProductList.add(productBO);
-            } else {
-                // Adding replaced qty
-                if (productBO.getRepOuterQty() > 0 || productBO.getRepCaseQty() > 0 || productBO.getRepPieceQty() > 0) {
-                    mOrderedProductList.add(productBO);
-                }
             }
 
         }
@@ -1114,7 +1109,8 @@ public class CommonPrintHelper {
             productBO = productList.elementAt(i);
             if (productBO.getOrderedCaseQty() > 0
                     || productBO.getOrderedPcsQty() > 0
-                    || productBO.getOrderedOuterQty() > 0) {
+                    || productBO.getOrderedOuterQty() > 0
+                    || (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))) {
 
                 mOrderedProductList.add(productBO);
             }
@@ -1485,6 +1481,8 @@ public class CommonPrintHelper {
 
 
                     if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
+                        if(mAttrList.size()>0)
+                            sb.append("\n");
                         for (AttributeListBO attr : mAttrList) {
                             mProductValue = "";
                             if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
@@ -2439,6 +2437,25 @@ public class CommonPrintHelper {
                 qty = ouQty + " " + uomBo.getListName();
         }
         return qty;
+    }
+
+    private boolean isReturnDoneForProduct(ProductMasterBO productMasterBO) {
+        try {
+            for (SalesReturnReasonBO bo : productMasterBO.getSalesReturnReasonList()) {
+                if (bo.getPieceQty() != 0 || bo.getCaseQty() != 0
+                        || bo.getOuterQty() > 0)
+                    return true;
+
+            }
+
+            if (productMasterBO.getRepPieceQty() > 0
+                    || productMasterBO.getRepOuterQty() > 0 || productMasterBO.getRepCaseQty() > 0)
+                return true;
+
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        return false;
     }
 
 }

@@ -33,4 +33,9 @@ public class CollectionReportModel implements ICollectionReportModelPresenter {
     public void loadCollectionReport() {
         collectionReportHelper.loadCollectionReport();
     }
+
+    @Override
+    public CollectionReportHelper getReportHelper() {
+       return collectionReportHelper;
+    }
 }

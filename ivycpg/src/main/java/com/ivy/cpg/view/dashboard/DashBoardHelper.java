@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -113,7 +114,7 @@ public class DashBoardHelper {
 
     public String getEnumNamefromValue(String filterName) {
         //WEEKTYPE.getEnumByString(filterName);
-        String weekCode = (filterName.contains("Week"))?"wk" + filterName.substring(filterName.length()-1,
+        String weekCode = (filterName.contains("Week")) ? "wk" + filterName.substring(filterName.length() - 1,
                 filterName.length()) : "";
         return weekCode;
     }
@@ -200,26 +201,57 @@ public class DashBoardHelper {
 
     }
 
-    public ArrayList<String> getSellerKpiMonthNameList() {
+    /**
+     * @param isFromHomeScreenTwo
+     * @return isFromHomeScreenTwo - false  Load Month List for Seller P3M interval
+     * isFromHomeScreenTwo - true   Load Month List for Retailer P3M interval
+     */
+    public ArrayList<String> getKpiMonthNameList(boolean isFromHomeScreenTwo) {
         ArrayList<String> monthNoList = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
             db.createDataBase();
             db.openDataBase();
-            String sb = "SELECT distinct strftime('%m', replace(fromdate,'/','-')) AS Month FROM sellerkpi " +
-                    "WHERE Interval=" + bmodel.QT(P3M) +
-                    " order by Month desc";
+
+            String monthText = "";
+            if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                monthText = "IntervalDesc";
+            } else {
+                monthText = "strftime('%m', replace(fromdate,'/','-'))";
+            }
+
+            String sb;
+            if (!isFromHomeScreenTwo) {
+                sb = "SELECT distinct " + monthText + " AS Month FROM SellerKPI " +
+                        "WHERE Interval=" + bmodel.QT(P3M) +
+                        " order by fromdate desc";
+            } else {
+                sb = "SELECT distinct " + monthText + " AS Month FROM RetailerKPI " +
+                        "WHERE RetailerId= " + bmodel.getRetailerMasterBO().getRetailerID() + " AND Interval=" + bmodel.QT(P3M) +
+                        " order by fromdate desc";
+            }
+
             Cursor c = db.selectSQL(sb);
             int index = 0;
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    int monthValue = SDUtil.convertToInt(c.getString(0));
-                    if (monthValue > 0 && monthValue <= 12) {
-                        monthNoList.add(MONTH_NAME[monthValue - 1]);
+                    if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                        monthNoList.add(c.getString(0));
+                        Date date = new SimpleDateFormat("MMMM", Locale.ENGLISH).parse(c.getString(0));
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(date);
                         index++;
-                        if ((Calendar.getInstance().get(Calendar.MONTH) + 1) == monthValue)
+                        if ((Calendar.getInstance().get(Calendar.MONTH) + 1) == cal.get(Calendar.MONTH))
                             currentmonthindex = index - 1;
+                    } else {
+                        int monthValue = SDUtil.convertToInt(c.getString(0));
+                        if (monthValue > 0 && monthValue <= 12) {
+                            monthNoList.add(MONTH_NAME[monthValue - 1]);
+                            index++;
+                            if ((Calendar.getInstance().get(Calendar.MONTH) + 1) == monthValue)
+                                currentmonthindex = index - 1;
+                        }
                     }
                 }
             }
@@ -248,7 +280,7 @@ public class DashBoardHelper {
         try {
             db.createDataBase();
             db.openDataBase();
-            String sb = "SELECT distinct WeekCode AS Week FROM sellerkpi " +
+            String sb = "SELECT distinct IntervalDesc AS Week FROM sellerkpi " +
                     "WHERE Interval=" + bmodel.QT(WEEK) +
                     " order by Week desc";
             Cursor c = db.selectSQL(sb);
@@ -256,11 +288,11 @@ public class DashBoardHelper {
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     //WEEKTYPE.valueOf(c.getString(0)).toString()
-                    String weekName = (c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
-                            c.getString(0).length()) : "";
-                    if(weekName.trim().length()>0) {
-                        weekList.add(weekName);
-                    }
+//                    String weekName = (c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
+//                            c.getString(0).length()) : "";
+//                    if(weekName.trim().length()>0) {
+                    weekList.add(c.getString(0));
+//                    }
                 }
             }
         } catch (Exception e) {
@@ -277,13 +309,14 @@ public class DashBoardHelper {
         try {
             db.createDataBase();
             db.openDataBase();
-            String sb = "Select Weekcode from SellerKPI where "+ bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) +" between fromdate and todate and Interval = " + bmodel.QT(WEEK);
+            String sb = "Select IntervalDesc from SellerKPI where " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + bmodel.QT(WEEK);
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     //WEEKTYPE.valueOf(c.getString(0)).toString()
-                    int index = getWeekList().indexOf((c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
-                            c.getString(0).length()) : "");
+//                    int index = getWeekList().indexOf((c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
+//                            c.getString(0).length()) : "");
+                    int index = getWeekList().indexOf(c.getString(0));
                     return index;
                 }
             }
@@ -497,19 +530,22 @@ public class DashBoardHelper {
             db.openDataBase();
             getDashChartDataList().clear();
 
+            String monthText = "";
+            if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                monthText = "RK.IntervalDesc";
+            } else {
+                monthText = "IFNULL(strftime('%m', replace(fromdate,'/','-')),0)";
+            }
 
             String sql = "SELECT SLM.ListName,RKD.Target,RKD.Achievement,"
                     + " ROUND(CASE WHEN (100-((RKD.Achievement*100)/((RKD.Target)*1.0))) < 0"
                     + " THEN 100 ELSE ((RKD.Achievement*100)/((RKD.Target)*1.0)) END ,2) AS conv_ach_perc"
-                    + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,count(rkdd.KPIParamLovId) FROM RetailerKPI RK"
+                    + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,SLM.ListCode," + monthText + " FROM RetailerKPI RK"
                     + " inner join RetailerKPIDetail RKD on RKD.KPIID= RK.KPIID"
                     + " LEFT join RetailerKPIScore RKS on RKD.KPIID= RKS.KPIID and RKD.KPIParamLovId = RKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId"
-                    + " LEFT join RetailerKPISKUDetail rkdd on rkdd.KPIParamLovId =RKD.KPIParamLovId "
                     + " where retailerid =" + retailerID + " and interval= '" + interval + "' "
-                    + " AND "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + " between RK.fromdate and RK.todate group by SLM.Listid order by DisplaySeq asc";
+                    + " order by DisplaySeq asc";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -534,7 +570,15 @@ public class DashBoardHelper {
                     sbo.setKpiID(c.getInt(6));
                     sbo.setKpiTypeLovID(c.getInt(7));
                     sbo.setFlex1(c.getInt(8));
-                    sbo.setSubDataCount(c.getInt(9));
+                    sbo.setSubDataCount(getRetailerSubDataCount(sbo.getKpiTypeLovID()));
+                    sbo.setCode(c.getString(9));
+                    if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                        sbo.setMonthName(c.getString(10));
+                    } else {
+                        int value = SDUtil.convertToInt(c.getString(10));
+                        if (value > 0 && value <= 12)
+                            sbo.setMonthName(MONTH_NAME[value - 1]);
+                    }
 
                     getDashChartDataList().add(sbo);
                 }
@@ -880,7 +924,7 @@ public class DashBoardHelper {
     // get a interval from DB
     public ArrayList<String> getDashList(boolean isRetailer) {
 
-        ArrayList<String> dashList = null;
+        ArrayList<String> dashList = new ArrayList<>();
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -890,10 +934,9 @@ public class DashBoardHelper {
             if (!isRetailer)
                 sql = "select distinct interval from SellerKPI";
             else
-                sql = "select distinct interval from RetailerKPI";
+                sql = "select distinct interval from RetailerKPI where RetailerId="+bmodel.getRetailerMasterBO().getRetailerID();
             Cursor c = db.selectSQL(sql);
             if (c != null) {
-                dashList = new ArrayList<>();
                 while (c.moveToNext()) {
                     dashList.add(c.getString(0));
                 }
@@ -903,7 +946,7 @@ public class DashBoardHelper {
             db.closeDB();
 
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
         return dashList;
     }
@@ -1277,7 +1320,7 @@ public class DashBoardHelper {
             String sql = "SELECT SLM.ListName,SKD.Target,ifnull(SKD.Achievement,0),"
                     + " ROUND(CASE WHEN (100-((SKD.Achievement*100)/((SKD.Target)*1.0))) < 0"
                     + " THEN 100 ELSE ((SKD.Achievement*100)/((SKD.Target)*1.0)) END ,2) AS conv_ach_perc"
-                    + ",IFNULL(SKS.Score,0),IFNULL(SKS.Incentive,0),SK.KPIID,SKD.KPIParamLovId,SLM.Flex1,count(SKDD.KPIParamLovId),SLM.ListCode,Weekcode,SKD.Flex1 AS kpiFlex1 FROM SellerKPI SK"
+                    + ",IFNULL(SKS.Score,0),IFNULL(SKS.Incentive,0),SK.KPIID,SKD.KPIParamLovId,SLM.Flex1,count(SKDD.KPIParamLovId),SLM.ListCode,SK.IntervalDesc,SKD.Flex1 AS kpiFlex1 FROM SellerKPI SK"
                     + " inner join SellerKPIDetail SKD on SKD.KPIID= SK.KPIID"
                     + " LEFT join SellerKPIScore SKS on SKD.KPIID= SKS.KPIID and SKD.KPIParamLovId = SKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=SKD.KPIParamLovId"
@@ -1285,7 +1328,7 @@ public class DashBoardHelper {
                     + " where userid = "
                     + bmodel.QT(userid)
                     + " and interval= 'WEEK'"
-                    + " group by SLM.Listid,SK.WeekCode order by DisplaySeq asc";
+                    + " group by SLM.Listid,SK.IntervalDesc order by DisplaySeq asc";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -1337,10 +1380,17 @@ public class DashBoardHelper {
             getDashChartDataList().clear();
             //mParamAchieved = 0;
 
+            String monthText = "";
+            if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                monthText = "SK.IntervalDesc";
+            } else {
+                monthText = "IFNULL(strftime('%m', replace(fromdate,'/','-')),0)";
+            }
+
             String sql = "SELECT SLM.ListName,SKD.Target,SKD.Achievement,"
                     + " ROUND(CASE WHEN (100-((SKD.Achievement*100)/((SKD.Target)*1.0))) < 0"
                     + " THEN 100 ELSE ((SKD.Achievement*100)/((SKD.Target)*1.0)) END ,2) AS conv_ach_perc"
-                    + ",IFNULL(SKS.Score,0),IFNULL(SKS.Incentive,0),SK.KPIID,SKD.KPIParamLovId,SLM.Flex1,SLM.ListCode,IFNULL(strftime('%m', replace(fromdate,'/','-')),0),SKD.Flex1 AS kpiFlex1 FROM SellerKPI SK"
+                    + ",IFNULL(SKS.Score,0),IFNULL(SKS.Incentive,0),SK.KPIID,SKD.KPIParamLovId,SLM.Flex1,SLM.ListCode," + monthText + ",SKD.Flex1 AS kpiFlex1 FROM SellerKPI SK"
                     + " inner join SellerKPIDetail SKD on SKD.KPIID= SK.KPIID"
                     + " LEFT join SellerKPIScore SKS on SKD.KPIID= SKS.KPIID and SKD.KPIParamLovId = SKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=SKD.KPIParamLovId"
@@ -1377,9 +1427,13 @@ public class DashBoardHelper {
                     sbo.setSubDataCount(getSubdataCount(sbo.getKpiTypeLovID()));
                     sbo.setCode(c.getString(9));
                     sbo.setKpiFlex(c.getString(c.getColumnIndex("kpiFlex1")));
-                    int value = SDUtil.convertToInt(c.getString(10));
-                    if (value > 0 && value <= 12)
-                        sbo.setMonthName(MONTH_NAME[value - 1]);
+                    if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                        sbo.setMonthName(c.getString(10));
+                    } else {
+                        int value = SDUtil.convertToInt(c.getString(10));
+                        if (value > 0 && value <= 12)
+                            sbo.setMonthName(MONTH_NAME[value - 1]);
+                    }
 //                    if (!c.getString(9).equals("INV")) {
                     getDashChartDataList().add(sbo);
 //                    } else {
@@ -1423,6 +1477,34 @@ public class DashBoardHelper {
         return count;
     }
 
+    private int getRetailerSubDataCount(int KPIParamLovId) {
+        int count = 0;
+        try {
+            showDayAndP3MSpinner = 0;
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql = "select count(*) from RetailerKPISKUDetail where KPIParamLovId = " + KPIParamLovId;
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    count = c.getInt(0);
+
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return 0;
+        }
+
+        return count;
+    }
+
     //Only for loading trend chart
     public void loadP3MTrendChaart(String userid) {
         try {
@@ -1432,11 +1514,17 @@ public class DashBoardHelper {
             db.openDataBase();
             getP3mChartList().clear();
 
+            String monthText = "";
+            if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                monthText = "SK.IntervalDesc ";
+            } else {
+                monthText = "IFNULL(strftime('%m', replace(fromdate,'/','-')),0) ";
+            }
 
             String sql = "SELECT SLM.ListName,SKD.Target,SKD.Achievement,"
                     + " ROUND(CASE WHEN (100-((SKD.Achievement*100)/((SKD.Target)*1.0))) < 0"
                     + " THEN 100 ELSE ((SKD.Achievement*100)/((SKD.Target)*1.0)) END ,2) AS conv_ach_perc"
-                    + ",IFNULL(SKS.Score,0),IFNULL(SKS.Incentive,0),SK.KPIID,SKD.KPIParamLovId,SLM.Flex1,SLM.ListCode,IFNULL(strftime('%m', replace(fromdate,'/','-')),0)  FROM SellerKPI SK"
+                    + ",IFNULL(SKS.Score,0),IFNULL(SKS.Incentive,0),SK.KPIID,SKD.KPIParamLovId,SLM.Flex1,SLM.ListCode," + monthText + "FROM SellerKPI SK"
                     + " inner join SellerKPIDetail SKD on SKD.KPIID= SK.KPIID"
                     + " LEFT join SellerKPIScore SKS on SKD.KPIID= SKS.KPIID and SKD.KPIParamLovId = SKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=SKD.KPIParamLovId"
@@ -1472,9 +1560,13 @@ public class DashBoardHelper {
                     sbo.setFlex1(c.getInt(8));
                     sbo.setSubDataCount(getSubdataCount(sbo.getKpiTypeLovID()));
                     sbo.setCode(c.getString(9));
-                    int value = SDUtil.convertToInt(c.getString(10));
-                    if (value > 0 && value <= 12)
-                        sbo.setMonthName(MONTH_NAME[value - 1]);
+                    if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
+                        sbo.setMonthName(c.getString(10));
+                    } else {
+                        int value = SDUtil.convertToInt(c.getString(10));
+                        if (value > 0 && value <= 12)
+                            sbo.setMonthName(MONTH_NAME[value - 1]);
+                    }
                     getP3mChartList().add(sbo);
                 }
                 if (getP3mChartList().size() > 0) {
@@ -2006,15 +2098,8 @@ public class DashBoardHelper {
                 dashbo = new DashBoardBO();
                 dashbo.setText(c.getString(0));
                 dashbo.setCode(c.getString(4));
-                if (bmodel.configurationMasterHelper.IS_PRODUCTIVE_CALLS_OBJ_PH) {
-                    if (dashbo.getCode() != null
-                            && dashbo.getCode().equalsIgnoreCase("DSR_PC")) {
-                        dashbo.setTarget((int) ((c.getDouble(2) * bmodel.configurationMasterHelper
-                                .getProductiveCallPercentage()) / 100));
-                    } else
-                        dashbo.setTarget(c.getDouble(2));
-                } else
-                    dashbo.setTarget(c.getDouble(2));
+
+                dashbo.setTarget(c.getDouble(2));
 
                 dashbo.setAp3m(c.getDouble(3));
 
@@ -3187,18 +3272,17 @@ public class DashBoardHelper {
     }
 
 
-
     public ArrayList<IncentiveDashboardBO> downloadIncentiveList(String type) {
         incentiveList = new ArrayList<>();
-        incentiveType=new ArrayList<>();
+        incentiveType = new ArrayList<>();
 
-        String groupName="0";
+        String groupName = "0";
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql = "SELECT * FROM " + DataMembers.tbl_IncentiveDashboard +" Where inctype='"+type+"'";
+            String sql = "SELECT * FROM " + DataMembers.tbl_IncentiveDashboard + " Where inctype='" + type + "'";
 
             Cursor c = db.selectSQL(sql);
 
@@ -3214,10 +3298,10 @@ public class DashBoardHelper {
                     con.setFactor(c.getString(c.getColumnIndex("factor")));
                     con.setAchper(c.getString(c.getColumnIndex("achper")));
                     con.setAch(c.getString(c.getColumnIndex("ach")));
-                    if(con.getGroups().equalsIgnoreCase("")||!groupName.equalsIgnoreCase(con.getGroups())){
+                    if (con.getGroups().equalsIgnoreCase("") || !groupName.equalsIgnoreCase(con.getGroups())) {
                         con.setIsNewGroup(true);
-                        groupName=con.getGroups();
-                    }else{
+                        groupName = con.getGroups();
+                    } else {
                         con.setIsNewGroup(false);
                     }
 
@@ -3247,53 +3331,53 @@ public class DashBoardHelper {
     }
 
 
-    public ArrayList<IncentiveDashboardDefinitionBO> downloadIncentiveDetails(String type){
-        try{
+    public ArrayList<IncentiveDashboardDefinitionBO> downloadIncentiveDetails(String type) {
+        try {
 
-            String groupName="0";
-            String factorName="0";
-            String groupPackage="0";
+            String groupName = "0";
+            String factorName = "0";
+            String groupPackage = "0";
 
-            ArrayList<IncentiveDashboardDefinitionBO> list=new ArrayList<>();
+            ArrayList<IncentiveDashboardDefinitionBO> list = new ArrayList<>();
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql = "SELECT * FROM IncentiveDashboardDefinition where inctype='"+type+"'";
+            String sql = "SELECT * FROM IncentiveDashboardDefinition where inctype='" + type + "'";
             Cursor c = db.selectSQL(sql);
 
-            while (c.moveToNext()){
-                IncentiveDashboardDefinitionBO incentiveDashboardDefinitionBO=new IncentiveDashboardDefinitionBO();
+            while (c.moveToNext()) {
+                IncentiveDashboardDefinitionBO incentiveDashboardDefinitionBO = new IncentiveDashboardDefinitionBO();
 
                 incentiveDashboardDefinitionBO.setFactor(c.getString(0));
                 incentiveDashboardDefinitionBO.setSalesParam(c.getString(1));
                 incentiveDashboardDefinitionBO.setAchPercentage(c.getString(2));
                 incentiveDashboardDefinitionBO.setMaxOpportunity(c.getString(3));
-                if(c.getString(4)!=null)
+                if (c.getString(4) != null)
                     incentiveDashboardDefinitionBO.setGroups(c.getString(4));
                 else
                     incentiveDashboardDefinitionBO.setGroups("");
                 incentiveDashboardDefinitionBO.setIncentiveType(c.getString(5));
 
-                if(incentiveDashboardDefinitionBO.getSalesParam().trim().equalsIgnoreCase("")||!groupName.equalsIgnoreCase(incentiveDashboardDefinitionBO.getSalesParam())){
+                if (incentiveDashboardDefinitionBO.getSalesParam().trim().equalsIgnoreCase("") || !groupName.equalsIgnoreCase(incentiveDashboardDefinitionBO.getSalesParam())) {
                     incentiveDashboardDefinitionBO.setIsNewGroup(true);
-                    groupName=incentiveDashboardDefinitionBO.getSalesParam();
-                }else{
+                    groupName = incentiveDashboardDefinitionBO.getSalesParam();
+                } else {
                     incentiveDashboardDefinitionBO.setIsNewGroup(false);
                 }
 
-                if(!incentiveDashboardDefinitionBO.getFactor().equalsIgnoreCase(factorName)){
+                if (!incentiveDashboardDefinitionBO.getFactor().equalsIgnoreCase(factorName)) {
                     incentiveDashboardDefinitionBO.setIsNewFactor(true);
-                    factorName=incentiveDashboardDefinitionBO.getFactor();
-                }else{
+                    factorName = incentiveDashboardDefinitionBO.getFactor();
+                } else {
                     incentiveDashboardDefinitionBO.setIsNewFactor(false);
                 }
 
-                if(incentiveDashboardDefinitionBO.getGroups().trim().equalsIgnoreCase("")||!incentiveDashboardDefinitionBO.getGroups().equalsIgnoreCase(groupPackage)){
+                if (incentiveDashboardDefinitionBO.getGroups().trim().equalsIgnoreCase("") || !incentiveDashboardDefinitionBO.getGroups().equalsIgnoreCase(groupPackage)) {
                     incentiveDashboardDefinitionBO.setNewPackage(true);
-                    groupPackage=incentiveDashboardDefinitionBO.getGroups();
-                }else{
+                    groupPackage = incentiveDashboardDefinitionBO.getGroups();
+                } else {
                     incentiveDashboardDefinitionBO.setNewPackage(false);
                 }
 
@@ -3306,7 +3390,7 @@ public class DashBoardHelper {
 
             return list;
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -3349,8 +3433,6 @@ public class DashBoardHelper {
         parentId = tempParentId;
         return parentId;
     }
-
-
 
 
     public int getPromotionDetail(String flag) {
@@ -3495,7 +3577,7 @@ public class DashBoardHelper {
             StringBuffer sb = new StringBuffer();
             sb.append("select count(*) from OrderDetail where retailerid in (" + retailerID + ")");
             if (mslProdIDs != null && !mslProdIDs.isEmpty())
-            sb.append("and ProductID in (" + mslProdIDs + ")");
+                sb.append("and ProductID in (" + mslProdIDs + ")");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {

@@ -303,7 +303,7 @@ public class PhotoCaptureHelper {
         try {
             db.openDataBase();
             String sql1 = "SELECT phototypeid,pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName FROM Photocapture WHERE RetailerID="
-                    + retailerID + " And DistributorID=" + mBModel.getRetailerMasterBO().getDistributorId();
+                    + retailerID + " And DistributorID=" + mBModel.getRetailerMasterBO().getDistributorId() + " and upload = 'N'";
             cursor = db.selectSQL(sql1);
 
             if (cursor != null) {
@@ -397,6 +397,8 @@ public class PhotoCaptureHelper {
     }
 
     public ArrayList<PhotoCaptureLocationBO> getLocations() {
+        if (inStoreLocation == null)
+            inStoreLocation = new ArrayList<>();
         return inStoreLocation;
     }
 

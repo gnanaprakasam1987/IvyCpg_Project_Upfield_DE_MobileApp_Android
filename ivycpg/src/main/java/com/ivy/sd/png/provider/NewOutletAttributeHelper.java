@@ -160,6 +160,8 @@ public class NewOutletAttributeHelper {
 
 
     public ArrayList<Integer> getmCommonAttributeList() {
+        if (mCommonAttributeList == null)
+            mCommonAttributeList = new ArrayList<>();
         return mCommonAttributeList;
     }
 

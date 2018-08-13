@@ -678,7 +678,7 @@ public class AttendanceHelper {
 
                 String inTime = nonFieldTwoBo.getInTime() != null ? nonFieldTwoBo.getInTime() : " ";
 
-                String columns = "uid,date,intime,outtime,reasonid,userid,latitude,longitude,counterid,upload";
+                String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,upload";
                 String value = bmodel.QT(nonFieldTwoBo.getId()) + ","
                         + bmodel.QT(nonFieldTwoBo.getFromDate()) + ","
                         + bmodel.QT(inTime) + ","

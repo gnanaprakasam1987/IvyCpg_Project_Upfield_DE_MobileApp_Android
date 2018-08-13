@@ -21,8 +21,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.FontUtils;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, @NotNull ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
         final OrderReportBO reportBO = items
@@ -57,7 +57,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
             row = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_order_report, parent, false);
             holder = new ViewHolder(row);
-            holder.text_retailerName = row.findViewById(R.id.PRDNAME);
+            holder.text_retailerName = row.findViewById(R.id.prd_nameTv);
             holder.label_orderNumber = row.findViewById(R.id.ordertxt);
             holder.text_delivery_date = row.findViewById(R.id.text_delivery_date);
             holder.tvFocusBrandCount = row.findViewById(R.id.focus_brand_count);
@@ -86,6 +86,9 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             holder.discTitle = row.findViewById(R.id.tv_disc_title);
 
             holder.orderImage = row.findViewById(R.id.ord_img_view);
+
+            holder.tvVolumeValue = row.findViewById(R.id.tv_volume);
+            holder.tvVolumeLabel = row.findViewById(R.id.tv_volume_title);
 
             if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                 holder.tvWeight.setVisibility(View.GONE);
@@ -124,6 +127,11 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             if (!businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE)
                 holder.orderImage.setVisibility(View.GONE);
 
+            if (!businessModel.configurationMasterHelper.SHOW_VOLUME_QTY) {
+                holder.tvVolumeLabel.setVisibility(View.GONE);
+                holder.tvVolumeValue.setVisibility(View.GONE);
+            }
+
 
             holder.orderImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -154,24 +162,26 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
 
         holder.text_retailerName.setText(reportBO.getRetailerName());
-        holder.text_retailerName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.text_orderValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_orderNumber.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tvOrderNo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.text_delivery_date.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tvMustSellCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tvFocusBrandCount.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.label_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_weight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_PreORPost.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_focusBrand.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.label_MustSell.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.tv_tax_value.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.tv_discount_amt.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        holder.taxTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        holder.discTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        holder.text_retailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.text_orderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_orderNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvOrderNo.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.text_delivery_date.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvFocusBrandCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvMustSellCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvFocusBrandCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tvVolumeValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
 
+        holder.label_LPC.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_weight.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_PreORPost.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_focusBrand.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_MustSell.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.tv_tax_value.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.tv_discount_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.taxTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.discTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.tvVolumeLabel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
 
         try {
             if (businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) != null) {
@@ -202,10 +212,66 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
         holder.text_orderValue.setText(businessModel.formatValue((reportBO
                 .getOrderTotal())));
+
+
         holder.text_LPC.setText(reportBO.getLPC());
         holder.tvwDist.setText(reportBO.getDist());
         holder.tvOrderNo.setText(reportBO.getOrderID());
         holder.tvWeight.setText(String.valueOf(reportBO.getWeight()));
+
+
+        try {
+
+            StringBuilder sb = new StringBuilder();
+            String op = mContext.getResources().getString(R.string.item_piece);
+            String oc = mContext.getResources().getString(R.string.item_case);
+            String ou = mContext.getResources().getString(R.string.item_outer);
+
+            if (businessModel.labelsMasterHelper
+                    .applyLabels("item_piece") != null)
+                op = businessModel.labelsMasterHelper
+                        .applyLabels("item_piece");
+            if (businessModel.labelsMasterHelper
+                    .applyLabels("item_case") != null)
+                oc = businessModel.labelsMasterHelper
+                        .applyLabels("item_case");
+
+            if (businessModel.labelsMasterHelper
+                    .applyLabels("item_outer") != null)
+                ou = businessModel.labelsMasterHelper
+                        .applyLabels("item_outer");
+
+
+            if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
+
+                sb.append(reportBO.getVolumePcsQty() + " " + op + " ");
+            }
+
+
+            if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE) {
+
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    sb.append(": " + (reportBO.getVolumeCaseQty()) + " "
+                            + oc + " ");
+                else
+                    sb.append(reportBO.getVolumeCaseQty() + " "
+                            + oc + " ");
+            }
+
+            if (businessModel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS || businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    sb.append(": " + (reportBO.getVolumeOuterQty()) + " "
+                            + ou + " ");
+                else
+                    sb.append(reportBO.getVolumeCaseQty() + " "
+                            + ou + " ");
+            }
+
+            holder.tvVolumeValue.setText(sb.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
@@ -249,6 +315,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .centerCrop()
+                        .transform(businessModel.circleTransform)
                         .placeholder(R.drawable.no_image_available)
                         .into(holder.orderImage);
 
@@ -293,9 +360,10 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         }
 
         TextView text_retailerName, label_orderNumber;
-        TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount;
+        TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount, tvVolumeValue;
         TextView text_delivery_date, tv_tax_value, tv_discount_amt, taxTitle, discTitle;
-        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight, label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel;
+        TextView tvOrderNo, tvFocusBrandCount, tvMustSellCount, tv_seller_type, label_weight,
+                label_focusBrand, label_MustSell, focusbrandlabel, mustselllabel, tvVolumeLabel;
         ImageView orderImage;
 
     }

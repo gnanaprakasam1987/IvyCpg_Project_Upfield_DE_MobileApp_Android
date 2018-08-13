@@ -36,12 +36,12 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -54,12 +54,11 @@ import com.ivy.sd.png.view.ScannedUnmappedDialogFragment;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 public class
 AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener, BrandDialogInterface,
-        DataPickerDialogFragment.UpdateDateInterface,AssetContractor.AssetView{
+        DataPickerDialogFragment.UpdateDateInterface,AssetContractor.AssetView,FiveLevelFilterCallBack{
 
     private DrawerLayout mDrawerLayout;
     private AlertDialog alertDialog;
@@ -331,7 +330,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         menu.findItem(R.id.menu_add).setTitle(R.string.addnewasset);
         menu.findItem(R.id.menu_remove).setTitle(R.string.removeasset);
 
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mSelectedIdByLevelId != null) {
+        if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
                 if (mSelectedIdByLevelId.get(id) > 0) {
                     menu.findItem(R.id.menu_fivefilter).setIcon(
@@ -358,10 +357,9 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
             menu.findItem(R.id.menu_survey).setVisible(true);
         }
 
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
-        if (mBModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && mBModel.productHelper.isFilterAvaiable(MENU_ASSET)) {
+        if (mBModel.productHelper.isFilterAvaiable(MENU_ASSET)) {
             menu.findItem(R.id.menu_fivefilter).setVisible(true);
         }
         if (!assetTrackingHelper.SHOW_MOVE_ASSET) {
@@ -421,9 +419,6 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
             Intent intent = new Intent(getActivity(), AssetPosmRemoveActivity.class);
             intent.putExtra("module", MENU_ASSET);
             startActivity(intent);
-            return true;
-        } else if (i == R.id.menu_product_filter) {
-
             return true;
         } else if (i == R.id.menu_loc_filter) {
             showLocation();
@@ -519,6 +514,8 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                         Toast.makeText(getActivity(), getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
                     } else {
                         assetPresenter.setBarcode(result.getContents());
+                        assetPresenter.updateList();
+                        adapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -624,37 +621,14 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     }
 
     @Override
-    public void updateMultiSelectionBrand(List<String> mFilterName,
-                                          List<Integer> mFilterId) {
-    }
+    public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
+        assetPresenter.updateFiveFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts,mFilterText);
 
-    @Override
-    public void updateMultiSelectionCategory(List<Integer> mCategory) {
-
+        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
     }
 
     @Override
     public void updateGeneralText(String mFilterText) {
-
-    }
-
-    @Override
-    public void loadStartVisit() {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList) {
-
-    }
-
-    @Override
-    public void updateFromFiveLevelFilter(Vector<LevelBO> mParentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId
-            , ArrayList<Integer> mAttributeProducts, String mFilterText) {
-
-       assetPresenter.updateFiveFilter(mParentIdList,mSelectedIdByLevelId,mAttributeProducts,mFilterText);
-
-        this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
     }
 

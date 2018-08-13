@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/list_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/text_productName"
+                style="?attr/customListTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="start"
+
+                android:gravity="start"
+                android:padding="@dimen/dimen_2dp"
+                android:text="@string/product_name"
+                android:textColor="@color/black_bg1"
+                android:textSize="@dimen/font_micro_small" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_productName">
+
+
+                <TextView
+                    android:id="@+id/text_reason"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_gravity="center_vertical|start"
+                    android:layout_marginBottom="@dimen/icons_top_margin"
+                    android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_marginRight="@dimen/dimen_4dp"
+                    android:gravity="center_vertical|start"
+                    android:maxLines="1"
+                    android:text="Dummy Reason" />
+
+                <TextView
+                    android:id="@+id/text_divider"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/icons_top_margin"
+                    android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_marginRight="@dimen/dimen_4dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/text_reason"
+                    android:maxLines="1"
+                    android:text="-" />
+
+                <TextView
+                    android:id="@+id/text_reasonType"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginBottom="@dimen/icons_top_margin"
+                    android:layout_toEndOf="@+id/text_divider"
+                    android:layout_toRightOf="@+id/text_divider"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="sdfdfdfdf" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/text_caseQty"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/text_outerQty"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="0"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/text_pieceQty"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:id="@+id/text_value"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_small" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
