@@ -34,7 +34,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
@@ -1763,8 +1762,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     // Don't write any code  after this dialog.. because it is just a confirmation dialog
                     orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
                     orderConfirmationDialog.show();
-                    Window window = orderConfirmationDialog.getWindow();
-                    window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     orderConfirmationDialog.setCancelable(false);
 
                 }
@@ -1900,8 +1897,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             // Don't write any code  after this dialog.. because it is just a confirmation dialog
                             orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
                             orderConfirmationDialog.show();
-                            Window window = orderConfirmationDialog.getWindow();
-                            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                             orderConfirmationDialog.setCancelable(false);
 
 
