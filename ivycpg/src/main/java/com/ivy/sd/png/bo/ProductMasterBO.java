@@ -206,6 +206,7 @@ public class ProductMasterBO {
     private int isFocusBrand4;
     private int isSMP;
     private int isNMustSell;
+    private int mDeadProduct;
 
     /**
      * Total scheme discount amount applied on line value.
@@ -273,6 +274,7 @@ public class ProductMasterBO {
     private String invoiceno;
     private String ReasonDesc;
     private String ReasonID = "0";
+    private String priceChangeReasonID = "0";
     private int oos = -2;
 
     private int priceChanged;
@@ -518,6 +520,7 @@ public class ProductMasterBO {
 
         this.ReasonDesc = productBO.ReasonDesc;
         this.ReasonID = productBO.ReasonID;
+        this.priceChangeReasonID = productBO.priceChangeReasonID;
         this.oos = productBO.oos;
         this.taxValue = productBO.taxValue;
         this.schemeAppliedValue = productBO.schemeAppliedValue;
@@ -534,6 +537,7 @@ public class ProductMasterBO {
         this.hsnCode = productBO.getHsnCode();
         this.defaultUomId = productBO.getDefaultUomId();
         this.selectedUomId = productBO.getSelectedUomId();
+        this.mDeadProduct = productBO.getmDeadProduct();
     }
 
     // ******* Location ********
@@ -1937,5 +1941,21 @@ public class ProductMasterBO {
 
     public void setSelectedUomPosition(int selectedUomPosition) {
         this.selectedUomPosition = selectedUomPosition;
+    }
+
+    public String getPriceChangeReasonID() {
+        return priceChangeReasonID;
+    }
+
+    public void setPriceChangeReasonID(String priceChangeReasonID) {
+        this.priceChangeReasonID = priceChangeReasonID;
+    }
+
+    public int getmDeadProduct() {
+        return mDeadProduct;
+    }
+
+    public void setmDeadProduct(int mDeadProduct) {
+        this.mDeadProduct = mDeadProduct;
     }
 }

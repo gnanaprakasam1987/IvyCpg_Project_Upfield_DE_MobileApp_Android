@@ -89,6 +89,7 @@ public class RealTimeLocationService extends Service {
         LocationRequest request = new LocationRequest();
         request.setInterval(5000);
         request.setFastestInterval(2500);
+        request.setSmallestDisplacement(10);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         client = LocationServices.getFusedLocationProviderClient(this);

@@ -55,8 +55,9 @@ import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
-import com.ivy.cpg.view.supervisor.SupervisorMapFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.LoadManagementFragment;
@@ -1624,9 +1625,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         TaskFragment taskFragment = (TaskFragment) fm.findFragmentByTag(MENU_TASK_NEW);
         BackUpSellerFragment backUpSellerFragment = (BackUpSellerFragment) fm.findFragmentByTag(MENU_BACKUP_SELLER);
 
-        SupervisorMapFragment supervisorMapRFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_REALTIME);
-        SupervisorMapFragment supervisorMapMFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_MOVEMENT);
-        SupervisorMapFragment supervisorMapCFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_CALLANALYSIS);
+        SellersMapHomeFragment supervisorMapCFragment = (SellersMapHomeFragment) fm.findFragmentByTag(MENU_SUPERVISOR_CALLANALYSIS);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1740,12 +1739,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (backUpSellerFragment != null && fragmentName.equals(MENU_BACKUP_SELLER)
                 && backUpSellerFragment.isVisible()) {
             return;
-        } else if (supervisorMapRFragment != null && (fragmentName.equals(MENU_SUPERVISOR_REALTIME))
-                && supervisorMapRFragment.isVisible()) {
-            return;
-        } else if (supervisorMapMFragment != null && (fragmentName.equals(MENU_SUPERVISOR_MOVEMENT))
-                && supervisorMapMFragment.isVisible()) {
-            return;
         } else if (supervisorMapCFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
                 && supervisorMapCFragment.isVisible()) {
             return;
@@ -1824,10 +1817,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(taskFragment);
         if (backUpSellerFragment != null)
             ft.remove(backUpSellerFragment);
-        if (supervisorMapRFragment != null)
-            ft.remove(supervisorMapRFragment);
-        if (supervisorMapMFragment != null)
-            ft.remove(supervisorMapMFragment);
         if (supervisorMapCFragment != null)
             ft.remove(supervisorMapCFragment);
 
@@ -2150,29 +2139,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_BACKUP_SELLER);
                 break;
 
-            case MENU_SUPERVISOR_REALTIME:
-                bndl = new Bundle();
-                bndl.putString("screentitle", menuName);
-                bndl.putInt("TrackingType", 0);
-                fragment = new SupervisorMapFragment();
-                fragment.setArguments(bndl);
-                ft.add(R.id.fragment_content, fragment,
-                        MENU_SUPERVISOR_REALTIME);
-                break;
-            case MENU_SUPERVISOR_MOVEMENT:
-                bndl = new Bundle();
-                bndl.putString("screentitle", menuName);
-                bndl.putInt("TrackingType", 1);
-                fragment = new SupervisorMapFragment();
-                fragment.setArguments(bndl);
-                ft.add(R.id.fragment_content, fragment,
-                        MENU_SUPERVISOR_MOVEMENT);
-                break;
             case MENU_SUPERVISOR_CALLANALYSIS:
+
+                SupervisorActivityHelper.getInstance().loginToFirebase();
+                SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(),SDUtil.now(SDUtil.DATE_GLOBAL));
+
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("TrackingType", 2);
-                fragment = new SupervisorMapFragment();
+                fragment = new SellersMapHomeFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_SUPERVISOR_CALLANALYSIS);

@@ -1,12 +1,13 @@
 package com.ivy.cpg.locationservice.realtime;
 
 import android.content.Context;
+import android.os.Parcelable;
 
 import com.ivy.cpg.locationservice.LocationDetailBO;
 
 import java.io.Serializable;
 
-public interface RealTimeLocation extends Serializable {
+public interface RealTimeLocation extends Serializable,Parcelable {
     void onRealTimeLocationReceived(LocationDetailBO locationDetailBO, Context context);
 
     void updateAttendanceIn(Context context, String pathNode);
