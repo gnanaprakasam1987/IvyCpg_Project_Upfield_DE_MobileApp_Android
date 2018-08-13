@@ -319,6 +319,7 @@ public class ProductHelper {
             HashMap<String, String> hashMap = new HashMap<>();
             HashMap<String, String> hashMap1 = new HashMap<>();
             HashMap<String, Integer> oosMap = new HashMap<>();
+            ArrayList<String> deadProductList = new ArrayList<>();
 
             String sql = "select pid,Ordp4,Stkp4,OOS from RtrWiseP4OrderAndStockMaster where rid="
                     + QT(bmodel.retailerMasterBO.getRetailerID()) + "";
@@ -333,11 +334,27 @@ public class ProductHelper {
                 }
                 c.close();
             }
+
+            sql = "select pid from RtrWiseDeadProducts where rid=" + QT(bmodel.retailerMasterBO.getRetailerID());
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    deadProductList.add(c.getString(0));
+                }
+                c.close();
+            }
             db.closeDB();
-            if (hashMap.size() > 0 || hashMap1.size() > 0 || oosMap.size() > 0) {
+            if (hashMap.size() > 0 || hashMap1.size() > 0 || oosMap.size() > 0 || !deadProductList.isEmpty()) {
                 for (ProductMasterBO p : productMaster) {
+
+                    if (deadProductList.contains(p.getProductID()))
+                        p.setmDeadProduct(1);
+                    else
+                        p.setmDeadProduct(0);
+
                     String value = hashMap
                             .get(p.getProductID());
+
                     if (value != null) {
                         p.setRetailerWiseProductWiseP4Qty(value);
                         p.setRetailerWiseP4StockQty(hashMap1.get(p.getProductID()));
@@ -3561,7 +3578,7 @@ public class ProductHelper {
             sb.append(" locationid in(" + bmodel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + bmodel.getRetailerMasterBO().getAccountid() + " AND Accountid != 0" + ") OR ");
             sb.append(" (Retailerid=0 AND distributorid=0 AND Channelid=0 AND locationid =0 AND Accountid =0))");
-            sb.append(" and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE') ");
+            sb.append(" and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE' and ListType = 'DISCOUNT_MODULE_TYPE') ");
             sb.append(" and dm.ApplyLevelid=(select ListId from StandardListMaster ");
             sb.append(" where ListCode='ITEM' and ListType='DISCOUNT_APPLY_TYPE') ");
             sb.append(" and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE')");
@@ -5122,6 +5139,7 @@ public class ProductHelper {
         this.globalCategory = globalCategory;
     }
 
+
     public boolean isFilterAvaiable(String menuCode) {
         DBUtil db = null;
         boolean isAvailable = false;
@@ -5413,9 +5431,10 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor cur = db
-                    .selectSQL("select HHTCode,MName,RField1  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                    .selectSQL("select HHTCode,MName,RField1,RField  from HhtMenuMaster where flag=1 and lower(MenuType)="
                             + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
-                            + " and lang=" + bmodel.QT(language));
+                            + " and lang=" + bmodel.QT(language)
+                            + " Order By MNumber");
 
             if (cur != null && cur.getCount() > 0) {
                 ConfigureBO configureBO;
@@ -5424,6 +5443,7 @@ public class ProductHelper {
                     configureBO.setConfigCode(cur.getString(0));
                     configureBO.setMenuName(cur.getString(1));
                     configureBO.setMandatory(cur.getInt(2));
+                    configureBO.setRField(cur.getString(3));
                     list.add(configureBO);
                 }
                 cur.close();
@@ -5514,7 +5534,7 @@ public class ProductHelper {
                 }
         } catch (Exception e) {
             Commons.printException(e);
-            return false;
+            return true;
         }
         return false;
     }

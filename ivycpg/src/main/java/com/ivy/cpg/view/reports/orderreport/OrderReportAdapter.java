@@ -23,7 +23,6 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.utils.FontUtils;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, @NotNull ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
         final OrderReportBO reportBO = items
@@ -58,7 +57,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
             row = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_order_report, parent, false);
             holder = new ViewHolder(row);
-            holder.text_retailerName = row.findViewById(R.id.PRDNAME);
+            holder.text_retailerName = row.findViewById(R.id.prd_nameTv);
             holder.label_orderNumber = row.findViewById(R.id.ordertxt);
             holder.text_delivery_date = row.findViewById(R.id.text_delivery_date);
             holder.tvFocusBrandCount = row.findViewById(R.id.focus_brand_count);

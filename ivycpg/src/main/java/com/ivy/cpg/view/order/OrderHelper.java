@@ -212,7 +212,13 @@ public class OrderHelper {
 
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath,totalamount";
+                    + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po," +
+                    "remark,freeProductsAmount,latitude,longitude,is_processed,timestampid," +
+                    "Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID," +
+                    "stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime," +
+                    "FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath," +
+                    "RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath," +
+                    "totalamount,AddressId";
 
             String printFilePath = "";
             if (businessModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
@@ -296,7 +302,8 @@ public class OrderHelper {
                     + "," + businessModel.QT(businessModel.getRemarkType()) + "," + businessModel.QT(businessModel.getRField3())
                     + "," + businessModel.QT(businessModel.getOrderHeaderBO().getOrderImageName())
                     + "," + businessModel.QT(orderImagePath)
-                    + "," + getOrderTotalValue();
+                    + "," + getOrderTotalValue()
+                    + "," + businessModel.getOrderHeaderBO().getAddressID();
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -1374,7 +1381,7 @@ public class OrderHelper {
                 } else {
                     sb.append("0,");
                 }
-                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3,orderImage from "
+                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3,orderImage,AddressId from "
                         + DataMembers.tbl_orderHeader + " OD");
 
                 sb.append(" left join InvoiceDiscountDetail ID on ID.OrderId=OD.orderid and ID.typeid=0 and ID.pid=0 ");
@@ -1392,7 +1399,7 @@ public class OrderHelper {
                 } else {
                     sb.append("0,");
                 }
-                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3,orderImage from "
+                sb.append("deliveryDate,remark,freeProductsCount,ReturnValue,CrownCount,IFNULL(imagename,'') AS imagename,salesType,imgName,RField1,RField2,RField3,orderImage,AddressId from "
                         + DataMembers.tbl_orderHeader + " OD ");
 
                 sb.append(" left join InvoiceDiscountDetail ID on OD.OrderId=OD.orderid and ID.typeid=0 and ID.pid=0 ");
@@ -1450,8 +1457,6 @@ public class OrderHelper {
                     this.invoiceDiscount = orderHeaderCursor.getDouble(5) + "";
                     businessModel.retailerMasterBO.setOrderTypeId(orderHeaderCursor.getString(12));
 
-                    businessModel.setRField1(orderHeaderCursor.getString(14));
-                    businessModel.setRField2(orderHeaderCursor.getString(15));
 
                     businessModel.getOrderHeaderBO()
                             .setRField1(orderHeaderCursor.getString(14));
@@ -1462,6 +1467,7 @@ public class OrderHelper {
                     businessModel.setRField2(orderHeaderCursor.getString(15));
                     businessModel.setRField3(orderHeaderCursor.getString(16));
                     businessModel.getOrderHeaderBO().setOrderImageName(orderHeaderCursor.getString(17));
+                    businessModel.getOrderHeaderBO().setAddressID(orderHeaderCursor.getInt(18));
 
                 }
                 orderHeaderCursor.close();
@@ -1797,7 +1803,12 @@ public class OrderHelper {
 
             // Save invoice header
             businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
-            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount,paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount,discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned,LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype,imgName,creditPeriod,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,totalamount";
+            String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount," +
+                    "paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount," +
+                    "discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned," +
+                    "LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype," +
+                    "imgName,creditPeriod,PrintFilePath,timestampid,RemarksType,RField1,RField2," +
+                    "RField3,totalamount,AddressId";
             StringBuilder sb = new StringBuilder();
             sb.append(businessModel.QT(invoiceId) + ",");
             sb.append(businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -1874,6 +1885,7 @@ public class OrderHelper {
             sb.append("," + businessModel.QT(businessModel.getRField2()));
             sb.append("," + businessModel.QT(businessModel.getRField3()));
             sb.append("," + getInvoiceTotalValue());
+            sb.append("," + businessModel.getOrderHeaderBO().getAddressID());
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());

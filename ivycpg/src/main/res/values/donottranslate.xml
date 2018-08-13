@@ -188,4 +188,5 @@
 
     <string name="filter_by">Filter By</string>
     <string name="show_results">Show Results</string>
+    <string name="please_choose_address">Please choose any one address</string>
 </resources>

@@ -330,7 +330,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 row = inflater.inflate(R.layout.row_invoice_report_new, parent, false);
                 holder = new ViewHolder();
-                holder.text_retailerName = (TextView) row.findViewById(R.id.PRDNAME);
+                holder.text_retailerName = (TextView) row.findViewById(R.id.prd_nameTv);
 
                 holder.text_value = (TextView) row.findViewById(R.id.PRDMRP);
                 holder.text_LPC = (TextView) row.findViewById(R.id.lpc);

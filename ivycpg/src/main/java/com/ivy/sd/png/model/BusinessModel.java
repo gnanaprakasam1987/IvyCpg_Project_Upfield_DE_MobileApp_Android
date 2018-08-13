@@ -72,6 +72,7 @@ import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
+import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
@@ -116,7 +117,6 @@ import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.DeliveryManagementHelper;
-import com.ivy.sd.png.provider.DynamicReportHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.ExpenseSheetHelper;
@@ -1426,7 +1426,7 @@ public class BusinessModel extends Application {
 
                             + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
 
-                            + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
+                            + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
                             + " LEFT JOIN RetailerContact RC1 ON RC1.RetailerId = A.RetailerID AND RC1.IsPrimary = 1"
                             + " LEFT JOIN RetailerContact RC2 ON RC2.RetailerId = A.RetailerID AND RC2.IsPrimary = 0"

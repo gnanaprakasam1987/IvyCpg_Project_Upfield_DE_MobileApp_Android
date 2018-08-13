@@ -130,6 +130,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_HISTORY = "PRO05";
     private static final String CODE_SHOW_TASK = "PRO08";
     public static final String CODE_SHOW_AVG_SALES_PER_LEVEL = "PRO09";
+    //
+
+    public static final String CODE_SHOW_SALES_VALUE_DR = "PRO10";
+
     private static final String CODE_SHOW_ASSET_HISTORY = "PRO07";
     private static final String CODE_SHOW_EDIT_PRO = "PRO21";
     private static final String COBE_DB_BACKUP = "SQLBACKUP";// code for DB backup
@@ -597,6 +601,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_ASSET_HISTORY; //PRO07
     public boolean SHOW_TASK;  //PRO08
     public boolean SHOW_AVG_SALES_PER_LEVEL;  //PRO09
+//
+    public boolean SHOW_SALES_VALUE_DR;
     public boolean SHOW_PROFILE_EDIT;
     public boolean SHOW_LPC_ORDER;
     public boolean SHOW_TOTAL_QTY_ORDER_SUMMARY;
@@ -1481,6 +1487,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CHECK_PHOTO_MANDATORY = "FUN71";
     public boolean IS_CHECK_PHOTO_MANDATORY;
 
+    private static final String CODE_SHOW_MODULE_MANDATORY = "FUN72";
+    public boolean IS_CHECK_MODULE_MANDATORY;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -1994,6 +2003,9 @@ public class ConfigurationMasterHelper {
         this.SHOW_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) : false;
         this.SHOW_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TASK) : false;
         this.SHOW_AVG_SALES_PER_LEVEL = hashMapHHTModuleConfig.get(CODE_SHOW_AVG_SALES_PER_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_AVG_SALES_PER_LEVEL) : false;
+
+        this.SHOW_SALES_VALUE_DR = hashMapHHTModuleConfig.get(CODE_SHOW_SALES_VALUE_DR) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SALES_VALUE_DR) : false;
+
         this.SHOW_ASSET_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_ASSET_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ASSET_HISTORY) : false;
         this.SHOW_PROFILE_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) : false;
         this.IS_DB_BACKUP = hashMapHHTModuleConfig.get(COBE_DB_BACKUP) != null ? hashMapHHTModuleConfig.get(COBE_DB_BACKUP) : false;
@@ -2595,6 +2607,7 @@ public class ConfigurationMasterHelper {
         }
 
         this.IS_CHECK_PHOTO_MANDATORY = hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) : false;
+        this.IS_CHECK_MODULE_MANDATORY = hashMapHHTModuleConfig.get(CODE_SHOW_MODULE_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MODULE_MANDATORY) : false;
 
     }
 

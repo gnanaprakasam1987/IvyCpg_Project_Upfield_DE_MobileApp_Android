@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.reports.userlogreport;
 
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -29,6 +30,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +43,9 @@ import java.util.concurrent.TimeUnit;
 public class LogReportFragment extends IvyBaseFragment {
 
     private static final String FORMAT = "%02d:%02d";
+    private CompositeDisposable compositeDisposable;
+    private ListView list;
+    private TextView tvTotalHrs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,48 +58,82 @@ public class LogReportFragment extends IvyBaseFragment {
         bmodel.setContext(getActivity());
 
 
+        list = view.findViewById(R.id.list);
+        tvTotalHrs = view.findViewById(R.id.tvTotalHrs);
 
-        UserLogReport userLogReport=new UserLogReport(getContext());
-        ArrayList<LogReportBO> myList = userLogReport.downloadLogReport();
-
-        ListView list = view.findViewById(R.id.list);
-        TextView tvTotalHrs = view.findViewById(R.id.tvTotalHrs);
-
-        if (myList.size() > 0) {
-
-            Collections.sort(myList, new Comparator<LogReportBO>() {
-                SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
-
-                public int compare(LogReportBO o1, LogReportBO o2) {
-                    try {
-                        return formatter.parse(o1.getOutTime()).compareTo(formatter.parse(o2.getOutTime()));
-                    } catch (ParseException e) {
-                        throw new IllegalArgumentException(e);
-                    }
-                }
-            });
-
-            list.setAdapter(new MyAdapter(myList));
-            for (LogReportBO logBo : myList) {
-                calculateHrsSpent(logBo.getInTime(), logBo.getOutTime());
-            }
-
-            String hrsMin = parseTime(totMinutes);
-            tvTotalHrs.setText(hrsMin);
-
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.alert_activity_log), Toast.LENGTH_LONG).show();
-        }
+        getUserLogReportData();
 
 
         return view;
+    }
+
+
+    private void getUserLogReportData() {
+        final ArrayList<LogReportBO> myList = new ArrayList<>();
+        final SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
+        final AlertDialog alertDialog;
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(getActivity());
+        compositeDisposable = new CompositeDisposable();
+        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        compositeDisposable.add((Disposable) new UserLogReport(getActivity()).
+                downloadLogReport()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<ArrayList<LogReportBO>>() {
+                    @Override
+                    public void onNext(ArrayList<LogReportBO> mylist) {
+
+                        Collections.sort(mylist, new Comparator<LogReportBO>() {
+
+
+                            public int compare(LogReportBO o1, LogReportBO o2) {
+                                try {
+                                    return formatter.parse(o1.getOutTime()).compareTo(formatter.parse(o2.getOutTime()));
+                                } catch (ParseException e) {
+                                    throw new IllegalArgumentException(e);
+                                }
+                            }
+                        });
+                        myList.addAll(mylist);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        alertDialog.dismiss();
+                        Toast.makeText(getActivity(), getString(R.string.unable_to_load_data), Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        alertDialog.dismiss();
+                        if (myList.size() > 0) {
+
+
+                            list.setAdapter(new MyAdapter(myList));
+                            for (LogReportBO logBo : myList) {
+                                calculateHrsSpent(logBo.getInTime(), logBo.getOutTime());
+                            }
+
+                            String hrsMin = parseTime(totMinutes);
+                            tvTotalHrs.setText(hrsMin);
+
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.alert_activity_log), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }));
     }
 
     long totMinutes = 0;
 
     private void calculateHrsSpent(String startTime, String endTime) {
 
-        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss",Locale.ENGLISH);
+        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
         try {
             Date date1 = sdf1.parse(startTime);
             Date date2 = sdf1.parse(endTime);
@@ -181,8 +225,8 @@ public class LogReportFragment extends IvyBaseFragment {
     }
 
     private String to12hrFormat(String time) {
-        DateFormat f1 = new SimpleDateFormat("HH:mm:ss",Locale.ENGLISH); //HH for hour of the day (0 - 23)
-        DateFormat f2 = new SimpleDateFormat("h:mm a",Locale.ENGLISH);
+        DateFormat f1 = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH); //HH for hour of the day (0 - 23)
+        DateFormat f2 = new SimpleDateFormat("h:mm a", Locale.ENGLISH);
         String time_converted = "";
         try {
             Date d = f1.parse(time);
