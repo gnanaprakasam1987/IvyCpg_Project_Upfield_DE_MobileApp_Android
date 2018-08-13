@@ -8698,7 +8698,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select count(distinct InvoiceNo),sum(totalamount) from Invoicemaster where invoicedate = "
+                    .selectSQL("select count(distinct Inv.InvoiceNo),sum(Inv.totalamount) from Invoicemaster Inv" +
+                            " INNER JOIN OrderHeader OH ON OH.orderId=Inv.OrderId where Inv.invoicedate = "
                             + QT(userMasterHelper.getUserMasterBO().getDownloadDate()));
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -9038,6 +9039,32 @@ public class BusinessModel extends Application {
         }
 
         return 0;
+    }
+
+    public boolean hasPendingInvoice(String date,String retailerIds) {
+        try {
+            double balance = 0;
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select Inv.InvoiceNo,Round(Inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as balance from "
+                    + DataMembers.tbl_InvoiceMaster + " Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo where Inv.Retailerid in("
+                    + retailerIds
+                    + ") and Inv.InvoiceDate ='" + date + "'and Inv.upload = 'N'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    balance = balance + c.getDouble(c.getColumnIndex("balance"));
+                }
+                c.close();
+                if (balance > 0)
+                    return true;
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
     }
 
 }

@@ -1219,8 +1219,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(doPrintFormatingLeft(getResources().getString(R.string.comments) + ": ----------------------------------------------", 36));
                 sb.append(LineFeed(2));
                 sb.append(doPrintFormatingLeft(getResources().getString(R.string.customer_sign) + ": ---------------------------------------------", 36));
-                sb.append(LineFeed(2));
-                sb.append(LineFeed(2));
+                sb.append(LineFeed(5));
 
                 return sb.toString();
             }

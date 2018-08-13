@@ -1390,6 +1390,9 @@ public class ConfigurationMasterHelper {
     public boolean COMPUTE_DUE_DAYS;
 
     public boolean SHOW_SALES_RETURN_IN_ORDER;
+    public boolean SHOW_SALES_RETURN_IN_DELIVERY;
+
+
 
     public int retailerLocAccuracyLvl;
 
@@ -3400,6 +3403,7 @@ public class ConfigurationMasterHelper {
             SHOW_DELIVERY_PC = false;
             SHOW_DELIVERY_CA = false;
             SHOW_DELIVERY_OU = false;
+            SHOW_SALES_RETURN_IN_DELIVERY=false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3428,6 +3432,9 @@ public class ConfigurationMasterHelper {
                             break;
                         case "OC":
                             SHOW_DELIVERY_CA = true;
+                            break;
+                        case "SR":
+                            SHOW_SALES_RETURN_IN_DELIVERY=true;
                             break;
                     }
 
