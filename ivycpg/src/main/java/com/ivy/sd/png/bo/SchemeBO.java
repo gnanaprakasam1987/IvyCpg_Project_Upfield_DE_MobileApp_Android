@@ -695,24 +695,58 @@ public class SchemeBO {
         return isChecked;
     }
 
-    private double totalOrderQty;
+    private double totalPieceQty, totalCaseQty;
 
-    public double getTotalOrderQty() {
-        return totalOrderQty;
+    public double getTotalPieceQty() {
+        return totalPieceQty;
     }
 
-    public void setTotalOrderQty(double totalOrderQty) {
-        this.totalOrderQty = totalOrderQty;
+    public void setTotalPieceQty(double totalPieceQty) {
+        this.totalPieceQty = totalPieceQty;
     }
 
-    private double totalPriceQty;
-
-    public double getTotalPriceQty() {
-        return totalPriceQty;
+    public double getTotalCaseQty() {
+        return totalCaseQty;
     }
 
-    public void setTotalPriceQty(double totalPriceQty) {
-        this.totalPriceQty = totalPriceQty;
+    public void setTotalCaseQty(double totalCaseQty) {
+        this.totalCaseQty = totalCaseQty;
+    }
+
+    private double totalPieceEveryQty, totalCaseEveryQty;
+
+    public double getTotalPieceEveryQty() {
+        return totalPieceEveryQty;
+    }
+
+    public void setTotalPieceEveryQty(double totalPieceEveryQty) {
+        this.totalPieceEveryQty = totalPieceEveryQty;
+    }
+
+    public double getTotalCaseEveryQty() {
+        return totalCaseEveryQty;
+    }
+
+    public void setTotalCaseEveryQty(double totalCaseEveryQty) {
+        this.totalCaseEveryQty = totalCaseEveryQty;
+    }
+
+    private double totalPcsPriceQty, totalCasesPriceQty;
+
+    public double getTotalPcsPriceQty() {
+        return totalPcsPriceQty;
+    }
+
+    public void setTotalPcsPriceQty(double totalPcsPriceQty) {
+        this.totalPcsPriceQty = totalPcsPriceQty;
+    }
+
+    public double getTotalCasesPriceQty() {
+        return totalCasesPriceQty;
+    }
+
+    public void setTotalCasesPriceQty(double totalCasesPriceQty) {
+        this.totalCasesPriceQty = totalCasesPriceQty;
     }
 
     private boolean isCurrentSlab;
@@ -753,7 +787,7 @@ public class SchemeBO {
         this.toQty = toQty;
     }
 
-    private boolean everyCaseUOM;
+    private boolean everyCaseUOM, isCaseScheme;
 
     public boolean isEveryCaseUOM() {
         return everyCaseUOM;
@@ -761,5 +795,13 @@ public class SchemeBO {
 
     public void setEveryCaseUOM(boolean everyCaseUOM) {
         this.everyCaseUOM = everyCaseUOM;
+    }
+
+    public boolean isCaseScheme() {
+        return isCaseScheme;
+    }
+
+    public void setCaseScheme(boolean caseScheme) {
+        isCaseScheme = caseScheme;
     }
 }

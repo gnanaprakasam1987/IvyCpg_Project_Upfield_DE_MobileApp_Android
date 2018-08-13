@@ -11,6 +11,7 @@ import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.SchemaQPSAchHistoryBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SchemeProductBatchQty;
@@ -101,6 +102,7 @@ public class SchemeDetailsMasterHelper {
     private ArrayList<SchemeBO> mDisplaySchemeMasterList;
     private ArrayList<SchemeBO> mDisplaySchemeSlabs;
     private ArrayList<SchemeBO> mDisplaySchemeTrackingList;
+    private HashMap<String, SchemaQPSAchHistoryBO> mSchemaQPSAchHistoryList;
 
     protected SchemeDetailsMasterHelper(Context context) {
         bModel = (BusinessModel) context.getApplicationContext();
@@ -439,7 +441,7 @@ public class SchemeDetailsMasterHelper {
         }
         c.close();
         loadParentSchemInfo(db);
-
+        loadQPSCumulativeAchHistory(db);
     }
 
     public ArrayList<Integer> getParentIDList() {
@@ -4877,15 +4879,48 @@ public class SchemeDetailsMasterHelper {
     }
 
     public void resetSchemeQPSList() {
-        for(SchemeBO scheme : mSchemeList){
+        for (SchemeBO scheme : mSchemeList) {
             scheme.setFromQty(0);
             scheme.setToQty(0);
-            scheme.setTotalOrderQty(0);
+            scheme.setTotalPieceQty(0);
             scheme.setCurrentSlab(false);
             scheme.setNextSlab(false);
         }
     }
 
+    public HashMap<String, SchemaQPSAchHistoryBO> getmSchemaQPSAchHistoryList() {
+        return mSchemaQPSAchHistoryList;
+    }
+
+    public void setmSchemaQPSAchHistoryList(HashMap<String, SchemaQPSAchHistoryBO> mSchemaQPSAchHistoryList) {
+        this.mSchemaQPSAchHistoryList = mSchemaQPSAchHistoryList;
+    }
+
+    public void loadQPSCumulativeAchHistory(DBUtil db) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Select distinct SchemeID ,Cumulative_Purchase,CurSlab_Sch_Amt,CurSlab_Rs_Per, " +
+                "NextSlab_Balance,NextSlab_Sch_Amt,NextSlab_Rs_Per from SchemaQPSAchHistory");
+        Cursor c = db.selectSQL(sb.toString());
+
+        if (c.getCount() > 0) {
+            mSchemaQPSAchHistoryList = new HashMap<>();
+            while (c.moveToNext()) {
+                SchemaQPSAchHistoryBO schemeBO = new SchemaQPSAchHistoryBO();
+                schemeBO.setSchemeID(c.getInt(0));
+                schemeBO.setCumulative_Purchase(c.getDouble(1));
+                schemeBO.setCurSlab_Sch_Amt(c.getDouble(2));
+                schemeBO.setCurSlab_Rs_Per(c.getDouble(3));
+                schemeBO.setNextSlab_balance(c.getDouble(4));
+                schemeBO.setNextSlab_Sch_Amt(c.getDouble(5));
+                schemeBO.setNextSlab_Rs_Per(c.getDouble(6));
+                mSchemaQPSAchHistoryList.put(c.getString(0),schemeBO);
+            }
+        }
+        c.close();
+
+        setmSchemaQPSAchHistoryList(mSchemaQPSAchHistoryList);
+    }
 }
 
 

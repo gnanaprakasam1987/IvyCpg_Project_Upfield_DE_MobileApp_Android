@@ -343,7 +343,7 @@
                 android:divider="#FFFFFF"
                 android:dividerHeight="0dp"
                 android:groupIndicator="@null"
-
+                android:descendantFocusability="beforeDescendants"
                 />
         </LinearLayout>
         <!-- </HorizontalScrollView> -->

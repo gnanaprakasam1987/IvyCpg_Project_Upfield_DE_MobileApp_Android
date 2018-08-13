@@ -549,21 +549,21 @@ public class SchemeProductBO {
 		this.getType = getType;
 	}
 
-	int childPosition, parentPosition;
+	boolean pcsSelected, casesSelected;
 
-	public int getChildPosition() {
-		return childPosition;
+	public boolean isPcsSelected() {
+		return pcsSelected;
 	}
 
-	public void setChildPosition(int childPosition) {
-		this.childPosition = childPosition;
+	public void setPcsSelected(boolean pcsSelected) {
+		this.pcsSelected = pcsSelected;
 	}
 
-	public int getParentPosition() {
-		return parentPosition;
+	public boolean isCasesSelected() {
+		return casesSelected;
 	}
 
-	public void setParentPosition(int parentPosition) {
-		this.parentPosition = parentPosition;
+	public void setCasesSelected(boolean casesSelected) {
+		this.casesSelected = casesSelected;
 	}
 }
