@@ -41,7 +41,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CatalogOrder;
-import com.ivy.sd.png.view.CrownReturnActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 
@@ -71,7 +70,8 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
     private String schemeViewTxt = "View";
     private SchemeFreeProductSelectionDialog mSchemeDialog;
     private InputMethodManager inputManager;
-    //int selectedChldPosition = 0, selectedParentPosition = 0;
+    HashMap<Integer, SchemeBO> minItemList = new HashMap<>();
+    HashMap<Integer, SchemeBO> preSchemeList;
     HashMap<Integer, SchemeBO> currentSchemeList;
     HashMap<Integer, SchemeBO> nextSchemeList;
     List<SchemeBO> schemeIDList;
@@ -152,6 +152,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 fromOrderScreen.equalsIgnoreCase("MENU_ORDER") ||
                 fromOrderScreen.equalsIgnoreCase("MENU_CATALOG_ORDER")) {
             parentSchemeList = new HashMap<>();
+            preSchemeList = new HashMap<>();
             currentSchemeList = new HashMap<>();
             nextSchemeList = new HashMap<>();
             mSchemeDoneList = new ArrayList<>();
@@ -215,7 +216,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
     private void checkSlabandsetProduct() {
         String groupName = "";
         HashMap<Integer, SchemeBO> tempList = new HashMap<>();
-        HashMap<Integer, SchemeBO> minItemList = new HashMap<>();
+        minItemList = new HashMap<>();
         for (int i = 0; i < schemeIDList.size(); i++) {
             SchemeBO schemeHeader = schemeIDList.get(i);
             if (minItemList.get(schemeHeader.getParentId()) == null) {
@@ -347,6 +348,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     schemeHeader.setTotalCasesPriceQty(totalCasesPriceQty);
                 }
                 currentSchemeList.put(schemeHeader.getParentId(), schemeHeader);
+                //nextSchemeList.remove(schemeHeader.getParentId());
             } else if (totalPiecesQty >= schemeHeader.getFromQty() && totalPiecesQty <= schemeHeader.getToQty()) {
                 schemeHeader.setTotalPieceQty(totalPiecesQty);
                 if (totalPiecesEveryPriceQty > 0) {
@@ -356,55 +358,76 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     schemeHeader.setTotalPcsPriceQty(totalPiecesPriceQty);
                 }
                 currentSchemeList.put(schemeHeader.getParentId(), schemeHeader);
-            }
-
-            int currentCount = 0;
-            for (Map.Entry<Integer, SchemeBO> entry : currentSchemeList.entrySet()) {
-                if (entry.getKey().equals(schemeHeader.getParentId())) {
-                    currentCount++;
-                }
-            }
-            int nextCount = 0;
-            for (Map.Entry<Integer, SchemeBO> entry : nextSchemeList.entrySet()) {
-                if (entry.getKey().equals(schemeHeader.getParentId())) {
-                    nextCount++;
-                }
-            }
-
-            if (groupName.equals(schemeHeader.getGroupName()) && currentCount == 1 && nextCount == 0
-                    && !currentSchemeList.equals(nextSchemeList)) {
-                HashMap<Integer, SchemeBO> tempNextList = new HashMap<>();
-                tempNextList.put(schemeHeader.getParentId(), schemeHeader);
-                if (!tempNextList.equals(currentSchemeList))
-                    nextSchemeList.put(schemeHeader.getParentId(), schemeHeader);
-            }
-            groupName = schemeHeader.getGroupName();
-            if ((totalCasesQty >= schemeHeader.getFromQty()) && (totalCasesQty >= schemeHeader.getToQty())) {
-                schemeHeader.setTotalCaseQty(totalCasesQty);
-                tempList.put(schemeHeader.getParentId(), schemeHeader);
-            } else if ((totalPiecesQty >= schemeHeader.getFromQty()) && (totalPiecesQty >= schemeHeader.getToQty())) {
+                //nextSchemeList.remove(schemeHeader.getParentId());
+            } else if (totalPiecesQty > 0 && totalPiecesQty < minItemList.get(schemeHeader.getParentId()).getFromQty()) {
                 schemeHeader.setTotalPieceQty(totalPiecesQty);
-                tempList.put(schemeHeader.getParentId(), schemeHeader);
+                preSchemeList.put(schemeHeader.getParentId(), schemeHeader);
+            } else if (totalCasesQty > 0 && schemeHeader.isCaseScheme() && totalCasesQty < minItemList.get(schemeHeader.getParentId()).getFromQty()) {
+                schemeHeader.setTotalCaseQty(totalCasesQty);
+                preSchemeList.put(schemeHeader.getParentId(), schemeHeader);
+                //nextSchemeList.remove(schemeHeader.getParentId());
             }
+
+//            int currentCount = 0;
+//            for (Map.Entry<Integer, SchemeBO> entry : currentSchemeList.entrySet()) {
+//                if (entry.getKey().equals(schemeHeader.getParentId())) {
+//                    currentCount++;
+//                }
+//            }
+//            int nextCount = 0;
+//            for (Map.Entry<Integer, SchemeBO> entry : nextSchemeList.entrySet()) {
+//                if (entry.getKey().equals(schemeHeader.getParentId())) {
+//                    nextCount++;
+//                }
+//            }
+
+//            if (groupName.equals(schemeHeader.getGroupName()) && !currentSchemeList.equals(nextSchemeList)) {
+//                HashMap<Integer, SchemeBO> tempNextList = new HashMap<>();
+//                tempNextList.put(schemeHeader.getParentId(), schemeHeader);
+//                if (!tempNextList.equals(currentSchemeList))
+//                    nextSchemeList.put(schemeHeader.getParentId(), schemeHeader);
+//            }
+//            groupName = schemeHeader.getGroupName();
+//            if ((totalCasesQty >= schemeHeader.getFromQty()) && (totalCasesQty >= schemeHeader.getToQty())) {
+//                schemeHeader.setTotalCaseQty(totalCasesQty);
+//                tempList.put(schemeHeader.getParentId(), schemeHeader);
+//            } else if ((totalPiecesQty >= schemeHeader.getFromQty()) && (totalPiecesQty >= schemeHeader.getToQty())) {
+//                schemeHeader.setTotalPieceQty(totalPiecesQty);
+//                tempList.put(schemeHeader.getParentId(), schemeHeader);
+//            }
         }
 
-        boolean isKeyAlreadyAdded = false;
-        for (Map.Entry<Integer, SchemeBO> entry : tempList.entrySet()) {
-            if (currentSchemeList.containsKey(entry.getKey())) {
-                isKeyAlreadyAdded = true;
-            }
-        }
-
-        if (!isKeyAlreadyAdded) {
-            currentSchemeList.putAll(tempList);
-        }
-
+//        boolean isKeyAlreadyAdded = false;
+//        for (Map.Entry<Integer, SchemeBO> entry : tempList.entrySet()) {
+//            if (currentSchemeList.containsKey(entry.getKey())) {
+//                isKeyAlreadyAdded = true;
+//            }
+//        }
+//
+//        if (!isKeyAlreadyAdded) {
+//            currentSchemeList.putAll(tempList);
+//        }
+        nextSchemeList.clear();
         if (currentSchemeList.size() == 0 && nextSchemeList.size() == 0) {
             nextSchemeList.putAll(minItemList);
         } else {
             for (int i = 0; i < schemeIDList.size(); i++) {
                 if (currentSchemeList.get(schemeIDList.get(i).getParentId()) == null) {
+
                     nextSchemeList.put(schemeIDList.get(i).getParentId(), minItemList.get(schemeIDList.get(i).getParentId()));
+                } else if (currentSchemeList.get(schemeIDList.get(i).getParentId()) != null) {
+                    try {
+                        if (schemeIDList.get(i + 1) != null && schemeIDList.get(i + 1).getParentId() ==
+                                currentSchemeList.get(schemeIDList.get(i).getParentId()).getParentId() &&
+                                nextSchemeList.get(schemeIDList.get(i).getParentId()) == null &&
+                                currentSchemeList.get(schemeIDList.get(i).getParentId()) != schemeIDList.get(i + 1) &&
+                                currentSchemeList.get(schemeIDList.get(i).getParentId()).getToQty() < schemeIDList.get(i + 1).getFromQty()) {
+                            nextSchemeList.remove(schemeIDList.get(i).getParentId());
+                            nextSchemeList.put(schemeIDList.get(i).getParentId(), schemeIDList.get(i + 1));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -465,10 +488,10 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                                 } else if (buyType.equals("QTY")) { //Qty
                                     double cumulativePurchaseValue = 0;
                                     if (schemeHeader.getEveryQty() > 0) {
+                                        double x = parentSchemeBO.getCumulativePurchase() - (parentSchemeBO.getCurSlabCumSchAmt() % schemeHeader.getEveryQty());
                                         double y = (schemeHeader.isCaseScheme() ? schemeHeader.getTotalCaseEveryQty() : schemeHeader.getTotalPieceEveryQty());
-                                        //cumulativePurchaseValue = Math.floor(parentSchemeBO.getCalculatedCumulativePurchase() / schemeHeader.getEveryQty());
-                                        cumulativePurchaseValue = y * schemeBO.getMinAmount();
-                                        parentSchemeBO.setCalculatedcurSlabCumSchAmt(cumulativePurchaseValue);
+                                        cumulativePurchaseValue = x + y ;
+                                        parentSchemeBO.setCalculatedcurSlabCumSchAmt(cumulativePurchaseValue * schemeBO.getMinAmount());
                                     } else {
                                         parentSchemeBO.setCalculatedcurSlabCumSchAmt(schemeBO.getMinAmount());
                                     }
@@ -539,8 +562,8 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     if (historyMap != null && historyMap.get(schemeHeader.getParentId() + "") != null) {
                         //Calculating Next Slab Item with Ach History
                         String buyType = "";
-                        List<SchemeProductBO> schemeBuyingList = checkNextSlabBuyProducts(entry.getKey(), parentSchemeBO.getCumulativePurchase());
-                        for (SchemeProductBO schemeBO : schemeBuyingList) {
+                        //List<SchemeProductBO> schemeBuyingList = checkNextSlabBuyProducts(entry.getKey(), parentSchemeBO.getCumulativePurchase());
+                        for (SchemeProductBO schemeBO : schemeHeader.getBuyingProducts()) {
                             buyType = (schemeBO.getBuyType() != null) ? schemeBO.getBuyType() : "";
                         }
 
@@ -549,6 +572,18 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                             parentSchemeBO.setCumulativePurchase(qpsHistoryBO.getCumulative_Purchase());
                             parentSchemeBO.setCurSlabCumSchAmt(qpsHistoryBO.getCurSlab_Sch_Amt());
                             parentSchemeBO.setCurSlabrsorPer(qpsHistoryBO.getCurSlab_Rs_Per());
+                            if (preSchemeList != null && preSchemeList.size() > 0) {
+                                try {
+                                    SchemeBO scheme = preSchemeList.get(schemeHeader.getParentId());
+                                    parentSchemeBO.setCalculatedCumulativePurchase(scheme.getTotalPieceQty());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                parentSchemeBO.setCalculatedCumulativePurchase(0);
+                            }
+                            parentSchemeBO.setCalculatedcurSlabCumSchAmt(0);
+                            parentSchemeBO.setCalculatedcurSlabrsorPer(0);
                         }
                         parentSchemeBO.setNextSlabBalance(qpsHistoryBO.getNextSlab_balance());
                         parentSchemeBO.setNextSlabCumSchAmt(qpsHistoryBO.getNextSlab_Sch_Amt());
@@ -569,7 +604,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         }
 
                         if (parentSchemeBO.getCalculatednextSlabBalance() > 0) {
-                            List<SchemeProductBO> nextSchemeBOList = checkNextSlabFreeProducts(entry.getKey(), schemebuyQty);
+                            List<SchemeProductBO> nextSchemeBOList = checkNextSlabFreeProducts(entry.getKey(), parentSchemeBO.getCalculatedCumulativePurchase());
                             for (SchemeProductBO schemeBO : nextSchemeBOList) {
                                 if (getType.equals("PER")) {
                                     parentSchemeBO.setCalculatednextSlabCumSchAmt((buyType.equals("SV")) ? ((schemeBO.getMinPercent() / 100) * schemebuyQty) : 0);
@@ -585,6 +620,20 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         }
                     } else {
                         //Calculating Next Slab Item without Ach History
+                        if (currentSchemeList.get(schemeHeader.getParentId()) == null) {
+                            if (preSchemeList != null && preSchemeList.size() > 0) {
+                                try {
+                                    SchemeBO scheme = preSchemeList.get(schemeHeader.getParentId());
+                                    parentSchemeBO.setCalculatedCumulativePurchase(scheme.getTotalPieceQty());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                parentSchemeBO.setCalculatedCumulativePurchase(0);
+                            }
+                            parentSchemeBO.setCalculatedcurSlabCumSchAmt(0);
+                            parentSchemeBO.setCalculatedcurSlabrsorPer(0);
+                        }
                         parentSchemeBO.setNextSlabBalance(0);
                         parentSchemeBO.setNextSlabCumSchAmt(0);
                         parentSchemeBO.setNextSlabrsorPer(0);
@@ -649,7 +698,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         if (screenCode.equalsIgnoreCase("CSale")) {
             menu.findItem(R.id.menu_counter_remark).setVisible(true);
         }
-        menu.findItem(R.id.menu_product_filter).setVisible(false);
+        //menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -676,11 +725,11 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 isClick = true;
                 if ((bModel.configurationMasterHelper.SHOW_CROWN_MANAGMENT || bModel.configurationMasterHelper.SHOW_FREE_PRODUCT_GIVEN)
                         && bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    Intent intent = new Intent(QPSSchemeApply.this,
-                            CrownReturnActivity.class);
-                    intent.putExtra("OrderFlag", "Nothing");
-                    intent.putExtra("ScreenCode", screenCode);
-                    startActivity(intent);
+//                    Intent intent = new Intent(QPSSchemeApply.this,
+//                            CrownReturnActivity.class);
+//                    intent.putExtra("OrderFlag", "Nothing");
+//                    intent.putExtra("ScreenCode", screenCode);
+//                    startActivity(intent);
                 } else if (bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     Intent intent = new Intent(QPSSchemeApply.this,
                             BatchAllocation.class);
@@ -860,10 +909,10 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                                         product.setIncreasedCasesQty(SDUtil.convertToInt(s.toString()));
                                     }
                                     if (product.getProductId().equals(holder.schemeProducts.getProductId()) &&
-                                            product.getSchemeId()==holder.schemeProducts.getSchemeId()) {
+                                            product.getSchemeId() == holder.schemeProducts.getSchemeId()) {
                                         product.setCasesSelected(true);
                                         product.setPcsSelected(false);
-                                    } else{
+                                    } else {
                                         product.setCasesSelected(false);
                                         product.setPcsSelected(false);
                                     }
@@ -1272,35 +1321,35 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         List<SchemeProductBO> currentList = new ArrayList<>();
         List<SchemeProductBO> nextList = new ArrayList<>();
         //if (qty > 0) {
-            boolean isAvailable = false, upFlag = false, downFlag = false;
-            int i = 0;
-            for (SchemeBO schemeHeader : schemeIDList) {
-                if (schemeHeader.getParentId() == schemeID) {
-                    availableList.add(schemeHeader);
-                }
+        boolean isAvailable = false, upFlag = false, downFlag = false;
+        int i = 0;
+        for (SchemeBO schemeHeader : schemeIDList) {
+            if (schemeHeader.getParentId() == schemeID) {
+                availableList.add(schemeHeader);
             }
+        }
 
-            for (SchemeBO schemeBO : availableList) {
-                if (currentList.size() > 0 && nextList.size() == 0) {
-                    isAvailable = true;
-                    nextList.addAll(schemeBO.getBuyingProducts());
-                }
-                if (qty >= schemeBO.getFromQty() && qty <= schemeBO.getToQty()) {
-                    currentList.addAll(schemeBO.getBuyingProducts());
-                }
-                if (qty >= schemeBO.getFromQty() && qty >= schemeBO.getToQty() && currentList.size() == 0) {
-                    upFlag = true;
-                }
-                if (qty <= schemeBO.getFromQty() && qty <= schemeBO.getToQty() && currentList.size() == 0) {
-                    downFlag = true;
-                }
-                i++;
+        for (SchemeBO schemeBO : availableList) {
+            if (currentList.size() > 0 && nextList.size() == 0) {
+                isAvailable = true;
+                nextList.addAll(schemeBO.getBuyingProducts());
             }
+            if (qty >= schemeBO.getFromQty() && qty <= schemeBO.getToQty()) {
+                currentList.addAll(schemeBO.getBuyingProducts());
+            }
+            if (qty >= schemeBO.getFromQty() && qty >= schemeBO.getToQty() && currentList.size() == 0) {
+                upFlag = true;
+            }
+            if (qty <= schemeBO.getFromQty() && qty <= schemeBO.getToQty() && currentList.size() == 0) {
+                downFlag = true;
+            }
+            i++;
+        }
 
 
-            if (!isAvailable && upFlag)
-                nextList.addAll(availableList.get(i - 1).getBuyingProducts());
-            if (!isAvailable && downFlag) nextList.addAll(availableList.get(0).getBuyingProducts());
+        if (!isAvailable && upFlag)
+            nextList.addAll(availableList.get(i - 1).getBuyingProducts());
+        if (!isAvailable && downFlag) nextList.addAll(availableList.get(0).getBuyingProducts());
         //}
         return nextList;
     }
@@ -1311,50 +1360,33 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         List<SchemeProductBO> currentList = new ArrayList<>();
         List<SchemeProductBO> nextList = new ArrayList<>();
         //if (qty > 0) {
-            boolean isAvailable = false, upFlag = false, downFlag = false;
-            int i = 0;
-            for (SchemeBO schemeHeader : schemeIDList) {
-                if (schemeHeader.getParentId() == schemeID) {
-                    availableList.add(schemeHeader);
-                }
+        boolean isAvailable = false, upFlag = false, downFlag = false;
+        int i = 0;
+        for (SchemeBO schemeHeader : schemeIDList) {
+            if (schemeHeader.getParentId() == schemeID) {
+                availableList.add(schemeHeader);
             }
-            for (SchemeBO schemeBO : availableList) {
-                if (currentList.size() > 0 && nextList.size() == 0) {
-                    isAvailable = true;
-                    nextList.addAll(schemeBO.getFreeProducts());
-                }
-                if (qty >= schemeBO.getFromQty() && qty <= schemeBO.getToQty()) {
-                    currentList.addAll(schemeBO.getFreeProducts());
-                }
-                if (qty >= schemeBO.getFromQty() && qty >= schemeBO.getToQty() && currentList.size() == 0) {
-                    upFlag = true;
-                }
-                if (qty <= schemeBO.getFromQty() && qty <= schemeBO.getToQty() && currentList.size() == 0) {
-                    downFlag = true;
-                }
-                i++;
+        }
+        for (SchemeBO schemeBO : availableList) {
+            if (currentList.size() > 0 && nextList.size() == 0) {
+                isAvailable = true;
+                nextList.addAll(schemeBO.getFreeProducts());
             }
-            if (!isAvailable && upFlag) nextList.addAll(availableList.get(i - 1).getFreeProducts());
-            if (!isAvailable && downFlag) nextList.addAll(availableList.get(0).getFreeProducts());
+            if (qty >= schemeBO.getFromQty() && qty <= schemeBO.getToQty()) {
+                currentList.addAll(schemeBO.getFreeProducts());
+            }
+            if (qty >= schemeBO.getFromQty() && qty >= schemeBO.getToQty() && currentList.size() == 0) {
+                upFlag = true;
+            }
+            if (qty <= schemeBO.getFromQty() && qty <= schemeBO.getToQty() && currentList.size() == 0) {
+                downFlag = true;
+            }
+            i++;
+        }
+        if (!isAvailable && upFlag) nextList.addAll(availableList.get(i - 1).getFreeProducts());
+        if (!isAvailable && downFlag) nextList.addAll(availableList.get(0).getFreeProducts());
         //}
         return nextList;
     }
 
-    private float getPcsPrice(String productID) {
-        for (ProductMasterBO product : bModel.productHelper.getProductMaster()) {
-            if (product.getProductID().equals(productID)) {
-                return product.getSrp();
-            }
-        }
-        return 0;
-    }
-
-    private float getCasesPrice(String productID) {
-        for (ProductMasterBO product : bModel.productHelper.getProductMaster()) {
-            if (product.getProductID().equals(productID)) {
-                return product.getCsrp();
-            }
-        }
-        return 0;
-    }
 }
