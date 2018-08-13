@@ -172,8 +172,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
         for (ConfigureBO configureBO : profileConfig) {    /*First level  looping for prepare condition */
 
-            if ((configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.LATTITUDE_LONGITUDE) && configureBO.isFlag() == 1)
-                    || (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.PROFILE_31) && configureBO.isFlag() == 1)) {
+            if ((configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.LATTITUDE) && configureBO.isFlag() == 1)
+                    || (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.LONGITUDE) && configureBO.isFlag() == 1)) {
                 isLatLong = true;
                 lat = retailerMasterBO.getLatitude() + "";
                 longitude = retailerMasterBO.getLongitude() + "";
@@ -225,7 +225,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
                     @Override
                     public void onError(Throwable e) {
-                       Commons.print(e.getMessage());
+                        Commons.print(e.getMessage());
                     }
 
                     @Override
@@ -237,8 +237,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
 
-    private HashMap<Integer, ArrayList<NewOutletAttributeBO>> getAttributeBOListByLocationID(){
-      return   mAttributeBOListByLocationID;
+    private HashMap<Integer, ArrayList<NewOutletAttributeBO>> getAttributeBOListByLocationID() {
+        return mAttributeBOListByLocationID;
     }
 
 
@@ -270,8 +270,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         getCompositeDisposable().add(Observable.zip(
                 mProfileDataManager.updateRetailerMasterAttribute(mEditAttributeList, mAttributeChildList, mAttributeParentList),
                 mProfileDataManager.updateRetailerMasterAttribute(retailerMasterBO.getAttributeBOArrayList(), mAttributeChildList, mAttributeParentList),
-                new BiFunction<ArrayList<NewOutletAttributeBO>,
-                        ArrayList<NewOutletAttributeBO>, Boolean>() {
+                new BiFunction<ArrayList<NewOutletAttributeBO>, ArrayList<NewOutletAttributeBO>, Boolean>() {
                     @Override
                     public Boolean apply(ArrayList<NewOutletAttributeBO> mTempList,
                                          ArrayList<NewOutletAttributeBO> mattributeList) throws Exception {
@@ -289,7 +288,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
                     @Override
                     public void onError(Throwable e) {
-                       Commons.print(e.getMessage());
+                        Commons.print(e.getMessage());
                     }
 
                     @Override
@@ -351,8 +350,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     public ArrayList<NewOutletAttributeBO> getRetailerAttribute() {
 
-        if(attributeList==null){
-            attributeList=new ArrayList<>();
+        if (attributeList == null) {
+            attributeList = new ArrayList<>();
         }
         return attributeList;
     }
@@ -410,8 +409,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 getIvyView().showMessage("Location not captured.");
             } else {
                 if (!isLatLong) {
-                    profileConfig.add(new ConfigureBO(ProfileConstant.LATTITUDE_LONGITUDE, "Latitude", lat, 0, 0, 0));
-                    profileConfig.add(new ConfigureBO(ProfileConstant.PROFILE_31, "Latitude", longitude, 0, 0, 0));
+                    profileConfig.add(new ConfigureBO(ProfileConstant.LATTITUDE, "Latitude", lat, 0, 0, 0));
+                    profileConfig.add(new ConfigureBO(ProfileConstant.LONGITUDE, "Latitude", longitude, 0, 0, 0));
                 } else {
                     getIvyView().setlatlongtextview(lat, longitude);
                 }
@@ -603,8 +602,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             else
                 subChannelID = retailerMasterBO.getSubchannelid();
             if (mAttributeListByLocationID != null)
-                mChannelAttributeList.addAll(mAttributeListByLocationID.get(subChannelID));
-
+                if (mAttributeListByLocationID.get(subChannelID) != null) {
+                    mChannelAttributeList.addAll(mAttributeListByLocationID.get(subChannelID));
+                }
         }
     }
 
@@ -709,7 +709,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         getIvyView().showMessage(R.string.location_not_captured);
                     }
                 }
-                 saveEditProfile();
+                saveEditProfile();
             }
         } catch (Exception e) {
             Commons.printException(e);
@@ -717,6 +717,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private void saveEditProfile() {
+
+        getIvyView().showLoading();
+
         getCompositeDisposable().add(mProfileDataManager.downloadPriorityProductsForRetailerUpdate(retailerHelper.getContractID())
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -729,7 +732,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         if (products == null)
                             products = new ArrayList<String>();
                         if (getIvyView().getSelectedPriorityProductList() != null) {
-                            for ( StandardListBO bo : getIvyView().getSelectedPriorityProductList()) {
+                            for (StandardListBO bo : getIvyView().getSelectedPriorityProductList()) {
                                 if (!products.contains(bo.getListID())) {
                                     bo.setStatus("N");
                                     tempList.add(bo);
@@ -766,24 +769,24 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private String tid;
-    boolean isData=false;
-    String currentDate;
+    private boolean isData = false;
+    private String currentDate;
 
     private void updateProfileEdit() {
 
-        currentDate= SDUtil.now(SDUtil.DATE_GLOBAL);
+        currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
         tid = userMasterHelper.getUserMasterBO().getUserid()
                 + "" + retailerMasterBO.getRetailerID()
                 + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-        getCompositeDisposable().add(mProfileDataManager.checkHeaderAvailablility(retailerMasterBO.getRetailerID(),currentDate)
+        getCompositeDisposable().add(mProfileDataManager.checkHeaderAvailablility(retailerMasterBO.getRetailerID(), currentDate)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<String>() {
                                @Override
                                public void accept(String response) throws Exception {
-                                   if(!AppUtils.isEmptyString(response))
-                                       tid=response;
+                                   if (!AppUtils.isEmptyString(response))
+                                       tid = response;
                                    prepareProfileEditValues();
                                }
                            }, new Consumer<Throwable>() {
@@ -796,56 +799,948 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 ));
     }
 
-    private void prepareProfileEditValues(){
+    private void prepareProfileEditValues() {
 
         for (ConfigureBO configBO : profileConfig) {
-            if(configBO.getModule_Order() == 1) {
-                String conficCode=configBO.getConfigCode();
-                switch (conficCode){
+            String conficCode = configBO.getConfigCode();
+            if (configBO.getModule_Order() == 1) {
+                switch (conficCode) {
                     case ProfileConstant.STORENAME:
                         updateStoreName(configBO);
                         break;
-                }
+                    case ProfileConstant.ADDRESS1:
+                        updateAddress1(configBO);
+                        break;
+                    case ProfileConstant.ADDRESS2:
+                        updateAddress2(configBO);
+                        break;
+                    case ProfileConstant.ADDRESS3:
+                        updateAddress3(configBO);
+                        break;
+                    case ProfileConstant.CITY:
+                        updateCity(configBO);
+                        break;
+                    case ProfileConstant.STATE:
+                        updateState(configBO);
+                        break;
+                    case ProfileConstant.CONTRACT:
+                        updateContract(configBO);
+                        break;
+                    case ProfileConstant.PINCODE:
+                        updatePincode(configBO);
+                        break;
+                    case ProfileConstant.CONTACT_NUMBER:
+                        updateContactNumber(configBO);
+                        break;
+                    case ProfileConstant.CHANNEL:
+                        updateChannel(configBO);
+                        break;
+                    case ProfileConstant.SUBCHANNEL:
+                        updateSubChannel(configBO);
+                        break;
+                    case ProfileConstant.LATTITUDE:
+                        updateLatitude(configBO);
+                        break;
+                    case ProfileConstant.LONGITUDE:
+                        updateLongitude(configBO);
+                        break;
+                    case ProfileConstant.PHOTO_CAPTURE:
+                        updatePhotoCapture(configBO);
+                        break;
+                    case ProfileConstant.RFiled1:
+                        updateRFiled1(configBO);
+                        break;
+                    case ProfileConstant.RField2:
+                        updateRFiled2(configBO);
+                        break;
+                    case ProfileConstant.CREDIT_INVOICE_COUNT:
+                        updateCreditInvoiceCount(configBO);
+                        break;
+                    case ProfileConstant.RField4:
+                        updateRfield4(configBO);
+                        break;
+                    case ProfileConstant.RFIELD5:
+                        updateRfield5(configBO);
+                        break;
+                    case ProfileConstant.RFIELD6:
+                        updateRfield6(configBO);
+                        break;
+                    case ProfileConstant.RFIELD7:
+                        updateRfield7(configBO);
+                        break;
+                    case ProfileConstant.LOCATION01:
+                        updateLocation1(configBO);
+                        break;
+                    case ProfileConstant.CREDITPERIOD:
+                        updateCreditPeriod(configBO);
+                        break;
+                    case ProfileConstant.PROFILE_60:
+                        updateProfileImage(configBO);
+                        break;
+                    case ProfileConstant.GSTN:
+                        updateGSTN(configBO);
+                        break;
+                    case ProfileConstant.INSEZ:
+                        updateSezCheckBox(configBO);
+                        break;
+                    case ProfileConstant.PAN_NUMBER:
+                        updatePanNumber(configBO);
+                        break;
+                    case ProfileConstant.FOOD_LICENCE_NUM:
+                        updateFoodLIcenceNumber(configBO);
+                        break;
+                    case ProfileConstant.DRUG_LICENSE_NUM:
+                        updateDrugLIcenceNumber(configBO);
+                        break;
+                    case ProfileConstant.FOOD_LICENCE_EXP_DATE:
+                        updateFoodLcenceExpDate(configBO);
+                        break;
+                    case ProfileConstant.DRUG_LICENSE_EXP_DATE:
+                        updateDrugLcenceExpDate(configBO);
+                        break;
+                    case ProfileConstant.EMAIL:
+                        updateEmail(configBO);
+                        break;
+                    case ProfileConstant.MOBILE:
+                        updateMobile(configBO);
+                        break;
+                    case ProfileConstant.FAX:
+                        updateFax(configBO);
+                        break;
+                    case ProfileConstant.REGION:
+                        updateRegion(configBO);
+                        break;
+                    case ProfileConstant.COUNTRY:
+                        updateCountry(configBO);
+                        break;
+                    case ProfileConstant.NEARBYRET:
+                        updateNearByRetailer();
+                        break;
+                    case ProfileConstant.PRIORITYPRODUCT:
+                        updatePriorityProduct();
+                        break;
 
+                    case ProfileConstant.ATTRIBUTE:
+                        updateRetailerMasterAttributeList();
+                        break;
+                }
+            } else if (configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
+                switch (conficCode) {
+                    case ProfileConstant.LATTITUDE:
+                        updateLatitude(configBO);
+                        break;
+                    case ProfileConstant.LONGITUDE:
+                        updateLongitude(configBO);
+                        break;
+                }
             }
         }
-        updateHeaderList();
+
+      /*  if (!isData)
+            getIvyView().hideLoading();
+        else
+            updateHeaderList();*/
 
     }
 
-    private void updateHeaderList(){
-        getIvyView().showLoading();
-        getCompositeDisposable().add(mProfileDataManager.updateRetailer(tid,retailerMasterBO.getRetailerID(),currentDate)
+    private ArrayList<NewOutletAttributeBO> updateRetailerMasterAttribute(ArrayList<NewOutletAttributeBO> list) {
+
+        //Load Child Attribute list which parent is not zero
+        ArrayList<NewOutletAttributeBO> childList = mAttributeChildList;
+        if(childList==null) {
+            childList = new ArrayList<>();
+        }
+
+        //Load Parent Attribute List which Parent id is zero
+        ArrayList<NewOutletAttributeBO> parentList = mAttributeParentList;
+        if(parentList==null) {
+            parentList = new ArrayList<>();
+        }
+
+        ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
+        int attribID;
+        int tempAttribID;
+        int parentID;
+        int tempParentID = 0;
+        String attribName = "";
+        String attribHeader = "";
+        int levelId;
+        String status;
+        NewOutletAttributeBO tempBO;
+        for (NewOutletAttributeBO attributeBO : list) {
+            tempBO = new NewOutletAttributeBO();
+            attribID = attributeBO.getAttrId();
+            status = attributeBO.getStatus();
+            levelId = attributeBO.getLevelId();
+            for (int i = childList.size() - 1; i >= 0; i--) {
+                NewOutletAttributeBO attributeBO1 = childList.get(i);
+                tempAttribID = attributeBO1.getAttrId();
+                if (attribID == tempAttribID) {
+                    attribName = attributeBO1.getAttrName();
+                    tempParentID = attributeBO1.getParentId();
+                    continue;
+                }
+                if (tempAttribID == tempParentID)
+                    tempParentID = attributeBO1.getParentId();
+            }
+
+            for (NewOutletAttributeBO attributeBO2 : parentList) {
+                parentID = attributeBO2.getAttrId();
+                if (tempParentID == parentID)
+                    attribHeader = attributeBO2.getAttrName();
+            }
+            tempBO.setAttrId(attribID);
+            tempBO.setParentId(tempParentID);
+            tempBO.setAttrName(attribName);
+            tempBO.setAttrParent(attribHeader);
+            tempBO.setStatus(status);
+            tempBO.setLevelId(levelId);
+            tempList.add(tempBO);
+        }
+        return tempList;
+    }
+
+
+    private void updateRetailerMasterAttributeList() {
+
+        ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
+        isData = true;
+        ArrayList<NewOutletAttributeBO> attributeList = updateRetailerMasterAttribute(getRetailerAttribute());
+        ArrayList<NewOutletAttributeBO> attList = updateRetailerMasterAttribute(retailerMasterBO.getAttributeBOArrayList());
+
+        NewOutletAttributeBO tempBO1;
+        NewOutletAttributeBO tempBO2 = null;
+
+        if (attributeList.size() > 0) {
+            for (int i = 0; i < attributeList.size(); i++) {
+                tempBO1 = attributeList.get(i);
+                if (attList.size() > 0) {
+                    boolean isDiffParent = true;
+                    ArrayList<Integer> porcessedAttributes = new ArrayList<>();
+                    for (int j = 0; j < attList.size(); j++) {
+                        tempBO2 = attList.get(j);
+                        if (tempBO1.getParentId() == tempBO2.getParentId()) {
+                            if (tempBO1.getAttrId() != tempBO2.getAttrId()) {
+                                tempBO1.setStatus("N");
+                                tempList.add(tempBO1);
+                                tempBO2.setStatus("D");
+                                tempList.add(tempBO2);
+                                isDiffParent = false;
+                                porcessedAttributes.add(tempBO2.getAttrId());
+                            }
+                        }
+
+                    }
+                    /**
+                     * add attribute list while change parent id
+                     * isDiffParent
+                     * true - parentId is mismatched
+                     * false - parentId is matched
+                     * add previous attribute data
+                     * which is not available in processedAttribute list
+                     *
+                     */
+                    if (isDiffParent) {
+                        tempBO1.setStatus("N");
+                        tempList.add(tempBO1);
+
+                        for (NewOutletAttributeBO bo : attList) {
+                            if (!porcessedAttributes.contains(bo.getAttrId())) {
+                                assert tempBO2 != null;
+                                tempBO2.setStatus("D");
+                                tempList.add(tempBO2);
+                            }
+                        }
+                    }
+
+                } else {
+                    tempBO1.setStatus("N");
+                    tempList.add(tempBO1);
+                }
+            }
+        } else {
+            for (int j = 0; j < attList.size(); j++) {
+                tempBO2 = attList.get(j);
+                tempBO2.setStatus("D");
+                tempList.add(tempBO2);
+            }
+        }
+        getCompositeDisposable().add(mProfileDataManager.updateRetailerMasterAttribute(tid, retailerMasterBO.getRetailerID(),tempList)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                                @Override
                                public void accept(Boolean response) throws Exception {
-                                   if(response){
-                                       AppUtils.latlongImageFileName = "";
-                                       lat = "";
-                                       longitude = "";
-                                   }
-                                   getIvyView().hideLoading();
+                                   isData = response;
+                                   if (!isData)
+                                       getIvyView().hideLoading();
+                                   else
+                                       updateHeaderList();
                                }
                            }, new Consumer<Throwable>() {
                                @Override
                                public void accept(Throwable throwable) throws Exception {
-                                   Commons.print(throwable.getMessage());
                                    getIvyView().hideLoading();
-
+                                   Commons.print(throwable.getMessage());
                                }
                            }
                 ));
     }
 
-    private void updateStoreName(ConfigureBO configBO){
 
+    private void updatePriorityProduct() {
+        getCompositeDisposable().add(mProfileDataManager.updateRetailerEditPriorityProducts(tid,
+                retailerMasterBO.getRetailerID(),getSelectedPrioProducts())
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                               @Override
+                               public void accept(Boolean response) throws Exception {
+                                   isData = response;
+                                   if (!isData)
+                                       getIvyView().hideLoading();
+                                   else
+                                       updateHeaderList();
+
+                               }
+                           }, new Consumer<Throwable>() {
+                               @Override
+                               public void accept(Throwable throwable) throws Exception {
+                                   getIvyView().hideLoading();
+                                   Commons.print(throwable.getMessage());
+                               }
+                           }
+                ));
+
+    }
+
+
+    private void updateNearByRetailer() {
+
+        final HashMap<String, String> temp = new HashMap<>();
+        if (getNearByRetailers().size() > 0) {
+            isData = true;
+            for (RetailerMasterBO bo : getNearByRetailers()) {
+                temp.put(bo.getRetailerID(), "N");
+            }
+        }
+        getCompositeDisposable().add(mProfileDataManager.getNearbyRetailerIds(retailerMasterBO.getRetailerID())
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
+                    @Override
+                    public void onNext(ArrayList<String> nearbyRetailerIds) {
+                        if (nearbyRetailerIds != null) {
+                            if (temp.size() > 0) {
+                                for (String id : nearbyRetailerIds) {
+                                    if (temp.get(id) != null) {
+                                        temp.remove(id);
+                                    } else {
+                                        temp.put(id, "D");
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Commons.print(e.getMessage());
+                    }
+                    @Override
+                    public void onComplete() {
+                        getCompositeDisposable().add(mProfileDataManager.updateNearByRetailers(tid,retailerMasterBO.getRetailerID(),temp)
+                                .subscribeOn(getSchedulerProvider().io())
+                                .observeOn(getSchedulerProvider().ui())
+                                .subscribe(new Consumer<Boolean>() {
+                                               @Override
+                                               public void accept(Boolean response) throws Exception {
+                                                   isData = response;
+                                                   if (!isData)
+                                                       getIvyView().hideLoading();
+                                                   else
+                                                       updateHeaderList();
+                                               }
+                                           }, new Consumer<Throwable>() {
+                                               @Override
+                                               public void accept(Throwable throwable) throws Exception {
+                                                   getIvyView().hideLoading();
+                                                   Commons.print(throwable.getMessage());
+                                               }
+                                           }
+                                ));
+                    }
+                }));
+
+
+    }
+
+
+    private void updateCountry(ConfigureBO configBO) {
+        if ((retailerMasterBO.getCountry() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getCountry() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getAddressid()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateRegion(ConfigureBO configBO) {
+        if ((retailerMasterBO.getRegion() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getRegion() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getAddressid()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateFax(ConfigureBO configBO) {
+        if ((retailerMasterBO.getFax() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getFax() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getAddressid()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateMobile(ConfigureBO configBO) {
+        if ((retailerMasterBO.getMobile() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getMobile() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getAddressid()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateEmail(ConfigureBO configBO) {
+        if ((retailerMasterBO.getEmail() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getEmail() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getAddressid()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateDrugLcenceExpDate(ConfigureBO configBO) {
+        if ((retailerMasterBO.getDLNoExpDate() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getDLNoExpDate() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getRetailerID()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateFoodLcenceExpDate(ConfigureBO configBO) {
+        if ((retailerMasterBO.getFoodLicenceExpDate() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getFoodLicenceExpDate() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getRetailerID()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateDrugLIcenceNumber(ConfigureBO configBO) {
+        if ((retailerMasterBO.getDLNo() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getDLNo() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getRetailerID()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateFoodLIcenceNumber(ConfigureBO configBO) {
+        if ((retailerMasterBO.getFoodLicenceNo() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getFoodLicenceNo() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getRetailerID()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updatePanNumber(ConfigureBO configBO) {
+        if ((retailerMasterBO.getPanNumber() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getPanNumber() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getRetailerID()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+
+    private void updateSezCheckBox(ConfigureBO configBO) {
+        if ((retailerMasterBO.getIsSEZzone() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getIsSEZzone() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getRetailerID()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateGSTN(ConfigureBO configBO) {
+        if ((retailerMasterBO.getGSTNumber() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getGSTNumber() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getRetailerID()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateProfileImage(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getProfileImagePath() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+                AppUtils.checkFileExist(configBO.getMenuNumber() + "", retailerMasterBO.getRetailerID(), false);
+
+            } else if ((!(retailerMasterBO.getProfileImagePath() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String imagePath = "Profile" + "/" + userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
+                        + "/" + userMasterHelper.getUserMasterBO().getUserid()
+                        + "/" + configBO.getMenuNumber();
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode()) + "," + AppUtils.QT(imagePath) + ","
+                        + retailerMasterBO.getRetailerID() + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+                AppUtils.checkFileExist(configBO.getMenuNumber() + "", retailerMasterBO.getRetailerID(), false);
+            }
+
+        }
+
+    }
+
+    private void updateCreditPeriod(ConfigureBO configBO) {
+        if ((retailerMasterBO.getCreditDays() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getCreditDays() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                    + "," + AppUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getRetailerID()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
+    private void updateLocation1(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("0")) {
+            if ((retailerMasterBO.getLocationId() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if (retailerMasterBO.getLocationId() != 0
+                    && ((!(retailerMasterBO.getLocationId() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber()))))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateRfield7(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getRField7() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getRField7() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateRfield6(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getRField6() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getRField6() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateRfield5(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getRField5() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getRField5() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateRfield4(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getRField4() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getRField4() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateCreditInvoiceCount(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getCredit_invoice_count() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getCredit_invoice_count() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateRFiled2(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getRfield2() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getRfield2() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateRFiled1(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getRField1() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getRField1() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updatePhotoCapture(ConfigureBO configBO) {
+
+        String imagePath = "Profile" + "/" + userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
+                + "/" + userMasterHelper.getUserMasterBO().getUserid() + "/" + configBO.getMenuNumber();
+        String mCustomquery = AppUtils.QT(configBO.getConfigCode()) + ","
+                + AppUtils.QT(imagePath) + "," + retailerMasterBO.getAddressid() + "," + retailerMasterBO.getRetailerID() + ")";
+        insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+
+        AppUtils.checkFileExist(AppUtils.latlongImageFileName + "", retailerMasterBO.getRetailerID(), true);
+    }
+
+    private void updateLongitude(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("0.0")) {
+            if ((retailerMasterBO.getLongitude() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getLongitude() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateLatitude(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("0.0")) {
+            if ((retailerMasterBO.getLatitude() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getLatitude() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateSubChannel(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getSubchannelid() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getSubchannelid() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateChannel(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getChannelID() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getChannelID() + "").equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateContactNumber(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if (retailerMasterBO.getContactnumber().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!retailerMasterBO.getContactnumber().equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updatePincode(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if (retailerMasterBO.getPincode().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!retailerMasterBO.getPincode().equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateContract(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if ((retailerMasterBO.getContractLovid() + "").equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!(retailerMasterBO.getContractLovid() + "").equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getRetailerID()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateState(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if (retailerMasterBO.getState().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!retailerMasterBO.getState().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateCity(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if (retailerMasterBO.getCity().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!retailerMasterBO.getCity().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateStoreName(ConfigureBO configBO) {
         if (!configBO.getMenuNumber().equals("")) {
             if (retailerMasterBO.getRetailerName().equals(configBO.getMenuNumber())
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
                 deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-               // isData = true;
+                // isData = true;
             } else if ((!retailerMasterBO.getRetailerName().equals(configBO.getMenuNumber())
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
@@ -855,43 +1750,128 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         + "," + AppUtils.QT(configBO.getMenuNumber())
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
-                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(),mCustomquery);
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
                 //isData = true;
             }
         }
     }
 
-    private void deletePreviousRow(String configCode,String RetailerId){
-        getCompositeDisposable().add(mProfileDataManager.deleteQuery(configCode,RetailerId)
+    private void updateAddress1(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if (retailerMasterBO.getAddress1().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!retailerMasterBO.getAddress1().equals(configBO.getMenuNumber()) && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateAddress2(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if (retailerMasterBO.getAddress2().equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!retailerMasterBO.getAddress2().equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateAddress3(ConfigureBO configBO) {
+        if (!configBO.getMenuNumber().equals("")) {
+            if (retailerMasterBO.getAddress3().equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+                deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+            } else if ((!retailerMasterBO.getAddress3().equals(configBO.getMenuNumber())
+                    && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                    || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                    && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                String mCustomquery = AppUtils.QT(configBO.getConfigCode())
+                        + "," + AppUtils.QT(configBO.getMenuNumber())
+                        + "," + retailerMasterBO.getAddressid()
+                        + "," + retailerMasterBO.getRetailerID() + ")";
+                insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+            }
+        }
+    }
+
+    private void updateHeaderList() {
+
+        getCompositeDisposable().add(mProfileDataManager.updateRetailer(tid, retailerMasterBO.getRetailerID(), currentDate)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                                @Override
                                public void accept(Boolean response) throws Exception {
-                                   isData=response;
+                                   if (response) {
+                                       AppUtils.latlongImageFileName = "";
+                                       lat = "";
+                                       longitude = "";
+                                   }
+                                   getIvyView().hideLoading();
                                }
                            }, new Consumer<Throwable>() {
                                @Override
                                public void accept(Throwable throwable) throws Exception {
+                                   getIvyView().hideLoading();
                                    Commons.print(throwable.getMessage());
                                }
                            }
                 ));
     }
 
-
-    private void insertRow(String configCode,String RetailerId, String mCustomquery){
-        getCompositeDisposable().add(mProfileDataManager.insertNewRow( configCode, RetailerId,tid,mCustomquery)
+    private void deletePreviousRow(String configCode, String RetailerId) {
+        getCompositeDisposable().add(mProfileDataManager.deleteQuery(configCode, RetailerId)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                                @Override
                                public void accept(Boolean response) throws Exception {
-                                   isData=response;
+                                   isData = response;
+                                   if (!isData)
+                                       getIvyView().hideLoading();
+                                   else
+                                       updateHeaderList();
                                }
                            }, new Consumer<Throwable>() {
                                @Override
                                public void accept(Throwable throwable) throws Exception {
+                                   getIvyView().hideLoading();
+                                   Commons.print(throwable.getMessage());
+                               }
+                           }
+                ));
+    }
+
+    private void insertRow(String configCode, String RetailerId, String mCustomquery) {
+        getCompositeDisposable().add(mProfileDataManager.insertNewRow(configCode, RetailerId, tid, mCustomquery)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                               @Override
+                               public void accept(Boolean response) throws Exception {
+                                   isData = response;
+                                   if (!isData)
+                                       getIvyView().hideLoading();
+                                   else
+                                       updateHeaderList();
+                               }
+                           }, new Consumer<Throwable>() {
+                               @Override
+                               public void accept(Throwable throwable) throws Exception {
+                                   getIvyView().hideLoading();
                                    Commons.print(throwable.getMessage());
                                }
                            }
@@ -937,8 +1917,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
-            else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CONTACT_NUMBER)
+            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CONTACT_NUMBER)
                     && profileConfig.get(i).getModule_Order() == 1 && profileConfig.get(i).getMaxLengthNo() > 0) {
                 try {
                     if (getIvyView().getDynamicEditTextValues(i).length() == 0 ||
@@ -952,14 +1931,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
-            else if (configCode.equals(ProfileConstant.ATTRIBUTE)
+            } else if (configCode.equals(ProfileConstant.ATTRIBUTE)
                     && profileConfig.get(i).getModule_Order() == 1) {
 
                 validateAttribute();
 
-            }
-            else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.EMAIL)
+            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.EMAIL)
                     && profileConfig.get(i).getModule_Order() == 1
                     && getIvyView().getDynamicEditTextValues(i).length() != 0) {
                 try {
@@ -978,8 +1955,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
-            else if (profileConfig.get(i).getConfigCode()
+            } else if (profileConfig.get(i).getConfigCode()
                     .equalsIgnoreCase(ProfileConstant.MOBILE)
                     && profileConfig.get(i).getModule_Order() == 1
                     && getIvyView().getDynamicEditTextValues(i).length() != 0) {
@@ -993,8 +1969,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
-            else if (profileConfig.get(i).getConfigCode()
+            } else if (profileConfig.get(i).getConfigCode()
                     .equalsIgnoreCase(ProfileConstant.PAN_NUMBER)
                     && profileConfig.get(i).getModule_Order() == 1) {
                 try {
@@ -1004,21 +1979,20 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         if (length > 0 && length < profileConfig.get(i).getMaxLengthNo()) {
                             validate = false;
                             getIvyView().setDynamicEditTextFocus(i);
-                            getIvyView().showMessage(profileConfig.get(i).getMenuName()+" Length Must Be"+profileConfig.get(i).getMaxLengthNo());
+                            getIvyView().showMessage(profileConfig.get(i).getMenuName() + " Length Must Be" + profileConfig.get(i).getMaxLengthNo());
                             break;
                         } else if (length > 0 && !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
                             validate = false;
                             getIvyView().setDynamicEditTextFocus(i);
-                            String errorMessage=profileConfig.get(i).getMenuName();
-                            getIvyView().profileEditShowMessage(R.string.enter_valid,errorMessage);
+                            String errorMessage = profileConfig.get(i).getMenuName();
+                            getIvyView().profileEditShowMessage(R.string.enter_valid, errorMessage);
                             break;
                         }
                     }
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
-            else if (profileConfig.get(i).getConfigCode()
+            } else if (profileConfig.get(i).getConfigCode()
                     .equalsIgnoreCase(ProfileConstant.GSTN)
                     && profileConfig.get(i).getModule_Order() == 1) {
                 int length = getIvyView().getDynamicEditTextValues(i).length();
@@ -1036,40 +2010,41 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                 , profileConfig.get(i).getRegex())) {
                             validate = false;
                             getIvyView().setDynamicEditTextFocus(i);
-                            String errorMessage=profileConfig.get(i).getMenuName();
-                            getIvyView().profileEditShowMessage(R.string.enter_valid,errorMessage);
+                            String errorMessage = profileConfig.get(i).getMenuName();
+                            getIvyView().profileEditShowMessage(R.string.enter_valid, errorMessage);
 
                             break;
                         } else if (length > 0 && !isValidGSTINWithPAN(getIvyView().getDynamicEditTextValues(i))) {
                             validate = false;
                             getIvyView().setDynamicEditTextFocus(i);
-                            String errorMessage=profileConfig.get(i).getMenuName();
-                            getIvyView().profileEditShowMessage(R.string.enter_valid,errorMessage);
+                            String errorMessage = profileConfig.get(i).getMenuName();
+                            getIvyView().profileEditShowMessage(R.string.enter_valid, errorMessage);
                             break;
                         }
                     }
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
-            else if (profileConfig.get(i).getModule_Order() == 1) {
+            } else if (profileConfig.get(i).getModule_Order() == 1) {
                 try {
-                    int length = getIvyView().getDynamicEditTextValues(i).length();
-                    if (length < profileConfig.get(i).getMaxLengthNo() ||
-                            !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
-                        if (length > 0 && getIvyView().getDynamicEditTextValues(i).length() < profileConfig.get(i).getMaxLengthNo()) {
-                            validate = false;
-                            getIvyView().setDynamicEditTextFocus(i);
+                    if (!AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
+                        int length = getIvyView().getDynamicEditTextValues(i).length();
+                        if (length < profileConfig.get(i).getMaxLengthNo() ||
+                                !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
+                            if (length > 0 && getIvyView().getDynamicEditTextValues(i).length() < profileConfig.get(i).getMaxLengthNo()) {
+                                validate = false;
+                                getIvyView().setDynamicEditTextFocus(i);
 
-                            getIvyView().showMessage(profileConfig.get(i).getMenuName() + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+                                getIvyView().showMessage(profileConfig.get(i).getMenuName() + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
 
-                            break;
-                        } else if (length > 0 && !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
-                            validate = false;
-                            getIvyView().setDynamicEditTextFocus(i);
-                            String errorMessage=profileConfig.get(i).getMenuName();
-                            getIvyView().profileEditShowMessage(R.string.enter_valid,errorMessage);
-                            break;
+                                break;
+                            } else if (length > 0 && !AppUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex())) {
+                                validate = false;
+                                getIvyView().setDynamicEditTextFocus(i);
+                                String errorMessage = profileConfig.get(i).getMenuName();
+                                getIvyView().profileEditShowMessage(R.string.enter_valid, errorMessage);
+                                break;
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -1087,31 +2062,31 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             for (int i = 0; i < size; i++) {
                 String configCode = profileConfig.get(i).getConfigCode();
                 if (configCode.equals(ProfileConstant.STORENAME) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.ADDRESS1) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.ADDRESS2) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.ADDRESS3) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.CONTACT_NUMBER) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
@@ -1131,7 +2106,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     if (getIvyView().getContractStatusList() != null)
                         profileConfig.get(i).setMenuNumber(getIvyView().getContractSpinnerSelectedItemListId() + "");
 
-                } else if (configCode.equals(ProfileConstant.LATTITUDE_LONGITUDE) && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(ProfileConstant.LATTITUDE) && profileConfig.get(i).getModule_Order() == 1) {
                     if (AppUtils.isEmptyString(lat)) {
                         profileConfig.get(i).setMenuNumber("0.0");
                     } else {
@@ -1142,7 +2117,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
                         profileConfig.get(i).setMenuNumber(lattiTude);
                     }
-                } else if (configCode.equals(ProfileConstant.PROFILE_31) && profileConfig.get(i).getModule_Order() == 1) {
+                } else if (configCode.equals(ProfileConstant.LONGITUDE) && profileConfig.get(i).getModule_Order() == 1) {
                     if (AppUtils.isEmptyString(longitude)) {
                         profileConfig.get(i).setMenuNumber("0.0");
                     } else {
@@ -1193,47 +2168,47 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         }
                     }
                 } else if (configCode.equals(ProfileConstant.CITY) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                    if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.STATE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i) )) {
+                    if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.CREDITPERIOD) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                    if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("0");
                     } else {
                         profileConfig.get(i).setMenuNumber(getIvyView().getDynamicEditTextValues(i));
                     }
                 } else if (configCode.equals(ProfileConstant.RFiled1) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                    if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.RField2) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                    if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
-                } else if (configCode.equals(ProfileConstant.PROFILE_27) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                } else if (configCode.equals(ProfileConstant.CREDIT_INVOICE_COUNT) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.RField4) && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                        if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                         }
                     } else {
                         RetailerFlexBO retailerFlexBO = getIvyView().getRField4SpinnerSelectedItem();
@@ -1244,10 +2219,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 } else if (configCode.equals(ProfileConstant.RFIELD5) && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                        if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                         }
                     } else {
                         RetailerFlexBO retailerFlexBO = getIvyView().getRField5SpinnerSelectedItem();
@@ -1258,10 +2233,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 } else if (configCode.equals(ProfileConstant.RFIELD6) && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                        if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                         }
                     } else {
                         RetailerFlexBO retailerFlexBO = getIvyView().getRField6SpinnerSelectedItem();
@@ -1272,10 +2247,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 } else if (configCode.equals(ProfileConstant.RFIELD7) && profileConfig.get(i).getModule_Order() == 1) {
                     if (profileConfig.get(i).getHasLink() == 0) {
-                        if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                        if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                         }
                     } else {
                         RetailerFlexBO retailerFlexBO = getIvyView().getRField7SpinnerSelectedItem();
@@ -1291,10 +2266,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         profileConfig.get(i).setMenuNumber(imageFileName);
                     }
                 } else if (configCode.equals(ProfileConstant.GSTN) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( getIvyView().getDynamicEditTextValues(i))) {
+                    if (AppUtils.isEmptyString(getIvyView().getDynamicEditTextValues(i))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes( getIvyView().getDynamicEditTextValues(i)));
+                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(getIvyView().getDynamicEditTextValues(i)));
                     }
                 } else if (configCode.equals(ProfileConstant.INSEZ) && profileConfig.get(i).getModule_Order() == 1) {
                     if (!getIvyView().getSEZcheckBoxCheckedValues()) {
@@ -1304,66 +2279,66 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 } else if (configCode.equals(ProfileConstant.PAN_NUMBER) && profileConfig.get(i).getModule_Order() == 1) {
 
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.FOOD_LICENCE_NUM) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.DRUG_LICENSE_NUM) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.FOOD_LICENCE_EXP_DATE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString(AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) )  ||
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))) ||
                             getIvyView().getFoodLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                AppUtils.validateInput( getIvyView().getFoodLicenceExpDateValue())));
+                                AppUtils.validateInput(getIvyView().getFoodLicenceExpDateValue())));
                     }
                 } else if (configCode.equals(ProfileConstant.DRUG_LICENSE_EXP_DATE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString(AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) )  ||
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))) ||
                             getIvyView().getDrugLicenceExpDateValue().equalsIgnoreCase("Select Date")) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
-                                AppUtils.validateInput( getIvyView().getDrugLicenceExpDateValue())));
+                                AppUtils.validateInput(getIvyView().getDrugLicenceExpDateValue())));
                     }
 
                 } else if (configCode.equals(ProfileConstant.EMAIL) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.MOBILE) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.FAX) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.REGION) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
                 } else if (configCode.equals(ProfileConstant.COUNTRY) && profileConfig.get(i).getModule_Order() == 1) {
-                    if (AppUtils.isEmptyString( AppUtils.validateInput( getIvyView().getDynamicEditTextValues(i) ) ) ) {
+                    if (AppUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
                         profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
@@ -1383,23 +2358,15 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         for (int index = 0; index < profileConfig.size(); index++) {
             if (profileConfig.get(index).getConfigCode()
                     .equalsIgnoreCase(ProfileConstant.PAN_NUMBER)) {
-
                 String panNumber = getIvyView().getDynamicEditTextValues(index);
-                if (panNumber.length() > 0) {
-                    if (target.subSequence(2, target.length() - 3).equals(panNumber))
-                        return true;
-                    else
-                        return false;
-                } else
-                    return true;
+                return panNumber.length() <= 0 || target.subSequence(2, target.length() - 3).equals(panNumber);
             }
         }
-
         return true;
     }
 
 
-    private void validateAttribute(){
+    private void validateAttribute() {
 
         ArrayList<NewOutletAttributeBO> selectedAttributeLevel = new ArrayList<>();
         boolean isAdded = true;
@@ -1414,8 +2381,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                             selectedAttributeLevel.add(tempBO);
                         } else {
                             isAdded = false;
-                            String errorMessage=attributeBO.getAttrName() + " is Mandatory";
-                            getIvyView().profileEditShowMessage(R.string.attribute ,errorMessage);
+                            String errorMessage = attributeBO.getAttrName() + " is Mandatory";
+                            getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
                             break;
                         }
                     } else {
@@ -1436,8 +2403,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                             selectedAttributeLevel.add(tempBO);
                         } else {
                             isAdded = false;
-                            String errorMessage=attributeBo.getAttrName() + " is Mandatory";
-                            getIvyView().profileEditShowMessage(R.string.attribute ,errorMessage);
+                            String errorMessage = attributeBo.getAttrName() + " is Mandatory";
+                            getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
                             break;
                         }
                     } else {
@@ -1458,14 +2425,14 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     @Override
-    public void verifyOTP(final String mType,final String mValue) {
+    public void verifyOTP(final String mType, final String mValue) {
 
         getCompositeDisposable().add(mProfileDataManager.generateOtpUrl()
-        .subscribeOn(getSchedulerProvider().io())
-        .observeOn(getSchedulerProvider().ui())
-        .subscribe(new Consumer<String>() {
-            @Override
-            public void accept(String s) throws Exception {
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
 
                /* if(!AppUtils.isEmptyString(s)){
                         *//*switch (mType) {
@@ -1482,8 +2449,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         }*//*
                 }else
                     getIvyView().showMessage(R.string.otp_download_url_empty);*/
-            }
-        }));
+                    }
+                }));
 
     }
 
@@ -1637,7 +2604,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || comparConfigerCode(mConfigCode, ProfileConstant.CITY)
                 || comparConfigerCode(mConfigCode, ProfileConstant.RFiled1)
                 || comparConfigerCode(mConfigCode, ProfileConstant.RField2)
-                || comparConfigerCode(mConfigCode, ProfileConstant.PROFILE_27)
+                || comparConfigerCode(mConfigCode, ProfileConstant.CREDIT_INVOICE_COUNT)
                 || (comparConfigerCode(mConfigCode, ProfileConstant.RField4) && profileConfig.get(mNumber).getHasLink() == 0)
                 || (comparConfigerCode(mConfigCode, ProfileConstant.RFIELD5) && profileConfig.get(mNumber).getHasLink() == 0)
                 || (comparConfigerCode(mConfigCode, ProfileConstant.RFIELD6) && profileConfig.get(mNumber).getHasLink() == 0)
@@ -1712,7 +2679,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.CONTRACT:
                         prepareContract();
                         break;
-                    case ProfileConstant.LATTITUDE_LONGITUDE:
+                    case ProfileConstant.LATTITUDE:
                         prepareLatLong();
                         break;
                     case ProfileConstant.PHOTO_CAPTURE:
@@ -1751,7 +2718,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.RFIELD7:
                         prepareRfield7();
                         break;
-                    case ProfileConstant.PROFILE_27:
+                    case ProfileConstant.CREDIT_INVOICE_COUNT:
                         prepareProfile27();
                         break;
                     case ProfileConstant.PRIORITYPRODUCT:
@@ -1796,8 +2763,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.DRUG_LICENSE_EXP_DATE:
                         prepareDrugLiceneExpDate();
                         break;
-
-
                 }
             } else {
                 //write the code here  for without flag and order condition
@@ -2049,12 +3014,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     private void prepareLatLong() {
         String textLat = retailerMasterBO.getLatitude() + "";
-         String MenuName = "LatLong";
+        String MenuName = "LatLong";
         if (mPreviousProfileChanges.get(configCode) != null)
             if (!mPreviousProfileChanges.get(configCode).equals(textLat))
                 textLat = mPreviousProfileChanges.get(configCode);
         for (int j = 0; j < profileConfig.size(); j++) {
-            if (profileConfig.get(j).getConfigCode().equals(ProfileConstant.PROFILE_31)
+            if (profileConfig.get(j).getConfigCode().equals(ProfileConstant.LONGITUDE)
                     && flag == 1 && profileConfig.get(mNumber).getModule_Order() == 1) {
                 String textLong = retailerMasterBO.getLongitude() + "";
                 if (mPreviousProfileChanges.get(profileConfig.get(j).getConfigCode()) != null)
@@ -2354,7 +3319,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     /*comparing two values with equalsIgnoreCase*/
-    private boolean comparConfigerCode(String configCode,  String configCodeFromDB) {
+    private boolean comparConfigerCode(String configCode, String configCodeFromDB) {
         return configCode.equalsIgnoreCase(configCodeFromDB);
     }
 

@@ -13,7 +13,7 @@ public class ProfileConstant {
     public static final String ADDRESS3 = "PROFILE05";//ADDRESS3,length validation=Y,Has Edit=1,RetailerMaster
     public static final String CHANNEL = "PROFILE06";//CHANNEL,length validation=Y,Has Edit=1,RetailerMaster
     public static final String SUBCHANNEL = "PROFILE07";//SUBCHANNEL,length validation=Y,Has Edit=1,RetailerMaster
-    public static final String LATTITUDE_LONGITUDE = "PROFILE08";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerAddress
+    public static final String LATTITUDE= "PROFILE08";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerAddress
 
     public static final String PROFILE_09 = "PROFILE09";//CONTACTPERSON1,length validation=Y,Has Edit=0,RetailerContact
     public static final String PROFILE_10 = "PROFILE10";//PHNO1,length validation=Y,input validation=NUMBER,Has Edit=0,RetailerContact
@@ -29,10 +29,10 @@ public class ProfileConstant {
     public static final String CONTRACT_TYPE = "PROFILE22";//CONTRACT_TYPE,Has Edit=0 Note:-Only Profile Config
     public static final String CREDITPERIOD = "PROFILE25";//CREDITPERIOD,level,length validation=Y,Has Edit=0,RetailerMaster
     public static final String RField2 = "PROFILE26";//RField2,Has Edit=1 Note:-Only Profile Config
-    public static final String PROFILE_27 = "PROFILE27";
+    public static final String CREDIT_INVOICE_COUNT = "PROFILE27"; //Credit_invoice_count
     public static final String RField4 = "PROFILE28";//RField4,length validation=Y,Has Edit=1,RetailerMaster
     public static final String CONTACT_NUMBER = "PROFILE30";//CONTACT_NUMBER Note:-Only Profile Config
-    public static final String PROFILE_31 = "PROFILE31";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerMaster
+    public static final String LONGITUDE = "PROFILE31";//Latitude,Longitude,length validation=Y,Has Edit=1,RetailerMaster
     public static final String NEARBYRET = "PROFILE36";//NEARBYRET(retailers)length validation=Y,Has Edit=1,RetailerMaster
     public static final String PINCODE = "PROFILE38";//PINCODE,length validation=Y,Has Edit=0, RetailerAddress
     public static final String CITY = "PROFILE39";//CITY :Note:-Only Profile Config,Has Edit=1

@@ -1030,21 +1030,26 @@ public class NewOutletHelper {
                             || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                         deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                        queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + configBO.getMenuNumber() + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                        queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + configBO.getMenuNumber()
+                                + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                         isData = true;
                     }
 
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE81") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1053,14 +1058,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE82") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1069,14 +1080,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE84") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1085,14 +1102,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE83") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1101,14 +1124,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE85") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1117,14 +1146,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE78") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getAddressid()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1133,14 +1168,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE79") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber()) + ","
+                                    + bmodel.getRetailerMasterBO().getAddressid()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1149,14 +1190,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE86") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber()) + ","
+                                    + bmodel.getRetailerMasterBO().getAddressid() + ","
+                                    + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1165,14 +1212,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE87") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber()) + ","
+                                    + bmodel.getRetailerMasterBO().getAddressid()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1181,14 +1234,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE88") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber()) + ","
+                                    + bmodel.getRetailerMasterBO().getAddressid()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 

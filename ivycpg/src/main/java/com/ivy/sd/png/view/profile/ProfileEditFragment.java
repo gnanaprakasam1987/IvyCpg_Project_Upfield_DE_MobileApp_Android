@@ -50,6 +50,7 @@ package com.ivy.sd.png.view.profile;
         import android.widget.CheckBox;
         import android.widget.CompoundButton;
         import android.widget.DatePicker;
+        import android.widget.EditText;
         import android.widget.ImageView;
         import android.widget.LinearLayout;
         import android.widget.ListView;
@@ -203,6 +204,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     private TextView textview[] = new TextView[150];
     private AppCompatEditText editText[] = new AppCompatEditText[150];
+
 
     private ArrayList<NewOutletBO> mcontactTitleList = null, mcontractStatusList = null;
     private ArrayList<NewOutletAttributeBO> attributeList = null, attributeHeaderList = null;
@@ -4279,6 +4281,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         try {
             int size = profileConfig.size();
+
             for (int i = 0; i < size; i++) {
                 String configCode = profileConfig.get(i).getConfigCode();
                 if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(PROFILE_06) && profileConfig.get(i).getModule_Order() == 1) {
@@ -4520,7 +4523,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                } else if (profileConfig.get(i).getModule_Order() == 1) {
+                }
+                /*else if (profileConfig.get(i).getModule_Order() == 1) {
                     try {
                         if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
                                 !isValidRegx(editText[i].getText().toString(), profileConfig.get(i).getRegex())) {
@@ -4544,7 +4548,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                }
+                }*/
             }
 
         } catch (Exception e) {

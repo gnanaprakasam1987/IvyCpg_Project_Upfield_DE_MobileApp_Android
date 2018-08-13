@@ -28,6 +28,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +39,21 @@ public class AppUtils {
 
     private AppUtils() {
 
+    }
+
+    public static void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {
+        try {
+            String fName = (!isLatLongImage) ? "PRO_" : "LATLONG_" + retailerID;
+            File sourceDir = new File(HomeScreenFragment.photoPath);
+            File[] files = sourceDir.listFiles();
+            for (File file : files) {
+                if (file.getName().startsWith(fName) &&
+                        !file.getName().equals(imageName))
+                    file.delete();
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 
     public static String validateInput(String input) {

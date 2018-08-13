@@ -70,6 +70,12 @@ public interface IProfileDataManager {
 
     Single<Boolean> insertNewRow( String configCode, String RetailerID, String mTid, String mCustomQuery);
 
+    Single<Boolean> updateNearByRetailers( String mTid, String RetailerID,HashMap<String, String> temp);
+
+    Single<Boolean> updateRetailerEditPriorityProducts( String mTid, String RetailerID,ArrayList<StandardListBO> selectedPrioProducts );
+
+    Single<Boolean> updateRetailerMasterAttribute( String mTid, String RetailerID,ArrayList<NewOutletAttributeBO> tempList);
+
     Single<Boolean> updateRetailer(String mTid, String RetailerID,String currentDate);
 
     void closeDB();

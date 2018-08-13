@@ -870,12 +870,128 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     }
 
     @Override
+    public Single<Boolean> updateNearByRetailers(final String mTid, final String RetailerID, final HashMap<String, String> temp ) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    dbUtil.deleteSQL("RrtNearByEditRequest", " tid =" + AppUtils.QT(mTid), false);
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return false;
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        try {
+                            // if(aBoolean) if we want we can add condition. it will return the deleted row response .
+                            if(temp!=null)
+                            for (String id : temp.keySet()) {
+                                String Q = "insert into RrtNearByEditRequest (tid,rid,nearbyrid,status,upload)" +
+                                        "values (" + AppUtils.QT(mTid) + "," + RetailerID + "," + id
+                                        + "," + AppUtils.QT(temp.get(id)) + ",'N')";
+                                dbUtil.executeQ(Q);
+                            }
+                            return true;
+                        } catch (Exception e) {
+                            Commons.printException("" + e);
+                        }
+                        return false;
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> updateRetailerEditPriorityProducts(final String mTid, final String RetailerID
+            , final ArrayList<StandardListBO> selectedPrioProducts) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    dbUtil.deleteSQL("RetailerEditPriorityProducts", " RetailerId ="
+                            + AppUtils.QT(RetailerID), false);
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return false;
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        try {
+                            if(selectedPrioProducts!=null)
+                            for (StandardListBO bo : selectedPrioProducts) {
+                                String Q = "insert into RetailerEditPriorityProducts (tid,RetailerId,productId,levelid,status,upload)" +
+                                        "values (" + AppUtils.QT(mTid)
+                                        + "," + AppUtils.QT(RetailerID)
+                                        + "," + SDUtil.convertToInt(bo.getListID())
+                                        + "," + AppUtils.QT(bo.getListCode())
+                                        + "," + AppUtils.QT(bo.getStatus()) + ",'N')";
+                                dbUtil.executeQ(Q);
+                                return true;
+                            }
+                        }catch (Exception e){
+                            Commons.printException("" + e);
+                        }
+                        return false;
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> updateRetailerMasterAttribute(final String mTid, final String RetailerID, final ArrayList<NewOutletAttributeBO> tempList) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    dbUtil.deleteSQL("RetailerEditAttribute", " tid =" + AppUtils.QT(mTid), false);
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return false;
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        for (NewOutletAttributeBO id : tempList) {
+                            String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
+                                    "values (" + AppUtils.QT(mTid)
+                                    + "," + RetailerID
+                                    + "," + id.getAttrId()
+                                    + "," + id.getLevelId()
+                                    + "," + AppUtils.QT(id.getStatus()) + ",'N')";
+                            dbUtil.executeQ(Q);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public Single<Boolean> updateRetailer(final String tid, final String RetailerID, final String currentDate) {
 
         final String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
-                "values (" + AppUtils.QT(tid)
-                + "," + RetailerID
-                + "," + AppUtils.QT(currentDate) + ")";
+                "values (" + AppUtils.QT(tid) + "," + RetailerID + "," + AppUtils.QT(currentDate) + ")";
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
@@ -892,12 +1008,15 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
 
-                return Single.zip(getRetailerEditDetailCount(tid),
+                return Single.zip(
+                        getRetailerEditDetailCount(tid),
                         getnearbyEditRequestCount(tid),
                         getRetailerEditPriorityProductsCount(tid),
-                        getRetailerEditAttributeCount(tid), new Function4<Integer, Integer, Integer, Integer, Boolean>() {
+                        getRetailerEditAttributeCount(tid),
+                        new Function4<Integer, Integer, Integer, Integer, Boolean>() {
                             @Override
-                            public Boolean apply(Integer integer, Integer integer2, Integer integer3, Integer integer4) throws Exception {
+                            public Boolean apply(Integer integer, Integer integer2,
+                                                 Integer integer3, Integer integer4) throws Exception {
                                 return integer > 0 || integer2 > 0 || integer3 > 0 || integer4 > 0;
                             }
                         }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {

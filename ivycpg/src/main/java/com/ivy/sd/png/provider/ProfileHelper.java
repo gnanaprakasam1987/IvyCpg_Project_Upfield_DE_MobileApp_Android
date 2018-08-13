@@ -858,6 +858,12 @@ public class ProfileHelper {
         }
     }
 
+    /**
+     * @See {@link  com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#checkFileExist}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {
         try {
             String fName = (!isLatLongImage) ? "PRO_" : "LATLONG_" + retailerID;

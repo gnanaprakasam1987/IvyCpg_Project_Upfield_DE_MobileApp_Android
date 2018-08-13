@@ -41,6 +41,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -127,7 +128,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
 
     private TextView textview[] = new TextView[100];
-    private AppCompatEditText editText[] = new AppCompatEditText[100];
+
+    @SuppressLint("UseSparseArrays")
+    private HashMap<Integer,AppCompatEditText> editTextHashMap=new HashMap<>();
 
     private MaterialSpinner channel, subchannel, location1, location2, location3,
             contractSpinner, rField5Spinner, rField6Spinner, rField7Spinner, rField4Spinner;
@@ -556,12 +559,29 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public String getDynamicEditTextValues(int mNumber) {
-        return editText[mNumber].getText().toString().trim();
+        AppCompatEditText value = editTextHashMap.get(mNumber);
+        if (value != null) {
+            return value.getText().toString().trim();
+        } else {
+            if (editTextHashMap.containsKey(mNumber)) {
+                // Okay, there's a key but the value is null
+            } else {
+                // Definitely no such key
+            }
+            return "";
+        }
+
     }
 
     @Override
     public void setDynamicEditTextFocus(int mNumber) {
-        editText[mNumber].requestFocus();
+        EditText value = editTextHashMap.get(mNumber);
+        if (value != null) {
+            value.requestFocus();
+        } else {
+            // No such key
+        }
+
     }
 
     @SuppressLint("UseSparseArrays")
@@ -866,7 +886,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         editTextInputLayout = new TextInputLayout(getActivity());
         editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
 
-        editText[mNumber].addTextChangedListener(new TextWatcher() {
+        editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
@@ -880,8 +900,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 String s = et.toString();
                 if (IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
                     s = s.toUpperCase();
-                    editText[mNumber].setText(s);
-                    editText[mNumber].setSelection(editText[mNumber].length());
+                    editTextHashMap.get(mNumber).setText(s);
+                    editTextHashMap.get(mNumber).setSelection(editTextHashMap.get(mNumber).length());
                 }
             }
         });
@@ -907,7 +927,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             verifyBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    profileEditPresenter.verifyOTP("EMAIL", editText[mNumber].getText().toString());
+                    profileEditPresenter.verifyOTP("EMAIL",  editTextHashMap.get(mNumber).getText().toString());
                 }
             });
             emailLayout.addView(verifyBtn, verifyButtonParams);
@@ -944,7 +964,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 verifyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        profileEditPresenter.verifyOTP("MOBILE", editText[mNumber].getText().toString());
+                        profileEditPresenter.verifyOTP("MOBILE", editTextHashMap.get(mNumber).getText().toString());
                     }
                 });
 
@@ -960,7 +980,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         if (comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
             editTextInputLayout = new TextInputLayout(getActivity());
             editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
-            editText[mNumber].addTextChangedListener(new TextWatcher() {
+            editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 }
@@ -975,7 +995,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                     if (!qty.equals("")) {
                         if (SDUtil.convertToInt(qty) > MAX_CREDIT_DAYS) {
                             //Delete the last entered number and reset the qty
-                            editText[mNumber].setText(qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0");
+                            editTextHashMap.get(mNumber).setText(qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0");
                             Toast.makeText(getActivity(), getResources().getString(R.string.max_credit_days_allowed)
                                     + " " + MAX_CREDIT_DAYS, Toast.LENGTH_LONG).show();
                         }
@@ -1132,37 +1152,36 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     private AppCompatEditText getSingleEditTextView(int positionNumber, String configCode,
                                                     String menuName, String values, boolean IS_UPPERCASE_LETTER) {
-        editText[positionNumber] = new AppCompatEditText(getActivity());
-        editText[positionNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-        editText[positionNumber].setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-        editText[positionNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        editText[positionNumber].setText(values);
-        editText[positionNumber].setHint(menuName);
-
-        if (!comparConfigerCode(configCode, ProfileConstant.EMAIL)) {//if not Email //cmd for not apply inputfilter value for email id
-            getInputFilter(positionNumber);
-        }
+        AppCompatEditText appCompatEditText = new AppCompatEditText(getActivity());
+        appCompatEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
+        appCompatEditText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        appCompatEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
+        appCompatEditText.setText(values);
+        appCompatEditText.setHint(menuName);
 
         if (!IS_UPPERCASE_LETTER)
-            editText[positionNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+            appCompatEditText.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
         else
-            editText[positionNumber].setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+            appCompatEditText.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
         if (comparConfigerCode(configCode, ProfileConstant.CONTACT_NUMBER)
                 || comparConfigerCode(configCode, ProfileConstant.MOBILE)
                 || comparConfigerCode(configCode, ProfileConstant.FAX)) {
-            editText[positionNumber].setInputType(InputType.TYPE_CLASS_PHONE);
+            appCompatEditText.setInputType(InputType.TYPE_CLASS_PHONE);
         }
 
         if (comparConfigerCode(configCode, ProfileConstant.CREDITPERIOD)) {
-            editText[positionNumber].setInputType(InputType.TYPE_CLASS_NUMBER);
+            appCompatEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
             if (values.equals("0") || values.equals("-1"))
-                editText[positionNumber].setText("");
+                appCompatEditText.setText("");
             else
-                editText[positionNumber].setText(values);
+                appCompatEditText.setText(values);
         }
-
-        return editText[positionNumber];
+        editTextHashMap.put(positionNumber,appCompatEditText);
+        if (!comparConfigerCode(configCode, ProfileConstant.EMAIL)) {//if not Email //cmd for not apply inputfilter value for email id
+            getInputFilter(positionNumber);
+        }
+        return appCompatEditText;
     }
 
 
@@ -2417,9 +2436,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         if (inputFilters != null && inputFilters.size() > 0) {
             InputFilter[] stockArr = new InputFilter[inputFilters.size()];
             stockArr = inputFilters.toArray(stockArr);
-            editText[positionNumber].setFilters(stockArr);
+            editTextHashMap.get(positionNumber).setFilters(stockArr);
             if (inputFilters.size() == 2)
-                editText[positionNumber].setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            editTextHashMap.get(positionNumber).setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         }
     }
 

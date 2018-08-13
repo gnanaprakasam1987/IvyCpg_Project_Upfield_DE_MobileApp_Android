@@ -109,7 +109,7 @@ public interface IProfileEditContract {
 
        ArrayList<NewOutletBO> getContractStatusList();
 
-       int  getContractSpinnerSelectedItemListId();
+       int getContractSpinnerSelectedItemListId();
 
        int getLocation1SelectedItemLocId();
 

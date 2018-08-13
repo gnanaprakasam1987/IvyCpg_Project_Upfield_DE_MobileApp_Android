@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.sd.png.asean.view.R;
@@ -143,7 +144,15 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void showMessage(String message) {
-        ((BaseActivity) getActivity()).showMessage(message);
+        if(getActivity() instanceof BaseActivity){
+            ((BaseActivity) getActivity()).showMessage(message);
+        }else{
+            if (message != null) {
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
