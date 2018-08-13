@@ -106,7 +106,7 @@
         android:orderInCategory="104"
         android:title="Attach Pdf files"
         android:visible="false"
-        ivydist:showAsAction="ifRoom" />
+        ivydist:showAsAction="always" />
 
 
 </menu>

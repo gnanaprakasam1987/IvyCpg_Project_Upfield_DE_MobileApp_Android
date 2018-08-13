@@ -267,7 +267,7 @@ public class OrderHeader {
         return addressID;
     }
 
-    private String attachedFileName = "";
+   /* private String attachedFileName = "";
 
     public String getAttachedFileName() {
         return attachedFileName;
@@ -275,5 +275,5 @@ public class OrderHeader {
 
     public void setAttachedFileName(String attachedFileName) {
         this.attachedFileName = attachedFileName;
-    }
+    }*/
 }

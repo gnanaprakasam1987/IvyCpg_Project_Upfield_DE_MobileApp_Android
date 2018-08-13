@@ -936,7 +936,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         * */
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
-            if (bModel.getOrderHeaderBO().getAttachedFileName().length() > 0) {
+            if (bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
                 Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.icon_save);
                 drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
                 menu.findItem(R.id.menu_attach_file).setIcon(drawable);
@@ -1098,7 +1098,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     + "_file.pdf";
 
 
-            String mFirstName = bModel.getOrderHeaderBO().getAttachedFileName();
+            String mFirstName = bModel.getOrderHeaderBO().getOrderImageName();
 
             boolean nFilesThere = bModel
                     .checkForNFilesInFolder(
@@ -3425,11 +3425,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             case FILE_SELECTION:
                 if (requestCode == 12 && data != null) {
 
-
+                    invalidateOptionsMenu();
                     String realPath = Util.getPath(this, data.getData());
                     Util.copyFile(new File(realPath), HomeScreenFragment.photoPath, attachedFilePath);
                     if (bModel.getOrderHeaderBO() != null)
-                        bModel.getOrderHeaderBO().setAttachedFileName(attachedFilePath);
+                        bModel.getOrderHeaderBO().setOrderImageName(attachedFilePath);
                 }
                 break;
             default:
