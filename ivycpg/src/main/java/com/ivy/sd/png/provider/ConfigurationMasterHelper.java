@@ -1471,6 +1471,11 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
 
+
+    //132 --- task 45
+    private static final String CODE_SHOW_ORDER_ATTACH_FILE = "ORDB76";
+    public boolean IS_SHOW_ORDER_ATTACH_FILE;
+
     private static final String CODE_SHOW_ALL_SKU_ON_EDIT = "ORDB75";
     public boolean IS_SHOW_ALL_SKU_ON_EDIT;
 
@@ -3837,6 +3842,7 @@ public class ConfigurationMasterHelper {
             IS_SHOW_DEFAULT_UOM = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
             IS_SHOW_ORDER_PHOTO_CAPTURE = false;
+            IS_SHOW_ORDER_ATTACH_FILE = false;
             IS_ORD_DIGIT = false;
             ORD_DIGIT = 0;
             IS_SWITCH_WITH_OUT_TGT = false;
@@ -4496,6 +4502,17 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
 
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_ORDER_ATTACH_FILE) + " and Flag=1";
+
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    IS_SHOW_ORDER_ATTACH_FILE = true;
+                }
+                c.close();
+            }
 
             //Order Digit config
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster

@@ -266,4 +266,14 @@ public class OrderHeader {
     public int getAddressID() {
         return addressID;
     }
+
+   /* private String attachedFileName = "";
+
+    public String getAttachedFileName() {
+        return attachedFileName;
+    }
+
+    public void setAttachedFileName(String attachedFileName) {
+        this.attachedFileName = attachedFileName;
+    }*/
 }
