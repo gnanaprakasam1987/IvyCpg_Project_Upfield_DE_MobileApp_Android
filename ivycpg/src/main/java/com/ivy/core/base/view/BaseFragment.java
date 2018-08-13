@@ -139,7 +139,12 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void showMessage(int resId) {
-        ((BaseActivity) getActivity()).showMessage(resId);
+
+        if(getActivity() instanceof BaseActivity){
+            ((BaseActivity) getActivity()).showMessage(resId);
+        }else{
+            Toast.makeText(getActivity(), getString(resId), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

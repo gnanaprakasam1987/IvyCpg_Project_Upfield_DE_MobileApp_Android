@@ -153,8 +153,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     private int locid = 0;
     private int subChannelSpinnerCount = 0;
-    private String MName;
-    private String menuCode;
     private int id;
     private String selectedProductID = "";
     static String lat = "", longitude = "";
@@ -263,7 +261,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            //bmodel.latlongImageFileName = "";
+            AppUtils.latlongImageFileName = "";
             getActivity().finish();
         }
 
@@ -280,7 +278,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @Override
     public void createImageView(String path) {
         getmRootLinearLayout().addView(getImageView());
-        mScrollView.addView(getmRootLinearLayout());
         String filePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + path;
         if (AppUtils.checkImagePresent(filePath)) {
             try {
@@ -297,7 +294,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @Override
     public void createImageView(int userId, String path) {
         getmRootLinearLayout().addView(getImageView());
-        mScrollView.addView(getmRootLinearLayout());
         File imgFile = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                 + userId + DataMembers.DIGITAL_CONTENT + "/" + DataMembers.PROFILE + "/" + path);
         if (imgFile.exists()) {
@@ -314,7 +310,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             if (new File(cameraFilePath).exists())
                 openImage(new File(cameraFilePath));
             else
-                Toast.makeText(getActivity(), getResources().getString(R.string.unloadimage), Toast.LENGTH_SHORT).show();
+            showMessage(R.string.unloadimage);
         } else {
             File filePath = null;
             if (hasProfileImagePath) {
@@ -328,7 +324,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             if (filePath.exists())
                 openImage(filePath);
             else
-                Toast.makeText(getActivity(), getResources().getString(R.string.unloadimage), Toast.LENGTH_SHORT).show();
+                showMessage(R.string.unloadimage);
 
         }
     }
@@ -347,7 +343,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 Commons.printException("" + e);
             }
         } else {
-            Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_access_the_sdcard), Toast.LENGTH_SHORT).show();
+            showMessage(R.string.unable_to_access_the_sdcard);
         }
     }
 
@@ -368,8 +364,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         }
         if (requestCode == LATLONG_CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                //String latlongCameraFilePath = HomeScreenFragment.photoPath + "/" + bmodel.latlongImageFileName;
-                Toast.makeText(getActivity(), "Photo Captured Successfully", Toast.LENGTH_LONG).show();
+                showMessage("Photo Captured Successfully");
             }
         }
         if (resultCode == RESULT_OK) {
@@ -402,6 +397,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
         getmRootLinearLayout().addView(getCheckBoxView(isSEZzone,Mandatory,menuName),getCommonsparams());
     }
+
 
     @Override
     public void createSpinnerView(Vector<ChannelBO> channelMaster, int mNumber, String MName, String menuCode, int id) {
@@ -667,12 +663,13 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @Override
     public void profileEditShowMessage(int resouceId,String msg) {
         Toast.makeText(getActivity(),
-                getActivity().getResources().getString(R.string.attribute) + " " + msg, Toast.LENGTH_LONG).show();
+                getActivity().getResources().getString(resouceId) + " " + msg, Toast.LENGTH_LONG).show();
     }
 
 
     @Override
-    public void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList) {
+    public void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList,
+                                         String menuCode,String MName) {
 
         if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD5)) {
             ArrayAdapter<RetailerFlexBO> rField5Adapter = new ArrayAdapter<>(getActivity(),
@@ -689,13 +686,12 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField5Spinner.setAdapter(rField5Adapter);
             rField5Spinner.setSelection(selPos);
             rField5Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent, View view,
-                                           int pos, long id) {
+                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 }
 
-                public void onNothingSelected(AdapterView<?> arg0) {
-                }
+                public void onNothingSelected(AdapterView<?> arg0) {}
             });
+
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD6)) {
             ArrayAdapter<RetailerFlexBO> rField6Adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_item);
@@ -996,8 +992,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                         if (SDUtil.convertToInt(qty) > MAX_CREDIT_DAYS) {
                             //Delete the last entered number and reset the qty
                             editTextHashMap.get(mNumber).setText(qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0");
-                            Toast.makeText(getActivity(), getResources().getString(R.string.max_credit_days_allowed)
-                                    + " " + MAX_CREDIT_DAYS, Toast.LENGTH_LONG).show();
+                            String message=" " + MAX_CREDIT_DAYS;
+                            profileEditShowMessage(R.string.max_credit_days_allowed,message);
+
                         }
                     }
                 }
@@ -1185,10 +1182,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
 
-    private LinearLayout getSpinnerView(int mNumber, String MName, @NonNls String menuCode, int id) {
+    private LinearLayout getSpinnerView(int mNumber, String MName, String menuCode, int id) {
 
-        this.menuCode = menuCode;
-        this.MName = MName;
         this.id = id;
         mLocationMasterList1 = profileEditPresenter.getLocationMasterList1();
         mLocationMasterList2 = profileEditPresenter.getLocationMasterList2();
@@ -1422,7 +1417,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField5Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField5Spinner.setId(mNumber);
             rField5Spinner.setFloatingLabelText(MName);
-            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_5);
+            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_5,menuCode,MName);
             layout.addView(rField5Spinner, spinweight);
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD6)) {
@@ -1430,7 +1425,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField6Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField6Spinner.setId(mNumber);
             rField6Spinner.setFloatingLabelText(MName);
-            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_6);
+            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_6,menuCode,MName);
             layout.addView(rField6Spinner, spinweight);
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD7)) {
@@ -1438,7 +1433,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField7Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField7Spinner.setId(mNumber);
             rField7Spinner.setFloatingLabelText(MName);
-            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_7);
+            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_7,menuCode,MName);
             layout.addView(rField7Spinner, spinweight);
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RField4)) {
@@ -1446,7 +1441,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField4Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField4Spinner.setId(mNumber);
             rField4Spinner.setFloatingLabelText(MName);
-            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_4);
+            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_4,menuCode,MName);
             layout.addView(rField4Spinner, spinweight);
         }
         return layout;
@@ -1592,7 +1587,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                     dialogFragment.setCancelable(false);
 
                 } else {
-                    //  Toast.makeText(getActivity(), getResources().getString(R.string.priority_products_not_available), Toast.LENGTH_SHORT).show();
+                    //showLoading(R.string.priority_products_not_available);
                 }
             }
         });
@@ -2072,6 +2067,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
                         @Override
                         public void onNothingSelected(AdapterView<?> parent) {
+
                         }
                     });
                     spinnerHashMap.put(attribName + index, spinner);
@@ -2417,17 +2413,11 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
             } catch (ActivityNotFoundException e) {
                 Commons.printException("" + e);
-                Toast.makeText(
-                        getActivity(),
-                        getResources()
-                                .getString(
-                                        R.string.no_application_available_to_view_video),
-                        Toast.LENGTH_SHORT).show();
+                showMessage(R.string.no_application_available_to_view_video);
+
             }
         } else {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.unloadimage),
-                    Toast.LENGTH_SHORT).show();
+            showMessage(R.string.unloadimage);
         }
     }
 
@@ -2448,7 +2438,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         int year;
         int month;
         int day;
-        @NonNls
         String code;
 
         public DatePickerFragment(String code, int year, int month, int day) {
@@ -2468,7 +2457,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
             Calendar selectedDate = new GregorianCalendar(year, month, day);
             if (selectedDate.after(Calendar.getInstance())) {
-                @NonNls SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
                 if (code.equalsIgnoreCase("DLEXPDATE"))
                     dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
 

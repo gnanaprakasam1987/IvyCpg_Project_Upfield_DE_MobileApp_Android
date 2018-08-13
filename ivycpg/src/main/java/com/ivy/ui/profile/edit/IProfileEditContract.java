@@ -63,7 +63,7 @@ public interface IProfileEditContract {
 
         void checkRegex(String regex);
 
-        void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList);
+        void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList,String menuCode,String MName);
 
         void isLatLongCameravailable(boolean b);
 
@@ -173,7 +173,7 @@ public interface IProfileEditContract {
 
         String[] getParentLevelName( boolean b);
 
-        void downloadRetailerFlexValues( String type);
+        void downloadRetailerFlexValues( String type,String menuCode,String MName);
 
         boolean IS_BAIDU_MAP();
 

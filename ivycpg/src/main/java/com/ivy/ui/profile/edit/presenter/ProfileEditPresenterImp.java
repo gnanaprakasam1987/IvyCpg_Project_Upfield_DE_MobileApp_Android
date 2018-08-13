@@ -465,14 +465,14 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     @Override
-    public void downloadRetailerFlexValues(String type) {
+    public void downloadRetailerFlexValues(String type, final String menuCode,final String MName) {
         getCompositeDisposable().add(mProfileDataManager.downloadRetailerFlexValues(type)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<RetailerFlexBO>>() {
                     @Override
                     public void onNext(ArrayList<RetailerFlexBO> retailerFlexBOS) {
-                        getIvyView().updateRetailerFlexValues(retailerFlexBOS);
+                        getIvyView().updateRetailerFlexValues(retailerFlexBOS,menuCode,MName);
                     }
 
                     @Override
