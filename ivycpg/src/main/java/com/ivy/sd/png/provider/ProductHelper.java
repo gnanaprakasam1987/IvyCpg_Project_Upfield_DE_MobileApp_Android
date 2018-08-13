@@ -1909,6 +1909,7 @@ public class ProductHelper {
             product.setPrice_oo("0");
             product.setPrice_pc("0");
             product.setReasonID("0");
+            product.setPriceChangeReasonID("0");
             product.setPriceChanged(0);
             product.setPriceCompliance(0);
 
