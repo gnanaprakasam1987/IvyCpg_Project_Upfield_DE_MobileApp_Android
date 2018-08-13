@@ -186,6 +186,9 @@
     <string name="retailer_contact_list">Contact data not Available!</string>
     <string name="not_able_to_register_visit">Not able to register the visit</string>
 
+    <string name="discount_amt_cannot_be_higher_than_percentage">Discount Amount cannot be Higher than “%1$s” of product price.</string>
+    <string name="select_reason_for_price_change">Select Reason for Price Change!</string>
+
     <string name="filter_by">Filter By</string>
     <string name="show_results">Show Results</string>
     <string name="please_choose_address">Please choose any one address</string>

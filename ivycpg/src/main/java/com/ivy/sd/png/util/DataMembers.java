@@ -411,7 +411,7 @@ public class DataMembers {
     private static final String tbl_PriceHeader_cols = "Tid,RetailerId,Date,TimeZone,distributorid,Weightage,Score";
 
     private static final String tbl_PriceDetail = "PriceCheckDetail";
-    private static final String tbl_PriceDetail_cols = "Tid,PId,Changed,Price,Compliance,ReasonId,Own,UomID,Mrp,mop,Score";
+    private static final String tbl_PriceDetail_cols = "Tid,PId,Changed,Price,Compliance,ReasonId,Own,UomID,Mrp,mop,price_change_reasonid,Score";
 
     private static final String tbl_attendancedetail = "AttendanceDetail";
     private static final String tbl_attendancedetail_cols = "Tid,DateIn,Atd_ID,ReasonID,FromDate,ToDate,Timezone,Status,Remarks,Session,jointUserId,LeaveType_LovId,TotalDays,timeSpent,userid";
