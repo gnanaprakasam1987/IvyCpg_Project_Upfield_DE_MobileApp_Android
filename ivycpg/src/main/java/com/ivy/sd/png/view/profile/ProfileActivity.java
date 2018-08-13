@@ -1027,6 +1027,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
 
+        String mapKey = "key="+getString(R.string.google_maps_api_key);
+
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude; // Destination of route
         String sensor = "sensor=false";
@@ -1040,7 +1042,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints;
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints+"&"+mapKey;
         String output = "json";
 
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
