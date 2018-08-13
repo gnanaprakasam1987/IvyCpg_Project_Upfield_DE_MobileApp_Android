@@ -2,24 +2,34 @@ package com.ivy.cpg.locationservice.realtime;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.SystemClock;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.ivy.cpg.locationservice.LocationConstants;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_PASSWORD;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
+
 public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     /**
      * Firebase Authentication Method
@@ -29,8 +39,8 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
 
-            String email = LocationConstants.FIREBASE_EMAIL;
-            String password = LocationConstants.FIREBASE_PASSWORD;
+            String email = FIREBASE_EMAIL;
+            String password = FIREBASE_PASSWORD;
 
             if(email.trim().length() > 0 && password.trim().length() > 0) {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(
@@ -52,6 +62,10 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         }
     }
 
+    private FireBaseRealtimeLocationUpload(Parcel parcel) {
+
+    }
+
     /**
      * Get Triggered when location received
      */
@@ -61,7 +75,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         locationDetailBO.setOutTime("");
         locationDetailBO.setStatus("IN");
 
-        updateFirebaseData(context, locationDetailBO, "movement_tracking");
+        updateFirebaseData(context, locationDetailBO);
 
     }
 
@@ -69,20 +83,35 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
      * Update Firebase Attendance InTime and Status in Specified Node
      */
     @Override
-    public void updateAttendanceIn(Context context, String pathNode) {
-        String userId = "";
+    public void updateAttendanceIn(final Context context, String pathNode) {
+        int userId = 0;
+        String userName = "";
         UserMasterBO userMasterBO = getUserDetail(context);
         if (userMasterBO != null) {
-            userId = String.valueOf(userMasterBO.getUserid());
+            userId = userMasterBO.getUserid();
+            userName = String.valueOf(userMasterBO.getUserName());
         }
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
-                child(LocationConstants.FIREBASE_BASE_PATH).child(pathNode).child(userId);
-        databaseReference.child("inTime").setValue(String.valueOf(System.currentTimeMillis()));
-        databaseReference.child("outTime").setValue("");
-        databaseReference.child("status").setValue("IN");
-        databaseReference.child("userId").setValue("userId");
-        databaseReference.child("supervisorId").setValue(getSupervisorIds(context));
+        Map<String, Object> attendanceObj = new HashMap<>();
+        attendanceObj.put("inTime", System.currentTimeMillis());
+        attendanceObj.put("outTime", "");
+        attendanceObj.put("status", "IN");
+        attendanceObj.put("userId",userId);
+        attendanceObj.put("userName",userName);
+
+        String[] splitSupervisorIds = getSupervisorIds(context).split("/");
+
+        for(String ids :splitSupervisorIds) {
+            if (!ids.isEmpty())
+                attendanceObj.put(ids, true);
+        }
+
+        db.collection(FIRESTORE_BASE_PATH)
+                .document(ATTENDANCE_PATH)
+                .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
+                .document(userId+"")
+                .set(attendanceObj);
+
     }
 
     /**
@@ -97,37 +126,52 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             userId = String.valueOf(userMasterBO.getUserid());
         }
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
-                child(LocationConstants.FIREBASE_BASE_PATH).child(pathNode).child(userId);
-        databaseReference.child("outTime").setValue(String.valueOf(System.currentTimeMillis()));
-        databaseReference.child("status").setValue("Day Closed");
-//            FirebaseDatabase.getInstance().goOffline();
+        Map<String, Object> attendanceObj = new HashMap<>();
+        attendanceObj.put("outTime", System.currentTimeMillis());
+        attendanceObj.put("status", "Day Closed");
+
+        db.collection(FIRESTORE_BASE_PATH)
+                .document(ATTENDANCE_PATH)
+                .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
+                .document(userId)
+                .update(attendanceObj);
     }
 
     /**
      * Insert or update Location data and attendance data in Firebase Node
      */
-    private void updateFirebaseData(Context context, LocationDetailBO locationDetailBO, String nodePath) {
-        String userId = "", userName = "";
+    private void updateFirebaseData(Context context, LocationDetailBO locationDetailBO) {
+        int userId = 0 ;
+        String userName = "";
         UserMasterBO userMasterBO = getUserDetail(context);
         if (userMasterBO != null) {
-            userId = String.valueOf(userMasterBO.getUserid());
+            userId = userMasterBO.getUserid();
             userName = String.valueOf(userMasterBO.getUserName());
         }
 
-        final String path = LocationConstants.FIREBASE_BASE_PATH + "/" + nodePath + "/" + userId;
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);
-        ref.child("userId").setValue(userId);
-        ref.child("userName").setValue(userName);
-        ref.child("supervisorId").setValue(getSupervisorIds(context));
-        ref.child("latitude").setValue(locationDetailBO.getLatitude());
-        ref.child("longitude").setValue(locationDetailBO.getLongitude());
-        ref.child("accuracy").setValue(locationDetailBO.getAccuracy());
-        ref.child("batterStatus").setValue(locationDetailBO.getBatteryStatus());
-        ref.child("gpsEnabled").setValue(locationDetailBO.isGpsEnabled());
-        ref.child("mockLocationEnabled").setValue(locationDetailBO.isMockLocationEnabled());
-        ref.child("activityType").setValue(locationDetailBO.getActivityType());
-        ref.child("time").setValue(System.currentTimeMillis());
+        Map<String, Object> locationObj = new HashMap<>();
+        locationObj.put("userId",userId);
+        locationObj.put("userName",userName);
+        locationObj.put("latitude",Double.valueOf(locationDetailBO.getLatitude()));
+        locationObj.put("longitude",Double.valueOf(locationDetailBO.getLongitude()));
+        locationObj.put("accuracy",Double.valueOf(locationDetailBO.getAccuracy()));
+        locationObj.put("batterStatus",locationDetailBO.getBatteryStatus());
+        locationObj.put("gpsEnabled",locationDetailBO.isGpsEnabled());
+        locationObj.put("mockLocationEnabled",locationDetailBO.isMockLocationEnabled());
+        locationObj.put("activityType",locationDetailBO.getActivityType());
+        locationObj.put("time",System.currentTimeMillis());
+
+        String[] splitSupervisorIds = getSupervisorIds(context).split("/");
+
+        for(String ids :splitSupervisorIds)
+            if (!ids.isEmpty())
+                locationObj.put(ids,true);
+
+        db.collection(FIRESTORE_BASE_PATH)
+                .document(REALTIME_LOCATION_PATH)
+                .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
+                .document(userId+"")
+                .set(locationObj);
     }
 
     /**
@@ -147,6 +191,10 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                 userMasterBO = new UserMasterBO();
                 userMasterBO.setUserid(cursor.getInt(0));
                 userMasterBO.setUserName(cursor.getString(1));
+
+//                userMasterBO.setUserid(8);
+//                userMasterBO.setUserName("Mansoor");
+
                 cursor.close();
             }
 
@@ -171,10 +219,10 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             db.createDataBase();
             db.openDataBase();
 
-            Cursor cursor = db.selectSQL("select userid from usermaster where isDeviceuser=0 and relationship = 'PARENT'");
+            Cursor cursor = db.selectSQL("select parentpositionids from usermaster where isDeviceuser=1");
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    supervisorIds.append(cursor.getString(0)).append("/");
+                    supervisorIds.append(cursor.getString(0));
                 }
             } else
                 supervisorIds = new StringBuilder();
@@ -185,5 +233,25 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         }
 
         return supervisorIds.toString();
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public FireBaseRealtimeLocationUpload createFromParcel(Parcel in) {
+            return new FireBaseRealtimeLocationUpload(in);
+        }
+
+        public FireBaseRealtimeLocationUpload[] newArray(int size) {
+            return new FireBaseRealtimeLocationUpload[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }

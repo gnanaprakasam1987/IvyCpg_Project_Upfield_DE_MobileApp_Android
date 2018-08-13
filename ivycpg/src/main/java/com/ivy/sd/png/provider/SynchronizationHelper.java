@@ -2196,9 +2196,9 @@ SynchronizationHelper {
                 MyHttpConnectionNew http = new MyHttpConnectionNew();
                 http.create(MyHttpConnectionNew.POST, url.toString(), null);
                 http.addHeader(SECURITY_HEADER, mSecurityKey);
-                http.addParam("userinfo", headerinfo);
+                http.addParam("userInfo", headerinfo);
                 if (data != null) {
-                    http.addParam("data", data);
+                    http.addParam("Data", data);
                 }
                 http.connectMe();
                 Vector<String> result = http.getResult();

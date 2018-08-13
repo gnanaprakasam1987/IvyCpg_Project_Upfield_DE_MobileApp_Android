@@ -6768,7 +6768,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         String strPname = getResources().getString(
                 R.string.product_name)
                 + " (" + mylist.size() + ")";
-        // MyAdapter lvwplist = new MyAdapter(mylist);
+        // OutletListAdapter lvwplist = new OutletListAdapter(mylist);
         lvwplist.setAdapter(new MyAdapter(mylist));
 //        salesReturnHelper = SalesReturnHelper.getInstance(this);
     }

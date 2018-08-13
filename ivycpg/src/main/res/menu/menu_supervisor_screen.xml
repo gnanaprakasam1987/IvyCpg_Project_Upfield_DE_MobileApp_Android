@@ -7,7 +7,7 @@
         android:iconTint="@color/white"
         android:title="route"
         ivydist:showAsAction="always"
-        android:visible="true"
+        android:visible="false"
         />
 
     <item
@@ -15,6 +15,39 @@
         android:icon="@drawable/ic_navigation_icon"
         android:title="navigate"
         ivydist:showAsAction="always"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/menu_date"
+        android:icon="@drawable/ic_calendar"
+        android:title="Today"
+        ivydist:showAsAction="always|withText"
         android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_dashboard"
+        android:icon="@drawable/ic_dashboard_icon"
+        android:title="Dashboard"
+        ivydist:showAsAction="always"
+        android:visible="true"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/ic_action_sort"
+        android:title="Sort"
+        ivydist:showAsAction="always"
+        android:visible="false"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/icon_search"
+        android:title="search"
+        ivydist:actionViewClass="android.support.v7.widget.SearchView"
+        ivydist:showAsAction="always"
+        android:visible="true"/>
+
+
 
 </menu>
