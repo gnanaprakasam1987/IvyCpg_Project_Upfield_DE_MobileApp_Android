@@ -206,6 +206,7 @@ public class ProductMasterBO {
     private int isFocusBrand4;
     private int isSMP;
     private int isNMustSell;
+    private int mDeadProduct;
 
     /**
      * Total scheme discount amount applied on line value.
@@ -536,6 +537,7 @@ public class ProductMasterBO {
         this.hsnCode = productBO.getHsnCode();
         this.defaultUomId = productBO.getDefaultUomId();
         this.selectedUomId = productBO.getSelectedUomId();
+        this.mDeadProduct = productBO.getmDeadProduct();
     }
 
     // ******* Location ********
@@ -1947,5 +1949,13 @@ public class ProductMasterBO {
 
     public void setPriceChangeReasonID(String priceChangeReasonID) {
         this.priceChangeReasonID = priceChangeReasonID;
+    }
+
+    public int getmDeadProduct() {
+        return mDeadProduct;
+    }
+
+    public void setmDeadProduct(int mDeadProduct) {
+        this.mDeadProduct = mDeadProduct;
     }
 }

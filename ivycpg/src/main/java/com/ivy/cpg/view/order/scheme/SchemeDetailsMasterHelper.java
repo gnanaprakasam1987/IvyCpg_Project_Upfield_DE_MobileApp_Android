@@ -893,11 +893,11 @@ public class SchemeDetailsMasterHelper {
                     + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bModel.QT(retailerId) + ") as PieceUOM ON PieceUOM.Pid = A.pid"
                     + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bModel.QT(retailerId) + ") as OuterUOM ON OuterUOM.Pid = A.pid"
                     + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bModel.QT(retailerId) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
-                    + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bModel.QT(retailerId) + " and invoicestatus=1"
+                    + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bModel.QT(retailerId) + " and invoicestatus=1 and OH.upload!='X'"
                     + " LEFT JOIN SchemeDetail SD on SD.parentid=A.schid and OH.orderid=SD.orderid"
                     + " LEFT JOIN SchemeFreeProductDetail SPD on SPD.parentid=A.schid and OH.orderid=SPD.orderid"
 
-                    + " where OH.upload!='X' and rid=" + bModel.QT(retailerId)
+                    + " where rid=" + bModel.QT(retailerId)
                     + " and A.schid!=IFNULL(SD.parentid,0) and A.schid!=IFNULL(SPD.parentid,0) order by schid";
 
             Cursor c = db.selectSQL(query);

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#b1000000"
+    android:animateLayoutChanges="true">
+
+    <TextView
+        android:id="@+id/tv_store_count"
+        style="?attr/customListItemPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:gravity="center"
+        android:text="Total Store 8"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/_20sdp"
+        android:padding="@dimen/_5sdp"
+        android:layout_above="@+id/pager_layout"
+        android:layout_marginBottom="@dimen/_60sdp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:id="@+id/pager_layout">
+
+        <com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:clipToPadding="false"
+            app:rvp_singlePageFling="true"
+            app:rvp_triggerOffset="0.1"/>
+
+        <com.ivy.cpg.view.supervisor.customviews.scrollingpagerindicator.ScrollingPagerIndicator
+            android:id="@+id/scroll_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/viewpager"
+            android:layout_marginTop="@dimen/_50sdp"
+            app:spi_dotSelectedColor="@color/colorPrimaryDark"
+            app:spi_dotColor="@color/new_grey"
+            app:spi_visibleDotCount="9"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/close_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close_icon_white"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_40sdp"/>
+
+</RelativeLayout>

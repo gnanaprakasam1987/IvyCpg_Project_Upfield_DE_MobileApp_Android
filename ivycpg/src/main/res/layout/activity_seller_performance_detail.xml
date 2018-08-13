@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/scroll_view"
+        android:fillViewport="true"
+        android:background="#f6f9fc">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/_5sdp"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.36"
+                android:id="@+id/chart_layout"
+                android:background="@drawable/chart_bg_color_gradient">
+
+                <com.github.mikephil.charting.charts.CombinedChart
+                    android:id="@+id/combined_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_10sdp"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_calendar"
+                    android:layout_alignParentRight="true"
+                    android:visibility="gone"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.64">
+
+                <include layout="@layout/seller_performance_layout"
+                    android:id="@+id/seller_performance_layout"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</RelativeLayout>

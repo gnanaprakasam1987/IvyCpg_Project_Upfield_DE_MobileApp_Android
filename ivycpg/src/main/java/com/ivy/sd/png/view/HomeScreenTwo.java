@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
@@ -87,12 +88,12 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -167,7 +168,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_DISPLAY_SCH = "MENU_DISPLAY_SCH";
     public static final String MENU_DISPLAY_SCH_TRACK = "MENU_DISPLAY_SCH_TRACK";
     public static final String MENU_ORD_DELIVERY = "MENU_DELIVERY_MGMT_ORD";
-    public static final String MENU_SALES_RET_DELIVERY ="MENU_SALES_RET_DELIVERY";
+    public static final String MENU_SALES_RET_DELIVERY = "MENU_SALES_RET_DELIVERY";
 
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
@@ -848,7 +849,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             showDialog(2);
             return true;
         } else if (i1 == R.id.menu_supplier_selection) {
-           // checking first position- because if primary available then there is a
+            // checking first position- because if primary available then there is a
             // need to show seggregated view
             if (!bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
                     && mSupplierList.size() > 0 && mSupplierList.get(0).getIsPrimary() == 1) {
@@ -1451,7 +1452,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
-                }else if (menuDB.get(i).getConfigCode().equals(MENU_SALES_RET_DELIVERY)) {
+                } else if (menuDB.get(i).getConfigCode().equals(MENU_SALES_RET_DELIVERY)) {
                     if (menuDB.get(i).getHasLink() == 1) {
                         if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
@@ -2615,38 +2616,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (bmodel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
 
+                        new DownloadSalesReturnProducts(salesReturnHelper, menu.getConfigCode(), menu.getMenuName()).execute();
 
-                        if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
-                            salesReturnHelper.downloadSalesReturnSKUs(this);
-
-                        else
-                            salesReturnHelper.downloadSalesReturnProducts(this);
-
-
-                        salesReturnHelper.cloneReasonMaster(false);
-
-                        Commons.print("Sales Return Prod Size<><><><<>" + salesReturnHelper.getSalesReturnProducts().size());
-
-                        salesReturnHelper.getInstance(this).clearSalesReturnTable(false);
-
-
-                        if (!bmodel.configurationMasterHelper.IS_INVOICE) {
-                            salesReturnHelper.getInstance(this).removeSalesReturnTable(false);
-                            salesReturnHelper.getInstance(this).loadSalesReturnData(getApplicationContext(), "", "");
-                        }
-
-                        bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);
-
-                        bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-
-                        Intent intent = new Intent(HomeScreenTwo.this,
-                                SalesReturnActivity.class);
-                        intent.putExtra("CurrentActivityCode", menu.getConfigCode());
-                        intent.putExtra("screentitle", menu.getMenuName());
-                        startActivity(intent);
-                        finish();
                     } else {
                         Toast.makeText(
                                 HomeScreenTwo.this,
@@ -3743,9 +3714,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
             }
-        }else if(menu.getConfigCode().equals(MENU_SALES_RET_DELIVERY) && hasLink == 1){
+        } else if (menu.getConfigCode().equals(MENU_SALES_RET_DELIVERY) && hasLink == 1) {
             if (isPreviousDone(menu)
-                    || bmodel.configurationMasterHelper.IS_JUMP){
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
                 Intent i = new Intent(this,
                         SalesReturnDeliveryActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -4816,6 +4787,94 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(menuCode));
         bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(menuCode,
                 bmodel.productHelper.getRetailerModuleSequenceValues()));
+    }
+
+
+    /**
+     * Load Sales Download method in Async Task
+     *
+     */
+    class DownloadSalesReturnProducts extends AsyncTask<Integer, Integer, Boolean> {
+        private AlertDialog.Builder builder;
+        private AlertDialog salesAlertDialog;
+        private SalesReturnHelper salesReturnHelper;
+        private String menCode;
+        private String menuName;
+
+        public DownloadSalesReturnProducts(SalesReturnHelper salesReturnHelper, String configCode, String menuName) {
+            this.salesReturnHelper = salesReturnHelper;
+            this.menCode = configCode;
+            this.menuName = menuName;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            builder = new AlertDialog.Builder(HomeScreenTwo.this);
+
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            salesAlertDialog = builder.create();
+            salesAlertDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+            try {
+
+                if (salesReturnHelper.IS_PRD_CNT_DIFF_SR)
+                    salesReturnHelper.downloadSalesReturnSKUs(HomeScreenTwo.this);
+
+                else
+                    salesReturnHelper.downloadSalesReturnProducts(HomeScreenTwo.this);
+
+
+                salesReturnHelper.cloneReasonMaster(false);
+
+                Commons.print("Sales Return Prod Size<><><><<>" + salesReturnHelper.getSalesReturnProducts().size());
+
+                salesReturnHelper.getInstance(HomeScreenTwo.this).clearSalesReturnTable(false);
+
+
+                if (!bmodel.configurationMasterHelper.IS_INVOICE) {
+                    salesReturnHelper.getInstance(HomeScreenTwo.this).removeSalesReturnTable(false);
+                    salesReturnHelper.getInstance(HomeScreenTwo.this).loadSalesReturnData(getApplicationContext(), "", "");
+                }
+
+                bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);
+
+                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                        SDUtil.now(SDUtil.TIME), menCode);
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
+            return Boolean.FALSE;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isFlag) {
+            super.onPostExecute(isFlag);
+            salesAlertDialog.dismiss();
+            if (isFlag) {
+                Intent intent = new Intent(HomeScreenTwo.this,
+                        SalesReturnActivity.class);
+                intent.putExtra("CurrentActivityCode", menCode);
+                intent.putExtra("screentitle", menuName);
+                startActivity(intent);
+                finish();
+            } else {
+                isCreated = false;
+                isClick = false;
+                Toast.makeText(
+                        HomeScreenTwo.this,
+                        getResources()
+                                .getString(
+                                        R.string.unable_to_load_data),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 
