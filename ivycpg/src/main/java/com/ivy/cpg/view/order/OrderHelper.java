@@ -300,7 +300,8 @@ public class OrderHelper {
                     + "," + businessModel.QT(businessModel.getOrderHeaderBO().getOrderImageName())
                     + "," + businessModel.QT(orderImagePath)
                     + "," + getOrderTotalValue()
-                    + "," + businessModel.getOrderHeaderBO().getAddressID();
+                    + "," + (businessModel.getOrderHeaderBO().getAddressID() == -1
+                    ? 0 : businessModel.getOrderHeaderBO().getAddressID());
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -800,7 +801,7 @@ public class OrderHelper {
                 }
 
                 columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath";
+                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath,AddressId";
                 values = uid
                         + ","
                         + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
@@ -867,7 +868,9 @@ public class OrderHelper {
                         + "," + businessModel.QT(businessModel.getRField2()) + "," + businessModel.QT(SDUtil.now(SDUtil.TIME))
                         + "," + businessModel.QT(businessModel.getRemarkType()) + "," + businessModel.QT(businessModel.getRField3())
                         + "," + businessModel.QT(businessModel.getOrderHeaderBO().getOrderImageName())
-                        + "," + businessModel.QT(orderImagePath);
+                        + "," + businessModel.QT(orderImagePath)
+                        + "," + (businessModel.getOrderHeaderBO().getAddressID() == -1
+                        ? 0 : businessModel.getOrderHeaderBO().getAddressID());
 
 
                 db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -1860,7 +1863,8 @@ public class OrderHelper {
             sb.append("," + businessModel.QT(businessModel.getRField2()));
             sb.append("," + businessModel.QT(businessModel.getRField3()));
             sb.append("," + getInvoiceTotalValue());
-            sb.append("," + businessModel.getOrderHeaderBO().getAddressID());
+            sb.append("," + (businessModel.getOrderHeaderBO().getAddressID() == -1
+                    ? 0 : businessModel.getOrderHeaderBO().getAddressID()));
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());

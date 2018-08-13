@@ -872,7 +872,7 @@ public class ReasonHelper {
             db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            String s = "SELECT RA.AddressId,(RA.Address1|| \",\" ||RA.Address2|| \",\" ||RA.Address3) as Address  FROM StandardListMaster SLM"
+            String s = "SELECT RA.AddressId,RA.Address1,RA.Address2,RA.Address3  FROM StandardListMaster SLM"
                     + " LEFT JOIN RetailerAddress RA ON SLM.ListId = RA.AddressTypeID"
                     + " WHERE RA.RetailerId =" + retailerId
                     + " AND SLM.ListCode in(" + addressSB.toString() + ")"
@@ -881,8 +881,22 @@ public class ReasonHelper {
             if (c != null) {
                 while (c.moveToNext()) {
                     reason = new ReasonMaster();
+                    StringBuilder address = new StringBuilder();
                     reason.setReasonID(c.getString(0));
-                    reason.setReasonDesc(c.getString(1));
+
+                    address.append(c.getString(1));
+                    address.append(", ");
+
+                    if (c.getString(2).length() > 0) {
+                        address.append(c.getString(2));
+                        address.append(", ");
+                    }
+                    if (c.getString(3).length() > 0) {
+                        address.append(c.getString(3));
+                        address.append(",");
+                    }
+
+                    reason.setReasonDesc(address.toString());
                     addressList.add(reason);
                 }
                 c.close();
