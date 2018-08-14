@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -70,6 +71,7 @@ import com.ivy.cpg.view.order.scheme.RetailerInfo;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -210,6 +212,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     Handler handler = null;
     Runnable runnable = null;
+
+    String dynamicReportTitle = "" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -587,10 +591,26 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         * Show dynamic report based on Retailer
         * */
 
+        String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                + " where hhtCode=" + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_SALES_VALUE_DR) + " and Flag=1";
 
+        DBUtil db = new DBUtil(this, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+
+
+        Cursor c = db.selectSQL(sql);
+        if (c != null && c.getCount() != 0) {
+            if (c.moveToNext()) {
+                dynamicReportTitle = c.getString(c.getColumnIndex("RField"));
+            }
+            c.close();
+            db.closeDB();
+        }
+
+        dynamicReportTitle = dynamicReportTitle.equalsIgnoreCase("") ? "Report" : dynamicReportTitle;
 
         if (bmodel.configurationMasterHelper.SHOW_SALES_VALUE_DR) {
-            tabLayout.addTab(tabLayout.newTab().setText("Report"));
+            tabLayout.addTab(tabLayout.newTab().setText(dynamicReportTitle));
         }
 
 
@@ -1394,7 +1414,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 return new SBDGapFragment();
             } else if (tabName.equals(retailer_contact_title)) {
                 return new RetailerContactFragment();
-            } else if ("Report".equalsIgnoreCase(tabName)) {
+            } else if (dynamicReportTitle.equalsIgnoreCase(tabName)) {
                 DynamicReportHelper.getInstance(ProfileActivity.this).downloadDynamicReport("MENU_DYN_RPT_RTR");
                 DynamicReportFragment dynamicReportFragment = new DynamicReportFragment();
                 Bundle bundle = new Bundle();
