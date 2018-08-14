@@ -81,7 +81,6 @@ import com.ivy.ui.profile.edit.di.ProfileEditModule;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
-import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -348,7 +347,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @NonNls Intent data) {
+    public void onActivityResult(int requestCode, int resultCode,  Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
@@ -1576,8 +1575,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             public void onClick(View v) {
                 if (mPriorityProductList != null) {
                     FragmentManager fm = getActivity().getSupportFragmentManager();
-                    @NonNls CustomFragment dialogFragment = new CustomFragment();
-                    @NonNls Bundle bundle = new Bundle();
+                     CustomFragment dialogFragment = new CustomFragment();
+                     Bundle bundle = new Bundle();
                     bundle.putString("title", MName);
                     bundle.putString("screentitle", MName);
                     bundle.putInt("hasLink", 0);
@@ -1798,7 +1797,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                                 || (profileEditPresenter.getChannelAttributeList() != null
                                 && profileEditPresenter.getChannelAttributeList().contains(parentBO.getAttrId()))))) {
 
-                            @NonNls LinearLayout layout = new LinearLayout(getActivity());
+                             LinearLayout layout = new LinearLayout(getActivity());
                             // setting tag as channel, used to remove channel views particularly and update new one if channel changed
                             if (profileEditPresenter.getChannelAttributeList() != null
                                     && profileEditPresenter.getChannelAttributeList().contains(parentBO.getAttrId()))
@@ -2260,7 +2259,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
 
     public void onMapViewClicked() {
-        @NonNls Intent in;
+         Intent in;
         int REQUEST_CODE = 100;
         if (profileEditPresenter.IS_BAIDU_MAP())
             in = new Intent(getActivity(), BaiduMapDialogue.class);
@@ -2389,7 +2388,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
     /*comparing two values with equalsIgnoreCase*/
-    private boolean comparConfigerCode(String configCode, @NonNls String configCodeFromDB) {
+    private boolean comparConfigerCode(String configCode, String configCodeFromDB) {
         return configCode.equalsIgnoreCase(configCodeFromDB);
     }
 

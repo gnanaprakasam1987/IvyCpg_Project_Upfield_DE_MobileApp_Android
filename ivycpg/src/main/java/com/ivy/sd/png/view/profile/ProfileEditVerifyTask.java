@@ -6,7 +6,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 
-import org.jetbrains.annotations.NonNls;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -48,7 +47,7 @@ public class ProfileEditVerifyTask extends AsyncTask<Integer,Integer,Integer> {
             jsonData.put("Notification", notificationArray);
 
 
-            @NonNls JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
 
             jsonFormatter.addParameter("UserId", bmodel.userMasterHelper.getUserMasterBO().getUserid());
             jsonFormatter.addParameter("VersionCode", bmodel.getApplicationVersionNumber());
@@ -66,7 +65,7 @@ public class ProfileEditVerifyTask extends AsyncTask<Integer,Integer,Integer> {
 
             if (responseVector.size() > 0) {
                 for (String s : responseVector) {
-                    @NonNls JSONObject jsonObjectResponse = new JSONObject(s);
+                     JSONObject jsonObjectResponse = new JSONObject(s);
 
                     Iterator itr = jsonObjectResponse.keys();
                     while (itr.hasNext()) {

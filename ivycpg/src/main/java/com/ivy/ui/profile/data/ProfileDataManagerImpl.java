@@ -6,7 +6,6 @@ import android.database.Cursor;
 
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
@@ -939,12 +938,13 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                                         + "," + AppUtils.QT(bo.getListCode())
                                         + "," + AppUtils.QT(bo.getStatus()) + ",'N')";
                                 dbUtil.executeQ(Q);
-                                return true;
                             }
+                            return true;
                         }catch (Exception e){
                             Commons.printException("" + e);
+                            return false;
                         }
-                        return false;
+
                     }
                 });
             }
@@ -970,17 +970,21 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                 return Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
-                        for (NewOutletAttributeBO id : tempList) {
-                            String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
-                                    "values (" + AppUtils.QT(mTid)
-                                    + "," + RetailerID
-                                    + "," + id.getAttrId()
-                                    + "," + id.getLevelId()
-                                    + "," + AppUtils.QT(id.getStatus()) + ",'N')";
-                            dbUtil.executeQ(Q);
+                        try {
+                            for (NewOutletAttributeBO id : tempList) {
+                                String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
+                                        "values (" + AppUtils.QT(mTid)
+                                        + "," + RetailerID
+                                        + "," + id.getAttrId()
+                                        + "," + id.getLevelId()
+                                        + "," + AppUtils.QT(id.getStatus()) + ",'N')";
+                                dbUtil.executeQ(Q);
+                            }
                             return true;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return false;
                         }
-                        return false;
                     }
                 });
             }
