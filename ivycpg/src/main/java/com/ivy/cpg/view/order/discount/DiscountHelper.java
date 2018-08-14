@@ -926,7 +926,7 @@ public class DiscountHelper {
         if (appliedSchemeList != null) {
 
             for (SchemeBO schemeBO : appliedSchemeList) {
-                if (schemeBO != null) {b f v
+                if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();
                     }
