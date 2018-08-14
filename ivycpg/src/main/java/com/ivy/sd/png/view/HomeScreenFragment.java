@@ -90,7 +90,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener, PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
+public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener
+        , PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
     private BusinessModel bmodel;
 
     //used to save the photo

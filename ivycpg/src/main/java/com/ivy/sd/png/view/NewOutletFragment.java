@@ -111,7 +111,9 @@ import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 
-public class NewOutletFragment extends IvyBaseFragment implements NearByRetailerDialog.NearByRetailerInterface, PrioritySelectionDialog.PrioritySelectionListener {
+public class NewOutletFragment extends IvyBaseFragment
+        implements NearByRetailerDialog.NearByRetailerInterface
+        , PrioritySelectionDialog.PrioritySelectionListener {
     private double lattitude = 0;
     private double longitude = 0;
 

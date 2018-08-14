@@ -1043,13 +1043,13 @@ public class ProfileHelper {
     }
 
 
-    public Observable<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID) {
+    public Observable<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID, final boolean isEdit) {
         return Observable.create(new ObservableOnSubscribe<ArrayList<RetailerContactBo>>() {
             @Override
             public void subscribe(ObservableEmitter<ArrayList<RetailerContactBo>> subscriber) throws Exception {
                 ArrayList<RetailerContactBo> contactList = new ArrayList<>();
                 try {
-                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,RC.contact_title_lovid as contact_title_lovid"
+                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,RC.contact_title_lovid as contact_title_lovid,"
                             + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
                             + " ifnull(RC.Email,'') as email from RetailerContact RC "
                             + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
@@ -1075,6 +1075,10 @@ public class ProfileHelper {
                             contactList.add(retailerContactBo);
                         }
                         c.close();
+                    }
+
+                    if(isEdit){
+
                     }
                     db.closeDB();
                     subscriber.onNext(contactList);

@@ -45,9 +45,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
-/**
- * Created by mansoor.k on 03-08-2018.
- */
+
 public class ContactCreationFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private ArrayList<ConfigureBO> contactConfig;
@@ -64,6 +62,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private ArrayList<StandardListBO> mcontactTitleList;
     private ArrayAdapter<StandardListBO> contactTitleAdapter;
     private ArrayList<RetailerContactBo> contactList;
+    private ArrayList<RetailerContactBo> retailerContactList;
 
     //views
     @BindView(R.id.tvTitlePrimary)
@@ -98,6 +97,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
     @BindView(R.id.rv_contacts)
     RecyclerView rvContacts;
+    private AppSchedulerProvider appSchedulerProvider;
 
 
     @Override
@@ -118,13 +118,34 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
     private void initializeViews() {
 
-        AppSchedulerProvider appSchedulerProvider = new AppSchedulerProvider();
-
+        appSchedulerProvider = new AppSchedulerProvider();
         new CompositeDisposable().add((Disposable) bmodel.configurationMasterHelper.downloadContactModuleConfig()
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribeWith(getContactConfig()));
     }
+
+    private Observer<ArrayList<RetailerContactBo>> arrayListObserver() {
+        return new DisposableObserver<ArrayList<RetailerContactBo>>() {
+            @Override
+            public void onNext(ArrayList<RetailerContactBo> contactList) {
+                bmodel.newOutletHelper.setRetailerContactList(contactList);
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+                loadRecyclerView();
+            }
+        };
+    }
+
 
     private Observer<ArrayList<ConfigureBO>> getContactConfig() {
         return new DisposableObserver<ArrayList<ConfigureBO>>() {
@@ -143,7 +164,11 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
             @Override
             public void onComplete() {
-
+                if (isEdit)
+                    new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(),true)
+                            .subscribeOn(appSchedulerProvider.io())
+                            .observeOn(appSchedulerProvider.ui())
+                            .subscribeWith(arrayListObserver()));
             }
         };
     }
@@ -637,12 +662,14 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
     private int getSpinnerPostion(String listId) {
         int default_value = 0;
-        for (int i = 0; i < contactTitleAdapter.getCount(); i++) {
-            StandardListBO tempBo = contactTitleAdapter.getItem(i);
-            if (tempBo.getListID().equalsIgnoreCase(listId)) {
-                return i;
+        if (contactTitleAdapter != null)
+            for (int i = 0; i < contactTitleAdapter.getCount(); i++) {
+                StandardListBO tempBo = contactTitleAdapter.getItem(i);
+                assert tempBo != null;
+                if (tempBo.getListID().equalsIgnoreCase(listId)) {
+                    return i;
+                }
             }
-        }
         return default_value;
     }
 }

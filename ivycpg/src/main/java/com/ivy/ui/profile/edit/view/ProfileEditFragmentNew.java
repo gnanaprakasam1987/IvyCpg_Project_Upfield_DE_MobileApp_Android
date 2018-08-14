@@ -100,7 +100,7 @@ import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ProfileEditFragmentNew extends BaseFragment implements IProfileEditContract.ProfileEditView ,RetailerOTPDialog.OTPListener {
+public class ProfileEditFragmentNew extends BaseFragment implements IProfileEditContract.ProfileEditView, RetailerOTPDialog.OTPListener {
 
     @BindView(R.id.profile_edit_scrollview)
     ScrollView mScrollView;
@@ -125,11 +125,10 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private AppCompatCheckBox inSEZcheckBox = null;
 
 
-
     private TextView textview[] = new TextView[100];
 
     @SuppressLint("UseSparseArrays")
-    private HashMap<Integer,AppCompatEditText> editTextHashMap=new HashMap<>();
+    private HashMap<Integer, AppCompatEditText> editTextHashMap = new HashMap<>();
 
     private MaterialSpinner channel, subchannel, location1, location2, location3,
             contractSpinner, rField5Spinner, rField6Spinner, rField7Spinner, rField4Spinner;
@@ -207,7 +206,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         paramsAttribSpinner = new LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
         paramsAttribSpinner.weight = 2.3f;
 
-        weight0wrap= new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        weight0wrap = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         weight0wrap.setMargins(10, 0, 0, 5);
 
         weight4 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -251,7 +250,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
     @OnClick(R.id.profile_edit_save)
-    public void seveUpdateProfile(){
+    public void seveUpdateProfile() {
         profileEditPresenter.saveUpdatedProfileEdit();
     }
 
@@ -309,7 +308,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             if (new File(cameraFilePath).exists())
                 openImage(new File(cameraFilePath));
             else
-            showMessage(R.string.unloadimage);
+                showMessage(R.string.unloadimage);
         } else {
             File filePath = null;
             if (hasProfileImagePath) {
@@ -347,7 +346,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode,  Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
@@ -394,7 +393,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @Override
     public void createCheckBoxView(String isSEZzone, int Mandatory, String menuName) {
 
-        getmRootLinearLayout().addView(getCheckBoxView(isSEZzone,Mandatory,menuName),getCommonsparams());
+        getmRootLinearLayout().addView(getCheckBoxView(isSEZzone, Mandatory, menuName), getCommonsparams());
     }
 
 
@@ -448,14 +447,14 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
 
     @Override
-    public void createDrugLicenseExpDate(String mName,int mNumber,String data) {
-        getmRootLinearLayout().addView(getDurgExpDateView(mName,mNumber,data), getCommonsparams());
+    public void createDrugLicenseExpDate(String mName, int mNumber, String data) {
+        getmRootLinearLayout().addView(getDurgExpDateView(mName, mNumber, data), getCommonsparams());
     }
 
 
     @Override
-    public void createFoodLicenceExpDate(String mName,int mNumber,String data) {
-        getmRootLinearLayout().addView(getFoodExpDateView(mName,mNumber,data), getCommonsparams());
+    public void createFoodLicenceExpDate(String mName, int mNumber, String data) {
+        getmRootLinearLayout().addView(getFoodExpDateView(mName, mNumber, data), getCommonsparams());
     }
 
 
@@ -478,7 +477,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     public int getLocation1SelectedItemLocId() {
         return ((LocationBO) location1.getSelectedItem()).getLocId();
     }
-
 
 
     @Override
@@ -582,10 +580,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @SuppressLint("UseSparseArrays")
     @Override
     public HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList() {
-        if(selectedAttribList!=null){
-            return  selectedAttribList;
-        }
-        else selectedAttribList =new HashMap<>();
+        if (selectedAttribList != null) {
+            return selectedAttribList;
+        } else selectedAttribList = new HashMap<>();
         return selectedAttribList;
     }
 
@@ -601,7 +598,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public ChannelBO getChennalSelectedItemBO() {
-        return   (ChannelBO) channel.getSelectedItem();
+        return (ChannelBO) channel.getSelectedItem();
     }
 
     @Override
@@ -660,7 +657,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     }
 
     @Override
-    public void profileEditShowMessage(int resouceId,String msg) {
+    public void profileEditShowMessage(int resouceId, String msg) {
         Toast.makeText(getActivity(),
                 getActivity().getResources().getString(resouceId) + " " + msg, Toast.LENGTH_LONG).show();
     }
@@ -668,7 +665,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList,
-                                         String menuCode,String MName) {
+                                         String menuCode, String MName) {
 
         if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD5)) {
             ArrayAdapter<RetailerFlexBO> rField5Adapter = new ArrayAdapter<>(getActivity(),
@@ -688,7 +685,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 }
 
-                public void onNothingSelected(AdapterView<?> arg0) {}
+                public void onNothingSelected(AdapterView<?> arg0) {
+                }
             });
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD6)) {
@@ -922,7 +920,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             verifyBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    profileEditPresenter.verifyOTP("EMAIL",  editTextHashMap.get(mNumber).getText().toString());
+                    profileEditPresenter.verifyOTP("EMAIL", editTextHashMap.get(mNumber).getText().toString());
                 }
             });
             emailLayout.addView(verifyBtn, verifyButtonParams);
@@ -991,8 +989,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                         if (SDUtil.convertToInt(qty) > MAX_CREDIT_DAYS) {
                             //Delete the last entered number and reset the qty
                             editTextHashMap.get(mNumber).setText(qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0");
-                            String message=" " + MAX_CREDIT_DAYS;
-                            profileEditShowMessage(R.string.max_credit_days_allowed,message);
+                            String message = " " + MAX_CREDIT_DAYS;
+                            profileEditShowMessage(R.string.max_credit_days_allowed, message);
 
                         }
                     }
@@ -1004,7 +1002,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         return linearlayout;
     }
 
-    private LinearLayout getCheckBoxView(String mSEZzone,int mMandatory,String mMenuName){
+    private LinearLayout getCheckBoxView(String mSEZzone, int mMandatory, String mMenuName) {
 
         LinearLayout baselayout = new LinearLayout(getActivity());
         baselayout.setOrientation(LinearLayout.VERTICAL);
@@ -1046,7 +1044,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
 
     @SuppressLint("RestrictedApi")
-    private LinearLayout getFoodExpDateView(String mName,int mNumber,String data){
+    private LinearLayout getFoodExpDateView(String mName, int mNumber, String data) {
 
         LinearLayout secondlayout = new LinearLayout(getActivity());
         LinearLayout firstlayout = new LinearLayout(getActivity());
@@ -1058,13 +1056,13 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         tv_label.setText(mName);
         tv_label.setTextColor(Color.BLACK);
         tv_label.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-        tv_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity())) ;
+        tv_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         firstlayout.addView(tv_label, params8);
         flExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
         flExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
         flExpDateTextView.setTextColor(Color.BLACK);
         flExpDateTextView.setGravity(Gravity.CENTER);
-        flExpDateTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        flExpDateTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         flExpDateTextView.setId(mNumber);
         flExpDateTextView.setTypeface(flExpDateTextView.getTypeface(), Typeface.NORMAL);
         flExpDateTextView.setText(data);
@@ -1079,7 +1077,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
-                 String date = flExpDateTextView.getText().toString();
+                String date = flExpDateTextView.getText().toString();
                 if (!date.equalsIgnoreCase("Select Date") && date.contains("/") && date.split("/").length == 3) {
                     year = Integer.valueOf(date.split("/")[0]);
                     month = Integer.valueOf(date.split("/")[1]) - 1;
@@ -1095,7 +1093,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
 
     @SuppressLint("RestrictedApi")
-    private LinearLayout getDurgExpDateView(String mName, int mNumber, String data){
+    private LinearLayout getDurgExpDateView(String mName, int mNumber, String data) {
         LinearLayout linearlayout = new LinearLayout(getActivity());
         linearlayout.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -1109,13 +1107,13 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         tv_label.setText(mName);
         tv_label.setTextColor(Color.BLACK);
         tv_label.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-        tv_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        tv_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         firstlayout.addView(tv_label, params8);
         dlExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
         dlExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
         dlExpDateTextView.setTextColor(Color.BLACK);
         dlExpDateTextView.setGravity(Gravity.CENTER);
-        dlExpDateTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        dlExpDateTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         dlExpDateTextView.setId(mNumber);
         dlExpDateTextView.setTypeface(dlExpDateTextView.getTypeface(), Typeface.NORMAL);
 
@@ -1132,13 +1130,13 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
-                 String date = dlExpDateTextView.getText().toString();
+                String date = dlExpDateTextView.getText().toString();
                 if (!date.equalsIgnoreCase("Select Date") && date.contains("/") && date.split("/").length == 3) {
                     year = Integer.valueOf(date.split("/")[0]);
                     month = Integer.valueOf(date.split("/")[1]) - 1;
                     day = Integer.valueOf(date.split("/")[2]);
                 }
-                 DialogFragment newFragment = new DatePickerFragment("DLEXPDATE", year, month, day);
+                DialogFragment newFragment = new DatePickerFragment("DLEXPDATE", year, month, day);
                 newFragment.show(getActivity().getSupportFragmentManager(), "dlDatePicker");
             }
         });
@@ -1173,7 +1171,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             else
                 appCompatEditText.setText(values);
         }
-        editTextHashMap.put(positionNumber,appCompatEditText);
+        editTextHashMap.put(positionNumber, appCompatEditText);
         if (!comparConfigerCode(configCode, ProfileConstant.EMAIL)) {//if not Email //cmd for not apply inputfilter value for email id
             getInputFilter(positionNumber);
         }
@@ -1416,7 +1414,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField5Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField5Spinner.setId(mNumber);
             rField5Spinner.setFloatingLabelText(MName);
-            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_5,menuCode,MName);
+            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_5, menuCode, MName);
             layout.addView(rField5Spinner, spinweight);
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD6)) {
@@ -1424,7 +1422,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField6Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField6Spinner.setId(mNumber);
             rField6Spinner.setFloatingLabelText(MName);
-            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_6,menuCode,MName);
+            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_6, menuCode, MName);
             layout.addView(rField6Spinner, spinweight);
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD7)) {
@@ -1432,7 +1430,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField7Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField7Spinner.setId(mNumber);
             rField7Spinner.setFloatingLabelText(MName);
-            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_7,menuCode,MName);
+            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_7, menuCode, MName);
             layout.addView(rField7Spinner, spinweight);
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RField4)) {
@@ -1440,7 +1438,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             rField4Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             rField4Spinner.setId(mNumber);
             rField4Spinner.setFloatingLabelText(MName);
-            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_4,menuCode,MName);
+            profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_4, menuCode, MName);
             layout.addView(rField4Spinner, spinweight);
         }
         return layout;
@@ -1575,8 +1573,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             public void onClick(View v) {
                 if (mPriorityProductList != null) {
                     FragmentManager fm = getActivity().getSupportFragmentManager();
-                     CustomFragment dialogFragment = new CustomFragment();
-                     Bundle bundle = new Bundle();
+                    CustomFragment dialogFragment = new CustomFragment();
+                    Bundle bundle = new Bundle();
                     bundle.putString("title", MName);
                     bundle.putString("screentitle", MName);
                     bundle.putInt("hasLink", 0);
@@ -1797,7 +1795,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                                 || (profileEditPresenter.getChannelAttributeList() != null
                                 && profileEditPresenter.getChannelAttributeList().contains(parentBO.getAttrId()))))) {
 
-                             LinearLayout layout = new LinearLayout(getActivity());
+                            LinearLayout layout = new LinearLayout(getActivity());
                             // setting tag as channel, used to remove channel views particularly and update new one if channel changed
                             if (profileEditPresenter.getChannelAttributeList() != null
                                     && profileEditPresenter.getChannelAttributeList().contains(parentBO.getAttrId()))
@@ -2259,7 +2257,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
 
     public void onMapViewClicked() {
-         Intent in;
+        Intent in;
         int REQUEST_CODE = 100;
         if (profileEditPresenter.IS_BAIDU_MAP())
             in = new Intent(getActivity(), BaiduMapDialogue.class);
@@ -2286,11 +2284,12 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     private void updateLocationAdapter1(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<>();
-        for (LocationBO locationBO : mLocationMasterList1) {
-            if (parentId == locationBO.getParentId()) {
-                locationList.add(locationBO);
+        if (mLocationMasterList1 != null)
+            for (LocationBO locationBO : mLocationMasterList1) {
+                if (parentId == locationBO.getParentId()) {
+                    locationList.add(locationBO);
+                }
             }
-        }
         locationAdapter1 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, locationList);
         if (locationAdapter1.getCount() > 0) {
             if (!(locationAdapter1.getItem(0)).getLocName().toLowerCase().contains("select"))
@@ -2306,6 +2305,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     private void updateLocationAdapter2(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<LocationBO>();
+        if(mLocationMasterList2!=null)
         for (LocationBO locationBO : mLocationMasterList2) {
             if (parentId == locationBO.getParentId()) {
                 locationList.add(locationBO);
@@ -2427,7 +2427,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             stockArr = inputFilters.toArray(stockArr);
             editTextHashMap.get(positionNumber).setFilters(stockArr);
             if (inputFilters.size() == 2)
-            editTextHashMap.get(positionNumber).setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                editTextHashMap.get(positionNumber).setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         }
     }
 
