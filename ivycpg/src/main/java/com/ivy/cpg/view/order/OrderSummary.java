@@ -936,11 +936,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
             if (bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
-                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.icon_save);
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_attach_file_black_24dp);
                 drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
                 menu.findItem(R.id.menu_attach_file).setIcon(drawable);
             } else {
-                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.icon_save);
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_attach_file_black_24dp);
                 drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
                 menu.findItem(R.id.menu_attach_file).setIcon(drawable);
             }
