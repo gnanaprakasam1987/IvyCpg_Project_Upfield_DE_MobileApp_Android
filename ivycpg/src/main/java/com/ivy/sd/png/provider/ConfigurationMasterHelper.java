@@ -6224,7 +6224,7 @@ public class ConfigurationMasterHelper {
     public String getDynamicReportTitle() {
 
         String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                + " where hhtCode=" + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_SALES_VALUE_DR) + " and Flag=1";
+                + " where hhtCode=" + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_SALES_VALUE_DR) + " and Flag=1 and ForSwitchSeller = 0";
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
