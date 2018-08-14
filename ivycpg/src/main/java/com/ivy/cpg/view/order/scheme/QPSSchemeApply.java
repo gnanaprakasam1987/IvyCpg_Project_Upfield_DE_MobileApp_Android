@@ -141,35 +141,19 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         }
                     }
                 }
-//                if (isSchemeAplied(schemeHelper.getAppliedSchemeList())) {
-//                    schemeHelper.clearOffInvoiceSchemeList();
                 click(2);
-//                } else {
-//                    showAlert(getResources().getString(R.string.you_have_unchecked_applicable_scheme), 1);
-//                }
             }
         });
 
-        if (fromOrderScreen.equalsIgnoreCase("MENU_STK_ORD") ||
-                fromOrderScreen.equalsIgnoreCase("MENU_ORDER") ||
-                fromOrderScreen.equalsIgnoreCase("MENU_CATALOG_ORDER")) {
-            parentSchemeList = new HashMap<>();
-            preSchemeList = new HashMap<>();
-            currentSchemeList = new HashMap<>();
-            nextSchemeList = new HashMap<>();
-            mSchemeDoneList = new ArrayList<>();
-            schemeHelper.resetSchemeQPSList();
-            //For setting Ordered SKUs and check Slab in the object.
-            schemeIDList = schemeHelper.getSchemeList();
-            new SchemeApplyAsync().execute();
-        } else {
-//            mSchemeDoneList = schemeHelper.getAppliedSchemeList();
-//            if (mSchemeDoneList.size() > 0) {
-//                mExpandableAdapterNew = new SchemeExpandableAdapter();
-//                mExpandableLV.setAdapter(mExpandableAdapterNew);
-//            }
-        }
-
+        parentSchemeList = new HashMap<>();
+        preSchemeList = new HashMap<>();
+        currentSchemeList = new HashMap<>();
+        nextSchemeList = new HashMap<>();
+        mSchemeDoneList = new ArrayList<>();
+        schemeHelper.resetSchemeQPSList();
+        //For setting Ordered SKUs and check Slab in the object.
+        schemeIDList = schemeHelper.getSchemeList();
+        new SchemeApplyAsync().execute();
 
         if (!schemeHelper.IS_SCHEME_EDITABLE)
             ((LinearLayout) findViewById(R.id.footer)).setVisibility(View.GONE);
@@ -190,7 +174,6 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-
             try {
                 checkSlabandsetProduct();
                 mSchemeDoneList = buildListView();
@@ -199,8 +182,6 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 Commons.printException(ex);
                 return false;
             }
-
-
         }
 
         @Override
@@ -216,15 +197,12 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
     }
 
     private void checkSlabandsetProduct() {
-        String groupName = "";
-        HashMap<Integer, SchemeBO> tempList = new HashMap<>();
         minItemList = new HashMap<>();
         for (int i = 0; i < schemeIDList.size(); i++) {
             SchemeBO schemeHeader = schemeIDList.get(i);
             if (minItemList.get(schemeHeader.getParentId()) == null) {
                 minItemList.put(schemeHeader.getParentId(), schemeHeader);
             }
-
             float totalPiecesQty = 0, totalPiecesPriceQty = 0, totalPiecesEveryQty = 0, totalPiecesEveryPriceQty = 0;
             double totalCasesQty = 0, totalCasesPriceQty = 0, totalCasesEveryQty = 0, totalCasesEveryPriceQty = 0;
             for (SchemeProductBO schemeProduct : schemeHeader.getBuyingProducts()) {
@@ -350,7 +328,6 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     schemeHeader.setTotalCasesPriceQty(totalCasesPriceQty);
                 }
                 currentSchemeList.put(schemeHeader.getParentId(), schemeHeader);
-                //nextSchemeList.remove(schemeHeader.getParentId());
             } else if (totalPiecesQty >= schemeHeader.getFromQty() && totalPiecesQty <= schemeHeader.getToQty()) {
                 schemeHeader.setTotalPieceQty(totalPiecesQty);
                 if (totalPiecesEveryPriceQty > 0) {
@@ -360,62 +337,20 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     schemeHeader.setTotalPcsPriceQty(totalPiecesPriceQty);
                 }
                 currentSchemeList.put(schemeHeader.getParentId(), schemeHeader);
-                //nextSchemeList.remove(schemeHeader.getParentId());
             } else if (totalPiecesQty > 0 && totalPiecesQty < minItemList.get(schemeHeader.getParentId()).getFromQty()) {
                 schemeHeader.setTotalPieceQty(totalPiecesQty);
                 preSchemeList.put(schemeHeader.getParentId(), schemeHeader);
             } else if (totalCasesQty > 0 && schemeHeader.isCaseScheme() && totalCasesQty < minItemList.get(schemeHeader.getParentId()).getFromQty()) {
                 schemeHeader.setTotalCaseQty(totalCasesQty);
                 preSchemeList.put(schemeHeader.getParentId(), schemeHeader);
-                //nextSchemeList.remove(schemeHeader.getParentId());
             }
-
-//            int currentCount = 0;
-//            for (Map.Entry<Integer, SchemeBO> entry : currentSchemeList.entrySet()) {
-//                if (entry.getKey().equals(schemeHeader.getParentId())) {
-//                    currentCount++;
-//                }
-//            }
-//            int nextCount = 0;
-//            for (Map.Entry<Integer, SchemeBO> entry : nextSchemeList.entrySet()) {
-//                if (entry.getKey().equals(schemeHeader.getParentId())) {
-//                    nextCount++;
-//                }
-//            }
-
-//            if (groupName.equals(schemeHeader.getGroupName()) && !currentSchemeList.equals(nextSchemeList)) {
-//                HashMap<Integer, SchemeBO> tempNextList = new HashMap<>();
-//                tempNextList.put(schemeHeader.getParentId(), schemeHeader);
-//                if (!tempNextList.equals(currentSchemeList))
-//                    nextSchemeList.put(schemeHeader.getParentId(), schemeHeader);
-//            }
-//            groupName = schemeHeader.getGroupName();
-//            if ((totalCasesQty >= schemeHeader.getFromQty()) && (totalCasesQty >= schemeHeader.getToQty())) {
-//                schemeHeader.setTotalCaseQty(totalCasesQty);
-//                tempList.put(schemeHeader.getParentId(), schemeHeader);
-//            } else if ((totalPiecesQty >= schemeHeader.getFromQty()) && (totalPiecesQty >= schemeHeader.getToQty())) {
-//                schemeHeader.setTotalPieceQty(totalPiecesQty);
-//                tempList.put(schemeHeader.getParentId(), schemeHeader);
-//            }
         }
-
-//        boolean isKeyAlreadyAdded = false;
-//        for (Map.Entry<Integer, SchemeBO> entry : tempList.entrySet()) {
-//            if (currentSchemeList.containsKey(entry.getKey())) {
-//                isKeyAlreadyAdded = true;
-//            }
-//        }
-//
-//        if (!isKeyAlreadyAdded) {
-//            currentSchemeList.putAll(tempList);
-//        }
         nextSchemeList.clear();
         if (currentSchemeList.size() == 0 && nextSchemeList.size() == 0) {
             nextSchemeList.putAll(minItemList);
         } else {
             for (int i = 0; i < schemeIDList.size(); i++) {
                 if (currentSchemeList.get(schemeIDList.get(i).getParentId()) == null) {
-
                     nextSchemeList.put(schemeIDList.get(i).getParentId(), minItemList.get(schemeIDList.get(i).getParentId()));
                 } else if (currentSchemeList.get(schemeIDList.get(i).getParentId()) != null) {
                     try {
@@ -568,7 +503,6 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         for (SchemeProductBO schemeBO : schemeHeader.getBuyingProducts()) {
                             buyType = (schemeBO.getBuyType() != null) ? schemeBO.getBuyType() : "";
                         }
-
                         SchemaQPSAchHistoryBO qpsHistoryBO = historyMap.get(schemeHeader.getParentId() + "");
                         if (currentSchemeList.get(schemeHeader.getParentId()) == null) {
                             parentSchemeBO.setCumulativePurchase(qpsHistoryBO.getCumulative_Purchase());
@@ -705,7 +639,6 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         if (screenCode.equalsIgnoreCase("CSale")) {
             menu.findItem(R.id.menu_counter_remark).setVisible(true);
         }
-        //menu.findItem(R.id.menu_product_filter).setVisible(false);
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -783,12 +716,9 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
     }
 
-    NextSlabSchemeDialog mSchemePromDialog;
-
     class SchemeExpandableAdapter extends BaseExpandableListAdapter {
 
         LayoutInflater mInflater;
-
 
         public SchemeExpandableAdapter() {
             mInflater = getLayoutInflater();
@@ -1057,39 +987,6 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 holder.tv_calculated_nextslab.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_calculated_nextslab_sch_amt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_calculated_nextslab_rs_per.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-//                holder.upArrow.setOnClickListener(new OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        schemeHelper.loadSchemePromotion(getApplicationContext(),
-//                                holder.schemeBO.getSchemeId(),
-//                                holder.schemeBO.getParentLogic(),
-//                                holder.schemeBO.getChannelId(),
-//                                holder.schemeBO.getSubChannelId(),
-//                                holder.productBO.getProductID(),
-//                                holder.schemeBO.getQuantity());
-//                        if (schemeHelper.getSchemePromotion() != null
-//                                && schemeHelper.getSchemePromotion()
-//                                .size() > 0) {
-//                            if (mSchemePromDialog == null) {
-////                                mSchemePromDialog = new NextSlabSchemeDialog(
-////                                        QPSSchemeApply.this, false, null,
-////                                        QPSSchemeApply.this);
-//
-//                                mSchemePromDialog.setCancelable(false);
-//                            }
-//                            mSchemePromDialog.show();
-//                        } else {
-//                            Toast.makeText(QPSSchemeApply.this,
-//                                    "No Better Promotional Scheme available",
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                    }
-//                });
-
                 view.setTag(holder);
             } else {
                 holder = (SchemeProductHolder) view.getTag();
@@ -1115,8 +1012,8 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             holder.tv_calculated_nextslab.setText(SDUtil.format(holder.parentSchemeBO.getCalculatednextSlabBalance(), 2, 0) + "");
             holder.tv_calculated_nextslab_sch_amt.setText(SDUtil.format(holder.parentSchemeBO.getCalculatednextSlabCumSchAmt(), 2, 0) + "");
             holder.tv_calculated_nextslab_rs_per.setText(SDUtil.format(holder.parentSchemeBO.getCalculatednextSlabrsorPer(), 2, 0) + "");
-            if(holder.parentSchemeBO.isSelected()){
-                holder.tv_scheme.setTextColor(Color.parseColor("#27AE60"));
+            if (holder.parentSchemeBO.isSelected()) {
+                holder.tv_scheme.setTextColor(Color.parseColor("#196F3D"));
             } else {
                 holder.tv_scheme.setTextColor(Color.parseColor("#000000"));
             }
@@ -1132,8 +1029,6 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         public boolean isChildSelectable(int groupPosition, int childPosition) {
             return true;
         }
-
-
     }
 
     private class SchemeProductHolder {

@@ -4901,8 +4901,8 @@ public class SchemeDetailsMasterHelper {
     public void loadQPSCumulativeAchHistory(DBUtil db) {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Select distinct SchemeID ,Cumulative_Purchase,CurSlab_Sch_Amt,CurSlab_Rs_Per, " +
-                "NextSlab_Balance,NextSlab_Sch_Amt,NextSlab_Rs_Per from SchemaQPSAchHistory");
+        sb.append("Select distinct SchemeID ,Cumulative_Purchase,CurSlab_Sch_Amt,CurSlab_FlatAmt_Per, " +
+                "NextSlab_Balance,NextSlab_Sch_Amt,NextSlab_FlatAmt_Per from SchemaQPSAchHistory");
         Cursor c = db.selectSQL(sb.toString());
 
         if (c.getCount() > 0) {

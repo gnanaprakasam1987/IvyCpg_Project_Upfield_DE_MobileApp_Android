@@ -230,24 +230,24 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
                     android:background="@color/black_bg1"
-                    android:orientation="horizontal" android:weightSum="2">
+                    android:orientation="horizontal" android:weightSum="2.4">
 
-                    <TextView
-                        android:id="@+id/tv_scheme_header"
-                        style="?attr/customListTitle"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.4"
-                        android:layout_height="match_parent"
-                        android:gravity="start|center"
-                        android:paddingLeft="@dimen/dimen_2dp"
-                        android:paddingRight="@dimen/dimen_2dp"
-                        android:text="Scheme Name" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_scheme_header"-->
+                        <!--style="?attr/customListTitle"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_weight="0.4"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:gravity="start|center"-->
+                        <!--android:paddingLeft="@dimen/dimen_2dp"-->
+                        <!--android:paddingRight="@dimen/dimen_2dp"-->
+                        <!--android:text="Scheme Name" />-->
 
                     <TextView
                         android:id="@+id/tv_schemeduration_header"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.3"
                         android:layout_height="match_parent"
                         android:paddingLeft="@dimen/dimen_2dp"
                         android:paddingRight="@dimen/dimen_2dp"
@@ -258,7 +258,7 @@
                         android:id="@+id/tv_schemetype_header"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.3"
                         android:layout_height="match_parent"
                         android:paddingLeft="@dimen/dimen_2dp"
                         android:paddingRight="@dimen/dimen_2dp"
@@ -269,7 +269,7 @@
                         android:id="@+id/tv_cumulative_purchase_header"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.3"
                         android:layout_height="match_parent"
                         android:paddingLeft="@dimen/dimen_2dp"
                         android:paddingRight="@dimen/dimen_2dp"
@@ -280,7 +280,7 @@
                         android:id="@+id/tv_curslab_sch_amt_header"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.3"
                         android:layout_height="match_parent"
                         android:paddingLeft="@dimen/dimen_2dp"
                         android:paddingRight="@dimen/dimen_2dp"
@@ -291,7 +291,7 @@
                         android:id="@+id/tv_curslab_rs_per_header"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.3"
                         android:layout_height="match_parent"
                         android:paddingLeft="@dimen/dimen_2dp"
                         android:paddingRight="@dimen/dimen_2dp"
@@ -302,7 +302,7 @@
                         android:id="@+id/tv_nextslab_header"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.3"
                         android:layout_height="match_parent"
                         android:paddingLeft="@dimen/dimen_2dp"
                         android:paddingRight="@dimen/dimen_2dp"
@@ -313,7 +313,7 @@
                         android:id="@+id/tv_nextslab_sch_amt_header"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.3"
                         android:layout_height="match_parent"
                         android:paddingLeft="@dimen/dimen_2dp"
                         android:paddingRight="@dimen/dimen_2dp"
@@ -324,7 +324,7 @@
                         android:id="@+id/tv_nextslab_rs_per_header"
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.3"
                         android:layout_height="match_parent"
                         android:paddingLeft="@dimen/dimen_2dp"
                         android:paddingRight="@dimen/dimen_2dp"
