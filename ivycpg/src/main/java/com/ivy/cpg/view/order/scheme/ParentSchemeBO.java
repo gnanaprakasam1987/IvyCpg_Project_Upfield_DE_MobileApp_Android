@@ -11,6 +11,7 @@ public class ParentSchemeBO {
     private String schemeDesc, buyType;
     private double cumulativePurchase, curSlabCumSchAmt, curSlabrsorPer, nextSlabBalance,
             nextSlabCumSchAmt, nextSlabrsorPer;
+    private boolean selected;
 
     public int getSchemeID() {
         return schemeID;
@@ -134,5 +135,13 @@ public class ParentSchemeBO {
 
     public void setCalculatednextSlabrsorPer(double calculatednextSlabrsorPer) {
         this.calculatednextSlabrsorPer = calculatednextSlabrsorPer;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

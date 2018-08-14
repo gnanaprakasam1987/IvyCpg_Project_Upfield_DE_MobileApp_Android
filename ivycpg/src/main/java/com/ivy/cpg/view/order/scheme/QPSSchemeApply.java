@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -445,10 +447,10 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     SchemeBO schemeHeader = entry.getValue();
                     if (historyMap != null && historyMap.get(schemeHeader.getParentId() + "") != null) {
                         //Calculating Header Item with Ach History
-                        String type = "", buyType = "";
+                        String buyType = "", getType = "";
                         for (SchemeProductBO schemeBO : schemeHeader.getBuyingProducts()) {
-                            type = (schemeBO.getGetType() != null) ? schemeBO.getGetType() : "";
                             buyType = (schemeBO.getBuyType() != null) ? schemeBO.getBuyType() : "";
+                            getType = (schemeBO.getGetType() != null) ? schemeBO.getGetType() : "";
                         }
 
                         //Calculating Static cumulative purchase, Cur Sch Details
@@ -471,7 +473,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
 
                         List<SchemeProductBO> calculatedSchemeBOList = checkSlab(entry.getKey(), parentSchemeBO.getCalculatedCumulativePurchase());
                         for (SchemeProductBO schemeBO : calculatedSchemeBOList) {
-                            if (type.equals("PER")) {
+                            if (getType.contains("PER")) {
                                 if (buyType.equals("SV")) { // Amount
                                     parentSchemeBO.setCalculatedcurSlabCumSchAmt((schemeBO.getMinPercent() / 100) * parentSchemeBO.getCalculatedCumulativePurchase());
                                 } else if (buyType.equals("QTY")) { // Qty
@@ -482,7 +484,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                                     parentSchemeBO.setCalculatedcurSlabCumSchAmt((schemeBO.getMinPercent() / 100) * cumulativePurchaseValue);
                                 }
                                 parentSchemeBO.setCalculatedcurSlabrsorPer(schemeBO.getMinPercent());
-                            } else if (type.equals("VALUE")) {
+                            } else if (getType.contains("VALUE")) {
                                 if (buyType.equals("SV")) { //Amount
                                     parentSchemeBO.setCalculatedcurSlabCumSchAmt(schemeBO.getMinAmount());
                                 } else if (buyType.equals("QTY")) { //Qty
@@ -490,7 +492,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                                     if (schemeHeader.getEveryQty() > 0) {
                                         double x = parentSchemeBO.getCumulativePurchase() - (parentSchemeBO.getCurSlabCumSchAmt() % schemeHeader.getEveryQty());
                                         double y = (schemeHeader.isCaseScheme() ? schemeHeader.getTotalCaseEveryQty() : schemeHeader.getTotalPieceEveryQty());
-                                        cumulativePurchaseValue = x + y ;
+                                        cumulativePurchaseValue = x + y;
                                         parentSchemeBO.setCalculatedcurSlabCumSchAmt(cumulativePurchaseValue * schemeBO.getMinAmount());
                                     } else {
                                         parentSchemeBO.setCalculatedcurSlabCumSchAmt(schemeBO.getMinAmount());
@@ -505,10 +507,10 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         parentSchemeBO.setCurSlabCumSchAmt(0);
                         parentSchemeBO.setCurSlabrsorPer(0);
 
-                        String type = "", buyType = "";
+                        String buyType = "", getType = "";
                         for (SchemeProductBO schemeBO : schemeHeader.getBuyingProducts()) {
-                            type = (schemeBO.getGetType() != null) ? schemeBO.getGetType() : "";
                             buyType = (schemeBO.getBuyType() != null) ? schemeBO.getBuyType() : "";
+                            getType = (schemeBO.getGetType() != null) ? schemeBO.getGetType() : "";
                             if (buyType.equals("SV")) {
                                 parentSchemeBO.setCalculatedCumulativePurchase(schemeHeader.getTotalPieceQty());
                             } else {
@@ -518,7 +520,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                             schemeList.add(schemeBO);
                         }
                         for (SchemeProductBO schemeBO : schemeHeader.getFreeProducts()) {
-                            if (type.equals("PER")) {
+                            if (getType.contains("PER")) {
                                 if (buyType.equals("SV")) { //Amount
                                     parentSchemeBO.setCalculatedcurSlabCumSchAmt((schemeBO.getMinPercent() / 100) * parentSchemeBO.getCalculatedCumulativePurchase());
                                 } else if (buyType.equals("QTY")) { //Qty
@@ -533,7 +535,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                                     }
                                 }
                                 parentSchemeBO.setCalculatedcurSlabrsorPer(schemeBO.getMinPercent());
-                            } else if (type.equals("VALUE")) {
+                            } else if (getType.contains("VALUE")) {
                                 if (buyType.equals("SV")) { //Amount
                                     parentSchemeBO.setCalculatedcurSlabCumSchAmt(schemeBO.getMinAmount());
                                 } else if (buyType.equals("QTY")) { //Qty
@@ -606,10 +608,10 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         if (parentSchemeBO.getCalculatednextSlabBalance() > 0) {
                             List<SchemeProductBO> nextSchemeBOList = checkNextSlabFreeProducts(entry.getKey(), parentSchemeBO.getCalculatedCumulativePurchase());
                             for (SchemeProductBO schemeBO : nextSchemeBOList) {
-                                if (getType.equals("PER")) {
+                                if (getType.contains("PER")) {
                                     parentSchemeBO.setCalculatednextSlabCumSchAmt((buyType.equals("SV")) ? ((schemeBO.getMinPercent() / 100) * schemebuyQty) : 0);
                                     parentSchemeBO.setCalculatednextSlabrsorPer(schemeBO.getMinPercent());
-                                } else if (getType.equals("VALUE")) {
+                                } else if (getType.contains("VALUE")) {
                                     parentSchemeBO.setCalculatednextSlabCumSchAmt((buyType.equals("SV")) ? (parentSchemeBO.getCalculatednextSlabBalance() > 0 ? schemeBO.getMinAmount() : 0) : 0);
                                     parentSchemeBO.setCalculatednextSlabrsorPer(parentSchemeBO.getCalculatednextSlabBalance() > 0 ? schemeBO.getMinAmount() : 0);
                                 }
@@ -638,10 +640,10 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         parentSchemeBO.setNextSlabCumSchAmt(0);
                         parentSchemeBO.setNextSlabrsorPer(0);
 
-                        String getType = "", buyType = "";
+                        String buyType = "", getType = "";
                         for (SchemeProductBO schemeBO : schemeHeader.getBuyingProducts()) {
-                            getType = (schemeBO.getGetType() != null) ? schemeBO.getGetType() : "";
                             buyType = (schemeBO.getBuyType() != null) ? schemeBO.getBuyType() : "";
+                            getType = (schemeBO.getGetType() != null) ? schemeBO.getGetType() : "";
                             if (schemeBO.getBuyType().matches("SV|QTY")) {
                                 schemebuyQty = schemeBO.getBuyQty();
                                 parentSchemeBO.setCalculatednextSlabBalance(Math.max(0, schemeBO.getBuyQty() - parentSchemeBO.getCalculatedCumulativePurchase()));
@@ -651,10 +653,10 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                             }
                         }
                         for (SchemeProductBO schemeBO : schemeHeader.getFreeProducts()) {
-                            if (getType.equals("PER")) {
+                            if (getType.contains("PER")) {
                                 parentSchemeBO.setCalculatednextSlabCumSchAmt((buyType.equals("SV")) ? (schemeBO.getMinPercent() / 100) * schemebuyQty : 0);
                                 parentSchemeBO.setCalculatednextSlabrsorPer(schemeBO.getMinPercent());
-                            } else if (getType.equals("VALUE")) {
+                            } else if (getType.contains("VALUE")) {
                                 parentSchemeBO.setCalculatednextSlabCumSchAmt((buyType.equals("SV")) ? (parentSchemeBO.getCalculatednextSlabBalance() > 0 ? schemeBO.getMinAmount() : 0) : 0);
                                 parentSchemeBO.setCalculatednextSlabrsorPer(parentSchemeBO.getCalculatednextSlabBalance() > 0 ? schemeBO.getMinAmount() : 0);
                             }
@@ -669,6 +671,11 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             }
 
             QPSListBO qpsListBO = new QPSListBO();
+            if (parentSchemeBO.getCalculatedcurSlabCumSchAmt() > 0) {
+                parentSchemeBO.setSelected(true);
+            } else {
+                parentSchemeBO.setSelected(false);
+            }
             qpsListBO.setParentScheme(parentSchemeBO);
             qpsListBO.setSchemeList(schemeList);
             mSchemeDoneList.add(qpsListBO);
@@ -1108,6 +1115,11 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             holder.tv_calculated_nextslab.setText(SDUtil.format(holder.parentSchemeBO.getCalculatednextSlabBalance(), 2, 0) + "");
             holder.tv_calculated_nextslab_sch_amt.setText(SDUtil.format(holder.parentSchemeBO.getCalculatednextSlabCumSchAmt(), 2, 0) + "");
             holder.tv_calculated_nextslab_rs_per.setText(SDUtil.format(holder.parentSchemeBO.getCalculatednextSlabrsorPer(), 2, 0) + "");
+            if(holder.parentSchemeBO.isSelected()){
+                holder.tv_scheme.setTextColor(Color.parseColor("#27AE60"));
+            } else {
+                holder.tv_scheme.setTextColor(Color.parseColor("#000000"));
+            }
             return view;
         }
 

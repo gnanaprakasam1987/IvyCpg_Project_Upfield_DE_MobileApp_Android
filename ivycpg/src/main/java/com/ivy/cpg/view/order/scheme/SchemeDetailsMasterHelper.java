@@ -440,8 +440,10 @@ public class SchemeDetailsMasterHelper {
             }
         }
         c.close();
-        loadParentSchemInfo(db);
-        loadQPSCumulativeAchHistory(db);
+        if (IS_SCHEME_QPS_TRACKING) {
+            loadParentSchemInfo(db);
+            loadQPSCumulativeAchHistory(db);
+        }
     }
 
     public ArrayList<Integer> getParentIDList() {
@@ -2819,7 +2821,7 @@ public class SchemeDetailsMasterHelper {
         double totalValue = 0;
 
         for (ProductMasterBO productMasterBO : mOrderedProductList) {
-            if (productMasterBO.getProductID().equals(productId)|| productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
+            if (productMasterBO.getProductID().equals(productId) || productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
 
                 if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0) {
                     if (mBatchListByProductId != null) {
@@ -4877,12 +4879,14 @@ public class SchemeDetailsMasterHelper {
     }
 
     public void resetSchemeQPSList() {
-        for (SchemeBO scheme : mSchemeList) {
-            scheme.setFromQty(0);
-            scheme.setToQty(0);
-            scheme.setTotalPieceQty(0);
-            scheme.setCurrentSlab(false);
-            scheme.setNextSlab(false);
+        if (mSchemeList != null) {
+            for (SchemeBO scheme : mSchemeList) {
+                scheme.setFromQty(0);
+                scheme.setToQty(0);
+                scheme.setTotalPieceQty(0);
+                scheme.setCurrentSlab(false);
+                scheme.setNextSlab(false);
+            }
         }
     }
 
@@ -4912,7 +4916,7 @@ public class SchemeDetailsMasterHelper {
                 schemeBO.setNextSlab_balance(c.getDouble(4));
                 schemeBO.setNextSlab_Sch_Amt(c.getDouble(5));
                 schemeBO.setNextSlab_Rs_Per(c.getDouble(6));
-                mSchemaQPSAchHistoryList.put(c.getString(0),schemeBO);
+                mSchemaQPSAchHistoryList.put(c.getString(0), schemeBO);
             }
         }
         c.close();
