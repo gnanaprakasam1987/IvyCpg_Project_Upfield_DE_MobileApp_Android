@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -71,7 +70,6 @@ import com.ivy.cpg.view.order.scheme.RetailerInfo;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -213,7 +211,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     Handler handler = null;
     Runnable runnable = null;
 
-    String dynamicReportTitle = "" ;
+    String dynamicReportTitle = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -590,24 +588,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         *
         * Show dynamic report based on Retailer
         * */
-
-        String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                + " where hhtCode=" + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_SALES_VALUE_DR) + " and Flag=1";
-
-        DBUtil db = new DBUtil(this, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-
-
-        Cursor c = db.selectSQL(sql);
-        if (c != null && c.getCount() != 0) {
-            if (c.moveToNext()) {
-                dynamicReportTitle = c.getString(c.getColumnIndex("RField"));
-            }
-            c.close();
-            db.closeDB();
-        }
-
-        dynamicReportTitle = dynamicReportTitle.equalsIgnoreCase("") ? "Report" : dynamicReportTitle;
+        dynamicReportTitle = bmodel.configurationMasterHelper.getDynamicReportTitle();
 
         if (bmodel.configurationMasterHelper.SHOW_SALES_VALUE_DR) {
             tabLayout.addTab(tabLayout.newTab().setText(dynamicReportTitle));
@@ -748,7 +729,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         upArrow = ContextCompat.getDrawable(this, R.drawable.ic_home_arrow);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.FullBlack), PorterDuff.Mode.SRC_ATOP);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
@@ -1047,7 +1028,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
 
-        String mapKey = "key="+getString(R.string.google_maps_api_key);
+        String mapKey = "key=" + getString(R.string.google_maps_api_key);
 
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude; // Destination of route
@@ -1062,7 +1043,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints+"&"+mapKey;
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints + "&" + mapKey;
         String output = "json";
 
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;

@@ -6205,4 +6205,27 @@ public class ConfigurationMasterHelper {
         }
 
     }
+
+
+    public String getDynamicReportTitle() {
+
+        String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                + " where hhtCode=" + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_SALES_VALUE_DR) + " and Flag=1";
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+
+        String title = "";
+
+        Cursor c = db.selectSQL(sql);
+        if (c != null && c.getCount() != 0) {
+            if (c.moveToNext()) {
+                title = c.getString(c.getColumnIndex("RField")).equalsIgnoreCase("")?"Report":c.getString(c.getColumnIndex("RField"));
+            }
+            c.close();
+            db.closeDB();
+        }
+
+        return title;
+    }
 }
