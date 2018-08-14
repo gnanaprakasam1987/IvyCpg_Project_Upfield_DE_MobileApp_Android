@@ -132,7 +132,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_SHOW_AVG_SALES_PER_LEVEL = "PRO09";
     //
 
-    public static final String CODE_SHOW_SALES_VALUE_DR = "PRO10";
+    public static final String CODE_SHOW_SALES_VALUE_DR = "PRO30";
 
     private static final String CODE_SHOW_ASSET_HISTORY = "PRO07";
     private static final String CODE_SHOW_EDIT_PRO = "PRO21";
@@ -601,7 +601,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_ASSET_HISTORY; //PRO07
     public boolean SHOW_TASK;  //PRO08
     public boolean SHOW_AVG_SALES_PER_LEVEL;  //PRO09
-//
+    //
     public boolean SHOW_SALES_VALUE_DR;
     public boolean SHOW_PROFILE_EDIT;
     public boolean SHOW_LPC_ORDER;
@@ -1470,10 +1470,8 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
-
-
     //132 --- task 45
-    private static final String CODE_SHOW_ORDER_ATTACH_FILE = "ORDB76";
+    // private static final String CODE_SHOW_ORDER_ATTACH_FILE = "ORDB76";
     public boolean IS_SHOW_ORDER_ATTACH_FILE;
 
     private static final String CODE_SHOW_ALL_SKU_ON_EDIT = "ORDB75";
@@ -4497,22 +4495,18 @@ public class ConfigurationMasterHelper {
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
-                    IS_SHOW_ORDER_PHOTO_CAPTURE = true;
+                    int rField = c.getInt(c.getColumnIndex("RField"));
+                    if (rField == 0) {
+                        IS_SHOW_ORDER_PHOTO_CAPTURE = true;
+                        IS_SHOW_ORDER_ATTACH_FILE = false;
+                    } else if (rField == 1) {
+                        IS_SHOW_ORDER_PHOTO_CAPTURE = false;
+                        IS_SHOW_ORDER_ATTACH_FILE = true;
+                    }
                 }
                 c.close();
             }
 
-
-            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_ORDER_ATTACH_FILE) + " and Flag=1";
-
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    IS_SHOW_ORDER_ATTACH_FILE = true;
-                }
-                c.close();
-            }
 
             //Order Digit config
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
