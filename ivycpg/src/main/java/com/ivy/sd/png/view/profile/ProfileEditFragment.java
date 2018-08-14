@@ -4418,7 +4418,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     try {
                         if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
                                 !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex()) ||
-                                !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+                                !isValidGSTINWithPAN(editText[i].getText().toString().trim()) || !isValidComposition()) {
 
 
                             int length = editText[i].getText().toString().trim().length();
