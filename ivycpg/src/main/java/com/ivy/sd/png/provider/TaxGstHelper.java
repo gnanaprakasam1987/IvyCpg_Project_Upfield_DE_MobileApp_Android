@@ -934,12 +934,6 @@ public class TaxGstHelper implements TaxInterface {
                             || productBo.getOrderedCaseQty() > 0
                             || productBo.getOrderedOuterQty() > 0) {
 
-                        double temp = (productBo.getOrderedPcsQty() * productBo.getSrp())
-                                + (productBo.getOrderedCaseQty() * productBo.getCsrp())
-                                + productBo.getOrderedOuterQty() * productBo.getOsrp();
-
-                        productBo.setDiscount_order_value(temp);
-
                         if (mTaxListByProductId != null && mTaxListByProductId.get(productBo.getProductID()) != null) {
 
                             ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());

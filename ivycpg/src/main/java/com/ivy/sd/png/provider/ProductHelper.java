@@ -2111,7 +2111,10 @@ public class ProductHelper {
             for (int i = 0; i < siz; ++i) {
                 product = productMaster.get(i);
 
-                if (product.getIsMustSell() == 1
+                if (product.getmDeadProduct() == 1
+                        && getFilterColor("Filt15") != 0)
+                    product.setTextColor(getFilterColor("Filt15"));
+                else if (product.getIsMustSell() == 1
                         && getFilterColor("Filt10") != 0)
                     product.setTextColor(getFilterColor("Filt10"));
                 else if (product.getIsFocusBrand() == 1
