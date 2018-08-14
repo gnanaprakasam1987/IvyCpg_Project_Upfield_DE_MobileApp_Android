@@ -564,9 +564,9 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             public void onMapLoaded() {
 
                 if (sellerMapHomePresenter.areaBoundsTooSmall(builder.build(), 300)) {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 17));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
                 } else {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
                 }
 
             }
