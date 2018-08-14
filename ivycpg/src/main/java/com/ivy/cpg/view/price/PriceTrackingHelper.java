@@ -122,7 +122,7 @@ public class PriceTrackingHelper {
             }
 
 
-            sql1 = "SELECT PId, Changed, Price, Compliance, ReasonId, Own,UomID,mrp,mop,mprice_change_reasonid FROM "
+            sql1 = "SELECT PId, Changed, Price, Compliance, ReasonId, Own,UomID,mrp,mop,price_change_reasonid FROM "
                     + mPriceChangeDetail + " WHERE Tid = " + QT(tid);
             cur = db.selectSQL(sql1);
             if (cur != null) {
