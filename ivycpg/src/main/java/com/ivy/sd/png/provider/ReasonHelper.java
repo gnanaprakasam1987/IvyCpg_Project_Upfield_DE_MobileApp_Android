@@ -16,6 +16,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 
@@ -846,6 +847,68 @@ public class ReasonHelper {
             distributionChannelType = new ArrayList<>();
         }
         return distributionChannelType;
+    }
+
+
+    public ArrayList<ReasonMaster> getRetailerAddress(String retailerId,
+                                                      String addressCode) {
+        DBUtil db = null;
+        ArrayList<ReasonMaster> addressList = new ArrayList<>();
+        StringBuilder addressSB = new StringBuilder();
+        if (addressCode.contains(",")) {
+            String[] addressArray = addressCode.split(",");
+            int i = 0;
+            for (String addCodes : addressArray) {
+                if (addressSB.length() > 0)
+                    addressSB.append(",");
+
+                addressSB.append(AppUtils.QT(addCodes));
+                i = i + 1;
+            }
+        } else
+            addressSB.append(addressCode);
+        try {
+            ReasonMaster reason;
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT RA.AddressId,RA.Address1,RA.Address2,RA.Address3  FROM StandardListMaster SLM"
+                    + " LEFT JOIN RetailerAddress RA ON SLM.ListId = RA.AddressTypeID"
+                    + " WHERE RA.RetailerId =" + retailerId
+                    + " AND SLM.ListCode in(" + addressSB.toString() + ")"
+                    + " AND ListType = 'ADDRESS_TYPE'";
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    reason = new ReasonMaster();
+                    StringBuilder address = new StringBuilder();
+                    reason.setReasonID(c.getString(0));
+
+                    address.append(c.getString(1));
+                    address.append(", ");
+
+                    if (c.getString(2).length() > 0) {
+                        address.append(c.getString(2));
+                        address.append(", ");
+                    }
+                    if (c.getString(3).length() > 0) {
+                        address.append(c.getString(3));
+                        address.append(",");
+                    }
+
+                    reason.setReasonDesc(address.toString());
+                    addressList.add(reason);
+                }
+                c.close();
+            }
+            return addressList;
+        } catch (SQLException e) {
+            Commons.printException(e);
+        } finally {
+            if (db != null)
+                db.closeDB();
+        }
+        return new ArrayList<>();
     }
 
 }

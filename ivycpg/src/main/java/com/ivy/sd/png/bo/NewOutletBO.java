@@ -1,6 +1,6 @@
 package com.ivy.sd.png.bo;
 
-import org.jetbrains.annotations.NonNls;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -171,7 +171,7 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
 
     }
 
-    public NewOutletBO(int locid, @NonNls String listName) {
+    public NewOutletBO(int locid,  String listName) {
         super();
         this.listName = listName;
         this.listId = locid;

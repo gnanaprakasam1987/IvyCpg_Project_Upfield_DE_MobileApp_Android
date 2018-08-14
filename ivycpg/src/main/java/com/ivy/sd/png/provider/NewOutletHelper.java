@@ -26,7 +26,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
-import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -2649,7 +2648,7 @@ public class NewOutletHelper {
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
-    public ArrayList<RetailerFlexBO> downloadRetailerFlexValues(@NonNls String type) {
+    public ArrayList<RetailerFlexBO> downloadRetailerFlexValues( String type) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         ArrayList<RetailerFlexBO> flexValues = new ArrayList<>();

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/outlet_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/seller_info_layout"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/_12sdp"
+    android:paddingLeft="@dimen/_4sdp"
+    android:paddingRight="@dimen/_4sdp"
+    android:paddingTop="@dimen/_12sdp"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/number_text"
+        style="?attr/customListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:maxLines="1"
+        android:text=""
+        android:textColor="#8b000000"
+        android:textSize="@dimen/_10sdp" />
+
+    <TextView
+        android:id="@+id/store_text"
+        style="?attr/customListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:maxLines="1"
+        android:text=""
+        android:textColor="#8b000000"
+        android:textSize="@dimen/_12sdp" />
+
+    <TextView
+        android:id="@+id/time_in_text"
+        style="?attr/customListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text=""
+        android:textColor="#8b000000"
+        android:textSize="@dimen/_10sdp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/time_out_text"
+        style="?attr/customListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text=""
+        android:textColor="#8b000000"
+        android:textSize="@dimen/_10sdp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/skipped_text"
+        style="?attr/customListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.4"
+        android:paddingRight="@dimen/_10sdp"
+        android:gravity="center_vertical|right"
+        android:maxLines="1"
+        android:text="Skipped"
+        android:textColor="#9f041b"
+        android:textSize="@dimen/_10sdp"/>
+
+</LinearLayout>

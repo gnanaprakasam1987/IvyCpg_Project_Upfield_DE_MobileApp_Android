@@ -72,6 +72,7 @@ import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
+import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
@@ -116,7 +117,6 @@ import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.DeliveryManagementHelper;
-import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.ExpenseSheetHelper;
@@ -179,7 +179,6 @@ import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
-import org.jetbrains.annotations.NonNls;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -369,7 +368,6 @@ public class BusinessModel extends Application {
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
-    @NonNls
     public String latlongImageFileName;
     private ArrayList<String> orderIdList = new ArrayList<>();
 
@@ -1445,7 +1443,7 @@ public class BusinessModel extends Application {
 
                             + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
 
-                            + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
+                            + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
                             + " LEFT JOIN RetailerContact RC1 ON RC1.RetailerId = A.RetailerID AND RC1.IsPrimary = 1"
                             + " LEFT JOIN RetailerContact RC2 ON RC2.RetailerId = A.RetailerID AND RC2.IsPrimary = 0"
@@ -9111,6 +9109,31 @@ public class BusinessModel extends Application {
         }
 
         return 0;
+    }
+
+    public String getUserParentPosition(){
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ParentPositionIds from UserMaster where userid="
+                            + QT(String.valueOf(userMasterHelper.getUserMasterBO().getUserid())));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    String id = c.getString(0);
+                    c.close();
+                    db.closeDB();
+                    return id==null?"":id;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return "";
     }
 
 }

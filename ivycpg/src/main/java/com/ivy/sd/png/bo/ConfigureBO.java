@@ -1,12 +1,12 @@
 package com.ivy.sd.png.bo;
 
-import org.jetbrains.annotations.NonNls;
+
 
 import java.io.Serializable;
 
 public class ConfigureBO implements Serializable {
 
-    private String configCode, menuName, locationType, RField2,RField6;
+    private String configCode, menuName, locationType, RField2, RField6, RField;
     private String menuNumber = "0";
     private int flag, hasLink;
     private int moduleOrder;
@@ -29,7 +29,7 @@ public class ConfigureBO implements Serializable {
 
     }
 
-    public ConfigureBO(@NonNls String configcode, @NonNls String menuName, String menuNum,
+    public ConfigureBO( String configcode,  String menuName, String menuNum,
                        int mOrder, int flag, int haslink) {
         this.configCode = configcode;
         this.menuName = menuName;
@@ -156,11 +156,12 @@ public class ConfigureBO implements Serializable {
         this.kpiAchieved = kpiAchieved;
     }
 
-    private String kpiTarget="-1",kpiAchieved="-1";
+    private String kpiTarget = "-1", kpiAchieved = "-1";
 
     public void setRegex(String regex) {
         this.regex = regex;
     }
+
     public String getRegex() {
         return regex;
     }
@@ -171,5 +172,14 @@ public class ConfigureBO implements Serializable {
 
     public void setRField6(String RField6) {
         this.RField6 = RField6;
+    }
+
+    // used to load retailer address in order confirmation dialog based given address type List Code by comma separate
+    public String getRField() {
+        return RField;
+    }
+
+    public void setRField(String RField) {
+        this.RField = RField;
     }
 }
