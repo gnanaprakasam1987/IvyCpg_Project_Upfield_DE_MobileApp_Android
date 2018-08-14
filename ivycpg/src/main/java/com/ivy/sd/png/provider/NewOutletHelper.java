@@ -26,6 +26,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -2252,30 +2253,23 @@ public class NewOutletHelper {
 
 
             column = "RetailerID,contactname,ContactName_LName,contactNumber," +
-                    "contact_title,contact_title_lovid,IsPrimary,Upload";
+                    "contact_title,contact_title_lovid,IsPrimary,Email,Upload";
 
-            if (outlet.getContactpersonname() != null && !outlet.getContactpersonname().trim().equals("")) {
-                value = QT(getId())
-                        + "," + QT(outlet.getContactpersonname())
-                        + "," + QT(getNewoutlet().getContactpersonnameLastName())
-                        + "," + QT(outlet.getPhone())
-                        + "," + QT(getNewoutlet().getContact1title())
-                        + "," + getNewoutlet().getContact1titlelovid()
-                        + "," + 1
-                        + "," + QT("N");
-                db.insertSQL("RetailerContact", column, value);
+            if (retailerContactList.size() > 0) {
+                for (RetailerContactBo retailerContactBo : retailerContactList) {
+                    value = QT(getId())
+                            + "," + QT(retailerContactBo.getFistname())
+                            + "," + QT(retailerContactBo.getLastname())
+                            + "," + QT(retailerContactBo.getContactNumber())
+                            + "," + QT(retailerContactBo.getTitle())
+                            + "," + QT(retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") ? "0" : retailerContactBo.getContactTitleLovId())
+                            + "," + retailerContactBo.getIsPrimary()
+                            + "," + QT(retailerContactBo.getContactMail())
+                            + "," + QT("N");
+                    db.insertSQL("RetailerContact", column, value);
+                }
             }
-            if (outlet.getContactpersonname2() != null && !outlet.getContactpersonname2().trim().equals("")) {
-                value = QT(getId())
-                        + "," + QT(outlet.getContactpersonname2())
-                        + "," + QT(getNewoutlet().getContactpersonname2LastName())
-                        + "," + QT(outlet.getPhone2())
-                        + "," + QT(getNewoutlet().getContact2title())
-                        + "," + getNewoutlet().getContact2titlelovid()
-                        + "," + 0
-                        + "," + QT("N");
-                db.insertSQL("RetailerContact", column, value);
-            }
+
 
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
                     + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile";
@@ -2673,5 +2667,44 @@ public class NewOutletHelper {
         }
         return flexValues;
     }
+
+    private ArrayList<RetailerContactBo> retailerContactList;
+
+    public ArrayList<RetailerContactBo> getRetailerContactList() {
+        if (retailerContactList == null)
+            return new ArrayList<>();
+        return retailerContactList;
+    }
+
+    public void setRetailerContactList(ArrayList<RetailerContactBo> retailerContactList) {
+        this.retailerContactList = retailerContactList;
+    }
+
+    public ArrayList<StandardListBO> downlaodContactTitle() {
+        StandardListBO contactTitle;
+        ArrayList<StandardListBO> contactTitleList = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTACT_TITLE_TYPE'");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    contactTitle = new StandardListBO();
+                    contactTitle.setListID(c.getString(0));
+                    contactTitle.setListName(c.getString(2));
+                    contactTitleList.add(contactTitle);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return contactTitleList;
+    }
+
 
 }

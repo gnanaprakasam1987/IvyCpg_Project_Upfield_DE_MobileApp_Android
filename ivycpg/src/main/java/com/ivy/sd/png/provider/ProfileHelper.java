@@ -1049,7 +1049,7 @@ public class ProfileHelper {
             public void subscribe(ObservableEmitter<ArrayList<RetailerContactBo>> subscriber) throws Exception {
                 ArrayList<RetailerContactBo> contactList = new ArrayList<>();
                 try {
-                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,"
+                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,RC.contact_title_lovid as contact_title_lovid"
                             + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
                             + " ifnull(RC.Email,'') as email from RetailerContact RC "
                             + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
@@ -1066,6 +1066,7 @@ public class ProfileHelper {
                                 retailerContactBo.setTitle(c.getString(c.getColumnIndex("contactTitle")));
                             else
                                 retailerContactBo.setTitle(c.getString(c.getColumnIndex("listName")));
+                            retailerContactBo.setContactTitleLovId(c.getString(c.getColumnIndex("contact_title_lovid")));
                             retailerContactBo.setFistname(c.getString(c.getColumnIndex("cName")));
                             retailerContactBo.setLastname(c.getString(c.getColumnIndex("cLname")));
                             retailerContactBo.setContactNumber(c.getString(c.getColumnIndex("cNumber")));

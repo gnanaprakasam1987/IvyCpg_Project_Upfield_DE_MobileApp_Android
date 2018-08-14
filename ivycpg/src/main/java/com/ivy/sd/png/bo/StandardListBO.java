@@ -26,6 +26,11 @@ public class StandardListBO {
         this.listName = item.listName;
     }
 
+    public StandardListBO(String ListID, String listName) {
+        this.ListID = ListID;
+        this.listName = listName;
+    }
+
     public StandardListBO() {
 
     }
