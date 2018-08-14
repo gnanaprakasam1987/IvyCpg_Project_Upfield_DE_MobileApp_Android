@@ -60,7 +60,7 @@
             <EditText
                 android:id="@+id/edit_creditnoteamt"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/cheque_no_height"
+                android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true" />
