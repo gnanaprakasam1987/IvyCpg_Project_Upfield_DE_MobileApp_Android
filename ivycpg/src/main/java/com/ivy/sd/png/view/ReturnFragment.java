@@ -402,6 +402,24 @@ public class ReturnFragment extends IvyBaseFragment {
                 ((TextView) row.findViewById(R.id.tv_mfd_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) row.findViewById(R.id.tv_exp_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
+
+                holder.spinnerAdapter = new ArrayAdapter<>(getActivity(),
+                        R.layout.spinner_bluetext_layout);
+                holder.spinnerAdapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                SalesReturnReasonBO reason = new SalesReturnReasonBO();
+                reason.setReasonID("0");
+                reason.setReasonDesc(getResources().getString(R.string.select_reason));
+                reason.setReasonCategory("");
+                holder.spinnerAdapter.add(reason);
+
+                if (!salesReturnHelper.SHOW_SR_CATEGORY)
+                    for (SalesReturnReasonBO reasonBo : bmodel.reasonHelper.getReasonSalesReturnMaster()) {
+                        holder.spinnerAdapter.add(reasonBo);
+                    }
+
+                holder.reasonSpinner.setAdapter(holder.spinnerAdapter);
+
                 if(salesReturnHelper.IS_SHOW_SR_INVOICE_NO_HISTORY) {
                     ArrayList<String> mInvoiceList = salesReturnHelper.getInvoiceNo(getContext());
                     mInvoiceAdapter = new ArrayAdapter<>(getContext(),
@@ -910,23 +928,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     }
                 }
             }
-            holder.spinnerAdapter = new ArrayAdapter<>(getActivity(),
-                    R.layout.spinner_bluetext_layout);
-            holder.spinnerAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            SalesReturnReasonBO reason = new SalesReturnReasonBO();
-            reason.setReasonID("0");
-            reason.setReasonDesc(getResources().getString(R.string.select_reason));
-            reason.setReasonCategory("");
-            holder.spinnerAdapter.add(reason);
 
-            if (!salesReturnHelper.SHOW_SR_CATEGORY)
-                for (SalesReturnReasonBO reasonBo : bmodel.reasonHelper.getReasonSalesReturnMaster()) {
-                    holder.spinnerAdapter.add(reasonBo);
-                }
-
-
-            holder.reasonSpinner.setAdapter(holder.spinnerAdapter);
             if (holder.reasonBO.getReasonID() != null) {
                 if (!holder.reasonBO.getReasonID().equals("0")) {
                     if (!salesReturnHelper.SHOW_SR_CATEGORY) {

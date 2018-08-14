@@ -327,7 +327,7 @@ public class BatchAllocationHelper {
     /**
      * Method to use single productBO allocated batchwise depends on entered Qty
      *
-     * @param ProductMasterBO - this productBO used to allocate batchwise
+     * @param productBo - this productBO used to allocate batchwise
      */
     public void updateBatchlist(ProductMasterBO productBo) {
 
@@ -716,12 +716,7 @@ public class BatchAllocationHelper {
                 .getBatchlistByProductID().get(productBO.getProductID());
         if (batchList != null) {
             for (ProductMasterBO batchProductBO : batchList) {
-                double lineValue = batchProductBO.getOrderedPcsQty()
-                        * batchProductBO.getSrp()
-                        + batchProductBO.getOrderedCaseQty()
-                        * batchProductBO.getCsrp()
-                        + batchProductBO.getOrderedOuterQty()
-                        * batchProductBO.getOsrp();
+                double lineValue = batchProductBO.getDiscount_order_value();
                 if (lineValue > 0) {
                     batchProductBO.setApplyValue(lineValue * discountValue / 100);
                     totalVaue = totalVaue + batchProductBO.getDiscount_order_value() - batchProductBO.getApplyValue();
@@ -779,7 +774,7 @@ public class BatchAllocationHelper {
      */
     public void setBatchwiseProducts(String productid, int caseqty,
                                      int pieceqty, int outerQty, float srp, double pricePerPiece,
-                                     Cursor OrderDetails, int caseSize, int outerSize, String batchid,int skuResonId,String remarks) {
+                                     Cursor OrderDetails, int caseSize, int outerSize, String batchid, int skuResonId, String remarks) {
         ProductMasterBO produBo = bmodel.getProductbyId(productid);
         if (produBo != null) {
             if (produBo.getBatchwiseProductCount() > 0) {

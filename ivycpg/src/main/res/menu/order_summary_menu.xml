@@ -100,5 +100,13 @@
         android:visible="false"
         ivydist:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/menu_attach_file"
+        android:icon="@drawable/ic_attach_file_black_24dp"
+        android:orderInCategory="104"
+        android:title="Attach Pdf files"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+
 
 </menu>

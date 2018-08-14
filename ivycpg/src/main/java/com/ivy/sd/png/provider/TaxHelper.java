@@ -705,9 +705,8 @@ public class TaxHelper implements TaxInterface {
         values.append("," + taxBO.getGroupId() + ",0");
 
         db.insertSQL("OrderTaxDetails", columns, values.toString());
-        if( mBusinessModel.getRetailerMasterBO().getIsVansales()==1||mBusinessModel.configurationMasterHelper.IS_INVOICE)
+        if (mBusinessModel.getRetailerMasterBO().getIsVansales() == 1 || mBusinessModel.configurationMasterHelper.IS_INVOICE)
             db.insertSQL("InvoiceTaxDetails", columns, values.toString());
-
 
 
     }
@@ -841,12 +840,6 @@ public class TaxHelper implements TaxInterface {
                     if (productBo.getOrderedPcsQty() > 0
                             || productBo.getOrderedCaseQty() > 0
                             || productBo.getOrderedOuterQty() > 0) {
-
-                        double temp = (productBo.getOrderedPcsQty() * productBo.getSrp())
-                                + (productBo.getOrderedCaseQty() * productBo.getCsrp())
-                                + productBo.getOrderedOuterQty() * productBo.getOsrp();
-
-                        productBo.setDiscount_order_value(temp);
 
                         if (mTaxListByProductId != null && mTaxListByProductId.get(productBo.getProductID()) != null) {
 

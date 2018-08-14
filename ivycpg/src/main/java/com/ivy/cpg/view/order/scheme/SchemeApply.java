@@ -548,7 +548,6 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                 QUANTITY = null;
                                 if (isChecked) {
 
-                                    holder.text_stock_availability.setVisibility(View.GONE);
                                     if (bModel.configurationMasterHelper.IS_SIH_VALIDATION
                                             && !holder.schemeBO.isSihAvailableForFreeProducts()) {
                                         holder.text_stock_availability.setVisibility(View.VISIBLE);
@@ -558,6 +557,10 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                                 .setQuantityTypeSelected(false);
                                         holder.showFreeBTN.setEnabled(true);
                                         return;
+                                    }
+                                    else {
+                                        holder.text_stock_availability.setVisibility(View.GONE);
+
                                     }
 
                                     if (holder.schemeBO.isPriceTypeSeleted()) {
@@ -1316,6 +1319,10 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.schemeBO
                         .setQuantityTypeSelected(false);
                 holder.showFreeBTN.setEnabled(true);
+                holder.text_stock_availability.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.text_stock_availability.setVisibility(View.GONE);
             }
 
 
