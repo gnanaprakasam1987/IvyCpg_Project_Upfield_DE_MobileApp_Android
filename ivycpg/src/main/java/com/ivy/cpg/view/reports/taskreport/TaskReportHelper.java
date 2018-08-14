@@ -204,9 +204,9 @@ public class TaskReportHelper {
         }
 
         Cursor c = db
-                .selectSQL("select distinct A.taskid,B.taskcode,B.taskDesc,A.UserId,B.TaskOwner,B.Date," +
-                        " um.username"+concatQuery+" from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid  " +
-                        " inner join usermaster um on um.userid = A.UserId  where A.retailerId=0 and A.userId!=0 "+conditionStr+" order by A.UserId");
+                .selectSQL("select distinct A.taskid,B.taskcode,B.taskDesc,B.TaskOwner,B.Date "
+                        +concatQuery+" from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid  " +
+                        " where A.retailerId=0 "+conditionStr+" order by B.Date");
         taskDataBO = new Vector<>();
         if (c != null) {
             TaskDataBO taskmasterbo;
@@ -215,12 +215,12 @@ public class TaskReportHelper {
                 taskmasterbo.setTaskId(c.getString(0));
                 taskmasterbo.setTasktitle(c.getString(1));
                 taskmasterbo.setTaskDesc(c.getString(2));
-                taskmasterbo.setUserId(c.getInt(3));
+                taskmasterbo.setUserId(bmodel.userMasterHelper.getUserMasterBO().getUserid());
                 taskmasterbo.setRid(0);
-                taskmasterbo.setTaskOwner(c.getString(4));
-                taskmasterbo.setCreatedDate(c.getString(5));
-                taskmasterbo.setUserName(c.getString(6));
-                taskmasterbo.setIsdone(c.getString(7));
+                taskmasterbo.setTaskOwner(c.getString(3));
+                taskmasterbo.setCreatedDate(c.getString(4));
+                taskmasterbo.setUserName(bmodel.userMasterHelper.getUserMasterBO().getUserName());
+                taskmasterbo.setIsdone(c.getString(5));
                 taskDataBOS.add(taskmasterbo);
             }
             c.close();

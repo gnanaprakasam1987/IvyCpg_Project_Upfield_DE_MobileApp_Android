@@ -9067,6 +9067,31 @@ public class BusinessModel extends Application {
         return false;
     }
 
+    public String getUserParentPosition(){
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ParentPositionIds from UserMaster where userid="
+                            + QT(String.valueOf(userMasterHelper.getUserMasterBO().getUserid())));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    String id = c.getString(0);
+                    c.close();
+                    db.closeDB();
+                    return id==null?"":id;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return "";
+    }
+
 }
 
 

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1320"
-    android:versionName="2.132.0.2303">
+    android:versionName="2.132.0.2243">
 
     <supports-screens
         android:anyDensity="true"
@@ -784,7 +784,21 @@
         <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity" />
         <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity" />
         <activity
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
+            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"

@@ -176,6 +176,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String mDiscount = "Filt18";
     private final String mSuggestedOrder = "Filt25";
     private final String mDrugProducts = "Filt28";
+    private final String mDeadProducts = "Filt15";
 
     private boolean isSbd;
     private boolean isSbdGaps;
@@ -194,6 +195,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private boolean isStock;
     private boolean isDiscount;
     private boolean isDrugProducts;
+    private boolean isDeadProducts;
 
     private MustSellReasonDialog dialog;
     /**
@@ -4963,6 +4965,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     isStock = true;
                 else if (bo.getConfigCode().equals(mDrugProducts))
                     isDrugProducts = true;
+                else if (bo.getConfigCode().equals(mDeadProducts))
+                    isDeadProducts = true;
             }
         }
     }
@@ -5203,7 +5207,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
                 || (generaltxt.equalsIgnoreCase(mShelf) && (ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1))
                 || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0)
-                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1);
+                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)
+                || (generaltxt.equalsIgnoreCase(mDeadProducts) && ret.getmDeadProduct() == 1);
     }
 
     private String getFilterName(String filtername) {
@@ -5740,7 +5745,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && (ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1
                 || ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1 || ret.getLocations().get(mSelectedLocationIndex).getWHPiece() > 0
                 || ret.getLocations().get(mSelectedLocationIndex).getWHCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getWHOuter() > 0 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1))
-                || (isDiscount && ret.getIsDiscountable() == 1) || (isDrugProducts && ret.getIsDrug() == 1);
+                || (isDiscount && ret.getIsDiscountable() == 1) || (isDrugProducts && ret.getIsDrug() == 1)
+                || (isDeadProducts && ret.getmDeadProduct() == 1);
     }
 
     private boolean hasStockOnly() {
@@ -6762,7 +6768,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         String strPname = getResources().getString(
                 R.string.product_name)
                 + " (" + mylist.size() + ")";
-        // MyAdapter lvwplist = new MyAdapter(mylist);
+        // OutletListAdapter lvwplist = new OutletListAdapter(mylist);
         lvwplist.setAdapter(new MyAdapter(mylist));
 //        salesReturnHelper = SalesReturnHelper.getInstance(this);
     }
