@@ -362,7 +362,7 @@ public class DiscountHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
+            sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" distributorid=" + businessModel.getRetailerMasterBO().getDistributorId() + " OR ");
@@ -662,7 +662,7 @@ public class DiscountHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
+            sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
@@ -733,7 +733,7 @@ public class DiscountHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
+            sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");

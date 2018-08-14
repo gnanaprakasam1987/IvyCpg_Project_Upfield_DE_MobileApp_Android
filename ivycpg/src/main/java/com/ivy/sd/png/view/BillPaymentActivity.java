@@ -52,12 +52,12 @@ public class BillPaymentActivity extends IvyBaseActivityNoActionBar implements R
     }
 
     @Override
-    protected void onResume() {
+    protected void onResumeFragments() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment, new BillPaymentActivityFragment());
-        ft.commit();
+        ft.commitAllowingStateLoss();
 
-        super.onResume();
+        super.onResumeFragments();
     }
 
     @Override

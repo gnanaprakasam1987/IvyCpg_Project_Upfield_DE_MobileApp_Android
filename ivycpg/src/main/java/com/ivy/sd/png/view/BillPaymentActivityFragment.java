@@ -51,8 +51,6 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
     private HashMap<String, PaymentBO> mPaymentBOByMode;
     private String mErrorMsg = "";
     private ArrayList<InvoiceHeaderBO> mSelecteInvoiceList;
-
-    private AlertDialog.Builder build;
     private AlertDialog alertDialog;
 
     public BillPaymentActivityFragment() {
@@ -519,7 +517,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            build = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
             customProgressDialog(build, getResources().getString(R.string.saving));
             alertDialog = build.create();
             alertDialog.show();

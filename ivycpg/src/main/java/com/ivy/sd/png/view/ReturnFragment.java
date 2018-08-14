@@ -20,6 +20,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -336,6 +337,7 @@ public class ReturnFragment extends IvyBaseFragment {
 
     class MyAdapter extends ArrayAdapter<SalesReturnReasonBO> {
         final ArrayList<SalesReturnReasonBO> items;
+        ArrayAdapter<String> mInvoiceAdapter=null;
 
         MyAdapter(ArrayList<SalesReturnReasonBO> items) {
             super(getActivity(), R.layout.row_salesreturn_entry_listitem,
@@ -375,7 +377,7 @@ public class ReturnFragment extends IvyBaseFragment {
                 holder.mfgDate = (Button) row.findViewById(R.id.mfgDate);
                 holder.expDate = (Button) row.findViewById(R.id.expDate);
                 holder.oldMrp = (EditText) row.findViewById(R.id.oldMrp);
-                holder.invoiceno = (EditText) row.findViewById(R.id.invoiceno);
+                holder.invoiceno = (AutoCompleteTextView) row.findViewById(R.id.invoiceno);
                 holder.srpedit = (EditText) row.findViewById(R.id.srpedit);
                 holder.lotNumber = (EditText) row.findViewById(R.id.lotnumber);
                 holder.ivClose = (ImageView) row.findViewById(R.id.ivClose);
@@ -400,6 +402,31 @@ public class ReturnFragment extends IvyBaseFragment {
                 ((TextView) row.findViewById(R.id.tv_mfd_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 ((TextView) row.findViewById(R.id.tv_exp_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
+
+                holder.spinnerAdapter = new ArrayAdapter<>(getActivity(),
+                        R.layout.spinner_bluetext_layout);
+                holder.spinnerAdapter
+                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                SalesReturnReasonBO reason = new SalesReturnReasonBO();
+                reason.setReasonID("0");
+                reason.setReasonDesc(getResources().getString(R.string.select_reason));
+                reason.setReasonCategory("");
+                holder.spinnerAdapter.add(reason);
+
+                if (!salesReturnHelper.SHOW_SR_CATEGORY)
+                    for (SalesReturnReasonBO reasonBo : bmodel.reasonHelper.getReasonSalesReturnMaster()) {
+                        holder.spinnerAdapter.add(reasonBo);
+                    }
+
+                holder.reasonSpinner.setAdapter(holder.spinnerAdapter);
+
+                if(salesReturnHelper.IS_SHOW_SR_INVOICE_NO_HISTORY) {
+                    ArrayList<String> mInvoiceList = salesReturnHelper.getInvoiceNo(getContext());
+                    mInvoiceAdapter = new ArrayAdapter<>(getContext(),
+                            R.layout.autocompelete_bluetext_layout, mInvoiceList);
+                    mInvoiceAdapter.setDropDownViewResource(R.layout.autocomplete_bluetext_list_item);
+                    holder.invoiceno.setAdapter(mInvoiceAdapter);
+                }
 
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -599,7 +626,10 @@ public class ReturnFragment extends IvyBaseFragment {
                     @Override
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
-                        // no operation
+                        if(s.toString().contains("\"")) {
+                            String qty = s.toString().replaceAll("\"", "");
+                            holder.invoiceno.setText(qty);
+                        }
                     }
 
                     @Override
@@ -673,7 +703,7 @@ public class ReturnFragment extends IvyBaseFragment {
 
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
-
+                        view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
                         mSelectedET = holder.outerQty;
                         int inType = holder.outerQty.getInputType();
                         holder.outerQty.setInputType(InputType.TYPE_NULL);
@@ -689,7 +719,7 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 holder.caseQty.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
-
+                        view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
                         mSelectedET = holder.caseQty;
                         int inType = holder.caseQty.getInputType();
                         holder.caseQty.setInputType(InputType.TYPE_NULL);
@@ -705,7 +735,7 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 holder.pieceQty.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
-
+                        view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
                         mSelectedET = holder.pieceQty;
                         int inType = holder.pieceQty.getInputType();
                         holder.pieceQty.setInputType(InputType.TYPE_NULL);
@@ -722,7 +752,7 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 holder.oldMrp.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
-
+                        view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
                         mSelectedET = holder.oldMrp;
                         int inType = holder.oldMrp.getInputType();
                         holder.oldMrp.setInputType(InputType.TYPE_NULL);
@@ -740,6 +770,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
 
+                        view.findViewById(R.id.keypad).setVisibility(View.VISIBLE);
                         mSelectedET = holder.srpedit;
                         int inType = holder.srpedit.getInputType();
                         holder.srpedit.setInputType(InputType.TYPE_NULL);
@@ -755,16 +786,25 @@ public class ReturnFragment extends IvyBaseFragment {
                 holder.invoiceno.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
 
-                        mSelectedET = holder.invoiceno;
+                        view.findViewById(R.id.keypad).setVisibility(View.GONE);
                         int inType = holder.invoiceno.getInputType();
                         holder.invoiceno.setInputType(InputType.TYPE_NULL);
                         holder.invoiceno.onTouchEvent(event);
                         holder.invoiceno.setInputType(inType);
                         holder.invoiceno.selectAll();
                         holder.invoiceno.requestFocus();
-                        inputManager.hideSoftInputFromWindow(
-                                mSelectedET.getWindowToken(), 0);
+                        holder.invoiceno.showDropDown();
+                        inputManager.showSoftInput(
+                                holder.invoiceno, InputMethodManager.SHOW_FORCED);
                         return true;
+                    }
+                });
+
+                holder.invoiceno.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+                        String invoiceNumber = mInvoiceAdapter.getItem(pos);
+                        holder.reasonBO.setInvoiceno(invoiceNumber);
                     }
                 });
 
@@ -888,23 +928,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     }
                 }
             }
-            holder.spinnerAdapter = new ArrayAdapter<>(getActivity(),
-                    R.layout.spinner_bluetext_layout);
-            holder.spinnerAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            SalesReturnReasonBO reason = new SalesReturnReasonBO();
-            reason.setReasonID("0");
-            reason.setReasonDesc(getResources().getString(R.string.select_reason));
-            reason.setReasonCategory("");
-            holder.spinnerAdapter.add(reason);
 
-            if (!salesReturnHelper.SHOW_SR_CATEGORY)
-                for (SalesReturnReasonBO reasonBo : bmodel.reasonHelper.getReasonSalesReturnMaster()) {
-                    holder.spinnerAdapter.add(reasonBo);
-                }
-
-
-            holder.reasonSpinner.setAdapter(holder.spinnerAdapter);
             if (holder.reasonBO.getReasonID() != null) {
                 if (!holder.reasonBO.getReasonID().equals("0")) {
                     if (!salesReturnHelper.SHOW_SR_CATEGORY) {
@@ -1013,7 +1037,7 @@ public class ReturnFragment extends IvyBaseFragment {
         private EditText caseQty;
         private EditText oldMrp;
         private EditText outerQty;
-        private EditText invoiceno;
+        private AutoCompleteTextView invoiceno;
         private EditText srpedit;
         private EditText lotNumber;
         private Button mfgDate;

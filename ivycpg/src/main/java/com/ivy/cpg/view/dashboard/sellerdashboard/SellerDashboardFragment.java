@@ -1238,7 +1238,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             }
             if (bmodel.configurationMasterHelper.SHOW_KPIBARCHART_DASH) {
                 NUM_ITEMS++;
-                KpiBarChartFragment barchartFragment = new KpiBarChartFragment();
+                KPIStackedBarChartFragment barchartFragment = new KPIStackedBarChartFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("selectedInterval", selectedInterval);
                 barchartFragment.setArguments(bundle);

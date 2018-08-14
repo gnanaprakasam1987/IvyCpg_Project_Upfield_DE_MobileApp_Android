@@ -18,7 +18,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -2304,6 +2306,23 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     }
 
+
+    public void detachNewOutlet(){
+        android.support.v4.app.FragmentManager fm = getFragmentManager();
+        android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+        NewOutletFragment mNewOutletFragment = (NewOutletFragment) fm
+                .findFragmentByTag(MENU_NEW_RETAILER);
+
+        if (mNewOutletFragment != null) {
+            ft.detach(mNewOutletFragment);
+            ft.commit();
+        }
+
+        DrawerLayout mDrawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        mDrawerLayout.openDrawer(GravityCompat.START);
+
+        setScreenTitle(getResources().getString(R.string.app_name));
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();

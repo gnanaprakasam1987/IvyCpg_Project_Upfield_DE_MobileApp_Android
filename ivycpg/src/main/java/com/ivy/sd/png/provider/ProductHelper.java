@@ -3586,7 +3586,7 @@ public class ProductHelper {
             sb.append(" locationid in(" + bmodel.channelMasterHelper.getLocationHierarchy(mContext) + ") OR ");
             sb.append(" Accountid =" + bmodel.getRetailerMasterBO().getAccountid() + " AND Accountid != 0" + ") OR ");
             sb.append(" (Retailerid=0 AND distributorid=0 AND Channelid=0 AND locationid =0 AND Accountid =0))");
-            sb.append(" and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE') ");
+            sb.append(" and dm.moduleid=(select ListId from StandardListMaster where ListCode='INVOICE' and ListType = 'DISCOUNT_MODULE_TYPE') ");
             sb.append(" and dm.ApplyLevelid=(select ListId from StandardListMaster ");
             sb.append(" where ListCode='ITEM' and ListType='DISCOUNT_APPLY_TYPE') ");
             sb.append(" and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE')");
@@ -5147,6 +5147,7 @@ public class ProductHelper {
         this.globalCategory = globalCategory;
     }
 
+
     public boolean isFilterAvaiable(String menuCode) {
         DBUtil db = null;
         boolean isAvailable = false;
@@ -5438,9 +5439,10 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor cur = db
-                    .selectSQL("select HHTCode,MName,RField1  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                    .selectSQL("select HHTCode,MName,RField1,RField  from HhtMenuMaster where flag=1 and lower(MenuType)="
                             + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
-                            + " and lang=" + bmodel.QT(language));
+                            + " and lang=" + bmodel.QT(language)
+                            + " Order By MNumber");
 
             if (cur != null && cur.getCount() > 0) {
                 ConfigureBO configureBO;
@@ -5449,6 +5451,7 @@ public class ProductHelper {
                     configureBO.setConfigCode(cur.getString(0));
                     configureBO.setMenuName(cur.getString(1));
                     configureBO.setMandatory(cur.getInt(2));
+                    configureBO.setRField(cur.getString(3));
                     list.add(configureBO);
                 }
                 cur.close();
@@ -5539,7 +5542,7 @@ public class ProductHelper {
                 }
         } catch (Exception e) {
             Commons.printException(e);
-            return false;
+            return true;
         }
         return false;
     }

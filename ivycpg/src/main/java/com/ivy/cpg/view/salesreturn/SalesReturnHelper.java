@@ -7,11 +7,11 @@ import android.database.DatabaseUtils;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.CreditNoteListBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.TaxBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -66,6 +66,8 @@ public class SalesReturnHelper {
     private static final String CODE_SALABLE_AND_NON_SALABLE_SKU = "SR17";
     public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
     public boolean SHOW_SR_CATEGORY;
+    private static final String CODE_SR_INVOICE_NO_HISTORY = "SR22";
+    public boolean IS_SHOW_SR_INVOICE_NO_HISTORY;
 
 
     public static final String CREDIT_TYPE = "CREDIT";
@@ -269,6 +271,7 @@ public class SalesReturnHelper {
             SHOW_SALES_RET_OUTER_CASE = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
             SHOW_SR_CATEGORY = false;
+            IS_SHOW_SR_INVOICE_NO_HISTORY = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -388,6 +391,16 @@ public class SalesReturnHelper {
                 c.close();
             }
 
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SR_INVOICE_NO_HISTORY) + " and Flag=1 and ForSwitchSeller = 0";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.IS_SHOW_SR_INVOICE_NO_HISTORY = true;
+                }
+                c.close();
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -540,9 +553,9 @@ public class SalesReturnHelper {
                                 .getOldBatchIDByMfd(product
                                         .getProductID())
                                 + ","
-                                + QT((bo.getInvoiceno() == null || "null".equals(bo
-                                .getInvoiceno())) ? ""
-                                : bo.getInvoiceno())
+                                + (bo.getInvoiceno() == null || "null".equals(bo
+                                .getInvoiceno()) ? ""
+                                : DatabaseUtils.sqlEscapeString(bo.getInvoiceno()))
                                 + ","
                                 + bo.getSrpedit()
                                 + ","
@@ -1634,7 +1647,7 @@ public class SalesReturnHelper {
     }
 
 
-    private int isSameContentLevel(Context mContext) {
+    public int isSameContentLevel(Context mContext) {
         int count = 0;
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1659,4 +1672,5 @@ public class SalesReturnHelper {
 
         return count;
     }
+
 }

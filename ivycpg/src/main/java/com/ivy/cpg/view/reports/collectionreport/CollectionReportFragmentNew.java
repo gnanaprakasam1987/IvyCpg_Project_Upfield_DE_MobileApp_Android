@@ -74,7 +74,8 @@ public class CollectionReportFragmentNew extends Fragment implements ICollection
         initializeModel();
         mCollectionReportModelPresenter.loadCollectionReport();
         mCollectionReportModelPresenter.setUpAdapter();
-        updateDetails();
+        CollectionReportHelper reportHelper =  mCollectionReportModelPresenter.getReportHelper();
+        updateDetails(reportHelper);
         initFooter(view);
 
         return view;
@@ -153,11 +154,11 @@ public class CollectionReportFragmentNew extends Fragment implements ICollection
         });
     }
 
-    private void updateDetails() {
-        if (bModel.reportHelper.getLstPaymentBObyGroupId() != null)
-            for (String groupid : bModel.reportHelper.getLstPaymentBObyGroupId().keySet()) {
-                for (int i = 0; i < bModel.reportHelper.getLstPaymentBObyGroupId().get(groupid).size(); i++) {
-                    PaymentBO payBO = bModel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
+    private void updateDetails(CollectionReportHelper collectionReportHelper) {
+        if (collectionReportHelper.getLstPaymentBObyGroupId() != null)
+            for (String groupid : collectionReportHelper.getLstPaymentBObyGroupId().keySet()) {
+                for (int i = 0; i < collectionReportHelper.getLstPaymentBObyGroupId().get(groupid).size(); i++) {
+                    PaymentBO payBO = collectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
                     if (payBO.getCashMode().equals(StandardListMasterConstants.CASH)) {
                         totalCash = totalCash + payBO.getAmount();
                     } else if (payBO.getCashMode().equals(StandardListMasterConstants.CHEQUE)) {
