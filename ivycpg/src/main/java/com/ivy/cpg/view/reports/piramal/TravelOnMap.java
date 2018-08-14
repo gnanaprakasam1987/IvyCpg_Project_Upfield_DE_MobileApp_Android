@@ -156,8 +156,10 @@ public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
 
         String OriDest = "origin=" + SDUtil.convertToDouble(srclat) + "," + SDUtil.convertToDouble(srclon) + "&destination=" + SDUtil.convertToDouble(destlat) + "," + SDUtil.convertToDouble(destlon);
 
+        String mapKey = "key="+getString(R.string.google_maps_api_key);
+
         String sensor = "sensor=false&mode=walking";   //&mode=walking
-        String params = OriDest + "&" + sensor;
+        String params = OriDest + "&" + sensor+"&"+mapKey;
         String output = "json";
         String url = "https://maps.googleapis.com/maps/api/directions/"
                 + output + "?" + params;

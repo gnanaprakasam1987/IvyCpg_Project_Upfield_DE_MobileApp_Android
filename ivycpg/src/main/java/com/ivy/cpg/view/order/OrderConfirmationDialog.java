@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -78,10 +79,22 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
             dialogInterface = (OrderSummary) context;
             businessModel = (BusinessModel) context.getApplicationContext();
 
+            ArrayList<ConfigureBO> list = businessModel.productHelper.downloadOrderSummaryDialogFields(context);
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+
+            if (list.size() == 0) {
+                lp.height = (int) context.getResources().getDimension(R.dimen.dimens_180dp);
+            } else if (list.size() >= 5) {
+                lp.height = (int) context.getResources().getDimension(R.dimen.loginbox_height);
+            } else if (list.size() <= 4) {
+                lp.height = (int) context.getResources().getDimension(R.dimen.photo_capture_app_bar_height);
+            }
+            getWindow().setAttributes(lp);
             initializeViews();
 
             ArrayAdapter<ReasonMaster> shipment_adapter, payment_adapter, channel_adapter, address_type_adapter;
-            ArrayList<ConfigureBO> list = businessModel.productHelper.downloadOrderSummaryDialogFields(context);
             for (ConfigureBO configureBO : list) {
                 if (configureBO.getConfigCode().equals(SHIPMENT_TYPE)) {
                     layout_shipment.setVisibility(View.VISIBLE);

@@ -130,6 +130,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_HISTORY = "PRO05";
     private static final String CODE_SHOW_TASK = "PRO08";
     public static final String CODE_SHOW_AVG_SALES_PER_LEVEL = "PRO09";
+    //
+
+    public static final String CODE_SHOW_SALES_VALUE_DR = "PRO30";
+
     private static final String CODE_SHOW_ASSET_HISTORY = "PRO07";
     private static final String CODE_SHOW_EDIT_PRO = "PRO21";
     private static final String COBE_DB_BACKUP = "SQLBACKUP";// code for DB backup
@@ -377,7 +381,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FIT_SCORE = "FITDASH";
     public boolean IS_FITSCORE_NEEDED;
 
-    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD, SHOW_NOR_DASHBOARD,SHOW_RETAILER_CONTACT;
+    public boolean SHOW_LAST_3MONTHS_BILLS, SHOW_MSL_NOT_SOLD, SHOW_NOR_DASHBOARD, SHOW_RETAILER_CONTACT;
     private static final String CODE_SHOW_COLLECTION_PRINT = "COLL12";
     public boolean SHOW_COLLECTION_PRINT;
     public int MAX_NO_OF_PRODUCT_LINES = 1;
@@ -597,6 +601,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_ASSET_HISTORY; //PRO07
     public boolean SHOW_TASK;  //PRO08
     public boolean SHOW_AVG_SALES_PER_LEVEL;  //PRO09
+    //
+    public boolean SHOW_SALES_VALUE_DR;
     public boolean SHOW_PROFILE_EDIT;
     public boolean SHOW_LPC_ORDER;
     public boolean SHOW_TOTAL_QTY_ORDER_SUMMARY;
@@ -1084,10 +1090,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_COLLECTION_SEQ_NO;
     public static final String CODE_SHOW_SERIAL_NO = "ORDB51";
     public boolean SHOW_SERIAL_NO_SCREEN;
-    public static final String CODE_PRICE_MRP = "PRICE_MRP";
-    public boolean SHOW_PRICE_MRP = false;
-    public static final String CODE_PRICE_MOP = "PRICE_MOP";
-    public boolean SHOW_PRICE_MOP = false;
     public static final String CODE_SHOW_RETAILER_SELECTION_FILTER = "RTRS09";
     public boolean SHOW_RETAILER_SELECTION_FILTER = false;
     public static final String CODE_FEEDBACK_IN_CLOSE_CALL = "FUN27";
@@ -1468,6 +1470,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
+    //132 --- task 45
+    // private static final String CODE_SHOW_ORDER_ATTACH_FILE = "ORDB76";
+    public boolean IS_SHOW_ORDER_ATTACH_FILE;
 
     private static final String CODE_SHOW_ALL_SKU_ON_EDIT = "ORDB75";
     public boolean IS_SHOW_ALL_SKU_ON_EDIT;
@@ -1483,6 +1488,10 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SHOW_MODULE_MANDATORY = "FUN72";
     public boolean IS_CHECK_MODULE_MANDATORY;
+
+    private static final String CODE_DISCOUNT_PRICE_PER = "FUN73";
+    public boolean IS_DISCOUNT_PRICE_PER;
+    public double DISCOUNT_PRICE_PER = 50;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -1997,6 +2006,9 @@ public class ConfigurationMasterHelper {
         this.SHOW_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) : false;
         this.SHOW_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TASK) : false;
         this.SHOW_AVG_SALES_PER_LEVEL = hashMapHHTModuleConfig.get(CODE_SHOW_AVG_SALES_PER_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_AVG_SALES_PER_LEVEL) : false;
+
+        this.SHOW_SALES_VALUE_DR = hashMapHHTModuleConfig.get(CODE_SHOW_SALES_VALUE_DR) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SALES_VALUE_DR) : false;
+
         this.SHOW_ASSET_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_ASSET_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ASSET_HISTORY) : false;
         this.SHOW_PROFILE_EDIT = hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EDIT_PRO) : false;
         this.IS_DB_BACKUP = hashMapHHTModuleConfig.get(COBE_DB_BACKUP) != null ? hashMapHHTModuleConfig.get(COBE_DB_BACKUP) : false;
@@ -2181,8 +2193,6 @@ public class ConfigurationMasterHelper {
         this.SHOW_NETAMOUNT_IN_REPORT = hashMapHHTModuleConfig.get(CODE_NETAMOUNT_IN_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_NETAMOUNT_IN_REPORT) : false;
         this.SHOW_COLLECTION_SEQ_NO = hashMapHHTModuleConfig.get(CODE_COLLECTION_SEQ_NO) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_SEQ_NO) : false;
         this.SHOW_SERIAL_NO_SCREEN = hashMapHHTModuleConfig.get(CODE_SHOW_SERIAL_NO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SERIAL_NO) : false;
-        this.SHOW_PRICE_MRP = hashMapHHTModuleConfig.get(CODE_PRICE_MRP) != null ? hashMapHHTModuleConfig.get(CODE_PRICE_MRP) : false;
-        this.SHOW_PRICE_MOP = hashMapHHTModuleConfig.get(CODE_PRICE_MOP) != null ? hashMapHHTModuleConfig.get(CODE_PRICE_MOP) : false;
         this.SHOW_RETAILER_SELECTION_FILTER = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_SELECTION_FILTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_SELECTION_FILTER) : false;
         this.SHOW_FEEDBACK_IN_CLOSE_CALL = hashMapHHTModuleConfig.get(CODE_FEEDBACK_IN_CLOSE_CALL) != null ? hashMapHHTModuleConfig.get(CODE_FEEDBACK_IN_CLOSE_CALL) : false;
         this.SHOW_PRINT_DELIVERY_MANAGEMENT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY_MANAGEMENT) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY_MANAGEMENT) : false;
@@ -2600,6 +2610,8 @@ public class ConfigurationMasterHelper {
         this.IS_CHECK_PHOTO_MANDATORY = hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) : false;
         this.IS_CHECK_MODULE_MANDATORY = hashMapHHTModuleConfig.get(CODE_SHOW_MODULE_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MODULE_MANDATORY) : false;
 
+        this.IS_DISCOUNT_PRICE_PER = hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) : false;
+        this.DISCOUNT_PRICE_PER = hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) : 50;
     }
 
     private boolean isInOutModule() {
@@ -3828,6 +3840,7 @@ public class ConfigurationMasterHelper {
             IS_SHOW_DEFAULT_UOM = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
             IS_SHOW_ORDER_PHOTO_CAPTURE = false;
+            IS_SHOW_ORDER_ATTACH_FILE = false;
             IS_ORD_DIGIT = false;
             ORD_DIGIT = 0;
             IS_SWITCH_WITH_OUT_TGT = false;
@@ -4482,7 +4495,14 @@ public class ConfigurationMasterHelper {
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
-                    IS_SHOW_ORDER_PHOTO_CAPTURE = true;
+                    int rField = c.getInt(c.getColumnIndex("RField"));
+                    if (rField == 0) {
+                        IS_SHOW_ORDER_PHOTO_CAPTURE = true;
+                        IS_SHOW_ORDER_ATTACH_FILE = false;
+                    } else if (rField == 1) {
+                        IS_SHOW_ORDER_PHOTO_CAPTURE = false;
+                        IS_SHOW_ORDER_ATTACH_FILE = true;
+                    }
                 }
                 c.close();
             }
@@ -4719,7 +4739,6 @@ public class ConfigurationMasterHelper {
         }
         return getGenFilter();
     }
-
 
 
     public int getSbdDistTargetPCent() {

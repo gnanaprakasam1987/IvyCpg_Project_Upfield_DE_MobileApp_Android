@@ -31,15 +31,18 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -300,7 +303,8 @@ public class OrderHelper {
                     + "," + businessModel.QT(businessModel.getOrderHeaderBO().getOrderImageName())
                     + "," + businessModel.QT(orderImagePath)
                     + "," + getOrderTotalValue()
-                    + "," + businessModel.getOrderHeaderBO().getAddressID();
+                    + "," + (businessModel.getOrderHeaderBO().getAddressID() == -1
+                    ? 0 : businessModel.getOrderHeaderBO().getAddressID());
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -324,6 +328,7 @@ public class OrderHelper {
             else
                 finalProductList = businessModel.productHelper.getProductMaster();
 
+            Set<String> parentHierarchyIds = new HashSet<>();
             //get entry level discount value
             double entryLevelDistSum = 0;
             Vector<ProductMasterBO> mOrderedProductList = new Vector<>();
@@ -357,6 +362,10 @@ public class OrderHelper {
                                     db.insertSQL(
                                             DataMembers.tbl_orderDetails,
                                             columns, values);
+
+                                    String[] ids = batchProductBO.getParentHierarchy().split("/");
+                                    parentHierarchyIds.addAll(Arrays.asList(ids));
+
                                 }
                             }
                         }
@@ -367,9 +376,26 @@ public class OrderHelper {
                                 .toString();
                         db.insertSQL(DataMembers.tbl_orderDetails, columns,
                                 values);
+
+                        String[] ids = product.getParentHierarchy().split("/");
+                        parentHierarchyIds.addAll(Arrays.asList(ids));
+
                     }
 
                 }
+
+            }
+
+            if (parentHierarchyIds.size() > 0) {
+
+                String parentHierarchy = "";
+                for (String ids : parentHierarchyIds) {
+                    if(!ids.trim().equals(""))
+                        parentHierarchy = parentHierarchy + "/" + ids;
+                }
+                parentHierarchy = parentHierarchy + "/";
+
+                db.updateSQL("update orderheader set ParentHierarchy = "+businessModel.QT(parentHierarchy)+" where orderid ="+uid);
 
             }
 
@@ -800,7 +826,7 @@ public class OrderHelper {
                 }
 
                 columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath";
+                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath,AddressId";
                 values = uid
                         + ","
                         + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
@@ -867,7 +893,9 @@ public class OrderHelper {
                         + "," + businessModel.QT(businessModel.getRField2()) + "," + businessModel.QT(SDUtil.now(SDUtil.TIME))
                         + "," + businessModel.QT(businessModel.getRemarkType()) + "," + businessModel.QT(businessModel.getRField3())
                         + "," + businessModel.QT(businessModel.getOrderHeaderBO().getOrderImageName())
-                        + "," + businessModel.QT(orderImagePath);
+                        + "," + businessModel.QT(orderImagePath)
+                        + "," + (businessModel.getOrderHeaderBO().getAddressID() == -1
+                        ? 0 : businessModel.getOrderHeaderBO().getAddressID());
 
 
                 db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -1860,7 +1888,8 @@ public class OrderHelper {
             sb.append("," + businessModel.QT(businessModel.getRField2()));
             sb.append("," + businessModel.QT(businessModel.getRField3()));
             sb.append("," + getInvoiceTotalValue());
-            sb.append("," + businessModel.getOrderHeaderBO().getAddressID());
+            sb.append("," + (businessModel.getOrderHeaderBO().getAddressID() == -1
+                    ? 0 : businessModel.getOrderHeaderBO().getAddressID()));
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());

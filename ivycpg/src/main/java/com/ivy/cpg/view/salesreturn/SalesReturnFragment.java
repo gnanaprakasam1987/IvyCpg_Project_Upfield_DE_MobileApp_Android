@@ -267,7 +267,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 R.string.product_name)
                 + " (" + mylist.size() + ")";
         pnametitle.setText(strPname);
-        // MyAdapter lvwplist = new MyAdapter(mylist);
+        // OutletListAdapter lvwplist = new OutletListAdapter(mylist);
         lvwplist.setAdapter(new MyAdapter(mylist));
         salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
     }
