@@ -350,8 +350,13 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                if(builder != null)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+                if(builder != null) {
+                    if (sellerMapViewPresenter.areaBoundsTooSmall(builder.build(), 300)) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
+                    } else {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
+                    }
+                }
             }
         });
     }
@@ -394,7 +399,8 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
 //        if (lineOptions == null) {
 
-        PolylineOptions lineOptions = new PolylineOptions();
+        if (points != null) {
+            PolylineOptions lineOptions = new PolylineOptions();
 
             lineOptions.addAll(points);
             lineOptions.width(8);
@@ -402,8 +408,9 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             lineOptions.zIndex(10000000);
             lineOptions.geodesic(true);
 
-        Polyline mapPolyLine = mMap.addPolyline(lineOptions);
+            Polyline mapPolyLine = mMap.addPolyline(lineOptions);
             mapPolyLine.setClickable(true);
+        }
 
 //        } else {
 //            mapPolyLine.setPoints(points);

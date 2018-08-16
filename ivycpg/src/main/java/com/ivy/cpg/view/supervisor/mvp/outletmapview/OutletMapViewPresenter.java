@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.supervisor.mvp.outletmapview;
 
 import android.content.Context;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 
@@ -311,6 +312,11 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         return duratingStr;
     }
 
+    public void removeFirestoreListener() {
+        if(registration != null)
+            registration.remove();
+    }
+
     private void setSellerDetailValues(DocumentSnapshot documentSnapshot) {
 
         try {
@@ -442,7 +448,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         }
     }
 
-    public void channelFilterIds(HashMap<Integer, Integer> channelIds){
+    void channelFilterIds(HashMap<Integer, Integer> channelIds){
         mSelectedIdByChannelId = channelIds;
     }
 
@@ -502,5 +508,11 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         }
 
         return planeDate;
+    }
+
+    boolean areaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
+        float[] result = new float[1];
+        Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude, result);
+        return result[0] < minDistanceInMeter;
     }
 }

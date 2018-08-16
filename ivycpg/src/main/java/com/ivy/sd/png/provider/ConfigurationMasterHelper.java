@@ -227,7 +227,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SECONDARY_CONTACT_NUMBER = "PROFILE12";
     private static final String CODE_BATCH_WISE_PRODUCT = "BWP01";
     private static final String CODE_SIGNATURE_SCREEN = "ORDB03";
-    private static final String CODE_PARTIAL_PAYMENT = "COLL03";
+    private static final String CODE_FULL_PAYMENT = "COLL03";
     private static final String CODE_COLLECTION_ORDER = "COLL04";
     private static final String CODE_COLLECTION_REASON = "COLL05";
     private static final String CODE_DEVICE_STATUS = "FUN05";
@@ -744,7 +744,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_NEWOUTLET_LOCATION;
     public boolean SHOW_DISC_AMOUNT_ALLOW;
 
-    public boolean IS_PARTIAL_PAYMENT = true;
+    public boolean IS_FULL_PAYMENT;
     public boolean IS_COLLECTION_ORDER;
     public boolean SHOW_COLLECTION_REASON;
     public boolean IS_COLLECTION_MANDATE; // for Kellogs cash customer to do collection on the same day
@@ -1206,6 +1206,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DOC_REF_NO = "COLL16";
     public boolean SHOW_DOC_REF_NO;
 
+    private static final String CODE_COLLECTION_MANDATE = "COLL17";
 
     private static final String CODE_IS_NEW_RETAILER_EDIT = "NEWRET01";
     public boolean IS_NEW_RETAILER_EDIT;
@@ -1391,6 +1392,9 @@ public class ConfigurationMasterHelper {
     public boolean COMPUTE_DUE_DAYS;
 
     public boolean SHOW_SALES_RETURN_IN_ORDER;
+    public boolean SHOW_SALES_RETURN_IN_DELIVERY;
+
+
 
     public int retailerLocAccuracyLvl;
 
@@ -2050,7 +2054,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_BATCH_WISE_PRICE = hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) != null ? hashMapHHTModuleConfig.get(CODE_BATCH_WISE_PRODUCT) : false;
         this.SHOW_SIGNATURE_SCREEN = hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_SIGNATURE_SCREEN) : false;
         this.SHOW_DISC_AMOUNT_ALLOW = hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_DISC_AMOUNT_ALLOW) : false;
-        this.IS_PARTIAL_PAYMENT = hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_PARTIAL_PAYMENT) : false;
+        this.IS_FULL_PAYMENT = hashMapHHTModuleConfig.get(CODE_FULL_PAYMENT) != null ? hashMapHHTModuleConfig.get(CODE_FULL_PAYMENT) : false;
         this.SHOW_SKUWISE_INCENTIVE = hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) != null ? hashMapHHTModuleConfig.get(CODE_SKUWISE_INCENTIVE) : false;
         this.CALC_OUTSTANDING = hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATE_OUTSTANDING) : false;
         this.SHOW_COLLECTION_SLAB = hashMapHHTModuleConfig.get(CODE_SHOW_COLLECTION_SLAB) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_COLLECTION_SLAB) : false;
@@ -2365,6 +2369,12 @@ public class ConfigurationMasterHelper {
         this.IS_PAYMENT_RECEIPTNO_GET = hashMapHHTModuleConfig.get(CODE_PAYMENT_RECEIPT_NO) != null ? hashMapHHTModuleConfig.get(CODE_PAYMENT_RECEIPT_NO) : false;
         this.COLL_CHEQUE_MODE = hashMapHHTModuleConfig.get(CODE_COLL_CHEQUE_MODE) != null ? hashMapHHTModuleConfig.get(CODE_COLL_CHEQUE_MODE) : false;
         this.SHOW_DOC_REF_NO = hashMapHHTModuleConfig.get(CODE_DOC_REF_NO) != null ? hashMapHHTModuleConfig.get(CODE_DOC_REF_NO) : false;
+        if (hashMapHHTModuleOrder.get(CODE_COLLECTION_REASON) != null) {
+            if (hashMapHHTModuleOrder.get(CODE_COLLECTION_REASON) == 1)
+                IS_COLLECTION_MANDATE = true;
+
+        }
+
         this.IS_NEW_RETAILER_EDIT = hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_EDIT) != null ? hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_EDIT) : false;
         this.IS_EOD_STOCK_SPLIT = hashMapHHTModuleConfig.get(CODE_EOD_STOCK_SPLIT) != null ? hashMapHHTModuleConfig.get(CODE_EOD_STOCK_SPLIT) : false;
         this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY = hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) : false;
@@ -3409,6 +3419,7 @@ public class ConfigurationMasterHelper {
             SHOW_DELIVERY_PC = false;
             SHOW_DELIVERY_CA = false;
             SHOW_DELIVERY_OU = false;
+            SHOW_SALES_RETURN_IN_DELIVERY=false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3437,6 +3448,9 @@ public class ConfigurationMasterHelper {
                             break;
                         case "OC":
                             SHOW_DELIVERY_CA = true;
+                            break;
+                        case "SR":
+                            SHOW_SALES_RETURN_IN_DELIVERY=true;
                             break;
                     }
 
@@ -6204,5 +6218,28 @@ public class ConfigurationMasterHelper {
             bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
         }
 
+    }
+
+
+    public String getDynamicReportTitle() {
+
+        String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                + " where hhtCode=" + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_SALES_VALUE_DR) + " and Flag=1 and ForSwitchSeller = 0";
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+
+        String title = "";
+
+        Cursor c = db.selectSQL(sql);
+        if (c != null && c.getCount() != 0) {
+            if (c.moveToNext()) {
+                title = c.getString(c.getColumnIndex("RField")).equalsIgnoreCase("")?"Report":c.getString(c.getColumnIndex("RField"));
+            }
+            c.close();
+            db.closeDB();
+        }
+
+        return title;
     }
 }

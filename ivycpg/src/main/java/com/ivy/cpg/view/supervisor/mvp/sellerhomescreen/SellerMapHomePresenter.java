@@ -903,7 +903,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         return isSameDate;
     }
 
-    public boolean areaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
+    boolean areaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
         float[] result = new float[1];
         Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude, result);
         return result[0] < minDistanceInMeter;

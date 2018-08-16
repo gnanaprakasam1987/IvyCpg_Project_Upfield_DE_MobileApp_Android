@@ -1319,19 +1319,19 @@ public class CommonPrintHelper {
                                 if (freeProduct.getCaseUomId() == schemeProductBO.getUomID()
                                         && freeProduct.getCaseUomId() != 0) {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
-                                    mProductCaseQtyTotal = mProductCaseQtyTotal + schemeProductBO.getQuantitySelected();
+                                    mProductCaseQtyTotal += mProductCaseQtyTotal + schemeProductBO.getQuantitySelected();
                                 }
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_PIECE)) {
                                 if (freeProduct.getPcUomid() == schemeProductBO.getUomID()
                                         && freeProduct.getPcUomid() != 0) {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
-                                    mProductPieceQtyTotal = mProductPieceQtyTotal + schemeProductBO.getQuantitySelected();
+                                    mProductPieceQtyTotal += mProductPieceQtyTotal + schemeProductBO.getQuantitySelected();
                                 }
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_OUTER)) {
                                 if (freeProduct.getOuUomid() == schemeProductBO.getUomID()
                                         && freeProduct.getOuUomid() != 0) {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
-                                    mProductOuterQtyTotal = mProductOuterQtyTotal + schemeProductBO.getQuantitySelected();
+                                    mProductOuterQtyTotal += mProductOuterQtyTotal + schemeProductBO.getQuantitySelected();
                                 }
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_UOM_WISE_QTY)) {
 

@@ -317,7 +317,7 @@ public class StockViewActivity extends ToolBarwithFilter implements
             childList = new ArrayList<LoadManagementBO>();
             for (LoadManagementBO childBO : temp2) {
                 if (parentBo.getProductid() == childBO.getProductid()
-                        && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty())
+                        && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty()&& !childBO.getBatchId().equals("0"))
                     childList.add(childBO);
             }
             String pid = String.valueOf(parentBo.getProductid());

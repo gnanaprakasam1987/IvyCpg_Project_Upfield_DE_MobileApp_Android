@@ -156,7 +156,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         mChart = findViewById(R.id.combined_chart);
         mChart.setNoDataText("Loading...");
         mChart.setNoDataTextColor(ContextCompat.getColor(this,R.color.WHITE));
-        mChart.animateXY(3000,3000,
+        mChart.animateXY(2500,2500,
                 Easing.EasingOption.EaseInBack, Easing.EasingOption.EaseOutBack);
 
         tabLayout = findViewById(R.id.tab_layout);
@@ -334,7 +334,8 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
-        l.setTextSize(getResources().getDimension(R.dimen._6sdp));
+        l.setTextSize(14f);
+        l.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
         l.setDrawInside(false);
 
         YAxis rightAxis = mChart.getAxisRight();
@@ -343,7 +344,8 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         rightAxis.setDrawAxisLine(false);
         rightAxis.setEnabled(true);
         rightAxis.setDrawGridLines(true);
-        rightAxis.setGridColor(ContextCompat.getColor(this,R.color.WHITE));
+        rightAxis.setGridColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
+        rightAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
@@ -351,8 +353,9 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         leftAxis.setEnabled(true);
         leftAxis.setDrawAxisLine(true);
         leftAxis.setDrawGridLines(true);
-        leftAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.WHITE));
-        leftAxis.setGridColor(ContextCompat.getColor(this,R.color.WHITE));
+        leftAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
+        leftAxis.setGridColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
+        leftAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -360,7 +363,8 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         xAxis.setGranularity(1f);
         xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(false);
-        xAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.WHITE));
+        xAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        xAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
 
         xAxis.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
@@ -390,13 +394,16 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         LineData d = new LineData();
 
         LineDataSet set = new LineDataSet(sellerPerformancePresenter.getSellerCoveredEntry(), "Covered");
-        set.setColor((ContextCompat.getColor(this,R.color.colorPrimary)));
-        set.setLineWidth(getResources().getDimension(R.dimen._2sdp));
+        set.setColor((ContextCompat.getColor(this,R.color.chart_covered_line)));
+        set.setLineWidth(4f);
         set.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
-        set.setCircleRadius(getResources().getDimension(R.dimen._2sdp));
+        set.setCircleColorHole(ContextCompat.getColor(this,R.color.chart_point_circle));
+        set.setCircleRadius(6f);
+        set.setCircleHoleRadius(4f);
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(true);
-        set.setValueTextSize(getResources().getDimension(R.dimen._6sdp));
+        set.setValueTextSize(12f);
+        set.setValueTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
         set.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -407,13 +414,16 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         set.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
 
         LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
-        set1.setColor(ContextCompat.getColor(this,R.color.GREEN));
-        set1.setLineWidth(getResources().getDimension(R.dimen._2sdp));
+        set1.setColor(ContextCompat.getColor(this,R.color.chart_productivity_line));
+        set1.setLineWidth(4f);
         set1.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
-        set1.setCircleRadius(getResources().getDimension(R.dimen._2sdp));
+        set1.setCircleColorHole(ContextCompat.getColor(this,R.color.chart_point_circle));
+        set1.setCircleRadius(6f);
+        set1.setCircleHoleRadius(4f);
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setDrawValues(true);
-        set1.setValueTextSize(getResources().getDimension(R.dimen._6sdp));
+        set1.setValueTextSize(12f);
+        set1.setValueTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
         set1.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
