@@ -310,5 +310,11 @@
     <color name="white_trans">#4DFFFFFF</color>
 
     <color name="map_poly_line">#5c000000</color>
+    <color name="chart_point_circle">#E5DC4B</color>
+    <color name="chart_productivity_line">#1AE547</color>
+    <color name="chart_covered_line">#007AFF</color>
+    <color name="chart_horizontal_line_color">#33ffffff</color>
+    <color name="chart_vertical_bar_color">#4DFFFFFF</color>
+
 
 </resources>
