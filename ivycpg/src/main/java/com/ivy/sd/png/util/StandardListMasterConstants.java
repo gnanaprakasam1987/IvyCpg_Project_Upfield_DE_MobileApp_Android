@@ -53,13 +53,13 @@ public class StandardListMasterConstants {
 	public static final String MENU_PND_INVOICE_REPORT = "MENU_PND_INV_RPT";
 	public static final String MENU_SKU_REPORT = "MENU_SKU_REPORT";
 	public static final String MENU_CURRENT_STOCK_REPORT = "MENU_CURRENT_STOCK_REPORT";
-	public static final String MENU_BEGINNING_STOCK_REPORT = "MENU_BEG_STOCK_REPORT";
+
 	public static final String MENU_COLLECTION_REPORT = "MENU_COLLECTION_REPORT";
 	public static final String MENU_TASK_EXECUTION_REPORT = "MENU_TASK_EXEC_REPORT";
 	public static final String MENU_EOD_STOCK_REPORT = "MENU_EOD_STOCK_REPORT";
 	public static final String MENU_TASK_REPORT = "MENU_TASK_REPORT";
 	public static final String MENU_QUESTION_REPORT = "MENU_QUESTION_REPORT";
-	public static final String MENU_CURRENT_STOCK_BATCH_REPORT="MENU_CURSTKBATCH_REPORT";
+
 	public static final String MENU_PS_ORD_RPT="MENU_PS_ORD_RPT";
 	public static final String MENU_DYN_REPORT = "MENU_DYN_RPT"; // Dynamic Report
 	public static final String MENU_LOG = "MENU_LOG"; // Activity Log
