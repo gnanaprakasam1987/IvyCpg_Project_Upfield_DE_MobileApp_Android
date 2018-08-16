@@ -221,9 +221,7 @@
         <activity
             android:name="com.ivy.sd.png.view.ViewImage"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.PlanningSubScreen"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
@@ -265,9 +263,6 @@
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
-        <activity
-            android:name="com.ivy.sd.png.view.merch.MerchandisingActivity"
-            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity"
             android:screenOrientation="portrait" />
@@ -522,12 +517,7 @@
         <activity
             android:name="com.ivy.sd.png.view.DamageStockFragmentActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.VanStockAdjustActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.CurrentStockBatchViewActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.sd.png.view.CaptureSignatureActivity"
             android:screenOrientation="portrait" />
@@ -781,8 +771,7 @@
         <activity
             android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity" />
-        <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity" />
+
         <activity
             android:name="com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity"
             android:screenOrientation="portrait" />
