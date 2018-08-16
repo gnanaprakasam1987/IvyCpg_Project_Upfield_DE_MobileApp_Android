@@ -28,7 +28,8 @@
                 android:id="@+id/outlet_image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_150sdp"
-                android:layout_alignParentTop="true"/>
+                android:layout_alignParentTop="true"
+                android:background="@drawable/covered_outlet_bg_gradient"/>
 
             <ImageView
                 android:id="@+id/outlet_no_image"
