@@ -101,7 +101,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         }
 
         menuIcons.put(MENU_ODAMETER, R.drawable.icon_odameter);
-        menuIcons.put(MENU_ODAMETER, R.drawable.icon_order);
+        menuIcons.put(MENU_PLANNING, R.drawable.icon_order);
         menuIcons.put(MENU_STOCK_VIEW, R.drawable.icon_stock);
         menuIcons.put(MENU_VANLOAD_STOCK_VIEW, R.drawable.icon_stock);
         menuIcons.put(MENU_MANUAL_VAN_LOAD, R.drawable.icon_vanload);
