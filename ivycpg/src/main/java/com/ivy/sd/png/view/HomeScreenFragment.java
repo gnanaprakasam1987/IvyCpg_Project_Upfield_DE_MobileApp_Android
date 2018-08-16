@@ -57,9 +57,9 @@ import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
-import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.LoadManagementFragment;
@@ -1516,6 +1516,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             getActivity().finish();
         } else if (menuItem.getConfigCode().equals(MENU_NON_FIELD)) {
             bmodel.reasonHelper.downloadPlaneDeviateReasonMaster("FIELD_PLAN_TYPE");
+            bmodel.reasonHelper.downloadPlannedActivitiesReasonMaster("FIELD_PLAN_TYPE");
+            bmodel.reasonHelper.downloadNonPlannedReason();
             switchFragment(MENU_NON_FIELD, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_DELMGMT_RET)) {
             switchFragment(MENU_DELMGMT_RET, menuItem.getMenuName());
@@ -2144,7 +2146,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_SUPERVISOR_CALLANALYSIS:
 
                 SupervisorActivityHelper.getInstance().loginToFirebase();
-                SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(),SDUtil.now(SDUtil.DATE_GLOBAL));
+                SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(), SDUtil.now(SDUtil.DATE_GLOBAL));
 
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
@@ -2282,22 +2284,34 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     }
 
 
-    public void detachNewOutlet(){
+    public void detach(String menuCode) {
         android.support.v4.app.FragmentManager fm = getFragmentManager();
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
-        NewOutletFragment mNewOutletFragment = (NewOutletFragment) fm
-                .findFragmentByTag(MENU_NEW_RETAILER);
 
-        if (mNewOutletFragment != null) {
-            ft.detach(mNewOutletFragment);
-            ft.commit();
+        if (MENU_NEW_RETAILER.equals(menuCode)) {
+            NewOutletFragment mNewOutletFragment = (NewOutletFragment) fm
+                    .findFragmentByTag(MENU_NEW_RETAILER);
+
+            if (mNewOutletFragment != null) {
+                ft.detach(mNewOutletFragment);
+                ft.commit();
+            }
+        } else if (MENU_NON_FIELD.equals(menuCode)) {
+            PlanDeviationFragment mPlanDeviationFragment = (PlanDeviationFragment) fm
+                    .findFragmentByTag(MENU_NON_FIELD);
+            if (mPlanDeviationFragment != null) {
+                ft.detach(mPlanDeviationFragment);
+                ft.commit();
+            }
         }
+
 
         DrawerLayout mDrawerLayout = getActivity().findViewById(R.id.drawer_layout);
         mDrawerLayout.openDrawer(GravityCompat.START);
 
         setScreenTitle(getResources().getString(R.string.app_name));
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

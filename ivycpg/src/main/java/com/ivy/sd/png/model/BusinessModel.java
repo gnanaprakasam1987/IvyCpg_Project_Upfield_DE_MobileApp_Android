@@ -8553,9 +8553,16 @@ public class BusinessModel extends Application {
 
             for (NonproductivereasonBO reasnBo : reasonBoList) {
 
+                String remark = "";
+                if (!reasnBo.getDeviatedReasonId().equalsIgnoreCase("0")) {
+                    remark = reasnBo.getDeviationReason();
+                } else {
+                    remark = remarks;
+                }
+
                 values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
                         + QT(reasnBo.getDate()) + "," + QT(reasnBo.getReasonid())
-                        + "," + QT(remarks) +
+                        + "," + QT(remark) +
                         "," + getRetailerMasterBO().getDistributorId();
 
                 db.insertSQL("NonFieldActivity", columns, values);

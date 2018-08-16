@@ -37,6 +37,7 @@ public class StandardListMasterConstants {
 
 	public static final String SALES_RETURN_SALABLE_REASON_TYPE = "SRS";
 	public static final String SALES_RETURN_NONSALABLE_REASON_TYPE = "SR";
+	public static final String NON_PLANNED_REASON_TYPE = "NFA_DEVIATION";
 	public static final String OTP_REASON_TYPE = "RTRSKP";
 	public static final String COLLECTION_TRANSACTION_PAYMENT_TYPE = "COLL_TRAN_PAY_TYPE";
 	public static final String COLLECTION_NORMAL_PAYMENT = "CNP";
