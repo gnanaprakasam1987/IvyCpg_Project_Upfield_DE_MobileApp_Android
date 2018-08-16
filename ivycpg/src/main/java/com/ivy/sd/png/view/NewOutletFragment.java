@@ -5155,7 +5155,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                                                     int whichButton) {
                                     HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
                                     if (currentFragment != null) {
-                                        currentFragment.detachNewOutlet();
+                                        currentFragment.detach("MENU_NEW_RETAILER");
                                     }
                                 }
                             });
