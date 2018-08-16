@@ -262,8 +262,13 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                if (builder != null)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+                if (builder != null) {
+                    if (outletMapViewPresenter.areaBoundsTooSmall(builder.build(), 300)) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
+                    } else {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
+                    }
+                }
             }
         });
     }
@@ -561,4 +566,10 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        outletMapViewPresenter.removeFirestoreListener();
+    }
 }
