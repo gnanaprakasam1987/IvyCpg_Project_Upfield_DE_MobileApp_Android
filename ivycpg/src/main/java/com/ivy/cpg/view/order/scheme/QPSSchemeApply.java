@@ -198,12 +198,13 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
 
     private void checkSlabandsetProduct() {
         minItemList = new HashMap<>();
+        HashMap<String, SchemaQPSAchHistoryBO> historyMap = schemeHelper.getmSchemaQPSAchHistoryList();
         for (int i = 0; i < schemeIDList.size(); i++) {
             SchemeBO schemeHeader = schemeIDList.get(i);
             if (minItemList.get(schemeHeader.getParentId()) == null) {
                 minItemList.put(schemeHeader.getParentId(), schemeHeader);
             }
-            float totalPiecesQty = 0, totalPiecesPriceQty = 0, totalPiecesEveryQty = 0, totalPiecesEveryPriceQty = 0;
+            double totalPiecesQty = 0, totalPiecesPriceQty = 0, totalPiecesEveryQty = 0, totalPiecesEveryPriceQty = 0;
             double totalCasesQty = 0, totalCasesPriceQty = 0, totalCasesEveryQty = 0, totalCasesEveryPriceQty = 0;
             for (SchemeProductBO schemeProduct : schemeHeader.getBuyingProducts()) {
                 schemeHeader.setFromQty(schemeProduct.getBuyQty());
@@ -319,6 +320,13 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     }
                 }
             }
+            if (historyMap != null && historyMap.get(schemeHeader.getParentId() + "") != null) {
+                if (schemeHeader.isCaseScheme()) {
+                    totalCasesQty = totalCasesQty + historyMap.get(schemeHeader.getParentId() + "").getCumulative_Purchase();
+                } else {
+                    totalPiecesQty = totalPiecesQty + historyMap.get(schemeHeader.getParentId() + "").getCumulative_Purchase();
+                }
+            }
             if (schemeHeader.isCaseScheme() && totalCasesQty >= schemeHeader.getFromQty() && totalCasesQty <= schemeHeader.getToQty()) {
                 schemeHeader.setTotalCaseQty(totalCasesQty);
                 if (totalCasesEveryPriceQty > 0) {
@@ -397,9 +405,9 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         //Calculating Dynamic cumulative purchase, Cur Sch Details
                         for (SchemeProductBO schemeBO : schemeHeader.getBuyingProducts()) {
                             if (buyType.equals("SV")) {
-                                parentSchemeBO.setCalculatedCumulativePurchase(parentSchemeBO.getCumulativePurchase() + (schemeHeader.getTotalPieceQty()));
+                                parentSchemeBO.setCalculatedCumulativePurchase(/*parentSchemeBO.getCumulativePurchase() + */(schemeHeader.getTotalPieceQty()));
                             } else if (buyType.equals("QTY")) {
-                                parentSchemeBO.setCalculatedCumulativePurchase(parentSchemeBO.getCumulativePurchase() +
+                                parentSchemeBO.setCalculatedCumulativePurchase(/*parentSchemeBO.getCumulativePurchase() +*/
                                         (schemeHeader.isCaseScheme() ? schemeHeader.getTotalCaseQty() :
                                                 schemeHeader.getTotalPieceQty()));
                             }
@@ -461,7 +469,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                                 } else if (buyType.equals("QTY")) { //Qty
                                     double cumulativePurchaseValue = 0;
                                     if (schemeHeader.getEveryQty() > 0) {
-                                        cumulativePurchaseValue = schemeHeader.isCaseScheme() ? schemeHeader.getTotalCaseEveryQty() : schemeHeader.getTotalPieceEveryQty();
+                                        cumulativePurchaseValue = schemeHeader.isCaseScheme() ? schemeHeader.getTotalCasesPriceQty() : schemeHeader.getTotalPcsPriceQty();
                                         cumulativePurchaseValue = cumulativePurchaseValue * (schemeBO.getMinPercent() / 100);
                                         parentSchemeBO.setCalculatedcurSlabCumSchAmt(cumulativePurchaseValue);
                                     } else {
