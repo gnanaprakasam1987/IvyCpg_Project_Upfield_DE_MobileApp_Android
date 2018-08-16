@@ -41,7 +41,7 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.Vector;
 
-public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
+public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
     BusinessModel bmodel;
     private Toolbar toolbar;
     private ProductMasterBO mProductMasterBO;
@@ -1374,8 +1374,8 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                     if (isChecked) {
                         rbNoPrice.setChecked(false);
                         rbYesPrice.setButtonDrawable(R.drawable.ic_tick_enable);
-                        rbYesPrice.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_yes_green));
-                        rbNoPrice.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_yes_grey));
+                        rbYesPrice.setTextColor(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.plano_yes_green));
+                        rbNoPrice.setTextColor(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.plano_yes_grey));
                         rbNoPrice.setButtonDrawable(R.drawable.ic_cross_disable);
                         mProductMasterBO.setPriceChanged(1);
                         if (mProductMasterBO
@@ -1392,8 +1392,8 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
                         rbYesPrice.setChecked(false);
                         rbYesPrice.setButtonDrawable(R.drawable.ic_tick_disable);
                         rbNoPrice.setButtonDrawable(R.drawable.ic_cross_enable);
-                        rbYesPrice.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_yes_grey));
-                        rbNoPrice.setTextColor(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.plano_no_red));
+                        rbYesPrice.setTextColor(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.plano_yes_grey));
+                        rbNoPrice.setTextColor(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.plano_no_red));
                         mProductMasterBO.setPriceChanged(0);
                         etPricePiece.setText("0");
                     }
@@ -1664,15 +1664,15 @@ public class AvailabiltyCheckActivity extends IvyBaseActivityNoActionBar {
     private void updateCheckBoxStatus() {
         if (mProductMasterBO.getLocations()
                 .get(mSelectedLocationIndex).getAvailability() == 1) {
-            CompoundButtonCompat.setButtonTintList(chkAvailability, ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.colorAccent)));
+            CompoundButtonCompat.setButtonTintList(chkAvailability, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.colorAccent)));
             chkAvailability.setChecked(true);
         } else if (mProductMasterBO.getLocations()
                 .get(mSelectedLocationIndex).getAvailability() == 0) {
-            CompoundButtonCompat.setButtonTintList(chkAvailability, ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.RED)));
+            CompoundButtonCompat.setButtonTintList(chkAvailability, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.RED)));
             chkAvailability.setChecked(true);
         } else if (mProductMasterBO.getLocations()
                 .get(mSelectedLocationIndex).getAvailability() == -1) {
-            CompoundButtonCompat.setButtonTintList(chkAvailability, ColorStateList.valueOf(ContextCompat.getColor(AvailabiltyCheckActivity.this, R.color.checkbox_default_color)));
+            CompoundButtonCompat.setButtonTintList(chkAvailability, ColorStateList.valueOf(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.checkbox_default_color)));
             chkAvailability.setChecked(false);
         }
 

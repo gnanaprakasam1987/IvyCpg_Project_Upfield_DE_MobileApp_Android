@@ -6,6 +6,7 @@ public class ReasonMaster {
     private String conditionId;
     private String reasonDesc;
     private String reasonCategory;
+    private int isPlanned;
 
     public ReasonMaster() {
     }
@@ -52,5 +53,11 @@ public class ReasonMaster {
         this.reasonDesc = reasonDesc;
     }
 
+    public int getIsPlanned() {
+        return isPlanned;
+    }
 
+    public void setIsPlanned(int isPlanned) {
+        this.isPlanned = isPlanned;
+    }
 }

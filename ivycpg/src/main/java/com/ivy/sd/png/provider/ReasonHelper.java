@@ -40,6 +40,8 @@ public class ReasonHelper {
     private ArrayList<ReasonMaster> shipmentType;
     private ArrayList<ReasonMaster> paymentType;
     private ArrayList<ReasonMaster> distributionChannelType;
+    private ArrayList<ReasonMaster> reasonPlanedActivities;
+    private ArrayList<ReasonMaster> nonPlanedReasons;
 
     private ReasonHelper(Context context) {
         this.context = context;
@@ -88,6 +90,37 @@ public class ReasonHelper {
             Commons.printException(e);
         }
     }
+
+
+    public void downloadNonPlannedReason() {
+        try {
+            ReasonMaster reason;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT A.ListId, A.ListName, A.ListCode FROM StandardListMaster A"
+                    + " INNER JOIN StandardListMaster B ON A.ParentId = B.ListId AND "
+                    + " ( B.ListCode = '" + StandardListMasterConstants.NON_PLANNED_REASON_TYPE
+                    + "') WHERE A.ListType ='REASON'";
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                nonPlanedReasons = null;
+                nonPlanedReasons = new ArrayList<>();
+                while (c.moveToNext()) {
+                    reason = new ReasonMaster();
+                    reason.setReasonID(c.getString(0));
+                    reason.setReasonDesc(c.getString(1));
+                    reason.setReasonCategory(c.getString(2));
+                    nonPlanedReasons.add(reason);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+    }
+
 
     /**
      * Download nonproductive reason for module with image.
@@ -233,7 +266,8 @@ public class ReasonHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType =" + QT(listType);
+            String s = "SELECT ListId, ListName,CASE WHEN ifnull(P.id,0) >0 THEN 1 ELSE 0 END as planned FROM StandardListMaster S" +
+                    " Left join PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + QT(listType);
             Cursor c = db.selectSQL(s);
             if (c != null) {
                 reasonPlaneDeviationMaster = null;
@@ -242,12 +276,14 @@ public class ReasonHelper {
                     reason = new ReasonMaster();
                     reason.setReasonID(c.getString(0));
                     reason.setReasonDesc(c.getString(1));
+                    reason.setIsPlanned(c.getInt(2));
                     reasonPlaneDeviationMaster.add(reason);
                 }
                 c.close();
                 reason = new ReasonMaster();
                 reason.setReasonID("0");
                 reason.setReasonDesc("Others");
+                reason.setIsPlanned(1);
                 reasonPlaneDeviationMaster.add(reason);
             }
             db.closeDB();
@@ -255,6 +291,33 @@ public class ReasonHelper {
             Commons.printException(e);
         }
     }
+
+
+    public void downloadPlannedActivitiesReasonMaster(String listType){
+        try {
+            ReasonMaster reason;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT ListId, ListName FROM StandardListMaster S INNER JOIN PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + QT(listType);
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                reasonPlanedActivities = null;
+                reasonPlanedActivities = new ArrayList<>();
+                while (c.moveToNext()) {
+                    reason = new ReasonMaster();
+                    reason.setReasonID(c.getString(0));
+                    reason.setReasonDesc(c.getString(1));
+                    reasonPlanedActivities.add(reason);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+    }
+
 
 
     public void downloadNonProductiveReasonMaster() {
@@ -322,6 +385,25 @@ public class ReasonHelper {
             ArrayList<ReasonMaster> deviatedReturnMaster) {
         this.deviatedReturnMaster = deviatedReturnMaster;
     }
+
+    public ArrayList<ReasonMaster> getReasonPlanedActivities() {
+        return reasonPlanedActivities;
+    }
+
+    public void setReasonPlanedActivities(ArrayList<ReasonMaster> reasonPlanedActivities) {
+        this.reasonPlanedActivities = reasonPlanedActivities;
+    }
+
+    public ArrayList<ReasonMaster> getNonPlanedReasons() {
+        return nonPlanedReasons;
+    }
+
+    public void setNonPlanedReasons(ArrayList<ReasonMaster> nonPlanedReasons) {
+        this.nonPlanedReasons = nonPlanedReasons;
+    }
+
+
+
 
     public ArrayList<ReasonMaster> getDeviatedReturnMaster() {
         return deviatedReturnMaster;
