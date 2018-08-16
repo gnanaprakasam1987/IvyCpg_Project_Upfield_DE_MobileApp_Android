@@ -137,6 +137,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private TextView tv_sharePercent;
     private LinearLayout ll_stockCheck_SharePercent;
+    MyAdapter mSchedule;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -441,8 +442,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private void refreshList(ArrayList<ProductMasterBO> stockList) {
         this.stockList = stockList;
-        MyAdapter mSchedule = new MyAdapter(stockList);
-        listview.setAdapter(mSchedule);
+        if (mSchedule == null) {
+            mSchedule = new MyAdapter(stockList);
+            listview.setAdapter(mSchedule);
+        } else {
+            mSchedule.setListData(stockList);
+            mSchedule.notifyDataSetChanged();
+        }
     }
 
 
@@ -470,12 +476,16 @@ public class StockCheckFragment extends IvyBaseFragment implements
         stockCheckPresenter.updateCompetitorFilteredProducts(parentIdList, mSelectedIdByLevelId, filterText);
     }
 
-    class MyAdapter extends ArrayAdapter<ProductMasterBO> {
-        private final ArrayList<ProductMasterBO> items;
+    public class MyAdapter extends ArrayAdapter<ProductMasterBO> {
+        private ArrayList<ProductMasterBO> items;
 
         public MyAdapter(ArrayList<ProductMasterBO> items) {
             super(getActivity(), R.layout.row_closingstock, items);
             this.items = items;
+        }
+
+        public void setListData(ArrayList<ProductMasterBO> productList) {
+            this.items = productList;
         }
 
         public ProductMasterBO getItem(int position) {

@@ -3202,8 +3202,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
             }
-        }
-        if (menu.getConfigCode()
+        } else if (menu.getConfigCode()
                 .equals(MENU_SOD) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
