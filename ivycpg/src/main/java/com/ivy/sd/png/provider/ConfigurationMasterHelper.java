@@ -275,7 +275,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_STOCK_PRO_CREDIT_VALIDATION = "STKPRO16";
     private static final String CODE_DEVIATE_STORE_SCHEME_NOT_APPLY = "ORDB37";
     private static final String CODE_SALES_RETURN_IN_INVOICE = "SR04";
-    private static final String CODE_VANBARCODE_VALIDATION = "VBARCODEVAL";
+    //private static final String CODE_VANBARCODE_VALIDATION = "VBARCODEVAL";
     private static final String CODE_CREDIT_INVOICE_COUNT = "PROFILE23";
 
     private static final String CODE_HIDE_STOCK_APPLY_BUTTON = "STKPRO17";
@@ -765,7 +765,7 @@ public class ConfigurationMasterHelper {
     // Added in 43 version
     public boolean SHEME_NOT_APPLY_DEVIATEDSTORE;
     // Added in 43 version
-    public boolean SHOW_VANBARCODE_VALIDATION;
+    //public boolean SHOW_VANBARCODE_VALIDATION;
     public boolean ISAMAZON_IMGUPLOAD = true;
     // Added in 44 version
 
@@ -2046,7 +2046,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_CLOSE_DAY_VALID = hashMapHHTModuleConfig.get(CODE_CLOSE_DAY_VALID) != null ? hashMapHHTModuleConfig.get(CODE_CLOSE_DAY_VALID) : false;
         this.SHOW_BATCH_ALLOCATION = hashMapHHTModuleConfig.get(CODE_BATCH_ALLOCATION) != null ? hashMapHHTModuleConfig.get(CODE_BATCH_ALLOCATION) : false;
         this.SHOW_INVOICE_CREDIT_BALANCE = hashMapHHTModuleConfig.get(CODE_INV_CREDIT_BALANCE) != null ? hashMapHHTModuleConfig.get(CODE_INV_CREDIT_BALANCE) : false;
-        this.SHOW_VANBARCODE_VALIDATION = hashMapHHTModuleConfig.get(CODE_VANBARCODE_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_VANBARCODE_VALIDATION) : false;
+        //this.SHOW_VANBARCODE_VALIDATION = hashMapHHTModuleConfig.get(CODE_VANBARCODE_VALIDATION) != null ? hashMapHHTModuleConfig.get(CODE_VANBARCODE_VALIDATION) : false;
         this.IS_POST_DATE_ALLOW = hashMapHHTModuleConfig.get(CODE_POST_DATE_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_POST_DATE_ALLOW) : false;
         this.SHOW_DELIVERY_DATE = hashMapHHTModuleConfig.get(CODE_DELIVERY_DATE) != null ? hashMapHHTModuleConfig.get(CODE_DELIVERY_DATE) : false;
         this.IS_NEWOUTLET_IMAGETYPE = hashMapHHTModuleConfig.get(CODE_NEWOUTLET_IMAGETYPE) != null ? hashMapHHTModuleConfig.get(CODE_NEWOUTLET_IMAGETYPE) : false;

@@ -37,8 +37,8 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private ListView lvwplist;
     private LinearLayout linearLayout;
-    ClosingStockReportsHelper closingStockReportsHelper;
-    HashMap<String, ArrayList<ClosingStockReportBo>> retailerWiseClosingStock;
+    private ClosingStockReportsHelper closingStockReportsHelper;
+    private HashMap<String, ArrayList<ClosingStockReportBo>> retailerWiseClosingStock;
     private CompositeDisposable compositeDisposable;
 
     @Override
