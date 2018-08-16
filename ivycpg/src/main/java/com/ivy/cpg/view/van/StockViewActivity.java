@@ -247,12 +247,12 @@ public class StockViewActivity extends ToolBarwithFilter implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                loadActivity = new Intent(StockViewActivity.this, HomeScreenActivity.class);
+               /* loadActivity = new Intent(StockViewActivity.this, HomeScreenActivity.class);
                 if (isFromPlanning)
                     loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
                 else
                     loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-                startActivity(loadActivity);
+                startActivity(loadActivity);*/
                 finish();
             }
         } else if (id == R.id.menu_expand) {

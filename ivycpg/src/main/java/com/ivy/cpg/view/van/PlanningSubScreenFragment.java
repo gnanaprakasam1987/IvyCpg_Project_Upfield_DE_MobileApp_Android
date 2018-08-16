@@ -56,11 +56,11 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private boolean isClicked;
 
-    private String menuOdameter = "MENU_ODAMETER";
-    private String menuPlanning = "MENU_PLANNING";
-    private String menuStockView = "MENU_STOCK_VIEW";
-    private String menuVanloadStockView = "MENU_VANLOAD_STOCK_VIEW";
-    private String menuManualVanload = "MENU_MANUAL_VAN_LOAD";
+    private static final String MENU_PLANNING = "MENU_PLANNING";
+    private static final String MENU_ODAMETER = "MENU_ODAMETER";
+    private static final String MENU_STOCK_VIEW = "MENU_STOCK_VIEW";
+    private static final String MENU_VANLOAD_STOCK_VIEW = "MENU_VANLOAD_STOCK_VIEW";
+    private static final String MENU_MANUAL_VAN_LOAD = "MENU_MANUAL_VAN_LOAD";
 
     private Intent vanloadstockview;
     private Intent stockViewIntent;
@@ -100,11 +100,11 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
             getActivity().finish();
         }
 
-        menuIcons.put(menuOdameter, R.drawable.icon_odameter);
-        menuIcons.put(menuPlanning, R.drawable.icon_order);
-        menuIcons.put(menuStockView, R.drawable.icon_stock);
-        menuIcons.put(menuVanloadStockView, R.drawable.icon_stock);
-        menuIcons.put(menuManualVanload, R.drawable.icon_vanload);
+        menuIcons.put(MENU_ODAMETER, R.drawable.icon_odameter);
+        menuIcons.put(MENU_ODAMETER, R.drawable.icon_order);
+        menuIcons.put(MENU_STOCK_VIEW, R.drawable.icon_stock);
+        menuIcons.put(MENU_VANLOAD_STOCK_VIEW, R.drawable.icon_stock);
+        menuIcons.put(MENU_MANUAL_VAN_LOAD, R.drawable.icon_vanload);
         menuIcons.put(StandardListMasterConstants.MENU_TASK_REPORT, R.drawable.icon_reports);
 
         Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper.downloadPlanningSubMenu();
@@ -190,16 +190,15 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
         String menuPlanningConstant = "Day Planning";
         String menuDashDay = "MENU_DASH_DAY";
 
-        if (menuItem.getConfigCode().equals(menuOdameter)) {
+        if (menuItem.getConfigCode().equals(MENU_ODAMETER)) {
 
             Intent odameterintent = new Intent(getActivity(),
                     OdaMeterScreen.class);
             odameterintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             odameterintent.putExtra("screentitle", menuItem.getMenuName());
-            odameterintent.putExtra("planingsub", true);
             startActivity(odameterintent);
 
-        } else if (menuItem.getConfigCode().equals(menuPlanning)) {
+        } else if (menuItem.getConfigCode().equals(MENU_PLANNING)) {
 
             if (bmodel.synchronizationHelper.isDayClosed()) {
                 Toast.makeText(getActivity(),
@@ -221,16 +220,16 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                     startActivity(i);
                 }
             }
-        } else if (menuItem.getConfigCode().equals(menuVanloadStockView)) {
+        } else if (menuItem.getConfigCode().equals(MENU_VANLOAD_STOCK_VIEW)) {
 
             if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
                 checkIsAllowed(
-                        menuVanloadStockView);
+                        MENU_VANLOAD_STOCK_VIEW);
             }  else {
                 vanLoadSubRoutine(menuItem.getMenuName());
             }
 
-        } else if (menuItem.getConfigCode().equals(menuStockView)) {
+        } else if (menuItem.getConfigCode().equals(MENU_STOCK_VIEW)) {
             bmodel.configurationMasterHelper.loadStockUOMConfiguration();
             stockViewIntent = new Intent(getActivity(),
                     StockViewActivity.class);
@@ -246,7 +245,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
             i.putExtra("screentitle", menuItem.getMenuName());
             startActivity(i);
 
-        } else if (menuItem.getConfigCode().equals(menuManualVanload)) {
+        } else if (menuItem.getConfigCode().equals(MENU_MANUAL_VAN_LOAD)) {
 
             vanloadintent = new Intent(getActivity(),
                     ManualVanLoadActivity.class);
@@ -302,8 +301,8 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                 float distance = LocationUtil.calculateDistance(wareLatitude,
                         wareLongitude);
                 if (distance <= ConfigurationMasterHelper.vanDistance) {
-                    if (menuString.equals(menuVanloadStockView))
-                        vanLoadSubRoutine(menuVanloadStockView);
+                    if (menuString.equals(MENU_VANLOAD_STOCK_VIEW))
+                        vanLoadSubRoutine(MENU_VANLOAD_STOCK_VIEW);
 
                 } else {
                     showToastMessage(distance);
@@ -448,7 +447,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
                         bmodel.productHelper.getFilterProductLevels()));
 
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
-                        MENU_LOAD_MANAGEMENT, menuManualVanload);
+                        MENU_LOAD_MANAGEMENT, MENU_MANUAL_VAN_LOAD);
 
 
                 if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
@@ -541,7 +540,7 @@ public class PlanningSubScreenFragment extends IvyBaseFragment {
             if (i != null)
                 holder.menuIcon.setImageResource(i);
             else
-                holder.menuIcon.setImageResource(menuIcons.get(menuPlanning));
+                holder.menuIcon.setImageResource(menuIcons.get(MENU_PLANNING));
 
             if (position % 2 == 0)
                 convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
