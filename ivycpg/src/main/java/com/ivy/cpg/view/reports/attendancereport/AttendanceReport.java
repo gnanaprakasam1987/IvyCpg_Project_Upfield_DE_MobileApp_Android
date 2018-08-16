@@ -89,13 +89,13 @@ public class AttendanceReport extends IvyBaseFragment {
         final ArrayList<String> attendanceMonths = new ArrayList<>();
         attendanceReportBos = new ArrayList<>();
         AttendanceReportHelper attendanceReportHelper = new AttendanceReportHelper();
-        final AlertDialog alertDialog;
+     /*   final AlertDialog alertDialog;
         AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(getActivity());
+        builder = new AlertDialog.Builder(getActivity());*/
         compositeDisposable = new CompositeDisposable();
-        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+       /* customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
         alertDialog = builder.create();
-        alertDialog.show();
+        alertDialog.show();*/
 
         compositeDisposable.add((Disposable) Observable.zip(attendanceReportHelper.downloadAttendanceMonth(userId, getActivity()),
                 attendanceReportHelper.downloadAttendanceReport(userId, getActivity())
@@ -125,13 +125,13 @@ public class AttendanceReport extends IvyBaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        alertDialog.dismiss();
+                        //alertDialog.dismiss();
                         Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onComplete() {
-                        alertDialog.dismiss();
+                        //alertDialog.dismiss();
                     }
                 }));
 

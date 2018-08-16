@@ -615,10 +615,10 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                             String.format(
                                                     context.getResources().getString(
                                                             R.string.discount_amt_cannot_be_higher_than_percentage),
-                                                    bmodel.configurationMasterHelper.DISCOUNT_PRICE_PER+"%"),
+                                                    bmodel.configurationMasterHelper.DISCOUNT_PRICE_PER + "%"),
                                             Toast.LENGTH_SHORT).show();
 
-                                }else
+                                } else
                                     Toast.makeText(context, context.getResources().getString(R.string.discount_amt_cannot_be_higher_than_price), Toast.LENGTH_SHORT).show();
                             }
 
@@ -863,10 +863,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         }
         /* apply batchwise discount ends */
 
-        double line_total_price = (productBO.getOrderedCaseQty() * productBO
-                .getCsrp())
-                + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+        double line_total_price = productBO.getDiscount_order_value();
         productBO.setApplyValue(line_total_price * sum / 100);
 
         double total = productBO.getDiscount_order_value() - productBO.getApplyValue();

@@ -211,6 +211,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     Handler handler = null;
     Runnable runnable = null;
 
+    String dynamicReportTitle = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -586,11 +588,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         *
         * Show dynamic report based on Retailer
         * */
-
-
+        dynamicReportTitle = bmodel.configurationMasterHelper.getDynamicReportTitle();
 
         if (bmodel.configurationMasterHelper.SHOW_SALES_VALUE_DR) {
-            tabLayout.addTab(tabLayout.newTab().setText("Report"));
+            tabLayout.addTab(tabLayout.newTab().setText(dynamicReportTitle));
         }
 
 
@@ -728,7 +729,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         upArrow = ContextCompat.getDrawable(this, R.drawable.ic_home_arrow);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.FullBlack), PorterDuff.Mode.SRC_ATOP);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
@@ -1027,7 +1028,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
 
-        String mapKey = "key="+getString(R.string.google_maps_api_key);
+        String mapKey = "key=" + getString(R.string.google_maps_api_key);
 
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude; // Destination of route
@@ -1042,7 +1043,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints+"&"+mapKey;
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints + "&" + mapKey;
         String output = "json";
 
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
@@ -1394,7 +1395,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 return new SBDGapFragment();
             } else if (tabName.equals(retailer_contact_title)) {
                 return new RetailerContactFragment();
-            } else if ("Report".equalsIgnoreCase(tabName)) {
+            } else if (dynamicReportTitle.equalsIgnoreCase(tabName)) {
                 DynamicReportHelper.getInstance(ProfileActivity.this).downloadDynamicReport("MENU_DYN_RPT_RTR");
                 DynamicReportFragment dynamicReportFragment = new DynamicReportFragment();
                 Bundle bundle = new Bundle();
