@@ -61,6 +61,7 @@ import com.ivy.sd.png.view.About;
 import com.ivy.sd.png.view.AttendanceActivity;
 import com.ivy.sd.png.view.ChangePasswordActivity;
 import com.ivy.sd.png.view.DistributorSelectionActivity;
+import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PasswordLockDialogFragment;
 import com.ivy.sd.png.view.ResetPasswordDialog;
 import com.ivy.sd.png.view.UserSettingsActivity;
@@ -285,8 +286,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
 
     @Override
     public void goToHomeScreen() {
-        BusinessModel.loadActivity(LoginScreen.this,
-                DataMembers.actHomeScreen);
+       // BusinessModel.loadActivity(LoginScreen.this,
+               // DataMembers.actHomeScreen);
+
+       Intent myIntent = new Intent(this, HomeScreenActivity.class);
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityForResult(myIntent, 0);
     }
 
     @Override

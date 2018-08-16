@@ -615,9 +615,12 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                                 .updateTimeStampModuleWise(SDUtil
                                         .now(SDUtil.TIME));
                         getActivity().finish();
-                        BusinessModel.loadActivity(
-                                getActivity(),
-                                DataMembers.actHomeScreenTwo);
+                        //BusinessModel.loadActivity(
+                               // getActivity(),
+                              //  DataMembers.actHomeScreenTwo);
+                      Intent  myIntent = new Intent(getActivity(), HomeScreenTwo.class);
+                       startActivityForResult(myIntent, 0);
+
                         /* User clicked OK so do some stuff */
                     }
                 }, new CommonDialog.negativeOnClickListener() {
