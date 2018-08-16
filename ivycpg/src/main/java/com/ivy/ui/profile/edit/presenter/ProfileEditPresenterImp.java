@@ -28,6 +28,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
 
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
@@ -79,27 +80,28 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     private Vector<RetailerMasterBO> mDownloadLinkRetailer;
     private ArrayList<RetailerFlexBO> downloadRetailerFlexValues;
     private Vector<RetailerMasterBO> RetailerMasterList;
+    private NewOutletHelper newOutletHelper;
 
 
     /*Location ArrayList*/
-    private ArrayList<LocationBO> mLocationMasterList1 = null;
-    private ArrayList<LocationBO> mLocationMasterList2 = null;
-    private ArrayList<LocationBO> mLocationMasterList3 = null;
-    private SparseArray<Vector<RetailerMasterBO>> mLinkRetailerListByDistributorId;
+    private ArrayList<LocationBO> mLocationMasterList1 = new ArrayList<>();
+    private ArrayList<LocationBO> mLocationMasterList2 = new ArrayList<>();
+    private ArrayList<LocationBO> mLocationMasterList3 = new ArrayList<>();
+    private SparseArray<Vector<RetailerMasterBO>> mLinkRetailerListByDistributorId=new SparseArray<>();
     private Vector<RetailerMasterBO> nearByRetailers = new Vector<>();
-    private Vector<ConfigureBO> profileConfig = null;
+    private Vector<ConfigureBO> profileConfig = new Vector<>();
     private Vector<ChannelBO> channelMaster = null;
 
     /*Attributes */
     private ArrayList<Integer> mCommonAttributeList;
-    private HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID = null;
-    private HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID = null;
-    private ArrayList<NewOutletAttributeBO> mEditAttributeList = null;
-    private ArrayList<NewOutletAttributeBO> mAttributeChildList = null;
-    private ArrayList<NewOutletAttributeBO> mAttributeParentList = null;
-    private ArrayList<NewOutletAttributeBO> mAttributeList = null;
-    private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap = null;
-    private ArrayList<Integer> mChannelAttributeList = null;// attributes for selected channel already(from DB)..
+    private HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID = new HashMap<>();
+    private HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID = new HashMap<>();
+    private ArrayList<NewOutletAttributeBO> mEditAttributeList = new ArrayList<>();
+    private ArrayList<NewOutletAttributeBO> mAttributeChildList = new ArrayList<>();
+    private ArrayList<NewOutletAttributeBO> mAttributeParentList = new ArrayList<>();
+    private ArrayList<NewOutletAttributeBO> mAttributeList = new ArrayList<>();
+    private HashMap<String, ArrayList<NewOutletAttributeBO>> attribMap = new HashMap<>();
+    private ArrayList<Integer> mChannelAttributeList = new ArrayList<>();// attributes for selected channel already(from DB)..
     private ArrayList<StandardListBO> selectedPrioProducts = new ArrayList<>();
 
     //PriorityProduct
@@ -132,6 +134,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                    @Profile ChannelMasterHelper channelMasterHelper,
                                    @Profile SubChannelMasterHelper subChannelMasterHelper,
                                    @Profile RetailerHelper retailerHelper,
+                                   @Profile NewOutletHelper newOutletHelper,
                                    @Profile Vector<RetailerMasterBO> RetailerMasterList) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mProfileDataManager = profileDataManager;
@@ -142,6 +145,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         this.channelMasterHelper = channelMasterHelper;
         this.subChannelMasterHelper = subChannelMasterHelper;
         this.RetailerMasterList = RetailerMasterList;
+        this.newOutletHelper = newOutletHelper;
 
     }
 
@@ -238,7 +242,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private HashMap<Integer, ArrayList<NewOutletAttributeBO>> getAttributeBOListByLocationID() {
-        return mAttributeBOListByLocationID;
+      return   mAttributeBOListByLocationID;
     }
 
 
@@ -919,7 +923,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.PRIORITYPRODUCT:
                         updatePriorityProduct();
                         break;
-
                     case ProfileConstant.ATTRIBUTE:
                         updateRetailerMasterAttributeList();
                         break;
@@ -1808,7 +1811,31 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private void updateHeaderList() {
+        if (!configurationMasterHelper.IS_CONTACT_TAB){
+            getCompositeDisposable().add(mProfileDataManager.updateRetailerContactEdit(tid, retailerMasterBO.getRetailerID(), newOutletHelper.getRetailerContactList())
+                    .subscribeOn(getSchedulerProvider().io())
+                    .observeOn(getSchedulerProvider().ui())
+                    .subscribe(new Consumer<Boolean>() {
+                                   @Override
+                                   public void accept(Boolean response) throws Exception {
+                                       if (response) {
+                                           completedUpdate();
+                                       }
+                                   }
+                               }, new Consumer<Throwable>() {
+                                   @Override
+                                   public void accept(Throwable throwable) throws Exception {
+                                       Commons.print(throwable.getMessage());
+                                   }
+                               }
+                    ));
+        }else{
+            completedUpdate();
+        }
 
+    }
+
+    private void completedUpdate(){
         getCompositeDisposable().add(mProfileDataManager.updateRetailer(tid, retailerMasterBO.getRetailerID(), currentDate)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -1821,6 +1848,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                        longitude = "";
                                    }
                                    getIvyView().hideLoading();
+                                   getIvyView().showAlert();
+
                                }
                            }, new Consumer<Throwable>() {
                                @Override
@@ -2394,23 +2423,28 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             //to check all mandatory channel's attributes selected
             if (isChannelAvailable() && isAdded) {
 
-                for (NewOutletAttributeBO attributeBo : getAttributeBOListByLocationID().get(getIvyView().subChannelGetSelectedItem())) {
 
-                    NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBo.getAttrId());
+                try {
+                    for (NewOutletAttributeBO attributeBo : getAttributeBOListByLocationID().get(getIvyView().subChannelGetSelectedItem())) {
 
-                    if (attributeBo.getIsMandatory() == 1) {
-                        if (tempBO != null && tempBO.getAttrId() != -1) {
-                            selectedAttributeLevel.add(tempBO);
+                        NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBo.getAttrId());
+
+                        if (attributeBo.getIsMandatory() == 1) {
+                            if (tempBO != null && tempBO.getAttrId() != -1) {
+                                selectedAttributeLevel.add(tempBO);
+                            } else {
+                                isAdded = false;
+                                String errorMessage = attributeBo.getAttrName() + " is Mandatory";
+                                getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
+                                break;
+                            }
                         } else {
-                            isAdded = false;
-                            String errorMessage = attributeBo.getAttrName() + " is Mandatory";
-                            getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
-                            break;
+                            if (tempBO != null && tempBO.getAttrId() != -1)
+                                selectedAttributeLevel.add(tempBO);
                         }
-                    } else {
-                        if (tempBO != null && tempBO.getAttrId() != -1)
-                            selectedAttributeLevel.add(tempBO);
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             if (!isAdded) {
@@ -2419,6 +2453,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
             setRetailerAttribute(selectedAttributeLevel);
         } catch (Exception e) {
+            getIvyView().hideLoading();
             Commons.printException(e);
         }
     }

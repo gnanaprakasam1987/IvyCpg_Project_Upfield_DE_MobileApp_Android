@@ -1,104 +1,106 @@
 package com.ivy.ui.profile.edit.view;
 
 
-import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatEditText;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.Spanned;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
+        import android.annotation.SuppressLint;
+        import android.app.AlertDialog;
+        import android.app.DatePickerDialog;
+        import android.app.Dialog;
+        import android.content.ActivityNotFoundException;
+        import android.content.Context;
+        import android.content.DialogInterface;
+        import android.content.Intent;
+        import android.graphics.Bitmap;
+        import android.graphics.Color;
+        import android.graphics.Typeface;
+        import android.net.Uri;
+        import android.os.Build;
+        import android.os.Bundle;
+        import android.os.Environment;
+        import android.support.design.widget.TextInputLayout;
+        import android.support.v4.app.DialogFragment;
+        import android.support.v4.app.FragmentManager;
+        import android.support.v4.content.ContextCompat;
+        import android.support.v4.content.FileProvider;
+        import android.support.v7.view.ContextThemeWrapper;
+        import android.support.v7.widget.AppCompatCheckBox;
+        import android.support.v7.widget.AppCompatEditText;
+        import android.text.Editable;
+        import android.text.InputFilter;
+        import android.text.InputType;
+        import android.text.Spanned;
+        import android.text.TextWatcher;
+        import android.util.Log;
+        import android.util.TypedValue;
+        import android.view.Gravity;
+        import android.view.LayoutInflater;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.AdapterView;
+        import android.widget.ArrayAdapter;
+        import android.widget.BaseAdapter;
+        import android.widget.Button;
+        import android.widget.CheckBox;
+        import android.widget.CompoundButton;
+        import android.widget.DatePicker;
+        import android.widget.EditText;
+        import android.widget.ImageView;
+        import android.widget.LinearLayout;
+        import android.widget.ListView;
+        import android.widget.ScrollView;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import com.ivy.core.base.presenter.BasePresenter;
-import com.ivy.core.base.view.BaseFragment;
-import com.ivy.location.LocationUtil;
-import com.ivy.maplib.BaiduMapDialogue;
-import com.ivy.sd.camera.CameraActivity;
-import com.ivy.sd.png.asean.view.BuildConfig;
-import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ChannelBO;
-import com.ivy.sd.png.bo.LocationBO;
-import com.ivy.sd.png.bo.NewOutletAttributeBO;
-import com.ivy.sd.png.bo.NewOutletBO;
-import com.ivy.sd.png.bo.RetailerFlexBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.SpinnerBO;
-import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.SubchannelBO;
-import com.ivy.sd.png.commons.MaterialSpinner;
-import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.HomeScreenFragment;
-import com.ivy.sd.png.view.MapDialogue;
-import com.ivy.sd.png.view.NearByRetailerDialog;
-import com.ivy.sd.png.view.RetailerOTPDialog;
-import com.ivy.ui.profile.ProfileConstant;
-import com.ivy.ui.profile.edit.IProfileEditContract;
-import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
-import com.ivy.ui.profile.edit.di.ProfileEditModule;
-import com.ivy.utils.AppUtils;
-import com.ivy.utils.FontUtils;
+        import com.ivy.core.base.presenter.BasePresenter;
+        import com.ivy.core.base.view.BaseFragment;
+        import com.ivy.location.LocationUtil;
+        import com.ivy.maplib.BaiduMapDialogue;
+        import com.ivy.sd.camera.CameraActivity;
+        import com.ivy.sd.png.asean.view.BuildConfig;
+        import com.ivy.sd.png.asean.view.R;
+        import com.ivy.sd.png.bo.ChannelBO;
+        import com.ivy.sd.png.bo.LocationBO;
+        import com.ivy.sd.png.bo.NewOutletAttributeBO;
+        import com.ivy.sd.png.bo.NewOutletBO;
+        import com.ivy.sd.png.bo.RetailerFlexBO;
+        import com.ivy.sd.png.bo.RetailerMasterBO;
+        import com.ivy.sd.png.bo.SpinnerBO;
+        import com.ivy.sd.png.bo.StandardListBO;
+        import com.ivy.sd.png.bo.SubchannelBO;
+        import com.ivy.sd.png.commons.MaterialSpinner;
+        import com.ivy.sd.png.commons.SDUtil;
+        import com.ivy.sd.png.model.BusinessModel;
+        import com.ivy.sd.png.util.Commons;
+        import com.ivy.sd.png.util.DataMembers;
+        import com.ivy.sd.png.view.HomeScreenFragment;
+        import com.ivy.sd.png.view.MapDialogue;
+        import com.ivy.sd.png.view.NearByRetailerDialog;
+        import com.ivy.sd.png.view.RetailerOTPDialog;
+        import com.ivy.ui.profile.ProfileConstant;
+        import com.ivy.ui.profile.edit.IProfileEditContract;
+        import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
+        import com.ivy.ui.profile.edit.di.ProfileEditModule;
+        import com.ivy.utils.AppUtils;
+        import com.ivy.utils.FontUtils;
 
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Vector;
-import java.util.regex.Pattern;
+        import java.io.File;
+        import java.text.SimpleDateFormat;
+        import java.util.ArrayList;
+        import java.util.Calendar;
+        import java.util.Collections;
+        import java.util.GregorianCalendar;
+        import java.util.HashMap;
+        import java.util.Locale;
+        import java.util.Vector;
+        import java.util.regex.Pattern;
 
-import javax.inject.Inject;
+        import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.OnClick;
+        import butterknife.BindView;
+        import butterknife.OnClick;
 
-import static android.app.Activity.RESULT_OK;
+        import static android.app.Activity.RESULT_OK;
 
 public class ProfileEditFragmentNew extends BaseFragment implements IProfileEditContract.ProfileEditView, RetailerOTPDialog.OTPListener {
 
@@ -137,7 +139,8 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private ArrayList<InputFilter> inputFilters = null;
     private Vector<ChannelBO> channelMaster = null;
     private ArrayList<NewOutletBO> mcontractStatusList = null;
-    private ArrayList<LocationBO> mLocationMasterList1 = null, mLocationMasterList2 = null, mLocationMasterList3 = null;
+    private ArrayList<LocationBO> mLocationMasterList1 = null;
+    private ArrayList<LocationBO> mLocationMasterList2 = null;
     private ArrayAdapter<LocationBO> locationAdapter1 = null, locationAdapter2 = null;
     private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
     private ArrayList<StandardListBO> mPriorityProductList = null, selectedPriorityProductList = null;
@@ -146,7 +149,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private ArrayList<NewOutletAttributeBO> attributeHeaderList = null;
     private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap = null;
     private HashMap<String, ArrayList<Integer>> attributeIndexMap = null;
-    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList = null;
+    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList = new HashMap<>();
     private ArrayList<Integer> attributeIndexList = null;
 
     private int locid = 0;
@@ -254,6 +257,26 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         profileEditPresenter.saveUpdatedProfileEdit();
     }
 
+    @Override
+    public void showAlert() {
+        showAlertDialog(getActivity().getResources().getString(R.string.profile_updated_scccess), 0);
+    }
+     void showAlertDialog(String msg, int id) {
+        final int idd = id;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(msg);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                if (idd == 0) {
+                    getActivity().finish();
+
+                }
+            }
+        });
+        AppUtils.applyAlertDialogTheme(getActivity(),builder);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -577,18 +600,24 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     }
 
-    @SuppressLint("UseSparseArrays")
+
     @Override
     public HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList() {
         if (selectedAttribList != null) {
             return selectedAttribList;
-        } else selectedAttribList = new HashMap<>();
-        return selectedAttribList;
+        } else {
+            selectedAttribList = new HashMap<>();
+            return selectedAttribList;
+        }
     }
 
     @Override
     public int subChannelGetSelectedItem() {
-        return ((SpinnerBO) subchannel.getSelectedItem()).getId();
+        if( subchannel!=null){
+            return ((SpinnerBO) subchannel.getSelectedItem()).getId();
+        }else {
+            return 0;
+        }
     }
 
     @Override
@@ -598,7 +627,12 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public ChannelBO getChennalSelectedItemBO() {
-        return (ChannelBO) channel.getSelectedItem();
+        if( channel!=null){
+            return (ChannelBO) channel.getSelectedItem();
+        }else {
+            return new ChannelBO();
+        }
+
     }
 
     @Override
@@ -1184,7 +1218,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         this.id = id;
         mLocationMasterList1 = profileEditPresenter.getLocationMasterList1();
         mLocationMasterList2 = profileEditPresenter.getLocationMasterList2();
-        mLocationMasterList3 = profileEditPresenter.getLocationMasterList3();
+        ArrayList<LocationBO> mLocationMasterList3 = profileEditPresenter.getLocationMasterList3();
 
         LinearLayout layout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
         LinearLayout.LayoutParams spinweight = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -2306,11 +2340,11 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private void updateLocationAdapter2(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<LocationBO>();
         if(mLocationMasterList2!=null)
-        for (LocationBO locationBO : mLocationMasterList2) {
-            if (parentId == locationBO.getParentId()) {
-                locationList.add(locationBO);
+            for (LocationBO locationBO : mLocationMasterList2) {
+                if (parentId == locationBO.getParentId()) {
+                    locationList.add(locationBO);
+                }
             }
-        }
         locationAdapter2 = new ArrayAdapter<LocationBO>(getActivity(),
                 android.R.layout.simple_spinner_item, locationList);
         if (locationAdapter2 != null && locationAdapter2.getCount() > 0) {

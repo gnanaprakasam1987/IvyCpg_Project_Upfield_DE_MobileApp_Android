@@ -33,6 +33,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/ivIsPrimary"
+            android:layout_toLeftOf="@+id/ivIsdelete"
+            android:layout_toRightOf="@+id/ivIsPrimary"
             android:layout_toStartOf="@+id/ivIsdelete"
             android:gravity="center_vertical"
             android:orientation="vertical"
@@ -86,6 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:src="@drawable/ic_delete"
             android:visibility="gone"
             card_view:layout_constraintBottom_toBottomOf="parent" />

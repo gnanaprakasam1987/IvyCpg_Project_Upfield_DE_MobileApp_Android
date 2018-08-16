@@ -872,9 +872,7 @@ public class BusinessModel extends Application {
         String menuName = "";
         try {
 
-            for (ConfigureBO configureBO : configurationMasterHelper
-                    .getConfig()) {
-
+            for (ConfigureBO configureBO : configurationMasterHelper.getConfig()) {
                 if (configureBO.getConfigCode().equals(menuCode)) {
                     menuName = configureBO.getMenuName();
                 }

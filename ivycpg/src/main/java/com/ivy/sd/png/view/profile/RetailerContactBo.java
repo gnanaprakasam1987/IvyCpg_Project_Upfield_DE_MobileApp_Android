@@ -14,6 +14,16 @@ public class RetailerContactBo {
     private String contactTitleLovId = "";
     private String cpId= "";
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    private String status= "";
+
     public String getTitle() {
         return title;
     }

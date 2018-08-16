@@ -1,9 +1,5 @@
 package com.ivy.ui.profile.edit;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
-import android.net.Uri;
 
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
@@ -132,6 +128,8 @@ public interface IProfileEditContract {
        String getDrugLicenceExpDateValue();
 
        ArrayList<StandardListBO> getSelectedPriorityProductList();
+
+       void showAlert( );
 
 
 

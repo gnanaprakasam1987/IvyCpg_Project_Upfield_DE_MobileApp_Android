@@ -57,18 +57,22 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
 
             tabLayout = view.findViewById(R.id.tab_layout);
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+
             if (bundle != null) {
 
                 isFromEditProfileView = bundle.getBoolean("isEdit", false);
 
-                if (bundle.getString("screentitle") == null)
-                    setScreenTitle(bmodel.getMenuName("MENU_NEW_RETAILER"));
-                else
-                    setScreenTitle(bundle.getString("screentitle"));
-
+                if(isFromEditProfileView){
+                    setScreenTitle(getResources().getString(R.string.profile_edit_screen__title));
+                }else{
+                    if (bundle.getString("screentitle") == null)
+                        setScreenTitle(bmodel.getMenuName("MENU_NEW_RETAILER"));
+                    else
+                        setScreenTitle(bundle.getString("screentitle"));
+                }
 
                 if (isFromEditProfileView) {
-                    tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.edit)));
+                    tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.profile_edit_screen__title)));
                     transaction.replace(R.id.fragment_container, new ProfileEditFragmentNew());
                 } else {
                     tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.outlet)));
@@ -76,9 +80,7 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
                     transaction.replace(R.id.fragment_container, new NewOutletFragment());
                 }
 
-                if (bmodel.configurationMasterHelper.IS_CONTACT_TAB){
-                    tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.contact)));
-                }
+                tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.contact)));
 
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -88,15 +90,13 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
                 tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
-                        FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-                                .beginTransaction();
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                         if (tab.getPosition() == 0) {
                             if(isFromEditProfileView){
                                 transaction.replace(R.id.fragment_container, new ProfileEditFragmentNew());
                                 transaction.addToBackStack(null);
                                 transaction.commit();
                             }else {
-
                                 transaction.replace(R.id.fragment_container, new NewOutletFragment());
                                 transaction.addToBackStack(null);
                                 transaction.commit();
@@ -113,12 +113,10 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
                     }
 
                     @Override
-                    public void onTabUnselected(TabLayout.Tab tab) {
-                    }
+                    public void onTabUnselected(TabLayout.Tab tab) {}
 
                     @Override
-                    public void onTabReselected(TabLayout.Tab tab) {
-                    }
+                    public void onTabReselected(TabLayout.Tab tab) {}
                 });
 
             }
@@ -127,9 +125,6 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
             setScreenTitle(getResources().getString(R.string.new_retailer));
             Commons.printException(e);
         }
-
-
-
 
     }
 

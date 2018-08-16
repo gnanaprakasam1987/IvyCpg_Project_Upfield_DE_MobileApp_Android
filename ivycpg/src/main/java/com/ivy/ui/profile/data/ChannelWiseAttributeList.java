@@ -21,7 +21,12 @@ public class ChannelWiseAttributeList {
     }
 
     public HashMap<Integer, ArrayList<NewOutletAttributeBO>> getAttributeBOListByLocationID() {
-        return mAttributeBOListByLocationID;
+        if(mAttributeBOListByLocationID!=null){
+            return mAttributeBOListByLocationID;
+        }else {
+            return mAttributeBOListByLocationID=new HashMap<>();
+        }
+
     }
 
 

@@ -14,6 +14,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
@@ -52,6 +53,9 @@ public interface IvyAppComponent {
 
     @Profile
     RetailerHelper retailerHelper();
+
+    @Profile
+    NewOutletHelper newoutletHelper();
 
     @Profile
     Vector<RetailerMasterBO> getRetailerMaster();

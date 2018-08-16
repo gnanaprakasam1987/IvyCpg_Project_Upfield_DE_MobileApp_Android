@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
@@ -120,6 +121,11 @@ public class IvyAppModule {
     @Profile
     Vector<RetailerMasterBO> provideRetailerMaster(){
         return ((BusinessModel)mContext).getRetailerMaster();
+    }
+    @Provides
+    @Profile
+    NewOutletHelper provideNewoutletHelper(){
+        return ((BusinessModel)mContext).newOutletHelper;
     }
 
     @Provides

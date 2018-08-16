@@ -15,6 +15,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
@@ -1043,6 +1044,37 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                     }
                 });
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> updateRetailerContactEdit(final String mTid, final String RetailerID, final ArrayList<RetailerContactBo> retailerContactList) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+               String column = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName," +
+                        "ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid";
+
+                if (retailerContactList.size() > 0) {
+                    for (RetailerContactBo retailerContactBo : retailerContactList) {
+                        String value=AppUtils.QT(retailerContactBo.getTitle())+","
+                                +AppUtils.QT(retailerContactBo.getContactTitleLovId())+","
+                                +AppUtils.QT(retailerContactBo.getFistname())+","
+                                +AppUtils.QT(retailerContactBo.getLastname())+","
+                                +AppUtils.QT(retailerContactBo.getContactNumber())+","
+                                +AppUtils.QT(retailerContactBo.getContactMail())+","
+                                +retailerContactBo.getIsPrimary()+","
+                                +AppUtils.QT(retailerContactBo.getStatus())+","
+                                +AppUtils.QT(retailerContactBo.getCpId())+","
+                                +AppUtils.QT(RetailerID)+","
+                                +AppUtils.QT(mTid);
+
+                        dbUtil.insertSQL("RetailerContactEdit", column, value);
+                    }
+                }
+                return true;
             }
         });
     }

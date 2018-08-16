@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,7 +58,9 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private boolean ISCONTACTNAME, ISCONTACTNO, ISCONTACTPRIMARY, ISCONTACTEMAIL;
     private Unbinder unbinder;
 
+    //for editing new contact . created through newoutlet
     private boolean isEdit = false;
+    private boolean isProfileEdit = false;
     private RetailerContactBo retailerContactBo = new RetailerContactBo();
     private ArrayList<StandardListBO> mcontactTitleList;
     private ArrayAdapter<StandardListBO> contactTitleAdapter;
@@ -91,6 +94,8 @@ public class ContactCreationFragment extends IvyBaseFragment {
     EditText etEmail;
     @BindView(R.id.addbutton)
     Button addbutton;
+    @BindView(R.id.clear_button)
+    Button clearButton;
     @BindView(R.id.etOthers)
     EditText etOthers;
 
@@ -107,45 +112,25 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-
-        View view = inflater.inflate(R.layout.fragment_contact_creation, container,
-                false);
-
+        Bundle bundle = getArguments();
+        if (bundle == null)
+            bundle = getActivity().getIntent().getExtras();
+        if (bundle != null) {
+            isProfileEdit = bundle.getBoolean("isEdit", false);
+        }
+        View view = inflater.inflate(R.layout.fragment_contact_creation, container, false);
         unbinder = ButterKnife.bind(this, view);
         initializeViews();
         return view;
     }
 
     private void initializeViews() {
-
         appSchedulerProvider = new AppSchedulerProvider();
         new CompositeDisposable().add((Disposable) bmodel.configurationMasterHelper.downloadContactModuleConfig()
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribeWith(getContactConfig()));
     }
-
-    private Observer<ArrayList<RetailerContactBo>> arrayListObserver() {
-        return new DisposableObserver<ArrayList<RetailerContactBo>>() {
-            @Override
-            public void onNext(ArrayList<RetailerContactBo> contactList) {
-                bmodel.newOutletHelper.setRetailerContactList(contactList);
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-                loadRecyclerView();
-            }
-        };
-    }
-
 
     private Observer<ArrayList<ConfigureBO>> getContactConfig() {
         return new DisposableObserver<ArrayList<ConfigureBO>>() {
@@ -159,19 +144,16 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
             @Override
             public void onError(Throwable e) {
-
+                Commons.print(e.getMessage());
             }
 
             @Override
             public void onComplete() {
-                if (isEdit)
-                    new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(),true)
-                            .subscribeOn(appSchedulerProvider.io())
-                            .observeOn(appSchedulerProvider.ui())
-                            .subscribeWith(arrayListObserver()));
+
             }
         };
     }
+
 
     @Override
     public void onStart() {
@@ -252,37 +234,61 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
         loadRecyclerView();
 
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearViews();
+            }
+        });
 
         addbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (hasdata()) {
                     if (validateData()) {
-                        if (!isEdit) {
-                            if (contactList.size() < bmodel.configurationMasterHelper.RETAILER_CONTACT_COUNT) {
-                                retailerContactBo.setCpId("" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                        + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
-                                contactList.add(retailerContactBo);
-                                bmodel.newOutletHelper.setRetailerContactList(contactList);
-                                loadRecyclerView();
-                                clearViews();
-                            } else
-                                Toast.makeText(getActivity(), getActivity().getString(R.string.max_contacts_added), Toast.LENGTH_SHORT).show();
-                        } else {
-                            //updating edited values
-                            for (int i = 0; i < contactList.size(); i++) {
-                                if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContactBo.getCpId())) {
-                                    contactList.remove(i);
-                                    contactList.add(i, retailerContactBo);
-                                    break;
+                        if (isProfileEdit) {
+                            if (isEdit) {
+                                retailerContactBo.setStatus("U");
+                                for (int i = 0; i < contactList.size(); i++) {
+                                    if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContactBo.getCpId())) {
+                                        contactList.set(i, retailerContactBo);
+                                        break;
+                                    }
                                 }
+                            } else {
+                                if (contactList.size() < bmodel.configurationMasterHelper.RETAILER_CONTACT_COUNT) {
+                                    retailerContactBo.setStatus("I");
+                                    retailerContactBo.setCpId("" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                            + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                                    contactList.add(retailerContactBo);
+
+                                } else
+                                    Toast.makeText(getActivity(), getActivity().getString(R.string.max_contacts_added), Toast.LENGTH_SHORT).show();
                             }
-                            bmodel.newOutletHelper.setRetailerContactList(contactList);
-                            loadRecyclerView();
-                            clearViews();
-                            isEdit = false;
+                        } else {
+                            if (isEdit) {
+                                for (int i = 0; i < contactList.size(); i++) {
+                                    if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContactBo.getCpId())) {
+                                        contactList.set(i, retailerContactBo);
+                                        break;
+                                    }
+                                }
+                            } else {
+                                if (contactList.size() < bmodel.configurationMasterHelper.RETAILER_CONTACT_COUNT) {
+                                    retailerContactBo.setCpId("" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                            + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                                    contactList.add(retailerContactBo);
+                                } else
+                                    Toast.makeText(getActivity(), getActivity().getString(R.string.max_contacts_added), Toast.LENGTH_SHORT).show();
+
+                            }
                         }
+                        bmodel.newOutletHelper.setRetailerContactList(contactList);
+                        loadRecyclerView();
+                        clearViews();
+                        isEdit = false;
                     }
+
                 } else {
                     Toast.makeText(getActivity(), getActivity().getString(R.string.no_data_tosave), Toast.LENGTH_SHORT).show();
                 }
@@ -324,6 +330,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                                       int before, int count) {
             }
         });
+
         etLastName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
 
@@ -342,6 +349,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                                       int before, int count) {
             }
         });
+
         etPhno.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
 
@@ -447,7 +455,6 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
     private boolean hasdata() {
         boolean isData = false;
-
         if (retailerContactBo.getFistname().length() > 0 || retailerContactBo.getLastname().length() > 0 ||
                 !retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") ||
                 retailerContactBo.getTitle().length() > 0 || retailerContactBo.getContactMail().length() > 0
@@ -519,7 +526,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
         private ArrayList<RetailerContactBo> items;
 
-        public ContactsAdapter(ArrayList<RetailerContactBo> items) {
+        ContactsAdapter(ArrayList<RetailerContactBo> items) {
             this.items = items;
         }
 
@@ -530,8 +537,15 @@ public class ContactCreationFragment extends IvyBaseFragment {
             return new ViewHolder(view);
         }
 
+        int selectedPosition = -1;
+
         @Override
-        public void onBindViewHolder(ContactsAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(ContactsAdapter.ViewHolder holder, final int position) {
+            if (selectedPosition == position)
+                holder.itemView.setBackgroundColor(Color.parseColor("#0091D8"));
+            else
+                holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"));
+
             final RetailerContactBo retailerContactBo = items.get(position);
             if (ISCONTACTNAME) {
                 if (retailerContactBo.getTitle().length() > 0)
@@ -569,6 +583,8 @@ public class ContactCreationFragment extends IvyBaseFragment {
             holder.llItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    selectedPosition = position;
+                    notifyDataSetChanged();
                     editContact(retailerContactBo);
                 }
             });
@@ -625,15 +641,29 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
 
     //Email Id Validation
-    public final static boolean isValidEmail(CharSequence target) {
+    public static boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 
-    private void deleteContact(RetailerContactBo retailerContactBo) {
-        for (int i = 0; i < contactList.size(); i++) {
-            if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContactBo.getCpId())) {
-                contactList.remove(i);
-                break;
+    private void deleteContact(RetailerContactBo retailerContact) {
+
+        if(isProfileEdit){
+            retailerContactBo.setStatus("D");
+            for (int i = 0; i < contactList.size(); i++) {
+                if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContact.getCpId())) {
+                    if(!contactList.get(i).getStatus().equalsIgnoreCase("I")){
+                        contactList.remove(i);
+                    }else
+                        contactList.set(i,retailerContactBo);
+                    break;
+                }
+            }
+        }else{
+            for (int i = 0; i < contactList.size(); i++) {
+                if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContactBo.getCpId())) {
+                    contactList.remove(i);
+                    break;
+                }
             }
         }
         bmodel.newOutletHelper.setRetailerContactList(contactList);

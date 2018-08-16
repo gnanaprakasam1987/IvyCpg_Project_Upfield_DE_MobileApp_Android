@@ -7,6 +7,7 @@ import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +78,8 @@ public interface IProfileDataManager {
     Single<Boolean> updateRetailerMasterAttribute( String mTid, String RetailerID,ArrayList<NewOutletAttributeBO> tempList);
 
     Single<Boolean> updateRetailer(String mTid, String RetailerID,String currentDate);
+
+    Single<Boolean> updateRetailerContactEdit(String mTid, String RetailerID,ArrayList<RetailerContactBo> retailerContactList);
 
     void closeDB();
 

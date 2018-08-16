@@ -9,17 +9,26 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.ui.profile.edit.view.ProfileEditFragmentNew;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
+import java.util.ArrayList;
 import java.util.Vector;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 
 public class ProfileEditActivity extends IvyBaseActivityNoActionBar
         implements NearByRetailerDialog.NearByRetailerInterface {
 
     private BusinessModel bmodel;
     private Toolbar toolbar;
+    private AppSchedulerProvider appSchedulerProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +51,15 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
             Toast.makeText(ProfileEditActivity.this, getResources().getString(R.string.sessionout_loginagain), Toast.LENGTH_SHORT).show();
             finish();
         }
-        if (bmodel.configurationMasterHelper.IS_CONTACT_TAB){
-            Fragment fragment = new NewoutletContainerFragment();
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isEdit",true);
-            fragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_frame, fragment, fragment.getClass().getSimpleName())
-                    .addToBackStack(null)
-                    .commit();
+
+        if (!bmodel.configurationMasterHelper.IS_CONTACT_TAB){
+            appSchedulerProvider = new AppSchedulerProvider();
+            ArrayList<RetailerContactBo> retailerContactList=new ArrayList<>();
+            bmodel.newOutletHelper.setRetailerContactList(retailerContactList); //Just for clear the old contact list
+            new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(), true)
+                    .subscribeOn(appSchedulerProvider.io())
+                    .observeOn(appSchedulerProvider.ui())
+                    .subscribeWith(arrayListObserver()));
         }else{
             Fragment fragment = new ProfileEditFragmentNew();
             getSupportFragmentManager().beginTransaction()
@@ -61,7 +70,33 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
 
     }
 
+    private Observer<ArrayList<RetailerContactBo>> arrayListObserver() {
+        return new DisposableObserver<ArrayList<RetailerContactBo>>() {
+            @Override
+            public void onNext(ArrayList<RetailerContactBo> contactList) {
 
+                bmodel.newOutletHelper.setRetailerContactList(contactList);
+
+                Fragment fragment = new NewoutletContainerFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isEdit",true);
+                fragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_frame, fragment, fragment.getClass().getSimpleName())
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Commons.print(e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        };
+    }
 
 
     @Override
