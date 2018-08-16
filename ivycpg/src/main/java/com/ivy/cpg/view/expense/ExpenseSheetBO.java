@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.expense;
 
 public class ExpenseSheetBO {
     private int typeId, userId;

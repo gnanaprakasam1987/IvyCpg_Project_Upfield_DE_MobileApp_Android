@@ -1,21 +1,15 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.expense;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,13 +22,13 @@ import android.widget.Toast;
 
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ExpensesBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,17 +38,16 @@ import java.util.GregorianCalendar;
 public class ExpenseFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
-    private TextView tvcamera, tvImgCount;
+    private TextView tvImgCount;
     private EditText et_exp_date, et_amount;
     private Spinner sp_expenses;
-    private TextView tvDone, tvClear;
     private String Tid = "";
     private boolean isHeaderExists;
     private Context mContext;
     TabLayout tabLayout;
 
     private int exp_type = 0;
-    private static final String TAG = "ExpenseActivity";
+    private static final String TAG = "ExpenseFragment";
     private String imageFileName = "", amountValue, dateValue, photoNamePath;
     private ArrayList<String> imagesList;
 
@@ -63,6 +56,7 @@ public class ExpenseFragment extends IvyBaseFragment {
     final String EXTRA_PARAMETER = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
     final String DISABLE_PLUGIN = "DISABLE_PLUGIN";
     private static final int CAMERA_REQUEST_CODE = 1;
+    private ExpenseSheetHelper expenseSheetHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +74,7 @@ public class ExpenseFragment extends IvyBaseFragment {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        expenseSheetHelper = ExpenseSheetHelper.getInstance(getActivity());
     }
 
     private void initializeItem(View view) {
@@ -95,16 +90,16 @@ public class ExpenseFragment extends IvyBaseFragment {
         et_exp_date = view.findViewById(R.id.et_exp_date);
         et_amount = view.findViewById(R.id.et_amount);
         sp_expenses = view.findViewById(R.id.sp_expenses);
-        tvcamera = view.findViewById(R.id.tv_camera);
+        TextView tvcamera = view.findViewById(R.id.tv_camera);
         tvImgCount = view.findViewById(R.id.tv_img_count);
-        tvDone = view.findViewById(R.id.tv_done);
-        tvClear = view.findViewById(R.id.tv_clear);
+        TextView tvDone = view.findViewById(R.id.tv_done);
+        TextView tvClear = view.findViewById(R.id.tv_clear);
 
-        imagesList = new ArrayList<String>();
+        imagesList = new ArrayList<>();
         photoNamePath = HomeScreenFragment.photoPath + "/";
         Commons.print("Photo Path, " + "" + photoNamePath);
 
-        bmodel.expenseSheetHelper.loadExpenseData();
+        expenseSheetHelper.loadExpenseData();
         loadExpenses();
 
 
@@ -267,14 +262,14 @@ public class ExpenseFragment extends IvyBaseFragment {
     }
 
     private void loadExpenses() {
-        ArrayAdapter<SpinnerBO> spinnerAdapter = new ArrayAdapter<SpinnerBO>(mContext,
+        ArrayAdapter<SpinnerBO> spinnerAdapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_spinner_item);
         spinnerAdapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerAdapter.add(new SpinnerBO(0, "---Select---"));
 
-        for (SpinnerBO temp : bmodel.expenseSheetHelper.getExpnenses()) {
+        for (SpinnerBO temp : expenseSheetHelper.getExpnenses()) {
             spinnerAdapter.add(temp);
         }
 
@@ -337,7 +332,7 @@ public class ExpenseFragment extends IvyBaseFragment {
     }
 
     private void checkHeader() {
-        Tid = bmodel.expenseSheetHelper.checkExpenseHeader(et_exp_date.getText().toString());
+        Tid = expenseSheetHelper.checkExpenseHeader(et_exp_date.getText().toString());
         if (Tid.length() == 0)
             isHeaderExists = false;
         else
@@ -351,9 +346,9 @@ public class ExpenseFragment extends IvyBaseFragment {
         protected Boolean doInBackground(String... arg0) {
             try {
                 if (isHeaderExists) {
-                    double totalAmount = 0;
-                    totalAmount = bmodel.expenseSheetHelper.getExpenseTotal(Tid, dateValue) + SDUtil.convertToDouble(amountValue);
-                    bmodel.expenseSheetHelper.updateHeaderInsert(Tid, totalAmount, amountValue, exp_type, imagesList, exp_type + "" + SDUtil
+                    double totalAmount;
+                    totalAmount = expenseSheetHelper.getExpenseTotal(Tid, dateValue) + SDUtil.convertToDouble(amountValue);
+                    expenseSheetHelper.updateHeaderInsert(Tid, totalAmount, amountValue, exp_type, imagesList, exp_type + "" + SDUtil
                             .now(SDUtil.DATE_TIME_ID));
                 } else {
                     ExpensesBO expensesBO = new ExpensesBO();
@@ -364,7 +359,7 @@ public class ExpenseFragment extends IvyBaseFragment {
                             .now(SDUtil.DATE_TIME_ID));
                     expensesBO.setAmount(amountValue);
                     expensesBO.setImageList(imagesList);
-                    bmodel.expenseSheetHelper.saveAllData(expensesBO, dateValue);
+                    expenseSheetHelper.saveAllData(expensesBO, dateValue);
                 }
 
                 return Boolean.TRUE;

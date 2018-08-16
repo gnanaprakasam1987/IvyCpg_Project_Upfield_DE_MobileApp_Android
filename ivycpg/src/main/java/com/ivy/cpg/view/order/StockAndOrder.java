@@ -81,7 +81,7 @@ import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
-import com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity;
+import com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -1837,7 +1837,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
 
                         Intent intent = new Intent(StockAndOrder.this,
-                                AvailabiltyCheckActivity.class);
+                                CombinedStockDetailActivity.class);
                         intent.putExtra("screenTitle", holder.productObj.getProductName());
                         intent.putExtra("pid", holder.productObj.getProductID());
                         intent.putExtra("selectedLocationIndex", mSelectedLocationIndex);

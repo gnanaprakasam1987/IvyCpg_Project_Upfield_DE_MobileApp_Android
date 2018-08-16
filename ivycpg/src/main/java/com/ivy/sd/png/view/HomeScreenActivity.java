@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
-import com.ivy.cpg.view.van.LoadManagementFragment;
-import com.ivy.cpg.view.van.PlanningSubScreenFragment;
 import com.ivy.cpg.view.van.StockProposalFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -22,7 +20,6 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,8 +35,6 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
     private LinearLayout content_frame;
     private Handler handler;
     private HomeScreenFragment mHomeScreenFragment;
-    private IvyBaseFragment baseFragment;
-    private Intent i = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,36 +127,6 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
         if (mDrawerLayout.isDrawerVisible(GravityCompat.START))
             mDrawerLayout.closeDrawers();
     }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        if (baseFragment instanceof LoadManagementFragment) {
-            LoadManagementFragment loadmgtFrag = (LoadManagementFragment) baseFragment;
-            try {
-                if (i != null && loadmgtFrag.mSelectedBarCodemodule != null) {
-                    loadmgtFrag.checkBarcodeData(i);
-                    loadmgtFrag.mSelectedBarCodemodule = null;
-
-                }
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-
-        } else if (baseFragment instanceof PlanningSubScreenFragment) {
-            PlanningSubScreenFragment planningSubScreenFragment = (PlanningSubScreenFragment) baseFragment;
-            try {
-                if (i != null && planningSubScreenFragment.mSelectedBarCodemodule != null) {
-                    planningSubScreenFragment.checkBarcodeData(i);
-                    planningSubScreenFragment.mSelectedBarCodemodule = null;
-                }
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-        }
-    }
-
 
     public void numberPressed(View vw) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
