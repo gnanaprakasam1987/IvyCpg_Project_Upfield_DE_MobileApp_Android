@@ -115,13 +115,13 @@ public class SalesFundamentalGapReportFragment extends IvyBaseFragment {
 
     private void loadData(int beatId, String filter) {
         SFGDataList = new ArrayList<>();
-        final AlertDialog alertDialog;
+       /* final AlertDialog alertDialog;
         AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(getActivity());
+        builder = new AlertDialog.Builder(getActivity());*/
         compositeDisposable = new CompositeDisposable();
-        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        /*customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
         alertDialog = builder.create();
-        alertDialog.show();
+        alertDialog.show();*/
 
 
         compositeDisposable.add((Disposable) new SalesFGReportHelper(getActivity()).
@@ -139,13 +139,13 @@ public class SalesFundamentalGapReportFragment extends IvyBaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        alertDialog.dismiss();
+                       // alertDialog.dismiss();
                         Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onComplete() {
-                        alertDialog.dismiss();
+                       // alertDialog.dismiss();
                         MyAdapter adapter = new MyAdapter(SFGDataList);
                         lv.setAdapter(adapter);
                     }

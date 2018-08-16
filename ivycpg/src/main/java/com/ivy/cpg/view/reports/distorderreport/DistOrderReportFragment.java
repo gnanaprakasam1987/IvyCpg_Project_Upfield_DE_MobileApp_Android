@@ -159,13 +159,13 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 
     private void getDistOrdReportData() {
         mylist = new ArrayList<>();
-        final AlertDialog alertDialog;
+       /* final AlertDialog alertDialog;
         AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(getActivity());
+        builder = new AlertDialog.Builder(getActivity());*/
         compositeDisposable = new CompositeDisposable();
-        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        /*customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
         alertDialog = builder.create();
-        alertDialog.show();
+        alertDialog.show();*/
         compositeDisposable.add((Disposable) Observable.zip(distOrderReportHelper.downloadDistributorOrderReport(getActivity()), distOrderReportHelper.getavglinesfororderbooking("OrderHeader", getActivity())
                 , distOrderReportHelper.getorderbookingCount("OrderHeader", getActivity())
                 , new Function3<ArrayList<DistOrderReportBo>, Double, Double, Boolean>() {
@@ -197,7 +197,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
                     @Override
                     public void onError(Throwable e) {
                         // Show alert if error loading data.
-                        alertDialog.dismiss();
+                       // alertDialog.dismiss();
                         if (mylist == null) {
                             Toast.makeText(getActivity(),
                                     getResources().getString(R.string.unable_to_load_data),
@@ -208,7 +208,7 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 
                     @Override
                     public void onComplete() {
-                        alertDialog.dismiss();
+                        //alertDialog.dismiss();
                     }
                 }));
     }
