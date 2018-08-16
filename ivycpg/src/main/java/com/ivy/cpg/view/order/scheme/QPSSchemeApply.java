@@ -201,6 +201,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         HashMap<String, SchemaQPSAchHistoryBO> historyMap = schemeHelper.getmSchemaQPSAchHistoryList();
         for (int i = 0; i < schemeIDList.size(); i++) {
             SchemeBO schemeHeader = schemeIDList.get(i);
+            //Min Item to show "next balance to slab" if no Order is taken
             if (minItemList.get(schemeHeader.getParentId()) == null) {
                 minItemList.put(schemeHeader.getParentId(), schemeHeader);
             }
@@ -320,13 +321,16 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     }
                 }
             }
-            if (historyMap != null && historyMap.get(schemeHeader.getParentId() + "") != null) {
+            //Add Cumulative if exist
+            if (historyMap != null && historyMap.get(schemeHeader.getParentId() + "") != null
+                    && (totalCasesQty > 0 || totalPiecesQty > 0)) {
                 if (schemeHeader.isCaseScheme()) {
                     totalCasesQty = totalCasesQty + historyMap.get(schemeHeader.getParentId() + "").getCumulative_Purchase();
                 } else {
                     totalPiecesQty = totalPiecesQty + historyMap.get(schemeHeader.getParentId() + "").getCumulative_Purchase();
                 }
             }
+            //Check the slab slot and place the object
             if (schemeHeader.isCaseScheme() && totalCasesQty >= schemeHeader.getFromQty() && totalCasesQty <= schemeHeader.getToQty()) {
                 schemeHeader.setTotalCaseQty(totalCasesQty);
                 if (totalCasesEveryPriceQty > 0) {
@@ -353,6 +357,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 preSchemeList.put(schemeHeader.getParentId(), schemeHeader);
             }
         }
+        //Find the next slab based on current slab
         nextSchemeList.clear();
         if (currentSchemeList.size() == 0 && nextSchemeList.size() == 0) {
             nextSchemeList.putAll(minItemList);
