@@ -65,12 +65,9 @@ import java.util.Vector;
 
 public class LoadManagementFragment extends IvyBaseFragment {
 
-    private static final String OUR_INTENT_ACTION = "com.ivy.cpg.view.van.LoadManagementScreen.RECVR";
-    private static final String DATA_STRING_TAG = "com.motorolasolutions.emdk.datawedge.data_string";
-    private static final String ACTION_SOFTSCANTRIGGER = "com.motorolasolutions.emdk.datawedge.api.ACTION_SOFTSCANTRIGGER";
-    private static final String EXTRA_PARAM = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
-    private static final String DWAPI_TOGGLE_SCANNING = "TOGGLE_SCANNING";
+
     private static final HashMap<String, Integer> menuIcons = new HashMap<>();
+
     private static final String MENU_STOCK_PROPOSAL = "MENU_STOCK_PROPOSAL";
     private static final String MENU_MANUAL_VAN_LOAD = "MENU_MANUAL_VAN_LOAD";
     private static final String MENU_ODAMETER = "MENU_ODAMETER";
@@ -79,15 +76,17 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private static final String MENU_VAN_UNLOAD = "MENU_VAN_UNLOAD";
     private static final String MENU_VAN_PLANOGRAM = "MENU_VAN_PLANOGRAM";
     private static final String MENU_LOAD_WEBVIEW = "MENU_LOAD_WEBVIEW";
+
     private BusinessModel bmodel;
+
     private Intent vanloadintent;
     private Intent stockViewIntent;
     private Intent vanloadstockview;
-    //private Intent currenStockViewBatchWiseIntent;
-    private TextView mSelectedListBTN;
-    public String mSelectedBarCodemodule;
+
     private AlertDialog alertDialog;
+
     private View view;
+
     private Loadmanagemntreceiver mLoadmanagementReceiver;
 
     @Override
@@ -118,7 +117,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             }
 
             try {
-                LinearLayout bg = (LinearLayout) view.findViewById(R.id.root);
+                LinearLayout bg = view.findViewById(R.id.root);
                 File f = new File(
                         getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                                 + "/"
@@ -176,7 +175,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
                     bmodel.productHelper.getFilterProductLevels()));
 
-            ListView listView = (ListView) view.findViewById(R.id.listView1);
+            ListView listView = view.findViewById(R.id.listView1);
             listView.setCacheColorHint(0);
             listView.setAdapter(new MenuBaseAdapter(menuDB));
 
@@ -236,7 +235,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     public void onDestroy() {
         super.onDestroy();
         if (view != null)
-            unbindDrawables((LinearLayout) view.findViewById(R.id.root));
+            unbindDrawables(view.findViewById(R.id.root));
     }
 
     /**
@@ -355,11 +354,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             case MENU_VANLOAD_STOCK_VIEW:
 
                 if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
-                    checkIsAllowed(
-                            MENU_VANLOAD_STOCK_VIEW,
-                            bmodel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION);
-                } else if (bmodel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION) {
-                    checkBarCode(MENU_VANLOAD_STOCK_VIEW);
+                    checkIsAllowed(MENU_VANLOAD_STOCK_VIEW);
                 } else {
                     vanLoadSubRoutine(menuItem.getMenuName());
                 }
@@ -373,10 +368,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
                     checkIsAllowed(
-                            MENU_VAN_UNLOAD,
-                            bmodel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION);
-                } else if (bmodel.configurationMasterHelper.SHOW_VANBARCODE_VALIDATION) {
-                    checkBarCode(MENU_VAN_UNLOAD);
+                            MENU_VAN_UNLOAD);
                 } else {
                     vanUnLoadSubRoutine(menuItem.getMenuName());
                 }
@@ -451,7 +443,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
         new DownloadStockViewApply().execute();
     }
 
-    public void checkIsAllowed(String menuString, boolean isValidateBarCode) {
+    public void checkIsAllowed(String menuString) {
         try {
             DBUtil db = new DBUtil(getActivity(),
                     DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -481,9 +473,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 float distance = LocationUtil.calculateDistance(wareLatitude,
                         wareLongitude);
                 if (distance <= ConfigurationMasterHelper.vanDistance) {
-                    if (isValidateBarCode)
-                        checkBarCode(menuString);
-                    else if (MENU_VANLOAD_STOCK_VIEW.equals(menuString))
+                    if (MENU_VANLOAD_STOCK_VIEW.equals(menuString))
                         vanLoadSubRoutine(MENU_VANLOAD_STOCK_VIEW);
                     else if (MENU_VAN_UNLOAD.equals(menuString))
                         vanUnLoadSubRoutine(MENU_VAN_UNLOAD);
@@ -512,68 +502,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 .show();
     }
 
-    public void checkBarCode(String menuString) {
-        mSelectedBarCodemodule = menuString;
 
-        Intent i = new Intent();
-        i.setAction(ACTION_SOFTSCANTRIGGER);
-        i.putExtra(EXTRA_PARAM, DWAPI_TOGGLE_SCANNING);
-        getActivity().sendBroadcast(i);
-    }
-
-
-    public void checkBarcodeData(Intent i) {
-        String mScannedData, mBarCode = "";
-        if (i.getAction().contentEquals(OUR_INTENT_ACTION)) {
-            mScannedData = i.getStringExtra(DATA_STRING_TAG);
-            if (mScannedData == null)
-                mScannedData = "";
-
-            DBUtil db = new DBUtil(getActivity(),
-                    DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT barcode FROM WarehouseActivityMapping WHERE activity_code = "
-                            + DatabaseUtils
-                            .sqlEscapeString(mSelectedBarCodemodule));
-
-            if (c != null) {
-                if (c.moveToNext()) {
-                    mBarCode = c.getString(0);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-            if ("".equals(mBarCode))
-                showToastMessageForBarcode(-1);
-            else if ("".equals(mScannedData))
-                showToastMessageForBarcode(-2);
-            else if (mScannedData.equals(mBarCode)) {
-                if (MENU_VANLOAD_STOCK_VIEW.equals(mSelectedBarCodemodule))
-                    vanLoadSubRoutine(MENU_VANLOAD_STOCK_VIEW);
-                else if (MENU_VAN_UNLOAD.equals(mSelectedBarCodemodule))
-                    vanUnLoadSubRoutine(MENU_VAN_UNLOAD);
-            } else
-                showToastMessageForBarcode(-3);
-        }
-    }
-
-    private void showToastMessageForBarcode(int status) {
-        String strTitle = "";
-        if (status == -1)
-            strTitle = getResources().getString(
-                    R.string.warehouse_barcode_not_assigned);
-        else if (status == -2)
-            strTitle = getResources().getString(
-                    R.string.not_able_to_scan_barcode);
-        else if (status == -3)
-            strTitle = getResources().getString(R.string.barcode_not_matched);
-
-        Toast.makeText(getActivity(), strTitle, Toast.LENGTH_SHORT)
-                .show();
-    }
 
 
     private void downloadVanload() {
@@ -608,25 +537,19 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 convertView = inflater.inflate(R.layout.custom_newui_list_item, parent, false);
                 holder = new ViewHolder();
-                holder.menuIcon = (ImageView) convertView
+                holder.menuIcon = convertView
                         .findViewById(R.id.list_item_icon_ib);
 
-                holder.menuBTN = (TextView) convertView
+                holder.menuBTN = convertView
                         .findViewById(R.id.list_item_menu_tv_loadmgt);
 
-                holder.listLayout = (LinearLayout) convertView
+                holder.listLayout = convertView
                         .findViewById(R.id.list_layout);
 
                 convertView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        // Toast.makeText(getContext(),"jdfjfj",Toast.LENGTH_LONG).show();
-                        if (mSelectedListBTN != null)
-                            mSelectedListBTN.setSelected(false);
-
-                        //   mSelectedListBTN = holder.menuBTN;
-                        //   mSelectedListBTN.setSelected(true);
 
                         gotoNextActivity(holder.config);
                     }

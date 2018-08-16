@@ -221,9 +221,7 @@
         <activity
             android:name="com.ivy.sd.png.view.ViewImage"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.PlanningSubScreen"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
