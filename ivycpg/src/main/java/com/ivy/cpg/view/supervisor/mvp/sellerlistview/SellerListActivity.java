@@ -123,6 +123,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                 if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
                     bottomSheetBehavior.setHideable(true);
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    transparentView.setVisibility(View.GONE);
                 }
             }
 
@@ -186,7 +187,6 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                     case BottomSheetBehavior.STATE_DRAGGING:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        transparentView.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         transparentView.setVisibility(View.GONE);
@@ -198,6 +198,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
             }
         });
 
@@ -207,6 +208,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                transparentView.setVisibility(View.GONE);
 
                 int radioButtonID = sortRadioGroup.getCheckedRadioButtonId();
                 View radioButton = sortRadioGroup.findViewById(radioButtonID);
@@ -275,9 +277,12 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
             if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
                 bottomSheetBehavior.setHideable(true);
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                transparentView.setVisibility(View.GONE);
             }
-            else
+            else {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                transparentView.setVisibility(View.VISIBLE);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
