@@ -117,7 +117,7 @@ public class MyThread extends Thread {
                 bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
                 if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-                    LoginHelper.getInstance(ctx).onGCMRegistration(ctx.getApplicationContext());
+                    LoginHelper.getInstance(ctx).onFCMRegistration(ctx.getApplicationContext());
                 if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
                     bmodel.downloadChatCredentials();
 
