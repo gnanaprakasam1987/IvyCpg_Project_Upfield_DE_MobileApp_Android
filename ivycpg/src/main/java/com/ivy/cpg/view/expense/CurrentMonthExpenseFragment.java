@@ -1,7 +1,8 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.expense;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ExpenseSheetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -23,12 +23,6 @@ import java.util.ArrayList;
 public class CurrentMonthExpenseFragment extends IvyBaseFragment {
 
     BusinessModel bmodel;
-    private ExpandedListView list;
-    private TextView tvTotalAmount;
-
-    private String VALUE_PENDING = "Pending"; //R
-    private String VALUE_ACCEPTED = "Accepted"; //S
-    private String VALUE_REJECTED = "Rejected"; //D
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,11 +33,12 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        ExpenseSheetHelper expenseSheetHelper = ExpenseSheetHelper.getInstance(getActivity());
 
-        list = view.findViewById(R.id.expenses_list);
-        tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
-        list.setAdapter(new MyAdapter(bmodel.expenseSheetHelper.getCurrentMonthExpense()));
-        tvTotalAmount.setText(sumExpenses(bmodel.expenseSheetHelper.getCurrentMonthExpense()));
+        ExpandedListView list = view.findViewById(R.id.expenses_list);
+        TextView tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
+        list.setAdapter(new MyAdapter(expenseSheetHelper.getCurrentMonthExpense()));
+        tvTotalAmount.setText(sumExpenses(expenseSheetHelper.getCurrentMonthExpense()));
 
         ((TextView) view.findViewById(R.id.titleTotalamt)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -85,8 +80,13 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public @NonNull
+        View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
+
+            String VALUE_PENDING = "R";
+            String VALUE_ACCEPTED = "S";
+            String VALUE_REJECTED = "D";
 
             if (convertView == null) {
 
@@ -94,7 +94,7 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
 
-                convertView = inflater.inflate(R.layout.row_expense_sheet, null);
+                convertView = inflater.inflate(R.layout.row_expense_sheet, parent,false);
 
                 holder.tvDate = convertView.findViewById(R.id.tv_datevalue);
                 holder.tvExpType = convertView.findViewById(R.id.tv_expTypeValue);
@@ -115,11 +115,11 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
             holder.tvExpType.setText(holder.expenseSheetBO.getTypeName());
             holder.tvAmount.setText(bmodel.formatValue(SDUtil.convertToDouble("" + holder.expenseSheetBO.getAmount())));
 
-            if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("S"))
+            if (holder.expenseSheetBO.getStatus().equalsIgnoreCase(VALUE_ACCEPTED))
                 holder.ivStatus.setImageResource(R.drawable.ok_tick);
-            if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("D"))
+            if (holder.expenseSheetBO.getStatus().equalsIgnoreCase(VALUE_REJECTED))
                 holder.ivStatus.setImageResource(R.drawable.ic_cross_enable);
-            if (holder.expenseSheetBO.getStatus().equalsIgnoreCase("R"))
+            if (holder.expenseSheetBO.getStatus().equalsIgnoreCase(VALUE_PENDING))
                 holder.ivStatus.setImageResource(R.drawable.ic_pending);
 
             return convertView;

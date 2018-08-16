@@ -56,6 +56,7 @@ import com.ivy.cpg.view.dashboard.olddashboard.SkuWiseTargetFragment;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.expense.ExpenseFragment;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;

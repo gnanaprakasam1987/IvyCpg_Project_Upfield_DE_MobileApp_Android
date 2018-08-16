@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.expense;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,8 +6,6 @@ import android.database.DatabaseUtils;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.ExpenseSheetBO;
-import com.ivy.sd.png.bo.ExpensesBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -41,7 +39,7 @@ public class ExpenseSheetHelper {
 
     protected ExpenseSheetHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static ExpenseSheetHelper getInstance(Context context) {

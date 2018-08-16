@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.expense;
 
 
 import android.app.AlertDialog;
@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ExpensesBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -22,6 +22,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,14 +32,13 @@ public class DailyExpenseFragment extends IvyBaseFragment {
 
     BusinessModel bmodel;
 
-    private String Tid = "", photoNamePath;
+    private String photoNamePath;
     private TextView tvTotalAmount;
 
     private ExpandedListView list;
     ExpenseProofDialog dialogFragment;
 
-    private boolean isHeaderExists;
-
+    private ExpenseSheetHelper expenseSheetHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +49,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        expenseSheetHelper = ExpenseSheetHelper.getInstance(getActivity());
 
         photoNamePath = HomeScreenFragment.photoPath + "/";
 
@@ -73,29 +74,22 @@ public class DailyExpenseFragment extends IvyBaseFragment {
     }
 
     private void loadExpensesList(String date) {
-        Tid = bmodel.expenseSheetHelper.checkExpenseHeader(date);
-        if (Tid.length() == 0)
-            isHeaderExists = false;
-        else
-            isHeaderExists = true;
-
-        if (isHeaderExists) {
-            ArrayList<ExpensesBO> selectedDateExpenses = new ArrayList<>();
-            selectedDateExpenses = bmodel.expenseSheetHelper.getSelectedExpenses(Tid);
+        String Tid = expenseSheetHelper.checkExpenseHeader(date);
+        if (Tid.length() > 0) {
+            ArrayList<ExpensesBO> selectedDateExpenses = expenseSheetHelper.getSelectedExpenses(Tid);
             if (selectedDateExpenses.size() == 0)
-                bmodel.expenseSheetHelper.deleteHeader(Tid);
+                expenseSheetHelper.deleteHeader(Tid);
             loadExpensesList();
 
         }
     }
 
     private void loadExpensesList() {
-        int count = 0;
-        count = bmodel.expenseSheetHelper.checkExpenseHeader();
+        int count;
+        count = expenseSheetHelper.checkExpenseHeader();
         if (count > 0) {
 
-            ArrayList<ExpensesBO> selectedDateExpenses = new ArrayList<ExpensesBO>();
-            selectedDateExpenses = bmodel.expenseSheetHelper.getAllExpenses();
+            ArrayList<ExpensesBO> selectedDateExpenses = expenseSheetHelper.getAllExpenses();
             if (selectedDateExpenses.size() > 0) {
                 list.setVisibility(View.VISIBLE);
                 MyAdapter adapter = new MyAdapter(selectedDateExpenses);
@@ -140,7 +134,8 @@ public class DailyExpenseFragment extends IvyBaseFragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public @NonNull
+        View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
 
             if (convertView == null) {
@@ -149,7 +144,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-                convertView = inflater.inflate(R.layout.row_expense_sheet, null);
+                convertView = inflater.inflate(R.layout.row_expense_sheet, parent, false);
 
                 holder.tvDate = convertView.findViewById(R.id.tv_datevalue);
                 holder.tvExpType = convertView.findViewById(R.id.tv_expTypeValue);
@@ -255,7 +250,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
                         new File(imgpath).delete();
                     }
                 }
-                bmodel.expenseSheetHelper.deleteExpense(expensesBO.getRefId(), expensesBO.getTid(),
+                expenseSheetHelper.deleteExpense(expensesBO.getRefId(), expensesBO.getTid(),
                         expensesBO.getDate(), expensesBO.getAmount());
 
                 return Boolean.TRUE;
