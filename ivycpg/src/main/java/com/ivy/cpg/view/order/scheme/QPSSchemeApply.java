@@ -120,7 +120,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         } catch (Exception e) {
             Commons.printException(e);
         }
-
+        applyHeaderLabels();
 
         btnNext.setOnClickListener(new OnClickListener() {
             @Override
@@ -193,6 +193,81 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     mExpandableLV.setAdapter(mExpandableAdapterNew);
                 }
             }
+        }
+    }
+
+    private void applyHeaderLabels() {
+        try {
+            ((TextView) findViewById(R.id.tv_schemeduration_header)).setTypeface(
+                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_schemeduration_header).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_schemeduration_header)).setText(bModel.labelsMasterHelper
+                        .applyLabels(findViewById(R.id.tv_schemeduration_header).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        try {
+            ((TextView) findViewById(R.id.tv_schemetype_header)).setTypeface(
+                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_schemetype_header).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_schemetype_header)).setText(bModel.labelsMasterHelper
+                        .applyLabels(findViewById(R.id.tv_schemetype_header).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        try {
+            ((TextView) findViewById(R.id.tv_cumulative_purchase_header)).setTypeface(
+                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_cumulative_purchase_header).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_cumulative_purchase_header)).setText(bModel.labelsMasterHelper
+                        .applyLabels(findViewById(R.id.tv_cumulative_purchase_header).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        try {
+            ((TextView) findViewById(R.id.tv_curslab_sch_amt_header)).setTypeface(
+                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_curslab_sch_amt_header).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_curslab_sch_amt_header)).setText(bModel.labelsMasterHelper
+                        .applyLabels(findViewById(R.id.tv_curslab_sch_amt_header).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        try {
+            ((TextView) findViewById(R.id.tv_curslab_rs_per_header)).setTypeface(
+                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_curslab_rs_per_header).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_curslab_rs_per_header)).setText(bModel.labelsMasterHelper
+                        .applyLabels(findViewById(R.id.tv_curslab_rs_per_header).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        try {
+            ((TextView) findViewById(R.id.tv_nextslab_header)).setTypeface(
+                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_nextslab_header).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_nextslab_header)).setText(bModel.labelsMasterHelper
+                        .applyLabels(findViewById(R.id.tv_nextslab_header).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        try {
+            ((TextView) findViewById(R.id.tv_nextslab_sch_amt_header)).setTypeface(
+                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_nextslab_sch_amt_header).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_nextslab_sch_amt_header)).setText(bModel.labelsMasterHelper
+                        .applyLabels(findViewById(R.id.tv_nextslab_sch_amt_header).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        try {
+            ((TextView) findViewById(R.id.tv_nextslab_rs_per_header)).setTypeface(
+                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_nextslab_rs_per_header).getTag()) != null)
+                ((TextView) findViewById(R.id.tv_nextslab_rs_per_header)).setText(bModel.labelsMasterHelper
+                        .applyLabels(findViewById(R.id.tv_nextslab_rs_per_header).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
         }
     }
 
@@ -767,6 +842,70 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 holder.tv_pcs_final_qty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_cases_final_qty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.tv_gqt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+                try {
+                    ((TextView) view.findViewById(R.id.tv_header_productName)).setTypeface(
+                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_productName).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.tv_header_productName)).setText(bModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.tv_header_productName).getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+                try {
+                    ((TextView) view.findViewById(R.id.tv_header_pcs_ordered_qty)).setTypeface(
+                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_pcs_ordered_qty).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.tv_header_pcs_ordered_qty)).setText(bModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.tv_header_pcs_ordered_qty).getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+                try {
+                    ((TextView) view.findViewById(R.id.tv_header_cases_ordered_qty)).setTypeface(
+                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_cases_ordered_qty).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.tv_header_cases_ordered_qty)).setText(bModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.tv_header_cases_ordered_qty).getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+                try {
+                    ((TextView) view.findViewById(R.id.tv_header_uom)).setTypeface(
+                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_uom).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.tv_header_uom)).setText(bModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.tv_header_uom).getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+                try {
+                    ((TextView) view.findViewById(R.id.tv_header_pcs_final_qty)).setTypeface(
+                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_pcs_final_qty).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.tv_header_pcs_final_qty)).setText(bModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.tv_header_pcs_final_qty).getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+                try {
+                    ((TextView) view.findViewById(R.id.tv_header_cases_final_qty)).setTypeface(
+                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_cases_final_qty).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.tv_header_cases_final_qty)).setText(bModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.tv_header_cases_final_qty).getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+                try {
+                    ((TextView) view.findViewById(R.id.tv_header_gqt)).setTypeface(
+                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_gqt).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.tv_header_gqt)).setText(bModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(R.id.tv_header_gqt).getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
 
                 holder.tv_pcs_final_qty.setOnTouchListener(new View.OnTouchListener() {
                     @Override

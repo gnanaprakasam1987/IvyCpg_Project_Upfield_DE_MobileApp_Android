@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:background="@color/black_bg1"
+                android:background="@color/keypad_bg_color"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -37,6 +37,7 @@
                     android:layout_weight="0.8"
                     android:gravity="left|center_vertical"
                     android:paddingLeft="@dimen/dimen_5dp"
+                    android:tag="scheme_detail_productname"
                     android:text="Product Name" />
 
                 <TextView
@@ -48,6 +49,7 @@
                     android:layout_marginRight="@dimen/list_margin"
                     android:layout_weight="0.2"
                     android:gravity="center"
+                    android:tag="scheme_detail_orderedpcs"
                     android:text="Ordered Qty(Pcs)" />
 
                 <TextView
@@ -59,6 +61,7 @@
                     android:layout_marginRight="@dimen/list_margin"
                     android:layout_weight="0.2"
                     android:gravity="center"
+                    android:tag="scheme_detail_orderedcases"
                     android:text="Ordered Qty(Cases)" />
 
                 <TextView
@@ -70,6 +73,7 @@
                     android:layout_marginRight="@dimen/list_margin"
                     android:layout_weight="0.2"
                     android:gravity="center"
+                    android:tag="scheme_detail_uom"
                     android:text="UOM" />
 
                 <TextView
@@ -81,6 +85,7 @@
                     android:layout_marginRight="@dimen/list_margin"
                     android:layout_weight="0.2"
                     android:gravity="center"
+                    android:tag="scheme_detail_finalpcs"
                     android:text="Final Qty(Pcs)" />
 
                 <TextView
@@ -92,6 +97,7 @@
                     android:layout_marginRight="@dimen/list_margin"
                     android:layout_weight="0.2"
                     android:gravity="center"
+                    android:tag="scheme_detail_finalcases"
                     android:text="Final Qty(Cases)" />
 
                 <TextView
@@ -103,6 +109,7 @@
                     android:layout_marginRight="@dimen/list_margin"
                     android:layout_weight="0.2"
                     android:gravity="center"
+                    android:tag="scheme_detail_gqt"
                     android:text="GQT" />
 
             </LinearLayout>
