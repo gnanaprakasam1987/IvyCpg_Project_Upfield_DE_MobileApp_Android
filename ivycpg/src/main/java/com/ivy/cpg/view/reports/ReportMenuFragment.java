@@ -95,8 +95,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                     R.drawable.icon_monthly_plan);
             menuIcons.put(StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT,
                     R.drawable.icon_review_plan);
-            menuIcons.put(StandardListMasterConstants.MENU_BEGINNING_STOCK_REPORT,
-                    R.drawable.icon_collection);
+
             menuIcons.put(StandardListMasterConstants.MENU_COLLECTION_REPORT,
                     R.drawable.icon_sbd);
             menuIcons.put(StandardListMasterConstants.MENU_CREDIT_NOTE_REPORT,

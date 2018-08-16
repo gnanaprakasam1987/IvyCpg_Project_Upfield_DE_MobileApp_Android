@@ -83,7 +83,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private Intent vanloadintent;
     private Intent stockViewIntent;
     private Intent vanloadstockview;
-    private Intent currenStockViewBatchWiseIntent;
+    //private Intent currenStockViewBatchWiseIntent;
     private TextView mSelectedListBTN;
     public String mSelectedBarCodemodule;
     private AlertDialog alertDialog;
@@ -412,16 +412,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         menuItem.getMenuName());
                 startActivity(damagedSalesReturnIntent);
                 break;
-            case StandardListMasterConstants.MENU_CURRENT_STOCK_VIEW_BATCH:
-                currenStockViewBatchWiseIntent = new Intent(
-                        getActivity(),
-                        CurrentStockBatchViewActivity.class);
-                currenStockViewBatchWiseIntent
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                currenStockViewBatchWiseIntent.putExtra("screentitle",
-                        menuItem.getMenuName());
-                new DownloadCurrentStockBAtchWise().execute();
-                break;
+
             case MENU_LOAD_WEBVIEW:
                 if (bmodel.isOnline()) {
                     Intent i = new Intent(getActivity(), WebViewActivity.class);
@@ -858,51 +849,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
     }
 
-    class DownloadCurrentStockBAtchWise extends
-            AsyncTask<Integer, Integer, Boolean> {
 
-        private AlertDialog.Builder builder;
-        // private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
-                        bmodel.productHelper.getFilterProductLevels()));
-                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
-                        "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
-
-            } catch (Exception e) {
-                Commons.printException("" + e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-            // TO DO Auto-generated method stub
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-
-            alertDialog.dismiss();
-            startActivity(currenStockViewBatchWiseIntent);
-
-        }
-
-
-    }
 
     public class Loadmanagemntreceiver extends BroadcastReceiver {
         public static final String RESPONSE = "com.ivy.intent.action.LoadManagement";
