@@ -395,7 +395,7 @@
             android:name="com.ivy.cpg.view.stockcheck.CombinedStockFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity"
+            android:name="com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
@@ -629,9 +629,6 @@
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name="com.ivy.sd.png.view.LeaveApproval"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.ExpenseActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.WebViewActivity"

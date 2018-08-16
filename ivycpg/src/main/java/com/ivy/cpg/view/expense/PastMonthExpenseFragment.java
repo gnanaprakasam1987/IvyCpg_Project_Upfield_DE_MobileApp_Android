@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.expense;
 
 
 import android.graphics.Color;
@@ -7,16 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -33,25 +29,15 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
-import com.itextpdf.text.List;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ExpenseSheetBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 
 public class PastMonthExpenseFragment extends IvyBaseFragment {
@@ -64,6 +50,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
     RelativeLayout rlPieChart;
 
     private ArrayList<ExpMonthWiseBo> wiseBosmonth;
+    private ExpenseSheetHelper expenseSheetHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,6 +61,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        expenseSheetHelper = ExpenseSheetHelper.getInstance(getActivity());
         mChart = view.findViewById(R.id.barchart);
         pieChart = view.findViewById(R.id.pieChart);
         ivClosePieChart = view.findViewById(R.id.iv_close_piechart);
@@ -82,7 +70,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
 
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
-        tvTotalAmount.setText(sumExpenses(bmodel.expenseSheetHelper.getPastMonthExpense()));
+        tvTotalAmount.setText(sumExpenses(expenseSheetHelper.getPastMonthExpense()));
 
         tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
@@ -91,7 +79,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
                 rlPieChart.setVisibility(View.GONE);
                 mChart.setVisibility(View.VISIBLE);
-                tvTotalAmount.setText(sumExpenses(bmodel.expenseSheetHelper.getPastMonthExpense()));
+                tvTotalAmount.setText(sumExpenses(expenseSheetHelper.getPastMonthExpense()));
             }
         });
 
@@ -212,7 +200,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
         try {
             ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-            wiseBosmonth = sumExpensesMonthWise(bmodel.expenseSheetHelper.getPastMonthExpense());
+            wiseBosmonth = sumExpensesMonthWise(expenseSheetHelper.getPastMonthExpense());
             int i = 0;
             String[] monthsName = new String[12];
             for (ExpMonthWiseBo expMonthWiseBo : wiseBosmonth) {
@@ -275,7 +263,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
         try {
 
             ArrayList<ExpenseSheetBO> monthExpenses = new ArrayList<>();
-            for (ExpenseSheetBO expBp : bmodel.expenseSheetHelper.getPastMonthExpense()) {
+            for (ExpenseSheetBO expBp : expenseSheetHelper.getPastMonthExpense()) {
                 if (month.equals(expBp.getMonth())) {
                     monthExpenses.add(expBp);
                 }
