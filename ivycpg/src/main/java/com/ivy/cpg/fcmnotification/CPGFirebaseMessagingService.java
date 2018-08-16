@@ -12,8 +12,12 @@ import android.content.res.Resources;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.ivy.cpg.view.login.LoginScreen;
@@ -52,13 +56,14 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
         if (remoteMessage.getData().size() > 0) {
             Commons.print(TAG+" Message data payload: " + remoteMessage.getData());
 
-
+            scheduleJob(remoteMessage);
 
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Commons.print(TAG+" Message Notification Body: " + remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage.getNotification());
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -123,20 +128,19 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
                 MODE_PRIVATE);
     }
 
-
-    private void sendNotification(String messageBody) {
+    private void sendNotification(RemoteMessage.Notification notification) {
         Intent intent = new Intent(this, LoginScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        String channelId = getString(Integer.parseInt("1234"));
+        String channelId = "channelId";
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.launchericon)
-                        .setContentTitle("FCM Message")
-                        .setContentText(messageBody)
+                        .setContentTitle(notification.getTitle())
+                        .setContentText(notification.getBody())
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
@@ -144,15 +148,73 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
+        if (notificationManager != null) {
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+            // Since android Oreo notification channel is needed.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(channelId,
+                        "Channel human readable title",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        }
+    }
+
+
+    private void sendNotification(RemoteMessage remoteMessage) {
+        Intent intent = new Intent(this, LoginScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        String channelId = "ChannelId";
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.launchericon)
+                        .setContentTitle(
+                                remoteMessage.getData().get("title")!=null?remoteMessage.getData().get("title"):"Notify")
+                        .setContentText(
+                                remoteMessage.getData().get("body")!=null?remoteMessage.getData().get("body"):"Success")
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notificationManager != null) {
+            // Since android Oreo notification channel is needed.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(channelId,
+                        "Channel human readable title",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        }
+    }
+
+    /**
+     * Schedule a job using FirebaseJobDispatcher.
+     */
+    private void scheduleJob(RemoteMessage remoteMessage) {
+        // [START dispatch_job]
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("DataPayLoad",remoteMessage);
+
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+        Job myJob = dispatcher.newJobBuilder()
+                .setService(NotificationJobService.class)
+                .setTag("my-job-tag")
+                .setExtras(bundle)
+                .build();
+        dispatcher.schedule(myJob);
+        // [END dispatch_job]
     }
 
 }
