@@ -157,7 +157,16 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
 
         if (!schemeHelper.IS_SCHEME_EDITABLE)
             ((LinearLayout) findViewById(R.id.footer)).setVisibility(View.GONE);
+        mExpandableLV.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int previousGroup = -1;
 
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if(groupPosition != previousGroup)
+                    mExpandableLV.collapseGroup(previousGroup);
+                previousGroup = groupPosition;
+            }
+        });
     }
 
     @Override
@@ -938,7 +947,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     @Override
                     public void afterTextChanged(Editable s) {
                         if (!s.toString().equals(holder.schemeProducts.getIncreasedPcsQty() + "")) {
-                            schemeHelper.resetSchemeQPSList();
+                            schemeHelper.resetSchemeQPSListforData();
                             for (SchemeBO scheme : schemeIDList) {
                                 List<SchemeProductBO> productList = scheme.getBuyingProducts();
                                 for (SchemeProductBO product : productList) {
@@ -992,7 +1001,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     @Override
                     public void afterTextChanged(Editable s) {
                         if (!s.toString().equals(holder.schemeProducts.getIncreasedCasesQty() + "")) {
-                            schemeHelper.resetSchemeQPSList();
+                            schemeHelper.resetSchemeQPSListforData();
                             for (SchemeBO scheme : schemeIDList) {
                                 List<SchemeProductBO> productList = scheme.getBuyingProducts();
                                 for (SchemeProductBO product : productList) {

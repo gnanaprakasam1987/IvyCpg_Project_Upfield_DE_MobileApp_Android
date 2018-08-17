@@ -4911,7 +4911,21 @@ public class SchemeDetailsMasterHelper {
                     productBO.setCasesPrice(0);
                     productBO.setOrderedPcsQty(0);
                     productBO.setPcsPrice(0);
+                    productBO.setIncreasedPcsQty(0);
+                    productBO.setIncreasedCasesQty(0);
                 }
+            }
+        }
+    }
+
+    public void resetSchemeQPSListforData() {
+        if (mSchemeList != null) {
+            for (SchemeBO scheme : mSchemeList) {
+                scheme.setFromQty(0);
+                scheme.setToQty(0);
+                scheme.setTotalPieceQty(0);
+                scheme.setCurrentSlab(false);
+                scheme.setNextSlab(false);
             }
         }
     }
