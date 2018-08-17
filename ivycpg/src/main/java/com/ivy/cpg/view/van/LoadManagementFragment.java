@@ -66,8 +66,6 @@ import java.util.Vector;
 public class LoadManagementFragment extends IvyBaseFragment {
 
 
-    private static final HashMap<String, Integer> menuIcons = new HashMap<>();
-
     private static final String MENU_STOCK_PROPOSAL = "MENU_STOCK_PROPOSAL";
     private static final String MENU_MANUAL_VAN_LOAD = "MENU_MANUAL_VAN_LOAD";
     private static final String MENU_ODAMETER = "MENU_ODAMETER";
@@ -76,6 +74,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private static final String MENU_VAN_UNLOAD = "MENU_VAN_UNLOAD";
     private static final String MENU_VAN_PLANOGRAM = "MENU_VAN_PLANOGRAM";
     private static final String MENU_LOAD_WEBVIEW = "MENU_LOAD_WEBVIEW";
+
 
     private BusinessModel bmodel;
 
@@ -116,37 +115,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 ((HomeScreenActivity) getActivity()).checkAndRequestPermissionAtRunTime(3);
             }
 
-            try {
-                LinearLayout bg = view.findViewById(R.id.root);
-                File f = new File(
-                        getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                                + "/"
-                                + bmodel.userMasterHelper.getUserMasterBO()
-                                .getUserid() + "APP");
-                if (f.isDirectory()) {
-                    File files[] = f.listFiles(new FilenameFilter() {
-                        public boolean accept(File directory, String fileName) {
-                            return fileName.startsWith("bg_menu");
-                        }
-                    });
-                    for (File temp : files) {
-                        Bitmap bitmapImage = BitmapFactory.decodeFile(temp
-                                .getAbsolutePath());
-                        Drawable bgrImage = new BitmapDrawable(this.getResources(), bitmapImage);
-                        int sdk = android.os.Build.VERSION.SDK_INT;
-                        if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                            bg.setBackgroundDrawable(bgrImage);
-                        } else {
-                            bg.setBackground(bgrImage);
-                        }
-                        break;
-                    }
-
-                }
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-
             if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
                 Toast.makeText(
                         getActivity(),
@@ -155,17 +123,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
-
-
-            menuIcons.put(MENU_STOCK_PROPOSAL, R.drawable.icon_order);
-            menuIcons.put(MENU_MANUAL_VAN_LOAD, R.drawable.icon_vanload);
-            menuIcons.put(MENU_ODAMETER, R.drawable.icon_odameter);
-            menuIcons.put(MENU_STOCK_VIEW, R.drawable.icon_stock);
-            menuIcons.put(MENU_VANLOAD_STOCK_VIEW, R.drawable.icon_stock);
-            menuIcons.put(MENU_VAN_UNLOAD, R.drawable.icon_vanload);
-            menuIcons.put(MENU_VAN_PLANOGRAM, R.drawable.icon_vanload);
-            menuIcons.put(StandardListMasterConstants.MENU_DAMAGE_STOCK,
-                    R.drawable.icon_stock);
 
 
             Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
@@ -194,6 +151,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
@@ -205,6 +163,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
+
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
@@ -213,6 +172,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 bmodel.locationUtil.startLocationListener();
             }
         }
+
     }
 
 
@@ -305,20 +265,17 @@ public class LoadManagementFragment extends IvyBaseFragment {
     }
 
     private void gotoNextActivity(ConfigureBO menuItem) {
-        Intent stockpropintent;
-        Intent odameterintent;
-        Intent damagedSalesReturnIntent;
 
         switch (menuItem.getConfigCode()) {
             case MENU_STOCK_PROPOSAL:
 
-                stockpropintent = new Intent(getActivity(),
+                Intent stockProposalIntent = new Intent(getActivity(),
                         StockProposalScreen.class);
-                stockpropintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                stockpropintent.putExtra("screentitle", menuItem.getMenuName());
-                stockpropintent.putExtra("isFromLodMgt", true);
-                stockpropintent.putExtra("menuCode",menuItem.getConfigCode());
-                startActivity(stockpropintent);
+                stockProposalIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                stockProposalIntent.putExtra("screentitle", menuItem.getMenuName());
+                stockProposalIntent.putExtra("isFromLodMgt", true);
+                stockProposalIntent.putExtra("menuCode",menuItem.getConfigCode());
+                startActivity(stockProposalIntent);
                 break;
             case MENU_MANUAL_VAN_LOAD:
 
@@ -334,7 +291,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 break;
             case MENU_ODAMETER:
 
-                odameterintent = new Intent(getActivity(),
+                Intent odameterintent = new Intent(getActivity(),
                         OdaMeterScreen.class);
                 odameterintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 odameterintent.putExtra("screentitle", menuItem.getMenuName());
@@ -397,7 +354,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 break;
             case StandardListMasterConstants.MENU_DAMAGE_STOCK:
                 SalesReturnHelper.getInstance(getActivity()).loadDamagedProductReport(getContext().getApplicationContext());
-                damagedSalesReturnIntent = new Intent(getActivity(),
+                Intent damagedSalesReturnIntent = new Intent(getActivity(),
                         DamageStockFragmentActivity.class);
                 damagedSalesReturnIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 damagedSalesReturnIntent.putExtra("screentitle",
@@ -537,14 +494,9 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 convertView = inflater.inflate(R.layout.custom_newui_list_item, parent, false);
                 holder = new ViewHolder();
-                holder.menuIcon = convertView
-                        .findViewById(R.id.list_item_icon_ib);
 
                 holder.menuBTN = convertView
                         .findViewById(R.id.list_item_menu_tv_loadmgt);
-
-                holder.listLayout = convertView
-                        .findViewById(R.id.list_layout);
 
                 convertView.setOnClickListener(new View.OnClickListener() {
 
@@ -565,21 +517,12 @@ public class LoadManagementFragment extends IvyBaseFragment {
             holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.menuBTN.setText(configTemp.getMenuName());
 
-            Integer i = menuIcons.get(configTemp.getConfigCode());
-            if (i != null)
-                holder.menuIcon.setImageResource(i);
-            else
-                holder.menuIcon.setImageResource(menuIcons
-                        .get(MENU_STOCK_PROPOSAL));
-
             return convertView;
         }
 
         class ViewHolder {
             private ConfigureBO config;
-            private ImageView menuIcon;
             private TextView menuBTN;
-            private LinearLayout listLayout;
         }
     }
 

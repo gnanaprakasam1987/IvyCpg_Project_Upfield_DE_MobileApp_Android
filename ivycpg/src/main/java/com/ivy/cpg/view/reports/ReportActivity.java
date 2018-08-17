@@ -169,10 +169,10 @@ public class ReportActivity extends BaseActivity implements
     }
 
     private void onBackButtonClick() {
-        Intent i = new Intent(ReportActivity.this, HomeScreenActivity.class);
+        /*Intent i = new Intent(ReportActivity.this, HomeScreenActivity.class);
         i.putExtra("menuCode", "MENU_REPORT");
         i.putExtra("title", "aaa");
-        startActivity(i);
+        startActivity(i);*/
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 

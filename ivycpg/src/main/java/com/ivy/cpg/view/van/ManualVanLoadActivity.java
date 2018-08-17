@@ -632,15 +632,15 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         if (bmodel.loadManagementHelper.hasVanLoadDone()) {
             showDialog(0);
         } else {
-            loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
+            /*loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
             if (isFromPlanning)
                 loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
             else
-                loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
+                loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");*/
             bmodel.moduleTimeStampHelper.saveModuleTimeStamp("Out");
             bmodel.moduleTimeStampHelper.setTid("");
             bmodel.moduleTimeStampHelper.setModuleCode("");
-            startActivity(loadActivity);
+            //startActivity(loadActivity);
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
@@ -686,15 +686,15 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
+                                        /*loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
                                         if (isFromPlanning)
                                             loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
                                         else
-                                            loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
+                                            loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");*/
                                         bmodel.moduleTimeStampHelper.saveModuleTimeStamp("Out");
                                         bmodel.moduleTimeStampHelper.setTid("");
                                         bmodel.moduleTimeStampHelper.setModuleCode("");
-                                        startActivity(loadActivity);
+                                        //startActivity(loadActivity);
                                         finish();/* User clicked OK so do some stuff */
                                     }
                                 })
@@ -1382,15 +1382,15 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 Toast.makeText(ManualVanLoadActivity.this,
                         getResources().getString(R.string.saved_successfully),
                         Toast.LENGTH_SHORT).show();
-                loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
+                /*loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
                 if (isFromPlanning)
                     loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
                 else
-                    loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
+                    loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");*/
                 bmodel.moduleTimeStampHelper.saveModuleTimeStamp("Out");
                 bmodel.moduleTimeStampHelper.setTid("");
                 bmodel.moduleTimeStampHelper.setModuleCode("");
-                startActivity(loadActivity);
+                //startActivity(loadActivity);
                 finish();
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             } catch (Exception e) {

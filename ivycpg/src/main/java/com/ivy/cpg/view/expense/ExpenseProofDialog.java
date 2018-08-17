@@ -1,10 +1,11 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.expense;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +22,7 @@ import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,9 +35,9 @@ public class ExpenseProofDialog extends DialogFragment {
     GridView imgGrid;
     View v;
     String photoNamePath, refID;
-    private int IMAGE_MAX_SIZE = 500;
     private File deleteFilePath;
     private String deleteImageName = "";
+    private ExpenseSheetHelper expenseSheetHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,13 +53,14 @@ public class ExpenseProofDialog extends DialogFragment {
         v = inflater.inflate(R.layout.fragment_exp_img_proof, container, false);
 
         refID = getArguments().getString("refId");
-        Commons.print("refID, "+ "" + refID);
+        Commons.print("refID, " + "" + refID);
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        expenseSheetHelper = ExpenseSheetHelper.getInstance(getActivity());
 
-        button = (Button) v.findViewById(R.id.closeBTN);
-        imgGrid = (GridView) v.findViewById(R.id.grid);
+        button = v.findViewById(R.id.closeBTN);
+        imgGrid = v.findViewById(R.id.grid);
 
 
         button.setOnClickListener(new OnClickListener() {
@@ -70,17 +73,14 @@ public class ExpenseProofDialog extends DialogFragment {
 
         photoNamePath = HomeScreenFragment.photoPath + "/";
 
-        imgGrid.setAdapter(new MyAdapter(bmodel.expenseSheetHelper.getImagesList(refID)));
+        imgGrid.setAdapter(new MyAdapter(expenseSheetHelper.getImagesList(refID)));
 
         return v;
     }
 
 
     public boolean isShowing() {
-        if (getDialog() != null) {
-            return true;
-        }
-        return false;
+        return getDialog() != null;
     }
 
 
@@ -126,18 +126,19 @@ public class ExpenseProofDialog extends DialogFragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
+        public @NonNull
+        View getView(int position, View convertView, @NonNull ViewGroup viewGroup) {
             final ProofViewHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                convertView = (View) inflater.inflate(
-                        R.layout.row_image_proof, null);
+                convertView = inflater.inflate(
+                        R.layout.row_image_proof, viewGroup, false);
 
                 holder = new ProofViewHolder();
                 holder.imageName = items.get(position);
 
-                holder.imgProof = (ImageView) convertView.findViewById(R.id.iv_proof);
-                holder.tvDelete = (TextView) convertView.findViewById(R.id.tv_delete);
+                holder.imgProof = convertView.findViewById(R.id.iv_proof);
+                holder.tvDelete = convertView.findViewById(R.id.tv_delete);
 
                 File imgFile = new File(photoNamePath + "/" + holder.imageName);
 
@@ -190,6 +191,7 @@ public class ExpenseProofDialog extends DialogFragment {
      */
     private Bitmap decodeFile(File f) {
         Bitmap b = null;
+        int IMAGE_MAX_SIZE = 500;
         try {
             // Decode image size
             BitmapFactory.Options o = new BitmapFactory.Options();
@@ -242,9 +244,9 @@ public class ExpenseProofDialog extends DialogFragment {
 
                     public void onClick(DialogInterface dialog, int which) {
                         deleteFilePath.delete();
-                        bmodel.expenseSheetHelper.deleteImageProof(deleteImageName);
-                        if (bmodel.expenseSheetHelper.getImagesList(refID).size() > 0)
-                            imgGrid.setAdapter(new MyAdapter(bmodel.expenseSheetHelper.getImagesList(refID)));
+                        expenseSheetHelper.deleteImageProof(deleteImageName);
+                        if (expenseSheetHelper.getImagesList(refID).size() > 0)
+                            imgGrid.setAdapter(new MyAdapter(expenseSheetHelper.getImagesList(refID)));
                         else
                             getDialog().dismiss();
                     }
