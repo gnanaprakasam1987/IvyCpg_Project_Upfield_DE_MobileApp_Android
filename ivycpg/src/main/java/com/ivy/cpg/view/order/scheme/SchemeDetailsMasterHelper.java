@@ -4904,6 +4904,14 @@ public class SchemeDetailsMasterHelper {
                 scheme.setTotalPieceQty(0);
                 scheme.setCurrentSlab(false);
                 scheme.setNextSlab(false);
+                for(SchemeProductBO productBO : scheme.getBuyingProducts()){
+                    productBO.setParentID("");
+                    productBO.setGetType("");
+                    productBO.setOrderedCasesQty(0);
+                    productBO.setCasesPrice(0);
+                    productBO.setOrderedPcsQty(0);
+                    productBO.setPcsPrice(0);
+                }
             }
         }
     }

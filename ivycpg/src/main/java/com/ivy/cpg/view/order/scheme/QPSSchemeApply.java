@@ -601,6 +601,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                                     SchemeBO scheme = preSchemeList.get(schemeHeader.getParentId());
                                     parentSchemeBO.setCalculatedCumulativePurchase(scheme.getTotalPieceQty());
                                 } catch (Exception e) {
+                                    parentSchemeBO.setCalculatedCumulativePurchase(0);
                                     e.printStackTrace();
                                 }
                             } else {
@@ -650,6 +651,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                                     SchemeBO scheme = preSchemeList.get(schemeHeader.getParentId());
                                     parentSchemeBO.setCalculatedCumulativePurchase(scheme.getTotalPieceQty());
                                 } catch (Exception e) {
+                                    parentSchemeBO.setCalculatedCumulativePurchase(0);
                                     e.printStackTrace();
                                 }
                             } else {
