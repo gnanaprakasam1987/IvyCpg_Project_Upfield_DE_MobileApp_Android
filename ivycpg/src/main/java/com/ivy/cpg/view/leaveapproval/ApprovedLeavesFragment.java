@@ -1,9 +1,10 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.leaveapproval;
 
 
 import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,18 +24,17 @@ import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
-public class RejectedLeavesFragment extends IvyBaseFragment {
+public class ApprovedLeavesFragment extends IvyBaseFragment {
 
-
-    BusinessModel bmodel;
+    private BusinessModel bmodel;
     private String CODE_PENDING = "R", CODE_APPROVED = "S", CODE_REJECTED = "D";
-    ArrayList<LeaveApprovalBO> rejectedLeaves;
+    private ArrayList<LeaveApprovalBO> approvedLeaves;
     private ListView lvLeavesList;
     private LinearLayout llFooter;
     private TextView tv_approve, tv_pending, tv_reject;
     private int selected_count = 0;
-    LeaveApprovalBO leavesObj;
-
+    private LeaveApprovalBO leavesObj;
+    private LeaveApprovalHelper leaveApprovalHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,15 +46,16 @@ public class RejectedLeavesFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lvLeavesList = (ListView) view.findViewById(R.id.lv_leaves_list);
-        llFooter = (LinearLayout) view.findViewById(R.id.lv_footer);
-        tv_approve = (TextView) view.findViewById(R.id.tv_approve);
-        tv_pending = (TextView) view.findViewById(R.id.tv_pending);
-        tv_reject = (TextView) view.findViewById(R.id.tv_reject);
+        leaveApprovalHelper = LeaveApprovalHelper.getInstance(getActivity());
+
+        lvLeavesList = view.findViewById(R.id.lv_leaves_list);
+        llFooter = view.findViewById(R.id.lv_footer);
+        tv_approve = view.findViewById(R.id.tv_approve);
+        tv_pending = view.findViewById(R.id.tv_pending);
+        tv_reject = view.findViewById(R.id.tv_reject);
         tv_approve.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         tv_pending.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         tv_reject.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-
 
         return view;
     }
@@ -63,18 +64,18 @@ public class RejectedLeavesFragment extends IvyBaseFragment {
     public void onStart() {
         super.onStart();
         selected_count = 0;
-        tv_reject.setVisibility(View.GONE);
+        tv_approve.setVisibility(View.GONE);
         llFooter.setVisibility(View.GONE);
-        rejectedLeaves = new ArrayList<>();
-        for (LeaveApprovalBO leaves : bmodel.leaveApprovalHelper.getLeavePending()) {
-            if (leaves.getStatusCode().equals(CODE_REJECTED)) {
+        approvedLeaves = new ArrayList<>();
+        for (LeaveApprovalBO leaves : leaveApprovalHelper.getLeavePending()) {
+            if (leaves.getStatusCode().equals(CODE_APPROVED)) {
                 leaves.setSelected(false);
-                rejectedLeaves.add(leaves);
+                approvedLeaves.add(leaves);
             }
         }
 
-        if (rejectedLeaves.size() > 0)
-            lvLeavesList.setAdapter(new MyAdapter(rejectedLeaves));
+        if (approvedLeaves.size() > 0)
+            lvLeavesList.setAdapter(new MyAdapter(approvedLeaves));
         else
             lvLeavesList.setVisibility(View.GONE);
 
@@ -85,10 +86,10 @@ public class RejectedLeavesFragment extends IvyBaseFragment {
             }
         });
 
-        tv_approve.setOnClickListener(new View.OnClickListener() {
+        tv_reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SaveAsyncTask(CODE_APPROVED).execute();
+                new SaveAsyncTask(CODE_REJECTED).execute();
             }
         });
 
@@ -120,25 +121,26 @@ public class RejectedLeavesFragment extends IvyBaseFragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
+        public @NonNull
+        View getView(int position, View convertView, @NonNull ViewGroup viewGroup) {
             final LeaveViewHolder holder;
-            leavesObj = (LeaveApprovalBO) items.get(position);
+            leavesObj = items.get(position);
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                convertView = (View) inflater.inflate(
-                        R.layout.row_leave_user_list, null);
+                convertView = inflater.inflate(
+                        R.layout.row_leave_user_list, viewGroup, false);
 
                 holder = new LeaveViewHolder();
 
-                holder.tvUsername = (TextView) convertView.findViewById(R.id.tvusername);
-                holder.tvLeavePeriod = (TextView) convertView.findViewById(R.id.tv_leaveperiod);
-                holder.tv_leaveperiod_title = (TextView) convertView.findViewById(R.id.tv_leaveperiod_title);
-                holder.tvLeaveType = (TextView) convertView.findViewById(R.id.tv_leavetype);
-                holder.tv_leavetype_title = (TextView) convertView.findViewById(R.id.tv_leavetype_title);
-                holder.tvStatus = (TextView) convertView.findViewById(R.id.tv_status);
-                holder.tv_status_title = (TextView) convertView.findViewById(R.id.tv_status_title);
-                holder.ll_userLeaves = (LinearLayout) convertView.findViewById(R.id.ll_userLeaves);
-                holder.sel_img = (ImageView) convertView.findViewById(R.id.sel_img);
+                holder.tvUsername = convertView.findViewById(R.id.tvusername);
+                holder.tvLeavePeriod = convertView.findViewById(R.id.tv_leaveperiod);
+                holder.tv_leaveperiod_title = convertView.findViewById(R.id.tv_leaveperiod_title);
+                holder.tvLeaveType = convertView.findViewById(R.id.tv_leavetype);
+                holder.tv_leavetype_title = convertView.findViewById(R.id.tv_leavetype_title);
+                holder.tvStatus = convertView.findViewById(R.id.tv_status);
+                holder.tv_status_title = convertView.findViewById(R.id.tv_status_title);
+                holder.ll_userLeaves = convertView.findViewById(R.id.ll_userLeaves);
+                holder.sel_img = convertView.findViewById(R.id.sel_img);
 
                 holder.tvUsername.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 holder.tvLeavePeriod.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -219,18 +221,18 @@ public class RejectedLeavesFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(Void... arg0) {
 
-            for (int i = 0; i < rejectedLeaves.size(); i++) {
-                if (rejectedLeaves.get(i).isSelected()) {
-                    for (int j = 0; j < bmodel.leaveApprovalHelper.getLeavePending().size(); j++) {
-                        if (rejectedLeaves.get(i).getRefId() == bmodel.leaveApprovalHelper.getLeavePending().get(j).getRefId())
-                            bmodel.leaveApprovalHelper.getLeavePending().get(j).setChanged(true);
-                        bmodel.leaveApprovalHelper.getLeavePending().get(j).setStatusCode(status_code);
+            for (int i = 0; i < approvedLeaves.size(); i++) {
+                if (approvedLeaves.get(i).isSelected()) {
+                    for (int j = 0; j < leaveApprovalHelper.getLeavePending().size(); j++) {
+                        if (approvedLeaves.get(i).getRefId() == leaveApprovalHelper.getLeavePending().get(j).getRefId())
+                            leaveApprovalHelper.getLeavePending().get(j).setChanged(true);
+                        leaveApprovalHelper.getLeavePending().get(j).setStatusCode(status_code);
                     }
                 }
             }
             try {
-                bmodel.leaveApprovalHelper.saveStatusTransaction(bmodel.leaveApprovalHelper.getLeavePending());
-                bmodel.leaveApprovalHelper.loadLeaveData();
+                leaveApprovalHelper.saveStatusTransaction(leaveApprovalHelper.getLeavePending());
+                leaveApprovalHelper.loadLeaveData();
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -258,6 +260,7 @@ public class RejectedLeavesFragment extends IvyBaseFragment {
                 if (alertDialog != null)
                     alertDialog.dismiss();
             } catch (Exception e) {
+                Commons.printException(e);
             }
             if (result == Boolean.TRUE) {
 
@@ -273,5 +276,4 @@ public class RejectedLeavesFragment extends IvyBaseFragment {
         }
 
     }
-
 }

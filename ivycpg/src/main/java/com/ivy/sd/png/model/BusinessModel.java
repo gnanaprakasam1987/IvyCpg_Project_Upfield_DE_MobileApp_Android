@@ -123,7 +123,7 @@ import com.ivy.sd.png.provider.FitScoreHelper;
 import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
-import com.ivy.sd.png.provider.LeaveApprovalHelper;
+import com.ivy.cpg.view.leaveapproval.LeaveApprovalHelper;
 import com.ivy.sd.png.provider.LoyalityHelper;
 import com.ivy.sd.png.provider.MVPHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
@@ -274,7 +274,6 @@ public class BusinessModel extends Application {
     public OrderFullfillmentHelper orderfullfillmenthelper;
     public ProfileHelper profilehelper;
     public MVPHelper mvpHelper;
-    public LeaveApprovalHelper leaveApprovalHelper;
     public JExcelHelper mJExcelHelper;
     public DeliveryManagementHelper deliveryManagementHelper;
     public CommonPrintHelper mCommonPrintHelper;
@@ -429,7 +428,6 @@ public class BusinessModel extends Application {
         mRetailerHelper = RetailerHelper.getInstance(this);
         orderfullfillmenthelper = OrderFullfillmentHelper.getInstance(this);
         mvpHelper = MVPHelper.getInstance(this);
-        leaveApprovalHelper = LeaveApprovalHelper.getInstance(this);
         distributorMasterHelper = DistributorMasterHelper.getInstance(this);
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
         distTimeStampHeaderHelper = DistTimeStampHeaderHelper.getInstance(this);

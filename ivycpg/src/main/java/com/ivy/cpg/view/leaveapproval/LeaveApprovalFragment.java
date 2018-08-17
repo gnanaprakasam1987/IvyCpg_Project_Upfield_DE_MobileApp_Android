@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.leaveapproval;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +24,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenActivity;
 
 public class LeaveApprovalFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
@@ -56,8 +57,7 @@ public class LeaveApprovalFragment extends IvyBaseFragment {
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
 
-        if (actionBar != null)
-        {
+        if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setIcon(null);
             actionBar.setElevation(0);
@@ -66,7 +66,7 @@ public class LeaveApprovalFragment extends IvyBaseFragment {
 
         setScreenTitle("Leave Approval");
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_text_pending)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_text_approve)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.reject)));
@@ -86,9 +86,9 @@ public class LeaveApprovalFragment extends IvyBaseFragment {
             }
         }
 
-        bmodel.leaveApprovalHelper.loadLeaveData();
+        LeaveApprovalHelper.getInstance(getActivity()).loadLeaveData();
 
-        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+        final ViewPager viewPager = view.findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getActivity().getSupportFragmentManager(), tabLayout.getTabCount());
         adapter.notifyDataSetChanged();
@@ -96,7 +96,8 @@ public class LeaveApprovalFragment extends IvyBaseFragment {
         viewPager.setOffscreenPageLimit(0);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
