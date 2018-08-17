@@ -441,7 +441,7 @@ public class SchemeDetailsMasterHelper {
         }
         c.close();
         if (IS_SCHEME_QPS_TRACKING) {
-            loadParentSchemInfo(db);
+            loadParentSchemInfo(db, mParentIDList);
             loadQPSCumulativeAchHistory(db);
         }
     }
@@ -4865,12 +4865,16 @@ public class SchemeDetailsMasterHelper {
         this.parentSchemeList = parentSchemeList;
     }
 
-    public void loadParentSchemInfo(DBUtil db) {
+    public void loadParentSchemInfo(DBUtil db, ArrayList<Integer> schemeList) {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Select distinct SM.parentID, SM.shortName, SM.buyType from SchemeMaster SM");
+        String id = "";
+        for (Integer scheme : schemeList) {
+            id = id + scheme + ",";
+        }
+        id = id.substring(0, id.length() - 1);
+        sb.append("Select distinct SM.parentID, SM.shortName, SM.buyType from SchemeMaster SM where parentID in (" + id + ")");
         Cursor c = db.selectSQL(sb.toString());
-
         if (c.getCount() > 0) {
             parentSchemeList = new ArrayList<>();
             while (c.moveToNext()) {
