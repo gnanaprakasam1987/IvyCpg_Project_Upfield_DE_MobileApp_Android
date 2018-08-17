@@ -52,7 +52,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
             finish();
         }
 
-        if (!bmodel.configurationMasterHelper.IS_CONTACT_TAB){
+        if (bmodel.configurationMasterHelper.IS_CONTACT_TAB){
             appSchedulerProvider = new AppSchedulerProvider();
             ArrayList<RetailerContactBo> retailerContactList=new ArrayList<>();
             bmodel.newOutletHelper.setRetailerContactList(retailerContactList); //Just for clear the old contact list

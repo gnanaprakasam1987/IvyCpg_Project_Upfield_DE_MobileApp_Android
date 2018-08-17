@@ -33,6 +33,7 @@ import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.data.ChannelWiseAttributeList;
 import com.ivy.ui.profile.data.IProfileDataManager;
@@ -939,11 +940,50 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
         }
 
-      /*  if (!isData)
+        if(configurationMasterHelper.IS_CONTACT_TAB) {
+
+            /*Check the RetailerContactList if any changes happened update it*/
+            if (newOutletHelper.getRetailerContactList().size() > 0) {
+                for (RetailerContactBo retailerContactBo : newOutletHelper.getRetailerContactList()) {
+                    if (retailerContactBo.getStatus().equalsIgnoreCase("U")
+                            || retailerContactBo.getStatus().equalsIgnoreCase("I")
+                            || retailerContactBo.getStatus().equalsIgnoreCase("D")) {
+                        updateRetailerContactEditList();
+                    }
+                }
+            }
+
+             /*inset the RetailerContactList */
+            getCompositeDisposable().add(mProfileDataManager.insertRetailerContactEdit(tid,
+                    retailerMasterBO.getRetailerID(),
+                    newOutletHelper.getRetailerContactList())
+                    .subscribeOn(getSchedulerProvider().io())
+                    .observeOn(getSchedulerProvider().ui())
+                    .subscribe(new Consumer<Boolean>() {
+                                   @Override
+                                   public void accept(Boolean response) throws Exception {}
+                               }, new Consumer<Throwable>() {
+                                   @Override
+                                   public void accept(Throwable throwable) throws Exception {
+                                       Commons.print(throwable.getMessage());
+                                   }
+                               }
+                    ));
+        }
+
+        if (!isData)
             getIvyView().hideLoading();
         else
-            updateHeaderList();*/
+            updateHeaderList();
 
+    }
+
+    private void updateRetailerContactEditList() {
+        String mCustomquery = AppUtils.QT("CONTACTEDIT")
+                + "," + AppUtils.QT("1")
+                + "," + retailerMasterBO.getRetailerID()
+                + "," + retailerMasterBO.getRetailerID() + ")";
+        insertRow("CONTACTEDIT", retailerMasterBO.getRetailerID(), mCustomquery);
     }
 
     private ArrayList<NewOutletAttributeBO> updateRetailerMasterAttribute(ArrayList<NewOutletAttributeBO> list) {
@@ -1075,10 +1115,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                @Override
                                public void accept(Boolean response) throws Exception {
                                    isData = response;
-                                   if (!isData)
-                                       getIvyView().hideLoading();
-                                   else
-                                       updateHeaderList();
                                }
                            }, new Consumer<Throwable>() {
                                @Override
@@ -1100,11 +1136,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                @Override
                                public void accept(Boolean response) throws Exception {
                                    isData = response;
-                                   if (!isData)
-                                       getIvyView().hideLoading();
-                                   else
-                                       updateHeaderList();
-
                                }
                            }, new Consumer<Throwable>() {
                                @Override
@@ -1159,10 +1190,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                                @Override
                                                public void accept(Boolean response) throws Exception {
                                                    isData = response;
-                                                   if (!isData)
-                                                       getIvyView().hideLoading();
-                                                   else
-                                                       updateHeaderList();
                                                }
                                            }, new Consumer<Throwable>() {
                                                @Override
@@ -1811,31 +1838,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private void updateHeaderList() {
-        if (!configurationMasterHelper.IS_CONTACT_TAB){
-            getCompositeDisposable().add(mProfileDataManager.updateRetailerContactEdit(tid, retailerMasterBO.getRetailerID(), newOutletHelper.getRetailerContactList())
-                    .subscribeOn(getSchedulerProvider().io())
-                    .observeOn(getSchedulerProvider().ui())
-                    .subscribe(new Consumer<Boolean>() {
-                                   @Override
-                                   public void accept(Boolean response) throws Exception {
-                                       if (response) {
-                                           completedUpdate();
-                                       }
-                                   }
-                               }, new Consumer<Throwable>() {
-                                   @Override
-                                   public void accept(Throwable throwable) throws Exception {
-                                       Commons.print(throwable.getMessage());
-                                   }
-                               }
-                    ));
-        }else{
-            completedUpdate();
-        }
 
-    }
-
-    private void completedUpdate(){
         getCompositeDisposable().add(mProfileDataManager.updateRetailer(tid, retailerMasterBO.getRetailerID(), currentDate)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -1859,7 +1862,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                }
                            }
                 ));
+
     }
+
+
 
     private void deletePreviousRow(String configCode, String RetailerId) {
         getCompositeDisposable().add(mProfileDataManager.deleteQuery(configCode, RetailerId)
@@ -1869,10 +1875,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                @Override
                                public void accept(Boolean response) throws Exception {
                                    isData = response;
-                                   if (!isData)
-                                       getIvyView().hideLoading();
-                                   else
-                                       updateHeaderList();
                                }
                            }, new Consumer<Throwable>() {
                                @Override
@@ -1892,10 +1894,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                @Override
                                public void accept(Boolean response) throws Exception {
                                    isData = response;
-                                   if (!isData)
-                                       getIvyView().hideLoading();
-                                   else
-                                       updateHeaderList();
                                }
                            }, new Consumer<Throwable>() {
                                @Override
@@ -2422,7 +2420,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
             //to check all mandatory channel's attributes selected
             if (isChannelAvailable() && isAdded) {
-
 
                 try {
                     for (NewOutletAttributeBO attributeBo : getAttributeBOListByLocationID().get(getIvyView().subChannelGetSelectedItem())) {

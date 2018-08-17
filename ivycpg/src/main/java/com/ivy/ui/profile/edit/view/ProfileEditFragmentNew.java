@@ -261,6 +261,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     public void showAlert() {
         showAlertDialog(getActivity().getResources().getString(R.string.profile_updated_scccess), 0);
     }
+
      void showAlertDialog(String msg, int id) {
         final int idd = id;
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -603,7 +604,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList() {
-        if (selectedAttribList != null) {
+        if (selectedAttribList != null && !selectedAttribList.isEmpty()) {
             return selectedAttribList;
         } else {
             selectedAttribList = new HashMap<>();
@@ -1817,7 +1818,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                             mAddedCommonAttributeList.add(newOutletAttributeBO.getAttrId());
                     }
                     prepareCommonAttributeView(profileEditPresenter.getCommonAttributeList(), parentLayout, mAddedCommonAttributeList);
-                    //
 
                     for (int i = 0; i < rowCount; i++) {
 

@@ -455,8 +455,11 @@ public class DataMembers {
 
     public static final String tbl_RetailerEditHeader = "RetailerEditHeader";
     public static final String tbl_RetailerEditDetail = "RetailerEditDetail";
+    public static final String tbl_RetailerContactEdit = "RetailerContactEdit";
     private static final String tbl_RetailerEditHeader_cols = "Tid,RetailerId,Date";
     private static final String tbl_RetailerEditDetail_cols = "Tid,code,Value,RefId";
+    private static final String tbl_RetailerContactEdit_cols = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName,ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid";
+
 
 
     private static final String tbl_RetailerVerification = "RetailerVerification";
@@ -691,6 +694,7 @@ public class DataMembers {
         uploadColumn.put(tbl_OrderDiscountDetail, tbl_OrderDiscountDetail_cols);
         uploadColumn.put(tbl_RetailerEditHeader, tbl_RetailerEditHeader_cols);
         uploadColumn.put(tbl_RetailerEditDetail, tbl_RetailerEditDetail_cols);
+        uploadColumn.put(tbl_RetailerContactEdit, tbl_RetailerContactEdit_cols);
         uploadColumn.put(tbl_RetailerVerification, tbl_RetailerVerification_cols);
         uploadColumn.put(tbl_delivery_header, tbl_delivery_header_cols);
         uploadColumn.put(tbl_delivery_detail, tbl_delivery_detail_cols);
@@ -932,6 +936,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_SOD_Tracking_Parent_Detail, tbl_SOD_Tracking_Parent_Detail_cols);
         uploadColumnWithOutRetailer.put(tbl_RetailerEditHeader, tbl_RetailerEditHeader_cols);
         uploadColumnWithOutRetailer.put(tbl_RetailerEditDetail, tbl_RetailerEditDetail_cols);
+        uploadColumnWithOutRetailer.put(tbl_RetailerContactEdit, tbl_RetailerContactEdit_cols);
         uploadColumnWithOutRetailer.put(tbl_OutletTimestampImagesupload,
                 tbl_OutletTimestampImageupload_cols);
         uploadColumnWithOutRetailer.put(tbl_nearbyRetailer, tbl_nearbyRetailer_cols);

@@ -437,7 +437,13 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
     private void loadRecyclerView() {
         contactList = bmodel.newOutletHelper.getRetailerContactList();
-        ContactsAdapter contactsAdapter = new ContactsAdapter(contactList);
+        ArrayList<RetailerContactBo> contactListTemp=new ArrayList<>();
+        for (int i = 0; i < contactList.size(); i++) {
+            if(!contactList.get(i).getStatus().equalsIgnoreCase("D")){
+                contactListTemp.add(contactList.get(i));
+            }
+        }
+        ContactsAdapter contactsAdapter = new ContactsAdapter(contactListTemp);
         rvContacts.setAdapter(contactsAdapter);
     }
 

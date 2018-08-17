@@ -79,7 +79,7 @@ public interface IProfileDataManager {
 
     Single<Boolean> updateRetailer(String mTid, String RetailerID,String currentDate);
 
-    Single<Boolean> updateRetailerContactEdit(String mTid, String RetailerID,ArrayList<RetailerContactBo> retailerContactList);
+    Single<Boolean> insertRetailerContactEdit(String mTid, String RetailerID,ArrayList<RetailerContactBo> retailerContactList);
 
     void closeDB();
 

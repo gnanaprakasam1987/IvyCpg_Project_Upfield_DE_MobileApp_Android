@@ -822,11 +822,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public Boolean call() throws Exception {
                 try {
                     dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + AppUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
-                    return true;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-                return false;
+                return true;
             }
         });
     }
@@ -842,11 +841,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public Boolean call() throws Exception {
                 try {
                     dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + AppUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
-                    return true;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-                return false;
+                return true;
             }
         }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
             @Override
@@ -857,11 +855,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         try {
                             // if(aBoolean) if we want we can add condition. it will return the deleted row response .
                             dbUtil.executeQ(insertquery);
-                            return true;
                         } catch (Exception e) {
                             Commons.printException("" + e);
                         }
-                        return false;
+                        return true;
                     }
                 });
             }
@@ -870,17 +867,17 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     }
 
     @Override
-    public Single<Boolean> updateNearByRetailers(final String mTid, final String RetailerID, final HashMap<String, String> temp ) {
+    public Single<Boolean> updateNearByRetailers(final String mTid, final String RetailerID,
+                                                 final HashMap<String, String> temp) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 try {
                     dbUtil.deleteSQL("RrtNearByEditRequest", " tid =" + AppUtils.QT(mTid), false);
-                    return true;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-                return false;
+                return true;
             }
         }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
             @Override
@@ -890,18 +887,17 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     public Boolean call() throws Exception {
                         try {
                             // if(aBoolean) if we want we can add condition. it will return the deleted row response .
-                            if(temp!=null)
-                            for (String id : temp.keySet()) {
-                                String Q = "insert into RrtNearByEditRequest (tid,rid,nearbyrid,status,upload)" +
-                                        "values (" + AppUtils.QT(mTid) + "," + RetailerID + "," + id
-                                        + "," + AppUtils.QT(temp.get(id)) + ",'N')";
-                                dbUtil.executeQ(Q);
-                            }
-                            return true;
+                            if (temp != null)
+                                for (String id : temp.keySet()) {
+                                    String Q = "insert into RrtNearByEditRequest (tid,rid,nearbyrid,status,upload)" +
+                                            "values (" + AppUtils.QT(mTid) + "," + RetailerID + "," + id
+                                            + "," + AppUtils.QT(temp.get(id)) + ",'N')";
+                                    dbUtil.executeQ(Q);
+                                }
                         } catch (Exception e) {
                             Commons.printException("" + e);
                         }
-                        return false;
+                        return true;
                     }
                 });
             }
@@ -917,11 +913,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                 try {
                     dbUtil.deleteSQL("RetailerEditPriorityProducts", " RetailerId ="
                             + AppUtils.QT(RetailerID), false);
-                    return true;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-                return false;
+                return true;
             }
         }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
             @Override
@@ -930,18 +925,18 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     @Override
                     public Boolean call() throws Exception {
                         try {
-                            if(selectedPrioProducts!=null)
-                            for (StandardListBO bo : selectedPrioProducts) {
-                                String Q = "insert into RetailerEditPriorityProducts (tid,RetailerId,productId,levelid,status,upload)" +
-                                        "values (" + AppUtils.QT(mTid)
-                                        + "," + AppUtils.QT(RetailerID)
-                                        + "," + SDUtil.convertToInt(bo.getListID())
-                                        + "," + AppUtils.QT(bo.getListCode())
-                                        + "," + AppUtils.QT(bo.getStatus()) + ",'N')";
-                                dbUtil.executeQ(Q);
-                            }
+                            if (selectedPrioProducts != null)
+                                for (StandardListBO bo : selectedPrioProducts) {
+                                    String Q = "insert into RetailerEditPriorityProducts (tid,RetailerId,productId,levelid,status,upload)" +
+                                            "values (" + AppUtils.QT(mTid)
+                                            + "," + AppUtils.QT(RetailerID)
+                                            + "," + SDUtil.convertToInt(bo.getListID())
+                                            + "," + AppUtils.QT(bo.getListCode())
+                                            + "," + AppUtils.QT(bo.getStatus()) + ",'N')";
+                                    dbUtil.executeQ(Q);
+                                }
                             return true;
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Commons.printException("" + e);
                             return false;
                         }
@@ -953,17 +948,18 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     }
 
     @Override
-    public Single<Boolean> updateRetailerMasterAttribute(final String mTid, final String RetailerID, final ArrayList<NewOutletAttributeBO> tempList) {
+    public Single<Boolean> updateRetailerMasterAttribute(final String mTid, final String RetailerID,
+                                                         final ArrayList<NewOutletAttributeBO> tempList) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 try {
                     dbUtil.deleteSQL("RetailerEditAttribute", " tid =" + AppUtils.QT(mTid), false);
-                    return true;
+
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-                return false;
+                return true;
             }
         }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
             @Override
@@ -981,11 +977,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                                         + "," + AppUtils.QT(id.getStatus()) + ",'N')";
                                 dbUtil.executeQ(Q);
                             }
-                            return true;
                         } catch (Exception e) {
                             e.printStackTrace();
-                            return false;
                         }
+                        return true;
                     }
                 });
             }
@@ -1003,11 +998,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public Boolean call() throws Exception {
                 try {
                     dbUtil.deleteSQL(DataMembers.tbl_RetailerEditHeader, " Tid=" + AppUtils.QT(tid), false);
-                    return true;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
-                return false;
+                return true;
             }
         }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
             @Override
@@ -1032,13 +1026,12 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             @Override
                             public Boolean call() throws Exception {
                                 try {
-                                    if(aBoolean)
-                                    dbUtil.executeQ(insertHeader);
-                                    return true;
+                                    if (aBoolean)
+                                        dbUtil.executeQ(insertHeader);
                                 } catch (Exception e) {
                                     Commons.printException("" + e);
                                 }
-                                return false;
+                                return true;
                             }
                         });
 
@@ -1049,34 +1042,60 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     }
 
     @Override
-    public Single<Boolean> updateRetailerContactEdit(final String mTid, final String RetailerID, final ArrayList<RetailerContactBo> retailerContactList) {
+    public Single<Boolean> insertRetailerContactEdit(final String mTid, final String RetailerID,
+                                                     final ArrayList<RetailerContactBo> retailerContactList) {
+
+        final String column = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName," +
+                "ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid";
+
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-
-               String column = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName," +
-                        "ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid";
-
-                if (retailerContactList.size() > 0) {
-                    for (RetailerContactBo retailerContactBo : retailerContactList) {
-                        String value=AppUtils.QT(retailerContactBo.getTitle())+","
-                                +AppUtils.QT(retailerContactBo.getContactTitleLovId())+","
-                                +AppUtils.QT(retailerContactBo.getFistname())+","
-                                +AppUtils.QT(retailerContactBo.getLastname())+","
-                                +AppUtils.QT(retailerContactBo.getContactNumber())+","
-                                +AppUtils.QT(retailerContactBo.getContactMail())+","
-                                +retailerContactBo.getIsPrimary()+","
-                                +AppUtils.QT(retailerContactBo.getStatus())+","
-                                +AppUtils.QT(retailerContactBo.getCpId())+","
-                                +AppUtils.QT(RetailerID)+","
-                                +AppUtils.QT(mTid);
-
-                        dbUtil.insertSQL("RetailerContactEdit", column, value);
-                    }
+                try {
+                    String where="RetailerId="+RetailerID;
+                    dbUtil.deleteSQL("RetailerContactEdit",where,false);
+                } catch (Exception e) {
+                    Commons.printException("" + e);
                 }
                 return true;
             }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        if (retailerContactList.size() > 0) {
+                            for (RetailerContactBo retailerContactBo : retailerContactList) {
+                                if (retailerContactBo.getStatus().equalsIgnoreCase("U")
+                                        || retailerContactBo.getStatus().equalsIgnoreCase("I")
+                                        || retailerContactBo.getStatus().equalsIgnoreCase("D")) {
+                                    String value = AppUtils.QT(retailerContactBo.getTitle()) + ","
+                                            + AppUtils.QT(retailerContactBo.getContactTitleLovId()) + ","
+                                            + AppUtils.QT(retailerContactBo.getFistname()) + ","
+                                            + AppUtils.QT(retailerContactBo.getLastname()) + ","
+                                            + AppUtils.QT(retailerContactBo.getContactNumber()) + ","
+                                            + AppUtils.QT(retailerContactBo.getContactMail()) + ","
+                                            + retailerContactBo.getIsPrimary() + ","
+                                            + AppUtils.QT(retailerContactBo.getStatus()) + ","
+                                            + AppUtils.QT(retailerContactBo.getCpId()) + ","
+                                            + AppUtils.QT(RetailerID) + ","
+                                            + AppUtils.QT(mTid);
+                                    dbUtil.insertSQL("RetailerContactEdit", column, value);
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                });
+
+            }
         });
+
+
+
+
     }
 
     private Single<Integer> getRetailerEditDetailCount(final String tid) {
