@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.leaveapproval;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -34,7 +34,7 @@ public class LeaveApprovalHelper {
 
     protected LeaveApprovalHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static LeaveApprovalHelper getInstance(Context context) {
@@ -55,8 +55,8 @@ public class LeaveApprovalHelper {
             Cursor c;
 
 
-            leavePending = new ArrayList<LeaveApprovalBO>();
-            leaveApproved = new ArrayList<LeaveApprovalBO>();
+            leavePending = new ArrayList();
+            leaveApproved = new ArrayList();
 
             sql = new String("select distinct LR.userid,LR.refid,LR.fromdate,LR.todate,LR.status,SM.Listname,SM1.Listname,UM.username from Leaverequestdetails LR "
                     + "inner join StandardListMaster SM1 on SM1.Listid= LR.reasonid "
@@ -141,9 +141,6 @@ public class LeaveApprovalHelper {
             }
 
             c.close();
-            c = null;
-
-
             db.closeDB();
 
         } catch (Exception e) {
@@ -151,25 +148,12 @@ public class LeaveApprovalHelper {
         }
     }
 
-   /* public boolean hasDataTosave(ArrayList<LeaveApprovalBO> leaveusers) {
-
-        for (LeaveApprovalBO usersBO : leaveusers) {
-            if (usersBO.isChanged())
-                return true;
-        }
-
-        return false;
-    } */
-
-
     public void saveStatusTransaction(ArrayList<LeaveApprovalBO> leaves) {
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            String sql;
-            Cursor statusCursor;
 
             String statusColumns = "RefId, Status, ApprovedDate, uid, Upload";
 

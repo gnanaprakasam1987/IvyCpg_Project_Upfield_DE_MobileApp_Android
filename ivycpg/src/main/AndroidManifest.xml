@@ -618,9 +618,6 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name="com.ivy.sd.png.view.LeaveApproval"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.sd.png.view.WebViewActivity"
             android:screenOrientation="portrait" />
         <activity
