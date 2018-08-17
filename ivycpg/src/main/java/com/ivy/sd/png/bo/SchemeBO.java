@@ -695,4 +695,113 @@ public class SchemeBO {
         return isChecked;
     }
 
+    private double totalPieceQty, totalCaseQty;
+
+    public double getTotalPieceQty() {
+        return totalPieceQty;
+    }
+
+    public void setTotalPieceQty(double totalPieceQty) {
+        this.totalPieceQty = totalPieceQty;
+    }
+
+    public double getTotalCaseQty() {
+        return totalCaseQty;
+    }
+
+    public void setTotalCaseQty(double totalCaseQty) {
+        this.totalCaseQty = totalCaseQty;
+    }
+
+    private double totalPieceEveryQty, totalCaseEveryQty;
+
+    public double getTotalPieceEveryQty() {
+        return totalPieceEveryQty;
+    }
+
+    public void setTotalPieceEveryQty(double totalPieceEveryQty) {
+        this.totalPieceEveryQty = totalPieceEveryQty;
+    }
+
+    public double getTotalCaseEveryQty() {
+        return totalCaseEveryQty;
+    }
+
+    public void setTotalCaseEveryQty(double totalCaseEveryQty) {
+        this.totalCaseEveryQty = totalCaseEveryQty;
+    }
+
+    private double totalPcsPriceQty, totalCasesPriceQty;
+
+    public double getTotalPcsPriceQty() {
+        return totalPcsPriceQty;
+    }
+
+    public void setTotalPcsPriceQty(double totalPcsPriceQty) {
+        this.totalPcsPriceQty = totalPcsPriceQty;
+    }
+
+    public double getTotalCasesPriceQty() {
+        return totalCasesPriceQty;
+    }
+
+    public void setTotalCasesPriceQty(double totalCasesPriceQty) {
+        this.totalCasesPriceQty = totalCasesPriceQty;
+    }
+
+    private boolean isCurrentSlab;
+
+    public boolean isCurrentSlab() {
+        return isCurrentSlab;
+    }
+
+    public void setCurrentSlab(boolean currentSlab) {
+        isCurrentSlab = currentSlab;
+    }
+
+    private boolean isNextSlab;
+
+    public boolean isNextSlab() {
+        return isNextSlab;
+    }
+
+    public void setNextSlab(boolean nextSlab) {
+        isNextSlab = nextSlab;
+    }
+
+    private double fromQty, toQty;
+
+    public double getFromQty() {
+        return fromQty;
+    }
+
+    public void setFromQty(double fromQty) {
+        this.fromQty = fromQty;
+    }
+
+    public double getToQty() {
+        return toQty;
+    }
+
+    public void setToQty(double toQty) {
+        this.toQty = toQty;
+    }
+
+    private boolean everyCaseUOM, isCaseScheme;
+
+    public boolean isEveryCaseUOM() {
+        return everyCaseUOM;
+    }
+
+    public void setEveryCaseUOM(boolean everyCaseUOM) {
+        this.everyCaseUOM = everyCaseUOM;
+    }
+
+    public boolean isCaseScheme() {
+        return isCaseScheme;
+    }
+
+    public void setCaseScheme(boolean caseScheme) {
+        isCaseScheme = caseScheme;
+    }
 }
