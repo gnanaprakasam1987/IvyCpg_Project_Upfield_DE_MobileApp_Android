@@ -266,9 +266,6 @@ public class ProfileEditFragmentNew extends BaseFragment
         showAlertDialog(getActivity().getResources().getString(R.string.profile_updated_scccess), 0);
     }
 
-    public void setDataPickerListener(DatePreviewListener datePreviewListener){
-        this.datePreviewListener=datePreviewListener;
-    }
 
     void showAlertDialog(String msg, int id) {
         final int idd = id;
@@ -1678,8 +1675,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         try {
             //flag==0 - add common atrributes and attributes for current(from DB) channel
             //flag==1 - add new(if user changing the channel, then corresponding attributes loaded) channel attributes
-            boolean isCommon = false,
-                    isFromChannel = false;
+            boolean isCommon = false, isFromChannel = false;
 
             boolean isNewChannel = false;
 
@@ -1718,7 +1714,8 @@ public class ProfileEditFragmentNew extends BaseFragment
                 profileEditPresenter.isCommonAttributeView();
 
 
-            } else if (isFromChannel) {
+            }
+            else if (isFromChannel) {
                 isNewChannel = true;
                 // getting existing attribute layout and clearig childs for loading attributes of current channel
                 parentLayout = (LinearLayout) getView().findViewWithTag("attributeLayout");
@@ -1836,7 +1833,8 @@ public class ProfileEditFragmentNew extends BaseFragment
                         parentLayout.addView(layout);
                     }
                 }
-            } else if (isCommon) {
+            }
+            else if (isCommon) {
                 //Call while creating view first time
                 //Call while creating a  view
 
@@ -1955,8 +1953,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 } else {
                     // No attributes for current retailer..
                     // so just adding common attributes(Because user can add attribute for current retailer from edit screen).
-                    prepareCommonAttributeView(profileEditPresenter.getCommonAttributeList()
-                            , parentLayout, new ArrayList<Integer>());
+                    prepareCommonAttributeView(profileEditPresenter.getCommonAttributeList(), parentLayout, new ArrayList<Integer>());
                 }
 
 
@@ -1997,6 +1994,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         listHashMap = new HashMap<>();
         attributeIndexMap = new HashMap<>();
         selectedAttribList = new HashMap<>();
+
         ArrayList<ArrayList<NewOutletAttributeBO>> attributeGroupedList;
         ArrayList<NewOutletAttributeBO> childList = profileEditPresenter.getAttributeListChild();
         ArrayList<NewOutletAttributeBO> parentList = profileEditPresenter.getAttributeParentList();
@@ -2008,6 +2006,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         String title = "";
         NewOutletAttributeBO tempBO = new NewOutletAttributeBO();
         int tempLevel;
+
         for (NewOutletAttributeBO attributeBO : list) {
             attributeGroupedList = new ArrayList<>();
             attributeIndexList = new ArrayList<>();

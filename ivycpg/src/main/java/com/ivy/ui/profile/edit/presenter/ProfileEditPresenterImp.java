@@ -210,7 +210,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                             ArrayList<NewOutletAttributeBO> attributeBOArrayListChild) throws Exception {
 
                         mCommonAttributeList = commonAttributeList;
-                        //Below both aerialist come from ChannelWiseAtttributeModel.class
+                        //Below both list come from ChannelWiseAtttributeModel.class
                         mAttributeListByLocationID = channelWiseAttributeModel.getAttributeListByLocationID();
                         mAttributeBOListByLocationID = channelWiseAttributeModel.getAttributeBOListByLocationID();
                         //Below both function just update in retailer MasterBo for future use
@@ -985,6 +985,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 + "," + retailerMasterBO.getRetailerID() + ")";
         insertRow("CONTACTEDIT", retailerMasterBO.getRetailerID(), mCustomquery);
     }
+
 
     private ArrayList<NewOutletAttributeBO> updateRetailerMasterAttribute(ArrayList<NewOutletAttributeBO> list) {
 
@@ -1852,7 +1853,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                    }
                                    getIvyView().hideLoading();
                                    getIvyView().showAlert();
-
                                }
                            }, new Consumer<Throwable>() {
                                @Override
