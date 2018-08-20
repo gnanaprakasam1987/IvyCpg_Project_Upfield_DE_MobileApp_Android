@@ -910,29 +910,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
         LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
                 getActivity().getResources().getColor(R.color.white_box_start));
-        TextInputLayout editTextInputLayout;
-        editTextInputLayout = new TextInputLayout(getActivity());
-        editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
 
-        editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
+        TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
 
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable et) {
-                String s = et.toString();
-                if (IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
-                    s = s.toUpperCase();
-                    editTextHashMap.get(mNumber).setText(s);
-                    editTextHashMap.get(mNumber).setSelection(editTextHashMap.get(mNumber).length());
-                }
-            }
-        });
 
         //if  Email
         if (comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) && Mandatory == 1) {
@@ -945,6 +925,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             verifyButtonParams.setMargins(0, 0, 0, 2);
             verifyButtonParams.gravity = Gravity.BOTTOM;
 
+            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
             emailLayout.addView(editTextInputLayout, emailParam);
 
             Button verifyBtn = new Button(getActivity());
@@ -960,8 +941,11 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             });
             emailLayout.addView(verifyBtn, verifyButtonParams);
             linearlayout.addView(emailLayout, weight1);
-        } else
+        } else{
+            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
             linearlayout.addView(editTextInputLayout, weight1);
+        }
+
 
         /*ContactNumber,PHNO1,PHNO2,MOBILE,FAX*/
         if (comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER) ||
@@ -969,7 +953,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 comparConfigerCode(mConfigCode, ProfileConstant.FAX)) {
 
             editTextInputLayout = new TextInputLayout(getActivity());
-            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
 
             if (comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) && Mandatory == 1)  /*MOBILE*/ {
 
@@ -982,6 +965,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 mobileParam1.weight = 3;
                 mobileParam1.gravity = Gravity.BOTTOM;
 
+                editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
                 mobileLayout.addView(editTextInputLayout, mobileParam);
 
                 Button verifyBtn = new Button(getActivity());
@@ -999,9 +983,10 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 mobileLayout.addView(verifyBtn, mobileParam1);
 
                 linearlayout.addView(mobileLayout, weight1);
-            } else
+            } else{
+                editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
                 linearlayout.addView(editTextInputLayout, weight1);
-
+            }
         }
 
         //CREDITPERIOD
@@ -1033,6 +1018,26 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             });
             linearlayout.addView(editTextInputLayout, weight1);
         }
+
+        editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable et) {
+                String s = et.toString();
+                if (IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                    s = s.toUpperCase();
+                    editTextHashMap.get(mNumber).setText(s);
+                    editTextHashMap.get(mNumber).setSelection(editTextHashMap.get(mNumber).length());
+                }
+            }
+        });
 
         return linearlayout;
     }
