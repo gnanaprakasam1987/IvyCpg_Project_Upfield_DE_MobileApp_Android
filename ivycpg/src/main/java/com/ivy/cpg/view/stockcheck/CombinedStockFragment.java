@@ -774,7 +774,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                                 viewFlipper.showPrevious();
                             }
                             Intent intent = new Intent(getActivity(),
-                                    AvailabiltyCheckActivity.class);
+                                    CombinedStockDetailActivity.class);
                             intent.putExtra("screenTitle", holder.productObj.getProductName());
                             intent.putExtra("pid", holder.productObj.getProductID());
                             intent.putExtra("selectedLocationIndex", mSelectedLocationIndex);

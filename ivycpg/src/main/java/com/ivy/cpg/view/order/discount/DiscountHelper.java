@@ -139,10 +139,7 @@ public class DiscountHelper {
                     + productBO.getOrderedCaseQty() * productBO.getCaseSize()
                     + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
-            double line_total_price = (productBO.getOrderedCaseQty() * productBO
-                    .getCsrp())
-                    + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                    + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+            double line_total_price = productBO.getDiscount_order_value();
 
             double totalValue;
 
@@ -324,14 +321,28 @@ public class DiscountHelper {
                                 productBo.setProductDiscAmount(productBo.getProductDiscAmount() + discountValue);
 
 
-                                if (productBo.getDiscount_order_value() > 0) {
+                               /* if (productBo.getDiscount_order_value() > 0) {
                                     productBo.setDiscount_order_value(productBo
                                             .getDiscount_order_value() - discountValue);
-                                }
+                                }*/
 
                                 totalDiscountValue = totalDiscountValue + discountValue;
 
                             }
+                        }
+                    }
+
+                    // for computing Final discount order value for  a product .
+                    // added because of Multiple discount applied for same product
+                    for (StoreWiseDiscountBO storeWiseDiscountBO : discountProductIdList) {
+
+                        ProductMasterBO productBo = businessModel.productHelper
+                                .getProductMasterBOById(String.valueOf(storeWiseDiscountBO
+                                        .getProductId()));
+
+                        if (productBo.getDiscount_order_value() > 0) {
+                            productBo.setDiscount_order_value(productBo
+                                    .getDiscount_order_value() - productBo.getProductDiscAmount());
                         }
                     }
                 }
@@ -941,12 +952,8 @@ public class DiscountHelper {
                         double totalOrderValueOfBuyProducts = 0;
                         if (schemeBO.isAmountTypeSelected()) {
                             for (SchemeProductBO schemeProductBo : schemeProductList) {
-                                ProductMasterBO productBO = businessModel.productHelper
-                                        .getProductMasterBOById(schemeProductBo
-                                                .getProductId());
-                                totalOrderValueOfBuyProducts += (productBO.getOrderedCaseQty() * productBO.getCsrp())
-                                        + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                                        + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
+                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId());
                             }
                         }
 

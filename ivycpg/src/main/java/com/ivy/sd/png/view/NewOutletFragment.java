@@ -584,7 +584,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 if (resultCode != ConnectionResult.SUCCESS) {
                     bmodel.requestLocation(getActivity());
                 } else
-                    onCreateDialogNew();
+                    onCreateDialogNew(1);
             }
     }
 
@@ -5121,20 +5121,38 @@ public class NewOutletFragment extends IvyBaseFragment
         return false;
     }
 
-    protected void onCreateDialogNew() {
-        AlertDialog.Builder builderGPS = new AlertDialog.Builder(getActivity())
-                .setIcon(null)
-                .setTitle(getResources().getString(R.string.enable_gps))
-                .setPositiveButton(getResources().getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                                Intent myIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(myIntent);
-                            }
-                        });
-        bmodel.applyAlertDialogTheme(builderGPS);
+    protected void onCreateDialogNew(int flag) {
+        if(flag==1) {
+            AlertDialog.Builder builderGPS = new AlertDialog.Builder(getActivity())
+                    .setIcon(null)
+                    .setTitle(getResources().getString(R.string.enable_gps))
+                    .setPositiveButton(getResources().getString(R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    Intent myIntent = new Intent(
+                                            android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    startActivity(myIntent);
+                                }
+                            });
+            bmodel.applyAlertDialogTheme(builderGPS);
+        }
+        else if(flag==2){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                    .setIcon(null)
+                    .setTitle(getResources().getString(R.string.saved_successfully))
+                    .setPositiveButton(getResources().getString(R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                                    if (currentFragment != null) {
+                                        currentFragment.detach("MENU_NEW_RETAILER");
+                                    }
+                                }
+                            });
+            bmodel.applyAlertDialogTheme(builder);
+        }
     }
 
     private void setValues() {
@@ -5822,34 +5840,19 @@ public class NewOutletFragment extends IvyBaseFragment
 
                     bmodel.downloadVisit_Actual_Achieved();
 
-                    showToast(getResources().getString(
-                            R.string.saved_successfully));
+
                     if (bmodel.newOutletHelper.getOrderedProductList().size() > 0)
                         bmodel.newOutletHelper.getOrderedProductList().clear();
                     if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
+                        showToast(getResources().getString(
+                                R.string.saved_successfully));
                         startActivity(new Intent(getActivity(),
                                 HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));
 //                        getActivity().finish();
                     } else {
-                       /* startActivity(new Intent(getActivity(), HomeScreenActivity.class));
-                        getActivity().finish();*/
 
-                       try {
-                           HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
-                           if (currentFragment != null) {
-                               currentFragment.refreshList(true);
-                           /* android.support.v4.app.FragmentManager fm = currentFragment.getFragmentManager();
+                       onCreateDialogNew(2);
 
-                            NewOutletFragment mNewOutletFragment = (NewOutletFragment) fm
-                                    .findFragmentByTag(MENU_NEW_RETAILER);
-                            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
-
-                            if (mNewOutletFragment != null)
-                                ft.remove(mNewOutletFragment);*/
-                           }
-                       }catch(Exception e){
-                           Commons.printException(e);
-                       }
                     }
 
                 }

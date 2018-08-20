@@ -4,7 +4,8 @@ public class NonproductivereasonBO {
 
 	private String retailerid, retailerName, date, reasonid;
 	private String reasontype, collectionReasonID, collectionReasonType, moduleCode, imagePath="", imageName="";
-	private int beatId,distributorID;
+	private int beatId,distributorID,isPlanned;
+	private String deviationReason,deviatedReasonId;
 
 	public NonproductivereasonBO() {
 		// TODO Auto-generated constructor stub
@@ -116,5 +117,29 @@ public class NonproductivereasonBO {
 
 	public void setImageName(String imageName) {
 		this.imageName = imageName;
+	}
+
+	public int getIsPlanned() {
+		return isPlanned;
+	}
+
+	public void setIsPlanned(int isPlanned) {
+		this.isPlanned = isPlanned;
+	}
+
+	public String getDeviationReason() {
+		return deviationReason;
+	}
+
+	public void setDeviationReason(String deviationReason) {
+		this.deviationReason = deviationReason;
+	}
+
+	public String getDeviatedReasonId() {
+		return deviatedReasonId;
+	}
+
+	public void setDeviatedReasonId(String deviatedReasonId) {
+		this.deviatedReasonId = deviatedReasonId;
 	}
 }

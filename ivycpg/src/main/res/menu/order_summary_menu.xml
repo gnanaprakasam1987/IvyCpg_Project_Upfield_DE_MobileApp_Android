@@ -102,7 +102,7 @@
 
     <item
         android:id="@+id/menu_attach_file"
-        android:icon="@drawable/icon_save"
+        android:icon="@drawable/ic_attach_file_black_24dp"
         android:orderInCategory="104"
         android:title="Attach Pdf files"
         android:visible="false"

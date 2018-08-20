@@ -64,13 +64,13 @@ public class QuestionReportFragment extends IvyBaseFragment {
 
 
     private void getQuestionData() {
-        final AlertDialog alertDialog;
+        /*final AlertDialog alertDialog;
         AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(getActivity());
+        builder = new AlertDialog.Builder(getActivity());*/
         compositeDisposable = new CompositeDisposable();
-        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        /*customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
         alertDialog = builder.create();
-        alertDialog.show();
+        alertDialog.show();*/
 
         compositeDisposable.add((Disposable) QuestionReportHelper.getInstance().loadQuestionReports(getActivity())
                 .subscribeOn(Schedulers.io())
@@ -88,13 +88,13 @@ public class QuestionReportFragment extends IvyBaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        alertDialog.dismiss();
+                        //alertDialog.dismiss();
                         Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onComplete() {
-                        alertDialog.dismiss();
+                        //alertDialog.dismiss();
                     }
                 }));
     }

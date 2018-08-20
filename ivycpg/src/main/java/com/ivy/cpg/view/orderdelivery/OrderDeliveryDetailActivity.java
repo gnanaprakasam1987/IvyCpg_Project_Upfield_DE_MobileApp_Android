@@ -219,7 +219,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         }
 
 
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+        if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_PC)
             (view.findViewById(R.id.piece_qty)).setVisibility(View.GONE);
         else if(isHeader) {
             try {
@@ -242,7 +242,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             ((TextView) view.findViewById(R.id.piece_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+        if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_CA)
             ( view.findViewById(R.id.case_qty)).setVisibility(View.GONE);
         else if(isHeader){
             try {
@@ -265,7 +265,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             ((TextView) view.findViewById(R.id.case_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+        if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_OU)
             (view.findViewById(R.id.outer_qty)).setVisibility(View.GONE);
         else if (isHeader){
             try {
@@ -311,7 +311,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             ((TextView) view.findViewById(R.id.sih_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY)
             (view.findViewById(R.id.sales_return_qty)).setVisibility(View.GONE);
         else if (isHeader){
             try {
@@ -339,7 +339,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             ((TextView) view.findViewById(R.id.sales_return_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY)
             (view.findViewById(R.id.sales_replace_qty)).setVisibility(View.GONE);
         else if (isHeader){
             try {
@@ -523,7 +523,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         ((TextView)findViewById(R.id.prod_name)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+        if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_PC)
             (findViewById(R.id.piece_qty)).setVisibility(View.GONE);
         else {
             try {
@@ -539,7 +539,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             }
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+        if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_CA)
             ( findViewById(R.id.case_qty)).setVisibility(View.GONE);
         else {
             try {
@@ -555,7 +555,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             }
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+        if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_OU)
             (findViewById(R.id.outer_qty)).setVisibility(View.GONE);
         else {
             try {
@@ -587,7 +587,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             }
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY)
             (findViewById(R.id.sales_return_qty)).setVisibility(View.GONE);
         else {
             try {
@@ -603,7 +603,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             }
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+        if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY)
             (findViewById(R.id.sales_replace_qty)).setVisibility(View.GONE);
         else {
             try {
@@ -646,7 +646,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
                 productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_PC)
                     pieceQty.setVisibility(View.GONE);
                 else {
                     try {
@@ -659,7 +659,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     }
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_CA)
                     caseQty.setVisibility(View.GONE);
                 else {
                     try {
@@ -672,7 +672,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     }
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_OU)
                     outerQty.setVisibility(View.GONE);
                 else {
                     try {
@@ -698,7 +698,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     }
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY)
                     srpQty.setVisibility(View.GONE);
                 else {
                     try {
@@ -711,7 +711,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     }
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY)
                     srQty.setVisibility(View.GONE);
                 else {
                     try {
@@ -771,7 +771,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
             holder.sihQty.setText(String.valueOf(productList.get(position).getDSIH()));
 
-            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY) {
                 int total = 0;
                 if (productList.get(position).getSalesReturnReasonList() != null) {
                     for (SalesReturnReasonBO obj : productList.get(position).getSalesReturnReasonList())

@@ -93,12 +93,12 @@ public class DeliveryStockReport extends IvyBaseFragment implements View.OnClick
      */
     private void getDeliverStockData() {
         final AlertDialog alertDialog;
-        AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(getActivity());
+        /*AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(getActivity());*/
         compositeDisposable = new CompositeDisposable();
-        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+       /* customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
         alertDialog = builder.create();
-        alertDialog.show();
+        alertDialog.show();*/
         compositeDisposable.add((Disposable) DeliveryStockHelper.getInstance().downloadDeliveryStock(getActivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -115,13 +115,13 @@ public class DeliveryStockReport extends IvyBaseFragment implements View.OnClick
 
                     @Override
                     public void onError(Throwable e) {
-                        alertDialog.dismiss();
+                        //alertDialog.dismiss();
                         Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onComplete() {
-                        alertDialog.dismiss();
+                        //alertDialog.dismiss();
 
                     }
                 }));

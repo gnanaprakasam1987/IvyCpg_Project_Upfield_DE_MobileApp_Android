@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.database.Cursor;
+import android.location.Location;
 import android.text.format.DateUtils;
 import android.view.animation.LinearInterpolator;
 
@@ -488,6 +489,12 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     public ArrayList<ArrayList<RetailerBo>> getVisitedRetailerList() {
         return new ArrayList<>(retailerVisitDetailsByRId.values());
+    }
+
+    boolean areaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
+        float[] result = new float[1];
+        Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude, result);
+        return result[0] < minDistanceInMeter;
     }
 
     String convertPlaneDateToGlobal(String planeDate) {
