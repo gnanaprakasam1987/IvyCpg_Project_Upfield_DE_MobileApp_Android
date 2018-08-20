@@ -74,9 +74,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
         return new DisposableObserver<ArrayList<RetailerContactBo>>() {
             @Override
             public void onNext(ArrayList<RetailerContactBo> contactList) {
-
                 bmodel.newOutletHelper.setRetailerContactList(contactList);
-
                 Fragment fragment = new NewoutletContainerFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isEdit",true);

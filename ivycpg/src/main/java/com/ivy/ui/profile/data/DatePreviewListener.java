@@ -1,8 +1,8 @@
 package com.ivy.ui.profile.data;
 
-interface DatePreviewListener {
+public interface DatePreviewListener {
 
-   public void foodxpDate(String format) ;
-   public void druckExpDate(String format) ;
+    void foodxpDate(int year, int month, int day) ;
+    void druckExpDate(int year, int month, int day) ;
 
 }

@@ -1,108 +1,112 @@
 package com.ivy.ui.profile.edit.view;
 
 
-        import android.annotation.SuppressLint;
-        import android.app.AlertDialog;
-        import android.app.DatePickerDialog;
-        import android.app.Dialog;
-        import android.content.ActivityNotFoundException;
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.content.Intent;
-        import android.graphics.Bitmap;
-        import android.graphics.Color;
-        import android.graphics.Typeface;
-        import android.net.Uri;
-        import android.os.Build;
-        import android.os.Bundle;
-        import android.os.Environment;
-        import android.support.design.widget.TextInputLayout;
-        import android.support.v4.app.DialogFragment;
-        import android.support.v4.app.FragmentManager;
-        import android.support.v4.content.ContextCompat;
-        import android.support.v4.content.FileProvider;
-        import android.support.v7.view.ContextThemeWrapper;
-        import android.support.v7.widget.AppCompatCheckBox;
-        import android.support.v7.widget.AppCompatEditText;
-        import android.text.Editable;
-        import android.text.InputFilter;
-        import android.text.InputType;
-        import android.text.Spanned;
-        import android.text.TextWatcher;
-        import android.util.Log;
-        import android.util.TypedValue;
-        import android.view.Gravity;
-        import android.view.LayoutInflater;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.AdapterView;
-        import android.widget.ArrayAdapter;
-        import android.widget.BaseAdapter;
-        import android.widget.Button;
-        import android.widget.CheckBox;
-        import android.widget.CompoundButton;
-        import android.widget.DatePicker;
-        import android.widget.EditText;
-        import android.widget.ImageView;
-        import android.widget.LinearLayout;
-        import android.widget.ListView;
-        import android.widget.ScrollView;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.Spanned;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
-        import com.ivy.core.base.presenter.BasePresenter;
-        import com.ivy.core.base.view.BaseFragment;
-        import com.ivy.location.LocationUtil;
-        import com.ivy.maplib.BaiduMapDialogue;
-        import com.ivy.sd.camera.CameraActivity;
-        import com.ivy.sd.png.asean.view.BuildConfig;
-        import com.ivy.sd.png.asean.view.R;
-        import com.ivy.sd.png.bo.ChannelBO;
-        import com.ivy.sd.png.bo.LocationBO;
-        import com.ivy.sd.png.bo.NewOutletAttributeBO;
-        import com.ivy.sd.png.bo.NewOutletBO;
-        import com.ivy.sd.png.bo.RetailerFlexBO;
-        import com.ivy.sd.png.bo.RetailerMasterBO;
-        import com.ivy.sd.png.bo.SpinnerBO;
-        import com.ivy.sd.png.bo.StandardListBO;
-        import com.ivy.sd.png.bo.SubchannelBO;
-        import com.ivy.sd.png.commons.MaterialSpinner;
-        import com.ivy.sd.png.commons.SDUtil;
-        import com.ivy.sd.png.model.BusinessModel;
-        import com.ivy.sd.png.util.Commons;
-        import com.ivy.sd.png.util.DataMembers;
-        import com.ivy.sd.png.view.HomeScreenFragment;
-        import com.ivy.sd.png.view.MapDialogue;
-        import com.ivy.sd.png.view.NearByRetailerDialog;
-        import com.ivy.sd.png.view.RetailerOTPDialog;
-        import com.ivy.ui.profile.ProfileConstant;
-        import com.ivy.ui.profile.edit.IProfileEditContract;
-        import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
-        import com.ivy.ui.profile.edit.di.ProfileEditModule;
-        import com.ivy.utils.AppUtils;
-        import com.ivy.utils.FontUtils;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.core.base.view.BaseFragment;
+import com.ivy.location.LocationUtil;
+import com.ivy.maplib.BaiduMapDialogue;
+import com.ivy.sd.camera.CameraActivity;
+import com.ivy.sd.png.asean.view.BuildConfig;
+import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ChannelBO;
+import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.NewOutletAttributeBO;
+import com.ivy.sd.png.bo.NewOutletBO;
+import com.ivy.sd.png.bo.RetailerFlexBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.SpinnerBO;
+import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.bo.SubchannelBO;
+import com.ivy.sd.png.commons.MaterialSpinner;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.MapDialogue;
+import com.ivy.sd.png.view.NearByRetailerDialog;
+import com.ivy.sd.png.view.RetailerOTPDialog;
+import com.ivy.ui.profile.data.DatePreviewListener;
+
+import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.edit.IProfileEditContract;
+import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
+import com.ivy.ui.profile.edit.di.ProfileEditModule;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
+import com.ivy.ui.profile.data.DatePickerFragment;
 
 
-        import java.io.File;
-        import java.text.SimpleDateFormat;
-        import java.util.ArrayList;
-        import java.util.Calendar;
-        import java.util.Collections;
-        import java.util.GregorianCalendar;
-        import java.util.HashMap;
-        import java.util.Locale;
-        import java.util.Vector;
-        import java.util.regex.Pattern;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Vector;
+import java.util.regex.Pattern;
 
-        import javax.inject.Inject;
+import javax.inject.Inject;
 
-        import butterknife.BindView;
-        import butterknife.OnClick;
+import butterknife.BindView;
+import butterknife.OnClick;
 
-        import static android.app.Activity.RESULT_OK;
+import static android.app.Activity.RESULT_OK;
 
-public class ProfileEditFragmentNew extends BaseFragment implements IProfileEditContract.ProfileEditView, RetailerOTPDialog.OTPListener {
+public class ProfileEditFragmentNew extends BaseFragment
+        implements IProfileEditContract.ProfileEditView,RetailerOTPDialog.OTPListener,DatePreviewListener {
 
     @BindView(R.id.profile_edit_scrollview)
     ScrollView mScrollView;
@@ -167,8 +171,10 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     private static final int LATLONG_CAMERA_REQUEST_CODE = 2;
     private String imageFileName, cameraFilePath = "";
 
-    @SuppressLint("StaticFieldLeak")
-    static TextView dlExpDateTextView = null, flExpDateTextView = null;
+
+    private TextView dlExpDateTextView = null, flExpDateTextView = null;
+
+    private DatePreviewListener datePreviewListener;
 
     @Inject
     IProfileEditContract.ProfileEditPresenter<IProfileEditContract.ProfileEditView> profileEditPresenter;
@@ -181,6 +187,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
     @Override
     public void initVariables(View view) {
 
+        this.datePreviewListener=this;
         params5 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params5.setMargins(0, 0, 20, 0);
         params5.gravity = Gravity.CENTER;
@@ -245,10 +252,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public void onDestroy() {
-        if (dlExpDateTextView != null)
-            dlExpDateTextView = null;
-        if (flExpDateTextView != null)
-            flExpDateTextView = null;
+
         super.onDestroy();
     }
 
@@ -262,7 +266,11 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         showAlertDialog(getActivity().getResources().getString(R.string.profile_updated_scccess), 0);
     }
 
-     void showAlertDialog(String msg, int id) {
+    public void setDataPickerListener(DatePreviewListener datePreviewListener){
+        this.datePreviewListener=datePreviewListener;
+    }
+
+    void showAlertDialog(String msg, int id) {
         final int idd = id;
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(msg);
@@ -276,8 +284,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 }
             }
         });
-        AppUtils.applyAlertDialogTheme(getActivity(),builder);
+        AppUtils.applyAlertDialogTheme(getActivity(), builder);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -614,9 +623,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public int subChannelGetSelectedItem() {
-        if( subchannel!=null){
+        if (subchannel != null) {
             return ((SpinnerBO) subchannel.getSelectedItem()).getId();
-        }else {
+        } else {
             return 0;
         }
     }
@@ -628,9 +637,9 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     @Override
     public ChannelBO getChennalSelectedItemBO() {
-        if( channel!=null){
+        if (channel != null) {
             return (ChannelBO) channel.getSelectedItem();
-        }else {
+        } else {
             return new ChannelBO();
         }
 
@@ -941,7 +950,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
             });
             emailLayout.addView(verifyBtn, verifyButtonParams);
             linearlayout.addView(emailLayout, weight1);
-        } else{
+        } else {
             editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
             linearlayout.addView(editTextInputLayout, weight1);
         }
@@ -983,7 +992,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                 mobileLayout.addView(verifyBtn, mobileParam1);
 
                 linearlayout.addView(mobileLayout, weight1);
-            } else{
+            } else {
                 editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
                 linearlayout.addView(editTextInputLayout, weight1);
             }
@@ -1123,7 +1132,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                     month = Integer.valueOf(date.split("/")[1]) - 1;
                     day = Integer.valueOf(date.split("/")[2]);
                 }
-                DialogFragment newFragment = new DatePickerFragment("FLEXPDATE", year, month, day);
+                DialogFragment newFragment = new DatePickerFragment("FLEXPDATE", year, month, day, datePreviewListener);
                 newFragment.show(getActivity().getSupportFragmentManager(), "flDatePicker");
             }
         });
@@ -1176,13 +1185,36 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
                     month = Integer.valueOf(date.split("/")[1]) - 1;
                     day = Integer.valueOf(date.split("/")[2]);
                 }
-                DialogFragment newFragment = new DatePickerFragment("DLEXPDATE", year, month, day);
+                DialogFragment newFragment = new DatePickerFragment("DLEXPDATE", year, month, day, datePreviewListener);
                 newFragment.show(getActivity().getSupportFragmentManager(), "dlDatePicker");
             }
         });
         return linearlayout;
     }
 
+    @Override
+    public void foodxpDate(int year, int month, int day) {
+        Calendar selectedDate = new GregorianCalendar(year, month, day);
+        if (selectedDate.after(Calendar.getInstance())) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+        } else {
+            Toast.makeText(getActivity(), "Select future date", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void druckExpDate(int year, int month, int day) {
+        Calendar selectedDate = new GregorianCalendar(year, month, day);
+        if (selectedDate.after(Calendar.getInstance())) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+        } else {
+            Toast.makeText(getActivity(), "Select future date", Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
     private AppCompatEditText getSingleEditTextView(int positionNumber, String configCode,
                                                     String menuName, String values, boolean IS_UPPERCASE_LETTER) {
@@ -2344,7 +2376,7 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
 
     private void updateLocationAdapter2(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<LocationBO>();
-        if(mLocationMasterList2!=null)
+        if (mLocationMasterList2 != null)
             for (LocationBO locationBO : mLocationMasterList2) {
                 if (parentId == locationBO.getParentId()) {
                     locationList.add(locationBO);
@@ -2470,45 +2502,6 @@ public class ProfileEditFragmentNew extends BaseFragment implements IProfileEdit
         }
     }
 
-    @SuppressLint("ValidFragment")
-    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-
-        int year;
-        int month;
-        int day;
-        String code;
-
-        public DatePickerFragment(String code, int year, int month, int day) {
-            this.code = code;
-            this.year = year;
-            this.month = month;
-            this.day = day;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
-        }
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-
-            Calendar selectedDate = new GregorianCalendar(year, month, day);
-            if (selectedDate.after(Calendar.getInstance())) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-                if (code.equalsIgnoreCase("DLEXPDATE"))
-                    dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-
-                else if (code.equalsIgnoreCase("FLEXPDATE"))
-                    flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                this.year = year;
-                this.day = day;
-                this.month = month;
-            } else {
-                Toast.makeText(getActivity(), "Select future date", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
 
 }
