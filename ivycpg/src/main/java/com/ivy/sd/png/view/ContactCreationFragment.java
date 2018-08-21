@@ -104,6 +104,13 @@ public class ContactCreationFragment extends IvyBaseFragment {
     RecyclerView rvContacts;
     private AppSchedulerProvider appSchedulerProvider;
 
+    public static ContactCreationFragment getInstance(boolean isFromEditProfileView){
+        ContactCreationFragment creationFragment=new ContactCreationFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isEdit",isFromEditProfileView);
+        creationFragment.setArguments(bundle);
+        return creationFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -256,12 +263,17 @@ public class ContactCreationFragment extends IvyBaseFragment {
                                     }
                                 }
                             } else {
-                                if (contactList.size() < bmodel.configurationMasterHelper.RETAILER_CONTACT_COUNT) {
+                                int count=0;
+                                for (int i = 0; i < contactList.size(); i++) {
+                                    if(!contactList.get(i).getStatus().equalsIgnoreCase("D")){
+                                        count+=i+1;
+                                    }
+                                }
+                                if (count < bmodel.configurationMasterHelper.RETAILER_CONTACT_COUNT) {
                                     retailerContactBo.setStatus("I");
                                     retailerContactBo.setCpId("" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                             + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
                                     contactList.add(retailerContactBo);
-
                                 } else
                                     Toast.makeText(getActivity(), getActivity().getString(R.string.max_contacts_added), Toast.LENGTH_SHORT).show();
                             }
@@ -553,6 +565,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"));
 
             final RetailerContactBo retailerContactBo = items.get(position);
+
             if (ISCONTACTNAME) {
                 if (retailerContactBo.getTitle().length() > 0)
                     holder.title.setText(retailerContactBo.getTitle());
@@ -645,7 +658,6 @@ public class ContactCreationFragment extends IvyBaseFragment {
         }
     }
 
-
     //Email Id Validation
     public static boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
@@ -654,19 +666,19 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private void deleteContact(RetailerContactBo retailerContact) {
 
         if(isProfileEdit){
-            retailerContactBo.setStatus("D");
+            retailerContact.setStatus("D");
             for (int i = 0; i < contactList.size(); i++) {
                 if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContact.getCpId())) {
-                    if(!contactList.get(i).getStatus().equalsIgnoreCase("I")){
+                    if(contactList.get(i).getStatus().equalsIgnoreCase("I")){
                         contactList.remove(i);
                     }else
-                        contactList.set(i,retailerContactBo);
+                        contactList.set(i,retailerContact);
                     break;
                 }
             }
         }else{
             for (int i = 0; i < contactList.size(); i++) {
-                if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContactBo.getCpId())) {
+                if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContact.getCpId())) {
                     contactList.remove(i);
                     break;
                 }

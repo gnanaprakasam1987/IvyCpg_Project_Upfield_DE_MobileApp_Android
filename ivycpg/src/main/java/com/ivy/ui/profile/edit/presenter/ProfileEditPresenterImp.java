@@ -940,7 +940,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
 
         if(configurationMasterHelper.IS_CONTACT_TAB) {
-
             /*Check the RetailerContactList if any changes happened update it*/
             if (newOutletHelper.getRetailerContactList().size() > 0) {
                 for (RetailerContactBo retailerContactBo : newOutletHelper.getRetailerContactList()) {
@@ -948,10 +947,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                             || retailerContactBo.getStatus().equalsIgnoreCase("I")
                             || retailerContactBo.getStatus().equalsIgnoreCase("D")) {
                         updateRetailerContactEditList();
+                        break;
                     }
                 }
             }
-
              /*inset the RetailerContactList */
             getCompositeDisposable().add(mProfileDataManager.insertRetailerContactEdit(tid,
                     retailerMasterBO.getRetailerID(),
@@ -1045,17 +1044,13 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void updateRetailerMasterAttributeList() {
-
         isData = true;
-
         if(getIvyView().getSelectedAttribList().size()!=0) {
             ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
             ArrayList<NewOutletAttributeBO> attributeList = updateRetailerMasterAttribute(getRetailerAttribute());
             ArrayList<NewOutletAttributeBO> attList = updateRetailerMasterAttribute(retailerMasterBO.getAttributeBOArrayList());
-
             NewOutletAttributeBO tempBO1;
             NewOutletAttributeBO tempBO2 = null;
-
             if (attributeList.size() > 0) {
                 for (int i = 0; i < attributeList.size(); i++) {
                     tempBO1 = attributeList.get(i);
@@ -1890,6 +1885,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private void insertRow(String configCode, String RetailerId, String mCustomquery) {
+
         getCompositeDisposable().add(mProfileDataManager.insertNewRow(configCode, RetailerId, tid, mCustomquery)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
