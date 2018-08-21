@@ -22,6 +22,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.FontUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.io.File;
@@ -62,8 +63,8 @@ public class DailyExpenseFragment extends IvyBaseFragment {
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
         list = view.findViewById(R.id.expenses_list);
 
-        ((TextView) view.findViewById(R.id.tvTitleTotal)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tvTitleTotal)).setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        tvTotalAmount.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
 
         return view;

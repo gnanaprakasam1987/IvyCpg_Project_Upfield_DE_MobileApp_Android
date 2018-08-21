@@ -34,6 +34,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,8 +73,8 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
         tvTotalAmount.setText(sumExpenses(expenseSheetHelper.getPastMonthExpense()));
 
-        tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView) view.findViewById(R.id.titleTotalamt)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        tvTotalAmount.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.titleTotalamt)).setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         ivClosePieChart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

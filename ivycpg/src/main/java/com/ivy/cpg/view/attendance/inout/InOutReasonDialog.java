@@ -19,6 +19,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
 /**
  * Created by nivetha.s on 06-04-2016.
@@ -30,17 +31,15 @@ public class InOutReasonDialog extends Dialog {
     private Context context;
     private OnMyDialogResult Result;
 
-    protected InOutReasonDialog(final Context context,OnMyDialogResult mDialogResult) {
+    protected InOutReasonDialog(final Context context, OnMyDialogResult mDialogResult) {
         super(context);
         this.context = context;
-        BusinessModel bmodel = (BusinessModel) context.getApplicationContext();
-//        bmodel.setContext(context);
         this.Result = mDialogResult;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setContentView(R.layout.in_out_reason_dialog);
 
-        reason_spnr =  findViewById(R.id.reason_spnr);
+        reason_spnr = findViewById(R.id.reason_spnr);
         reason_spnr.setVisibility(View.VISIBLE);
         dataAdapter = new ArrayAdapter<>(context,
                 R.layout.spinner_bluetext_layout);
@@ -50,9 +49,9 @@ public class InOutReasonDialog extends Dialog {
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
         reason_spnr.setAdapter(dataAdapter);
-        Button btn_ok= findViewById(R.id.btn_ok);
-        TextView titleBar= findViewById(R.id.titleBar);
-        TextView must_sell_message_tv= findViewById(R.id.must_sell_message_tv);
+        Button btn_ok = findViewById(R.id.btn_ok);
+        TextView titleBar = findViewById(R.id.titleBar);
+        TextView must_sell_message_tv = findViewById(R.id.must_sell_message_tv);
         btn_ok
                 .setOnClickListener(new View.OnClickListener() {
 
@@ -71,9 +70,9 @@ public class InOutReasonDialog extends Dialog {
 
                     }
                 });
-        btn_ok.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        titleBar.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        must_sell_message_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        btn_ok.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
+        titleBar.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
+        must_sell_message_tv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
     }
 
     private void loadInOutReason() {

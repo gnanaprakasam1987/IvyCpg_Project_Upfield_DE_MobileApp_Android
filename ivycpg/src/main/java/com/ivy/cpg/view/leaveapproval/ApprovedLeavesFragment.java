@@ -20,6 +20,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ import io.reactivex.functions.Consumer;
 
 public class ApprovedLeavesFragment extends IvyBaseFragment {
 
-    private BusinessModel bmodel;
     private ArrayList<LeaveApprovalBO> approvedLeaves;
     private ListView lvLeavesList;
     private LinearLayout llFooter;
@@ -46,9 +46,6 @@ public class ApprovedLeavesFragment extends IvyBaseFragment {
         View view = inflater.inflate(R.layout.fragment_leave_history,
                 container, false);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-
         leaveApprovalHelper = LeaveApprovalHelper.getInstance(getActivity());
         appSchedulerProvider = new AppSchedulerProvider();
 
@@ -57,9 +54,9 @@ public class ApprovedLeavesFragment extends IvyBaseFragment {
         tv_approve = view.findViewById(R.id.tv_approve);
         tv_pending = view.findViewById(R.id.tv_pending);
         tv_reject = view.findViewById(R.id.tv_reject);
-        tv_approve.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        tv_pending.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        tv_reject.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        tv_approve.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        tv_pending.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        tv_reject.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         return view;
     }
@@ -181,13 +178,13 @@ public class ApprovedLeavesFragment extends IvyBaseFragment {
                 holder.ll_userLeaves = convertView.findViewById(R.id.ll_userLeaves);
                 holder.sel_img = convertView.findViewById(R.id.sel_img);
 
-                holder.tvUsername.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.tvLeavePeriod.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tvLeaveType.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tvStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_leaveperiod_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_leavetype_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_status_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tvUsername.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+                holder.tvLeavePeriod.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tvLeaveType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_leaveperiod_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_leavetype_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_status_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
 
 
                 convertView.setOnClickListener(new View.OnClickListener() {

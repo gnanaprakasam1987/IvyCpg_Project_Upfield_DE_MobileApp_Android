@@ -32,6 +32,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -118,14 +119,14 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         tvFromDate.setOnClickListener(this);
         tvToDate.setOnClickListener(this);
         //typeface
-        ((TextView) view.findViewById(R.id.reasonTextViewId)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) view.findViewById(R.id.leavereasonTextViewId)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        tvFromDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        tvToDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.reasonTextViewId)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        ((TextView) view.findViewById(R.id.leavereasonTextViewId)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        tvFromDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        tvToDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
         Button btn_proceed = view.findViewById(R.id.buttonproceed);
         btn_proceed.setOnClickListener(this);
-        btn_proceed.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btn_proceed.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         ArrayAdapter<AttendanceBO> leaveAdapter = new ArrayAdapter<>(
                 getActivity(), R.layout.spinner_bluetext_layout);

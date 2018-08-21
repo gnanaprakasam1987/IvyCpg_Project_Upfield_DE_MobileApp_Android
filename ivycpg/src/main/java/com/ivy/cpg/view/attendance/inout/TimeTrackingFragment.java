@@ -3,8 +3,6 @@ package com.ivy.cpg.view.attendance.inout;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -46,10 +43,9 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.FontUtils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.StringTokenizer;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
@@ -83,7 +79,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         no_data_txt = view.findViewById(R.id.no_data_txt);
 
         //typeface
-        no_data_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        no_data_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
@@ -208,34 +204,33 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 holder = new ViewHolder();
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                convertView =  inflater.inflate(R.layout.row_nonfield_two,
+                convertView = inflater.inflate(R.layout.row_nonfield_two,
                         parent, false);
 
-                holder.tvOutTime =  convertView
+                holder.tvOutTime = convertView
                         .findViewById(R.id.txt_fromTime);
-                holder.btOutTime =  convertView
+                holder.btOutTime = convertView
                         .findViewById(R.id.btn_fromTime);
-                holder.btInTime =  convertView
+                holder.btInTime = convertView
                         .findViewById(R.id.btn_toTime);
-                holder.tvInTime =  convertView
+                holder.tvInTime = convertView
                         .findViewById(R.id.txt_toTime);
-                holder.tvReason =  convertView
+                holder.tvReason = convertView
                         .findViewById(R.id.txt_reason);
-                holder.tvStatus =  convertView
+                holder.tvStatus = convertView
                         .findViewById(R.id.txt_status);
 
                 //typefaces
-                holder.tvOutTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tvInTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tvReason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tvStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_To)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_from)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_Status)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_Reason)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.btOutTime.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.btInTime.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-
+                holder.tvOutTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tvInTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tvReason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_To)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_from)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_Status)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_Reason)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.btOutTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+                holder.btInTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
                 convertView.setTag(holder);
 
@@ -463,39 +458,6 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             if (resultCode == Activity.RESULT_OK) {
                 loadNonFieldTwoDetails();
             }
-        }
-
-    }
-
-
-    // Time picker dialog on button click to register In Time
-    class SetTime implements View.OnClickListener, TimePickerDialog.OnTimeSetListener {
-
-        private ViewHolder holder;
-        private Calendar myCalendar;
-        private Context ctx;
-
-        public SetTime(ViewHolder holder, Context ctx) {
-            this.holder = holder;
-            this.holder.btInTime.setOnClickListener(this);
-            this.myCalendar = Calendar.getInstance();
-            this.ctx = ctx;
-        }
-
-        @Override
-        public void onClick(View v) {
-            int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
-            int minute = myCalendar.get(Calendar.MINUTE);
-            new TimePickerDialog(ctx, this, hour, minute, true).show();
-        }
-
-
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-            DecimalFormat formatter = new DecimalFormat("00");
-            this.holder.btInTime.setText(formatter.format(hourOfDay) + ":" + formatter.format(minute) + ":" + formatter.format(0));
-            holder.nonFieldTwoBO.setInTime(formatter.format(hourOfDay) + ":" + formatter.format(minute) + ":" + formatter.format(0));
         }
 
     }

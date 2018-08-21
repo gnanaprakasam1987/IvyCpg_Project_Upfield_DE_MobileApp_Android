@@ -32,11 +32,11 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
 import static com.ivy.sd.png.asean.view.R.id.menu_delete;
-import static com.ivy.sd.png.asean.view.R.id.no;
 import static com.ivy.sd.png.asean.view.R.string.item;
 
 /**
@@ -288,7 +288,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                 holder.monthHeader = row.findViewById(R.id.month_header);
                 holder.topLine = row.findViewById(R.id.top_line);
 
-                holder.tvUserName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.tvUserName.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
                 if (bmodel.configurationMasterHelper.IS_SHOW_DELETE_OPTION)
                     holder.deleteCB.setVisibility(View.VISIBLE);
