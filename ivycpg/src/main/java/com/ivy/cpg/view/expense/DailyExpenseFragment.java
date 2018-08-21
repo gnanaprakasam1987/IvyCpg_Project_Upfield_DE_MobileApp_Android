@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Paint;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -13,19 +12,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.FontUtils;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 public class DailyExpenseFragment extends IvyBaseFragment {
 
@@ -39,6 +43,8 @@ public class DailyExpenseFragment extends IvyBaseFragment {
     ExpenseProofDialog dialogFragment;
 
     private ExpenseSheetHelper expenseSheetHelper;
+    private ProgressDialog progressDialogue;
+    private AppSchedulerProvider appSchedulerProvider;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,8 +63,8 @@ public class DailyExpenseFragment extends IvyBaseFragment {
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
         list = view.findViewById(R.id.expenses_list);
 
-        ((TextView) view.findViewById(R.id.tvTitleTotal)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tvTitleTotal)).setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        tvTotalAmount.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
 
         return view;
@@ -67,7 +73,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-
+        appSchedulerProvider = new AppSchedulerProvider();
         loadExpensesList();
 
 
@@ -213,8 +219,32 @@ public class DailyExpenseFragment extends IvyBaseFragment {
                 new android.content.DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
-
-                        new DeleteAsyncTask(expensesBO).execute();
+                        boolean isDelete = false;
+                        progressDialogue = ProgressDialog.show(getActivity(),
+                                DataMembers.SD, getResources().getString(R.string.deleting),
+                                true, false);
+                        if (expensesBO.getImageList().size() > 0) {
+                            for (String imagename : expensesBO.getImageList()) {
+                                String imgpath = new File(photoNamePath + "/" + imagename).getAbsolutePath();
+                                isDelete = new File(imgpath).delete();
+                            }
+                        }
+                        if (isDelete) {
+                            new CompositeDisposable().add(expenseSheetHelper.deleteExpense(expensesBO.getRefId(), expensesBO.getTid(),
+                                    expensesBO.getDate(), expensesBO.getAmount())
+                                    .subscribeOn(appSchedulerProvider.io())
+                                    .observeOn(appSchedulerProvider.ui())
+                                    .subscribe(new Consumer<Boolean>() {
+                                        @Override
+                                        public void accept(Boolean aBoolean) {
+                                            progressDialogue.dismiss();
+                                            loadExpensesList(expensesBO.getDate());
+                                        }
+                                    }));
+                        } else {
+                            progressDialogue.dismiss();
+                            Toast.makeText(getActivity(), getActivity().getString(R.string.unable_to_access_the_sdcard), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                 });
@@ -232,53 +262,4 @@ public class DailyExpenseFragment extends IvyBaseFragment {
     public void refresh() {
         loadExpensesList();
     }
-
-    class DeleteAsyncTask extends AsyncTask<String, Integer, Boolean> {
-        private ProgressDialog progressDialogue;
-        ExpensesBO expensesBO;
-
-        DeleteAsyncTask(ExpensesBO expensesBO) {
-            this.expensesBO = expensesBO;
-        }
-
-        @Override
-        protected Boolean doInBackground(String... arg0) {
-            try {
-                if (expensesBO.getImageList().size() > 0) {
-                    for (String imagename : expensesBO.getImageList()) {
-                        String imgpath = new File(photoNamePath + "/" + imagename).getAbsolutePath();
-                        new File(imgpath).delete();
-                    }
-                }
-                expenseSheetHelper.deleteExpense(expensesBO.getRefId(), expensesBO.getTid(),
-                        expensesBO.getDate(), expensesBO.getAmount());
-
-                return Boolean.TRUE;
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-
-        }
-
-        protected void onPreExecute() {
-            progressDialogue = ProgressDialog.show(getActivity(),
-                    DataMembers.SD, getResources().getString(R.string.saving),
-                    true, false);
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-
-            progressDialogue.dismiss();
-            loadExpensesList(expensesBO.getDate());
-
-        }
-
-    }
-
 }

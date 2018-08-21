@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.webview;
 
 
 import android.annotation.SuppressLint;
@@ -22,6 +22,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
+import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.HashMap;
 import java.util.Locale;

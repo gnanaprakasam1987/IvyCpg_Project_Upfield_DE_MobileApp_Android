@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -29,10 +28,14 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 
 public class ExpenseFragment extends IvyBaseFragment {
@@ -57,6 +60,8 @@ public class ExpenseFragment extends IvyBaseFragment {
     final String DISABLE_PLUGIN = "DISABLE_PLUGIN";
     private static final int CAMERA_REQUEST_CODE = 1;
     private ExpenseSheetHelper expenseSheetHelper;
+    private AppSchedulerProvider appSchedulerProvider;
+    private ProgressDialog progressDialogue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,7 +90,12 @@ public class ExpenseFragment extends IvyBaseFragment {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        setScreenTitle(bmodel.getMenuName("MENU_EXPENSE"));
+
+        Bundle bundle = getArguments();
+        if (bundle == null)
+            bundle = getActivity().getIntent().getExtras();
+
+        setScreenTitle(bundle.getString("screentitle"));
 
         et_exp_date = view.findViewById(R.id.et_exp_date);
         et_amount = view.findViewById(R.id.et_amount);
@@ -98,6 +108,8 @@ public class ExpenseFragment extends IvyBaseFragment {
         imagesList = new ArrayList<>();
         photoNamePath = HomeScreenFragment.photoPath + "/";
         Commons.print("Photo Path, " + "" + photoNamePath);
+
+        appSchedulerProvider = new AppSchedulerProvider();
 
         expenseSheetHelper.loadExpenseData();
         loadExpenses();
@@ -200,14 +212,66 @@ public class ExpenseFragment extends IvyBaseFragment {
                 else if (et_amount.getText().toString().length() == 0)
                     Toast.makeText(mContext, getString(R.string.alert_amount), Toast.LENGTH_SHORT).show();
                 else {
+                    progressDialogue = ProgressDialog.show(mContext,
+                            DataMembers.SD, getResources().getString(R.string.saving),
+                            true, false);
                     amountValue = et_amount.getText().toString();
                     dateValue = et_exp_date.getText().toString();
-                    new SaveAsyncTask().execute();
+                    if (isHeaderExists) {
+                        new CompositeDisposable().add(expenseSheetHelper.updateHeaderInsert(Tid, dateValue, amountValue, exp_type, imagesList, exp_type + "" + SDUtil
+                                .now(SDUtil.DATE_TIME_ID))
+                                .subscribeOn(appSchedulerProvider.io())
+                                .observeOn(appSchedulerProvider.ui())
+                                .subscribe(new Consumer<Boolean>() {
+                                    @Override
+                                    public void accept(Boolean aBoolean) {
+                                        updateUiAfterSave();
+                                    }
+                                }));
+                    } else {
+                        ExpensesBO expensesBO = new ExpensesBO();
+                        expensesBO.setTid(bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
+                                .now(SDUtil.DATE_TIME_ID));
+                        expensesBO.setTypeId(exp_type);
+                        expensesBO.setRefId(exp_type + "" + SDUtil
+                                .now(SDUtil.DATE_TIME_ID));
+                        expensesBO.setAmount(amountValue);
+                        expensesBO.setImageList(imagesList);
+                        new CompositeDisposable().add(expenseSheetHelper.saveAllData(expensesBO, dateValue)
+                                .subscribeOn(appSchedulerProvider.io())
+                                .observeOn(appSchedulerProvider.ui())
+                                .subscribe(new Consumer<Boolean>() {
+                                    @Override
+                                    public void accept(Boolean aBoolean) {
+                                        updateUiAfterSave();
+                                    }
+                                }));
+                    }
                 }
             }
         });
 
 
+    }
+
+    private void updateUiAfterSave() {
+        progressDialogue.dismiss();
+
+        Toast.makeText(mContext,
+                getResources().getString(R.string.saved_successfully),
+                Toast.LENGTH_SHORT).show();
+        imagesList.clear();
+        sp_expenses.setSelection(0);
+        et_amount.setText("");
+        tvImgCount.setText("");
+
+        if (tabLayout.getSelectedTabPosition() == 0) {
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager()
+                    .beginTransaction();
+            transaction.replace(R.id.fragment_exp_type, new DailyExpenseFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
     }
 
     private void showCalendar() {
@@ -333,77 +397,13 @@ public class ExpenseFragment extends IvyBaseFragment {
 
     private void checkHeader() {
         Tid = expenseSheetHelper.checkExpenseHeader(et_exp_date.getText().toString());
-        if (Tid.length() == 0)
-            isHeaderExists = false;
-        else
-            isHeaderExists = true;
+        isHeaderExists = Tid.length() != 0;
     }
 
-    class SaveAsyncTask extends AsyncTask<String, Integer, Boolean> {
-        private ProgressDialog progressDialogue;
 
-        @Override
-        protected Boolean doInBackground(String... arg0) {
-            try {
-                if (isHeaderExists) {
-                    double totalAmount;
-                    totalAmount = expenseSheetHelper.getExpenseTotal(Tid, dateValue) + SDUtil.convertToDouble(amountValue);
-                    expenseSheetHelper.updateHeaderInsert(Tid, totalAmount, amountValue, exp_type, imagesList, exp_type + "" + SDUtil
-                            .now(SDUtil.DATE_TIME_ID));
-                } else {
-                    ExpensesBO expensesBO = new ExpensesBO();
-                    expensesBO.setTid(bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
-                            .now(SDUtil.DATE_TIME_ID));
-                    expensesBO.setTypeId(exp_type);
-                    expensesBO.setRefId(exp_type + "" + SDUtil
-                            .now(SDUtil.DATE_TIME_ID));
-                    expensesBO.setAmount(amountValue);
-                    expensesBO.setImageList(imagesList);
-                    expenseSheetHelper.saveAllData(expensesBO, dateValue);
-                }
-
-                return Boolean.TRUE;
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-
-        }
-
-        protected void onPreExecute() {
-            progressDialogue = ProgressDialog.show(mContext,
-                    DataMembers.SD, getResources().getString(R.string.saving),
-                    true, false);
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-
-            progressDialogue.dismiss();
-
-            Toast.makeText(mContext,
-                    getResources().getString(R.string.saved_successfully),
-                    Toast.LENGTH_SHORT).show();
-            imagesList.clear();
-            sp_expenses.setSelection(0);
-            et_amount.setText("");
-            tvImgCount.setText("");
-
-            if (tabLayout.getSelectedTabPosition() == 0) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-                        .beginTransaction();
-                transaction.replace(R.id.fragment_exp_type, new DailyExpenseFragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-
-
-        }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        expenseSheetHelper.clearInstance();
     }
-
 }

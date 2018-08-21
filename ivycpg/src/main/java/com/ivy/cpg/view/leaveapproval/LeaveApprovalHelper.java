@@ -13,6 +13,9 @@ import com.ivy.sd.png.util.DataMembers;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 public class LeaveApprovalHelper {
 
@@ -24,15 +27,19 @@ public class LeaveApprovalHelper {
     String mLeaveApproval = "LeaveApprovalDetails";
 
     public ArrayList<LeaveApprovalBO> getLeavePending() {
+        if(leavePending==null)
+            return new ArrayList<>();
         return leavePending;
     }
 
     public ArrayList<LeaveApprovalBO> getLeaveApproved() {
+        if(leaveApproved==null)
+            return new ArrayList<>();
         return leaveApproved;
     }
 
 
-    protected LeaveApprovalHelper(Context context) {
+    private LeaveApprovalHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context.getApplicationContext();
     }
@@ -43,109 +50,115 @@ public class LeaveApprovalHelper {
         }
         return instance;
     }
+    public void clearInstance() {
+        instance = null;
+    }
 
-    public void loadLeaveData() {
-        try {
+    public Single<Boolean> updateLeaves(){
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    saveStatusTransaction(leavePending);
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            String sql;
-            Cursor c;
-
-
-            leavePending = new ArrayList();
-            leaveApproved = new ArrayList();
-
-            sql = new String("select distinct LR.userid,LR.refid,LR.fromdate,LR.todate,LR.status,SM.Listname,SM1.Listname,UM.username from Leaverequestdetails LR "
-                    + "inner join StandardListMaster SM1 on SM1.Listid= LR.reasonid "
-                    + "inner join StandardListMaster SM on SM.ListCode = LR.status "
-                    + "inner join UserMaster UM on UM.userid = LR.userid "
-                    + "AND LR.fromdate >= " + QT(getTodayDate()));
-            c = db.selectSQL(sql);
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.createDataBase();
+                    db.openDataBase();
+                    String sql;
+                    Cursor c;
 
 
-            sql = null;
-            if (c != null) {
-                while (c.moveToNext()) {
-                    LeaveApprovalBO leveas = new LeaveApprovalBO();
-                    leveas.setUserId(c.getInt(0));
-                    leveas.setRefId(c.getInt(1));
-                    leveas.setFromDate(c.getString(2));
-                    leveas.setToDate(c.getString(3));
-                    leveas.setStatusCode(c.getString(4));
-                    leveas.setStatus(c.getString(5));
-                    leveas.setReason(c.getString(6));
-                    leveas.setUsername(c.getString(7));
-                    leveas.setChanged(false);
-                    leveas.setSelected(false);
+                    leavePending = new ArrayList<>();
+                    leaveApproved = new ArrayList<>();
 
-                    leavePending.add(leveas);
+                    sql = new String("select distinct LR.userid,LR.refid,LR.fromdate,LR.todate,LR.status,SM.Listname,SM1.Listname,UM.username from Leaverequestdetails LR "
+                            + "inner join StandardListMaster SM1 on SM1.Listid= LR.reasonid "
+                            + "inner join StandardListMaster SM on SM.ListCode = LR.status "
+                            + "inner join UserMaster UM on UM.userid = LR.userid "
+                            + "AND LR.fromdate >= " + QT(getTodayDate()));
+                    c = db.selectSQL(sql);
 
 
-                }
-            }
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            LeaveApprovalBO leveas = new LeaveApprovalBO();
+                            leveas.setUserId(c.getInt(0));
+                            leveas.setRefId(c.getInt(1));
+                            leveas.setFromDate(c.getString(2));
+                            leveas.setToDate(c.getString(3));
+                            leveas.setStatusCode(c.getString(4));
+                            leveas.setStatus(c.getString(5));
+                            leveas.setReason(c.getString(6));
+                            leveas.setUsername(c.getString(7));
+                            leveas.setChanged(false);
+                            leveas.setSelected(false);
 
-            c.close();
-            c = null;
-
-            sql = new String("select distinct LR.userid,LR.refid,LR.fromdate,LR.todate,LR.status,SM.Listname,SM1.Listname,UM.username from Leaverequestdetails LR "
-                    + "inner join StandardListMaster SM1 on SM1.Listid= LR.reasonid "
-                    + "inner join StandardListMaster SM on SM.ListCode = LR.status "
-                    + "inner join UserMaster UM on UM.userid = LR.userid "
-                    + "AND LR.fromdate < " + QT(getTodayDate()));
-            c = db.selectSQL(sql);
+                            leavePending.add(leveas);
 
 
-            sql = null;
-            if (c != null) {
-                while (c.moveToNext()) {
-                    LeaveApprovalBO leveas = new LeaveApprovalBO();
-                    leveas.setUserId(c.getInt(0));
-                    leveas.setRefId(c.getInt(1));
-                    leveas.setFromDate(c.getString(2));
-                    leveas.setToDate(c.getString(3));
-                    leveas.setStatusCode(c.getString(4));
-                    leveas.setStatus(c.getString(5));
-                    leveas.setReason(c.getString(6));
-                    leveas.setUsername(c.getString(7));
-                    leveas.setChanged(false);
-                    leveas.setSelected(false);
-
-                    leaveApproved.add(leveas);
-
-                }
-            }
-
-            c.close();
-            c = null;
-
-            //data from transaction table
-
-            sql = new String(
-                    "select LA.refid,LA.status,SM.Listname from LeaveApprovalDetails LA " +
-                            "inner join StandardListMaster SM on SM.ListCode = LA.status");
-            c = db.selectSQL(sql);
-            sql = null;
-            if (c != null) {
-                while (c.moveToNext()) {
-                    for (int i = 0; i < leavePending.size(); i++) {
-                        if (c.getInt(0) == leavePending.get(i).getRefId()) {
-                            leavePending.get(i).setStatusCode(c.getString(1));
-                            leavePending.get(i).setStatus(c.getString(2));
                         }
-
                     }
+
+                    c.close();
+
+                    sql = new String("select distinct LR.userid,LR.refid,LR.fromdate,LR.todate,LR.status,SM.Listname,SM1.Listname,UM.username from Leaverequestdetails LR "
+                            + "inner join StandardListMaster SM1 on SM1.Listid= LR.reasonid "
+                            + "inner join StandardListMaster SM on SM.ListCode = LR.status "
+                            + "inner join UserMaster UM on UM.userid = LR.userid "
+                            + "AND LR.fromdate < " + QT(getTodayDate()));
+                    c = db.selectSQL(sql);
+
+
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            LeaveApprovalBO leveas = new LeaveApprovalBO();
+                            leveas.setUserId(c.getInt(0));
+                            leveas.setRefId(c.getInt(1));
+                            leveas.setFromDate(c.getString(2));
+                            leveas.setToDate(c.getString(3));
+                            leveas.setStatusCode(c.getString(4));
+                            leveas.setStatus(c.getString(5));
+                            leveas.setReason(c.getString(6));
+                            leveas.setUsername(c.getString(7));
+                            leveas.setChanged(false);
+                            leveas.setSelected(false);
+
+                            leaveApproved.add(leveas);
+
+                        }
+                    }
+
+                    c.close();
+
+                    //data from transaction table
+
+                    sql = new String(
+                            "select LA.refid,LA.status,SM.Listname from LeaveApprovalDetails LA " +
+                                    "inner join StandardListMaster SM on SM.ListCode = LA.status");
+                    c = db.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            for (int i = 0; i < leavePending.size(); i++) {
+                                if (c.getInt(0) == leavePending.get(i).getRefId()) {
+                                    leavePending.get(i).setStatusCode(c.getString(1));
+                                    leavePending.get(i).setStatus(c.getString(2));
+                                }
+
+                            }
+                        }
+                    }
+
+                    c.close();
+                    db.closeDB();
+
+                } catch (Exception e) {
+                    Commons.printException(e);
                 }
+
+                return Boolean.TRUE;
             }
-
-            c.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
+        });
     }
 
     public void saveStatusTransaction(ArrayList<LeaveApprovalBO> leaves) {

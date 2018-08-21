@@ -16,9 +16,15 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
+/**
+ * @author mansoor
+ * To Show Current Expense for the month
+ * data from ExpenseMTDDetail table date occurs this month
+ */
 
 public class CurrentMonthExpenseFragment extends IvyBaseFragment {
 
@@ -40,8 +46,8 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
         list.setAdapter(new MyAdapter(expenseSheetHelper.getCurrentMonthExpense()));
         tvTotalAmount.setText(sumExpenses(expenseSheetHelper.getCurrentMonthExpense()));
 
-        ((TextView) view.findViewById(R.id.titleTotalamt)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.titleTotalamt)).setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        tvTotalAmount.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         return view;
     }
@@ -94,7 +100,7 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
 
-                convertView = inflater.inflate(R.layout.row_expense_sheet, parent,false);
+                convertView = inflater.inflate(R.layout.row_expense_sheet, parent, false);
 
                 holder.tvDate = convertView.findViewById(R.id.tv_datevalue);
                 holder.tvExpType = convertView.findViewById(R.id.tv_expTypeValue);

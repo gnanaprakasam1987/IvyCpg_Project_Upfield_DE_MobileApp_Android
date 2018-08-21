@@ -1,14 +1,14 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.nonfield;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,14 +23,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.NonFieldBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -46,16 +48,13 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private ListView lvList;
     TextView no_data_txt;
-    private ActionBar actionBar;
     ArrayList<NonFieldBO> nonFieldList = new ArrayList<>();
     CardView ll_title;
     MyAdapter mSchedule;
-    private AlertDialog objDialog = null;
-    private boolean hide_selectuser_icon = false;
     private ArrayList<StandardListBO> childList;
-    private ArrayAdapter<String> mChildUserNameAdapter;
     private int mSelectedIdIndex = -1;
     private String childUserName = "";
+    private NonFieldHelper nonFieldHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,42 +63,29 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        nonFieldHelper = NonFieldHelper.getInstance(getActivity());
         initializeItem();
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-   /*     if (toolbar != null) {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-
-            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(null);
-            TextView toolBarTitle = (TextView)view.findViewById(R.id.tv_toolbar_title);
-            toolBarTitle.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-            toolBarTitle.setText(bmodel.configurationMasterHelper.getTradecoveragetitle());
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_navigation_drawer);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayUseLogoEnabled(true);
-        }
-*/
         return view;
     }
 
     private void initializeItem() {
 
 
-        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setIcon(null);
             actionBar.setTitle(null);
             actionBar.setElevation(0);
-            //  actionBar.setStackedBackgroundDrawable((new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.toolbar_ret_bg))));
         }
 
-        setScreenTitle(bmodel.configurationMasterHelper.getTradecoveragetitle());
+        Bundle bundle = getArguments();
+        if (bundle == null)
+            bundle = getActivity().getIntent().getExtras();
+
+        setScreenTitle(bundle.getString("screentitle"));
+
     }
 
     @Override
@@ -113,8 +99,8 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         super.onStart();
 
         if (getView() != null) {
-            lvList = (ListView) getView().findViewById(R.id.listview);
-            no_data_txt = (TextView) getView().findViewById(R.id.no_data_txt);
+            lvList = getView().findViewById(R.id.listview);
+            no_data_txt = getView().findViewById(R.id.no_data_txt);
 
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(no_data_txt.getTag()) != null)
@@ -123,7 +109,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                 Commons.printException(e);
             }
 
-            ll_title = (CardView) getView().findViewById(R.id.card_title);
+            ll_title = getView().findViewById(R.id.card_title);
         }
 
         loadNonFieldDetails();
@@ -161,13 +147,11 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
 
             return true;
         } else if (i1 == R.id.menu_select) {
-            //bmodel.mAttendanceHelper.saveNonFieldWorkTwoDetails(nonFieldTwoBos);
-
             //select user
             showUserDialog();
             return true;
         } else if (i1 == R.id.menu_delete) {
-            if (bmodel.mAttendanceHelper.hasDelete())
+            if (nonFieldHelper.hasDelete())
                 new DeleteSelectedList().execute();
             else
                 Toast.makeText(getActivity(),
@@ -179,18 +163,16 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
     }
 
     private void showUserDialog() {
-        childList = bmodel.mAttendanceHelper.loadChildUserList(getActivity().getApplicationContext());
+        childList = AttendanceHelper.getInstance(getActivity()).loadChildUserList(getActivity().getApplicationContext());
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();
             } else if (childList.size() == 1) {
-                hide_selectuser_icon = true;
                 mSelectedIdIndex = item;
                 bmodel.setSelectedUserId(childList.get(0).getChildUserId());
                 loadListData();
             }
         } else {
-            hide_selectuser_icon = true;
             bmodel.setSelectedUserId(bmodel.userMasterHelper.getUserMasterBO().getUserid());
             loadListData();
         }
@@ -198,7 +180,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
     }
 
     private void showDialog() {
-        mChildUserNameAdapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<String> mChildUserNameAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
 
         for (StandardListBO temp : childList)
@@ -217,19 +199,18 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                         childUserName = childList.get(item).getChildUserName();
                         setScreenTitle(bmodel.configurationMasterHelper.getTradecoveragetitle() + " (" +
                                 childUserName + ")");
-                        hide_selectuser_icon = false;
                         loadListData();
                         dialog.dismiss();
                     }
                 });
 
-        objDialog = bmodel.applyAlertDialogTheme(builder);
+        AlertDialog objDialog = bmodel.applyAlertDialogTheme(builder);
         objDialog.setCancelable(false);
     }
 
     private void loadListData() {
-        bmodel.mAttendanceHelper.downloadNonFieldDetails(getActivity().getApplicationContext());
-        nonFieldList = bmodel.mAttendanceHelper.getNonFieldList();
+        nonFieldHelper.downloadNonFieldDetails(getActivity().getApplicationContext());
+        nonFieldList = nonFieldHelper.getNonFieldList();
 
         //data empty or not
         if (nonFieldList == null || !(nonFieldList.size() > 0)) {
@@ -272,7 +253,8 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public @NonNull
+        View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             final String PENDING = getResources().getString(R.string.pending);
             final String ACCEPTED = "Accepted";
@@ -287,26 +269,26 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                 row = inflater.inflate(R.layout.row_nonfield,
                         nullParent);
 
-                holder.tvFromDatae = (TextView) row
+                holder.tvFromDatae = row
                         .findViewById(R.id.txt_frmDate);
-                holder.tvToDate = (TextView) row
+                holder.tvToDate = row
                         .findViewById(R.id.txt_toDate);
-                holder.tvSession = (TextView) row
+                holder.tvSession = row
                         .findViewById(R.id.txt_session);
-                holder.tvReason = (TextView) row
+                holder.tvReason = row
                         .findViewById(R.id.txt_reason);
-                holder.tvStatus = (TextView) row
+                holder.tvStatus = row
                         .findViewById(R.id.txt_descrp);
 
-                holder.deleteCB = (CheckBox) row
+                holder.deleteCB = row
                         .findViewById(R.id.chk_delete);
-                holder.tvTimeSpent = (TextView) row.findViewById(R.id.txt_timespent);
-                holder.tvUserName = (TextView) row.findViewById(R.id.tvusername);
-                holder.tvMonthName = (TextView) row.findViewById(R.id.txt_monthName);
-                holder.monthHeader = (LinearLayout) row.findViewById(R.id.month_header);
-                holder.topLine = (ImageView) row.findViewById(R.id.top_line);
+                holder.tvTimeSpent = row.findViewById(R.id.txt_timespent);
+                holder.tvUserName = row.findViewById(R.id.tvusername);
+                holder.tvMonthName = row.findViewById(R.id.txt_monthName);
+                holder.monthHeader = row.findViewById(R.id.month_header);
+                holder.topLine = row.findViewById(R.id.top_line);
 
-                holder.tvUserName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.tvUserName.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
                 if (bmodel.configurationMasterHelper.IS_SHOW_DELETE_OPTION)
                     holder.deleteCB.setVisibility(View.VISIBLE);
@@ -333,7 +315,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                     ConfigurationMasterHelper.outDateFormat));
             holder.tvToDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.nonFieldBO.getToDate(),
                     ConfigurationMasterHelper.outDateFormat));
-            holder.tvSession.setText(bmodel.mAttendanceHelper
+            holder.tvSession.setText(nonFieldHelper
                     .getSessionBOBySessionID(holder.nonFieldBO.getsessionID()));
 
             if (bmodel.configurationMasterHelper.IS_SHOW_DELETE_OPTION) {
@@ -344,12 +326,12 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                 }
             }
 
-            if (bmodel.mAttendanceHelper.getReasonBOByReasonID(holder.nonFieldBO.getReasonID()) != null)
-                if ("LEAVE".equalsIgnoreCase(bmodel.mAttendanceHelper.getReasonBOByReasonID(holder.nonFieldBO.getReasonID())))
-                    holder.tvReason.setText(bmodel.mAttendanceHelper.
+            if (nonFieldHelper.getReasonBOByReasonID(holder.nonFieldBO.getReasonID()) != null)
+                if ("LEAVE".equalsIgnoreCase(nonFieldHelper.getReasonBOByReasonID(holder.nonFieldBO.getReasonID())))
+                    holder.tvReason.setText(nonFieldHelper.
                             getLeaveTypeByID(holder.nonFieldBO.getLeaveLovId()));
                 else
-                    holder.tvReason.setText(bmodel.mAttendanceHelper
+                    holder.tvReason.setText(nonFieldHelper
                             .getReasonBOByReasonID(holder.nonFieldBO.getReasonID()));
 
             if ("R".equalsIgnoreCase(holder.nonFieldBO.getStatus())) {
@@ -362,8 +344,8 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                 holder.tvStatus.setText(REJECTED);
             }
 
-            if (bmodel.mAttendanceHelper.getReasonBOByReasonID(holder.nonFieldBO.getReasonID()) != null)
-                if ("TRAVELTIME".equalsIgnoreCase(bmodel.mAttendanceHelper.getReasonBOByReasonID(holder.nonFieldBO.getReasonID()))) {
+            if (nonFieldHelper.getReasonBOByReasonID(holder.nonFieldBO.getReasonID()) != null)
+                if ("TRAVELTIME".equalsIgnoreCase(nonFieldHelper.getReasonBOByReasonID(holder.nonFieldBO.getReasonID()))) {
                     holder.tvTimeSpent.setText(holder.nonFieldBO.getTimeSpent());
                     holder.tvTimeSpent.setVisibility(View.VISIBLE);
                 } else {
@@ -379,7 +361,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
 
             if (holder.nonFieldBO.getMonthName().length() > 1) {
                 holder.monthHeader.setVisibility(View.VISIBLE);
-                String month_name = bmodel.mAttendanceHelper.changemonthName(holder.nonFieldBO.getMonthName());
+                String month_name = nonFieldHelper.changemonthName(holder.nonFieldBO.getMonthName());
                 holder.tvMonthName.setText(month_name);
                 if (!month_name.equalsIgnoreCase("THIS MONTH")) {
                     holder.topLine.setVisibility(View.VISIBLE);
@@ -405,7 +387,6 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         TextView tvTimeSpent;
         TextView tvMonthName;
         LinearLayout monthHeader;
-        LinearLayout llrow;
         CheckBox deleteCB;
         ImageView topLine;
         TextView tvUserName;
@@ -418,7 +399,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.mAttendanceHelper.deleteNonfield(getActivity().getApplicationContext());
+                nonFieldHelper.deleteNonfield(getActivity().getApplicationContext());
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);

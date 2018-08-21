@@ -41,7 +41,7 @@ import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CalenderBO;
-import com.ivy.sd.png.bo.NonFieldBO;
+import com.ivy.cpg.view.nonfield.NonFieldBO;
 import com.ivy.sd.png.bo.OfflineDateWisePlanBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;

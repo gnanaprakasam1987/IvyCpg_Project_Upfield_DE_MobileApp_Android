@@ -17,12 +17,12 @@ import com.ivy.sd.png.bo.LeaveApprovalBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
 public class HistoryLeavesFragment extends IvyBaseFragment {
 
-    private BusinessModel bmodel;
     private ListView lvLeavesList;
 
 
@@ -33,8 +33,6 @@ public class HistoryLeavesFragment extends IvyBaseFragment {
         View view = inflater.inflate(R.layout.fragment_leave_history,
                 container, false);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
 
         lvLeavesList = view.findViewById(R.id.lv_leaves_list);
         LinearLayout llFooter = view.findViewById(R.id.lv_footer);
@@ -99,14 +97,13 @@ public class HistoryLeavesFragment extends IvyBaseFragment {
                 holder.tvStatus =  convertView.findViewById(R.id.tv_status);
                 holder.tv_status_title =  convertView.findViewById(R.id.tv_status_title);
 
-
-                holder.tvUsername.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.tvLeavePeriod.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tvLeaveType.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tvStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_leaveperiod_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_leavetype_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_status_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tvUsername.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+                holder.tvLeavePeriod.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tvLeaveType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_leaveperiod_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_leavetype_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_status_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
 
                 holder.tvUsername.setText(holder.leaveApprovalBO.getUsername());
                 if (holder.leaveApprovalBO.getFromDate().equals(holder.leaveApprovalBO.getToDate()))
