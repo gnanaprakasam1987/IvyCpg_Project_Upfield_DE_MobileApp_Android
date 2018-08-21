@@ -153,7 +153,8 @@ public class ProfileEditFragmentNew extends BaseFragment
     private ArrayList<NewOutletAttributeBO> attributeHeaderList = null;
     private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap = null;
     private HashMap<String, ArrayList<Integer>> attributeIndexMap = null;
-    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList = new HashMap<>();
+    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList=new HashMap<>();
+
     private ArrayList<Integer> attributeIndexList = null;
 
     private int locid = 0;
@@ -610,12 +611,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList() {
-        if (selectedAttribList != null && !selectedAttribList.isEmpty()) {
-            return selectedAttribList;
-        } else {
-            selectedAttribList = new HashMap<>();
-            return selectedAttribList;
-        }
+       return selectedAttribList;
     }
 
     @Override
@@ -1786,8 +1782,8 @@ public class ProfileEditFragmentNew extends BaseFragment
                             spinner = new MaterialSpinner(getActivity());
 
                             attrbList = new ArrayList<>();
-                            attrbList.add(0, new NewOutletAttributeBO(-1, getActivity().getResources()
-                                    .getString(R.string.select_str) + " " + getActivity().getResources()
+                            attrbList.add(0, new NewOutletAttributeBO(-1,
+                                    getActivity().getResources().getString(R.string.select_str) + " " + getActivity().getResources()
                                     .getString(R.string.attribute)));
                             attrbList.addAll(profileEditPresenter.getAttributeMapList(attribName));
 
@@ -1994,6 +1990,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         listHashMap = new HashMap<>();
         attributeIndexMap = new HashMap<>();
         selectedAttribList = new HashMap<>();
+
 
         ArrayList<ArrayList<NewOutletAttributeBO>> attributeGroupedList;
         ArrayList<NewOutletAttributeBO> childList = profileEditPresenter.getAttributeListChild();

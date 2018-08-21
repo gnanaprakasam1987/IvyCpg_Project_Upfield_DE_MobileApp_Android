@@ -964,6 +964,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
             @Override
             public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+
                 return Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {

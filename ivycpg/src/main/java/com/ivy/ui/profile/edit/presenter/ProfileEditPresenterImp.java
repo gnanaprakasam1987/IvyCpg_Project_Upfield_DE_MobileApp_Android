@@ -205,8 +205,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     public Boolean apply(
                             ArrayList<Integer> commonAttributeList,
                             ChannelWiseAttributeList channelWiseAttributeModel,
-                            ArrayList<NewOutletAttributeBO> mAttributeBOArrayList,
-                            ArrayList<NewOutletAttributeBO> editAttributeList,
+                            ArrayList<NewOutletAttributeBO> attributeListForRetailer,
+                            ArrayList<NewOutletAttributeBO> editedAttributeList,
                             ArrayList<NewOutletAttributeBO> attributeBOArrayListChild) throws Exception {
 
                         mCommonAttributeList = commonAttributeList;
@@ -214,8 +214,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         mAttributeListByLocationID = channelWiseAttributeModel.getAttributeListByLocationID();
                         mAttributeBOListByLocationID = channelWiseAttributeModel.getAttributeBOListByLocationID();
                         //Below both function just update in retailer MasterBo for future use
-                        retailerMasterBO.setAttributeBOArrayList(mAttributeBOArrayList);
-                        mEditAttributeList = editAttributeList;
+                        retailerMasterBO.setAttributeBOArrayList(attributeListForRetailer);
+                        mEditAttributeList = editedAttributeList;
                         mAttributeChildList = attributeBOArrayListChild;
                         return true;
                     }
@@ -354,7 +354,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     public ArrayList<NewOutletAttributeBO> getRetailerAttribute() {
-
         if (attributeList == null) {
             attributeList = new ArrayList<>();
         }
@@ -1047,84 +1046,88 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     private void updateRetailerMasterAttributeList() {
 
-        ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
         isData = true;
-        ArrayList<NewOutletAttributeBO> attributeList = updateRetailerMasterAttribute(getRetailerAttribute());
-        ArrayList<NewOutletAttributeBO> attList = updateRetailerMasterAttribute(retailerMasterBO.getAttributeBOArrayList());
 
-        NewOutletAttributeBO tempBO1;
-        NewOutletAttributeBO tempBO2 = null;
+        if(getIvyView().getSelectedAttribList().size()!=0) {
+            ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
+            ArrayList<NewOutletAttributeBO> attributeList = updateRetailerMasterAttribute(getRetailerAttribute());
+            ArrayList<NewOutletAttributeBO> attList = updateRetailerMasterAttribute(retailerMasterBO.getAttributeBOArrayList());
 
-        if (attributeList.size() > 0) {
-            for (int i = 0; i < attributeList.size(); i++) {
-                tempBO1 = attributeList.get(i);
-                if (attList.size() > 0) {
-                    boolean isDiffParent = true;
-                    ArrayList<Integer> porcessedAttributes = new ArrayList<>();
-                    for (int j = 0; j < attList.size(); j++) {
-                        tempBO2 = attList.get(j);
-                        if (tempBO1.getParentId() == tempBO2.getParentId()) {
-                            if (tempBO1.getAttrId() != tempBO2.getAttrId()) {
-                                tempBO1.setStatus("N");
-                                tempList.add(tempBO1);
-                                tempBO2.setStatus("D");
-                                tempList.add(tempBO2);
-                                isDiffParent = false;
-                                porcessedAttributes.add(tempBO2.getAttrId());
+            NewOutletAttributeBO tempBO1;
+            NewOutletAttributeBO tempBO2 = null;
+
+            if (attributeList.size() > 0) {
+                for (int i = 0; i < attributeList.size(); i++) {
+                    tempBO1 = attributeList.get(i);
+                    if (attList.size() > 0) {
+                        boolean isDiffParent = true;
+                        ArrayList<Integer> porcessedAttributes = new ArrayList<>();
+                        for (int j = 0; j < attList.size(); j++) {
+                            tempBO2 = attList.get(j);
+                            if (tempBO1.getParentId() == tempBO2.getParentId()) {
+                                if (tempBO1.getAttrId() != tempBO2.getAttrId()) {
+                                    tempBO1.setStatus("N");
+                                    tempList.add(tempBO1);
+                                    tempBO2.setStatus("D");
+                                    tempList.add(tempBO2);
+                                    isDiffParent = false;
+                                    porcessedAttributes.add(tempBO2.getAttrId());
+                                }
+                            }
+
+                        }
+                        /**
+                         * add attribute list while change parent id
+                         * isDiffParent
+                         * true - parentId is mismatched
+                         * false - parentId is matched
+                         * add previous attribute data
+                         * which is not available in processedAttribute list
+                         *
+                         */
+                        if (isDiffParent) {
+                            tempBO1.setStatus("N");
+                            tempList.add(tempBO1);
+
+                            for (NewOutletAttributeBO bo : attList) {
+                                if (!porcessedAttributes.contains(bo.getAttrId())) {
+                                    assert tempBO2 != null;
+                                    tempBO2.setStatus("D");
+                                    tempList.add(tempBO2);
+                                }
                             }
                         }
 
-                    }
-                    /**
-                     * add attribute list while change parent id
-                     * isDiffParent
-                     * true - parentId is mismatched
-                     * false - parentId is matched
-                     * add previous attribute data
-                     * which is not available in processedAttribute list
-                     *
-                     */
-                    if (isDiffParent) {
+                    } else {
                         tempBO1.setStatus("N");
                         tempList.add(tempBO1);
-
-                        for (NewOutletAttributeBO bo : attList) {
-                            if (!porcessedAttributes.contains(bo.getAttrId())) {
-                                assert tempBO2 != null;
-                                tempBO2.setStatus("D");
-                                tempList.add(tempBO2);
-                            }
-                        }
                     }
-
-                } else {
-                    tempBO1.setStatus("N");
-                    tempList.add(tempBO1);
+                }
+            } else {
+                for (int j = 0; j < attList.size(); j++) {
+                    tempBO2 = attList.get(j);
+                    tempBO2.setStatus("D");
+                    tempList.add(tempBO2);
                 }
             }
-        } else {
-            for (int j = 0; j < attList.size(); j++) {
-                tempBO2 = attList.get(j);
-                tempBO2.setStatus("D");
-                tempList.add(tempBO2);
-            }
+            getCompositeDisposable().add(mProfileDataManager.updateRetailerMasterAttribute(tid, retailerMasterBO.getRetailerID(),tempList)
+                    .subscribeOn(getSchedulerProvider().io())
+                    .observeOn(getSchedulerProvider().ui())
+                    .subscribe(new Consumer<Boolean>() {
+                                   @Override
+                                   public void accept(Boolean response) throws Exception {
+                                       isData = response;
+                                   }
+                               }, new Consumer<Throwable>() {
+                                   @Override
+                                   public void accept(Throwable throwable) throws Exception {
+                                       getIvyView().hideLoading();
+                                       Commons.print(throwable.getMessage());
+                                   }
+                               }
+                    ));
         }
-        getCompositeDisposable().add(mProfileDataManager.updateRetailerMasterAttribute(tid, retailerMasterBO.getRetailerID(),tempList)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
-                               @Override
-                               public void accept(Boolean response) throws Exception {
-                                   isData = response;
-                               }
-                           }, new Consumer<Throwable>() {
-                               @Override
-                               public void accept(Throwable throwable) throws Exception {
-                                   getIvyView().hideLoading();
-                                   Commons.print(throwable.getMessage());
-                               }
-                           }
-                ));
+
     }
 
 
@@ -1960,9 +1963,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 }
             } else if (configCode.equals(ProfileConstant.ATTRIBUTE)
                     && profileConfig.get(i).getModule_Order() == 1) {
-
-                validateAttribute();
-
+                if(getIvyView().getSelectedAttribList().size()!=0){
+                    validateAttribute();
+                }
+                break;
             } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.EMAIL)
                     && profileConfig.get(i).getModule_Order() == 1
                     && getIvyView().getDynamicEditTextValues(i).length() != 0) {
@@ -2393,45 +2397,26 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
 
+
     private void validateAttribute() {
 
-        ArrayList<NewOutletAttributeBO> selectedAttributeLevel = new ArrayList<>();
-        boolean isAdded = true;
-        try {
-            // to check all common mandatory attributes selected
-            for (NewOutletAttributeBO attributeBO : getAttributeParentList()) {
+            boolean isAdded=true;
+            ArrayList<NewOutletAttributeBO> selectedAttributeLevel = new ArrayList<>();
 
-                if (getCommonAttributeList().contains(attributeBO.getAttrId())) {
-                    NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBO.getAttrId());
-                    if (attributeBO.getIsMandatory() == 1) {
-                        if (tempBO != null && tempBO.getAttrId() != -1) {
-                            selectedAttributeLevel.add(tempBO);
-                        } else {
-                            isAdded = false;
-                            String errorMessage = attributeBO.getAttrName() + " is Mandatory";
-                            getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
-                            break;
-                        }
-                    } else {
-                        if (tempBO != null && tempBO.getAttrId() != -1)
-                            selectedAttributeLevel.add(tempBO);
-                    }
-                }
-            }
-            //to check all mandatory channel's attributes selected
-            if (isChannelAvailable() && isAdded) {
+            try {
+                // to check all common mandatory attributes selected
+                for (NewOutletAttributeBO attributeBO : getAttributeParentList()) {
 
-                try {
-                    for (NewOutletAttributeBO attributeBo : getAttributeBOListByLocationID().get(getIvyView().subChannelGetSelectedItem())) {
+                    if (getCommonAttributeList().contains(attributeBO.getAttrId())) {
 
-                        NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBo.getAttrId());
+                        NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBO.getAttrId());
 
-                        if (attributeBo.getIsMandatory() == 1) {
+                        if (attributeBO.getIsMandatory() == 1) {
                             if (tempBO != null && tempBO.getAttrId() != -1) {
                                 selectedAttributeLevel.add(tempBO);
                             } else {
                                 isAdded = false;
-                                String errorMessage = attributeBo.getAttrName() + " is Mandatory";
+                                String errorMessage = attributeBO.getAttrName() + " is Mandatory";
                                 getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
                                 break;
                             }
@@ -2440,19 +2425,41 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                 selectedAttributeLevel.add(tempBO);
                         }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+                //to check all mandatory channel's attributes selected
+                if (isChannelAvailable() && isAdded) {
+
+                    try {
+                        for (NewOutletAttributeBO attributeBo : getAttributeBOListByLocationID().get(getIvyView().subChannelGetSelectedItem())) {
+
+                            NewOutletAttributeBO tempBO = getIvyView().getSelectedAttribList().get(attributeBo.getAttrId());
+
+                            if (attributeBo.getIsMandatory() == 1) {
+                                if (tempBO != null && tempBO.getAttrId() != -1) {
+                                    selectedAttributeLevel.add(tempBO);
+                                } else {
+                                    isAdded = false;
+                                    String errorMessage = attributeBo.getAttrName() + " is Mandatory";
+                                    getIvyView().profileEditShowMessage(R.string.attribute, errorMessage);
+                                    break;
+                                }
+                            } else {
+                                if (tempBO != null && tempBO.getAttrId() != -1)
+                                    selectedAttributeLevel.add(tempBO);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (!isAdded) {
+                    validate = false;
+                }
+                setRetailerAttribute(selectedAttributeLevel);
+            } catch (Exception e) {
+                getIvyView().hideLoading();
+                Commons.printException(e);
             }
-            if (!isAdded) {
-                validate = false;
-                //break;
-            }
-            setRetailerAttribute(selectedAttributeLevel);
-        } catch (Exception e) {
-            getIvyView().hideLoading();
-            Commons.printException(e);
-        }
     }
 
 
