@@ -77,20 +77,20 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
 
         BarDataSet set1;
         set1 = new BarDataSet(yVals1, "");
-        set1.setStackLabels(new String[]{"Achieved", "Target"});
+        set1.setStackLabels(new String[]{getResources().getString(R.string.achieved), getResources().getString(R.string.target)});
         set1.setValueFormatter(new PercentageValueFormatter());
         set1.setDrawIcons(false);
         set1.setValueTextColor(Color.WHITE);
         set1.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         set1.setColors(MATERIAL_COLORS);
-        ArrayList<String> mStirngList = new ArrayList<>();
+        ArrayList<String> mStringList = new ArrayList<>();
         for (int i = 0; i < dashBoardList.size(); i++) {
             String text = dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText();
             if (selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))) {
-                mStirngList.add((dashBoardList.get(i).getMonthName() != null && dashBoardList.get(i).getMonthName().length() == 0) ?
+                mStringList.add((dashBoardList.get(i).getMonthName() != null && dashBoardList.get(i).getMonthName().length() == 0) ?
                         text : "(" + dashBoardList.get(i).getMonthName() + ")" + text);
             } else {
-                mStirngList.add(text);
+                mStringList.add(text);
             }
         }
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
@@ -107,7 +107,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         xLabels.setTextSize(10f);
         xLabels.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         xLabels.setGranularity(1f);
-        xLabels.setValueFormatter(new IndexAxisValueFormatter(mStirngList));
+        xLabels.setValueFormatter(new IndexAxisValueFormatter(mStringList));
         xLabels.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis yAxisRight = mbarChart.getAxisRight();
