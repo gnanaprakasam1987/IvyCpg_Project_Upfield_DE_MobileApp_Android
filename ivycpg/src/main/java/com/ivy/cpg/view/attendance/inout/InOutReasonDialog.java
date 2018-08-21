@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.attendance.inout;
+package com.ivy.cpg.view.attendance.inout;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -25,26 +25,24 @@ import com.ivy.sd.png.util.DataMembers;
  */
 public class InOutReasonDialog extends Dialog {
 
-    Spinner reason_spnr;
-    ArrayAdapter<ReasonMaster> dataAdapter;
-    OnDismissListener listener;
-    Context context;
+    private Spinner reason_spnr;
+    private ArrayAdapter<ReasonMaster> dataAdapter;
+    private Context context;
     private OnMyDialogResult Result;
-    private BusinessModel bmodel;
 
     protected InOutReasonDialog(final Context context,OnMyDialogResult mDialogResult) {
         super(context);
         this.context = context;
-        bmodel = (BusinessModel) context.getApplicationContext();
+        BusinessModel bmodel = (BusinessModel) context.getApplicationContext();
 //        bmodel.setContext(context);
         this.Result = mDialogResult;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setContentView(R.layout.in_out_reason_dialog);
 
-        reason_spnr = (Spinner) findViewById(R.id.reason_spnr);
+        reason_spnr =  findViewById(R.id.reason_spnr);
         reason_spnr.setVisibility(View.VISIBLE);
-        dataAdapter = new ArrayAdapter<ReasonMaster>(context,
+        dataAdapter = new ArrayAdapter<>(context,
                 R.layout.spinner_bluetext_layout);
         dataAdapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_reason)));
         loadInOutReason();
@@ -52,15 +50,15 @@ public class InOutReasonDialog extends Dialog {
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
         reason_spnr.setAdapter(dataAdapter);
-        Button btn_ok=(Button) findViewById(R.id.btn_ok);
-        TextView titleBar=(TextView) findViewById(R.id.titleBar);
-        TextView must_sell_message_tv=(TextView) findViewById(R.id.must_sell_message_tv);
+        Button btn_ok= findViewById(R.id.btn_ok);
+        TextView titleBar= findViewById(R.id.titleBar);
+        TextView must_sell_message_tv= findViewById(R.id.must_sell_message_tv);
         btn_ok
                 .setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        Commons.print((ReasonMaster) reason_spnr
+                        Commons.print(reason_spnr
                                 .getSelectedItem()
                                 + " "
                                 + reason_spnr.getSelectedItemPosition());
@@ -78,15 +76,12 @@ public class InOutReasonDialog extends Dialog {
         must_sell_message_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
     }
 
-    public void loadInOutReason() {
+    private void loadInOutReason() {
         try {
             ReasonMaster reason;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            /*Cursor c = db.selectSQL("select reasonid,reasondescription from "
-                    + DataMembers.tbl_ReasonMaster
-                    + " where reasonCategory='ATR'");*/
 
             String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'REASON'"
                     + " AND ParentId = (SELECT ListId FROM StandardListMaster WHERE ListType ='REASON_TYPE' AND ListCode = 'ATR')";

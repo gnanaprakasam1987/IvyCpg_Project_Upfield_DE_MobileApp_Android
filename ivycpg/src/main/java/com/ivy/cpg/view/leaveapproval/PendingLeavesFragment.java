@@ -1,8 +1,7 @@
 package com.ivy.cpg.view.leaveapproval;
 
 
-import android.app.AlertDialog;
-import android.os.AsyncTask;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -20,21 +19,26 @@ import com.ivy.sd.png.bo.LeaveApprovalBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 public class PendingLeavesFragment extends IvyBaseFragment {
 
 
     private BusinessModel bmodel;
-    private String CODE_PENDING = "R", CODE_APPROVED = "S", CODE_REJECTED = "D";
     private ArrayList<LeaveApprovalBO> pendingLeaves;
     private ListView lvLeavesList;
     private LinearLayout llFooter;
     private TextView tv_approve, tv_pending, tv_reject;
     private int selected_count = 0;
     private LeaveApprovalHelper leaveApprovalHelper;
+    private ProgressDialog progressDialogue;
+    private AppSchedulerProvider appSchedulerProvider;
 
 
     @Override
@@ -47,7 +51,7 @@ public class PendingLeavesFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         leaveApprovalHelper = LeaveApprovalHelper.getInstance(getActivity());
-
+        appSchedulerProvider = new AppSchedulerProvider();
         lvLeavesList = view.findViewById(R.id.lv_leaves_list);
         llFooter = view.findViewById(R.id.lv_footer);
         tv_approve = view.findViewById(R.id.tv_approve);
@@ -69,6 +73,8 @@ public class PendingLeavesFragment extends IvyBaseFragment {
 
         pendingLeaves = new ArrayList<>();
 
+        final String CODE_APPROVED = "S", CODE_PENDING = "R", CODE_REJECTED = "D";
+
         for (LeaveApprovalBO leaves : leaveApprovalHelper.getLeavePending()) {
             if (leaves.getStatusCode().equals(CODE_PENDING)) {
                 leaves.setSelected(false);
@@ -86,17 +92,48 @@ public class PendingLeavesFragment extends IvyBaseFragment {
         tv_approve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SaveAsyncTask(CODE_APPROVED).execute();
+                processLeave(CODE_APPROVED);
             }
         });
 
         tv_reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SaveAsyncTask(CODE_REJECTED).execute();
+                processLeave(CODE_REJECTED);
             }
         });
 
+
+    }
+
+    private void processLeave(String status) {
+        progressDialogue = ProgressDialog.show(getActivity(),
+                DataMembers.SD, getResources().getString(R.string.saving),
+                true, false);
+        for (int i = 0; i < pendingLeaves.size(); i++) {
+            if (pendingLeaves.get(i).isSelected()) {
+                for (int j = 0; j < leaveApprovalHelper.getLeavePending().size(); j++) {
+                    if (pendingLeaves.get(i).getRefId() == leaveApprovalHelper.getLeavePending().get(j).getRefId())
+                        leaveApprovalHelper.getLeavePending().get(j).setChanged(true);
+                    leaveApprovalHelper.getLeavePending().get(j).setStatusCode(status);
+                }
+            }
+        }
+        new CompositeDisposable().add(leaveApprovalHelper.updateLeaves()
+                .subscribeOn(appSchedulerProvider.io())
+                .observeOn(appSchedulerProvider.ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) {
+                        progressDialogue.dismiss();
+                        Toast.makeText(
+                                getActivity(),
+                                getResources().getString(
+                                        R.string.saved_successfully),
+                                Toast.LENGTH_SHORT).show();
+                        onStart();
+                    }
+                }));
 
     }
 
@@ -128,23 +165,23 @@ public class PendingLeavesFragment extends IvyBaseFragment {
         public @NonNull
         View getView(final int position, View convertView, @NonNull ViewGroup viewGroup) {
             final LeaveViewHolder holder;
-            LeaveApprovalBO leavesObj =  items.get(position);
+            LeaveApprovalBO leavesObj = items.get(position);
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                convertView =  inflater.inflate(
+                convertView = inflater.inflate(
                         R.layout.row_leave_user_list, viewGroup, false);
 
                 holder = new LeaveViewHolder();
 
-                holder.tvUsername =  convertView.findViewById(R.id.tvusername);
-                holder.tvLeavePeriod =  convertView.findViewById(R.id.tv_leaveperiod);
-                holder.tv_leaveperiod_title =  convertView.findViewById(R.id.tv_leaveperiod_title);
-                holder.tvLeaveType =  convertView.findViewById(R.id.tv_leavetype);
-                holder.tv_leavetype_title =  convertView.findViewById(R.id.tv_leavetype_title);
-                holder.tvStatus =  convertView.findViewById(R.id.tv_status);
-                holder.tv_status_title =  convertView.findViewById(R.id.tv_status_title);
-                holder.ll_userLeaves =  convertView.findViewById(R.id.ll_userLeaves);
-                holder.sel_img =  convertView.findViewById(R.id.sel_img);
+                holder.tvUsername = convertView.findViewById(R.id.tvusername);
+                holder.tvLeavePeriod = convertView.findViewById(R.id.tv_leaveperiod);
+                holder.tv_leaveperiod_title = convertView.findViewById(R.id.tv_leaveperiod_title);
+                holder.tvLeaveType = convertView.findViewById(R.id.tv_leavetype);
+                holder.tv_leavetype_title = convertView.findViewById(R.id.tv_leavetype_title);
+                holder.tvStatus = convertView.findViewById(R.id.tv_status);
+                holder.tv_status_title = convertView.findViewById(R.id.tv_status_title);
+                holder.ll_userLeaves = convertView.findViewById(R.id.ll_userLeaves);
+                holder.sel_img = convertView.findViewById(R.id.sel_img);
 
                 holder.tvUsername.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 holder.tvLeavePeriod.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -210,73 +247,9 @@ public class PendingLeavesFragment extends IvyBaseFragment {
         ImageView sel_img;
     }
 
-    class SaveAsyncTask extends AsyncTask<Void, Integer, Boolean> {
-
-        //	private ProgressDialog progressDialogue;
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-        private String status_code;
-
-        SaveAsyncTask(String status_code) {
-            this.status_code = status_code;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... arg0) {
-
-            for (int i = 0; i < pendingLeaves.size(); i++) {
-                if (pendingLeaves.get(i).isSelected()) {
-                    for (int j = 0; j < leaveApprovalHelper.getLeavePending().size(); j++) {
-                        if (pendingLeaves.get(i).getRefId() == leaveApprovalHelper.getLeavePending().get(j).getRefId())
-                            leaveApprovalHelper.getLeavePending().get(j).setChanged(true);
-                        leaveApprovalHelper.getLeavePending().get(j).setStatusCode(status_code);
-                    }
-                }
-            }
-            try {
-                leaveApprovalHelper.saveStatusTransaction(leaveApprovalHelper.getLeavePending());
-                leaveApprovalHelper.loadLeaveData();
-
-                return Boolean.TRUE;
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-
-        }
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, getResources().getString(R.string.saving));
-            alertDialog = builder.create();
-            alertDialog.show();
-
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            try {
-                if (alertDialog != null)
-                    alertDialog.dismiss();
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-            if (result == Boolean.TRUE) {
-
-                Toast.makeText(
-                        getActivity(),
-                        getResources().getString(
-                                R.string.saved_successfully),
-                        Toast.LENGTH_SHORT).show();
-                onStart();
-
-            }
-
-        }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        leaveApprovalHelper.clearInstance();
     }
 }

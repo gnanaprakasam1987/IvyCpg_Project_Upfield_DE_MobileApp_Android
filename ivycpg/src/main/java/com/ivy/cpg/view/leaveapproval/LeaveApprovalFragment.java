@@ -25,6 +25,10 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.rx.AppSchedulerProvider;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 public class LeaveApprovalFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
@@ -86,7 +90,17 @@ public class LeaveApprovalFragment extends IvyBaseFragment {
             }
         }
 
-        LeaveApprovalHelper.getInstance(getActivity()).loadLeaveData();
+        AppSchedulerProvider appSchedulerProvider = new AppSchedulerProvider();
+        new CompositeDisposable().add(LeaveApprovalHelper.getInstance(getActivity()).updateLeaves()
+                .subscribeOn(appSchedulerProvider.io())
+                .observeOn(appSchedulerProvider.ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) {
+
+                    }
+                }));
+
 
         final ViewPager viewPager = view.findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter

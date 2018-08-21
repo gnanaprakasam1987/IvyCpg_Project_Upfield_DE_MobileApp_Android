@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.nonfield;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -14,7 +14,6 @@ import com.ivy.sd.png.util.Commons;
 
 public class NonFieldActivity extends IvyBaseActivityNoActionBar {
 
-    private Toolbar toolbar;
     public static boolean isSaved;
 
     @Override
@@ -23,7 +22,7 @@ public class NonFieldActivity extends IvyBaseActivityNoActionBar {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nonfield);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         BusinessModel bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -38,7 +37,6 @@ public class NonFieldActivity extends IvyBaseActivityNoActionBar {
         // Set title to actionbar
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle(bmodel.mSelectedActivityName);
             getSupportActionBar().setIcon(ContextCompat.getDrawable(this, R.drawable.icon_new_retailer));
             // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -79,10 +77,7 @@ public class NonFieldActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
-    protected void passData(Bundle instate) {
-        if(instate != null)
-            isSaved = true;
-        else
-            isSaved = false;
+    public void passData(Bundle instate) {
+        isSaved = instate != null;
     }
 }

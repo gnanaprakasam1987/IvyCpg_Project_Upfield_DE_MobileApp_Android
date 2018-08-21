@@ -19,6 +19,12 @@ import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
 
+/**
+ * @author mansoor
+ * To Show Current Expense for the month
+ * data from ExpenseMTDDetail table date occurs this month
+ *
+ */
 
 public class CurrentMonthExpenseFragment extends IvyBaseFragment {
 
