@@ -537,7 +537,7 @@ public class SOSFragment extends IvyBaseFragment implements
             // Change the Brand button Name
             brandFilterText = mFilterText;
             mSelectedFilterId = id;
-            tvSelectedName.setText(mFilterText);
+            tvSelectedName.setText(getResources().getString(R.string.brand));
 
             ArrayList<SOSBO> items = mSFHelper
                     .getSOSList();
@@ -973,7 +973,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                 calculateTotalValues();
                             else
                                 Toast.makeText(getActivity(), getResources().
-                                        getString(R.string.total_value_lesser_actual), Toast.LENGTH_LONG).show();
+                                        getString(R.string.total_value_less_than_actual_value), Toast.LENGTH_LONG).show();
                             calculateTotalValues();
                             if (dialog != null && isValid) {
                                 dialog.dismiss();
@@ -1689,17 +1689,9 @@ public class SOSFragment extends IvyBaseFragment implements
                             sb = holder.etActual.getText().toString();
 
                         if (!"".equals(s)) {
-                            float tot = 0;
                             try {
-                                if (!holder.etTotal.getText().toString().isEmpty())
-                                    tot = SDUtil.convertToFloat((holder.sosBO.getLocations().get(mSelectedLocationIndex).getParentTotal()));
-                                if (tot >= SDUtil.convertToFloat(s.toString()))
                                     holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
-                                else {
-                                    mBModel.showAlert(getResources().
-                                            getString(R.string.actual_value_exceeds_total), 0);
-                                    holder.etActual.setText(holder.sosBO.getLocations().get(mSelectedLocationIndex).getActual());
-                                }
+
                             } catch (Exception e) {
                                 holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(Integer.toString(0));
                                 Commons.printException("" + e);

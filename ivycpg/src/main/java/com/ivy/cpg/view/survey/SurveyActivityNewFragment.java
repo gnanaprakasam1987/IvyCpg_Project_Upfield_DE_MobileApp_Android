@@ -1631,7 +1631,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         getActivity(),
                         getResources()
                                 .getString(
-                                        R.string.answer_take_photo),
+                                        R.string.answer_to_take_photo),
                         Toast.LENGTH_SHORT).show();
             }
         }
