@@ -38,15 +38,15 @@ import java.util.Vector;
 public class DiscountDialog extends Dialog implements OnClickListener {
     private BusinessModel bmodel;
     private Context context;
-    private Button back,saveButton;
+    private Button back, saveButton;
     private TextView totalval, oldTotalValue;
     private ListView lvwplist;
     private ArrayList<ProductMasterBO> mylist;
     private EditText QUANTITY, D1;
-    private String append = "",  d1 = "0";
+    private String append = "", d1 = "0";
     private OrderSummary initAct;
     double sum = 0;
-    private Double result=0.0;
+    private Double result = 0.0;
     private double totalOrderValue;
     OnDismissListener disListner;
     DiscountHelper discountHelper;
@@ -76,7 +76,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
 
         bmodel = (BusinessModel) context.getApplicationContext();
         back = (Button) findViewById(R.id.closeButton);
-        saveButton=(Button)findViewById(R.id.saveButton);
+        saveButton = (Button) findViewById(R.id.saveButton);
         back.setOnClickListener(this);
         saveButton.setOnClickListener(this);
         saveButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
@@ -117,19 +117,18 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             findViewById(R.id.disc_price_title).setVisibility(View.GONE);
 
 
-            ((TextView) findViewById(R.id.u_price_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                        R.id.u_price_title).getTag()) != null)
-                    ((TextView) findViewById(R.id.u_price_title))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(findViewById(
-                                            R.id.u_price_title)
-                                            .getTag()));
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-
+        ((TextView) findViewById(R.id.u_price_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.u_price_title).getTag()) != null)
+                ((TextView) findViewById(R.id.u_price_title))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.u_price_title)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
 
 
         lvwplist = (ListView) findViewById(R.id.list);
@@ -162,7 +161,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         // on/off d1,d2,d3,da
         if (!bmodel.configurationMasterHelper.SHOW_D1) {
             findViewById(R.id.d1title).setVisibility(View.GONE);
-           // findViewById(R.id.d1).setVisibility(View.GONE); //As the SHOW_D1 will be false by default, editText is disabled. But it should.
+            // findViewById(R.id.d1).setVisibility(View.GONE); //As the SHOW_D1 will be false by default, editText is disabled. But it should.
         } else {
             ((TextView) findViewById(R.id.d1title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         }
@@ -172,8 +171,6 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         else {
             ((TextView) findViewById(R.id.datitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         }
-
-
 
 
         if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
@@ -294,13 +291,12 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         if (b == back) {
 
             disListner.onDismiss(this);
-            if(result>0) {
+            if (result > 0) {
 
                 this.initAct.onResume();
-            }
-            else
+            } else
                 discountHelper.clearDiscountQuantity();
-                //this.initAct.onResume();
+            //this.initAct.onResume();
         }
         if (b == saveButton) {
 
@@ -613,7 +609,17 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                         qty.length() - 1) : "0";
 
                                 holder.da.setText(qty);
-                                Toast.makeText(context, context.getResources().getString(R.string.discount_amt_cannot_be_higher_than_price), Toast.LENGTH_SHORT).show();
+                                if (bmodel.configurationMasterHelper.IS_DISCOUNT_PRICE_PER) {
+                                    Toast.makeText(
+                                            context,
+                                            String.format(
+                                                    context.getResources().getString(
+                                                            R.string.discount_amt_cannot_be_higher_than_percentage),
+                                                    bmodel.configurationMasterHelper.DISCOUNT_PRICE_PER + "%"),
+                                            Toast.LENGTH_SHORT).show();
+
+                                } else
+                                    Toast.makeText(context, context.getResources().getString(R.string.discount_amt_cannot_be_higher_than_price), Toast.LENGTH_SHORT).show();
                             }
 
                         } else {
@@ -724,7 +730,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
 
             holder.d1.setText(holder.productObj.getD1() + "");
 
-            result=SDUtil.convertToDouble(""+holder.productObj.getD1());
+            result = SDUtil.convertToDouble("" + holder.productObj.getD1());
             if (holder.productObj.getOuUomid() == 0 || !holder.productObj.isOuterMapped()) {
                 holder.outerQty.setEnabled(false);
             } else {
@@ -808,7 +814,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
 
     public double discountAmountCalc(ProductMasterBO productBO, double amount) {
 
-		/* apply batchwise discount starts */
+        /* apply batchwise discount starts */
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (productBO.getBatchwiseProductCount() > 0) {
@@ -827,8 +833,16 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 * productBO.getOutersize();
 
         productBO.setApplyValue(totalQty * amount);
+        double total = 0;
+        if (bmodel.configurationMasterHelper.IS_DISCOUNT_PRICE_PER) {
+            if (productBO.getApplyValue() > productBO.getDiscount_order_value() * (bmodel.configurationMasterHelper.DISCOUNT_PRICE_PER / 100))
+                total = -1;//to avoid entering greater than given percentage value
+            else
+                total = productBO.getDiscount_order_value() - productBO.getApplyValue();
+        } else {
+            total = productBO.getDiscount_order_value() - productBO.getApplyValue();
+        }
 
-        double total = productBO.getDiscount_order_value() - productBO.getApplyValue();
         updateDiscountedOrderValue();
         return total;
 
@@ -836,7 +850,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
 
     public double discountcalc(ProductMasterBO productBO, double sum) {
 
-		/* apply batchwise discount starts */
+        /* apply batchwise discount starts */
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (productBO.getBatchwiseProductCount() > 0) {
@@ -849,10 +863,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         }
         /* apply batchwise discount ends */
 
-        double line_total_price = (productBO.getOrderedCaseQty() * productBO
-                .getCsrp())
-                + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+        double line_total_price = productBO.getDiscount_order_value();
         productBO.setApplyValue(line_total_price * sum / 100);
 
         double total = productBO.getDiscount_order_value() - productBO.getApplyValue();

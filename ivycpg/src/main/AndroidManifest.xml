@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1320"
-    android:versionName="2.132.0.2337">
+    android:versionName="2.132.0.2484">
 
     <supports-screens
         android:anyDensity="true"
@@ -221,9 +221,7 @@
         <activity
             android:name="com.ivy.sd.png.view.ViewImage"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.PlanningSubScreen"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
@@ -265,9 +263,6 @@
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
-        <activity
-            android:name="com.ivy.sd.png.view.merch.MerchandisingActivity"
-            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity"
             android:screenOrientation="portrait" />
@@ -395,7 +390,7 @@
             android:name="com.ivy.cpg.view.stockcheck.CombinedStockFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity"
+            android:name="com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
@@ -522,12 +517,7 @@
         <activity
             android:name="com.ivy.sd.png.view.DamageStockFragmentActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.VanStockAdjustActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.CurrentStockBatchViewActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.sd.png.view.CaptureSignatureActivity"
             android:screenOrientation="portrait" />
@@ -629,9 +619,6 @@
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name="com.ivy.sd.png.view.LeaveApproval"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.ExpenseActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.WebViewActivity"
@@ -781,16 +768,33 @@
         <activity
             android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.SellerMapViewActivity" />
-        <activity android:name="com.ivy.cpg.view.supervisor.SellerListActivity" />
+
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
+            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.asset.PosmGallery"
+            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.order.scheme.QPSSchemeApply"
             android:screenOrientation="portrait" />
 
         <activity

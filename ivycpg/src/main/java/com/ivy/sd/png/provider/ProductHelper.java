@@ -12,6 +12,7 @@ import android.util.SparseArray;
 
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -1888,6 +1889,30 @@ public class ProductHelper {
                 //clear suggested Qty
                 product.setSocInventory(0);
                 product.setSoInventory(0);
+
+                product.setRepPieceQty(0);
+                product.setRepCaseQty(0);
+                product.setRepOuterQty(0);
+                product.setSelectedSalesReturnPosition(0);
+
+                if (product.getSalesReturnReasonList() != null && product.getSalesReturnReasonList().size() != 0) {
+                    for (SalesReturnReasonBO bo : product
+                            .getSalesReturnReasonList()) {
+                        if (bo.getCaseQty() > 0 || bo.getPieceQty() > 0 || bo.getOuterQty() > 0) {
+                            bo.setCaseQty(0);
+                            bo.setPieceQty(0);
+                            bo.setOuterQty(0);
+                            bo.setSrpedit(0);
+                            bo.setMfgDate("");
+                            bo.setExpDate("");
+                            bo.setOldMrp(0);
+                            bo.setLotNumber("");
+                            bo.setInvoiceno("");
+
+                        }
+                    }
+                }
+
             }
         }
 
@@ -1926,6 +1951,7 @@ public class ProductHelper {
             product.setPrice_oo("0");
             product.setPrice_pc("0");
             product.setReasonID("0");
+            product.setPriceChangeReasonID("0");
             product.setPriceChanged(0);
             product.setPriceCompliance(0);
 
@@ -2085,7 +2111,10 @@ public class ProductHelper {
             for (int i = 0; i < siz; ++i) {
                 product = productMaster.get(i);
 
-                if (product.getIsMustSell() == 1
+                if (product.getmDeadProduct() == 1
+                        && getFilterColor("Filt15") != 0)
+                    product.setTextColor(getFilterColor("Filt15"));
+                else if (product.getIsMustSell() == 1
                         && getFilterColor("Filt10") != 0)
                     product.setTextColor(getFilterColor("Filt10"));
                 else if (product.getIsFocusBrand() == 1

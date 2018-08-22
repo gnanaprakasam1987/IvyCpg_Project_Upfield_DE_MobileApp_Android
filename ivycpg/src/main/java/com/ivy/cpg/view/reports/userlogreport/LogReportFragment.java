@@ -71,13 +71,13 @@ public class LogReportFragment extends IvyBaseFragment {
     private void getUserLogReportData() {
         final ArrayList<LogReportBO> myList = new ArrayList<>();
         final SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
-        final AlertDialog alertDialog;
+        /*final AlertDialog alertDialog;
         AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(getActivity());
+        builder = new AlertDialog.Builder(getActivity());*/
         compositeDisposable = new CompositeDisposable();
-        customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        /*customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
         alertDialog = builder.create();
-        alertDialog.show();
+        alertDialog.show();*/
 
         compositeDisposable.add((Disposable) new UserLogReport(getActivity()).
                 downloadLogReport()
@@ -104,13 +104,13 @@ public class LogReportFragment extends IvyBaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        alertDialog.dismiss();
+                       // alertDialog.dismiss();
                         Toast.makeText(getActivity(), getString(R.string.unable_to_load_data), Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onComplete() {
-                        alertDialog.dismiss();
+                       // alertDialog.dismiss();
                         if (myList.size() > 0) {
 
 

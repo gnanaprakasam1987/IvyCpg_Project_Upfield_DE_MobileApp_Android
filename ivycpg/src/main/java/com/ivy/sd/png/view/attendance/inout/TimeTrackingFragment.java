@@ -34,6 +34,7 @@ import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonFieldTwoBo;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -49,6 +50,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.StringTokenizer;
+
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 
 public class TimeTrackingFragment extends IvyBaseFragment {
 
@@ -104,11 +108,12 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         mAdapter = new MyAdapter();
         listview.setAdapter(mAdapter);
 
-
         loadListData();
 
-
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
+
+            ((IvyBaseActivityNoActionBar)getActivity()).checkAndRequestPermissionAtRunTime(3);
+
             if (!bmodel.locationUtil.isGPSProviderEnabled()) {
                 GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
                 int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
@@ -537,7 +542,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE && reasonId.equalsIgnoreCase("10454")) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
             RealTimeLocationTracking.stopLocationTracking(getContext());
-            realTimeLocation.updateAttendanceOut(getContext(), "movement_tracking");
+            realTimeLocation.updateAttendanceOut(getContext(), REALTIME_LOCATION_PATH);
         }
 
         uploadAttendance("OUT", reasonId);
@@ -551,9 +556,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
 
             if (IN_OUT.equalsIgnoreCase("IN")) {
-                realTimeLocation.updateAttendanceIn(getContext(), "Attendance");
+                realTimeLocation.updateAttendanceIn(getContext(), ATTENDANCE_PATH);
             } else {
-                realTimeLocation.updateAttendanceOut(getContext(), "Attendance");
+                realTimeLocation.updateAttendanceOut(getContext(), ATTENDANCE_PATH);
             }
         }
     }

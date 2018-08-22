@@ -682,7 +682,7 @@ public class AttendanceHelper {
                 String value = bmodel.QT(nonFieldTwoBo.getId()) + ","
                         + bmodel.QT(nonFieldTwoBo.getFromDate()) + ","
                         + bmodel.QT(inTime) + ","
-                        + nonFieldTwoBo.getReason() + "," + userid + ","
+                        +nonFieldTwoBo.getReason() + "," + userid + ","
                         + bmodel.QT(LocationUtil.latitude + "") + "," + bmodel.QT(LocationUtil.longitude + "") + "," + bmodel.getCounterId() + "," + bmodel.QT("N");
 
                 db.insertSQL("AttendanceTimeDetails", columns, value);

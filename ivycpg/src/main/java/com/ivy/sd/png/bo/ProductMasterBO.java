@@ -274,6 +274,7 @@ public class ProductMasterBO {
     private String invoiceno;
     private String ReasonDesc;
     private String ReasonID = "0";
+    private String priceChangeReasonID = "0";
     private int oos = -2;
 
     private int priceChanged;
@@ -519,6 +520,7 @@ public class ProductMasterBO {
 
         this.ReasonDesc = productBO.ReasonDesc;
         this.ReasonID = productBO.ReasonID;
+        this.priceChangeReasonID = productBO.priceChangeReasonID;
         this.oos = productBO.oos;
         this.taxValue = productBO.taxValue;
         this.schemeAppliedValue = productBO.schemeAppliedValue;
@@ -1941,11 +1943,29 @@ public class ProductMasterBO {
         this.selectedUomPosition = selectedUomPosition;
     }
 
+    public String getPriceChangeReasonID() {
+        return priceChangeReasonID;
+    }
+
+    public void setPriceChangeReasonID(String priceChangeReasonID) {
+        this.priceChangeReasonID = priceChangeReasonID;
+    }
+
     public int getmDeadProduct() {
         return mDeadProduct;
     }
 
     public void setmDeadProduct(int mDeadProduct) {
         this.mDeadProduct = mDeadProduct;
+    }
+
+    private int increasedPcs;
+
+    public int getIncreasedPcs() {
+        return increasedPcs;
+    }
+
+    public void setIncreasedPcs(int increasedPcs) {
+        this.increasedPcs = increasedPcs;
     }
 }

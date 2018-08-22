@@ -22,7 +22,7 @@ import java.util.TimeZone;
  *      private final static String m24 = "k:mm";
  */
 
-public class CustomDigitalClock extends TextView  {
+public class CustomDigitalClock extends android.support.v7.widget.AppCompatTextView  {
 
     Calendar mCalendar;
     private final static String m12 = "h:mm:ss aa";

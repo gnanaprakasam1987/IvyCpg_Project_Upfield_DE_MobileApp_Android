@@ -68,6 +68,8 @@ import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.order.scheme.RetailerInfo;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
+import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -208,6 +210,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     Handler handler = null;
     Runnable runnable = null;
+
+    String dynamicReportTitle = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -580,6 +584,16 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             tabLayout.addTab(tabLayout.newTab().setText("SBD Gap"));
         }
 
+        /*
+        *
+        * Show dynamic report based on Retailer
+        * */
+        dynamicReportTitle = bmodel.configurationMasterHelper.getDynamicReportTitle();
+
+        if (bmodel.configurationMasterHelper.SHOW_SALES_VALUE_DR) {
+            tabLayout.addTab(tabLayout.newTab().setText(dynamicReportTitle));
+        }
+
 
         View root = tabLayout.getChildAt(0);
         if (root instanceof LinearLayout) {
@@ -715,7 +729,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         upArrow = ContextCompat.getDrawable(this, R.drawable.ic_home_arrow);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.FullBlack), PorterDuff.Mode.SRC_ATOP);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
@@ -1014,6 +1028,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
 
+        String mapKey = "key=" + getString(R.string.google_maps_api_key);
+
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude; // Destination of route
         String sensor = "sensor=false";
@@ -1027,7 +1043,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints;
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints + "&" + mapKey;
         String output = "json";
 
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
@@ -1379,6 +1395,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 return new SBDGapFragment();
             } else if (tabName.equals(retailer_contact_title)) {
                 return new RetailerContactFragment();
+            } else if (dynamicReportTitle.equalsIgnoreCase(tabName)) {
+                DynamicReportHelper.getInstance(ProfileActivity.this).downloadDynamicReport("MENU_DYN_RPT_RTR");
+                DynamicReportFragment dynamicReportFragment = new DynamicReportFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("isFrom", "Profile");
+                dynamicReportFragment.setArguments(bundle);
+                return dynamicReportFragment;
             }
             return null;
         }
@@ -2108,7 +2131,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));
 
 
-                boolean outletTimeStampSaved=bmodel.outletTimeStampHelper.saveTimeStamp(
+                boolean outletTimeStampSaved = bmodel.outletTimeStampHelper.saveTimeStamp(
                         SDUtil.now(SDUtil.DATE_GLOBAL), time
                         , distance, photoPath, fnameStarts, mVisitMode, mNFCReasonId);
 
@@ -2121,15 +2144,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 Commons.print("Attribute<><><><><><<<><><><><<" + bmodel.getRetailerAttributeList());
 
-                if(outletTimeStampSaved) {
+                if (outletTimeStampSaved) {
                     Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
                     i.putExtra("isLocDialog", true);
                     i.putExtra("isMandatoryDialog", true);
                     i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(i);
                     finish();
-                }else{
-                    Toast.makeText(getApplicationContext(),getString(R.string.not_able_to_register_visit),Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.not_able_to_register_visit), Toast.LENGTH_LONG).show();
                 }
             }
         }

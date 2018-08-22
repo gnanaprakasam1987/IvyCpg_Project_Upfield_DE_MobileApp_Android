@@ -74,6 +74,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.order.scheme.UpSellingActivity;
@@ -81,7 +82,7 @@ import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
-import com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity;
+import com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -1837,7 +1838,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
 
                         Intent intent = new Intent(StockAndOrder.this,
-                                AvailabiltyCheckActivity.class);
+                                CombinedStockDetailActivity.class);
                         intent.putExtra("screenTitle", holder.productObj.getProductName());
                         intent.putExtra("pid", holder.productObj.getProductID());
                         intent.putExtra("selectedLocationIndex", mSelectedLocationIndex);
@@ -4391,12 +4392,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
-            Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
-            init.putExtra("ScreenCode", screenCode);
-            init.putExtra("ForScheme", screenCode);
-            startActivity(init);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
+            if(schemeHelper.IS_SCHEME_QPS_TRACKING){
+                Intent init = new Intent(StockAndOrder.this, QPSSchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            } else {
+                Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            }
         } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
             Intent init = new Intent(StockAndOrder.this, OrderDiscount.class);
             init.putExtra("ScreenCode", screenCode);
@@ -6768,7 +6778,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         String strPname = getResources().getString(
                 R.string.product_name)
                 + " (" + mylist.size() + ")";
-        // MyAdapter lvwplist = new MyAdapter(mylist);
+        // OutletListAdapter lvwplist = new OutletListAdapter(mylist);
         lvwplist.setAdapter(new MyAdapter(mylist));
 //        salesReturnHelper = SalesReturnHelper.getInstance(this);
     }

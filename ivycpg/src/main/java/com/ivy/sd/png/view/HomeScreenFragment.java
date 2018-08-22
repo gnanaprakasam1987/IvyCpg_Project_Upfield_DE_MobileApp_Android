@@ -18,7 +18,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -54,9 +56,11 @@ import com.ivy.cpg.view.dashboard.olddashboard.SkuWiseTargetFragment;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.expense.ExpenseFragment;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
-import com.ivy.cpg.view.supervisor.SupervisorMapFragment;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.LoadManagementFragment;
@@ -1513,6 +1517,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             getActivity().finish();
         } else if (menuItem.getConfigCode().equals(MENU_NON_FIELD)) {
             bmodel.reasonHelper.downloadPlaneDeviateReasonMaster("FIELD_PLAN_TYPE");
+            bmodel.reasonHelper.downloadPlannedActivitiesReasonMaster("FIELD_PLAN_TYPE");
+            bmodel.reasonHelper.downloadNonPlannedReason();
             switchFragment(MENU_NON_FIELD, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_DELMGMT_RET)) {
             switchFragment(MENU_DELMGMT_RET, menuItem.getMenuName());
@@ -1624,9 +1630,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         TaskFragment taskFragment = (TaskFragment) fm.findFragmentByTag(MENU_TASK_NEW);
         BackUpSellerFragment backUpSellerFragment = (BackUpSellerFragment) fm.findFragmentByTag(MENU_BACKUP_SELLER);
 
-        SupervisorMapFragment supervisorMapRFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_REALTIME);
-        SupervisorMapFragment supervisorMapMFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_MOVEMENT);
-        SupervisorMapFragment supervisorMapCFragment = (SupervisorMapFragment) fm.findFragmentByTag(MENU_SUPERVISOR_CALLANALYSIS);
+        SellersMapHomeFragment supervisorMapCFragment = (SellersMapHomeFragment) fm.findFragmentByTag(MENU_SUPERVISOR_CALLANALYSIS);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1740,12 +1744,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (backUpSellerFragment != null && fragmentName.equals(MENU_BACKUP_SELLER)
                 && backUpSellerFragment.isVisible()) {
             return;
-        } else if (supervisorMapRFragment != null && (fragmentName.equals(MENU_SUPERVISOR_REALTIME))
-                && supervisorMapRFragment.isVisible()) {
-            return;
-        } else if (supervisorMapMFragment != null && (fragmentName.equals(MENU_SUPERVISOR_MOVEMENT))
-                && supervisorMapMFragment.isVisible()) {
-            return;
         } else if (supervisorMapCFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
                 && supervisorMapCFragment.isVisible()) {
             return;
@@ -1824,10 +1822,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(taskFragment);
         if (backUpSellerFragment != null)
             ft.remove(backUpSellerFragment);
-        if (supervisorMapRFragment != null)
-            ft.remove(supervisorMapRFragment);
-        if (supervisorMapMFragment != null)
-            ft.remove(supervisorMapMFragment);
         if (supervisorMapCFragment != null)
             ft.remove(supervisorMapCFragment);
 
@@ -2150,29 +2144,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_BACKUP_SELLER);
                 break;
 
-            case MENU_SUPERVISOR_REALTIME:
-                bndl = new Bundle();
-                bndl.putString("screentitle", menuName);
-                bndl.putInt("TrackingType", 0);
-                fragment = new SupervisorMapFragment();
-                fragment.setArguments(bndl);
-                ft.add(R.id.fragment_content, fragment,
-                        MENU_SUPERVISOR_REALTIME);
-                break;
-            case MENU_SUPERVISOR_MOVEMENT:
-                bndl = new Bundle();
-                bndl.putString("screentitle", menuName);
-                bndl.putInt("TrackingType", 1);
-                fragment = new SupervisorMapFragment();
-                fragment.setArguments(bndl);
-                ft.add(R.id.fragment_content, fragment,
-                        MENU_SUPERVISOR_MOVEMENT);
-                break;
             case MENU_SUPERVISOR_CALLANALYSIS:
+
+                SupervisorActivityHelper.getInstance().loginToFirebase();
+                SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(), SDUtil.now(SDUtil.DATE_GLOBAL));
+
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("TrackingType", 2);
-                fragment = new SupervisorMapFragment();
+                fragment = new SellersMapHomeFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_SUPERVISOR_CALLANALYSIS);
@@ -2192,116 +2172,35 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     }
 
-
-    public void onTabRemoved() {
-
+    /**
+     * @param menuCode detach current fragment based on passed menu code
+     */
+    public void detach(String menuCode) {
         android.support.v4.app.FragmentManager fm = getFragmentManager();
-
-        NewOutletFragment mNewOutletFragment = (NewOutletFragment) fm
-                .findFragmentByTag(MENU_NEW_RETAILER);
-
-        VisitFragment mVisitFragment = (VisitFragment) fm
-                .findFragmentByTag(MENU_VISIT);
-
-        SubDFragment mSubDFragment = (SubDFragment) fm
-                .findFragmentByTag(MENU_SUBD);
-
-        ExpenseFragment expenseFragment = (ExpenseFragment) fm
-                .findFragmentByTag(MENU_EXPENSE);
-
-        VisitFragment mPlanningFragment = (VisitFragment) fm
-                .findFragmentByTag(MENU_PLANNING);
-
-        LoadManagementFragment mLoadManagementFragment = (LoadManagementFragment) fm
-                .findFragmentByTag(MENU_LOAD_MANAGEMENT);
-
-        PlanningSubScreenFragment mPlanningSubScreenFragment = (PlanningSubScreenFragment) fm
-                .findFragmentByTag(MENU_PLANNING_SUB);
-
-        SynchronizationFragment mSyncFragment = (SynchronizationFragment) fm
-                .findFragmentByTag(MENU_SYNC);
-
-        SellerDashboardFragment mSellerDashFragment = (SellerDashboardFragment) fm
-                .findFragmentByTag(MENU_DASH_KPI);
-
-        SellerDashboardFragment mRouteDashFragment = (SellerDashboardFragment) fm.findFragmentByTag(MENU_ROUTE_KPI);
-
-        DashboardFragment mDashFragment = (DashboardFragment) fm
-                .findFragmentByTag(MENU_DASH);
-
-        DashboardFragment mDashDayFragment = (DashboardFragment) fm
-                .findFragmentByTag(MENU_DASH_DAY);
-
-        JoinCallFragment mJointCallFragment = (JoinCallFragment) fm
-                .findFragmentByTag(MENU_JOINT_CALL);
-
-        SurveyActivityNewFragment mJointCallSurveyFragment = (SurveyActivityNewFragment) fm
-                .findFragmentByTag(MENU_SURVEY_SW);
-
-        SurveyActivityNewFragment mJointCallSurvey1Fragment = (SurveyActivityNewFragment) fm
-                .findFragmentByTag(MENU_SURVEY01_SW);
-
-        EmptyReconciliationFragment mEmptyReconFragment = (EmptyReconciliationFragment) fm
-                .findFragmentByTag(MENU_EMPTY_RECONCILIATION);
-
-        DigitalContentFragment mDigitalContentFragment = (DigitalContentFragment) fm
-                .findFragmentByTag(MENU_DIGITIAL_SELLER);
-        RoadFragment mRoadFragment = (RoadFragment) fm
-                .findFragmentByTag(MENU_ROAD_ACTIVITY);
-        MVPFragment mMvpFragment = (MVPFragment) fm
-                .findFragmentByTag(MENU_MVP);
-
-        PrimarySaleFragment mPrimSaleFragment = (PrimarySaleFragment) fm
-                .findFragmentByTag(MENU_PRIMARY_SALES);
-
-        LeaveApprovalFragment mLeaveApprFragment = (LeaveApprovalFragment) fm
-                .findFragmentByTag(MENU_LEAVE_APR);
-        AttendanceFragment mAttendFragment = (AttendanceFragment) fm
-                .findFragmentByTag(MENU_PRESENCE);
-        NonFieldHomeFragment mNonFieldFragment = (NonFieldHomeFragment) fm
-                .findFragmentByTag(MENU_ATTENDANCE);
-        TimeTrackingFragment mNonFieldTwoFragment = (TimeTrackingFragment) fm
-                .findFragmentByTag(MENU_IN_OUT);
-        ReportMenuFragment mReportMenuFragment = (ReportMenuFragment) fm
-                .findFragmentByTag(MENU_REPORT);
-        LoadManagementFragment mLoadMgmtfragment = (LoadManagementFragment) fm
-                .findFragmentByTag(MENU_LOAD_MANAGEMENT);
-
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
+        if (MENU_NEW_RETAILER.equals(menuCode)) {
+            NewOutletFragment mNewOutletFragment = (NewOutletFragment) fm
+                    .findFragmentByTag(MENU_NEW_RETAILER);
 
-        if (mNewOutletFragment != null) {
-            ft.detach(mNewOutletFragment);
-        }
-        if (mSellerDashFragment != null) {
-            ft.detach(mSellerDashFragment);
-        }
-        if (mRouteDashFragment != null) {
-            ft.detach(mRouteDashFragment);
-        }
-        if (mReportMenuFragment != null) {
-            ft.detach(mReportMenuFragment);
-        }
-        if (mVisitFragment != null) {
-            ft.detach(mVisitFragment);
-        }
-        if (mSubDFragment != null) {
-            ft.detach(mSubDFragment);
-        }
-        if (mSyncFragment != null) {
-            ft.detach(mSyncFragment);
-        }
-        if (mLoadMgmtfragment != null) {
-            ft.detach(mLoadMgmtfragment);
-        }
-        if (mPlanningFragment != null) {
-            ft.detach(mPlanningFragment);
-        }
-        if (expenseFragment != null) {
-            ft.detach(expenseFragment);
+            if (mNewOutletFragment != null) {
+                ft.detach(mNewOutletFragment);
+                ft.commit();
+            }
+        } else if (MENU_NON_FIELD.equals(menuCode)) {
+            PlanDeviationFragment mPlanDeviationFragment = (PlanDeviationFragment) fm
+                    .findFragmentByTag(MENU_NON_FIELD);
+            if (mPlanDeviationFragment != null) {
+                ft.detach(mPlanDeviationFragment);
+                ft.commit();
+            }
         }
 
 
+        DrawerLayout mDrawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        mDrawerLayout.openDrawer(GravityCompat.START);
+
+        setScreenTitle(getResources().getString(R.string.app_name));
     }
 
     @Override

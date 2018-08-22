@@ -119,7 +119,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.DeliveryManagementHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
-import com.ivy.sd.png.provider.ExpenseSheetHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
 import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
@@ -276,7 +275,6 @@ public class BusinessModel extends Application {
     public ProfileHelper profilehelper;
     public MVPHelper mvpHelper;
     public LeaveApprovalHelper leaveApprovalHelper;
-    public ExpenseSheetHelper expenseSheetHelper;
     public JExcelHelper mJExcelHelper;
     public DeliveryManagementHelper deliveryManagementHelper;
     public CommonPrintHelper mCommonPrintHelper;
@@ -432,7 +430,6 @@ public class BusinessModel extends Application {
         orderfullfillmenthelper = OrderFullfillmentHelper.getInstance(this);
         mvpHelper = MVPHelper.getInstance(this);
         leaveApprovalHelper = LeaveApprovalHelper.getInstance(this);
-        expenseSheetHelper = ExpenseSheetHelper.getInstance(this);
         distributorMasterHelper = DistributorMasterHelper.getInstance(this);
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
         distTimeStampHeaderHelper = DistTimeStampHeaderHelper.getInstance(this);
@@ -8553,9 +8550,16 @@ public class BusinessModel extends Application {
 
             for (NonproductivereasonBO reasnBo : reasonBoList) {
 
+                String remark = "";
+                if (!reasnBo.getDeviatedReasonId().equalsIgnoreCase("0")) {
+                    remark = reasnBo.getDeviationReason();
+                } else {
+                    remark = remarks;
+                }
+
                 values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
                         + QT(reasnBo.getDate()) + "," + QT(reasnBo.getReasonid())
-                        + "," + QT(remarks) +
+                        + "," + QT(remark) +
                         "," + getRetailerMasterBO().getDistributorId();
 
                 db.insertSQL("NonFieldActivity", columns, values);
@@ -8698,7 +8702,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select count(distinct InvoiceNo),sum(totalamount) from Invoicemaster where invoicedate = "
+                    .selectSQL("select count(distinct Inv.InvoiceNo),sum(Inv.totalamount) from Invoicemaster Inv" +
+                            " INNER JOIN OrderHeader OH ON OH.orderId=Inv.OrderId where Inv.invoicedate = "
                             + QT(userMasterHelper.getUserMasterBO().getDownloadDate()));
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -9038,6 +9043,57 @@ public class BusinessModel extends Application {
         }
 
         return 0;
+    }
+
+    public boolean hasPendingInvoice(String date,String retailerIds) {
+        try {
+            double balance = 0;
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select Inv.InvoiceNo,Round(Inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as balance from "
+                    + DataMembers.tbl_InvoiceMaster + " Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo where Inv.Retailerid in("
+                    + retailerIds
+                    + ") and Inv.InvoiceDate ='" + date + "'and Inv.upload = 'N'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    balance = balance + c.getDouble(c.getColumnIndex("balance"));
+                }
+                c.close();
+                if (balance > 0)
+                    return true;
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    public String getUserParentPosition(){
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ParentPositionIds from UserMaster where userid="
+                            + QT(String.valueOf(userMasterHelper.getUserMasterBO().getUserid())));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    String id = c.getString(0);
+                    c.close();
+                    db.closeDB();
+                    return id==null?"":id;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return "";
     }
 
 }
