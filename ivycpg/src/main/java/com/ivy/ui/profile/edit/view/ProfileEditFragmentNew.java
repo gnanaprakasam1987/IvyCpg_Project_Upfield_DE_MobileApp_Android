@@ -139,13 +139,9 @@ public class ProfileEditFragmentNew extends BaseFragment
     private MaterialSpinner channel, subchannel, location1, location2, location3,
             contractSpinner, rField5Spinner, rField6Spinner, rField7Spinner, rField4Spinner;
 
-
     private ArrayList<InputFilter> inputFilters = null;
-    private Vector<ChannelBO> channelMaster = null;
-    private ArrayList<NewOutletBO> mcontractStatusList = null;
-    private ArrayList<LocationBO> mLocationMasterList1 = null;
-    private ArrayList<LocationBO> mLocationMasterList2 = null;
     private ArrayAdapter<LocationBO> locationAdapter1 = null, locationAdapter2 = null;
+
     private Vector<RetailerMasterBO> mSelectedIds = new Vector<>();
     private ArrayList<StandardListBO> mPriorityProductList = null, selectedPriorityProductList = null;
     private HashMap<String, MaterialSpinner> spinnerHashMap = null;
@@ -154,14 +150,13 @@ public class ProfileEditFragmentNew extends BaseFragment
     private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap = null;
     private HashMap<String, ArrayList<Integer>> attributeIndexMap = null;
     private HashMap<Integer, NewOutletAttributeBO> selectedAttribList=new HashMap<>();
-
     private ArrayList<Integer> attributeIndexList = null;
 
     private int locid = 0;
     private int subChannelSpinnerCount = 0;
     private int id;
     private String selectedProductID = "";
-    static String lat = "", longitude = "";
+    static  String lat = "", longitude = "";
     private boolean isLatLongCameravailable = false;
     private int spinnerCount = 0;
     private int check = 0;
@@ -429,13 +424,6 @@ public class ProfileEditFragmentNew extends BaseFragment
 
 
     @Override
-    public void createSpinnerView(Vector<ChannelBO> channelMaster, int mNumber, String MName, String menuCode, int id) {
-        this.channelMaster = channelMaster;
-        getmRootLinearLayout().addView(getSpinnerView(mNumber, MName, menuCode, id), getCommonsparams());
-    }
-
-
-    @Override
     public void createSpinnerView(int mNumber, String MName, String menuCode, int id) {
         getmRootLinearLayout().addView(getSpinnerView(mNumber, MName, menuCode, id), getCommonsparams());
     }
@@ -494,10 +482,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         return channel.getSelectedItem().toString().toLowerCase();
     }
 
-    @Override
-    public ArrayList<NewOutletBO> getContractStatusList() {
-        return mcontractStatusList;
-    }
+
 
     @Override
     public int getContractSpinnerSelectedItemListId() {
@@ -644,45 +629,6 @@ public class ProfileEditFragmentNew extends BaseFragment
             latlongtextview.setText(lat + "," + longitude);
     }
 
-
-    @Override
-    public void addLengthFilter(String regex) {
-        inputFilters = new ArrayList<>();
-        inputFilters.add(AppUtils.getInputFilter(regex));
-    }
-
-
-    @Override
-    public void checkRegex(String regex) {
-        final String reg;
-        try {
-            if (regex != null && !regex.isEmpty()) {
-                if (regex.contains("<") && regex.contains(">")) {
-                    reg = regex.replaceAll("\\<.*?\\>", "");
-                } else {
-                    reg = regex;
-                }
-                //data.replaceAll("\\(.*?\\)", "()"); //if you want to keep the brackets
-                InputFilter filter = new InputFilter() {
-                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                        for (int i = start; i < end; i++) {
-                            String checkMe = String.valueOf(source.charAt(i));
-                            if (!Pattern.compile(reg).matcher(checkMe).matches()) {
-                                Log.d("", "invalid");
-                                return "";
-                            }
-                        }
-                        return null;
-                    }
-                };
-                inputFilters.add(filter);
-            }
-        } catch (Exception ex) {
-            Commons.printException("regex check", ex);
-        }
-    }
-
-
     @Override
     public void showSuccessfullyProfileUpdatedAlert() {
 
@@ -827,10 +773,11 @@ public class ProfileEditFragmentNew extends BaseFragment
     }
 
     @Override
-    public void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList, int VALUE_NEARBY_RETAILER_MAX) {
-
+    public void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList
+            ,int VALUE_NEARBY_RETAILER_MAX) {
         if (retailersList != null && retailersList.size() > 0) {
-            NearByRetailerDialog dialog = new NearByRetailerDialog(getActivity(), VALUE_NEARBY_RETAILER_MAX, retailersList, mSelectedIds);
+            NearByRetailerDialog dialog = new NearByRetailerDialog(getActivity()
+                    ,VALUE_NEARBY_RETAILER_MAX, retailersList, mSelectedIds);
             dialog.show();
             dialog.setCancelable(false);
         }
@@ -1241,9 +1188,17 @@ public class ProfileEditFragmentNew extends BaseFragment
             else
                 appCompatEditText.setText(values);
         }
+
         editTextHashMap.put(positionNumber, appCompatEditText);
-        if (!comparConfigerCode(configCode, ProfileConstant.EMAIL)) {//if not Email //cmd for not apply inputfilter value for email id
-            getInputFilter(positionNumber);
+
+        if (!comparConfigerCode(configCode, ProfileConstant.EMAIL)) {
+            if (inputFilters != null && inputFilters.size() > 0) {
+                InputFilter[] stockArr = new InputFilter[inputFilters.size()];
+                stockArr = inputFilters.toArray(stockArr);
+                editTextHashMap.get(positionNumber).setFilters(stockArr);
+                if (inputFilters.size() == 2)
+                    editTextHashMap.get(positionNumber).setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            }
         }
         return appCompatEditText;
     }
@@ -1252,9 +1207,6 @@ public class ProfileEditFragmentNew extends BaseFragment
     private LinearLayout getSpinnerView(int mNumber, String MName, String menuCode, int id) {
 
         this.id = id;
-        mLocationMasterList1 = profileEditPresenter.getLocationMasterList1();
-        mLocationMasterList2 = profileEditPresenter.getLocationMasterList2();
-        ArrayList<LocationBO> mLocationMasterList3 = profileEditPresenter.getLocationMasterList3();
 
         LinearLayout layout = createLinearLayout(LinearLayout.HORIZONTAL, getActivity().getResources().getColor(R.color.white_box_start));
         LinearLayout.LayoutParams spinweight = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1275,12 +1227,11 @@ public class ProfileEditFragmentNew extends BaseFragment
             channelAdapter.add(new ChannelBO(0, getActivity().getResources()
                     .getString(R.string.select_str) + " " + MName));
             int position = 0, setPos = 0;
-            int channelID = id;
 
-            if (channelMaster != null)
-                for (ChannelBO temp : channelMaster) {
+            if (profileEditPresenter.getChannelMaster() != null)
+                for (ChannelBO temp : profileEditPresenter.getChannelMaster()) {
                     channelAdapter.add(temp);
-                    if (temp.getChannelId() == channelID)
+                    if (temp.getChannelId() == id)
                         setPos = position + 1;
                     position++;
                 }
@@ -1307,23 +1258,24 @@ public class ProfileEditFragmentNew extends BaseFragment
                 contractSpinner.setId(mNumber);
                 contractSpinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 contractSpinner.setFloatingLabelText(MName);
-                mcontractStatusList = new ArrayList<>();
-                mcontractStatusList.add(0, new NewOutletBO(0, getResources().getString(R.string.select_str) + " " + MName));
-                mcontractStatusList.addAll(profileEditPresenter.getContractStatusList());
-                ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontractStatusList);
+
+                String listName=getResources().getString(R.string.select_str) + " " + MName;
+                ArrayList<NewOutletBO> mContactStatus=new ArrayList<NewOutletBO>();
+                mContactStatus.addAll(profileEditPresenter.getContractStatusList(listName));
+
+                ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity()
+                        ,android.R.layout.simple_spinner_item,mContactStatus);
                 contractStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 contractSpinner.setAdapter(contractStatusAdapter);
                 contractSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     }
-
                     public void onNothingSelected(AdapterView<?> arg0) {
                     }
-
                 });
 
-                for (int i = 0; i < mcontractStatusList.size(); i++) {
-                    if (id == mcontractStatusList.get(i).getListId())
+                for (int i = 0; i < mContactStatus.size(); i++) {
+                    if (id == mContactStatus.get(i).getListId())
                         selected_pos = i;
                 }
                 contractSpinner.setSelection(selected_pos);
@@ -1347,14 +1299,10 @@ public class ProfileEditFragmentNew extends BaseFragment
                 location1.setId(mNumber);
                 location1.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 location1.setFloatingLabelText(MName);
-                if (mLocationMasterList1 == null) {
-                    mLocationMasterList1 = new ArrayList<LocationBO>();
-                }
-                mLocationMasterList1.add(0, new LocationBO(0, getActivity()
-                        .getResources().getString(R.string.select_str) + " " + MName));
 
+                String locationName=getActivity().getResources().getString(R.string.select_str) + " " + MName;
                 locationAdapter1 = new ArrayAdapter<LocationBO>(getActivity(),
-                        android.R.layout.simple_spinner_item, mLocationMasterList1);
+                        android.R.layout.simple_spinner_item, profileEditPresenter.getLocationMasterList1(locationName));
 
                 String loc1id = "";
                 int pos = 0, setPos = 0;
@@ -1363,7 +1311,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 if (loc1 != null) {
                     loc1id = loc1[0];
                 }
-                for (LocationBO loc : mLocationMasterList1) {
+                for (LocationBO loc : profileEditPresenter.getLocationMasterList1("")) {
                     if (loc.getLocId() == SDUtil.convertToInt(loc1id)) {
                         setPos = pos;
                     }
@@ -1393,14 +1341,11 @@ public class ProfileEditFragmentNew extends BaseFragment
                 location2.setId(mNumber);
                 location2.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 location2.setFloatingLabelText(MName);
-                //location2.setGravity(Gravity.CENTER);
-                if (mLocationMasterList2 == null) {
-                    mLocationMasterList2 = new ArrayList<LocationBO>();
-                }
-                mLocationMasterList2.add(0, new LocationBO(0, getActivity()
-                        .getResources().getString(R.string.select_str) + " " + MName));
+
+                String locationName=getActivity().getResources().getString(R.string.select_str) + " " + MName;
                 locationAdapter2 = new ArrayAdapter<LocationBO>(getActivity(),
-                        android.R.layout.simple_spinner_item, mLocationMasterList2);
+                        android.R.layout.simple_spinner_item, profileEditPresenter.getLocationMasterList2(locationName));
+
                 String loc2id = "";
                 int pos = 0, setPos = 0;
                 String[] loc2 = profileEditPresenter.getParentLevelName(locid, true);
@@ -1408,7 +1353,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 if (loc2 != null) {
                     loc2id = loc2[0];
                 }
-                for (LocationBO loc : mLocationMasterList2) {
+                for (LocationBO loc : profileEditPresenter.getLocationMasterList2("")) {
                     if (loc.getLocId() == SDUtil.convertToInt(loc2id)) {
                         setPos = pos;
                     }
@@ -1439,22 +1384,18 @@ public class ProfileEditFragmentNew extends BaseFragment
                 location3.setId(mNumber);
                 location3.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 location3.setFloatingLabelText(MName);
-                //location3.setGravity(Gravity.CENTER);
-                if (mLocationMasterList3 == null) {
-                    mLocationMasterList3 = new ArrayList<LocationBO>();
-                }
-                mLocationMasterList3.add(0, new LocationBO(0, getActivity()
-                        .getResources().getString(R.string.select_str) + " " + MName));
 
+                String locationName=getActivity().getResources().getString(R.string.select_str) + " " + MName;
                 ArrayAdapter<LocationBO> locationAdapter3 = new ArrayAdapter<LocationBO>(getActivity(),
-                        android.R.layout.simple_spinner_item, mLocationMasterList3);
+                        android.R.layout.simple_spinner_item, profileEditPresenter.getLocationMasterList3(locationName));
+
                 String locid = "";
                 int pos = 0, setPos = 0;
                 String[] loc3 = profileEditPresenter.getParentLevelName(true);
                 if (loc3 != null) {
                     locid = loc3[0];
                 }
-                for (LocationBO loc : mLocationMasterList3) {
+                for (LocationBO loc : profileEditPresenter.getLocationMasterList3("")) {
                     if (loc.getLocId() == SDUtil.convertToInt(locid)) {
                         setPos = pos;
                     }
@@ -2356,8 +2297,8 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     private void updateLocationAdapter1(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<>();
-        if (mLocationMasterList1 != null)
-            for (LocationBO locationBO : mLocationMasterList1) {
+        if (profileEditPresenter.getLocationMasterList1("") != null)
+            for (LocationBO locationBO : profileEditPresenter.getLocationMasterList1("")) {
                 if (parentId == locationBO.getParentId()) {
                     locationList.add(locationBO);
                 }
@@ -2377,15 +2318,15 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     private void updateLocationAdapter2(int parentId) {
         ArrayList<LocationBO> locationList = new ArrayList<LocationBO>();
-        if (mLocationMasterList2 != null)
-            for (LocationBO locationBO : mLocationMasterList2) {
+        if (profileEditPresenter.getLocationMasterList2("") != null)
+            for (LocationBO locationBO : profileEditPresenter.getLocationMasterList2("")) {
                 if (parentId == locationBO.getParentId()) {
                     locationList.add(locationBO);
                 }
             }
         locationAdapter2 = new ArrayAdapter<LocationBO>(getActivity(),
                 android.R.layout.simple_spinner_item, locationList);
-        if (locationAdapter2 != null && locationAdapter2.getCount() > 0) {
+        if (locationAdapter2.getCount() > 0) {
             if (!((LocationBO) locationAdapter2.getItem(0)).getLocName().toLowerCase().contains("select"))
                 locationAdapter2.insert(new LocationBO(0, getActivity()
                         .getResources().getString(R.string.select_str)), 0);
@@ -2492,14 +2433,38 @@ public class ProfileEditFragmentNew extends BaseFragment
         }
     }
 
-    //InputFilder
-    private void getInputFilter(int positionNumber) {
-        if (inputFilters != null && inputFilters.size() > 0) {
-            InputFilter[] stockArr = new InputFilter[inputFilters.size()];
-            stockArr = inputFilters.toArray(stockArr);
-            editTextHashMap.get(positionNumber).setFilters(stockArr);
-            if (inputFilters.size() == 2)
-                editTextHashMap.get(positionNumber).setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+    @Override
+    public void addLengthFilter(String regex) {
+        inputFilters = new ArrayList<>();
+        inputFilters.add(AppUtils.getInputFilter(regex));
+    }
+    @Override
+    public void checkRegex(String regex) {
+        final String reg;
+        try {
+            if (regex != null && !regex.isEmpty()) {
+                if (regex.contains("<") && regex.contains(">")) {
+                    reg = regex.replaceAll("\\<.*?\\>", "");
+                } else {
+                    reg = regex;
+                }
+                //data.replaceAll("\\(.*?\\)", "()"); //if you want to keep the brackets
+                InputFilter filter = new InputFilter() {
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            String checkMe = String.valueOf(source.charAt(i));
+                            if (!Pattern.compile(reg).matcher(checkMe).matches()) {
+                                Commons.print("invalid");
+                                return "";
+                            }
+                        }
+                        return null;
+                    }
+                };
+                inputFilters.add(filter);
+            }
+        } catch (Exception ex) {
+            Commons.printException("regex check", ex);
         }
     }
 

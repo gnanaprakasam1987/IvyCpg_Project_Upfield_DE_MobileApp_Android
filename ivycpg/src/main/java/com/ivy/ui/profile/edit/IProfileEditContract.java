@@ -1,6 +1,8 @@
 package com.ivy.ui.profile.edit;
 
 
+import android.text.InputFilter;
+
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
@@ -14,52 +16,45 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
 public interface IProfileEditContract {
 
-    interface ProfileEditView extends BaseIvyView{
+    interface ProfileEditView extends BaseIvyView {
 
         void createImageView();
 
         void createImageView(String path);
 
-        void createImageView(int userId ,String path);
+        void createImageView(int userId, String path);
 
-        void createEditTextView(int mNumber,String configCode, String menuName,
-                                String values,boolean IS_UPPERCASE_LETTER,
-                                int Mandatory,int MAX_CREDIT_DAYS);
+        void createEditTextView(int mNumber, String configCode, String menuName,
+                                String values, boolean IS_UPPERCASE_LETTER,
+                                int Mandatory, int MAX_CREDIT_DAYS);
 
-        void createCheckBoxView(String isSEZzone,int Mandatory,String menuName);
-
-        void createSpinnerView(Vector<ChannelBO> channelMaster,int mNumber, String MName, String menuCode, int id);
+        void createCheckBoxView(String isSEZzone, int Mandatory, String menuName);
 
         void createSpinnerView(int mNumber, String MName, String menuCode, int id);
 
-        void createSpinnerView(int mNumber, String MName, String menuCode, int id,int locid );
+        void createSpinnerView(int mNumber, String MName, String menuCode, int id, int locid);
 
-        void createLatlongTextView( int mNumber, String MName,  String textvalue);
+        void createLatlongTextView(int mNumber, String MName, String textvalue);
 
         void showSuccessfullyProfileUpdatedAlert();
 
         void navigateToProfileScreen();
 
-        void profileEditShowMessage(int resouceId,String msg);
+        void profileEditShowMessage(int resouceId, String msg);
 
-        void imageViewOnClick(int userId ,String path, boolean hasProfileImagePath);
+        void imageViewOnClick(int userId, String path, boolean hasProfileImagePath);
 
         void takePhoto(String imageFileName, boolean isForLatLong);
 
-        void setlatlongtextview(String lat,String longitude);
+        void setlatlongtextview(String lat, String longitude);
 
-        void addLengthFilter(String regex);  //Regex
-
-        void checkRegex(String regex);
-
-        void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList,String menuCode,String MName);
+        void updateRetailerFlexValues(ArrayList<RetailerFlexBO> retailerFlexBOArrayList, String menuCode, String MName);
 
         void isLatLongCameravailable(boolean b);
 
@@ -69,16 +64,16 @@ public interface IProfileEditContract {
 
         void getNearbyRetailersEditRequest(Vector<RetailerMasterBO> mSelectedIds);
 
-        void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList,int VALUE_NEARBY_RETAILER_MAX );
+        void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList, int VALUE_NEARBY_RETAILER_MAX);
 
-        void createPriorityProductView(ArrayList<StandardListBO> mPriorityProductList,String selectedProductID ,
+        void createPriorityProductView(ArrayList<StandardListBO> mPriorityProductList, String selectedProductID,
                                        int mNumber, String MName, String textvalue, String productID);
 
         void createAttributeView(int flag);
 
-        void createDrugLicenseExpDate(String mName,int mNumber,String data);
+        void createDrugLicenseExpDate(String mName, int mNumber, String data);
 
-        void createFoodLicenceExpDate(String mName,int mNumber,String data);
+        void createFoodLicenceExpDate(String mName, int mNumber, String data);
 
         String getChennalSelectedItem();
 
@@ -96,48 +91,49 @@ public interface IProfileEditContract {
 
         HashMap<Integer, NewOutletAttributeBO> getSelectedAttribList();
 
-        int  subChannelGetSelectedItem();
+        int subChannelGetSelectedItem();
 
 
-       Vector<RetailerMasterBO> getSelectedIds();
+        Vector<RetailerMasterBO> getSelectedIds();
 
-       ChannelBO getChennalSelectedItemBO();
-
-       ArrayList<NewOutletBO> getContractStatusList();
-
-       int getContractSpinnerSelectedItemListId();
-
-       int getLocation1SelectedItemLocId();
-
-       int getLocation2SelectedItemLocId();
-
-       int getLocation3SelectedItemLocId();
-
-       RetailerFlexBO getRField4SpinnerSelectedItem();
-
-       RetailerFlexBO getRField5SpinnerSelectedItem();
-
-       RetailerFlexBO getRField6SpinnerSelectedItem();
-
-       RetailerFlexBO getRField7SpinnerSelectedItem();
-
-       boolean getSEZcheckBoxCheckedValues();
-
-       String getFoodLicenceExpDateValue();
-
-       String getDrugLicenceExpDateValue();
-
-       ArrayList<StandardListBO> getSelectedPriorityProductList();
-
-       void showAlert( );
+        ChannelBO getChennalSelectedItemBO();
 
 
+        int getContractSpinnerSelectedItemListId();
+
+        int getLocation1SelectedItemLocId();
+
+        int getLocation2SelectedItemLocId();
+
+        int getLocation3SelectedItemLocId();
+
+        RetailerFlexBO getRField4SpinnerSelectedItem();
+
+        RetailerFlexBO getRField5SpinnerSelectedItem();
+
+        RetailerFlexBO getRField6SpinnerSelectedItem();
+
+        RetailerFlexBO getRField7SpinnerSelectedItem();
+
+        boolean getSEZcheckBoxCheckedValues();
+
+        String getFoodLicenceExpDateValue();
+
+        String getDrugLicenceExpDateValue();
+
+        ArrayList<StandardListBO> getSelectedPriorityProductList();
+
+        void showAlert();
+
+        void addLengthFilter(String regex);
+
+        void checkRegex(String regex);
 
 
     }
 
     @PerActivity
-    interface ProfileEditPresenter<V extends ProfileEditView> extends BaseIvyPresenter<V>{
+    interface ProfileEditPresenter<V extends ProfileEditView> extends BaseIvyPresenter<V> {
 
         void downLoadDataFromDataBase();
 
@@ -159,19 +155,19 @@ public interface IProfileEditContract {
 
         String getPreviousProfileChangesList(String configCode);
 
-        ArrayList<NewOutletBO> getContractStatusList();
+        ArrayList<NewOutletBO> getContractStatusList(String listName);
 
-        ArrayList<LocationBO> getLocationMasterList1();
+        ArrayList<LocationBO> getLocationMasterList1(String locationName);
 
-        ArrayList<LocationBO> getLocationMasterList2();
+        ArrayList<LocationBO> getLocationMasterList2(String locationName);
 
-        ArrayList<LocationBO> getLocationMasterList3();
+        ArrayList<LocationBO> getLocationMasterList3(String locationName);
 
         String[] getParentLevelName(int locid, boolean b);
 
-        String[] getParentLevelName( boolean b);
+        String[] getParentLevelName(boolean b);
 
-        void downloadRetailerFlexValues( String type,String menuCode,String MName);
+        void downloadRetailerFlexValues(String type, String menuCode, String MName);
 
         boolean IS_BAIDU_MAP();
 
@@ -207,9 +203,10 @@ public interface IProfileEditContract {
 
         void saveUpdatedProfileEdit();
 
-        void verifyOTP(String mType,String mValue);
+        void verifyOTP(String mType, String mValue);
 
 
+        Vector<ChannelBO> getChannelMaster();
 
     }
 }
