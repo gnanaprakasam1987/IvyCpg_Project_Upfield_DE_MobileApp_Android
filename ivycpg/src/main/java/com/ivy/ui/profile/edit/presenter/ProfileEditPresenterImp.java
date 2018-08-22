@@ -2660,7 +2660,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
             int Mandatory = profileConfig.get(mNumber).getMandatory();
             int MAX_CREDIT_DAYS = configurationMasterHelper.MAX_CREDIT_DAYS;
-            getIvyView().createEditTextView(mNumber, configCode, menuName, values, IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS);
+            getIvyView().createEditTextView(mNumber, configCode, menuName, values
+                    , IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS);
         }
 
 

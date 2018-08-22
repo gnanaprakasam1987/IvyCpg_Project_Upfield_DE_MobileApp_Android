@@ -944,8 +944,13 @@ public class ProfileEditFragmentNew extends BaseFragment
             emailLayout.addView(verifyBtn, verifyButtonParams);
             linearlayout.addView(emailLayout, weight1);
         } else {
-            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
-            linearlayout.addView(editTextInputLayout, weight1);
+            if (!comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER) &&
+                    !comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) &&
+                    !comparConfigerCode(mConfigCode, ProfileConstant.FAX) &&
+                    !comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
+                editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
+                linearlayout.addView(editTextInputLayout, weight1);
+            }
         }
 
 

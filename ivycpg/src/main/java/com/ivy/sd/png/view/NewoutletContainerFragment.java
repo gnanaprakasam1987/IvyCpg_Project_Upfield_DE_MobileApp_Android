@@ -81,39 +81,40 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
             }
+            bundle = getArguments();
+            if (bundle == null)
+                bundle = getActivity().getIntent().getExtras();
+            if (bundle != null) {
+                isFromEditProfileView = bundle.getBoolean("isEdit", false);
+                if (isFromEditProfileView) {
+                    setScreenTitle(getResources().getString(R.string.profile_edit_screen__title));
+                } else {
+                    if (bundle.getString("screentitle") == null)
+                        setScreenTitle(bmodel.getMenuName("MENU_NEW_RETAILER"));
+                    else
+                        setScreenTitle(bundle.getString("screentitle"));
+                }
+
+                ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+
+                ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+
+                if (isFromEditProfileView)
+                    adapter.addFragment(new ProfileEditFragmentNew(), getResources().getString(R.string.profile_edit_screen__title));
+                else
+                    adapter.addFragment(new NewOutletFragment(), getResources().getString(R.string.outlet));
+
+                adapter.addFragment(ContactCreationFragment.getInstance(isFromEditProfileView), getResources().getString(R.string.contact));
+
+                viewPager.setAdapter(adapter);
+
+                TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+                tabLayout.setupWithViewPager(viewPager);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        bundle = getArguments();
-        if (bundle == null)
-            bundle = getActivity().getIntent().getExtras();
-        if (bundle != null) {
-            isFromEditProfileView = bundle.getBoolean("isEdit", false);
-            if (isFromEditProfileView) {
-                setScreenTitle(getResources().getString(R.string.profile_edit_screen__title));
-            } else {
-                if (bundle.getString("screentitle") == null)
-                    setScreenTitle(bmodel.getMenuName("MENU_NEW_RETAILER"));
-                else
-                    setScreenTitle(bundle.getString("screentitle"));
-            }
 
-            ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
-
-            ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
-
-            if (isFromEditProfileView)
-                adapter.addFragment(new ProfileEditFragmentNew(), getResources().getString(R.string.profile_edit_screen__title));
-            else
-                adapter.addFragment(new NewOutletFragment(), getResources().getString(R.string.outlet));
-
-            adapter.addFragment(ContactCreationFragment.getInstance(isFromEditProfileView), getResources().getString(R.string.contact));
-
-            viewPager.setAdapter(adapter);
-
-            TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-            tabLayout.setupWithViewPager(viewPager);
-        }
 
     }
 
