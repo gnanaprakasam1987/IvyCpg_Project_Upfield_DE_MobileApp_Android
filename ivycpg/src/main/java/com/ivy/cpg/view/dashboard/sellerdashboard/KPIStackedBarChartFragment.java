@@ -82,7 +82,6 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         set1.setDrawIcons(false);
         set1.setValueTextColor(Color.WHITE);
         set1.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
         set1.setColors(MATERIAL_COLORS);
         ArrayList<String> mStringList = new ArrayList<>();
         for (int i = 0; i < dashBoardList.size(); i++) {

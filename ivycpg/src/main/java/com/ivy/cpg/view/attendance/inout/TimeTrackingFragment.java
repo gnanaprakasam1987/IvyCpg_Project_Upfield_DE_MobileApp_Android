@@ -1,14 +1,13 @@
-package com.ivy.sd.png.view.attendance.inout;
+package com.ivy.cpg.view.attendance.inout;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -20,10 +19,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -31,8 +28,10 @@ import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.cpg.locationservice.realtime.FireBaseRealtimeLocationUpload;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
+import com.ivy.cpg.view.attendance.AttendanceHelper;
+import com.ivy.cpg.view.attendance.inout.InOutReasonDialog.OnMyDialogResult;
+import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.NonFieldTwoBo;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -44,11 +43,9 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
-import com.ivy.sd.png.view.attendance.inout.InOutReasonDialog.OnMyDialogResult;
+import com.ivy.utils.FontUtils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.StringTokenizer;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
@@ -59,17 +56,15 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     int addDialogrequestCode;
     private ListView listview;
-    ArrayList<NonFieldTwoBo> nonFieldTwoBos = new ArrayList<NonFieldTwoBo>();
+    ArrayList<NonFieldTwoBo> nonFieldTwoBos = new ArrayList<>();
     MyAdapter mAdapter;
     private InOutReasonDialog dialog;
     OnMyDialogResult onmydailogresult;
     TextView no_data_txt;
-    private AlertDialog objDialog = null;
-    private boolean hide_selectuser_icon = false;
     private ArrayList<StandardListBO> childList;
-    private ArrayAdapter<String> mChildUserNameAdapter;
     private int mSelectedIdIndex = -1;
     private String childUserName = "";
+    private AttendanceHelper attendanceHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,12 +72,14 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
+        attendanceHelper = AttendanceHelper.getInstance(getActivity());
+
         View view = inflater.inflate(R.layout.fragment_time_tracking, container, false);
         listview = view.findViewById(R.id.listview);
         no_data_txt = view.findViewById(R.id.no_data_txt);
 
         //typeface
-        no_data_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        no_data_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
@@ -90,7 +87,11 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        setScreenTitle(bmodel.getMenuName("MENU_IN_OUT"));
+        Bundle bundle = getArguments();
+        if (bundle == null)
+            bundle = getActivity().getIntent().getExtras();
+
+        setScreenTitle(bundle.getString("screentitle"));
         return view;
 
     }
@@ -112,7 +113,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
 
-            ((IvyBaseActivityNoActionBar)getActivity()).checkAndRequestPermissionAtRunTime(3);
+            ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(3);
 
             if (!bmodel.locationUtil.isGPSProviderEnabled()) {
                 GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
@@ -168,8 +169,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
     public void loadNonFieldTwoDetails() {
 
-        bmodel.mAttendanceHelper.downloadNonFieldTwoDetails(getActivity().getApplicationContext());
-        nonFieldTwoBos = bmodel.mAttendanceHelper.getNonFieldTwoBoList();
+        attendanceHelper.downloadNonFieldTwoDetails(getActivity().getApplicationContext());
+        nonFieldTwoBos = attendanceHelper.getNonFieldTwoBoList();
         mAdapter.notifyDataSetChanged();
     }
 
@@ -194,7 +195,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public @NonNull
+        View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
 
             if (convertView == null) {
@@ -202,35 +204,33 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 holder = new ViewHolder();
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                convertView = (View) inflater.inflate(R.layout.row_nonfield_two,
-                        null);
+                convertView = inflater.inflate(R.layout.row_nonfield_two,
+                        parent, false);
 
-                holder.tvOutTime = (TextView) convertView
+                holder.tvOutTime = convertView
                         .findViewById(R.id.txt_fromTime);
-                holder.btOutTime = (Button) convertView
+                holder.btOutTime = convertView
                         .findViewById(R.id.btn_fromTime);
-                holder.btInTime = (Button) convertView
+                holder.btInTime = convertView
                         .findViewById(R.id.btn_toTime);
-                holder.tvInTime = (TextView) convertView
+                holder.tvInTime = convertView
                         .findViewById(R.id.txt_toTime);
-                holder.tvReason = (TextView) convertView
+                holder.tvReason = convertView
                         .findViewById(R.id.txt_reason);
-                holder.tvStatus = (TextView) convertView
+                holder.tvStatus = convertView
                         .findViewById(R.id.txt_status);
 
                 //typefaces
-                holder.tvOutTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tvInTime.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tvReason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tvStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_To)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_from)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_Status)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_Reason)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.btOutTime.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.btInTime.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-
-                //holder.setTime = new SetTime(holder , getActivity());
+                holder.tvOutTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tvInTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tvReason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_To)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_from)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_Status)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_Reason)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.btOutTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+                holder.btInTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
                 convertView.setTag(holder);
 
@@ -244,8 +244,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             holder.btOutTime.setText(getResources().getString(R.string.endC));
             String inTime = holder.nonFieldTwoBO.getInTime() != null ? holder.nonFieldTwoBO.getInTime() : " ";
             String outTime = holder.nonFieldTwoBO.getOutTime() != null ? holder.nonFieldTwoBO.getOutTime() : " ";
-            String date = "";
-            String time = "";
+            String date;
+            String time;
             StringTokenizer tokenizer;
 
 
@@ -287,7 +287,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 public void onClick(View v) {
                     if (startLocationService(holder.nonFieldTwoBO.getReason())) {
                         holder.nonFieldTwoBO.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                        bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO, getActivity());
+                        attendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO, getActivity());
 
                         loadNonFieldTwoDetails();
                     }
@@ -299,7 +299,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 public void onClick(View v) {
 
                     holder.nonFieldTwoBO.setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                    bmodel.mAttendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO, getActivity());
+                    attendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO, getActivity());
                     loadNonFieldTwoDetails();
 
                     stopLocationService(holder.nonFieldTwoBO.getReason());
@@ -307,7 +307,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 }
             });
 
-            holder.tvReason.setText(bmodel.mAttendanceHelper
+            holder.tvReason.setText(attendanceHelper
                     .getReasonName(holder.nonFieldTwoBO.getReason(), getActivity()));
 
             return convertView;
@@ -319,8 +319,6 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         NonFieldTwoBo nonFieldTwoBO;
         TextView tvOutTime, tvReason, tvInTime, tvStatus;
         Button btInTime, btOutTime;
-        CheckBox deleteCB;
-        SetTime setTime;
 
     }
 
@@ -350,7 +348,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             return true;
         } else if (i1 == R.id.menu_add) {
 
-            if (bmodel.mAttendanceHelper.previousInOutTimeCompleted()) {
+            if (attendanceHelper.previousInOutTimeCompleted()) {
                 dialog = new InOutReasonDialog(getActivity(), onmydailogresult);
                 dialog.setDialogResult(new InOutReasonDialog.OnMyDialogResult() {
 
@@ -368,9 +366,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
                         if (startLocationService(addNonFieldTwoBo.getReason())) {
 
-                            bmodel.mAttendanceHelper.saveNonFieldWorkTwoDetail(addNonFieldTwoBo, getActivity());
+                            attendanceHelper.saveNonFieldWorkTwoDetail(addNonFieldTwoBo, getActivity());
                             if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE) {
-                                HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(getActivity());
+                                HomeScreenFragment.isLeave_today = attendanceHelper.checkLeaveAttendance(getActivity());
                             }
 
                             //}
@@ -396,17 +394,15 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     }
 
     private void showUserDialog() {
-        childList = bmodel.mAttendanceHelper.loadChildUserList(getActivity());
+        childList = attendanceHelper.loadChildUserList(getActivity());
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();
             } else if (childList.size() == 1) {
-                hide_selectuser_icon = true;
                 bmodel.setSelectedUserId(childList.get(0).getChildUserId());
                 loadListData();
             }
         } else {
-            hide_selectuser_icon = true;
             bmodel.setSelectedUserId(bmodel.userMasterHelper.getUserMasterBO().getUserid());
             loadListData();
         }
@@ -414,7 +410,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     }
 
     private void showDialog() {
-        mChildUserNameAdapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<String> mChildUserNameAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
 
         for (StandardListBO temp : childList)
@@ -433,19 +429,18 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                         childUserName = childList.get(item).getChildUserName();
                         setScreenTitle(bmodel.getMenuName("MENU_IN_OUT") + " (" +
                                 childUserName + ")");
-                        hide_selectuser_icon = false;
                         loadListData();
                         dialog.dismiss();
                     }
                 });
 
-        objDialog = bmodel.applyAlertDialogTheme(builder);
+        AlertDialog objDialog = bmodel.applyAlertDialogTheme(builder);
         objDialog.setCancelable(false);
     }
 
     private void loadListData() {
-        bmodel.mAttendanceHelper.downloadNonFieldTwoDetails(getActivity());
-        nonFieldTwoBos = bmodel.mAttendanceHelper.getNonFieldTwoBoList();
+        attendanceHelper.downloadNonFieldTwoDetails(getActivity());
+        nonFieldTwoBos = attendanceHelper.getNonFieldTwoBoList();
         //data empty or not
         if (nonFieldTwoBos == null || !(nonFieldTwoBos.size() > 0)) {
             listview.setVisibility(View.GONE);
@@ -463,40 +458,6 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             if (resultCode == Activity.RESULT_OK) {
                 loadNonFieldTwoDetails();
             }
-        }
-
-    }
-
-
-    // Time picker dialog on button click to register In Time
-    class SetTime implements View.OnClickListener, TimePickerDialog.OnTimeSetListener {
-
-        private ViewHolder holder;
-        private Calendar myCalendar;
-        private Context ctx;
-
-        public SetTime(ViewHolder holder, Context ctx) {
-            this.holder = holder;
-            this.holder.btInTime.setOnClickListener(this);
-            this.myCalendar = Calendar.getInstance();
-            this.ctx = ctx;
-        }
-
-        @Override
-        public void onClick(View v) {
-            int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
-            int minute = myCalendar.get(Calendar.MINUTE);
-            new TimePickerDialog(ctx, this, hour, minute, true).show();
-        }
-
-
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            // TODO Auto-generated method stub
-
-            DecimalFormat formatter = new DecimalFormat("00");
-            this.holder.btInTime.setText(formatter.format(hourOfDay) + ":" + formatter.format(minute) + ":" + formatter.format(0));
-            holder.nonFieldTwoBO.setInTime(formatter.format(hourOfDay) + ":" + formatter.format(minute) + ":" + formatter.format(0));
         }
 
     }
