@@ -23,7 +23,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/cardviewlist"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="@dimen/card_child_margin"
             card_view:cardBackgroundColor="@color/WHITE"
             card_view:cardCornerRadius="0dp"
@@ -34,7 +34,7 @@
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <LinearLayout

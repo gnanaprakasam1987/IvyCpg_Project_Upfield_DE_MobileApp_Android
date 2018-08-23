@@ -1,7 +1,8 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.leaveapproval;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +17,13 @@ import com.ivy.sd.png.bo.LeaveApprovalBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
 public class HistoryLeavesFragment extends IvyBaseFragment {
 
-    BusinessModel bmodel;
     private ListView lvLeavesList;
-    private String CODE_APPROVED = "S", CODE_REJECTED = "D";
-    private LinearLayout llFooter;
 
 
     @Override
@@ -34,11 +33,9 @@ public class HistoryLeavesFragment extends IvyBaseFragment {
         View view = inflater.inflate(R.layout.fragment_leave_history,
                 container, false);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
 
-        lvLeavesList = (ListView) view.findViewById(R.id.lv_leaves_list);
-        llFooter = (LinearLayout) view.findViewById(R.id.lv_footer);
+        lvLeavesList = view.findViewById(R.id.lv_leaves_list);
+        LinearLayout llFooter = view.findViewById(R.id.lv_footer);
         llFooter.setVisibility(View.GONE);
 
         return view;
@@ -47,10 +44,10 @@ public class HistoryLeavesFragment extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+        LeaveApprovalHelper leaveApprovalHelper = LeaveApprovalHelper.getInstance(getActivity());
 
-
-        if (bmodel.leaveApprovalHelper.getLeaveApproved().size() > 0)
-            lvLeavesList.setAdapter(new MyAdapter(bmodel.leaveApprovalHelper.getLeaveApproved()));
+        if (leaveApprovalHelper.getLeaveApproved().size() > 0)
+            lvLeavesList.setAdapter(new MyAdapter(leaveApprovalHelper.getLeaveApproved()));
 
 
     }
@@ -80,32 +77,33 @@ public class HistoryLeavesFragment extends IvyBaseFragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
+        public @NonNull
+        View getView(int position, View convertView, @NonNull ViewGroup viewGroup) {
             final LeaveViewHolder holder;
+            String CODE_APPROVED = "S", CODE_REJECTED = "D";
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                convertView = (View) inflater.inflate(
-                        R.layout.row_leave_user_list, null);
+                convertView =  inflater.inflate(
+                        R.layout.row_leave_user_list, viewGroup,false);
 
                 holder = new LeaveViewHolder();
                 holder.leaveApprovalBO = items.get(position);
 
-                holder.tvUsername = (TextView) convertView.findViewById(R.id.tvusername);
-                holder.tvLeavePeriod = (TextView) convertView.findViewById(R.id.tv_leaveperiod);
-                holder.tv_leaveperiod_title = (TextView) convertView.findViewById(R.id.tv_leaveperiod_title);
-                holder.tvLeaveType = (TextView) convertView.findViewById(R.id.tv_leavetype);
-                holder.tv_leavetype_title = (TextView) convertView.findViewById(R.id.tv_leavetype_title);
-                holder.tvStatus = (TextView) convertView.findViewById(R.id.tv_status);
-                holder.tv_status_title = (TextView) convertView.findViewById(R.id.tv_status_title);
+                holder.tvUsername =  convertView.findViewById(R.id.tvusername);
+                holder.tvLeavePeriod =  convertView.findViewById(R.id.tv_leaveperiod);
+                holder.tv_leaveperiod_title =  convertView.findViewById(R.id.tv_leaveperiod_title);
+                holder.tvLeaveType =  convertView.findViewById(R.id.tv_leavetype);
+                holder.tv_leavetype_title =  convertView.findViewById(R.id.tv_leavetype_title);
+                holder.tvStatus =  convertView.findViewById(R.id.tv_status);
+                holder.tv_status_title =  convertView.findViewById(R.id.tv_status_title);
 
-
-                holder.tvUsername.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.tvLeavePeriod.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tvLeaveType.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tvStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_leaveperiod_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_leavetype_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_status_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tvUsername.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+                holder.tvLeavePeriod.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tvLeaveType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_leaveperiod_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_leavetype_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_status_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
 
                 holder.tvUsername.setText(holder.leaveApprovalBO.getUsername());
                 if (holder.leaveApprovalBO.getFromDate().equals(holder.leaveApprovalBO.getToDate()))
@@ -119,9 +117,6 @@ public class HistoryLeavesFragment extends IvyBaseFragment {
                     holder.tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.GREEN));
                 else if (holder.leaveApprovalBO.getStatusCode().equals(CODE_REJECTED))
                     holder.tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.RED));
-
-
-
 
             }
 

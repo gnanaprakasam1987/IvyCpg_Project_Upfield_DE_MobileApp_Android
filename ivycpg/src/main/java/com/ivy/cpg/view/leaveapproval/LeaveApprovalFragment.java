@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.leaveapproval;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,16 +24,19 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.FontUtils;
+import com.ivy.utils.rx.AppSchedulerProvider;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 public class LeaveApprovalFragment extends IvyBaseFragment {
-    private BusinessModel bmodel;
     private View view;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
     }
 
     @Override
@@ -56,8 +59,7 @@ public class LeaveApprovalFragment extends IvyBaseFragment {
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
 
-        if (actionBar != null)
-        {
+        if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setIcon(null);
             actionBar.setElevation(0);
@@ -66,7 +68,7 @@ public class LeaveApprovalFragment extends IvyBaseFragment {
 
         setScreenTitle("Leave Approval");
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_text_pending)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_text_approve)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.reject)));
@@ -81,14 +83,24 @@ public class LeaveApprovalFragment extends IvyBaseFragment {
             for (int i = 0; i < tabChildsCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
                 }
             }
         }
 
-        bmodel.leaveApprovalHelper.loadLeaveData();
+        AppSchedulerProvider appSchedulerProvider = new AppSchedulerProvider();
+        new CompositeDisposable().add(LeaveApprovalHelper.getInstance(getActivity()).updateLeaves()
+                .subscribeOn(appSchedulerProvider.io())
+                .observeOn(appSchedulerProvider.ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) {
 
-        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+                    }
+                }));
+
+
+        final ViewPager viewPager = view.findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getActivity().getSupportFragmentManager(), tabLayout.getTabCount());
         adapter.notifyDataSetChanged();
@@ -96,7 +108,8 @@ public class LeaveApprovalFragment extends IvyBaseFragment {
         viewPager.setOffscreenPageLimit(0);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());

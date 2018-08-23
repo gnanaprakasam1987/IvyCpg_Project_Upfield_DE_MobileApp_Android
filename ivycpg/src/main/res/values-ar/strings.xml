@@ -1139,7 +1139,7 @@
     <string name="crown_count">Crown Count</string>
     <string name="do_u_want_directly_go_or_redownload">Do you want to directly go or redownlod?</string>
     <string name="do_u_want_remove_retailer">Do you want to Remove Retailer?</string>
-    <string name="do_u_want_to_delete_tran">Do you want to delete Transaction?</string>
+    <string name="do_u_want_to_delete_tran">هل تريد حذف المعاملة؟</string>
     <string name="do_u_want_to_save_delivery_management">Do you want to save Delivery Management?</string>
     <string name="do_you_want_to_activate_retailer">Do you want to Activate Retailer?</string>
     <string name="do_you_want_to_deactivate_retailer">Do you want to Deactivate Retailer?</string>
@@ -1260,5 +1260,10 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
+
+    <string name="share_percent">شارك ٪</string>
+    <string name="total_value_less_than_actual_value">القيمة الإجمالية أقل من القيمة الفعلي.</string>
+    <string name="answer_to_take_photo">أجب على السؤال لالتقاط صورة.</string>
+    <string name="value_exceeds_more_than_total">تتجاوز القيمة أكثر من الإجمالي.</string>
 
 </resources>

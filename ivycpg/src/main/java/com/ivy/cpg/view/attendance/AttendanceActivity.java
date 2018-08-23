@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.attendance;
 
 
 import android.os.Bundle;
@@ -15,7 +15,6 @@ import com.ivy.sd.png.util.Commons;
 
 public class AttendanceActivity extends IvyBaseActivityNoActionBar {
 
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +22,7 @@ public class AttendanceActivity extends IvyBaseActivityNoActionBar {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
 
         BusinessModel bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -44,7 +43,6 @@ public class AttendanceActivity extends IvyBaseActivityNoActionBar {
                     Toast.LENGTH_SHORT).show();
             finish();
         }
-
 
     }
 
