@@ -7,9 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -34,6 +31,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadActivity;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyActivity;
+import com.ivy.cpg.view.webview.WebViewActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -46,8 +44,6 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.sd.png.view.WebViewActivity;
-import com.ivy.cpg.view.webview.WebViewActivity;
 
 import java.util.Vector;
 
@@ -263,7 +259,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 stockProposalIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 stockProposalIntent.putExtra("screentitle", menuItem.getMenuName());
                 stockProposalIntent.putExtra("isFromLodMgt", true);
-                stockProposalIntent.putExtra("menuCode",menuItem.getConfigCode());
+                stockProposalIntent.putExtra("menuCode", menuItem.getConfigCode());
                 startActivity(stockProposalIntent);
                 break;
 
