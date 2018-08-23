@@ -64,7 +64,6 @@ import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.LoadManagementFragment;
-import com.ivy.cpg.view.van.PlanningSubScreenFragment;
 import com.ivy.cpg.view.van.StockProposalFragment;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.maplib.PlanningMapFragment;
@@ -117,7 +116,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_REPORT = "MENU_REPORT";
     private static final String MENU_SYNC = "MENU_SYNC";
     private static final String MENU_LOAD_MANAGEMENT = "MENU_LOAD_MANAGEMENT";
-    private static final String MENU_PLANNING_SUB = "MENU_PLANNING_SUB";
     private static final String MENU_LOAD_REQUEST = "MENU_STK_PRO";
     private static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     private static final String MENU_JOINT_CALL = "MENU_JOINT_CALL";
@@ -257,7 +255,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_EMPTY_RECONCILIATION, R.drawable.ic_empty_reconcilation_icon);
         menuIcons.put(MENU_ATTENDANCE, R.drawable.ic_vector_out_of_trade);
         menuIcons.put(MENU_REALLOCATION, R.drawable.ic_reallocation_icon);
-        menuIcons.put(MENU_PLANNING_SUB, R.drawable.icon_reports);
         menuIcons.put(MENU_DIGITIAL_SELLER, R.drawable.ic_vector_gallery);
         menuIcons.put(MENU_ROAD_ACTIVITY, R.drawable.icon_reports);
         menuIcons.put(MENU_PRESENCE, R.drawable.ic_vector_out_of_trade);
@@ -887,29 +884,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else {
                 switchFragment(MENU_LOAD_MANAGEMENT, menuItem.getMenuName());
             }
-        } else if (menuItem.getConfigCode().equals(MENU_PLANNING_SUB)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.next_day_coverage),
-                        Toast.LENGTH_SHORT).show();
-
-            } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.mark_attendance),
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.leaveToday),
-                            Toast.LENGTH_SHORT).show();
-            } else {
-                switchFragment(MENU_PLANNING_SUB, menuItem.getMenuName());
-
-            }
-
         } else if (menuItem.getConfigCode().equals(MENU_SYNC)) {
             switchFragment(MENU_SYNC, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_SKUWISESTGT)) {
@@ -1613,8 +1587,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_LOAD_MANAGEMENT);
         SkuWiseTargetFragment mSKUTgtFragment = (SkuWiseTargetFragment) fm
                 .findFragmentByTag(MENU_SKUWISESTGT);
-        PlanningSubScreenFragment mPlanningSubScreenFragment = (PlanningSubScreenFragment) fm
-                .findFragmentByTag(MENU_PLANNING_SUB);
         ReportMenuFragment mReportMenuFragment = (ReportMenuFragment) fm
                 .findFragmentByTag(MENU_REPORT);
         StockProposalFragment stockProposalFragment = (StockProposalFragment) fm
@@ -1715,9 +1687,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (mSKUTgtFragment != null && (fragmentName.equals(MENU_SKUWISESTGT))
                 && mSKUTgtFragment.isVisible()) {
             return;
-        } else if (mPlanningSubScreenFragment != null && (fragmentName.equals(MENU_PLANNING_SUB))
-                && mPlanningSubScreenFragment.isVisible()) {
-            return;
         } else if (mReportMenuFragment != null && (fragmentName.equals(MENU_REPORT))
                 && mReportMenuFragment.isVisible()) {
             return;
@@ -1804,8 +1773,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mLoadMgtFragment);
         if (mSKUTgtFragment != null)
             ft.remove(mSKUTgtFragment);
-        if (mPlanningSubScreenFragment != null)
-            ft.remove(mPlanningSubScreenFragment);
         if (mReportMenuFragment != null)
             ft.remove(mReportMenuFragment);
         if (stockProposalFragment != null)
@@ -2006,14 +1973,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_LOAD_MANAGEMENT);
                 break;
-            case MENU_PLANNING_SUB:
-                bmodel.configurationMasterHelper
-                        .setLoadplanningsubttitle(menuName);
-                fragment = new PlanningSubScreenFragment();
-                ft.add(R.id.fragment_content, fragment,
-                        MENU_PLANNING_SUB);
-                break;
-
             case MENU_PRESENCE:
                 ft.add(R.id.fragment_content, new AttendanceFragment(),
                         MENU_PRESENCE);
@@ -2192,6 +2151,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     .findFragmentByTag(MENU_NON_FIELD);
             if (mPlanDeviationFragment != null) {
                 ft.detach(mPlanDeviationFragment);
+                ft.commit();
+            }
+        } else if (MENU_LOAD_REQUEST.equals(menuCode)) {
+            StockProposalFragment mStockProposalFragment = (StockProposalFragment) fm
+                    .findFragmentByTag(MENU_LOAD_REQUEST);
+            if (mStockProposalFragment != null) {
+                ft.detach(mStockProposalFragment);
                 ft.commit();
             }
         }

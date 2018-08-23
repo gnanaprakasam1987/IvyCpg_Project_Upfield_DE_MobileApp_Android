@@ -1,8 +1,7 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.manualvanload;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -38,16 +37,14 @@ public class VanLoadReturnProductDialog extends Dialog implements
     private BusinessModel bmodel;
     // Declare Context
     private Context context;
-    // List to add values and Show in ListView
-    private ArrayList<BomReturnBO> mylist;
-    // Vairalbes
-    private String append = "";
+
+
     // Views
     private ListView lvwplist;
     private EditText QUANTITY;
     private ManualVanLoadActivity manualVanLoadActivity;
     private Button  btnSave;
-    private Toolbar toolbar;
+
 
     public VanLoadReturnProductDialog(Context context,
                                       ManualVanLoadActivity vanloadActivity) {
@@ -72,8 +69,6 @@ public class VanLoadReturnProductDialog extends Dialog implements
                 LayoutParams.MATCH_PARENT);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.Product_details);
         setCancelable(true);
         // Initialize Views in the Screen
         initializeView();
@@ -114,7 +109,8 @@ public class VanLoadReturnProductDialog extends Dialog implements
             }
 
             int size = totalSize.size();
-            mylist = new ArrayList<>();
+            // List to add values and Show in ListView
+            ArrayList<BomReturnBO> mylist = new ArrayList<>();
             // Add the products into list
             for (int i = 0; i < size; ++i) {
                 BomReturnBO productBo = totalSize.get(i);
@@ -254,7 +250,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
 
     }
 
-    public void eff() {
+    public void eff(String append) {
         String s = QUANTITY.getText().toString();
         if (!s.equals("0") && !s.equals("0.0")) {
             QUANTITY.setText(QUANTITY.getText() + append);
@@ -276,8 +272,8 @@ public class VanLoadReturnProductDialog extends Dialog implements
                 QUANTITY.setText(s + "");
             } else {
                 Button ed = (Button) findViewById(vw.getId());
-                append = ed.getText().toString();
-                eff();
+               String append = ed.getText().toString();
+                eff(append);
             }
         }
 

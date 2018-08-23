@@ -1,74 +1,173 @@
 package com.ivy.cpg.view.van;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoadManagementBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.ToolBarwithFilter;
+import com.ivy.sd.png.view.FilterFiveFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class StockViewActivity extends ToolBarwithFilter implements
-        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack {
-    private ArrayList<LoadManagementBO> filterlist;
+public class StockViewActivity extends IvyBaseActivityNoActionBar implements
+        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack, View.OnClickListener {
     private ArrayList<LoadManagementBO> mylist;
-    private Vector<LoadManagementBO> mylist2;
-    private ArrayList<LoadManagementBO> childList = null;
-    private HashMap<String, ArrayList<LoadManagementBO>> listDataChild;
     private ExpandableListAdapter expandableListAdapter;
     private boolean isExpandList = false;
-    private Intent loadActivity;
-    private boolean isFromPlanning = false;
-    private boolean isOutersize;
+    private DrawerLayout mDrawerLayout;
+    private ViewFlipper viewFlipper;
+    public HashMap<Integer, Integer> mSelectedIdByLevelId;
+    protected BusinessModel bmodel;
+    private ExpandableListView expandlvwplist;
+    private EditText mEdt_searchproductName;
+    private InputMethodManager inputManager;
+    private static final String BRAND = "Brand";
+    private static final String GENERAL = "General";
+    private TextView productName;
+    boolean expand_collapse_button_enable = false;
+    private HashMap<String, String> mSelectedFilterMap = new HashMap<>();
+    private ArrayList<String> mSearchTypeArray;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         final Intent i = getIntent();
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ListHeader);
-        LayoutInflater layoutInflater = (LayoutInflater) StockViewActivity.this
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final ViewGroup nullParent = null;
-        ll.addView(layoutInflater.inflate(R.layout.include_stockview_header,
-                nullParent, false));
+        setContentView(R.layout.layout_stockview);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        findViewById(R.id.keypad).setVisibility(View.GONE);
-        footerLty.setVisibility(View.GONE);
-        lvwplist.setVisibility(View.GONE);
-        expandlvwplist.setVisibility(View.VISIBLE);
 
+
+        Toolbar toolbar = toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        if (toolbar != null) {
+
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setIcon(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            // Used to on / off the back arrow icon
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            // Used to remove the app logo actionbar icon and set title as home
+            // (title support click)
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            setScreenTitle(i.getStringExtra("screentitle"));
+        }
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        // set a custom shadow that overlays the main content when the drawer
+        // opens
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.END);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
+
+        mEdt_searchproductName = (EditText) findViewById(R.id.edt_searchproductName);
+        Button mBtn_Search = (Button) findViewById(R.id.btn_search);
+        Button mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
+        Button mBtn_clear = (Button) findViewById(R.id.btn_clear);
+
+        mBtn_Search.setOnClickListener(this);
+        mBtnFilterPopup.setOnClickListener(this);
+        mBtn_clear.setOnClickListener(this);
+        mEdt_searchproductName.setOnEditorActionListener(this);
+
+        expandlvwplist = (ExpandableListView) findViewById(R.id.expand_lvwplist);
+        expandlvwplist.setCacheColorHint(0);
+
+        productName = (TextView) findViewById(R.id.productName);
+        productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        productName.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                int inType = productName.getInputType();
+                productName.setInputType(InputType.TYPE_NULL);
+                productName.onTouchEvent(event);
+                productName.setInputType(inType);
+                return true;
+            }
+        });
+
+        mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                supportInvalidateOptionsMenu();
+                if (s.length() >= 3) {
+                    loadSearchedList();
+                }
+            }
+        });
+
+        mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(getResources().getString(R.string.product_name));
+        mSearchTypeArray.add(getResources().getString(R.string.order_gcas));
+        mSearchTypeArray.add(getResources().getString(
+                R.string.order_dialog_barcode));
+
+        Vector<String> vect = new Vector<>();
+        vect.addAll(Arrays.asList(getResources().getStringArray(
+                R.array.productFilterArray)));
+        mSelectedFilterMap.put("General", GENERAL);
         ((TextView) findViewById(R.id.product_name)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) findViewById(R.id.sihCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) findViewById(R.id.sihOuterTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         ((TextView) findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
         if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
                 bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||
                 bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
@@ -180,7 +279,7 @@ public class StockViewActivity extends ToolBarwithFilter implements
             }
         }
 
-        mDrawerToggle = new ActionBarDrawerToggle(StockViewActivity.this,
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(StockViewActivity.this,
                 mDrawerLayout,
                 R.string.ok,
                 R.string.close
@@ -194,7 +293,7 @@ public class StockViewActivity extends ToolBarwithFilter implements
 
             public void onDrawerOpened(View drawerView) {
                 if (getSupportActionBar() != null) {
-                    setScreenTitle("Filter");
+                    setScreenTitle(getResources().getString(R.string.filter));
                 }
                 supportInvalidateOptionsMenu();
             }
@@ -207,35 +306,61 @@ public class StockViewActivity extends ToolBarwithFilter implements
         mylist = new ArrayList<>(bmodel.productHelper.getLoadMgmtProducts());
         Commons.print("stock view oncreate," + String.valueOf(mylist.size()));
 
-        /** Load products from product master **/
-//        LoadManagementBO lbo;
-//        mylist2 = new Vector<>();
-//        for (int j = 0; j < bmodel.productHelper.getLoadMgmtProducts().size(); j++) {
-//            lbo = bmodel.productHelper.getLoadMgmtProducts().get(j);
-//            if (lbo.getStocksih() > 0)
-//                mylist2.add(lbo);
-//        }
-
-
-        setActionBarTitle(i.getStringExtra("screentitle"));
-        hideSpecialFilter();
-        hideNextButton();
-        hideRemarksButton();
-        hideShemeButton();
-        hideLocationButton();
         updateBrandText("Brand", -1);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_actionbar_with_filter, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // Change color if Filter is selected
-        if (!generalbutton.equals(GENERAL))
-            menu.findItem(R.id.menu_spl_filter).setIcon(
-                    R.drawable.ic_action_star_select);
 
+        if (mSelectedIdByLevelId != null) {
+            for (Integer id : mSelectedIdByLevelId.keySet()) {
+                if (mSelectedIdByLevelId.get(id) > 0) {
+                    menu.findItem(R.id.menu_fivefilter).setIcon(
+                            R.drawable.ic_action_filter_select);
+                    break;
+                }
+            }
+        }
+
+        Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_down_arrow);
+        drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
+        menu.findItem(R.id.menu_expand).setIcon(drawable);
+
+
+        // If the nav drawer is open, hide action items related to the content
+        // view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
+
+        menu.findItem(R.id.menu_spl_filter).setVisible(false);
+        menu.findItem(R.id.menu_next).setVisible(false);
+        menu.findItem(R.id.menu_remarks).setVisible(false);
+        menu.findItem(R.id.menu_scheme).setVisible(false);
+        menu.findItem(R.id.menu_apply_so).setVisible(false);
+        menu.findItem(R.id.menu_apply_std_qty).setVisible(false);
         menu.findItem(R.id.menu_loc_filter).setVisible(false);
+        menu.findItem(R.id.menu_sih_apply).setVisible(false);
+
+        menu.findItem(R.id.menu_fivefilter).setVisible(false);
+
+        if (bmodel.productHelper.isFilterAvaiable("MENU_LOAD_MANAGEMENT"))
+            menu.findItem(R.id.menu_fivefilter).setVisible(true);
+
+        if (expand_collapse_button_enable)
+            menu.findItem(R.id.menu_expand).setVisible(true);
+        else
+            menu.findItem(R.id.menu_expand).setVisible(false);
+
+
+        if (drawerOpen)
+            menu.clear();
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -247,42 +372,44 @@ public class StockViewActivity extends ToolBarwithFilter implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-               /* loadActivity = new Intent(StockViewActivity.this, HomeScreenActivity.class);
-                if (isFromPlanning)
-                    loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
-                else
-                    loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-                startActivity(loadActivity);*/
-                finish();
+                onBackButtonClick();
             }
         } else if (id == R.id.menu_expand) {
-            if (!isExpandList) {
+            if (!isExpandList) {// used to view batch wise stock
+
+                if (inputManager.isAcceptingText())// hide soft key board after select expend menu
+                    inputManager.hideSoftInputFromWindow(
+                            mEdt_searchproductName.getWindowToken(), 0);
+
                 for (int i = 0; i < expandableListAdapter.getGroupCount(); i++) {
                     expandlvwplist.expandGroup(i);
                 }
                 isExpandList = true;
-            } else {
+            } else {// used to close batch wise stock
                 for (int i = 0; i < expandableListAdapter.getGroupCount(); i++) {
                     expandlvwplist.collapseGroup(i);
                 }
                 isExpandList = false;
             }
 
+        } else if (id == R.id.menu_fivefilter) {
+            if (bmodel.configurationMasterHelper.IS_UNLINK_FILTERS) {
+
+                mSelectedFilterMap.put("General", GENERAL);
+            }
+            FiveFilterFragment();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void handleMenuIcon(Menu menu) {
-
-    }
 
     @Override
     public void updateBrandText(String mFilterText, int bid) {
 
         mDrawerLayout.closeDrawers();
 
-        brandbutton = mFilterText;
 
         productName.setText("");
         if (mylist == null) {
@@ -311,13 +438,15 @@ public class StockViewActivity extends ToolBarwithFilter implements
             }
         }
 
-        listDataChild = new HashMap<>();
-
+        HashMap<String, ArrayList<LoadManagementBO>> listDataChild = new HashMap<>();
+        ArrayList<LoadManagementBO> childList = null;
         for (LoadManagementBO parentBo : temp) {
             childList = new ArrayList<LoadManagementBO>();
             for (LoadManagementBO childBO : temp2) {
                 if (parentBo.getProductid() == childBO.getProductid()
-                        && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty()&& !childBO.getBatchId().equals("0"))
+                        && childBO.getBatchlist() != null
+                        && !childBO.getBatchId().isEmpty()
+                        && !childBO.getBatchId().equals("0"))
                     childList.add(childBO);
             }
             String pid = String.valueOf(parentBo.getProductid());
@@ -328,6 +457,10 @@ public class StockViewActivity extends ToolBarwithFilter implements
             if (childList.size() > 0)
                 showExpandButton();
 //---------- remove duplicate product name from given list-----------//
+        /**
+         * product getting duplicated if more than batch is available single product so in this case
+         * only we removed duplicated product
+         */
 
         for (int i = 0; i < temp.size(); i++) {
 
@@ -346,97 +479,111 @@ public class StockViewActivity extends ToolBarwithFilter implements
     }
 
     @Override
-    public void onBackButtonClick() {
+    public void updateGeneralText(String mFilterText) {
+        // set the spl filter name on the button for display
+
+        if (mSelectedIdByLevelId != null)
+            mSelectedIdByLevelId.clear();
+
+        updateBrandText(BRAND, -1);
+    }
+
+    @Override
+    public void updateCancel() {
+        // Close Drawer
+        mDrawerLayout.closeDrawers();
+    }
+
+
+    private void onBackButtonClick() {
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
+
     public void loadSearchedList() {
 
-        if (mEdt_searchproductName.getText().length() >= 3) {
+        if (mylist == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.no_products_exists),
+                    0);
+            return;
+        }
+        int siz = mylist.size();
+        ArrayList<LoadManagementBO> temp = new ArrayList<>();
+        String mSelectedFilter = bmodel.getProductFilter();
+        for (int i = 0; i < siz; ++i) {
+            LoadManagementBO ret = mylist.get(i);
+            if ("BarCode".equals(mSelectedFilter)) {
+                if (ret.getSih() > 0) {
+                    if (ret.getBarcode()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText()
+                                            .toString().toLowerCase()))
+                        temp.add(ret);
+                }
 
-            if (mylist == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.no_products_exists),
-                        0);
-                return;
-            }
-            int siz = mylist.size();
-            ArrayList<LoadManagementBO> temp = new ArrayList<>();
-            String mSelectedFilter = bmodel.getProductFilter();
-            for (int i = 0; i < siz; ++i) {
-                LoadManagementBO ret = mylist.get(i);
-                if ("BarCode".equals(mSelectedFilter)) {
-                    if (ret.getSih() > 0) {
-                        if (ret.getBarcode()
-                                .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText()
-                                                .toString().toLowerCase()))
-                            temp.add(ret);
-                    }
+            } else if ("GCAS Code".equals(mSelectedFilter)) {
+                if (ret.getSih() > 0) {
+                    if (ret.getRField1()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText()
+                                            .toString().toLowerCase()))
+                        temp.add(ret);
+                }
 
-                } else if ("GCAS Code".equals(mSelectedFilter)) {
-                    if (ret.getSih() > 0) {
-                        if (ret.getRField1()
-                                .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText()
-                                                .toString().toLowerCase()))
-                            temp.add(ret);
-                    }
-
-                } else if (getResources().getString(
-                        R.string.product_name).equals(mSelectedFilter)) {
-                    if (ret.getSih() > 0) {
-                        if (ret.getProductshortname()
-                                .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText()
-                                                .toString().toLowerCase()))
-                            temp.add(ret);
-                    }
+            } else if (getResources().getString(
+                    R.string.product_name).equals(mSelectedFilter)) {
+                if (ret.getSih() > 0) {
+                    if (ret.getProductshortname()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText()
+                                            .toString().toLowerCase()))
+                        temp.add(ret);
                 }
             }
-            listDataChild = new HashMap<>();
+        }
+        HashMap<String, ArrayList<LoadManagementBO>> listDataChild = new HashMap<>();
 
-            for (LoadManagementBO parentBo : temp) {
-                childList = new ArrayList<>();
-                for (LoadManagementBO childBO : temp) {
-                    if (parentBo.getProductid() == childBO.getProductid()
-                            && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty())
-                        childList.add(childBO);
-                }
-                String pid = String.valueOf(parentBo.getProductid());
-
-                listDataChild.put(pid, childList);//load child batch List data
+        for (LoadManagementBO parentBo : temp) {
+            ArrayList<LoadManagementBO> childList = new ArrayList<>();
+            for (LoadManagementBO childBO : temp) {
+                if (parentBo.getProductid() == childBO.getProductid()
+                        && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty()
+                        && !childBO.getBatchId().equals("0"))
+                    childList.add(childBO);
             }
+            String pid = String.valueOf(parentBo.getProductid());
+
+            listDataChild.put(pid, childList);//load child batch List data
+        }
 
 //---------- remove duplicate product name from given list-----------///
+        /**
+         * product getting duplicated if more than batch is available single product so in this case
+         * only we removed duplicated product
+         */
 
-            for (int i = 0; i < temp.size(); i++) {
+        for (int i = 0; i < temp.size(); i++) {
 
-                for (int j = i + 1; j < temp.size(); j++) {
-                    if (temp.get(i).getProductid() == temp.get(j).getProductid()) {
-                        temp.remove(j);
-                        j--;
-                    }
+            for (int j = i + 1; j < temp.size(); j++) {
+                if (temp.get(i).getProductid() == temp.get(j).getProductid()) {
+                    temp.remove(j);
+                    j--;
                 }
             }
-
-
-            expandableListAdapter = new ExpandableListAdapter(this, temp, listDataChild);
-            expandlvwplist.setAdapter(expandableListAdapter);
-
-        } else {
-            Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
-                    .show();
         }
+
+        expandableListAdapter = new ExpandableListAdapter(this, temp, listDataChild);
+        expandlvwplist.setAdapter(expandableListAdapter);
     }
 
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        filterlist = new ArrayList<>();
+        ArrayList<LoadManagementBO> filterlist = new ArrayList<>();
         if (mAttributeProducts != null) {
             if (mFilteredPid != 0) {
                 for (LoadManagementBO productBO : mylist) {
@@ -458,13 +605,13 @@ public class StockViewActivity extends ToolBarwithFilter implements
             }
         } else {
             if (mFilteredPid != 0 && !mFilterText.equalsIgnoreCase("")) {
-                    for (LoadManagementBO productBO : mylist) {
-                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                for (LoadManagementBO productBO : mylist) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
 
-                            if (productBO.getSih() > 0)
-                                filterlist.add(productBO);
-                        }
+                        if (productBO.getSih() > 0)
+                            filterlist.add(productBO);
                     }
+                }
             } else {
                 for (LoadManagementBO productBO : mylist) {
                     if (productBO.getSih() > 0)
@@ -473,12 +620,15 @@ public class StockViewActivity extends ToolBarwithFilter implements
             }
         }
 
-        listDataChild = new HashMap<>();
+        HashMap<String, ArrayList<LoadManagementBO>> listDataChild = new HashMap<>();
+        ArrayList<LoadManagementBO> childList = null;
         for (LoadManagementBO parentBo : filterlist) {
             childList = new ArrayList<>();
             for (LoadManagementBO childBO : filterlist) {
                 if (parentBo.getProductid() == childBO.getProductid()
-                        && childBO.getBatchlist() != null && !childBO.getBatchId().isEmpty())
+                        && childBO.getBatchlist() != null
+                        && !childBO.getBatchId().isEmpty()
+                        && !childBO.getBatchId().equals("0"))
                     childList.add(childBO);
             }
             String pid = String.valueOf(parentBo.getProductid());
@@ -490,6 +640,10 @@ public class StockViewActivity extends ToolBarwithFilter implements
                 showExpandButton();
 
 //---------- remove duplicate product name from given list-----------///
+        /**
+         * product getting duplicated if more than batch is available single product so in this case
+         * only we removed duplicated product
+         */
         for (int i = 0; i < filterlist.size(); i++) {
 
             for (int j = i + 1; j < filterlist.size(); j++) {
@@ -504,11 +658,90 @@ public class StockViewActivity extends ToolBarwithFilter implements
 
         mDrawerLayout.closeDrawers();
         if (mSelectedIdByLevelId != null)
-            super.mSelectedIdByLevelId = mSelectedIdByLevelId;
+            this.mSelectedIdByLevelId = mSelectedIdByLevelId;
     }
 
     public void loadProductList() {
         updateGeneralText(GENERAL);
+    }
+
+    @Override
+    public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
+        if (arg1 == EditorInfo.IME_ACTION_DONE) {
+            if (mEdt_searchproductName.getText().length() >= 3) {
+                loadSearchedList();
+            } else {
+                Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
+                        .show();
+            }
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int btnId = v.getId();
+        bmodel = (BusinessModel) getApplicationContext();
+        bmodel.setContext(this);
+        if (btnId == R.id.btn_search) {
+            viewFlipper.showNext();
+        } else if (btnId == R.id.btn_filter_popup) {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(
+                    StockViewActivity.this);
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                    StockViewActivity.this,
+                    android.R.layout.select_dialog_singlechoice,
+                    mSearchTypeArray);
+            builderSingle.setAdapter(arrayAdapter,
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bmodel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+                    });
+            int selectedFiltPos = mSearchTypeArray.indexOf(bmodel
+                    .getProductFilter());
+            builderSingle.setSingleChoiceItems(arrayAdapter, selectedFiltPos,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bmodel.setProductFilter(arrayAdapter.getItem(which));
+                        }
+
+                    });
+            builderSingle.setPositiveButton(
+                    getResources().getString(R.string.ok),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton) {
+                        }
+                    });
+            bmodel.applyAlertDialogTheme(builderSingle);
+
+        } else if (btnId == R.id.btn_clear) {
+            viewFlipper.showPrevious();
+            mEdt_searchproductName.setText("");
+            /** set the following value to clear the **/
+            mSelectedFilterMap.put("General", "All");
+            mSelectedFilterMap.put("Brand", "All");
+            mSelectedFilterMap.put("Category", "All");
+            if (mSelectedFilterMap != null && mSelectedIdByLevelId != null) {
+                mSelectedIdByLevelId.clear();
+            }
+
+            try {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+
+            supportInvalidateOptionsMenu();
+            updateGeneralText(GENERAL);
+        }
     }
 
     private class ExpandableListAdapter extends BaseExpandableListAdapter {
@@ -1054,5 +1287,34 @@ public class StockViewActivity extends ToolBarwithFilter implements
 
     }
 
+    private void showExpandButton() {
+        expand_collapse_button_enable = true;
+    }
 
+    private void FiveFilterFragment() {
+        try {
+
+            mDrawerLayout.openDrawer(GravityCompat.END);
+            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
+                    .findFragmentByTag("Fivefilter");
+            android.support.v4.app.FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("serilizeContent",
+                    bmodel.configurationMasterHelper.getGenFilter());
+            bundle.putString("isFrom", "STK");
+            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
+
+            // set Fragmentclass Arguments
+            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
+            fragobj.setArguments(bundle);
+            ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
 }

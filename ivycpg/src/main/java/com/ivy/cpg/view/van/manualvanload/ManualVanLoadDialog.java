@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.manualvanload;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -44,7 +44,6 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
     private InputMethodManager inputManager;
     private String[] batchno;
     private String tv;
-    private Button addLoadBtn;
 //    private Button addLoadBtn,cancelLoadBtn;
 //    private TextView headerText;
 
@@ -66,7 +65,7 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
         setCancelable(true);
         bmodel = (BusinessModel) context.getApplicationContext();
         Button back = (Button) findViewById(R.id.closeButton);
-        addLoadBtn = (Button) findViewById(R.id.add_load);
+        Button addLoadBtn = (Button) findViewById(R.id.add_load);
         TextView headerText = (TextView) findViewById(R.id.titlebar);
         back.setOnClickListener(this);
         addLoadBtn.setOnClickListener(this);
@@ -160,7 +159,7 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
             } else {
                 Button ed = (Button) findViewById(v.getId());
                 append = ed.getText().toString();
-               numberPressed(ed);
+                numberPressed(ed);
             }
             updateValue();
         }
