@@ -124,7 +124,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private int index;
     private int top;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private int mFilteredProductId;
+    private int mFilteredProductId =-1;
     private boolean isViewMode;
     private TabLayout tabLayout;
     private Button saveButton;
@@ -521,7 +521,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 surveyBO = sBO;
             }
         }
-        if (mFilteredProductId != 0)
+
             loadQuestionFromFiveLevelFilter(surveyHelperNew.mSelectedSurvey, mFilteredProductId);
 
         /* Show or hide footer which display survey score and overall score*/
@@ -2294,7 +2294,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         mQuestions = new ArrayList<>();
         for (QuestionBO question : items) {
             if (question.getSurveyid() == surveyId || surveyId == -1) {
-                if (question.getParentHierarchy().contains("/" + filteredProductId + "/")
+                if ((question.getParentHierarchy() != null && question.getParentHierarchy().contains("/" + filteredProductId + "/"))
                         || filteredProductId == -1 && question.getIsSubQuestion() == 0) {
                     mQuestions.add(question);
                 }
