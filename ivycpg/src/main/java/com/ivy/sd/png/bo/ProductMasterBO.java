@@ -1958,4 +1958,14 @@ public class ProductMasterBO {
     public void setmDeadProduct(int mDeadProduct) {
         this.mDeadProduct = mDeadProduct;
     }
+
+    private int increasedPcs;
+
+    public int getIncreasedPcs() {
+        return increasedPcs;
+    }
+
+    public void setIncreasedPcs(int increasedPcs) {
+        this.increasedPcs = increasedPcs;
+    }
 }

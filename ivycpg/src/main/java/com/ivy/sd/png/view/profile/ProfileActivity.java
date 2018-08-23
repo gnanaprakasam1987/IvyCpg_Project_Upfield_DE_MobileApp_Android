@@ -2257,7 +2257,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(msg);
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 //  updateCancel();

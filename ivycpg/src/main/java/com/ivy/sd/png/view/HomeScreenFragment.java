@@ -49,6 +49,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
+import com.ivy.cpg.view.attendance.AttendanceFragment;
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.IncentiveDashboardFragment;
 import com.ivy.cpg.view.dashboard.olddashboard.DashboardFragment;
@@ -57,7 +59,10 @@ import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.expense.ExpenseFragment;
+import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.nonfield.NonFieldHelper;
+import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
@@ -65,6 +70,7 @@ import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.StockProposalFragment;
+import com.ivy.cpg.view.webview.WebViewActivity;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.camera.CameraActivity;
@@ -82,7 +88,7 @@ import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.attendance.inout.TimeTrackingFragment;
+import com.ivy.cpg.view.attendance.inout.TimeTrackingFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -279,7 +285,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         if (getActivity().getIntent().getBooleanExtra("fromSettingScreen", false))
             bmodel.labelsMasterHelper.downloadLabelsMaster();
 
-        if (bmodel.mAttendanceHelper.checkLeaveAttendance(getActivity()))
+        if (AttendanceHelper.getInstance(getActivity()).checkLeaveAttendance(getActivity()))
             isLeave_today = true;
 
         TextView userNameTv = (TextView) view.findViewById(R.id.tv_username);
@@ -780,9 +786,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             }
         } else if (menuItem.getConfigCode().equals(MENU_ATTENDANCE)) {
-            bmodel.mAttendanceHelper.downNonFieldReasons(getActivity());
-            bmodel.mAttendanceHelper.downLeaveTypes(getActivity());
-            bmodel.mAttendanceHelper.dynamicRadioButtton(getActivity());
+            NonFieldHelper nonFieldHelper = NonFieldHelper.getInstance(getActivity());
+            nonFieldHelper.downNonFieldReasons(getActivity());
+            nonFieldHelper.downLeaveTypes(getActivity());
+            nonFieldHelper.dynamicRadioButtton(getActivity());
             bmodel.configurationMasterHelper.setTradecoveragetitle(menuItem
                     .getMenuName());
             switchFragment(MENU_ATTENDANCE, menuItem.getMenuName());
@@ -1974,12 +1981,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_LOAD_MANAGEMENT);
                 break;
             case MENU_PRESENCE:
-                ft.add(R.id.fragment_content, new AttendanceFragment(),
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                fragment = new AttendanceFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
                         MENU_PRESENCE);
                 break;
             case MENU_IN_OUT:
                 bndl = new Bundle();
-                bndl.putString("screentitle", fragmentName);
+                bndl.putString("screentitle", menuName);
                 fragment = new TimeTrackingFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -1998,7 +2009,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_MVP);
                 break;
             case MENU_ATTENDANCE:
-                ft.add(R.id.fragment_content, new NonFieldHomeFragment(),
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                fragment = new NonFieldHomeFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
                         MENU_ATTENDANCE);
                 break;
             case MENU_PLANE_MAP:
@@ -2059,7 +2074,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 break;
 
             case MENU_EXPENSE:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
                 fragment = new ExpenseFragment();
+                fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_EXPENSE);
                 break;

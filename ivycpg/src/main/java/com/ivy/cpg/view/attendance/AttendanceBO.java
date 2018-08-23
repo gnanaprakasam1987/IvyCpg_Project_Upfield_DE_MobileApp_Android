@@ -1,12 +1,12 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.attendance;
 
 public class AttendanceBO {
 
 	private String date;
 
-	private String atd_LCode, atd_LName, atd_LType;
+	private String atd_LCode, atd_LName;
 
-	private int atd_Lid, atd_AccountID, atd_isRequired, atd_PLId, reasonid;
+	private int atd_Lid, atd_isRequired, atd_PLId, reasonid;
 
 	public String getDate() {
 		return date;
@@ -24,20 +24,9 @@ public class AttendanceBO {
 		this.atd_LCode = atd_LCode;
 	}
 
-	public String getAtd_LName() {
-		return atd_LName;
-	}
 
 	public void setAtd_LName(String atd_LName) {
 		this.atd_LName = atd_LName;
-	}
-
-	public String getAtd_LType() {
-		return atd_LType;
-	}
-
-	public void setAtd_LType(String atd_LType) {
-		this.atd_LType = atd_LType;
 	}
 
 	public int getAtd_Lid() {
@@ -46,14 +35,6 @@ public class AttendanceBO {
 
 	public void setAtd_Lid(int atd_Lid) {
 		this.atd_Lid = atd_Lid;
-	}
-
-	public int getAtd_AccountID() {
-		return atd_AccountID;
-	}
-
-	public void setAtd_AccountID(int atd_AccountID) {
-		this.atd_AccountID = atd_AccountID;
 	}
 
 	public int getAtd_isRequired() {

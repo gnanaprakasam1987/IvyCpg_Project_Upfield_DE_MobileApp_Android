@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.nonfield;
 
 public class NonFieldBO {
     private String frmDate;

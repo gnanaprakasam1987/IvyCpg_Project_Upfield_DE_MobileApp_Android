@@ -44,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -515,7 +516,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Date selected = DateUtil.convertStringToDateObject(delDate, ConfigurationMasterHelper.outDateFormat);
                 mCalendar.setTime(selected);
             } else {
-                bModel.mAttendanceHelper.downWeekOffs(OrderSummary.this);
+                NonFieldHelper.getInstance(this).downWeekOffs(OrderSummary.this);
                 mCalendar.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
                 mCalendar = dateValidation(mCalendar);
@@ -931,8 +932,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
         /*
-        * enable attach file option
-        * */
+         * enable attach file option
+         * */
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
             if (bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
@@ -2859,8 +2860,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), "yyyy/MM/dd");
-            if (bModel.mAttendanceHelper.isHoliday(dbDateFormat, OrderSummary.this)
-                    || bModel.mAttendanceHelper.isWeekOff(dbDateFormat)) {
+            if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
+                    || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
                 Toast.makeText(OrderSummary.this, "The Selected day is a holiday", Toast.LENGTH_SHORT).show();
             }
 
@@ -2888,8 +2889,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar dateValidation(Calendar selectedDate) {
         String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
                 selectedDate.getTime(), "yyyy/MM/dd");
-        if (bModel.mAttendanceHelper.isHoliday(dbDateFormat, OrderSummary.this)
-                || bModel.mAttendanceHelper.isWeekOff(dbDateFormat)) {
+        if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
+                || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
             selectedDate.add(Calendar.DAY_OF_MONTH, 1);
             return dateValidation(selectedDate);
         } else {

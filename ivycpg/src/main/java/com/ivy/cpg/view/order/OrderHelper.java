@@ -321,7 +321,7 @@ public class OrderHelper {
 
             // Save order details
             Vector<ProductMasterBO> finalProductList;
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty";
 
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
@@ -631,7 +631,7 @@ public class OrderHelper {
 
                 // Save order details
                 Vector<ProductMasterBO> finalProductList;
-                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP";
+                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty";
 
                 finalProductList = productList;
 
@@ -1188,7 +1188,7 @@ public class OrderHelper {
         sb.append("," + businessModel.QT(productBo.getHsnCode()));
         sb.append("," + SDUtil.getWithoutExponential(totalValue));
         sb.append("," + productBo.getMRP());
-
+        sb.append("," + productBo.getIncreasedPcs());
         return sb;
 
     }
