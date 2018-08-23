@@ -4395,8 +4395,9 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
                     codeValue = c.getString(0);
                 }
-            }
             c.close();
+            }
+
             if (codeValue != null) {
                 if (codeValue.equalsIgnoreCase(CODE_STK_ORD_ROW_BS))
                     IS_STK_ORD_BS = true;
