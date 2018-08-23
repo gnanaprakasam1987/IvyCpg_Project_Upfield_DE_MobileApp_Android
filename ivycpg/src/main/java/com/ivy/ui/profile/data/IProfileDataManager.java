@@ -28,7 +28,7 @@ public interface IProfileDataManager {
 
     Observable<HashMap<String, String>> getPreviousProfileChanges(String RetailerID);
 
-    Observable<Vector<RetailerMasterBO>> downloadLinkRetailer();
+    Observable<Vector<RetailerMasterBO>> getLinkRetailer();
 
     Observable<ArrayList<RetailerFlexBO>> downloadRetailerFlexValues(String type);
 

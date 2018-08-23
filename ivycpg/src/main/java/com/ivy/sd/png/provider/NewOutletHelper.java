@@ -2440,7 +2440,7 @@ public class NewOutletHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadLinkRetailer()}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getLinkRetailer()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -2504,7 +2504,7 @@ public class NewOutletHelper {
     }
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadLinkRetailer()}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getLinkRetailer()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -2514,7 +2514,7 @@ public class NewOutletHelper {
 
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
-     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadLinkRetailer()}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getLinkRetailer()}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */

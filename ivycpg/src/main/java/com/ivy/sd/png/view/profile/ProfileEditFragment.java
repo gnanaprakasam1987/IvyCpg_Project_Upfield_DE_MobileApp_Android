@@ -1397,6 +1397,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
     /*This method is used to create a new LinearLayout with attributes */
     private TextView getSingleTextView(int positionNumber, String menuName) {
+
         textview[positionNumber] = new TextView(getActivity());
         textview[positionNumber].setText(menuName);
         textview[positionNumber].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));

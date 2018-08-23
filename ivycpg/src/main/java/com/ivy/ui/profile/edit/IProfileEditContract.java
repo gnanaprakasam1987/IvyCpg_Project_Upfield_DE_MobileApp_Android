@@ -32,11 +32,11 @@ public interface IProfileEditContract {
 
         void createEditTextView(int mNumber, String configCode, String menuName,
                                 String values, boolean IS_UPPERCASE_LETTER,
-                                int Mandatory, int MAX_CREDIT_DAYS);
+                                int mandatory, int MAX_CREDIT_DAYS);
 
-        void createCheckBoxView(String isSEZzone, int Mandatory, String menuName);
+        void createCheckBoxView(String isSEZzone, int mandatory, String menuName);
 
-        void createSpinnerView(int mNumber, String MName, String menuCode, int id);
+        void createSpinnerView(int number, String menuName, String menuCode, int id);
 
         void createSpinnerView(int mNumber, String MName, String menuCode, int id, int locid);
 
@@ -93,11 +93,9 @@ public interface IProfileEditContract {
 
         int subChannelGetSelectedItem();
 
-
         Vector<RetailerMasterBO> getSelectedIds();
 
         ChannelBO getChennalSelectedItemBO();
-
 
         int getContractSpinnerSelectedItemListId();
 
@@ -129,25 +127,20 @@ public interface IProfileEditContract {
 
         void checkRegex(String regex);
 
-
     }
 
     @PerActivity
     interface ProfileEditPresenter<V extends ProfileEditView> extends BaseIvyPresenter<V> {
 
-        void downLoadDataFromDataBase();
+        void getProfileEditDataFromLocalDataBase();
 
-        void validateOTP(String type, String value);
+        void getImageLongClickListener(boolean isForLatLong);
 
-        void updateProfile();
+        void getImageOnClickListener();
 
-        void imageLongClickListener(boolean isForLatLong);
+        void getLatLongCameraBtnClickListene(boolean isForLatLong);
 
-        void latlongCameraBtnClickListene(boolean isForLatLong);
-
-        void imageOnClickListener();
-
-        void isCameraReqestCode();
+        void getCameraReqestCode();
 
         Vector<SubchannelBO> getSubChannelMaster();
 
@@ -182,10 +175,9 @@ public interface IProfileEditContract {
         void getLinkRetailerListByDistributorId();
 
         //AttributeView
-        void isCommonAttributeView();
+        void checkIsCommonAttributeView();
 
         HashMap<Integer, ArrayList<Integer>> getAttributeListByLocationId();
-
 
         int getLevel(int attrId);
 
@@ -205,8 +197,11 @@ public interface IProfileEditContract {
 
         void verifyOTP(String mType, String mValue);
 
-
         Vector<ChannelBO> getChannelMaster();
+
+        void validateOTP(String type, String value);
+
+        void updateProfile();
 
     }
 }

@@ -252,7 +252,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     but now it will return only mLinkRetailerList
     by this we need can get other data list ie mLinkRetailerListByDistributorId. Need to do in ProfileEditPresenterImp*/
     @Override
-    public Observable<Vector<RetailerMasterBO>> downloadLinkRetailer() {
+    public Observable<Vector<RetailerMasterBO>> getLinkRetailer() {
 
         return Observable.fromCallable(new Callable<Vector<RetailerMasterBO>>() {
             @Override
