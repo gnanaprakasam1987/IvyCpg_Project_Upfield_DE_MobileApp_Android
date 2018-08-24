@@ -293,6 +293,16 @@ public class ProductMasterBO {
     private double priceoffvalue;
     private int PriceOffId;
 
+    public float getASRP() {
+        return priceWithTax;
+    }
+
+    public void setASRP(float priceWithTax) {
+        this.priceWithTax = priceWithTax;
+    }
+
+    private float priceWithTax;
+
     public String getDescription() {
         return description;
     }
