@@ -309,7 +309,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.ivy.sd.png.view.OrderFullfillmentRetailerSelection"
+            android:name="com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection"
             android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -323,10 +323,10 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.ivy.sd.png.view.OrderFullfillment"
+            android:name="com.ivy.cpg.view.orderfullfillment.OrderFullfillment"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PartialFullfillment"
+            android:name="com.ivy.cpg.view.orderfullfillment.PartialFullfillment"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.HomeScreenActivity"

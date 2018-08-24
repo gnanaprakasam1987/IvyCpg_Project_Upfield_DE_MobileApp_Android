@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.orderfullfillment;
 
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -23,6 +23,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,6 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
     private ListView listView;
     private OrderFullfillmentBO retailerObj;
     private ArrayList<OrderFullfillmentBO> retailer;
-    private TypedArray typearr;
     private Toolbar toolbar;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
         setContentView(R.layout.activity_orderfullfillment_retailer_selection);
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -55,7 +55,6 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
         }
         listView = (ListView) findViewById(R.id.listView1);
         listView.setCacheColorHint(0);
-        typearr = getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         bmodel.orderfullfillmenthelper.downloadOrderFullfillmentRetailers();
         loadFilteredData((null));
     }
