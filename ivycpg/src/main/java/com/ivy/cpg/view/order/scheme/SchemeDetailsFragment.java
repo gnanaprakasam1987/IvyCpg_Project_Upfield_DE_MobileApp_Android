@@ -249,12 +249,13 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         layout_BuyProductParent.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
 
                         TextView text_BuyProductsTitle = getTextView(true, Gravity.LEFT, false);
-                        LinearLayout.LayoutParams layoutParams_BuyProductTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams layoutParams_BuyProductTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         layoutParams_BuyProductTitle.setMargins(0, 10, 0, 10);
                         layoutParams_BuyProductTitle.gravity = Gravity.CENTER_VERTICAL;
                         text_BuyProductsTitle.setLayoutParams(layoutParams_BuyProductTitle);
                         text_BuyProductsTitle.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                         text_BuyProductsTitle.setTextSize(mTextViewSize);
+                        text_BuyProductsTitle.setMaxLines(2);
 
                         if (bModel.labelsMasterHelper.applyLabels(BUY_PRODUCT_TITLE_LABEL) != null)
                             text_BuyProductsTitle.setText(bModel.labelsMasterHelper.applyLabels(BUY_PRODUCT_TITLE_LABEL));
@@ -411,7 +412,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         freeTitleTV.setWidth(150);
 
                         LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                        layoutParam_FreeTitle.setMargins(0, 10, 0, 10);
+                        layoutParam_FreeTitle.setMargins(0, 5, 0, 5);
                         freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                         freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                         freeTitleTV.setGravity(Gravity.LEFT | Gravity.CENTER);
@@ -449,7 +450,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                                 freeTitleTV.setWidth(150);
 
                                                 LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                                                layoutParam_FreeTitle.setMargins(0, 20, 0, 10);
+                                                layoutParam_FreeTitle.setMargins(0, 10, 0, 10);
                                                 freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                                                 freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
 
