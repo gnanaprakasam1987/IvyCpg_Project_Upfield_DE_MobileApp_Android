@@ -1,109 +1,109 @@
 package com.ivy.ui.profile.edit.view;
 
 
-        import android.annotation.SuppressLint;
-        import android.app.AlertDialog;
-        import android.content.ActivityNotFoundException;
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.content.Intent;
-        import android.graphics.Bitmap;
-        import android.graphics.Color;
-        import android.graphics.Typeface;
-        import android.net.Uri;
-        import android.os.Build;
-        import android.os.Bundle;
-        import android.os.Environment;
-        import android.support.design.widget.TextInputLayout;
-        import android.support.v4.app.DialogFragment;
-        import android.support.v4.app.FragmentManager;
-        import android.support.v4.content.ContextCompat;
-        import android.support.v4.content.FileProvider;
-        import android.support.v7.view.ContextThemeWrapper;
-        import android.support.v7.widget.AppCompatCheckBox;
-        import android.support.v7.widget.AppCompatEditText;
-        import android.text.Editable;
-        import android.text.InputFilter;
-        import android.text.InputType;
-        import android.text.Spanned;
-        import android.text.TextWatcher;
-        import android.util.TypedValue;
-        import android.view.Gravity;
-        import android.view.LayoutInflater;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.AdapterView;
-        import android.widget.ArrayAdapter;
-        import android.widget.BaseAdapter;
-        import android.widget.Button;
-        import android.widget.CheckBox;
-        import android.widget.CompoundButton;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.Spanned;
+import android.text.TextWatcher;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
-        import android.widget.EditText;
-        import android.widget.ImageView;
-        import android.widget.LinearLayout;
-        import android.widget.ListView;
-        import android.widget.ScrollView;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import com.ivy.core.base.presenter.BasePresenter;
-        import com.ivy.core.base.view.BaseFragment;
-        import com.ivy.location.LocationUtil;
-        import com.ivy.maplib.BaiduMapDialogue;
-        import com.ivy.sd.camera.CameraActivity;
-        import com.ivy.sd.png.asean.view.BuildConfig;
-        import com.ivy.sd.png.asean.view.R;
-        import com.ivy.sd.png.bo.ChannelBO;
-        import com.ivy.sd.png.bo.LocationBO;
-        import com.ivy.sd.png.bo.NewOutletAttributeBO;
-        import com.ivy.sd.png.bo.NewOutletBO;
-        import com.ivy.sd.png.bo.RetailerFlexBO;
-        import com.ivy.sd.png.bo.RetailerMasterBO;
-        import com.ivy.sd.png.bo.SpinnerBO;
-        import com.ivy.sd.png.bo.StandardListBO;
-        import com.ivy.sd.png.bo.SubchannelBO;
-        import com.ivy.sd.png.commons.MaterialSpinner;
-        import com.ivy.sd.png.commons.SDUtil;
-        import com.ivy.sd.png.model.BusinessModel;
-        import com.ivy.sd.png.util.Commons;
-        import com.ivy.sd.png.util.DataMembers;
-        import com.ivy.sd.png.view.HomeScreenFragment;
-        import com.ivy.sd.png.view.MapDialogue;
-        import com.ivy.sd.png.view.NearByRetailerDialog;
-        import com.ivy.sd.png.view.RetailerOTPDialog;
-        import com.ivy.ui.profile.data.DatePreviewListener;
+import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.core.base.view.BaseFragment;
+import com.ivy.location.LocationUtil;
+import com.ivy.maplib.BaiduMapDialogue;
+import com.ivy.sd.camera.CameraActivity;
+import com.ivy.sd.png.asean.view.BuildConfig;
+import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ChannelBO;
+import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.NewOutletAttributeBO;
+import com.ivy.sd.png.bo.NewOutletBO;
+import com.ivy.sd.png.bo.RetailerFlexBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.SpinnerBO;
+import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.bo.SubchannelBO;
+import com.ivy.sd.png.commons.MaterialSpinner;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.MapDialogue;
+import com.ivy.sd.png.view.NearByRetailerDialog;
+import com.ivy.sd.png.view.RetailerOTPDialog;
+import com.ivy.ui.profile.data.DatePreviewListener;
 
-        import com.ivy.ui.profile.ProfileConstant;
-        import com.ivy.ui.profile.edit.IProfileEditContract;
-        import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
-        import com.ivy.ui.profile.edit.di.ProfileEditModule;
-        import com.ivy.utils.AppUtils;
-        import com.ivy.utils.FontUtils;
-        import com.ivy.ui.profile.data.DatePickerFragment;
+import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.edit.IProfileEditContract;
+import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
+import com.ivy.ui.profile.edit.di.ProfileEditModule;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
+import com.ivy.ui.profile.data.DatePickerFragment;
 
 
-        import java.io.File;
-        import java.text.SimpleDateFormat;
-        import java.util.ArrayList;
-        import java.util.Calendar;
-        import java.util.Collections;
-        import java.util.GregorianCalendar;
-        import java.util.HashMap;
-        import java.util.Locale;
-        import java.util.Vector;
-        import java.util.regex.Pattern;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Vector;
+import java.util.regex.Pattern;
 
-        import javax.inject.Inject;
+import javax.inject.Inject;
 
-        import butterknife.BindView;
-        import butterknife.OnClick;
+import butterknife.BindView;
+import butterknife.OnClick;
 
-        import static android.app.Activity.RESULT_OK;
+import static android.app.Activity.RESULT_OK;
 
 public class ProfileEditFragmentNew extends BaseFragment
-        implements IProfileEditContract.ProfileEditView,RetailerOTPDialog.OTPListener,DatePreviewListener {
+        implements IProfileEditContract.ProfileEditView, RetailerOTPDialog.OTPListener, DatePreviewListener {
 
     @BindView(R.id.profile_edit_scrollview)
     ScrollView mScrollView;
@@ -146,14 +146,14 @@ public class ProfileEditFragmentNew extends BaseFragment
     private ArrayList<NewOutletAttributeBO> attributeHeaderList = null;
     private HashMap<String, ArrayList<ArrayList<NewOutletAttributeBO>>> listHashMap = null;
     private HashMap<String, ArrayList<Integer>> attributeIndexMap = null;
-    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList=new HashMap<>();
+    private HashMap<Integer, NewOutletAttributeBO> selectedAttribList = new HashMap<>();
     private ArrayList<Integer> attributeIndexList = null;
 
     private int locid = 0;
     private int subChannelSpinnerCount = 0;
     private int id;
     private String selectedProductID = "";
-    static  String lat = "", longitude = "";
+    static String lat = "", longitude = "";
     private boolean isLatLongCameravailable = false;
     private int spinnerCount = 0;
     private int check = 0;
@@ -180,7 +180,7 @@ public class ProfileEditFragmentNew extends BaseFragment
     @Override
     public void initVariables(View view) {
 
-        this.datePreviewListener=this;
+        this.datePreviewListener = this;
         params5 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params5.setMargins(0, 0, 20, 0);
         params5.gravity = Gravity.CENTER;
@@ -405,26 +405,18 @@ public class ProfileEditFragmentNew extends BaseFragment
                                    String values, final boolean IS_UPPERCASE_LETTER,
                                    int mandatory, final int MAX_CREDIT_DAYS) {
 
-        if(comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) && mandatory == 1){
+        if (comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) && mandatory == 1) {
             createEmailView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER);
-        }
-        else if (comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER) ||
+        } else if (comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER) ||
                 comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) ||
                 comparConfigerCode(mConfigCode, ProfileConstant.FAX)) {
-            createMobileAndFaxView( mNumber,  mConfigCode,  menuName, values,  IS_UPPERCASE_LETTER, mandatory);
+            createMobileAndFaxView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER, mandatory);
+        } else if (comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
+            createCreditDaysView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER, MAX_CREDIT_DAYS);
+        } else {
+            createCommonEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER);
         }
-        else if (comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
-            createCreditDaysView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER,MAX_CREDIT_DAYS);
-        }
-        else{
-            LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
-                    getActivity().getResources().getColor(R.color.white_box_start));
-            TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
-            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
-            linearlayout.addView(editTextInputLayout, weight1);
-            getmRootLinearLayout().addView(linearlayout,getCommonsparams());
-        }
-        if (!comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)){
+        if (!comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
             editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
@@ -512,7 +504,6 @@ public class ProfileEditFragmentNew extends BaseFragment
     public String getChennalSelectedItem() {
         return channel.getSelectedItem().toString().toLowerCase();
     }
-
 
 
     @Override
@@ -805,10 +796,10 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public void retailersButtonOnClick(Vector<RetailerMasterBO> retailersList
-            ,int VALUE_NEARBY_RETAILER_MAX) {
+            , int VALUE_NEARBY_RETAILER_MAX) {
         if (retailersList != null && retailersList.size() > 0) {
             NearByRetailerDialog dialog = new NearByRetailerDialog(getActivity()
-                    ,VALUE_NEARBY_RETAILER_MAX, retailersList, mSelectedIds);
+                    , VALUE_NEARBY_RETAILER_MAX, retailersList, mSelectedIds);
             dialog.show();
             dialog.setCancelable(false);
         }
@@ -886,14 +877,14 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     private void createMobileAndFaxView(final int mNumber, String mConfigCode, String menuName,
                                         String values, final boolean IS_UPPERCASE_LETTER,
-                                        int mandatory){
+                                        int mandatory) {
 
         LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
                 getActivity().getResources().getColor(R.color.white_box_start));
 
         TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
 
-        if (comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) && mandatory == 1)  {
+        if (comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) && mandatory == 1) {
 
             LinearLayout mobileLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
             LinearLayout.LayoutParams mobileParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -927,12 +918,12 @@ public class ProfileEditFragmentNew extends BaseFragment
             linearlayout.addView(editTextInputLayout, weight1);
         }
 
-        getmRootLinearLayout().addView(linearlayout,getCommonsparams());
+        getmRootLinearLayout().addView(linearlayout, getCommonsparams());
     }
 
 
     private void createEmailView(final int mNumber, String mConfigCode, String menuName,
-                                 String values, final boolean IS_UPPERCASE_LETTER){
+                                 String values, final boolean IS_UPPERCASE_LETTER) {
 
         LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
                 getActivity().getResources().getColor(R.color.white_box_start));
@@ -964,13 +955,13 @@ public class ProfileEditFragmentNew extends BaseFragment
         });
         emailLayout.addView(verifyBtn, verifyButtonParams);
         linearlayout.addView(emailLayout, weight1);
-        getmRootLinearLayout().addView(linearlayout,getCommonsparams());
+        getmRootLinearLayout().addView(linearlayout, getCommonsparams());
     }
 
 
     private void createCreditDaysView(final int mNumber, String mConfigCode, String menuName,
                                       String values, final boolean IS_UPPERCASE_LETTER,
-                                      final int MAX_CREDIT_DAYS){
+                                      final int MAX_CREDIT_DAYS) {
         LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
                 getActivity().getResources().getColor(R.color.white_box_start));
         TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
@@ -1001,7 +992,17 @@ public class ProfileEditFragmentNew extends BaseFragment
             }
         });
         linearlayout.addView(editTextInputLayout, weight1);
-        getmRootLinearLayout().addView(linearlayout,getCommonsparams());
+        getmRootLinearLayout().addView(linearlayout, getCommonsparams());
+    }
+
+    private void createCommonEditTextView(final int mNumber, String mConfigCode, String menuName,
+                                          String values, final boolean IS_UPPERCASE_LETTER) {
+        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
+                getActivity().getResources().getColor(R.color.white_box_start));
+        TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
+        editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
+        linearlayout.addView(editTextInputLayout, weight1);
+        getmRootLinearLayout().addView(linearlayout, getCommonsparams());
     }
 
     private LinearLayout getCheckBoxView(String mSEZzone, int mMandatory, String mMenuName) {
@@ -1268,17 +1269,18 @@ public class ProfileEditFragmentNew extends BaseFragment
                 contractSpinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 contractSpinner.setFloatingLabelText(MName);
 
-                String listName=getResources().getString(R.string.select_str) + " " + MName;
-                ArrayList<NewOutletBO> mContactStatus=new ArrayList<NewOutletBO>();
+                String listName = getResources().getString(R.string.select_str) + " " + MName;
+                ArrayList<NewOutletBO> mContactStatus = new ArrayList<NewOutletBO>();
                 mContactStatus.addAll(profileEditPresenter.getContractStatusList(listName));
 
                 ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity()
-                        ,android.R.layout.simple_spinner_item,mContactStatus);
+                        , android.R.layout.simple_spinner_item, mContactStatus);
                 contractStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 contractSpinner.setAdapter(contractStatusAdapter);
                 contractSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     }
+
                     public void onNothingSelected(AdapterView<?> arg0) {
                     }
                 });
@@ -1309,7 +1311,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 location1.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 location1.setFloatingLabelText(MName);
 
-                String locationName=getActivity().getResources().getString(R.string.select_str) + " " + MName;
+                String locationName = getActivity().getResources().getString(R.string.select_str) + " " + MName;
                 locationAdapter1 = new ArrayAdapter<LocationBO>(getActivity(),
                         android.R.layout.simple_spinner_item, profileEditPresenter.getLocationMasterList1(locationName));
 
@@ -1351,7 +1353,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 location2.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 location2.setFloatingLabelText(MName);
 
-                String locationName=getActivity().getResources().getString(R.string.select_str) + " " + MName;
+                String locationName = getActivity().getResources().getString(R.string.select_str) + " " + MName;
                 locationAdapter2 = new ArrayAdapter<LocationBO>(getActivity(),
                         android.R.layout.simple_spinner_item, profileEditPresenter.getLocationMasterList2(locationName));
 
@@ -1394,7 +1396,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 location3.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 location3.setFloatingLabelText(MName);
 
-                String locationName=getActivity().getResources().getString(R.string.select_str) + " " + MName;
+                String locationName = getActivity().getResources().getString(R.string.select_str) + " " + MName;
                 ArrayAdapter<LocationBO> locationAdapter3 = new ArrayAdapter<LocationBO>(getActivity(),
                         android.R.layout.simple_spinner_item, profileEditPresenter.getLocationMasterList3(locationName));
 
@@ -1665,8 +1667,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 profileEditPresenter.checkIsCommonAttributeView();
 
 
-            }
-            else if (isFromChannel) {
+            } else if (isFromChannel) {
                 isNewChannel = true;
                 // getting existing attribute layout and clearig childs for loading attributes of current channel
                 parentLayout = (LinearLayout) getView().findViewWithTag("attributeLayout");
@@ -1784,8 +1785,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                         parentLayout.addView(layout);
                     }
                 }
-            }
-            else if (isCommon) {
+            } else if (isCommon) {
                 //Call while creating view first time
                 //Call while creating a  view
 
@@ -2447,6 +2447,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         inputFilters = new ArrayList<>();
         inputFilters.add(AppUtils.getInputFilter(regex));
     }
+
     @Override
     public void checkRegex(String regex) {
         final String reg;

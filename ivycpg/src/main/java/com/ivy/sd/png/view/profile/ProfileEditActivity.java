@@ -3,6 +3,7 @@ package com.ivy.sd.png.view.profile;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
@@ -112,5 +113,13 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
     public void updateCancel() {
         setResult(2);
         finish();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+           finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

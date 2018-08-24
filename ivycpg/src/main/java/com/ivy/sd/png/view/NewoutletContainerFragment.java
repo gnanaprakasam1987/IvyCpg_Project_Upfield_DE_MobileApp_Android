@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.ivy.sd.png.asean.view.R;
@@ -114,8 +115,6 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 }
