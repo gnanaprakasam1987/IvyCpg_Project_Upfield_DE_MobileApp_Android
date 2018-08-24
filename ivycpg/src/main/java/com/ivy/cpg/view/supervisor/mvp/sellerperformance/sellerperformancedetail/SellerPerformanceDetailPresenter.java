@@ -360,8 +360,16 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
                 RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
-                if (retailerMasterBo != null) {
+                if (retailerMasterBo == null) {
+                    retailerMasterHashmap.put(documentSnapshotBo.getRetailerId(), documentSnapshotBo);
 
+                    retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
+
+                    if (retailerMasterBo.getIsDeviated())
+                        selectedSeller.setDeviationCount(selectedSeller.getDeviationCount() + 1);
+                }
+
+                if (retailerMasterBo != null) {
 
                     if (retailerMasterBo.getIsOrdered() || documentSnapshotBo.getOrderValue() > 0) {
                         retailerMasterBo.setIsOrdered(true);

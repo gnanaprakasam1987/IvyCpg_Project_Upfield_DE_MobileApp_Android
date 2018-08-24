@@ -62,6 +62,7 @@ import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.PlanningSubScreenFragment;
 import com.ivy.cpg.view.van.StockProposalFragment;
@@ -710,7 +711,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
-            } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
+            }else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
+                    && isInandOut
+                    && bmodel.mAttendanceHelper.isWorking(getContext())) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.mark_attendance),
+                        Toast.LENGTH_SHORT).show();
+            }
+            else if (!bmodel.synchronizationHelper.isDataAvailable()) {
                 Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
                                 getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();

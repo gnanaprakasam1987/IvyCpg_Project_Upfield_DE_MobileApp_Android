@@ -991,7 +991,10 @@ public class SynchronizationFragment extends IvyBaseFragment
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.pls_upload_images_before_download), 0);
-                } else {
+                } else if(!UploadHelper.getInstance(getContext()).isAttendanceCompleted(getContext())){
+                    showAttendanceNotCompletedToast();
+                }
+                else {
                     if (!selectedRetailerDownloadCheckBox.isChecked()) {
                         if (bmodel.configurationMasterHelper.SHOW_DOWNLOAD_ALERT)
                             showAlertForDownload();

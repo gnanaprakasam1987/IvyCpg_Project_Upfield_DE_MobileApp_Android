@@ -365,6 +365,34 @@ public class AttendanceHelper {
 
     }
 
+    /**
+     * This Method checks the given Id is Working status
+     * @param id StandardListMaster ListId
+     * @param context Context
+     * @return returns boolean
+     */
+    public boolean isWorkingStatus(int id,Context context) {
+
+        DBUtil db;
+        boolean isIdWorking = false;
+        try {
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select Listid from StandardListMaster where ListCode='WORKING' and ListId = '"+id+"'");
+            if (c != null && c.getCount() > 0) {
+                c.close();
+                isIdWorking = true;
+            }
+            db.close();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return isIdWorking;
+    }
+
     public String getReasonBOByReasonID(int n) {
         NonFieldBO reasonBo = reasonBOByreasonID.get(n);
         if (reasonBo != null) {
@@ -1380,5 +1408,38 @@ public class AttendanceHelper {
         return childUserBOs;
     }
 
+    public boolean isWorking(Context context) {
+        DBUtil db;
+        boolean check = true;
+        try {
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            int counts = 0;
+
+            Cursor c = db
+                    .selectSQL("SELECT HHTCode ,(select COUNT(upload) from AttendanceTimeDetails atd " +
+                            "inner join StandardListMaster sm on sm.ListId = atd.reasonid where atd.outtime IS NULL and sm.ListCode='WORKING')" +
+                            " as count FROM HhtMenuMaster where HHTCode='MENU_IN_OUT' and Flag=1 and hasLink=1");
+            if (c != null) {
+                if (c.moveToFirst())
+                    counts = c.getInt(1);
+
+                c.close();
+            }
+            db.close();
+
+            if (counts > 0) {
+                check = false;
+            } else {
+                check = true;
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return check;
+    }
 
 }
