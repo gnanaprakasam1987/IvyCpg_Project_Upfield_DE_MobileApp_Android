@@ -123,7 +123,7 @@ public class SchemeDetailsMasterHelper {
     private static final String CODE_SCHEME_SLAB_ON = "SCH08";
     private static final String CODE_SCHEME_CHECK = "SCH09";
     private static final String CODE_UP_SELLING = "SCH05";
-    private static final String CODE_SCHEME_WITH_TAX = "SCH10";
+    private static final String CODE_CHECK_SCHEME_WITH_ASRP = "SCH10";
 
     public boolean IS_SCHEME_ON;
     public boolean IS_SCHEME_EDITABLE;
@@ -137,7 +137,7 @@ public class SchemeDetailsMasterHelper {
     public boolean IS_UP_SELLING;
     public boolean IS_SCHEME_QPS_TRACKING;
     private int UP_SELLING_PERCENTAGE = 70;
-    private boolean IS_SCHEME_WITH_TAX_ON;
+    private boolean IS_CHECK_SCHEME_WITH_ASRP;
 
     private boolean isBatchWiseProducts;
 
@@ -248,8 +248,8 @@ public class SchemeDetailsMasterHelper {
                         IS_VALIDATE_FOC_VALUE_WITH_ORDER_VALUE = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_SLAB_ON))
                         IS_SCHEME_SLAB_ON = true;
-                    else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_WITH_TAX))
-                        IS_SCHEME_WITH_TAX_ON = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_CHECK_SCHEME_WITH_ASRP))
+                        IS_CHECK_SCHEME_WITH_ASRP = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_UP_SELLING)) {
                         IS_UP_SELLING = true;
                         if (c.getInt(1) > 0) {
@@ -2837,28 +2837,29 @@ public class SchemeDetailsMasterHelper {
                             for (ProductMasterBO batchProductBO : batchWiseList) {
                                 if (batchProductBO.getBatchid().equals(batchId)) {
 
-                                    if(IS_SCHEME_WITH_TAX_ON){
+                                    if(IS_CHECK_SCHEME_WITH_ASRP){
                                         int qty= batchProductBO.getOrderedPcsQty()
                                                 + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize())
                                                 + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize());
-                                        totalValue += qty*batchProductBO.getPriceWithTax();
+                                        totalValue += qty*batchProductBO.getASRP();
                                     }else{
                                         totalValue += (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
                                                 + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCsrp())
                                                 + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
-                                        totalValue += getTotalAccumulationValue(schemeId, productId, isBatchWise, batchId);
                                     }
+                                    totalValue += getTotalAccumulationValue(schemeId, productId, isBatchWise, batchId);
+
                                 }
                             }
                         }
                     }
                 } else {
-                    if(IS_SCHEME_WITH_TAX_ON){
+                    if(IS_CHECK_SCHEME_WITH_ASRP){
                         int qty= productMasterBO.getOrderedPcsQty()
                                 + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
                                 + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
 
-                        totalValue += qty*productMasterBO.getPriceWithTax();
+                        totalValue += qty*productMasterBO.getASRP();
                     }else{
                         totalValue += (productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp())
                                 + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp())
