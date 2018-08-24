@@ -227,7 +227,7 @@ public class OrderHelper {
                         StandardListMasterConstants.PRINT_FILE_ORDER + businessModel.invoiceNumber + ".txt";
             }
             String orderImagePath = "";
-            if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
+            if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE || businessModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
                 if (businessModel.getOrderHeaderBO().getOrderImageName().length() > 0)
                     orderImagePath = businessModel.userMasterHelper.getUserMasterBO().getDownloadDate()
                             .replace("/", "") + "/"
