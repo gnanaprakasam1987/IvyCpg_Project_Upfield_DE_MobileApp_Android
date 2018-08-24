@@ -12,11 +12,11 @@
             android:key="languagePref"
             android:layout="@layout/settings_card_layout"
             android:summary="Choose your language"
-            android:title="Language" />
+            android:title="@string/language" />
     </com.ivy.sd.png.view.CustomPreferenceCategory>
     <com.ivy.sd.png.view.CustomPreferenceCategory
         android:layout="@layout/settings_header_layout"
-        android:title="Printer Settings"
+        android:title="@string/printer_settings"
 
         >
         <com.ivy.sd.png.view.CustomPreference
