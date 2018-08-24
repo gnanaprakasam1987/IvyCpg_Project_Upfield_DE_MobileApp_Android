@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.van.VanUnLoadModuleHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
@@ -78,18 +79,18 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     @Override
     public void validateAndUpload(boolean isDayCloseChecked) {
 
-        if (mBModel.configurationMasterHelper.IS_COLLECTION_MANDATE){
+        if (mBModel.configurationMasterHelper.IS_COLLECTION_MANDATE) {
 
-            StringBuilder retailerIds=new StringBuilder();
-            for(RetailerMasterBO retailerMasterBO:mBModel.getRetailerMaster()){
-                if(retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH")){
-                    if(retailerIds.length()>0)
+            StringBuilder retailerIds = new StringBuilder();
+            for (RetailerMasterBO retailerMasterBO : mBModel.getRetailerMaster()) {
+                if (retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH")) {
+                    if (retailerIds.length() > 0)
                         retailerIds.append(",");
 
                     retailerIds.append(retailerMasterBO.getRetailerID());
                 }
             }
-            if(retailerIds.length()>0&&mBModel.hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL),retailerIds.toString())) {
+            if (retailerIds.length() > 0 && mBModel.hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL), retailerIds.toString())) {
 
                 Toast.makeText(mContext, mContext.getResources().getString(R.string.collection_mandatory), Toast.LENGTH_SHORT).show();
                 return;
@@ -230,8 +231,8 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
 
     private void startSync(int callFlag) {
         Commons.print(" callFlag : " + callFlag);
-        if (mBModel.mAttendanceHelper.checkMenuInOut(mContext.getApplicationContext()))
-            mBModel.mAttendanceHelper.updateAttendaceDetailInTime(mContext.getApplicationContext());
+        if (AttendanceHelper.getInstance(mContext).checkMenuInOut(mContext.getApplicationContext()))
+            AttendanceHelper.getInstance(mContext).updateAttendaceDetailInTime(mContext.getApplicationContext());
 
         view.showProgressUploading();
 

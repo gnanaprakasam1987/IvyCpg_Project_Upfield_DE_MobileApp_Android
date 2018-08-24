@@ -107,7 +107,7 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
-import com.ivy.sd.png.provider.AttendanceHelper;
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
@@ -123,7 +123,6 @@ import com.ivy.sd.png.provider.FitScoreHelper;
 import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
-import com.ivy.cpg.view.leaveapproval.LeaveApprovalHelper;
 import com.ivy.sd.png.provider.LoyalityHelper;
 import com.ivy.sd.png.provider.MVPHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
@@ -263,7 +262,6 @@ public class BusinessModel extends Application {
     public NewOutletHelper newOutletHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
-    public AttendanceHelper mAttendanceHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
     public EmptyReconciliationHelper mEmptyReconciliationhelper;
     public EmptyReturnHelper mEmptyReturnHelper;
@@ -427,7 +425,6 @@ public class BusinessModel extends Application {
         setRetailerMaster(new Vector<RetailerMasterBO>());
 
         newOutletHelper = NewOutletHelper.getInstance(this);
-        mAttendanceHelper = AttendanceHelper.getInstance(this);
         competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
         mEmptyReconciliationhelper = EmptyReconciliationHelper
                 .getInstance(this);
@@ -3523,7 +3520,7 @@ public class BusinessModel extends Application {
 
         final int idd = id;
 
-        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, "Ok", new CommonDialog.PositiveClickListener() {
+        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick()
 

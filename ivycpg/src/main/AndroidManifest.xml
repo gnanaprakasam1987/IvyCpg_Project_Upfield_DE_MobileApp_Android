@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1320"
-    android:versionName="2.132.0.2243">
+    android:versionName="2.132.0.2484">
 
     <supports-screens
         android:anyDensity="true"
@@ -210,7 +210,7 @@
             android:name="com.ivy.sd.png.view.InitiativeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.AttendanceActivity"
+            android:name="com.ivy.cpg.view.attendance.AttendanceActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.NonVisitActivity"
@@ -538,7 +538,7 @@
             android:name="com.ivy.sd.png.view.EmptyReturnActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NonFieldActivity"
+            android:name="com.ivy.cpg.view.nonfield.NonFieldActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RoadActivity"
@@ -605,7 +605,7 @@
             android:name="com.ivy.sd.print.CommonPrintPreviewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.TimeTrackingActivity"
+            android:name="com.ivy.cpg.view.attendance.inout.TimeTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.TLAttendanceActivity"
@@ -618,7 +618,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name="com.ivy.sd.png.view.WebViewActivity"
+            android:name="com.ivy.cpg.view.webview.WebViewActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.camera.NativeCameraActivity"
@@ -651,7 +651,7 @@
             android:name="com.ivy.sd.png.view.About"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NonFieldFragment"
+            android:name="com.ivy.cpg.view.nonfield.NonFieldFragment"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.profile.ProfileEditActivity"

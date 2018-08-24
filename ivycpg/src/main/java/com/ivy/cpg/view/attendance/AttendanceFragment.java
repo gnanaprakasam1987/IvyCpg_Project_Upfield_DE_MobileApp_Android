@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.attendance;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -26,13 +26,13 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.AttendanceBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,12 +51,14 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
     private String currentDate = "", fromDate = "", toDate = "";
     private AlertDialog mAlertDialog;
     private View view;
+    private AttendanceHelper attendanceHelper;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        attendanceHelper = AttendanceHelper.getInstance(getActivity());
     }
 
     @Override
@@ -69,7 +71,10 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
             setScreenTitle(getResources().getString(R.string.attend));
             actionBar.setIcon(null);
         } else if (actionBar != null) {
-            setScreenTitle(bmodel.getMenuName("MENU_PRESENCE"));
+            Bundle bundle = getArguments();
+            if (bundle == null)
+                bundle = getActivity().getIntent().getExtras();
+            setScreenTitle(bundle.getString("screentitle"));
             actionBar.setIcon(null);
         }
 
@@ -96,10 +101,10 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        leaveSpinner = (Spinner) view.findViewById(R.id.sp_reason);
+        leaveSpinner = view.findViewById(R.id.sp_reason);
 
-        leaveReasonSpinner = (Spinner) view.findViewById(R.id.sp_special_reason);
-        leaveReasonTextView = (TextView) view.findViewById(R.id.leavereasonTextViewId);
+        leaveReasonSpinner = view.findViewById(R.id.sp_special_reason);
+        leaveReasonTextView = view.findViewById(R.id.leavereasonTextViewId);
 
 
         currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
@@ -107,32 +112,32 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         fromDate = currentDate;
         toDate = currentDate;
 
-        tvFromDate = (Button) view.findViewById(R.id.fromDatetxt);
-        tvToDate = (Button) view.findViewById(R.id.todatetext);
+        tvFromDate = view.findViewById(R.id.fromDatetxt);
+        tvToDate = view.findViewById(R.id.todatetext);
         tvFromDate.setText(fromDate);
         tvToDate.setText(toDate);
         tvFromDate.setOnClickListener(this);
         tvToDate.setOnClickListener(this);
         //typeface
-        ((TextView)view.findViewById(R.id.reasonTextViewId)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView)view.findViewById(R.id.leavereasonTextViewId)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        tvFromDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        tvToDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.reasonTextViewId)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        ((TextView) view.findViewById(R.id.leavereasonTextViewId)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        tvFromDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        tvToDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
-        Button btn_proceed = (Button) view.findViewById(R.id.buttonproceed);
+        Button btn_proceed = view.findViewById(R.id.buttonproceed);
         btn_proceed.setOnClickListener(this);
-        btn_proceed.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btn_proceed.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         ArrayAdapter<AttendanceBO> leaveAdapter = new ArrayAdapter<>(
                 getActivity(), R.layout.spinner_bluetext_layout);
         leaveAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
-        bmodel.mAttendanceHelper.downloadAttendanceReasons(getActivity());
+        attendanceHelper.downloadAttendanceReasons(getActivity());
 
-        for (int j = 0; j < bmodel.mAttendanceHelper.getReasonList().size(); ++j) {
-            if (bmodel.mAttendanceHelper.getReasonList().get(j).getAtd_PLId() == 0) {
-                leaveAdapter.add(bmodel.mAttendanceHelper.getReasonList()
+        for (int j = 0; j < attendanceHelper.getReasonList().size(); ++j) {
+            if (attendanceHelper.getReasonList().get(j).getAtd_PLId() == 0) {
+                leaveAdapter.add(attendanceHelper.getReasonList()
                         .get(j));
             }
         }
@@ -200,7 +205,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
             int mFromMonth = c.get(Calendar.MONTH);
             int mFromDay = c.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog dpd = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
+            DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
                     new DatePickerDialog.OnDateSetListener() {
 
                         public void onDateSet(DatePicker view, int year1,
@@ -230,7 +235,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
             int mToMonth = c1.get(Calendar.MONTH);
             int mToDay = c1.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog dpd1 = new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle,
+            DatePickerDialog dpd1 = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
                     new DatePickerDialog.OnDateSetListener() {
 
                         public void onDateSet(DatePicker view, int year,
@@ -260,9 +265,9 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
                 R.layout.spinner_bluetext_layout);
         reasonAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        for (int j = 0; j < bmodel.mAttendanceHelper.getReasonList().size(); ++j) {
-            if (bmodel.mAttendanceHelper.getReasonList().get(j).getAtd_PLId() == lid)
-                reasonAdapter.add(bmodel.mAttendanceHelper.getReasonList().get(
+        for (int j = 0; j < attendanceHelper.getReasonList().size(); ++j) {
+            if (attendanceHelper.getReasonList().get(j).getAtd_PLId() == lid)
+                reasonAdapter.add(attendanceHelper.getReasonList().get(
                         j));
         }
         if (reasonAdapter.isEmpty()) {
@@ -304,10 +309,10 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
                     public void onClick(DialogInterface dialog, int which) {
 
                         if (idd == -1) {
-                            bmodel.mAttendanceHelper.saveAttendanceDetails(
+                            attendanceHelper.saveAttendanceDetails(
                                     SDUtil.now(SDUtil.DATE_GLOBAL), atd_id,
                                     reason_id, tvFromDate.getText().toString(),
-                                    tvToDate.getText().toString(), atd_code,getActivity());
+                                    tvToDate.getText().toString(), atd_code, getActivity());
 
                             if (!bmodel.configurationMasterHelper.IS_ATTENDANCE_SYNCUPLOAD) {
                                 showUploadAlert(
@@ -493,8 +498,8 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         @Override
         protected Integer doInBackground(Void... params) {
 
-            UploadHelper mUploadHelper=UploadHelper.getInstance(getActivity());
-            return mUploadHelper.uploadUsingHttp(getHandler(), DataMembers.ATTENDANCE_UPLOAD,getActivity().getApplicationContext());
+            UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
+            return mUploadHelper.uploadUsingHttp(getHandler(), DataMembers.ATTENDANCE_UPLOAD, getActivity().getApplicationContext());
         }
 
         @Override

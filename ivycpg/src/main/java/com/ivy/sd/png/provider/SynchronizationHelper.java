@@ -30,6 +30,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
@@ -3995,7 +3996,7 @@ SynchronizationHelper {
         bmodel.labelsMasterHelper.downloadLabelsMaster();
 
         //check attendance
-        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(context);
+        HomeScreenFragment.isLeave_today = AttendanceHelper.getInstance(context).checkLeaveAttendance(context);
 
         //save sales return with Old batchid for the product
         bmodel.productHelper.loadOldBatchIDMap();

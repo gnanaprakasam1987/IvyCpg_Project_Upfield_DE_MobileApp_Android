@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.attendance.inout;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,17 +13,15 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
 public class TimeTrackingActivity extends IvyBaseActivityNoActionBar {
-    private BusinessModel bmodel;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_tracking);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
 
-        bmodel = (BusinessModel) getApplicationContext();
+        BusinessModel bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
@@ -62,7 +60,7 @@ public class TimeTrackingActivity extends IvyBaseActivityNoActionBar {
     /**
      * this would clear all the resources used of the layout.
      *
-     * @param view
+     * @param view root view
      */
     private void unbindDrawables(View view) {
         if (view != null) {

@@ -34,6 +34,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +73,8 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
         tvTotalAmount.setText(sumExpenses(expenseSheetHelper.getPastMonthExpense()));
 
-        tvTotalAmount.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        tvTotalAmount.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.titleTotalamt)).setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         ivClosePieChart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -172,17 +174,13 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
         private String monthName, amount;
 
-        public ExpMonthWiseBo(String monthName, String amount) {
+        private ExpMonthWiseBo(String monthName, String amount) {
             this.monthName = monthName;
             this.amount = amount;
         }
 
         public String getMonthName() {
             return monthName;
-        }
-
-        public void setMonthName(String monthName) {
-            this.monthName = monthName;
         }
 
         public String getAmount() {
@@ -199,7 +197,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
     private void setData() {
 
         try {
-            ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+            ArrayList<BarEntry> yVals1 = new ArrayList<>();
             wiseBosmonth = sumExpensesMonthWise(expenseSheetHelper.getPastMonthExpense());
             int i = 0;
             String[] monthsName = new String[12];
@@ -250,7 +248,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
     private void setDataPieChart(String month) {
 
-        ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+        ArrayList<PieEntry> entries = new ArrayList<>();
 
         double total = 0.0;
 
@@ -288,7 +286,7 @@ public class PastMonthExpenseFragment extends IvyBaseFragment {
 
         // add a lot of colors
 
-        ArrayList<Integer> colors = new ArrayList<Integer>();
+        ArrayList<Integer> colors = new ArrayList<>();
 
 
         for (int c : ColorTemplate.MATERIAL_COLORS)

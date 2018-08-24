@@ -1919,9 +1919,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     orderDeliveryHelper.updateProductWithExcessStock(this);
                 }
 
+                // Tin Expiry validation
                 if (bmodel.configurationMasterHelper.IS_RESTRICT_ORDER_TAKING
                         && (bmodel.getRetailerMasterBO().getRField4().equals("1")
-                        || (bmodel.getRetailerMasterBO().getTinExpDate() != null && !bmodel.getRetailerMasterBO().getTinExpDate().isEmpty() && SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.getRetailerMasterBO().getTinExpDate(), "yyyy/MM/dd") > 0))) {
+                        || (bmodel.getRetailerMasterBO().getTinExpDate() != null
+                        && !bmodel.getRetailerMasterBO().getTinExpDate().isEmpty() &&
+                        SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                                bmodel.getRetailerMasterBO().getTinExpDate(), "yyyy/MM/dd") > 0))) {
                     bmodel.showAlert(getResources().getString(R.string.order_not_allowed_for_retailer), 0);
                     isCreated = false;
                     return;
