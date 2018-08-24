@@ -653,7 +653,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             // Apply Item  level discount
             if (bModel.configurationMasterHelper.SHOW_DISCOUNT) {
-                double itemLevelDiscount = discountHelper.calculateItemLevelDiscount();
+                double itemLevelDiscount = discountHelper.calculateItemLevelDiscount(mOrderedProductList);
                 totalOrderValue = totalOrderValue - itemLevelDiscount;
             }
 
