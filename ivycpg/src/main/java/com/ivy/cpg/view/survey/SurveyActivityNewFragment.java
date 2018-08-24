@@ -1919,7 +1919,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         if (mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
                 || mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
-                || mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS")) {
+                || mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS")
+                || mMenuCode.equalsIgnoreCase("MENU_NEW_RET")) {
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
             menu.findItem(R.id.menu_reason).setVisible(false);
         }
