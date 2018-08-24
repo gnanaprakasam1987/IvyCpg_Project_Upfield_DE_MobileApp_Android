@@ -1107,7 +1107,7 @@ public class ProductHelper {
                     product.setPriceoffvalue(c.getDouble(c.getColumnIndex("priceoffvalue")));
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
 
-                    product.setPriceWithTax(c.getInt(c.getColumnIndex("asrp"))); //added by murugan
+                    product.setASRP(c.getInt(c.getColumnIndex("asrp"))); //added by murugan
 
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
