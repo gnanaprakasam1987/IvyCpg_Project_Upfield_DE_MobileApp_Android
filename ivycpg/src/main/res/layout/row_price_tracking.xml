@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingStart="@dimen/list_padding_left_n_right"
     android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingStart="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
 
 
@@ -26,8 +26,8 @@
                 style="?attr/customListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:layout_alignParentTop="true" />
+                android:layout_alignParentTop="true"
+                android:maxLines="2" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,9 +41,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
+                    android:layout_marginRight="@dimen/dimen_2dp"
                     android:ellipsize="marquee"
-                    android:singleLine="true"
-                    android:layout_marginRight="@dimen/dimen_2dp" />
+                    android:singleLine="true" />
 
                 <TextView
                     android:id="@+id/prdcode_tv"
@@ -51,9 +51,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
+                    android:layout_marginRight="@dimen/dimen_2dp"
                     android:ellipsize="marquee"
-                    android:singleLine="true"
-                    android:layout_marginRight="@dimen/dimen_2dp" />
+                    android:singleLine="true" />
 
                 <TextView
                     android:id="@+id/tv_srp"
@@ -93,10 +93,10 @@
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="8"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_2dp" />
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/ooprice"
@@ -104,10 +104,10 @@
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="8"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_2dp" />
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/pcprice"
@@ -115,10 +115,10 @@
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
                 android:layout_weight="1"
                 android:maxLength="8"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_2dp" />
+                android:visibility="gone" />
         </LinearLayout>
 
         <RelativeLayout
@@ -147,23 +147,40 @@
         <Spinner
             android:id="@+id/reason"
             android:layout_width="@dimen/spinner_width"
-            android:layout_height="@dimen/spinner_height"
+            android:layout_height="52dp"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/view_dotted_line"
             android:layout_centerVertical="true"
             android:layout_marginTop="@dimen/list_item_inter_margin"
+            android:background="@android:color/transparent"
             android:gravity="center"
+            android:overlapAnchor="false"
             android:prompt="@string/reason"
-            android:visibility="gone"
-            android:layout_alignParentLeft="true" />
+            android:visibility="gone" />
+
+        <Spinner
+            android:id="@+id/reason_pc"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="52dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/view_dotted_line"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/list_item_inter_margin"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:overlapAnchor="false"
+            android:prompt="@string/reason"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_prev_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/view_dotted_line"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/view_dotted_line">
 
             <TextView
                 android:id="@+id/prev_price_label"
@@ -177,8 +194,8 @@
             <View
                 android:layout_width="@dimen/dimen_1dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dimen_8dp"
                 android:layout_marginEnd="@dimen/dimen_8dp"
+                android:layout_marginStart="@dimen/dimen_8dp"
                 android:background="@color/GRAY" />
 
             <LinearLayout
@@ -186,8 +203,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_8dp">
+                android:layout_marginRight="@dimen/dimen_8dp"
+                android:visibility="gone">
 
 
                 <TextView
@@ -197,9 +214,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/ca"
-                    android:layout_marginRight="@dimen/dimen_4dp" />
+                    android:text="@string/ca" />
 
                 <TextView
                     android:id="@+id/prev_ca"
@@ -217,8 +234,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_8dp">
+                android:layout_marginRight="@dimen/dimen_8dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/prev_oo_label"
@@ -227,9 +244,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/ou"
-                    android:layout_marginRight="@dimen/dimen_4dp" />
+                    android:text="@string/ou" />
 
                 <TextView
                     android:id="@+id/prev_oo"
@@ -247,8 +264,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_8dp">
+                android:layout_marginRight="@dimen/dimen_8dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/prev_pc_label"
@@ -257,9 +274,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/pc"
-                    android:layout_marginRight="@dimen/dimen_4dp" />
+                    android:text="@string/pc" />
 
                 <TextView
                     android:id="@+id/prev_pc"
@@ -278,8 +295,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/ll_prev_price"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/ll_prev_price">
 
             <TextView
                 android:id="@+id/prev_mrp_label"
@@ -293,8 +310,8 @@
             <View
                 android:layout_width="@dimen/dimen_1dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dimen_8dp"
                 android:layout_marginEnd="@dimen/dimen_8dp"
+                android:layout_marginStart="@dimen/dimen_8dp"
                 android:background="@color/GRAY" />
 
             <LinearLayout
@@ -302,8 +319,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_8dp">
+                android:layout_marginRight="@dimen/dimen_8dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/prev_mrp_ca_label"
@@ -312,9 +329,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/ca"
-                    android:layout_marginRight="@dimen/dimen_4dp" />
+                    android:text="@string/ca" />
 
                 <TextView
                     android:id="@+id/tv_prev_mrp_ca"
@@ -332,8 +349,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_8dp">
+                android:layout_marginRight="@dimen/dimen_8dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/prev_mrp_oo_label"
@@ -342,9 +359,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/ou"
-                    android:layout_marginRight="@dimen/dimen_4dp" />
+                    android:text="@string/ou" />
 
                 <TextView
                     android:id="@+id/tv_prev_mrp_oo"
@@ -362,8 +379,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_8dp">
+                android:layout_marginRight="@dimen/dimen_8dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/prev_mrp_pc_label"
@@ -372,9 +389,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
-                    android:text="@string/pc"
-                    android:layout_marginRight="@dimen/dimen_4dp" />
+                    android:text="@string/pc" />
 
                 <TextView
                     android:id="@+id/tv_prev_mrp_pc"

@@ -1,9 +1,9 @@
 package com.ivy.cpg.view.reports.sfreport;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +12,27 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
-import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
 
-public class SalesFundamentalGapReportFragment extends Fragment {
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
+public class SalesFundamentalGapReportFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private ListView lv;
     private int beatID = 0;
     private String choice = "";
+    private CompositeDisposable compositeDisposable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,12 +111,46 @@ public class SalesFundamentalGapReportFragment extends Fragment {
         return view;
     }
 
+    private ArrayList<SalesFundamentalGapReportBO> SFGDataList = null;
+
     private void loadData(int beatId, String filter) {
-        ArrayList<SalesFundamentalGapReportBO> SFGDataList = bmodel.reportHelper.downloadSFGreport(beatId, choice);
-        if (SFGDataList != null && SFGDataList.size() > 0) {
-            MyAdapter adapter = new MyAdapter(SFGDataList);
-            lv.setAdapter(adapter);
-        }
+        SFGDataList = new ArrayList<>();
+       /* final AlertDialog alertDialog;
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(getActivity());*/
+        compositeDisposable = new CompositeDisposable();
+        /*customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+        alertDialog = builder.create();
+        alertDialog.show();*/
+
+
+        compositeDisposable.add((Disposable) new SalesFGReportHelper(getActivity()).
+                downloadSFGreport(beatId, filter)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<ArrayList<SalesFundamentalGapReportBO>>() {
+                    @Override
+                    public void onNext(ArrayList<SalesFundamentalGapReportBO> salesFundamentalGapReportList) {
+                        if (salesFundamentalGapReportList.size() > 0) {
+                            SFGDataList = salesFundamentalGapReportList;
+                        } else
+                            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                       // alertDialog.dismiss();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                       // alertDialog.dismiss();
+                        MyAdapter adapter = new MyAdapter(SFGDataList);
+                        lv.setAdapter(adapter);
+                    }
+                }));
+
     }
 
     class ViewHolder {
@@ -166,8 +208,8 @@ public class SalesFundamentalGapReportFragment extends Fragment {
 
             holder.mSKUBO = items.get(position);
             holder.position = position;
-            holder.txtProdName.setText(holder.mSKUBO.getPName()+"");
-            holder.txtsosgap.setText(holder.mSKUBO.getGap()+"");
+            holder.txtProdName.setText(holder.mSKUBO.getPName() + "");
+            holder.txtsosgap.setText(holder.mSKUBO.getGap() + "");
             holder.txtsospm.setText(holder.mSKUBO.getPM() + "");
 
             return convertView;

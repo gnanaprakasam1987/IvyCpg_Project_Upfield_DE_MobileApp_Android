@@ -33,7 +33,7 @@
                 android:layout_gravity="center">
 
                 <TextView
-                    android:id="@+id/PRDNAME"
+                    android:id="@+id/prd_nameTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/store_margin_top"
@@ -51,7 +51,7 @@
                     android:id="@+id/invoice_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/PRDNAME"
+                    android:layout_below="@+id/prd_nameTv"
                     android:layout_marginStart="@dimen/store_margin_top"
                     android:ellipsize="end"
                     android:maxEms="10"

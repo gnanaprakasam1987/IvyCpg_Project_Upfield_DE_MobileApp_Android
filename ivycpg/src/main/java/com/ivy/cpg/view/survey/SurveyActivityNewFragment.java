@@ -62,6 +62,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -244,7 +245,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }
 
     private void showUserDialog() {
-        childList = bmodel.mAttendanceHelper.loadChildUserList(getActivity().getApplicationContext());
+        childList = AttendanceHelper.getInstance(getActivity()).loadChildUserList(getActivity().getApplicationContext());
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();
@@ -1630,7 +1631,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         getActivity(),
                         getResources()
                                 .getString(
-                                        R.string.answer_take_photo),
+                                        R.string.answer_to_take_photo),
                         Toast.LENGTH_SHORT).show();
             }
         }

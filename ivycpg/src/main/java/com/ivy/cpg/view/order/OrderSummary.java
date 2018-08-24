@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,7 +34,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
@@ -43,10 +44,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+import com.ivy.cpg.view.sync.catalogdownload.Util;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
@@ -96,6 +99,8 @@ import com.zebra.sdk.printer.PrinterLanguage;
 import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -132,6 +137,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int DIALOG_INVOICE_SAVED = 9;
     private static final int DIALOG_SIGNATURE_AVAILABLE = 8;
     private static final int CAMERA_REQUEST_CODE = 7;
+
+
+    private static final int FILE_SELECTION = 12;
 
     private Button button_order;
     private Button button_invoice;
@@ -190,7 +198,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean isEditMode = false;
     private Calendar mCalendar = null;
-    private String mImageName;
+    private String mImageName, attachedFilePath = "";
     private Toolbar toolbar;
 
 
@@ -508,7 +516,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Date selected = DateUtil.convertStringToDateObject(delDate, ConfigurationMasterHelper.outDateFormat);
                 mCalendar.setTime(selected);
             } else {
-                bModel.mAttendanceHelper.downWeekOffs(OrderSummary.this);
+                NonFieldHelper.getInstance(this).downWeekOffs(OrderSummary.this);
                 mCalendar.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
                 mCalendar = dateValidation(mCalendar);
@@ -923,6 +931,25 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 setVisible(bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE);
 
 
+        /*
+         * enable attach file option
+         * */
+
+        if (bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
+            if (bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_attach_file_black_24dp);
+                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
+                menu.findItem(R.id.menu_attach_file).setIcon(drawable);
+            } else {
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_attach_file_black_24dp);
+                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
+                menu.findItem(R.id.menu_attach_file).setIcon(drawable);
+            }
+
+        }
+
+        menu.findItem(R.id.menu_attach_file).setVisible(bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -1061,6 +1088,45 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         R.string.sdcard_is_not_ready_to_capture_img,
                         Toast.LENGTH_SHORT).show();
             }
+        } else if (i1 == R.id.menu_attach_file) {
+
+            attachedFilePath = "ORD_"
+                    + Commons.now(Commons.DATE_TIME) + "_"
+                    + bModel.getRetailerMasterBO()
+                    .getRetailerID() + "_"
+                    + bModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "_file.pdf";
+
+
+            String mFirstName = bModel.getOrderHeaderBO().getOrderImageName();
+
+            boolean nFilesThere = bModel
+                    .checkForNFilesInFolder(
+                            HomeScreenFragment.photoPath,
+                            1, mFirstName);
+            if (nFilesThere) {
+                File file = new File(HomeScreenFragment.photoPath + "/" + mFirstName);
+                Intent target = new Intent(Intent.ACTION_VIEW);
+                target.setDataAndType(Uri.fromFile(file), "application/pdf");
+                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                Intent intent = Intent.createChooser(target, "Open File");
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                String path = HomeScreenFragment.photoPath + "/"
+                        + attachedFilePath;
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("application/pdf");
+                intent.putExtra("path", path);
+                startActivityForResult(intent, FILE_SELECTION);
+
+            }
+
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1178,6 +1244,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             i.putExtra("tempOrdImg",
                     (bModel.getOrderHeaderBO().getOrderImageName() == null ? ""
                             : bModel.getOrderHeaderBO().getOrderImageName()));
+            i.putExtra("tempAddressId",
+                    bModel.getOrderHeaderBO().getAddressID());
         }
 
         bModel.setOrderHeaderBO(null);
@@ -1695,8 +1763,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     // Don't write any code  after this dialog.. because it is just a confirmation dialog
                     orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
                     orderConfirmationDialog.show();
-                    Window window = orderConfirmationDialog.getWindow();
-                    window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     orderConfirmationDialog.setCancelable(false);
 
                 }
@@ -1832,8 +1898,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             // Don't write any code  after this dialog.. because it is just a confirmation dialog
                             orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
                             orderConfirmationDialog.show();
-                            Window window = orderConfirmationDialog.getWindow();
-                            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                             orderConfirmationDialog.setCancelable(false);
 
 
@@ -2796,8 +2860,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), "yyyy/MM/dd");
-            if (bModel.mAttendanceHelper.isHoliday(dbDateFormat, OrderSummary.this)
-                    || bModel.mAttendanceHelper.isWeekOff(dbDateFormat)) {
+            if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
+                    || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
                 Toast.makeText(OrderSummary.this, "The Selected day is a holiday", Toast.LENGTH_SHORT).show();
             }
 
@@ -2825,8 +2889,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar dateValidation(Calendar selectedDate) {
         String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
                 selectedDate.getTime(), "yyyy/MM/dd");
-        if (bModel.mAttendanceHelper.isHoliday(dbDateFormat, OrderSummary.this)
-                || bModel.mAttendanceHelper.isWeekOff(dbDateFormat)) {
+        if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
+                || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
             selectedDate.add(Calendar.DAY_OF_MONTH, 1);
             return dateValidation(selectedDate);
         } else {
@@ -3354,10 +3418,21 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         bModel.getOrderHeaderBO().setOrderImageName(mImageName);
                 }
                 break;
+            case FILE_SELECTION:
+                if (requestCode == 12 && data != null) {
+
+                    invalidateOptionsMenu();
+                    String realPath = Util.getPath(this, data.getData());
+                    Util.copyFile(new File(realPath), HomeScreenFragment.photoPath, attachedFilePath);
+                    if (bModel.getOrderHeaderBO() != null)
+                        bModel.getOrderHeaderBO().setOrderImageName(attachedFilePath);
+                }
+                break;
             default:
                 break;
         }
     }
+
 
     @Override
     protected void onDestroy() {

@@ -26,9 +26,4 @@ public class LocationConstants {
     public static final String TILTING = "TILTING";
     public static final String UNKNOWN = "UNKNOWN";
 
-    public static final String FIREBASE_EMAIL= "sajena.a@ivymobility.com";
-    public static final String FIREBASE_PASSWORD ="9941782090";
-    public static final String FIREBASE_BASE_PATH="supervisorivycpg";
-
-
 }

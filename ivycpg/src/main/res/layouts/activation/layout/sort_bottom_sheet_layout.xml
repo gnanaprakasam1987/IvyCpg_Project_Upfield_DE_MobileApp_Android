@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheetLayout"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="@dimen/_300sdp"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:clickable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/_10sdp"
+    android:paddingTop="@dimen/_10sdp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_marginLeft="@dimen/_15sdp"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:text="Sort By"
+        android:textColor="@color/BLUE"
+        android:textSize="@dimen/_14sdp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:background="@color/grey_odd" />
+
+    <RadioGroup
+        android:id="@+id/sort_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_marginLeft="@dimen/_15sdp"
+        android:layout_marginRight="@dimen/_10sdp">
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:text="Sort by A - Z"
+            android:textColor="#8b000000"
+            android:textSize="@dimen/_12sdp" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:text="Sort by Z - A"
+            android:textColor="#8b000000"
+            android:textSize="@dimen/_12sdp" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:text="Top Performer"
+            android:textColor="#8b000000"
+            android:textSize="@dimen/_12sdp" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:text="Need more attention"
+            android:textColor="#8b000000"
+            android:textSize="@dimen/_12sdp" />
+
+    </RadioGroup>
+
+
+</LinearLayout>

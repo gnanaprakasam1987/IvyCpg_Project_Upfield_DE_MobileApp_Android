@@ -90,6 +90,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
+    private ArrayAdapter<ReasonMaster> priceSpinnerAdapter;
     private HashMap<Integer, Integer> mCompetitorSelectedIdByLevelId;
 
     TextView tvCurPriceText, tvProdName;
@@ -603,9 +604,17 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
     private void nextButtonClick() {
         try {
-            if (priceTrackingHelper.hasDataTosave(businessModel.productHelper.getTaggedProducts()))
-                new SaveAsyncTask().execute();
-            else
+            if (priceTrackingHelper.hasDataTosave(businessModel.productHelper.getTaggedProducts())) {
+                if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1)
+                    if (priceTrackingHelper.hasPriceChangeReason(businessModel.productHelper.getTaggedProducts()))
+                        new SaveAsyncTask().execute();
+                    else
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.select_reason_for_price_change),
+                                Toast.LENGTH_LONG).show();
+                else
+                    new SaveAsyncTask().execute();
+            } else
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.no_data_tosave),
                         Toast.LENGTH_LONG).show();
@@ -925,6 +934,17 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     || "NONE".equalsIgnoreCase(temp.getReasonCategory()))
                 spinnerAdapter.add(temp);
         }
+        priceSpinnerAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_bluetext_layout);
+        priceSpinnerAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
+        for (ReasonMaster temp : businessModel.reasonHelper.getReasonList()) {
+            if ("PRC".equalsIgnoreCase(temp.getReasonCategory())
+                    || "NONE".equalsIgnoreCase(temp.getReasonCategory()))
+                priceSpinnerAdapter.add(temp);
+        }
+
     }
 
     private int getReasonIndex(String reasonId) {
@@ -941,6 +961,20 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         return -1;
     }
 
+    private int getPriceReasonIndex(String reasonId) {
+        if (priceSpinnerAdapter.getCount() == 0)
+            return 0;
+        int len = priceSpinnerAdapter.getCount();
+        if (len == 0)
+            return 0;
+        for (int i = 0; i < len; ++i) {
+            ReasonMaster s = priceSpinnerAdapter.getItem(i);
+            if (s.getReasonID().equals(reasonId))
+                return i;
+        }
+        return -1;
+    }
+
     class ViewHolder {
         ProductMasterBO mSKUBO;
         TextView mBarCode, mSrp;
@@ -948,7 +982,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         TextView mPrev_CA_label, mPrev_PC_label, mPrev_OO_label, tv_prev_mrp_pc_label, tv_prev_mrp_ca_label, tv_prev_mrp_ou_label;
         CheckBox mChanged, mCompliance;
         EditText mCaPrice, mPcPrice, mOoPrice;
-        Spinner mReason;
+        Spinner mReason, mReason_price_change;
         RelativeLayout rl_PriceChanged, rl_PriceCompliance;
         TextView mProductCodeTV;
 
@@ -1050,6 +1084,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
                 holder.mReason = (Spinner) row
                         .findViewById(R.id.reason);
+                holder.mReason_price_change = (Spinner) row
+                        .findViewById(R.id.reason_pc);
+
                 holder.mProductCodeTV = (TextView) row
                         .findViewById(R.id.prdcode_tv);
                 holder.mProductCodeTV.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1101,6 +1138,13 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                             holder.mPcPrice.setEnabled(false);
                             holder.mOoPrice.setEnabled(false);
 
+                            if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1) {
+                                holder.mReason_price_change.setEnabled(false);
+                                holder.mReason_price_change.setSelected(false);
+                                holder.mReason_price_change.setSelection(0);
+                                holder.mSKUBO.setPriceChangeReasonID("0");
+                            }
+
 
                             if (businessModel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE) {
                                 holder.mCaPrice.setText(holder.mSKUBO.getPrevPrice_ca());
@@ -1134,6 +1178,12 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                             holder.mSKUBO.setPriceChanged(1);
                             holder.mChanged.setChecked(true);
 
+                            if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1) {
+                                holder.mReason_price_change.setEnabled(true);
+                                holder.mReason_price_change.setSelected(true);
+                                holder.mReason_price_change.setSelection(0);
+                                holder.mSKUBO.setPriceChangeReasonID("0");
+                            }
 
                             if (holder.mSKUBO.getOuUomid() == 0 || !holder.mSKUBO.isOuterMapped()) {
                                 holder.mOoPrice.setEnabled(false);
@@ -1332,6 +1382,23 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                             }
                         });
 
+                holder.mReason_price_change.setAdapter(priceSpinnerAdapter);
+                holder.mReason_price_change
+                        .setOnItemSelectedListener(new OnItemSelectedListener() {
+                            public void onItemSelected(AdapterView<?> parent,
+                                                       View view, int position, long id) {
+
+                                ReasonMaster reString = (ReasonMaster) holder.mReason_price_change
+                                        .getSelectedItem();
+
+                                holder.mSKUBO.setPriceChangeReasonID(reString
+                                        .getReasonID());
+                            }
+
+                            public void onNothingSelected(AdapterView<?> parent) {
+                            }
+                        });
+
                 if (!priceTrackingHelper.SHOW_PRICE_LASTVP)
                     holder.ll_prev_price_Lty.setVisibility(View.GONE);
 
@@ -1367,6 +1434,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
                 if (priceTrackingHelper.SHOW_PRICE_CHANGED) {
                     holder.rl_PriceChanged.setVisibility(View.VISIBLE);
+                    if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1)
+                        holder.mReason_price_change.setVisibility(View.VISIBLE);
                     holder.mCaPrice.setEnabled(false);
                     holder.mPcPrice.setEnabled(false);
                     holder.mOoPrice.setEnabled(false);
@@ -1424,12 +1493,18 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
 
             holder.mReason.setSelection(getReasonIndex(holder.mSKUBO.getReasonID()));
+            holder.mReason_price_change.setSelection(getPriceReasonIndex(holder.mSKUBO.getPriceChangeReasonID()));
+
             if (holder.mSKUBO.getPriceCompliance() == 1)
                 holder.mCompliance.setChecked(true);
 
             if (priceTrackingHelper.SHOW_PRICE_CHANGED) {
                 if (holder.mSKUBO.getPriceChanged() == 1) {
                     holder.mChanged.setChecked(true);
+
+                    if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1)
+                        holder.mReason_price_change.setEnabled(true);
+
 
                     if (holder.mSKUBO.getOuUomid() == 0 || !holder.mSKUBO.isOuterMapped()) {
                         holder.mOoPrice.setEnabled(false);
@@ -1454,6 +1529,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     holder.mCaPrice.setEnabled(false);
                     holder.mPcPrice.setEnabled(false);
                     holder.mOoPrice.setEnabled(false);
+                    if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1)
+                        holder.mReason_price_change.setEnabled(false);
 
                 }
             } else {

@@ -77,6 +77,7 @@ import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
+import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
@@ -111,7 +112,7 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
-import com.ivy.sd.png.provider.AttendanceHelper;
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
@@ -121,15 +122,12 @@ import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.DeliveryManagementHelper;
-import com.ivy.sd.png.provider.DynamicReportHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
-import com.ivy.sd.png.provider.ExpenseSheetHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
 import com.ivy.sd.png.provider.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
-import com.ivy.sd.png.provider.LeaveApprovalHelper;
 import com.ivy.sd.png.provider.LoyalityHelper;
 import com.ivy.sd.png.provider.MVPHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
@@ -277,7 +275,6 @@ public class BusinessModel extends Application {
     public NewOutletHelper newOutletHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
-    public AttendanceHelper mAttendanceHelper;
     public CompetitorTrackingHelper competitorTrackingHelper;
     public EmptyReconciliationHelper mEmptyReconciliationhelper;
     public EmptyReturnHelper mEmptyReturnHelper;
@@ -289,8 +286,6 @@ public class BusinessModel extends Application {
     public OrderFullfillmentHelper orderfullfillmenthelper;
     public ProfileHelper profilehelper;
     public MVPHelper mvpHelper;
-    public LeaveApprovalHelper leaveApprovalHelper;
-    public ExpenseSheetHelper expenseSheetHelper;
     public JExcelHelper mJExcelHelper;
     public DeliveryManagementHelper deliveryManagementHelper;
     public CommonPrintHelper mCommonPrintHelper;
@@ -433,7 +428,6 @@ public class BusinessModel extends Application {
         setRetailerMaster(new Vector<RetailerMasterBO>());
 
         newOutletHelper = NewOutletHelper.getInstance(this);
-        mAttendanceHelper = AttendanceHelper.getInstance(this);
         competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
         mEmptyReconciliationhelper = EmptyReconciliationHelper
                 .getInstance(this);
@@ -443,8 +437,6 @@ public class BusinessModel extends Application {
         mRetailerHelper = RetailerHelper.getInstance(this);
         orderfullfillmenthelper = OrderFullfillmentHelper.getInstance(this);
         mvpHelper = MVPHelper.getInstance(this);
-        leaveApprovalHelper = LeaveApprovalHelper.getInstance(this);
-        expenseSheetHelper = ExpenseSheetHelper.getInstance(this);
         distributorMasterHelper = DistributorMasterHelper.getInstance(this);
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
         distTimeStampHeaderHelper = DistTimeStampHeaderHelper.getInstance(this);
@@ -1454,7 +1446,7 @@ public class BusinessModel extends Application {
 
                             + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
 
-                            + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID"
+                            + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
                             + " LEFT JOIN RetailerContact RC1 ON RC1.RetailerId = A.RetailerID AND RC1.IsPrimary = 1"
                             + " LEFT JOIN RetailerContact RC2 ON RC2.RetailerId = A.RetailerID AND RC2.IsPrimary = 0"
@@ -3504,7 +3496,7 @@ public class BusinessModel extends Application {
 
         final int idd = id;
 
-        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, "Ok", new CommonDialog.PositiveClickListener() {
+        CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick()
 
@@ -8614,9 +8606,16 @@ public class BusinessModel extends Application {
 
             for (NonproductivereasonBO reasnBo : reasonBoList) {
 
+                String remark = "";
+                if (!reasnBo.getDeviatedReasonId().equalsIgnoreCase("0")) {
+                    remark = reasnBo.getDeviationReason();
+                } else {
+                    remark = remarks;
+                }
+
                 values = id + "," + QT(userMasterHelper.getUserMasterBO().getUserid() + "") + ","
                         + QT(reasnBo.getDate()) + "," + QT(reasnBo.getReasonid())
-                        + "," + QT(remarks) +
+                        + "," + QT(remark) +
                         "," + getRetailerMasterBO().getDistributorId();
 
                 db.insertSQL("NonFieldActivity", columns, values);
@@ -8759,7 +8758,8 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select count(distinct InvoiceNo),sum(totalamount) from Invoicemaster where invoicedate = "
+                    .selectSQL("select count(distinct Inv.InvoiceNo),sum(Inv.totalamount) from Invoicemaster Inv" +
+                            " INNER JOIN OrderHeader OH ON OH.orderId=Inv.OrderId where Inv.invoicedate = "
                             + QT(userMasterHelper.getUserMasterBO().getDownloadDate()));
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -9099,6 +9099,57 @@ public class BusinessModel extends Application {
         }
 
         return 0;
+    }
+
+    public boolean hasPendingInvoice(String date,String retailerIds) {
+        try {
+            double balance = 0;
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select Inv.InvoiceNo,Round(Inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as balance from "
+                    + DataMembers.tbl_InvoiceMaster + " Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo where Inv.Retailerid in("
+                    + retailerIds
+                    + ") and Inv.InvoiceDate ='" + date + "'and Inv.upload = 'N'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    balance = balance + c.getDouble(c.getColumnIndex("balance"));
+                }
+                c.close();
+                if (balance > 0)
+                    return true;
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    public String getUserParentPosition(){
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ParentPositionIds from UserMaster where userid="
+                            + QT(String.valueOf(userMasterHelper.getUserMasterBO().getUserid())));
+            if (c != null) {
+                if (c.moveToNext()) {
+                    String id = c.getString(0);
+                    c.close();
+                    db.closeDB();
+                    return id==null?"":id;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return "";
     }
 
 }

@@ -31,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.ivy.core.data.datamanager.DataManagerImpl;
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
@@ -2197,9 +2198,9 @@ SynchronizationHelper {
                 MyHttpConnectionNew http = new MyHttpConnectionNew();
                 http.create(MyHttpConnectionNew.POST, url.toString(), null);
                 http.addHeader(SECURITY_HEADER, mSecurityKey);
-                http.addParam("userinfo", headerinfo);
+                http.addParam("userInfo", headerinfo);
                 if (data != null) {
-                    http.addParam("data", data);
+                    http.addParam("Data", data);
                 }
                 http.connectMe();
                 Vector<String> result = http.getResult();
@@ -3996,7 +3997,7 @@ SynchronizationHelper {
         bmodel.labelsMasterHelper.downloadLabelsMaster();
 
         //check attendance
-        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(context);
+        HomeScreenFragment.isLeave_today = AttendanceHelper.getInstance(context).checkLeaveAttendance(context);
 
         //save sales return with Old batchid for the product
         bmodel.productHelper.loadOldBatchIDMap();

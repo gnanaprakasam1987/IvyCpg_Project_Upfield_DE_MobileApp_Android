@@ -116,6 +116,11 @@ public class SODAssetFragment extends IvyBaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sos, container, false);
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
+        assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
+        mSODAssetHelper = SODAssetHelper.getInstance(getActivity());
+        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
 
         initializeViews(view);
 

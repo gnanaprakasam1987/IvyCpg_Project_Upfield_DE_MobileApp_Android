@@ -790,6 +790,17 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                         }
                     });
 
+                    row.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+
+                            productName.setText(holder.pname);
+
+                            inputManager.hideSoftInputFromWindow(
+                                    mEdt_searchproductName.getWindowToken(), 0);
+
+                        }
+                    });
+
                     row.setTag(holder);
                 } else {
                     holder = (ViewHolder) row.getTag();

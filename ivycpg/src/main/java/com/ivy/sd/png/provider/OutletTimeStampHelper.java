@@ -175,7 +175,7 @@ public class OutletTimeStampHelper {
 
 	/**
 	 * Used to set Time Stamp.
-	 * 
+	 *
 	 * @param date date of last user visited retailer
 	 * @param timeIn time of last user visited retailer
 	 */
@@ -196,24 +196,19 @@ public class OutletTimeStampHelper {
             }
 
 			int joinCallFlag=0;
-			if (isJointCall(joinCallList)) {  // check join call or not
-                joinCallFlag = 1;
-            }DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
 					DataMembers.DB_PATH);
 			db.createDataBase();
 			db.openDataBase();
-			
-			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue";
 
-            if (isJointCall(joinCallList)) {  // check join call or not
-                joinCallFlag = 1;
-            }
+			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc";
+
 
 			String values = getUid() + ","
-					+ bmodel.retailerMasterBO.getBeatID() + "," + QT(date)+ ","
-					+  QT(bmodel.retailerMasterBO.getRetailerID()) + ","
-					+ QT(date + " " + timeIn) + "," + QT(date + " " + timeIn)+ ","
-					+  QT("0") + ","
+					+ bmodel.retailerMasterBO.getBeatID() + "," + QT(date)
+					+ "," + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
+					+ QT(date + " " + timeIn) + "," + QT(date + " " + timeIn)
+					+ "," + QT("") + ","
 					+ QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
 					+ QT(LocationUtil.latitude + "") + ","
 					+ QT(LocationUtil.longitude + "")+","
@@ -221,21 +216,22 @@ public class OutletTimeStampHelper {
 					+ QT(LocationUtil.accuracy+"")+","
 					+ QT(distance+"")+","
 					+ (dist<bmodel.getRetailerMasterBO().getGpsDistance()?1:0)+","
-					+ (getLastRetailerId()==SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID())? getLastRetailerSequence():(getLastRetailerSequence()+1))+ ","
-					+bmodel.retailerMasterBO.getDistributorId()+ ","
-					+getBatteryPercentage(context)+ ","
-					+QT(LocationUtil.mProviderName)+ ","
-					+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))+ ","
-					+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))+ ","
-					+QT("0");
+					+ (getLastRetailerId()==SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID())? getLastRetailerSequence():(getLastRetailerSequence()+1))
+					+","+bmodel.retailerMasterBO.getDistributorId()
+					+","+getBatteryPercentage(context)
+					+","+QT(LocationUtil.mProviderName)
+					+","+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
+					+","+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+					+","+QT(String.valueOf(bmodel.getOrderValue()))
+                    +","+QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
 
 			db.insertSQL("OutletTimestamp", columns, values);
-			
+
 			if(joinCallFlag==1){  // insert join call details
 				for(UserMasterBO userBo:joinCallList){
 					if(userBo.getIsJointCall()==1){
 				String joinCallColumns="timestampid,supid";
-				
+
 				String joinCallValues=getUid()+","+userBo.getUserid();
 				db.insertSQL("OutletJoinCall", joinCallColumns, joinCallValues);
 				}
@@ -258,38 +254,39 @@ public class OutletTimeStampHelper {
         return sucessFlag;
 	}
 
-    /**
-     * Set Time Out
-     *
-     * @param timeOut    Module timeout
-     * @param reasonDesc reason for closing
-     */
-    public void updateTimeStamp(String timeOut, String reasonDesc) {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
-            String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
-                    + "',feedback=" + bmodel.QT(reasonDesc)
-                    + ", OrderValue = " + QT(String.valueOf(bmodel.getOrderValue()))
-                    + ", outLatitude = " + QT(LocationUtil.latitude + "")
-                    + ", outLongitude = " + QT(LocationUtil.longitude + "")
-                    + ", LocationProvider = " + QT(LocationUtil.mProviderName)
-                    + ", gpsAccuracy = " + QT(LocationUtil.accuracy + "")
-                    + ", Battery = " + getBatteryPercentage(context)
-                    + ", IsLocationEnabled = " + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
-                    + ", IsDeviated = " + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
-                    + "  WHERE RetailerID = '"
-                    + bmodel.retailerMasterBO.getRetailerID()
-                    + "' AND TimeIn = '" + getTimeIn() + "'";
-            db.updateSQL(query);
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
+	/**
+	 * Set Time Out
+	 *
+	 * @param timeOut Module timeout
+	 * @param reasonDesc reason for closing
+	 */
+	public void updateTimeStamp(String timeOut,String reasonDesc) {
+		try {
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+					DataMembers.DB_PATH);
+			db.createDataBase();
+			db.openDataBase();
+			String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
+			String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
+					+"',feedback="+bmodel.QT(reasonDesc)
+					+", OrderValue = "+QT(String.valueOf(bmodel.getOrderValue()))
+					+", outLatitude = "+ QT(LocationUtil.latitude + "")
+					+", outLongitude = "+ QT(LocationUtil.longitude + "")
+					+", LocationProvider = "+QT(LocationUtil.mProviderName)
+					+", gpsAccuracy = "+ QT(LocationUtil.accuracy+"")
+					+", Battery = "+getBatteryPercentage(context)
+					+", IsLocationEnabled = "+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
+					+", IsDeviated = "+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+                    +", lpc = "+ bmodel.retailerMasterBO.getTotalLines()
+					+"  WHERE RetailerID = '"
+					+bmodel.retailerMasterBO.getRetailerID()
+					+ "' AND TimeIn = '" + getTimeIn() + "'";
+			db.updateSQL(query);
+			db.closeDB();
+		} catch (Exception e) {
+			Commons.printException(e);
+		}
+	}
 
 
     /**

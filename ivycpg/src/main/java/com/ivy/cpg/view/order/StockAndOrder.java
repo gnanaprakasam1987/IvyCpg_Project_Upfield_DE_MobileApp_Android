@@ -74,6 +74,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.order.scheme.UpSellingActivity;
@@ -81,7 +82,7 @@ import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
-import com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity;
+import com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -108,7 +109,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.MOQHighlightDialog;
@@ -118,6 +118,7 @@ import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,6 +177,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String mDiscount = "Filt18";
     private final String mSuggestedOrder = "Filt25";
     private final String mDrugProducts = "Filt28";
+    private final String mDeadProducts = "Filt15";
 
     private boolean isSbd;
     private boolean isSbdGaps;
@@ -194,6 +196,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private boolean isStock;
     private boolean isDiscount;
     private boolean isDrugProducts;
+    private boolean isDeadProducts;
 
     private MustSellReasonDialog dialog;
     /**
@@ -213,8 +216,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String TEMP_RFIELD1 = "tempRField1";
     private final String TEMP_RFIELD2 = "tempRField2";
     private final String TEMP_ORDDERIMG = "tempOrdImg";
+    private final String TEMP_ADDRESSID = "tempAddressId";
     private double totalvalue = 0;
-    private final String FROM_HOME_SCREEN = "IsFromHomeScreen";
+
 
 
     private int mSelectedBrandID = 0;
@@ -228,6 +232,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String tempRField1;
     private String tempRField2;
     private String tempOrdImg;
+    private int tempAddressId;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private LevelBO mSelectedLevelBO = new LevelBO();
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
@@ -259,7 +264,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private Vector<ProductMasterBO> productList = new Vector<>();
 
-    boolean isFromHomeScreen = false;
+
     private OrderHelper orderHelper;
 
     private static final int SALES_RETURN = 3;
@@ -307,7 +312,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         : extras.getString(TEMP_RFIELD2);
                 tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? ""
                         : extras.getString(TEMP_ORDDERIMG);
-                isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
+                tempAddressId = extras.getInt(TEMP_ADDRESSID);
+
             }
         } else {
             OrderedFlag = (String) (savedInstanceState
@@ -330,7 +336,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tempOrdImg = (String) (savedInstanceState
                     .getSerializable(TEMP_ORDDERIMG) == null ? ""
                     : savedInstanceState.getSerializable(TEMP_ORDDERIMG));
-            isFromHomeScreen = savedInstanceState.getBoolean(FROM_HOME_SCREEN, false);
+            tempAddressId = (int) (savedInstanceState
+                    .getSerializable(TEMP_ADDRESSID));
+
         }
 
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
@@ -456,7 +464,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
 
-        if (!isFromHomeScreen && bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+        if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.resetSRPvalues();
         }
 
@@ -949,15 +957,17 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .getString(TEMP_RFIELD2);
             tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? "" : extras
                     .getString(TEMP_ORDDERIMG);
-            isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
+            tempAddressId = extras.getInt(TEMP_ADDRESSID);
+
             savedInstanceState.putSerializable(ORDER_FLAG, OrderedFlag);
             savedInstanceState.putSerializable(TEMP_PO, tempPo);
             savedInstanceState.putSerializable(TEMP_REMARK, tempRemark);
             savedInstanceState.putSerializable(TEMP_RFIELD1, tempRField1);
             savedInstanceState.putSerializable(TEMP_RFIELD2, tempRField2);
             savedInstanceState.putString(TEMP_ORDDERIMG, tempOrdImg);
+            savedInstanceState.putSerializable(TEMP_ADDRESSID, tempAddressId);
             savedInstanceState.putSerializable(SCREEN_CODE, screenCode);
-            savedInstanceState.putSerializable(FROM_HOME_SCREEN, isFromHomeScreen);
+
         }
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -1828,7 +1838,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
 
                         Intent intent = new Intent(StockAndOrder.this,
-                                AvailabiltyCheckActivity.class);
+                                CombinedStockDetailActivity.class);
                         intent.putExtra("screenTitle", holder.productObj.getProductName());
                         intent.putExtra("pid", holder.productObj.getProductID());
                         intent.putExtra("selectedLocationIndex", mSelectedLocationIndex);
@@ -4272,6 +4282,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         tempRField2 == null ? "" : tempRField2);
                 bmodel.getOrderHeaderBO().setOrderImageName(
                         tempOrdImg == null ? "" : tempOrdImg);
+                bmodel.getOrderHeaderBO().setAddressID(tempAddressId);
 
                 if (bmodel.configurationMasterHelper.IS_MUST_SELL
                         && !bmodel.productHelper.isMustSellFilled()) {
@@ -4357,8 +4368,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void moveToNextScreen() {
 
 
-
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
 
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
@@ -4380,14 +4390,23 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Toast.LENGTH_SHORT).show();
             }
 
-        }else if (schemeHelper.IS_SCHEME_ON
+        } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
-            Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
-            init.putExtra("ScreenCode", screenCode);
-            init.putExtra("ForScheme", screenCode);
-            startActivity(init);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
+            if(schemeHelper.IS_SCHEME_QPS_TRACKING){
+                Intent init = new Intent(StockAndOrder.this, QPSSchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            } else {
+                Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            }
         } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
             Intent init = new Intent(StockAndOrder.this, OrderDiscount.class);
             init.putExtra("ScreenCode", screenCode);
@@ -4956,6 +4975,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     isStock = true;
                 else if (bo.getConfigCode().equals(mDrugProducts))
                     isDrugProducts = true;
+                else if (bo.getConfigCode().equals(mDeadProducts))
+                    isDeadProducts = true;
             }
         }
     }
@@ -5196,7 +5217,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
                 || (generaltxt.equalsIgnoreCase(mShelf) && (ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1))
                 || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0)
-                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1);
+                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)
+                || (generaltxt.equalsIgnoreCase(mDeadProducts) && ret.getmDeadProduct() == 1);
     }
 
     private String getFilterName(String filtername) {
@@ -5733,7 +5755,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && (ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1
                 || ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1 || ret.getLocations().get(mSelectedLocationIndex).getWHPiece() > 0
                 || ret.getLocations().get(mSelectedLocationIndex).getWHCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getWHOuter() > 0 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1))
-                || (isDiscount && ret.getIsDiscountable() == 1) || (isDrugProducts && ret.getIsDrug() == 1);
+                || (isDiscount && ret.getIsDiscountable() == 1) || (isDrugProducts && ret.getIsDrug() == 1)
+                || (isDeadProducts && ret.getmDeadProduct() == 1);
     }
 
     private boolean hasStockOnly() {
@@ -5853,7 +5876,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         Vector<ProductMasterBO> items = productList;
         if (mAttributeProducts != null) {
             count = 0;
-            if (mProductId!=0) {
+            if (mProductId != 0) {
                 if (mFilterText.length() > 0) {
                     count++;
                     for (ProductMasterBO productBO : items) {
@@ -5862,7 +5885,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
-                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mProductId+"/")) {
+                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mProductId + "/")) {
                                     // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                                     if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
 
@@ -5919,7 +5942,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
         } else {
             if (mFilterText.length() > 0) {
-                if (mProductId!=0) {
+                if (mProductId != 0) {
                     count++;
                     for (ProductMasterBO productBO : items) {
 
@@ -5929,7 +5952,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                     || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
                                     && productBO.getIndicativeOrder_oc() > 0)) {
-                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mProductId+"/")) {
+                                if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mProductId + "/")) {
                                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                         continue;
                                     mylist.add(productBO);
@@ -6335,7 +6358,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                     updateSelectedID();
 
-                    int mFilteredPId =0;
+                    int mFilteredPId = 0;
                     int size = sequence.size();
                     for (int i = size - 1; i >= 0; i--) {
                         if (mSelectedIdByLevelId.get(sequence.get(i).getProductID()) != null && mSelectedIdByLevelId.get(sequence.get(i).getProductID()) > 0) {
@@ -6353,7 +6376,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (isAttributeFilterSelected()) {
                             //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
                             if (isFilterContentSelected(sequence.size() - bmodel.productHelper.getmAttributeTypes().size())) {
-                               // mFilteredPId = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
+                                // mFilteredPId = updateProductLoad((sequence.size() - bmodel.productHelper.getmAttributeTypes().size()));
                             }
 
                             ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
@@ -6497,6 +6520,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
     }
+
     private ArrayList<Integer> getParenIdList(int selectedGridLevelID,
                                               ArrayList<Integer> list, LevelBO levelBO) {
         ArrayList<Integer> parentIdList = new ArrayList<>();
@@ -6754,7 +6778,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         String strPname = getResources().getString(
                 R.string.product_name)
                 + " (" + mylist.size() + ")";
-        // MyAdapter lvwplist = new MyAdapter(mylist);
+        // OutletListAdapter lvwplist = new OutletListAdapter(mylist);
         lvwplist.setAdapter(new MyAdapter(mylist));
 //        salesReturnHelper = SalesReturnHelper.getInstance(this);
     }

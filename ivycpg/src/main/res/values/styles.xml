@@ -81,6 +81,9 @@
         <item name="dashboardSpinnerSelector">@color/light_grey</item>
         <!--CustomTextViews-->
         <item name="SearchViewStyle">@style/SearchViewStyleBlue</item>
+
+
+
     </style>
 
     <style name="MyButtonBlue" parent="Base.Widget.AppCompat.Button">
@@ -120,6 +123,18 @@ negative button and neutral button -->
         <item name="buttonBarPositiveButtonStyle">@color/colorAccent</item>
         <item name="buttonBarNegativeButtonStyle">@color/colorAccent</item>
         <item name="buttonBarNeutralButtonStyle">@color/colorAccent</item>
+    </style>
+
+    <style name="SellerDatePickerStyle" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- Color palette -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="buttonBarPositiveButtonStyle">@color/colorPrimary</item>
+        <item name="buttonBarNegativeButtonStyle">@color/colorPrimary</item>
+        <item name="buttonBarNeutralButtonStyle">@color/colorPrimary</item>
     </style>
 
     <style name="AppTabLayout.Blue" parent="Widget.Design.TabLayout">
@@ -1298,6 +1313,42 @@ negative button and neutral button -->
     <style name="NormalTabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">@dimen/font_nano_small</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ScrollingPagerIndicator">
+        <item name="spi_dotColor">@android:color/darker_gray</item>
+        <item name="spi_dotSelectedColor">@android:color/darker_gray</item>
+        <item name="spi_dotSize">6dp</item>
+        <item name="spi_dotSelectedSize">10dp</item>
+        <item name="spi_dotSpacing">8dp</item>
+        <item name="spi_visibleDotCount">5</item>
+        <item name="spi_visibleDotThreshold">2</item>
+        <item name="spi_looped">false</item>
+    </style>
+
+    <style name="Tooltip">
+        <item name="android:text">Pop Up</item>
+        <item name="android:textColor">?android:textColorPrimaryInverse</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">5dp</item>
+        <item name="backgroundColor">@color/colorPrimary</item>
+        <item name="cornerRadius">4dp</item>
+    </style>
+
+
+    <style name="MVPTheme.Blue.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="MVPTheme.Blue.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ButtonApplyFilter" parent="Base.Widget.AppCompat.Button">
+        <item name="android:layout_height">@dimen/btn_round_corner_height</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/btn_round_text_color</item>
+        <item name="android:textSize">@dimen/btn_round_corner_text_size</item>
+        <item name="android:paddingLeft">@dimen/btn_round_corner_padding</item>
+        <item name="android:paddingRight">@dimen/btn_round_corner_padding</item>
+        <item name="android:minWidth">@dimen/btn_round_corner_width</item>
+        <item name="android:background">@drawable/filter_screen_apply</item>
     </style>
 
 </resources>

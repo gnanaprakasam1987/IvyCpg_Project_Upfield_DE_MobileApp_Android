@@ -4,10 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.DateWisePlanBO;
-import com.ivy.sd.png.bo.NonFieldBO;
+import com.ivy.cpg.view.nonfield.NonFieldBO;
 import com.ivy.sd.png.bo.OfflineDateWisePlanBO;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 

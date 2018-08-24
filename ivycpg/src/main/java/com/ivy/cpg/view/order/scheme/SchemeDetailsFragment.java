@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -248,7 +249,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         layout_BuyProductParent.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
 
                         TextView text_BuyProductsTitle = getTextView(true, Gravity.LEFT, false);
-                        LinearLayout.LayoutParams layoutParams_BuyProductTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (mTotalScreenWidth * 6) / 100);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams layoutParams_BuyProductTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         layoutParams_BuyProductTitle.setMargins(0, 10, 0, 10);
                         layoutParams_BuyProductTitle.gravity = Gravity.CENTER_VERTICAL;
                         text_BuyProductsTitle.setLayoutParams(layoutParams_BuyProductTitle);
@@ -264,6 +265,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         text_BuyProductsTitle.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         text_BuyProductsTitle.setGravity(Gravity.LEFT | Gravity.CENTER);
                         text_BuyProductsTitle.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                        text_BuyProductsTitle.setMaxLines(2);
 
                         LinearLayout layout_Slab;
                         layout_Slab = new LinearLayout(mContext);
@@ -285,6 +287,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                 slab.setLayoutParams(layoutParams_slab);
                                 slab.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                                 slab.setTextSize(mTextViewSize);
+                                slab.setEllipsize(TextUtils.TruncateAt.END);
+                                slab.setMaxLines(2);
                                 if (schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme() != null) {
                                     slab.setText(schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme());
                                     slab.setTag(schemeHelper.getSchemeById().get(mSlabList.get(k)).getScheme());
@@ -408,7 +412,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         freeTitleTV.setWidth(150);
 
                         LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                        layoutParam_FreeTitle.setMargins(0, 10, 0, 10);
+                        layoutParam_FreeTitle.setMargins(0, 5, 0, 5);
                         freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                         freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                         freeTitleTV.setGravity(Gravity.LEFT | Gravity.CENTER);
@@ -446,7 +450,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                                 freeTitleTV.setWidth(150);
 
                                                 LinearLayout.LayoutParams layoutParam_FreeTitle = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                                                layoutParam_FreeTitle.setMargins(0, 20, 0, 10);
+                                                layoutParam_FreeTitle.setMargins(0, 10, 0, 10);
                                                 freeTitleTV.setLayoutParams(layoutParam_FreeTitle);
                                                 freeTitleTV.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
 

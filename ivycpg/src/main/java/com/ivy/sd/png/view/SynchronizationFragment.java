@@ -49,7 +49,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +59,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
 import com.ivy.cpg.view.sync.LastSyncTimeHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
@@ -100,7 +100,6 @@ import java.util.Vector;
 
 public class SynchronizationFragment extends IvyBaseFragment
         implements View.OnClickListener, SwitchUserDialog.onSwitchUser, SyncContractor.SyncView {
-
 
 
     private static BusinessModel bmodel;
@@ -1335,7 +1334,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                         BusinessModel.loadActivity(getActivity(),
                                 DataMembers.actHomeScreen);
                     } else {
-                        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(getActivity().getApplicationContext());
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
                     }
                     isClicked = false;
@@ -1569,7 +1567,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     }
                 } else if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     //outelet Performac
-                    if (bmodel.reportHelper.getPerformRptUrl().length() > 0) {
+                    if (OutletPerfomanceHelper.getInstance(getActivity()).getPerformRptUrl().length() > 0) {
                         SharedPreferences.Editor editor = PreferenceManager
                                 .getDefaultSharedPreferences(getActivity())
                                 .edit();
@@ -2350,7 +2348,6 @@ public class SynchronizationFragment extends IvyBaseFragment
         if (withPhotosCheckBox.isChecked())
             withPhotosCheckBox.setChecked(false);
     }
-
 
 
     /**

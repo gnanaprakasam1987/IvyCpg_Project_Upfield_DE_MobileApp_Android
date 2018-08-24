@@ -11,6 +11,7 @@ import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.SchemaQPSAchHistoryBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SchemeProductBatchQty;
@@ -101,6 +102,7 @@ public class SchemeDetailsMasterHelper {
     private ArrayList<SchemeBO> mDisplaySchemeMasterList;
     private ArrayList<SchemeBO> mDisplaySchemeSlabs;
     private ArrayList<SchemeBO> mDisplaySchemeTrackingList;
+    private HashMap<String, SchemaQPSAchHistoryBO> mSchemaQPSAchHistoryList;
 
     protected SchemeDetailsMasterHelper(Context context) {
         bModel = (BusinessModel) context.getApplicationContext();
@@ -118,9 +120,11 @@ public class SchemeDetailsMasterHelper {
     private static final String CODE_SCHEME_EDITABLE = "SCH02";
     private static final String CODE_SCHEME_SHOW_SCREEN = "SCH03";
     private static final String CODE_FOC_ACCUMULATION_VALIDATION = "SCH04";
+    private static final String CODE_UP_SELLING = "SCH05";
     private static final String CODE_SCHEME_SLAB_ON = "SCH08";
     private static final String CODE_SCHEME_CHECK = "SCH09";
-    private static final String CODE_UP_SELLING = "SCH05";
+    private static final String CODE_CHECK_SCHEME_WITH_ASRP = "SCH10";
+
 
     public boolean IS_SCHEME_ON;
     public boolean IS_SCHEME_EDITABLE;
@@ -132,7 +136,9 @@ public class SchemeDetailsMasterHelper {
     public boolean IS_SCHEME_ON_MASTER;
     public boolean IS_SCHEME_SHOW_SCREEN_MASTER;
     public boolean IS_UP_SELLING;
+    public boolean IS_SCHEME_QPS_TRACKING;
     private int UP_SELLING_PERCENTAGE = 70;
+    private boolean IS_CHECK_SCHEME_WITH_ASRP ;
 
     private boolean isBatchWiseProducts;
 
@@ -231,6 +237,9 @@ public class SchemeDetailsMasterHelper {
                     if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_ON)) {
                         IS_SCHEME_ON = true;
                         IS_SCHEME_ON_MASTER = true;
+                        if (c.getInt(1) > 0) {
+                            IS_SCHEME_QPS_TRACKING = true;
+                        }
                     } else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_EDITABLE))
                         IS_SCHEME_EDITABLE = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_SHOW_SCREEN)) {
@@ -245,7 +254,8 @@ public class SchemeDetailsMasterHelper {
                         if (c.getInt(1) > 0) {
                             UP_SELLING_PERCENTAGE = c.getInt(1);
                         }
-                    }
+                    } else if (c.getString(0).equalsIgnoreCase(CODE_CHECK_SCHEME_WITH_ASRP))
+                        IS_CHECK_SCHEME_WITH_ASRP = true;
 
                     if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_CHECK)) {
                         IS_SCHEME_CHECK = true;
@@ -434,8 +444,10 @@ public class SchemeDetailsMasterHelper {
             }
         }
         c.close();
-
-
+        if (IS_SCHEME_QPS_TRACKING) {
+            loadParentSchemInfo(db, mParentIDList);
+            loadQPSCumulativeAchHistory(db);
+        }
     }
 
     public ArrayList<Integer> getParentIDList() {
@@ -893,11 +905,11 @@ public class SchemeDetailsMasterHelper {
                     + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bModel.QT(retailerId) + ") as PieceUOM ON PieceUOM.Pid = A.pid"
                     + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bModel.QT(retailerId) + ") as OuterUOM ON OuterUOM.Pid = A.pid"
                     + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bModel.QT(retailerId) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
-                    + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bModel.QT(retailerId) + " and invoicestatus=1"
+                    + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bModel.QT(retailerId) + " and invoicestatus=1 and OH.upload!='X'"
                     + " LEFT JOIN SchemeDetail SD on SD.parentid=A.schid and OH.orderid=SD.orderid"
                     + " LEFT JOIN SchemeFreeProductDetail SPD on SPD.parentid=A.schid and OH.orderid=SPD.orderid"
 
-                    + " where OH.upload!='X' and rid=" + bModel.QT(retailerId)
+                    + " where rid=" + bModel.QT(retailerId)
                     + " and A.schid!=IFNULL(SD.parentid,0) and A.schid!=IFNULL(SPD.parentid,0) order by schid";
 
             Cursor c = db.selectSQL(query);
@@ -2758,7 +2770,7 @@ public class SchemeDetailsMasterHelper {
     }
 
 
-    private HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeId() {
+    public HashMap<String, ArrayList<ProductMasterBO>> getSchemeHistoryListBySchemeId() {
         return mSchemeHistoryListBySchemeId;
     }
 
@@ -2811,27 +2823,35 @@ public class SchemeDetailsMasterHelper {
 
     public double getTotalOrderedValue(String productId, boolean isBatchWise, String batchId, int schemeId) {
         double totalValue = 0;
-
+        if (mOrderedProductList == null)
+            prepareNecessaryLists(bModel.productHelper.getProductMaster());
         for (ProductMasterBO productMasterBO : mOrderedProductList) {
-            if (productMasterBO.getProductID().equals(productId)) {
+            if (productMasterBO.getProductID().equals(productId) || productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
 
-                if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0
-                        || productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
+                if (isBatchWise && productMasterBO.getBatchwiseProductCount() > 0) {
                     if (mBatchListByProductId != null) {
 
                         ArrayList<ProductMasterBO> batchWiseList = mBatchListByProductId.get(productMasterBO.getProductID());
                         if (batchWiseList != null) {
 
                             for (ProductMasterBO batchProductBO : batchWiseList) {
+
                                 if (batchProductBO.getBatchid().equals(batchId)) {
 
                                     if (batchProductBO.getOrderedPcsQty() > 0 || batchProductBO.getOrderedCaseQty() > 0 || batchProductBO.getOrderedOuterQty() > 0) {
 
-                                        totalValue += (batchProductBO.getOrderedPcsQty() * productMasterBO.getSrp())
-                                                + (batchProductBO.getOrderedCaseQty() * productMasterBO.getCsrp())
-                                                + (batchProductBO.getOrderedOuterQty() * productMasterBO.getOsrp());
-
+                                        if(IS_CHECK_SCHEME_WITH_ASRP){
+                                            int qty= batchProductBO.getOrderedPcsQty()
+                                                    + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize())
+                                                    + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize());
+                                            totalValue += qty*batchProductBO.getASRP();
+                                        }else{
+                                            totalValue += (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
+                                                    + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCsrp())
+                                                    + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
+                                        }
                                         totalValue += getTotalAccumulationValue(schemeId, productId, isBatchWise, batchId);
+
 
                                     }
                                 }
@@ -2839,9 +2859,17 @@ public class SchemeDetailsMasterHelper {
                         }
                     }
                 } else {
-                    totalValue += (productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp())
-                            + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp())
-                            + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp());
+                    if(IS_CHECK_SCHEME_WITH_ASRP){
+                        int qty= productMasterBO.getOrderedPcsQty()
+                                + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
+
+                        totalValue += qty*productMasterBO.getASRP();
+                    }else{
+                        totalValue += (productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp())
+                                + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp())
+                                + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp());
+                    }
 
                     totalValue += getTotalAccumulationValue(schemeId, productId, isBatchWise, batchId);
                 }
@@ -2873,16 +2901,17 @@ public class SchemeDetailsMasterHelper {
             for (ProductMasterBO schemeAccBO : mAccumulationList) {
 
                 ProductMasterBO productMasterBO = mProductMasterBOById.get(schemeAccBO.getProductID());
-                if (productId.equals(schemeAccBO.getProductID()) || productMasterBO.getParentHierarchy().contains(productId)) {
+                if (productMasterBO != null)
+                    if (productId.equals(schemeAccBO.getProductID()) || productMasterBO.getParentHierarchy().contains(productId)) {
 
-                    if (!isBatchWise || schemeAccBO.getBatchid().equals(batchId)) {
-                        totalQty += (
-                                schemeAccBO.getOrderedPcsQty()
-                                        + (schemeAccBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
-                                        + (schemeAccBO.getOrderedOuterQty() * productMasterBO.getOutersize()));
-                        break;
+                        if (!isBatchWise || schemeAccBO.getBatchid().equals(batchId)) {
+                            totalQty += (
+                                    schemeAccBO.getOrderedPcsQty()
+                                            + (schemeAccBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                            + (schemeAccBO.getOrderedOuterQty() * productMasterBO.getOutersize()));
+                            break;
+                        }
                     }
-                }
             }
         }
 
@@ -2898,13 +2927,14 @@ public class SchemeDetailsMasterHelper {
             for (ProductMasterBO schemeAccBO : mAccumulationList) {
 
                 ProductMasterBO productMasterBO = mProductMasterBOById.get(schemeAccBO.getProductID());
-                if (productId.equals(schemeAccBO.getProductID()) || productMasterBO.getParentHierarchy().contains(productId)) {
+                if (productMasterBO != null)
+                    if (productId.equals(schemeAccBO.getProductID()) || productMasterBO.getParentHierarchy().contains(productId)) {
 
-                    if (!isBatchWise || (schemeAccBO.getBatchid().equals(batchId))) {
-                        totalValue += schemeAccBO.getTotalamount();
-                        break;
+                        if (!isBatchWise || (schemeAccBO.getBatchid().equals(batchId))) {
+                            totalValue += schemeAccBO.getTotalamount();
+                            break;
+                        }
                     }
-                }
             }
         }
 
@@ -2961,12 +2991,8 @@ public class SchemeDetailsMasterHelper {
 
             if (schemeBO.isAmountTypeSelected()) {
                 for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
-                    ProductMasterBO productBO = bModel.productHelper
-                            .getProductMasterBOById(schemeProductBo
-                                    .getProductId());
-                    totalOrderValueOfBuyProducts += (productBO.getOrderedCaseQty() * productBO.getCsrp())
-                            + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                            + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                    totalOrderValueOfBuyProducts += getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(),
+                            schemeProductBo.getBatchId(), schemeBO.getParentId());
                 }
             }
 
@@ -2981,64 +3007,79 @@ public class SchemeDetailsMasterHelper {
                     if ((productBO.getOrderedPcsQty() > 0 || productBO.getOrderedCaseQty() > 0 || productBO.getOrderedOuterQty() > 0)
                             || (schemeBO.getFreeProducts() != null && schemeBO.getFreeProducts().size() > 0)) {//this condition checked for current accumulation scheme if buy product's not available
 
-                        double amount_free = 0;
-                        StringBuffer sb = new StringBuffer();
-                        sb.append(orderID + "," + schemeBO.getSchemeId() + ","
-                                + schemeProductBO.getProductId() + ",");
-                        if (schemeBO.isQuantityTypeSelected()) {
-                            sb.append(bModel.QT(SCHEME_FREE_PRODUCT) + ",");
-                            sb.append(+0);
-                        } else if (schemeBO.isAmountTypeSelected()) {
-                            sb.append(bModel.QT(SCHEME_AMOUNT));
-
-                            double line_value = (productBO.getOrderedCaseQty() * productBO.getCsrp())
-                                    + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                                    + (productBO.getOrderedOuterQty() * productBO.getOsrp());
-                            double percentage_productContribution = ((line_value / totalOrderValueOfBuyProducts) * 100);
-                            amount_free = schemeBO.getSelectedAmount() * (percentage_productContribution / 100);
-
-                            sb.append("," + (amount_free));
-
-                        } else if (schemeBO.isPriceTypeSeleted()) {
-                            sb.append(bModel.QT(SCHEME_PRICE));
-                            sb.append("," + schemeBO.getSelectedPrice());
-
-                        } else if (schemeBO.isDiscountPrecentSelected()) {
-                            if (schemeBO.getGetType().equalsIgnoreCase(SCHEME_PERCENTAGE_BILL)) {
-                                sb = new StringBuffer();
-                                sb.append(orderID + "," + schemeBO.getSchemeId() + ","
-                                        + 0 + ",");
-                            }
-
-                            sb.append(bModel.QT(SCHEME_PERCENTAGE));
-                            sb.append("," + schemeBO.getSelectedPrecent());
-                        }
-                        sb.append("," + schemeBO.getParentId());
-                        sb.append("," + bModel.getRetailerMasterBO().getRetailerID());
-                        sb.append("," + bModel.getRetailerMasterBO().getDistributorId());
-                        if (schemeBO.isQuantityTypeSelected()) {
-                            sb.append(",'Y'");
-                        } else {
-                            sb.append(",'N'");
-                        }
-
-                        // saving product wise discount value if scheme is amount type
-                        if (schemeBO.isAmountTypeSelected()) {
-
-                            sb.append("," + amount_free);
-                        } else {
-                            sb.append("," + schemeProductBO.getDiscountValue());
-                        }
-
-                        db.insertSQL(DataMembers.tbl_scheme_details,
-                                schemeDetailColumn, sb.toString());
+                        saveProductSchemeDetail(schemeBO, db, orderID, schemeDetailColumn, totalOrderValueOfBuyProducts, schemeProductBO, productBO);
 
                     }
 
+                } else {
+                    if (mOrderedProductList != null) {
+                        for (int index = 0; index < mOrderedProductList.size(); index++) {
+                            ProductMasterBO productMasterBO = mOrderedProductList.get(index);
+                            if (productMasterBO.getParentHierarchy().contains("/" + schemeProductBO.getProductId() + "/")) {
+                                if ((productMasterBO.getOrderedPcsQty() > 0 || productMasterBO.getOrderedCaseQty() > 0 || productMasterBO.getOrderedOuterQty() > 0)) {//this condition checked for current accumulation scheme if buy product's not available
+                                    saveProductSchemeDetail(schemeBO, db, orderID, schemeDetailColumn, totalOrderValueOfBuyProducts, schemeProductBO, productMasterBO);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
 
+    }
+
+    private void saveProductSchemeDetail(SchemeBO schemeBO, DBUtil db, String orderID, String schemeDetailColumn, double totalOrderValueOfBuyProducts, SchemeProductBO schemeProductBO, ProductMasterBO productBO) {
+        double amount_free = 0;
+        StringBuffer sb = new StringBuffer();
+        sb.append(orderID + "," + schemeBO.getSchemeId() + ","
+                + schemeProductBO.getProductId() + ",");
+        if (schemeBO.isQuantityTypeSelected()) {
+            sb.append(bModel.QT(SCHEME_FREE_PRODUCT) + ",");
+            sb.append(+0);
+        } else if (schemeBO.isAmountTypeSelected()) {
+            sb.append(bModel.QT(SCHEME_AMOUNT));
+
+            double line_value = (productBO.getOrderedCaseQty() * productBO.getCsrp())
+                    + (productBO.getOrderedPcsQty() * productBO.getSrp())
+                    + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+            double percentage_productContribution = ((line_value / totalOrderValueOfBuyProducts) * 100);
+            amount_free = schemeBO.getSelectedAmount() * (percentage_productContribution / 100);
+
+            sb.append("," + (amount_free));
+
+        } else if (schemeBO.isPriceTypeSeleted()) {
+            sb.append(bModel.QT(SCHEME_PRICE));
+            sb.append("," + schemeBO.getSelectedPrice());
+
+        } else if (schemeBO.isDiscountPrecentSelected()) {
+            if (schemeBO.getGetType().equalsIgnoreCase(SCHEME_PERCENTAGE_BILL)) {
+                sb = new StringBuffer();
+                sb.append(orderID + "," + schemeBO.getSchemeId() + ","
+                        + 0 + ",");
+            }
+
+            sb.append(bModel.QT(SCHEME_PERCENTAGE));
+            sb.append("," + schemeBO.getSelectedPrecent());
+        }
+        sb.append("," + schemeBO.getParentId());
+        sb.append("," + bModel.getRetailerMasterBO().getRetailerID());
+        sb.append("," + bModel.getRetailerMasterBO().getDistributorId());
+        if (schemeBO.isQuantityTypeSelected()) {
+            sb.append(",'Y'");
+        } else {
+            sb.append(",'N'");
+        }
+
+        // saving product wise discount value if scheme is amount type
+        if (schemeBO.isAmountTypeSelected()) {
+
+            sb.append("," + amount_free);
+        } else {
+            sb.append("," + schemeProductBO.getDiscountValue());
+        }
+
+        db.insertSQL(DataMembers.tbl_scheme_details,
+                schemeDetailColumn, sb.toString());
     }
 
 
@@ -4157,14 +4198,17 @@ public class SchemeDetailsMasterHelper {
                                                         * schemeProductBO
                                                         .getQuantitySelected());
 
-                                            for (BomReturnBO returnBo : bModel.productHelper
-                                                    .getBomReturnProducts()) {
-                                                if (bomBo.getbPid().equals(
-                                                        returnBo.getPid())) {
-                                                    returnBo.setLiableQty(returnBo
-                                                            .getLiableQty()
-                                                            + bomBo.getTotalQty());
-                                                    break;
+                                            if(bModel.productHelper
+                                                    .getBomReturnProducts()!=null) {
+                                                for (BomReturnBO returnBo : bModel.productHelper
+                                                        .getBomReturnProducts()) {
+                                                    if (bomBo.getbPid().equals(
+                                                            returnBo.getPid())) {
+                                                        returnBo.setLiableQty(returnBo
+                                                                .getLiableQty()
+                                                                + bomBo.getTotalQty());
+                                                        break;
+                                                    }
                                                 }
                                             }
                                         }
@@ -4834,7 +4878,114 @@ public class SchemeDetailsMasterHelper {
 
     }
 
+    ArrayList<ParentSchemeBO> parentSchemeList = new ArrayList<>();
 
+    public ArrayList<ParentSchemeBO> getParentSchemeList() {
+        return parentSchemeList;
+    }
+
+    public void setParentSchemeList(ArrayList<ParentSchemeBO> parentSchemeList) {
+        this.parentSchemeList = parentSchemeList;
+    }
+
+    public void loadParentSchemInfo(DBUtil db, ArrayList<Integer> schemeList) {
+
+        StringBuilder sb = new StringBuilder();
+        String id = "";
+        for (Integer scheme : schemeList) {
+            id = id + scheme + ",";
+        }
+        id = id.substring(0, id.length() - 1);
+        sb.append("Select distinct SM.parentID, SM.shortName, SM.buyType from SchemeMaster SM where parentID in (" + id + ")");
+        Cursor c = db.selectSQL(sb.toString());
+        if (c.getCount() > 0) {
+            parentSchemeList = new ArrayList<>();
+            while (c.moveToNext()) {
+                ParentSchemeBO schemeBO = new ParentSchemeBO();
+                schemeBO.setSchemeID(c.getInt(0));
+                schemeBO.setSchemeDesc(c.getString(1));
+                schemeBO.setBuyType(c.getString(2));
+                schemeBO.setCumulativePurchase(0);
+                schemeBO.setCurSlabCumSchAmt(0);
+                schemeBO.setCurSlabrsorPer(0);
+                schemeBO.setNextSlabBalance(0);
+                schemeBO.setNextSlabCumSchAmt(0);
+                schemeBO.setNextSlabrsorPer(0);
+                parentSchemeList.add(schemeBO);
+            }
+        }
+        c.close();
+
+        setParentSchemeList(parentSchemeList);
+    }
+
+    public void resetSchemeQPSList() {
+        if (mSchemeList != null) {
+            for (SchemeBO scheme : mSchemeList) {
+                scheme.setFromQty(0);
+                scheme.setToQty(0);
+                scheme.setTotalPieceQty(0);
+                scheme.setCurrentSlab(false);
+                scheme.setNextSlab(false);
+                for(SchemeProductBO productBO : scheme.getBuyingProducts()){
+                    productBO.setParentID("");
+                    productBO.setGetType("");
+                    productBO.setOrderedCasesQty(0);
+                    productBO.setCasesPrice(0);
+                    productBO.setOrderedPcsQty(0);
+                    productBO.setPcsPrice(0);
+                    productBO.setIncreasedPcsQty(0);
+                    productBO.setIncreasedCasesQty(0);
+                }
+            }
+        }
+    }
+
+    public void resetSchemeQPSListforData() {
+        if (mSchemeList != null) {
+            for (SchemeBO scheme : mSchemeList) {
+                scheme.setFromQty(0);
+                scheme.setToQty(0);
+                scheme.setTotalPieceQty(0);
+                scheme.setCurrentSlab(false);
+                scheme.setNextSlab(false);
+            }
+        }
+    }
+
+    public HashMap<String, SchemaQPSAchHistoryBO> getmSchemaQPSAchHistoryList() {
+        return mSchemaQPSAchHistoryList;
+    }
+
+    public void setmSchemaQPSAchHistoryList(HashMap<String, SchemaQPSAchHistoryBO> mSchemaQPSAchHistoryList) {
+        this.mSchemaQPSAchHistoryList = mSchemaQPSAchHistoryList;
+    }
+
+    public void loadQPSCumulativeAchHistory(DBUtil db) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Select distinct SchemeID ,Cumulative_Purchase,CurSlab_Sch_Amt,CurSlab_FlatAmt_Per, " +
+                "NextSlab_Balance,NextSlab_Sch_Amt,NextSlab_FlatAmt_Per from SchemaQPSAchHistory");
+        Cursor c = db.selectSQL(sb.toString());
+
+        if (c.getCount() > 0) {
+            mSchemaQPSAchHistoryList = new HashMap<>();
+            while (c.moveToNext()) {
+                SchemaQPSAchHistoryBO schemeBO = new SchemaQPSAchHistoryBO();
+                schemeBO.setSchemeID(c.getInt(0));
+                schemeBO.setCumulative_Purchase(c.getDouble(1));
+                schemeBO.setCurSlab_Sch_Amt(c.getDouble(2));
+                schemeBO.setCurSlab_Rs_Per(c.getDouble(3));
+                schemeBO.setNextSlab_balance(c.getDouble(4));
+                schemeBO.setNextSlab_Sch_Amt(c.getDouble(5));
+                schemeBO.setNextSlab_Rs_Per(c.getDouble(6));
+                mSchemaQPSAchHistoryList.put(c.getString(0), schemeBO);
+            }
+        }
+        c.close();
+
+        setmSchemaQPSAchHistoryList(mSchemaQPSAchHistoryList);
+    }
 }
 
 

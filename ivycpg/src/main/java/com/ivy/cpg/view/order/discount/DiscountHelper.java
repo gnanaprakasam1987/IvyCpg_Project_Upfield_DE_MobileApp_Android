@@ -139,10 +139,7 @@ public class DiscountHelper {
                     + productBO.getOrderedCaseQty() * productBO.getCaseSize()
                     + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
-            double line_total_price = (productBO.getOrderedCaseQty() * productBO
-                    .getCsrp())
-                    + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                    + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+            double line_total_price = productBO.getDiscount_order_value();
 
             double totalValue;
 
@@ -324,14 +321,28 @@ public class DiscountHelper {
                                 productBo.setProductDiscAmount(productBo.getProductDiscAmount() + discountValue);
 
 
-                                if (productBo.getDiscount_order_value() > 0) {
+                               /* if (productBo.getDiscount_order_value() > 0) {
                                     productBo.setDiscount_order_value(productBo
                                             .getDiscount_order_value() - discountValue);
-                                }
+                                }*/
 
                                 totalDiscountValue = totalDiscountValue + discountValue;
 
                             }
+                        }
+                    }
+
+                    // for computing Final discount order value for  a product .
+                    // added because of Multiple discount applied for same product
+                    for (StoreWiseDiscountBO storeWiseDiscountBO : discountProductIdList) {
+
+                        ProductMasterBO productBo = businessModel.productHelper
+                                .getProductMasterBOById(String.valueOf(storeWiseDiscountBO
+                                        .getProductId()));
+
+                        if (productBo.getDiscount_order_value() > 0) {
+                            productBo.setDiscount_order_value(productBo
+                                    .getDiscount_order_value() - productBo.getProductDiscAmount());
                         }
                     }
                 }
@@ -362,7 +373,7 @@ public class DiscountHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
+            sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" distributorid=" + businessModel.getRetailerMasterBO().getDistributorId() + " OR ");
@@ -662,7 +673,7 @@ public class DiscountHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
+            sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
@@ -733,7 +744,7 @@ public class DiscountHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
-            sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
+            sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
             sb.append(" Channelid=" + businessModel.getRetailerMasterBO().getSubchannelid() + "  OR ");
@@ -941,12 +952,8 @@ public class DiscountHelper {
                         double totalOrderValueOfBuyProducts = 0;
                         if (schemeBO.isAmountTypeSelected()) {
                             for (SchemeProductBO schemeProductBo : schemeProductList) {
-                                ProductMasterBO productBO = businessModel.productHelper
-                                        .getProductMasterBOById(schemeProductBo
-                                                .getProductId());
-                                totalOrderValueOfBuyProducts += (productBO.getOrderedCaseQty() * productBO.getCsrp())
-                                        + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                                        + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+                                totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
+                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId());
                             }
                         }
 

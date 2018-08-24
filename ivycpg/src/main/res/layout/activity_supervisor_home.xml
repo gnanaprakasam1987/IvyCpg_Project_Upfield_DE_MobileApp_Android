@@ -3,13 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.ivy.maplib.MapWrapperLayout
         android:id="@+id/map_wrap_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/topimage_view"
         android:orientation="vertical">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -18,12 +18,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/recenter_location"
+            android:layout_gravity="right|end"
+            android:layout_margin="@dimen/_10sdp"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/focus_all"/>
+
     </com.ivy.maplib.MapWrapperLayout>
 
-    <include layout="@layout/bottom_sheet_layout"
-        android:visibility="visible"/>
+    <com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/_27sdp"
+        android:paddingRight="@dimen/_27sdp"
+        app:rvp_singlePageFling="true"
+        app:rvp_triggerOffset="0.1"/>
 
     <include layout="@layout/map_seller_info_layout"
-        android:id="@+id/user_info_layout"/>
+        android:id="@+id/user_info_layout"
+        android:visibility="gone"/>
+
+    <include layout="@layout/supervisor_bottom_layout"
+        android:visibility="visible"/>
 
 </android.support.design.widget.CoordinatorLayout>

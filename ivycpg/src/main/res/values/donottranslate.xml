@@ -128,7 +128,6 @@
     <string name="mandatory_fileds_empty">Mandatory fields empty!</string>
 
     <string name="enter_account">Enter account no</string>
-    <string name="share_percent">Share %</string>
     <string name="otp_download_url_empty">OTP Generate Url is Empty </string>
     <string name="profile_edit_verify_email_id">Please verify Email Id</string>
     <string name="profile_edit_verify_mobile_no">Please verify Mobile No</string>
@@ -162,9 +161,14 @@
     <string name="drug_license_expired">Drug License Expired</string>
     <string name="uom_not_available">Uom Not Available</string>
     <string name="pwd_policy_not_match">Password Policy Not Matched</string>
+
+    <string name="last_vist">Last Vist : </string>
+    <string name="visit_time">Visit Time : </string>
+    <string name="yet_to_visit">Yet to visit </string>
+    <string name="targeted">Targeted </string>
+    <string name="covered">Covered </string>
     <string name="please_complete">Please Complete</string>
-    <string name="actual_value_exceeds_total">Actual Value Exceeds Total Value</string>
-    <string name="total_value_lesser_actual">Total Value is lesser than Actual Value</string>
+
     <string name="enter_receipt_no">Enter Receipt Number</string>
     <string name="please_enter">Please Enter</string>
 
@@ -179,4 +183,14 @@
     <string name="retailer_contact_menu">Retailer Contact Menu not Available!</string>
     <string name="retailer_contact_list">Contact data not Available!</string>
     <string name="not_able_to_register_visit">Not able to register the visit</string>
+
+    <string name="discount_amt_cannot_be_higher_than_percentage">Discount Amount cannot be Higher than “%1$s” of product price.</string>
+    <string name="select_reason_for_price_change">Select Reason for Price Change!</string>
+
+    <string name="filter_by">Filter By</string>
+    <string name="show_results">Show Results</string>
+    <string name="please_choose_address">Please choose any one address</string>
+
+    <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
+    <string name="planned_activities">Planned Activities</string>
 </resources>

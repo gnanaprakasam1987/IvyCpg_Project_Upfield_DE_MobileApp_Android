@@ -34,7 +34,7 @@ public class SODAssetHelper {
 
     private SODAssetHelper(Context context) {
         this.mContext = context;
-        this.mBModel = (BusinessModel) context;
+        this.mBModel = (BusinessModel) context.getApplicationContext();
     }
 
     public static SODAssetHelper getInstance(Context context) {

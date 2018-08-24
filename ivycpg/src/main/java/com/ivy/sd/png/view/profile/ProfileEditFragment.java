@@ -4418,7 +4418,7 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                     try {
                         if (editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo() ||
                                 !isValidRegx(editText[i].getText().toString().trim(), profileConfig.get(i).getRegex()) ||
-                                !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+                                !isValidGSTINWithPAN(editText[i].getText().toString().trim()) || !isValidComposition()) {
 
 
                             int length = editText[i].getText().toString().trim().length();
@@ -4443,6 +4443,10 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
                                 Toast.makeText(getActivity(),
                                         getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName(), Toast.LENGTH_SHORT)
                                         .show();
+                                break;
+                            }
+                            else if (length > 0 && !isValidComposition()) {
+                                validate = false;
                                 break;
                             }
 
@@ -4517,6 +4521,24 @@ public class ProfileEditFragment extends IvyBaseFragment implements RetailerOTPD
             }
         }
 
+        return true;
+    }
+
+    public boolean isValidComposition() {
+        for (int index = 0; index < profileConfig.size(); index++) {
+            if (profileConfig.get(index).getConfigCode()
+                    .equalsIgnoreCase("PROFILE28")) {
+
+                if (rField4Spinner.getSelectedItem().toString().toLowerCase()
+                        .contains("select")) {
+                    rField4Spinner.requestFocus();
+                    Toast.makeText(getActivity(), getActivity().getResources()
+                            .getString(R.string.select_str) + " " + profileConfig.get(index).getMenuName(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                return true;
+            }
+        }
         return true;
     }
 

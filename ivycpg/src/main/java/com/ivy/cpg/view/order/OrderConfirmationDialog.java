@@ -2,19 +2,22 @@ package com.ivy.cpg.view.order;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.widget.AppCompatRadioButton;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -24,10 +27,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 
 /**
@@ -43,12 +44,13 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
     private Context context;
 
     private TextView textView_shipment_label, textView_payment_label, textView_channel_label, textView_delivery_label, textView_delivery;
-    private TextView textView_supplier_label, textView_note, textView_note_label, textView_order_value, textView_order_value_label, label_drug_note, text_drug_note;
+    private TextView textView_supplier_label, textView_note, textView_note_label, textView_order_value, textView_order_value_label, label_drug_note, text_drug_note, label_address_type;
     private Spinner spinner_shipment, spinner_payment, spinner_dist_channel;
-    private LinearLayout layout_shipment, layout_payment, layout_channel, layout_delivery_date, layout_supplier, layout_note, layout_order_value, layout_drug_note;
+    private LinearLayout layout_shipment, layout_payment, layout_channel, layout_delivery_date, layout_supplier, layout_note, layout_order_value, layout_drug_note, layout_address_type, layout_radio_btn_address_type;
     private AutoCompleteTextView autoCompleteTextView_suppliers;
+    private RadioGroup addressRadioGroup;
 
-    private boolean isMandatory_shipment, isMandatory_payterm, isMandatory_channel, isMandatory_supplier;
+    private boolean isMandatory_shipment, isMandatory_payterm, isMandatory_channel, isMandatory_supplier, isMandatory_addressType;
     private boolean isInvoice;
 
     ArrayList<SupplierMasterBO> mSupplierList;
@@ -62,9 +64,10 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
     private static final String NOTE = "NOTE";
     private static final String ORDER_VALUE = "ORDER_VALUE";
     private static final String ORDER_DRUG = "ORDER_DRUG";
+    private static final String ORDER_ADDRESS_TYPE = "ADDRESS_TYPE";
 
 
-    public OrderConfirmationDialog(Context context, boolean isInvoice, LinkedList<ProductMasterBO> mOrderedProductList, double orderValue) {
+    public OrderConfirmationDialog(Context context, final boolean isInvoice, LinkedList<ProductMasterBO> mOrderedProductList, double orderValue) {
         super(context);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -76,10 +79,22 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
             dialogInterface = (OrderSummary) context;
             businessModel = (BusinessModel) context.getApplicationContext();
 
+            ArrayList<ConfigureBO> list = businessModel.productHelper.downloadOrderSummaryDialogFields(context);
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+
+            if (list.size() == 0) {
+                lp.height = (int) context.getResources().getDimension(R.dimen.dimens_180dp);
+            } else if (list.size() >= 5) {
+                lp.height = (int) context.getResources().getDimension(R.dimen.loginbox_height);
+            } else if (list.size() <= 4) {
+                lp.height = (int) context.getResources().getDimension(R.dimen.photo_capture_app_bar_height);
+            }
+            getWindow().setAttributes(lp);
             initializeViews();
 
-            ArrayAdapter<ReasonMaster> shipment_adapter, payment_adapter, channel_adapter;
-            ArrayList<ConfigureBO> list = businessModel.productHelper.downloadOrderSummaryDialogFields(context);
+            ArrayAdapter<ReasonMaster> shipment_adapter, payment_adapter, channel_adapter, address_type_adapter;
             for (ConfigureBO configureBO : list) {
                 if (configureBO.getConfigCode().equals(SHIPMENT_TYPE)) {
                     layout_shipment.setVisibility(View.VISIBLE);
@@ -264,7 +279,8 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     textView_order_value_label.setText(configureBO.getMenuName());
 
 
-                } else if (configureBO.getConfigCode().equals(ORDER_DRUG) && businessModel.productHelper.isDLDateExpired()) {
+                } else if (configureBO.getConfigCode().equals(ORDER_DRUG)
+                        && businessModel.productHelper.isDLDateExpired()) {
                     if (businessModel.productHelper.isDrugOrder(mOrderedProductList)) {
                         layout_drug_note.setVisibility(View.VISIBLE);
                         try {
@@ -284,6 +300,40 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                         layout_drug_note.setVisibility(View.GONE);
                     }
 
+
+                } else if (configureBO.getConfigCode().equals(ORDER_ADDRESS_TYPE)) {
+                    layout_address_type.setVisibility(View.VISIBLE);
+                    label_address_type.setText(configureBO.getMenuName());
+
+                    if (configureBO.getMandatory() == 1) {
+                        findViewById(R.id.address_type_mandatory).setVisibility(View.VISIBLE);
+                        isMandatory_addressType = true;
+                    }
+
+                    ArrayList<ReasonMaster> storeAdressList = businessModel
+                            .reasonHelper.getRetailerAddress(businessModel
+                                            .getRetailerMasterBO().getRetailerID()
+                                    , configureBO.getRField());
+                    for (ReasonMaster addressBo : storeAdressList) {
+                        AppCompatRadioButton addRdBtn = new AppCompatRadioButton(context);
+                        addRdBtn.setId(SDUtil.convertToInt(addressBo.getReasonID()));
+                        addRdBtn.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        addRdBtn.setEllipsize(TextUtils.TruncateAt.END);
+                        addRdBtn.setMaxLines(1);
+                        addRdBtn.setText(addressBo.getReasonDesc());
+                        addressRadioGroup.addView(addRdBtn);
+
+                        if (businessModel.getOrderHeaderBO().getAddressID() == addRdBtn.getId())
+                            addRdBtn.setChecked(true);
+                    }
+
+
+                    addressRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+                        }
+                    });
 
                 }
             }
@@ -330,6 +380,10 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
         label_drug_note = (TextView) findViewById(R.id.label_drug_note);
         text_drug_note = (TextView) findViewById(R.id.text_drug_note);
 
+        layout_address_type = (LinearLayout) findViewById(R.id.layout_address_type);
+        label_address_type = (TextView) findViewById(R.id.label_address_type);
+        addressRadioGroup = (RadioGroup) findViewById(R.id.lyt_radio_btn_address_type);
+
         textView_delivery.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         textView_note.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         textView_order_value.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -344,6 +398,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
         textView_note_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         textView_order_value_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         label_drug_note.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        label_address_type.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
     }
 
@@ -361,16 +416,22 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
         if (view.getId() == R.id.btn_ok) {
 
             try {
-                if (isMandatory_shipment && ((ReasonMaster) spinner_shipment.getSelectedItem()).getReasonID().equals("0")) {
+                if (isMandatory_shipment
+                        && ((ReasonMaster) spinner_shipment.getSelectedItem())
+                        .getReasonID().equals("0")) {
                     Toast.makeText(context, context.getResources().getString(R.string.shipment_mandatory), Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                if (isMandatory_payterm && ((ReasonMaster) spinner_payment.getSelectedItem()).getReasonID().equals("0")) {
+                if (isMandatory_payterm
+                        && ((ReasonMaster) spinner_payment.getSelectedItem())
+                        .getReasonID().equals("0")) {
                     Toast.makeText(context, context.getResources().getString(R.string.pay_term_mandatory), Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (isMandatory_channel && ((ReasonMaster) spinner_dist_channel.getSelectedItem()).getReasonID().equals("0")) {
+                if (isMandatory_channel
+                        && ((ReasonMaster) spinner_dist_channel.getSelectedItem())
+                        .getReasonID().equals("0")) {
                     Toast.makeText(context, context.getResources().getString(R.string.dist_channel_mandatory), Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -385,6 +446,12 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                             return;
                         }
                 }
+                if (isMandatory_addressType
+                        && (addressRadioGroup.getCheckedRadioButtonId() == 0
+                        || addressRadioGroup.getCheckedRadioButtonId() == -1)) {
+                    Toast.makeText(context, context.getResources().getString(R.string.please_choose_address), Toast.LENGTH_LONG).show();
+                    return;
+                }
 
 
                 if (spinner_shipment.getSelectedItem() != null)
@@ -395,6 +462,9 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
 
                 if (spinner_dist_channel.getSelectedItem() != null)
                     businessModel.setRField3(((ReasonMaster) spinner_dist_channel.getSelectedItem()).getReasonID());
+
+                if (addressRadioGroup.getCheckedRadioButtonId() != 0)
+                    businessModel.getOrderHeaderBO().setAddressID(addressRadioGroup.getCheckedRadioButtonId());
 
                 dialogInterface.save(isInvoice);
             } catch (Exception ex) {

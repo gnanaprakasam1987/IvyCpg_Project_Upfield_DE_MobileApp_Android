@@ -178,7 +178,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     private final String TEMP_RFIELD1 = "tempRField1";
     private final String TEMP_RFIELD2 = "tempRField2";
     private double totalvalue = 0;
-    private final String FROM_HOME_SCREEN = "IsFromHomeScreen";
+
 
 
     private int mSelectedBrandID = 0;
@@ -221,7 +221,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
     private Vector<ProductMasterBO> productList = new Vector<>();
 
-    boolean isFromHomeScreen = false;
+
     private OrderHelper orderHelper;
 
     private static final int SALES_RETURN = 3;
@@ -263,7 +263,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                         : extras.getString(TEMP_RFIELD1);
                 tempRField2 = extras.getString(TEMP_RFIELD2) == null ? ""
                         : extras.getString(TEMP_RFIELD2);
-                isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
             }
         } else {
             OrderedFlag = (String) (savedInstanceState
@@ -283,7 +282,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             tempRField2 = (String) (savedInstanceState
                     .getSerializable(TEMP_RFIELD2) == null ? ""
                     : savedInstanceState.getSerializable(TEMP_RFIELD2));
-            isFromHomeScreen = savedInstanceState.getBoolean(FROM_HOME_SCREEN, false);
         }
 
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
@@ -375,7 +373,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
 
-        if (!isFromHomeScreen && bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+        if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.resetSRPvalues();
         }
 
@@ -839,14 +837,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     .getString(TEMP_RFIELD1);
             tempRField2 = extras.getString(TEMP_RFIELD2) == null ? "" : extras
                     .getString(TEMP_RFIELD2);
-            isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
             savedInstanceState.putSerializable(ORDER_FLAG, OrderedFlag);
             savedInstanceState.putSerializable(TEMP_PO, tempPo);
             savedInstanceState.putSerializable(TEMP_REMARK, tempRemark);
             savedInstanceState.putSerializable(TEMP_RFIELD1, tempRField1);
             savedInstanceState.putSerializable(TEMP_RFIELD2, tempRField2);
             savedInstanceState.putSerializable(SCREEN_CODE, screenCode);
-            savedInstanceState.putSerializable(FROM_HOME_SCREEN, isFromHomeScreen);
         }
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -4788,7 +4784,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 R.string.product_name)
                 + " (" + mylist.size() + ")";
         pnametitle.setText(strPname);
-        // MyAdapter lvwplist = new MyAdapter(mylist);
+        // OutletListAdapter lvwplist = new OutletListAdapter(mylist);
         lvwplist.setAdapter(new MyAdapter(mylist));
 //        salesReturnHelper = SalesReturnHelper.getInstance(this);
     }

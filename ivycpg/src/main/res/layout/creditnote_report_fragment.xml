@@ -26,15 +26,16 @@
         android:id="@+id/ll_explist"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@color/FullBlack"
+        android:gravity="center"
         android:layout_alignParentBottom="true" >
 
         <Button
             android:id="@+id/print"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_margin="@dimen/target_top_margin"
+            android:textAllCaps="false"
+            android:textSize="@dimen/font_micro_small"
             android:gravity="center"
             android:text="@string/print"
             android:visibility="gone" />
