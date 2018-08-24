@@ -195,4 +195,6 @@
 
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
     <string name="planned_activities">Planned Activities</string>
+
+    <string name="asset_service">Asset Service</string>
 </resources>

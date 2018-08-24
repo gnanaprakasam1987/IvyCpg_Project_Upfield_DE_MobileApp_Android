@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/material_tool_bar" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/recycler_asset_service"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footer"
+        android:layout_below="@+id/ll_toolbar">
+
+    </ListView>
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg"
+        android:orientation="horizontal"
+        android:padding="@dimen/footer_padding">
+
+        <Button
+            android:id="@+id/btn_delete"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:text="@string/asset_service"
+            android:textAllCaps="false" />
+    </RelativeLayout>
+
+</RelativeLayout>
+
