@@ -245,7 +245,6 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public void onDestroy() {
-
         super.onDestroy();
     }
 
@@ -280,12 +279,10 @@ public class ProfileEditFragmentNew extends BaseFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == android.R.id.home) {
             AppUtils.latlongImageFileName = "";
             getActivity().finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -404,13 +401,50 @@ public class ProfileEditFragmentNew extends BaseFragment
 
 
     @Override
-    public void createEditTextView(int mNumber, String configCode, String menuName,
-                                   String values, boolean IS_UPPERCASE_LETTER,
-                                   int mandatory, int MAX_CREDIT_DAYS) {
-        getmRootLinearLayout().addView(getEditTextView(mNumber, configCode, menuName,
-                values, IS_UPPERCASE_LETTER, mandatory, MAX_CREDIT_DAYS), getCommonsparams());
+    public void createEditTextView(final int mNumber, String mConfigCode, String menuName,
+                                   String values, final boolean IS_UPPERCASE_LETTER,
+                                   int mandatory, final int MAX_CREDIT_DAYS) {
 
+        if(comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) && mandatory == 1){
+            createEmailView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER);
+        }
+        else if (comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER) ||
+                comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) ||
+                comparConfigerCode(mConfigCode, ProfileConstant.FAX)) {
+            createMobileAndFaxView( mNumber,  mConfigCode,  menuName, values,  IS_UPPERCASE_LETTER, mandatory);
+        }
+        else if (comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
+            createCreditDaysView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER,MAX_CREDIT_DAYS);
+        }
+        else{
+            LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
+                    getActivity().getResources().getColor(R.color.white_box_start));
+            TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
+            editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
+            linearlayout.addView(editTextInputLayout, weight1);
+            getmRootLinearLayout().addView(linearlayout,getCommonsparams());
+        }
+        if (!comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)){
+            editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                }
 
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable et) {
+                    String s = et.toString();
+                    if (IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
+                        s = s.toUpperCase();
+                        editTextHashMap.get(mNumber).setText(s);
+                        editTextHashMap.get(mNumber).setSelection(editTextHashMap.get(mNumber).length());
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -850,29 +884,28 @@ public class ProfileEditFragmentNew extends BaseFragment
     }
 
 
-    private LinearLayout getEditTextView(final int mNumber, String mConfigCode, String menuName,
-                                         String values, final boolean IS_UPPERCASE_LETTER,
-                                         int mandatory, final int MAX_CREDIT_DAYS) {
+    private void createMobileAndFaxView(final int mNumber, String mConfigCode, String menuName,
+                                        String values, final boolean IS_UPPERCASE_LETTER,
+                                        int mandatory){
 
         LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
                 getActivity().getResources().getColor(R.color.white_box_start));
 
         TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
 
+        if (comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) && mandatory == 1)  {
 
-        //if  Email
-        if (comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) && mandatory == 1) {
-            LinearLayout emailLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
-            LinearLayout.LayoutParams emailParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-            emailParam.weight = 7;
+            LinearLayout mobileLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
+            LinearLayout.LayoutParams mobileParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+            mobileParam.weight = 7;
 
-            LinearLayout.LayoutParams verifyButtonParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-            verifyButtonParams.weight = 3;
-            verifyButtonParams.setMargins(0, 0, 0, 2);
-            verifyButtonParams.gravity = Gravity.BOTTOM;
+            LinearLayout.LayoutParams mobileParam1 = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+            mobileParam1.setMargins(0, 0, 0, 2);
+            mobileParam1.weight = 3;
+            mobileParam1.gravity = Gravity.BOTTOM;
 
             editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
-            emailLayout.addView(editTextInputLayout, emailParam);
+            mobileLayout.addView(editTextInputLayout, mobileParam);
 
             Button verifyBtn = new Button(getActivity());
             verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
@@ -882,115 +915,93 @@ public class ProfileEditFragmentNew extends BaseFragment
             verifyBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    profileEditPresenter.verifyOTP("EMAIL", editTextHashMap.get(mNumber).getText().toString());
+                    profileEditPresenter.verifyOTP("MOBILE", editTextHashMap.get(mNumber).getText().toString());
                 }
             });
-            emailLayout.addView(verifyBtn, verifyButtonParams);
-            linearlayout.addView(emailLayout, weight1);
+
+            mobileLayout.addView(verifyBtn, mobileParam1);
+
+            linearlayout.addView(mobileLayout, weight1);
         } else {
-            if (!comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER) &&
-                    !comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) &&
-                    !comparConfigerCode(mConfigCode, ProfileConstant.FAX) &&
-                    !comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
-                editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
-                linearlayout.addView(editTextInputLayout, weight1);
-            }
-        }
-
-
-        /*ContactNumber,PHNO1,PHNO2,MOBILE,FAX*/
-        if (comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER) ||
-                comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) ||
-                comparConfigerCode(mConfigCode, ProfileConstant.FAX)) {
-
-            editTextInputLayout = new TextInputLayout(getActivity());
-
-            if (comparConfigerCode(mConfigCode, ProfileConstant.MOBILE) && mandatory == 1)  /*MOBILE*/ {
-
-                LinearLayout mobileLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
-                LinearLayout.LayoutParams mobileParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-                mobileParam.weight = 7;
-
-                LinearLayout.LayoutParams mobileParam1 = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-                mobileParam1.setMargins(0, 0, 0, 2);
-                mobileParam1.weight = 3;
-                mobileParam1.gravity = Gravity.BOTTOM;
-
-                editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
-                mobileLayout.addView(editTextInputLayout, mobileParam);
-
-                Button verifyBtn = new Button(getActivity());
-                verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-                verifyBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, getActivity()));
-                verifyBtn.setText(getResources().getString(R.string.verify));
-                verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
-                verifyBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        profileEditPresenter.verifyOTP("MOBILE", editTextHashMap.get(mNumber).getText().toString());
-                    }
-                });
-
-                mobileLayout.addView(verifyBtn, mobileParam1);
-
-                linearlayout.addView(mobileLayout, weight1);
-            } else {
-                editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
-                linearlayout.addView(editTextInputLayout, weight1);
-            }
-        }
-
-        //CREDITPERIOD
-        if (comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
-            editTextInputLayout = new TextInputLayout(getActivity());
             editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
-            editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    String qty = s.toString();
-                    if (!qty.equals("")) {
-                        if (SDUtil.convertToInt(qty) > MAX_CREDIT_DAYS) {
-                            //Delete the last entered number and reset the qty
-                            editTextHashMap.get(mNumber).setText(qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0");
-                            String message = " " + MAX_CREDIT_DAYS;
-                            profileEditShowMessage(R.string.max_credit_days_allowed, message);
-
-                        }
-                    }
-                }
-            });
             linearlayout.addView(editTextInputLayout, weight1);
         }
 
+        getmRootLinearLayout().addView(linearlayout,getCommonsparams());
+    }
+
+
+    private void createEmailView(final int mNumber, String mConfigCode, String menuName,
+                                 String values, final boolean IS_UPPERCASE_LETTER){
+
+        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
+                getActivity().getResources().getColor(R.color.white_box_start));
+
+        TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
+
+        LinearLayout emailLayout = createLinearLayout(LinearLayout.HORIZONTAL, 0, 10);
+        LinearLayout.LayoutParams emailParam = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+        emailParam.weight = 7;
+
+        LinearLayout.LayoutParams verifyButtonParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+        verifyButtonParams.weight = 3;
+        verifyButtonParams.setMargins(0, 0, 0, 2);
+        verifyButtonParams.gravity = Gravity.BOTTOM;
+
+        editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
+        emailLayout.addView(editTextInputLayout, emailParam);
+
+        Button verifyBtn = new Button(getActivity());
+        verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
+        verifyBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, getActivity()));
+        verifyBtn.setText(getResources().getString(R.string.verify));
+        verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
+        verifyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                profileEditPresenter.verifyOTP("EMAIL", editTextHashMap.get(mNumber).getText().toString());
+            }
+        });
+        emailLayout.addView(verifyBtn, verifyButtonParams);
+        linearlayout.addView(emailLayout, weight1);
+        getmRootLinearLayout().addView(linearlayout,getCommonsparams());
+    }
+
+
+    private void createCreditDaysView(final int mNumber, String mConfigCode, String menuName,
+                                      String values, final boolean IS_UPPERCASE_LETTER,
+                                      final int MAX_CREDIT_DAYS){
+        LinearLayout linearlayout = createLinearLayout(LinearLayout.HORIZONTAL,
+                getActivity().getResources().getColor(R.color.white_box_start));
+        TextInputLayout editTextInputLayout = new TextInputLayout(getActivity());
+
+        editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, menuName, values, IS_UPPERCASE_LETTER));
+
         editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
-            public void afterTextChanged(Editable et) {
-                String s = et.toString();
-                if (IS_UPPERCASE_LETTER && !s.equals(s.toUpperCase())) {
-                    s = s.toUpperCase();
-                    editTextHashMap.get(mNumber).setText(s);
-                    editTextHashMap.get(mNumber).setSelection(editTextHashMap.get(mNumber).length());
+            public void afterTextChanged(Editable s) {
+                String qty = s.toString();
+                if (!qty.equals("")) {
+                    if (SDUtil.convertToInt(qty) > MAX_CREDIT_DAYS) {
+                        //Delete the last entered number and reset the qty
+                        editTextHashMap.get(mNumber).setText(qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0");
+                        String message = " " + MAX_CREDIT_DAYS;
+                        profileEditShowMessage(R.string.max_credit_days_allowed, message);
+
+                    }
                 }
             }
         });
-
-        return linearlayout;
+        linearlayout.addView(editTextInputLayout, weight1);
+        getmRootLinearLayout().addView(linearlayout,getCommonsparams());
     }
 
     private LinearLayout getCheckBoxView(String mSEZzone, int mMandatory, String mMenuName) {

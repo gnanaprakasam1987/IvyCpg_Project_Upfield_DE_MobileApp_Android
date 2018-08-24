@@ -2609,28 +2609,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 ));
     }
 
-    private void addPanNumberLengthFilter(String mConfigCode){
-        if (comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER)) {
-            getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
-            //checkPANRegex(mNumber);
-        }
-    }
-
-    private void addGSTNLengthFilter(String mConfigCode){
-        if (comparConfigerCode(mConfigCode, ProfileConstant.GSTN)) {
-            getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
-            //checkGSTRegex(mNumber);
-        }
-    }
-
-    private void addCommonLengthFilter(String mConfigCode){
-        if (!comparConfigerCode(mConfigCode, ProfileConstant.EMAIL) ||
-                !comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER) ||
-                !comparConfigerCode(mConfigCode, ProfileConstant.GSTN)) {
-            getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
-            getIvyView().checkRegex(profileConfig.get(mNumber).getRegex());
-        }
-    }
 
     private void checkConfigrationForEditText(int mNumber, String configCode, String menuName, String values) {
 
@@ -2957,12 +2935,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         if (mPreviousProfileChanges.get(configCode) != null)
             if (!mPreviousProfileChanges.get(configCode).equals(retailderName))
                 retailderName = mPreviousProfileChanges.get(configCode);
-
-        /*addCommonLengthFilter(configCode);
-        int Mandatory = profileConfig.get(mNumber).getMandatory();
-        int MAX_CREDIT_DAYS = configurationMasterHelper.MAX_CREDIT_DAYS;
-        getIvyView().createEditTextView(mNumber, configCode, mName, retailderName
-                , IS_UPPERCASE_LETTER, Mandatory, MAX_CREDIT_DAYS);*/
 
         checkConfigrationForEditText(mNumber, configCode, mName, retailderName);
     }
