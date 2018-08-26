@@ -1267,5 +1267,12 @@
     <string name="value_exceeds_more_than_total">تتجاوز القيمة أكثر من الإجمالي.</string>
     <string name="language">لغة</string>
     <string name="printer_settings">إعدادات الطابعة</string>
+    <string name="sales_return_value_exceeds_order_value">Sales Return Value should not exceed Order Value.</string>
+    <string name="discount_amount">Discount Amount</string>
+    <string name="payment_amount">Payment Amount</string>
+    <string name="balance_amount">Balance Amount</string>
+    <string name="collective_amount">Collective Amount</string>
+    <string name="return_products_price_less_than_replacing_product_price">Return value should be higher than replacement value</string>
+    <string name="return_products_not_matching_replacing_product_price">Return and Replacement value should be matched</string>
 
 </resources>

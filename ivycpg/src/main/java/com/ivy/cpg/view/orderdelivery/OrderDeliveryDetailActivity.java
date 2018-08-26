@@ -55,6 +55,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     final String Str_EDIT = "EDIT";
     private boolean isPrintClicked;
     private String orderId;
+    private double totalReturnValue,totalOrderValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +144,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             @Override
             public void onClick(View view) {
                 orderDeliveryPresenter.saveOrderDeliveryDetail(
-                        isEdit,orderId,getIntent().getExtras().getString("menuCode")
+                        isEdit,orderId,getIntent().getExtras().getString("menuCode"),totalOrderValue,totalReturnValue
 
                 );
             }
@@ -331,8 +332,10 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         else {
             int total = 0;
             if (productMasterBO.getSalesReturnReasonList() != null) {
-                for (SalesReturnReasonBO obj : productMasterBO.getSalesReturnReasonList())
+                for (SalesReturnReasonBO obj : productMasterBO.getSalesReturnReasonList()) {
                     total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
+                    totalReturnValue = totalReturnValue + (total * productMasterBO.getSrp());
+                }
             }
             ((TextView) view.findViewById(R.id.sales_return_qty)).setText(String.valueOf(total));
             ((TextView) view.findViewById(R.id.sales_return_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -499,7 +502,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
     @Override
     public void updateAmountDetails(String orderVal, String discountAmt,String taxAmt, String totalOrderAmt) {
-
+        totalOrderValue=SDUtil.convertToDouble(totalOrderAmt);
         orderBaseValue.setText(orderVal);
         discount_value.setText(discountAmt);
         taxValue.setText(taxAmt);

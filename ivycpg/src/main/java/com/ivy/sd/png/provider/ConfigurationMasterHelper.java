@@ -1008,6 +1008,11 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_SKU_CODE = "FUN06";
     public boolean IS_SHOW_SKU_CODE;
 
+    private static final String CODE_SR_VALIDATE_BY_RETAILER_TYPE= "SR20";
+    public boolean IS_SR_VALIDATE_BY_RETAILER_TYPE;
+
+    private static final String CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL= "SR21";
+    public boolean IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL,IS_INDICATIVE_MASTER;
 
     int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
@@ -2622,6 +2627,10 @@ public class ConfigurationMasterHelper {
 
         this.IS_DISCOUNT_PRICE_PER = hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) : false;
         this.DISCOUNT_PRICE_PER = hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) : 50;
+
+        this.IS_SR_VALIDATE_BY_RETAILER_TYPE = hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) : false;
+        this.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) : false;
+        this.IS_INDICATIVE_MASTER= hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
     }
 
     private boolean isInOutModule() {
@@ -6181,13 +6190,15 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
             if (codeValue != null) {
-
-                if (codeValue.equals("PS"))
-                    SHOW_VAN_STK_PS = true;
-                else if (codeValue.equals("CS"))
-                    SHOW_VAN_STK_CS = true;
-                else if (codeValue.equals("OU"))
-                    SHOW_VAN_STK_OU = true;
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    if (temp.equals("PS"))
+                        SHOW_VAN_STK_PS = true;
+                    else if (temp.equals("CS"))
+                        SHOW_VAN_STK_CS = true;
+                    else if (temp.equals("OU"))
+                        SHOW_VAN_STK_OU = true;
+                }
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -6203,6 +6214,11 @@ public class ConfigurationMasterHelper {
     public void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
         if (switchToPreSeller) {
             bmodel.configurationMasterHelper.downloadSwitchConfig();
+
+            bmodel.configurationMasterHelper.IS_INDICATIVE_SR=true;
+            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH=false;
+            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION=false;
+
         } else {
             SchemeDetailsMasterHelper schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(context);
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
@@ -6216,6 +6232,10 @@ public class ConfigurationMasterHelper {
             bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
             bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
             bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
+
+            bmodel.configurationMasterHelper.IS_INDICATIVE_SR=bmodel.configurationMasterHelper.IS_INDICATIVE_MASTER;
+            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH=true;
+            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION=true;
         }
 
     }

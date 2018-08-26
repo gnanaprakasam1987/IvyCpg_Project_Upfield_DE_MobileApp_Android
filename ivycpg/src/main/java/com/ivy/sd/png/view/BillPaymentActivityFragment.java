@@ -1199,7 +1199,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
                 if (totalDiscount > 0) {
                     sb.append(doPrintFormatingLeft(getResources().getString(R.string.discount) + " ", 10));
-                    sb.append(doPrintAddSpace(0, 18));
+                    sb.append(doPrintAddSpace(0, 17));
                     sb.append(doPrintFormatingRight(bmodel.formatValueBasedOnConfig(totalDiscount), 13));
                     sb.append(LineFeed(1));
                 }

@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Discount Amount"
+                    android:text="@string/discount_amount"
                     android:textColor="?attr/primarycolor"
                     android:textSize="@dimen/font_micro_small"
                     android:textStyle="bold" />
@@ -65,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Payment Amount"
+                    android:text="@string/payment_amount"
                     android:textColor="?attr/primarycolor"
                     android:textSize="@dimen/font_micro_small"
                     android:textStyle="bold" />
@@ -99,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Balance Amount"
+                    android:text="@string/balance_amount"
                     android:textColor="?attr/primarycolor"
                     android:textSize="@dimen/font_micro_small"
                     android:textStyle="bold" />
@@ -150,7 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Collective Amount"
+                android:text="@string/collective_amount"
                 android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/font_nano_small" />
 

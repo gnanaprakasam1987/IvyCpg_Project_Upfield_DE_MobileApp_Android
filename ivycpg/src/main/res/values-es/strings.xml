@@ -1264,5 +1264,13 @@
     <string name="total_value_less_than_actual_value">Total value is lesser than Actual value.</string>
     <string name="answer_to_take_photo">Answer to take photo.</string>
     <string name="value_exceeds_more_than_total">Value exceeds more than total.</string>
+    <string name="sales_return_value_exceeds_order_value">la orden de devolción de debe exceder el valor del pedido.</string>
+    <string name="tax_on">en</string>
+    <string name="discount_amount">Cantidad de Descuento</string>
+    <string name="payment_amount">Cantidad de Pago</string>
+    <string name="balance_amount">Cantidad Pendiente</string>
+    <string name="collective_amount">Cantidad de Colección</string>
+    <string name="return_products_price_less_than_replacing_product_price">El valor regresado deberìa ser mayor que el valor reemplazado</string>
+    <string name="return_products_not_matching_replacing_product_price">El regreso y el reemplazo deben ser equivalentes</string>
 
 </resources>
