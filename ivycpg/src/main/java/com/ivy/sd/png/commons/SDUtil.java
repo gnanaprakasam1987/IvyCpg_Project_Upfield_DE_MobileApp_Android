@@ -194,7 +194,7 @@ public class SDUtil {
                 }
 
                 DecimalFormat var9 = new DecimalFormat(commaFormat.toString() + e.toString(), otherSymbols);
-                //var9.setRoundingMode(RoundingMode.HALF_UP);
+                var9.setRoundingMode(RoundingMode.HALF_UP);
                 return var9.format(value);
             }
         } catch (Exception var8) {
