@@ -1225,9 +1225,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                                         bmodel.outletTimeStampHelper
                                                 .updateTimeStampModuleWise(SDUtil
                                                         .now(SDUtil.TIME));
-                                        BusinessModel.loadActivity(
+                                       /* BusinessModel.loadActivity(
                                                 CallAnalysisActivity.this,
-                                                DataMembers.actHomeScreenTwo);
+                                                DataMembers.actHomeScreenTwo);*/
+                                        Intent  myIntent = new Intent(CallAnalysisActivity.this, HomeScreenTwo.class);
+                                        startActivityForResult(myIntent, 0);
                                         finish();
                                     }
                                 });
@@ -1564,8 +1566,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
             resetRemarksBO();
-            BusinessModel.loadActivity(CallAnalysisActivity.this,
-                    DataMembers.actHomeScreenTwo);
+           /* BusinessModel.loadActivity(CallAnalysisActivity.this,
+                    DataMembers.actHomeScreenTwo);*/
+            Intent myIntent = new Intent(this, HomeScreenTwo.class);
+            startActivityForResult(myIntent, 0);
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
