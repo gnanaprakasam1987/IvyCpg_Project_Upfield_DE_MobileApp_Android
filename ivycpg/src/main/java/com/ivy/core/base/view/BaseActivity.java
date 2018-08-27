@@ -34,6 +34,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -449,8 +450,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         this.screenTitle = title;
         TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);
         mScreenTitleTV.setText(title);
-
-
+        mScreenTitleTV.setTypeface(FontUtils.getFontBalooHai(this,FontUtils. FontType.REGULAR));
     }
 
     public void showDialog(String msg) {
