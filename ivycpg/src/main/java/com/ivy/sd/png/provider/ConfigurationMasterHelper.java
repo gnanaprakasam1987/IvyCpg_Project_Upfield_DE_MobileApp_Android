@@ -152,7 +152,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_CREDIT_DAYS = "PROFILE21";//
     private static final String CODE_SHOW_MAX_OUTSTANDING = "PROFILE22";//
 
-    private static final String CODE_INITIATIVE_MERCHANDISING = "VLD02";
+    //private static final String CODE_INITIATIVE_MERCHANDISING = "VLD02";
     private static final String CODE_SUGGESTED_ORDER_LOGIC = "ORDB18";
     // code added in v 35
 
@@ -206,7 +206,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_CREDIT_LIMIT_WITH_SOFT_ALERT = false;
     private static final String CODE_POST_DATE_ALLOW = "COLL01";
     private static final String CODE_DELIVERY_DATE = "ORDB30";
-    private static final String CODE_ALLOW_DECIMAL = "ORDB31";
+    //private static final String CODE_ALLOW_DECIMAL = "ORDB31";
     // NewOutlet
     private static final String CODE_NEWOUTLET_LOCATION = "OUTLOC";
     private static final String CODE_NEWOUTLET_IMAGETYPE = "OUTIMGTYPE";
@@ -673,7 +673,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_DAYS;//
     public boolean SHOW_MAX_OUTSTANDING;//
 
-    public boolean SHOW_INITIATIVE_MERCHANDISING;
+    //public boolean SHOW_INITIATIVE_MERCHANDISING;
     // Added in 35 version
     public boolean SHOW_CALC;
 
@@ -1009,7 +1009,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SHOW_SKU_CODE;
 
 
-    int ROUND_DECIMAL_COUNT = 0;
+    //int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
     private BusinessModel bmodel;
@@ -2023,7 +2023,7 @@ public class ConfigurationMasterHelper {
         this.IS_ENTRY_LEVEL_DISCOUNT = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) : false;
         this.SHOW_DISCOUNT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) : false;
 
-        this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
+        //this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
         this.SHOW_CALC = hashMapHHTModuleConfig.get(CODE_CALCULATOR) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATOR) : false;
         this.IS_MUST_SELL = hashMapHHTModuleConfig.get(CODE_MUST_SELL) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL) : false;
         this.SHOW_STK_ORD_SRP = hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP) : false;
@@ -2324,7 +2324,7 @@ public class ConfigurationMasterHelper {
         this.printCount = hashMapHHTModuleOrder.get(CODE_PRINT_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PRINT_COUNT) : 0;
         this.photocount = hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_COUNT) : 0;
         this.raPhotoCount = hashMapHHTModuleOrder.get(CODE_ROAD_ACTIVITY_PHOTO_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_ROAD_ACTIVITY_PHOTO_COUNT) : 0;
-        this.ROUND_DECIMAL_COUNT = hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) != null ? hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) : 0;
+        //this.ROUND_DECIMAL_COUNT = hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) != null ? hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) : 0;
         this.photopercent = hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_PERCENT) != null ? hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_PERCENT) : 80;
         this.globalSeqId = hashMapHHTModuleOrder.get(CODE_GLOBAL_CATEGORY) != null ? hashMapHHTModuleOrder.get(CODE_GLOBAL_CATEGORY) : 0;
 
@@ -4395,8 +4395,9 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
                     codeValue = c.getString(0);
                 }
-            }
             c.close();
+            }
+
             if (codeValue != null) {
                 if (codeValue.equalsIgnoreCase(CODE_STK_ORD_ROW_BS))
                     IS_STK_ORD_BS = true;
