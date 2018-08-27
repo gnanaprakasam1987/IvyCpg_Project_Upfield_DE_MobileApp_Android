@@ -354,7 +354,8 @@ public class OrderDeliveryHelper {
         mTotalDeliverQtyByPid = new HashMap<>();
 
         for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
-            if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 || product.getOrderedOuterQty() > 0 || checkSalesReturnAvail(product)) {
+            if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 || product.getOrderedOuterQty() > 0
+                    || isReturnOrReplacementAvailable(product)) {
                 orderedProductMasterBOS.add(product);
 
                 int prodQty = product.getOrderedPcsQty()
@@ -369,6 +370,22 @@ public class OrderDeliveryHelper {
 
         setOrderedProductMasterBOS(orderedProductMasterBOS);
     }
+
+    /**
+     * Is product has return or replacement quantity>0
+     * @param productMasterBO Product
+     * @return is quantity>0
+     */
+    private boolean isReturnOrReplacementAvailable(ProductMasterBO productMasterBO) {
+
+        for (SalesReturnReasonBO obj : productMasterBO.getSalesReturnReasonList())
+            if (obj.getCaseQty() > 0 || obj.getPieceQty() > 0 || obj.getOuterQty() > 0)
+                return true;
+
+        return (productMasterBO.getRepPieceQty()>0||productMasterBO.getRepCaseQty()>0||productMasterBO.getRepOuterQty()>0);
+
+    }
+
 
     void downloadSchemeFreeProducts(Context context, String id) {
 
@@ -491,14 +508,7 @@ public class OrderDeliveryHelper {
         return totalvalue;
     }
 
-    private boolean checkSalesReturnAvail(ProductMasterBO productMasterBO) {
 
-        for (SalesReturnReasonBO obj : productMasterBO.getSalesReturnReasonList())
-            if (obj.getCaseQty() > 0 || obj.getPieceQty() > 0 || obj.getOuterQty() > 0)
-                return true;
-
-        return false;
-    }
 
     boolean isSIHAvailable(boolean isEdit) {
         for (ProductMasterBO headProductMasterBO : businessModel.productHelper.getProductMaster()) {
@@ -704,8 +714,8 @@ public class OrderDeliveryHelper {
                     saveProductLeveltax(orderId, db, totalOrderValue, invoiceId);
             }
 
-            db.updateSQL("update OrderHeader set invoicestatus = 1,totalamount =" + totalAmount +" where orderId = " + businessModel.QT(orderId));
-            db.updateSQL("update SalesReturnHeader set upload='N',invoiceid = " + businessModel.QT(invoiceId) + " where RefModuleTId = " + businessModel.QT(orderId));
+            db.updateSQL("update OrderHeader set is_vansales=1,invoicestatus = 1,totalamount =" + totalAmount +" where orderId = " + businessModel.QT(orderId));
+            db.updateSQL("update SalesReturnHeader set IFLAG=0,upload='N',invoiceid = " + businessModel.QT(invoiceId) + " where RefModuleTId = " + businessModel.QT(orderId));
 
             String uid = "";
             Cursor c = db.selectSQL("select uid from SalesReturnHeader where RefModuleTId = " + businessModel.QT(orderId));

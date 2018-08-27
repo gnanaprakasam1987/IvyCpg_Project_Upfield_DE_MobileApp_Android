@@ -1129,6 +1129,9 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     public void updateSaveStatus(boolean isSuccess) {
         if (isSuccess) {
 
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                    .now(SDUtil.TIME));
+
             Intent i = new Intent(this,
                     CommonPrintPreviewActivity.class);
             i.putExtra("IsFromOrder", false);

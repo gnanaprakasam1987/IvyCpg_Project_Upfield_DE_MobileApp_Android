@@ -594,8 +594,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                 ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
+                double balanceValue = SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived());
                 entries.add(new PieEntry(SDUtil.convertToFloat(dashboardData.getKpiAcheived())));
-                entries.add(new PieEntry(SDUtil.convertToFloat(dashboardData.getKpiTarget())));
+                entries.add(new PieEntry(balanceValue>=0?SDUtil.convertToFloat(balanceValue+""):0));
 
                 PieDataSet dataSet = new PieDataSet(entries, "");
 

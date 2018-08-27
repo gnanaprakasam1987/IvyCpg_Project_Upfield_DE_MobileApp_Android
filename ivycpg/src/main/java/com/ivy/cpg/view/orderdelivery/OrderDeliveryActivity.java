@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
@@ -270,6 +271,9 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
                                 orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size()-1).
                                         setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(OrderDeliveryActivity.this,orderId));
+
+                                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                                        .now(SDUtil.TIME));
 
                                 bmodel.mCommonPrintHelper.xmlRead("invoice", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null,null,null);
 

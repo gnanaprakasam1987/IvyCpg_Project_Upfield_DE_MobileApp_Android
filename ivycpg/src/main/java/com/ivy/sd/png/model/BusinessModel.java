@@ -8806,7 +8806,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
             String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
-                    + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
+                    + "(select sum(qty) from invoiceDetails where productId = VL.pid) as delvQty,"
                     + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
             Cursor c = db
                     .selectSQL(query);
@@ -8821,8 +8821,10 @@ public class BusinessModel extends Application {
                     while (c.moveToNext()) {
                         loadQty = c.getInt(0) + (c.getInt(1) * c.getInt(2))
                                 + (c.getInt(3) * c.getInt(4));
-                        deliverQty = loadQty - c.getInt(5);
+
+                        deliverQty = c.getInt(5);
                         deliverQty = deliverQty < 0 ? 0 : deliverQty;
+
                         price = c.getDouble(6);
                         deliveredValue += deliverQty * price;
                         loadedValue += loadQty * price;

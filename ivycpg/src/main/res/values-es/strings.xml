@@ -1272,5 +1272,8 @@
     <string name="collective_amount">Cantidad de Colección</string>
     <string name="return_products_price_less_than_replacing_product_price">El valor regresado deberìa ser mayor que el valor reemplazado</string>
     <string name="return_products_not_matching_replacing_product_price">El regreso y el reemplazo deben ser equivalentes</string>
+    <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
+    <string name="store_activities">Actividades</string>
+    <string name="stores">Clientes</string>
 
 </resources>

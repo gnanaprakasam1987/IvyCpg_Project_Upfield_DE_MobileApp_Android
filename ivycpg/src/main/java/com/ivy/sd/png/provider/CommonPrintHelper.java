@@ -947,7 +947,8 @@ public class CommonPrintHelper {
             if (productBO.getOrderedCaseQty() > 0
                     || productBO.getOrderedPcsQty() > 0
                     || productBO.getOrderedOuterQty() > 0
-                    || (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))) {
+                    || ((bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY||bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                    && isReturnDoneForProduct(productBO))) {
                 mOrderedProductList.add(productBO);
             }
 

@@ -1272,5 +1272,9 @@
     <string name="collective_amount">Collective Amount</string>
     <string name="return_products_price_less_than_replacing_product_price">Return value should be higher than replacement value</string>
     <string name="return_products_not_matching_replacing_product_price">Return and Replacement value should be matched</string>
+    <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
+    <string name="store_activities">Store Activities</string>
+    <string name="stores">Stores</string>
+
 
 </resources>

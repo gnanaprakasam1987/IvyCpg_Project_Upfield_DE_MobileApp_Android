@@ -303,7 +303,7 @@ public class TaxHelper implements TaxInterface {
      * @param invoiceid
      */
     public void loadTaxDetailsForPrint(String invoiceid) {
-
+        mGroupIdList = new ArrayList<>();
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -317,7 +317,6 @@ public class TaxHelper implements TaxInterface {
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 int groupid = 0;
-                mGroupIdList = new ArrayList<>();
 
                 mTaxPercentagerListByGroupId = new LinkedHashMap<>();
                 mTaxBOByGroupId = new SparseArray<>();

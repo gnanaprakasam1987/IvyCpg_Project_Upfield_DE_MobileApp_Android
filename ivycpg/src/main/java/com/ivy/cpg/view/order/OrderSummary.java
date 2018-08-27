@@ -697,7 +697,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bModel.getOrderHeaderBO() != null) {
                     bModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
                 }
-                totalOrderValue = totalOrderValue - billWiseDiscount;
+                totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount,bModel.configurationMasterHelper.VALUE_PRECISION_COUNT,0));
                 enteredDiscAmtOrPercent = billWiseDiscount;
 
             } else {

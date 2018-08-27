@@ -1032,8 +1032,8 @@ public class ReportHelper {
 
             // get freeQty for scheme free product from SchemeFreeProductDetail
             sb = new StringBuffer();
-            sb.append("select FreeProductid,sum(case when uomCount!=0 then FreeQty*UomCount else FreeQty end) as Qty,batchid");
-            sb.append(" from SchemeFreeproductDetail group by FreeProductid,batchid");
+            sb.append("select FreeProductid,sum(case when uomCount!=0 then FreeQty*UomCount else FreeQty end) as Qty,ifnull(batchid,0)");
+            sb.append(" from SchemeFreeproductDetail SD INNER JOIN orderHeader OH ON OH.orderId=SD.orderId where OH.is_vansales=1 and SD.upload!='X' group by FreeProductid,batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {

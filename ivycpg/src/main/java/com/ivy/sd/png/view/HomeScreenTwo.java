@@ -3689,6 +3689,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 orderDeliveryHelper.downloadOrderDeliveryHeader(this);
 
                 if (orderDeliveryHelper.getOrderHeaders().size() > 0) {
+                    bmodel.outletTimeStampHelper
+                            .saveTimeStampModuleWise(
+                                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    SDUtil.now(SDUtil.TIME),
+                                    MENU_ORD_DELIVERY);
+
                     Intent i = new Intent(this,
                             OrderDeliveryActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

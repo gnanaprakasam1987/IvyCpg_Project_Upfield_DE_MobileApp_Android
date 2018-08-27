@@ -471,10 +471,7 @@ public class SalesReturnHelper {
                 }
             }
 
-            // insert sales replacement and decrease the stock in hand.
-            if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
-                saveReplacementDetails(db, getSalesReturnID(), module,isInvoice);
-            }
+
 
             isData = false;
             String columns;
@@ -658,6 +655,11 @@ public class SalesReturnHelper {
                     values = values + "," + QT(getInvoiceId());
 
                 db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
+            }
+
+            // insert sales replacement and decrease the stock in hand.
+            if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
+                saveReplacementDetails(db, getSalesReturnID(), module,isInvoice);
             }
 
             // If credit note is generated, then tax appyled details should get saved.

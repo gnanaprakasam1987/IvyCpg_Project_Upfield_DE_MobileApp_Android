@@ -100,6 +100,11 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 loadPayTypeList();
         }
 
+        if(!bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW){
+            view.findViewById(R.id.ll_disc).setVisibility(View.GONE);
+            view.findViewById(R.id.layout_vertical_line).setVisibility(View.GONE);
+        }
+
         return view;
     }
 

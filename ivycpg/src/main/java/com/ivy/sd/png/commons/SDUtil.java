@@ -7,6 +7,7 @@ import com.ivy.lib.base64.Base64;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -193,6 +194,7 @@ public class SDUtil {
                 }
 
                 DecimalFormat var9 = new DecimalFormat(commaFormat.toString() + e.toString(), otherSymbols);
+                //var9.setRoundingMode(RoundingMode.HALF_UP);
                 return var9.format(value);
             }
         } catch (Exception var8) {
