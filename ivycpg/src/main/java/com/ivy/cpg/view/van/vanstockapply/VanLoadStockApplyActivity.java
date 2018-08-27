@@ -3,7 +3,6 @@ package com.ivy.cpg.view.van.vanstockapply;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -362,25 +361,19 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-
-            Intent loadActivity = new Intent(VanLoadStockApplyActivity.this, HomeScreenActivity.class);
+           /* Intent loadActivity = new Intent(VanLoadStockApplyActivity.this, HomeScreenActivity.class);
             if (isFromPlanning)
                 loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
             else
                 loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-            startActivity(loadActivity);
+            startActivity(loadActivity);*/
             finish();
-            onBackButtonClick();
-
-
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void onBackButtonClick() {
-        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-    }
 
     class UpdateSIH extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;

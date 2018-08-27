@@ -74,7 +74,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SODFragment extends IvyBaseFragment implements
-        BrandDialogInterface,FiveLevelFilterCallBack {
+        BrandDialogInterface, FiveLevelFilterCallBack {
 
     private SalesFundamentalHelper mSFHelper;
     private BusinessModel mBModel;
@@ -508,7 +508,7 @@ public class SODFragment extends IvyBaseFragment implements
         ArrayList<SODBO> myList = new ArrayList<>();
         if (mFilterText.length() > 0) {
             for (SODBO temp : items) {
-                if (temp.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
+                if (temp.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                     if (temp.getIsOwn() == 1)
                         myList.add(temp);
                 }

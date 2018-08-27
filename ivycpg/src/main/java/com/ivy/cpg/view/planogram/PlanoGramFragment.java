@@ -597,8 +597,6 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 mDrawerLayout.closeDrawers();
             else {
                 if ("1".equals(calledBy)) {
-                    startActivity(new Intent(getActivity(),
-                            HomeScreenActivity.class).putExtra("menuCode", "MENU_LOAD_MANAGEMENT"));
                     getActivity().finish();
                 }
                 if ("2".equals(calledBy)) {

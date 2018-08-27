@@ -1,8 +1,7 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.manualvanload;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -20,14 +19,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -38,16 +37,14 @@ public class VanLoadReturnProductDialog extends Dialog implements
     private BusinessModel bmodel;
     // Declare Context
     private Context context;
-    // List to add values and Show in ListView
-    private ArrayList<BomReturnBO> mylist;
-    // Vairalbes
-    private String append = "";
+
+
     // Views
     private ListView lvwplist;
     private EditText QUANTITY;
     private ManualVanLoadActivity manualVanLoadActivity;
-    private Button  btnSave;
-    private Toolbar toolbar;
+    private Button btnSave;
+
 
     public VanLoadReturnProductDialog(Context context,
                                       ManualVanLoadActivity vanloadActivity) {
@@ -72,8 +69,6 @@ public class VanLoadReturnProductDialog extends Dialog implements
                 LayoutParams.MATCH_PARENT);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.Product_details);
         setCancelable(true);
         // Initialize Views in the Screen
         initializeView();
@@ -91,7 +86,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
             lvwplist.setCacheColorHint(0);
             btnSave = (Button) findViewById(R.id.save_btn);
             btnSave.setOnClickListener(this);
-            btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            btnSave.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -114,7 +109,8 @@ public class VanLoadReturnProductDialog extends Dialog implements
             }
 
             int size = totalSize.size();
-            mylist = new ArrayList<>();
+            // List to add values and Show in ListView
+            ArrayList<BomReturnBO> mylist = new ArrayList<>();
             // Add the products into list
             for (int i = 0; i < size; ++i) {
                 BomReturnBO productBo = totalSize.get(i);
@@ -211,11 +207,8 @@ public class VanLoadReturnProductDialog extends Dialog implements
                                         .convertToInt(qty));
                             } else {
 
-                                Toast.makeText(
-                                        context,
-                                        context.getResources().getString(
-                                                R.string.exceed_allocation),
-                                        Toast.LENGTH_SHORT).show();
+                                ((IvyBaseActivityNoActionBar) context).showMessage(context.getString(
+                                        R.string.exceed_allocation));
                                 qty = qty.length() > 1 ? qty.substring(0,
                                         qty.length() - 1) : "0";
 
@@ -254,7 +247,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
 
     }
 
-    public void eff() {
+    public void eff(String append) {
         String s = QUANTITY.getText().toString();
         if (!s.equals("0") && !s.equals("0.0")) {
             QUANTITY.setText(QUANTITY.getText() + append);
@@ -276,8 +269,8 @@ public class VanLoadReturnProductDialog extends Dialog implements
                 QUANTITY.setText(s + "");
             } else {
                 Button ed = (Button) findViewById(vw.getId());
-                append = ed.getText().toString();
-                eff();
+                String append = ed.getText().toString();
+                eff(append);
             }
         }
 
@@ -286,13 +279,6 @@ public class VanLoadReturnProductDialog extends Dialog implements
     @Override
     public void onClick(View v) {
         Button b = (Button) v;
-       /* if (b == btnBack) {
-            bmodel.productHelper.calculateOrderReturnValue();
-            if (manualVanLoadActivity != null) {
-                this.manualVanLoadActivity.onResume();
-                dismiss();
-            }
-        }*/
         if (b == btnSave) {
             bmodel.productHelper.calculateOrderReturnValue();
             if (manualVanLoadActivity != null) {

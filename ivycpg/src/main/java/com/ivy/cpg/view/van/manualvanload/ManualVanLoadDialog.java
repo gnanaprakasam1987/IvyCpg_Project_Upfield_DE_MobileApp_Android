@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.manualvanload;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -28,8 +28,8 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
@@ -44,7 +44,6 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
     private InputMethodManager inputManager;
     private String[] batchno;
     private String tv;
-    private Button addLoadBtn;
 //    private Button addLoadBtn,cancelLoadBtn;
 //    private TextView headerText;
 
@@ -66,7 +65,7 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
         setCancelable(true);
         bmodel = (BusinessModel) context.getApplicationContext();
         Button back = (Button) findViewById(R.id.closeButton);
-        addLoadBtn = (Button) findViewById(R.id.add_load);
+        Button addLoadBtn = (Button) findViewById(R.id.add_load);
         TextView headerText = (TextView) findViewById(R.id.titlebar);
         back.setOnClickListener(this);
         addLoadBtn.setOnClickListener(this);
@@ -133,8 +132,8 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
 
 
         ListView lvwplist = (ListView) findViewById(R.id.list);
-        headerText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        addLoadBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        headerText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+        addLoadBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
 
         MyAdapter mSchedule = new MyAdapter(product.getBatchlist());
         lvwplist.setAdapter(mSchedule);
@@ -160,7 +159,7 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
             } else {
                 Button ed = (Button) findViewById(v.getId());
                 append = ed.getText().toString();
-               numberPressed(ed);
+                numberPressed(ed);
             }
             updateValue();
         }
@@ -326,10 +325,10 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
                         .findViewById(R.id.outerproductqtyCases);
                 holder.batchno = (MaterialSpinner) row.findViewById(R.id.batchno);
 
-                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.pieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.batchno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                holder.pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                holder.batchno.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
 
 
                 holder.caseQty.clearFocus();

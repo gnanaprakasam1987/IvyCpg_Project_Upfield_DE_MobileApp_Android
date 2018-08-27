@@ -3191,7 +3191,8 @@ public class BusinessModel extends Application {
             Commons.printException("" + e);
         }
     }
-
+@Deprecated
+//this method moved into #NetWorkUitls class
     public boolean isOnline() {
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -113,13 +113,6 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
 
         if (item.getItemId() == android.R.id.home) {
-
-            Intent in = new Intent(WebViewActivity.this, HomeScreenActivity.class);
-            if (mMenuCode.equals("MENU_LOAD_WEBVIEW"))
-                in = new Intent(WebViewActivity.this, HomeScreenActivity.class)
-                        .putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-
-            startActivity(in);
             finish();
             return true;
         }

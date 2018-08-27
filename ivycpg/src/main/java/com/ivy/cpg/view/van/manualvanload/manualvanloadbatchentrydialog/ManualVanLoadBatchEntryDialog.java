@@ -1,14 +1,10 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.manualvanload.manualvanloadbatchentrydialog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +12,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.van.manualvanload.ManualVanLoadHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -34,12 +30,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-class ManualVanLoadBatchEntryDialog extends Dialog implements
+public class ManualVanLoadBatchEntryDialog extends Dialog implements
         OnClickListener {
-    private static Button mfg_date;
-    private static Button exp_date;
-    private static LoadManagementBO product;
-    private static String outPutDateFormat;
+    private Button mfg_date;
+    private Button exp_date;
+    private LoadManagementBO product;
+    private String outPutDateFormat;
     private BusinessModel bmodel;
     private OnDismissListener addBatch, cancelBatch;
     private Activity activity;
@@ -47,9 +43,19 @@ class ManualVanLoadBatchEntryDialog extends Dialog implements
     private FragmentManager fragmentManager;
     private TextView messagetv;
 
-    ManualVanLoadBatchEntryDialog(Activity activity,
-                                  LoadManagementBO productBO, OnDismissListener addBatch,
-                                  OnDismissListener cancelBatch, FragmentManager fragmentManager) {
+    /**
+     * this Dialog used to create Batch for van load stock
+     *
+     * @param activity
+     * @param productBO       - LoadManagementBO
+     * @param addBatch        - OnDismissListener
+     * @param cancelBatch     - OnDismissListener
+     * @param fragmentManager
+     */
+
+    public ManualVanLoadBatchEntryDialog(Activity activity,
+                                         LoadManagementBO productBO, OnDismissListener addBatch,
+                                         OnDismissListener cancelBatch, FragmentManager fragmentManager) {
         super(activity);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.activity = activity;
@@ -133,32 +139,25 @@ class ManualVanLoadBatchEntryDialog extends Dialog implements
         } else if (id == R.id.close) {
             cancelBatch.onDismiss(ManualVanLoadBatchEntryDialog.this);
         } else if (id == R.id.mfg_date) {
-            DialogFragment newFragment = new DatePickerFragment();
+            newFragment = new DatePickerFragment();
+            newFragment.setCallbackListener(datePickerInterface);
             newFragment.show(fragmentManager, "datePicker1");
         } else if (id == R.id.exp_date) {
-            DialogFragment newFragment = new DatePickerFragment();
+            newFragment = new DatePickerFragment();
+            newFragment.setCallbackListener(datePickerInterface);
             newFragment.show(fragmentManager, "datePicker2");
         }
     }
 
-    public static class DatePickerFragment extends DialogFragment implements
-            DatePickerDialog.OnDateSetListener {
+    private DatePickerFragment newFragment;
 
-        @NonNull
+    DatePickerInterface datePickerInterface = new DatePickerInterface() {
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(),R.style.DatePickerDialogStyle, this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
+        public void onDataSet(int year, int month, int day) {
             Calendar selectedDate = new GregorianCalendar(year, month, day);
-            if (this.getTag().equals("datePicker1")) {
+            if (newFragment.getTag().equals("datePicker1")) {
                 if (selectedDate.after(Calendar.getInstance())) {
-                    Toast.makeText(getActivity(),
+                    Toast.makeText(activity,
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
                     product.setMfgDate(DateUtil.convertDateObjectToRequestedFormat(
@@ -171,14 +170,14 @@ class ManualVanLoadBatchEntryDialog extends Dialog implements
                     mfg_date.setText(DateUtil.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
-            } else if (this.getTag().equals("datePicker2")) {
+            } else if (newFragment.getTag().equals("datePicker2")) {
                 if (product.getMfgDate() != null
                         && product.getMfgDate().length() > 0) {
                     Date dateMfg = DateUtil.convertStringToDateObject(
                             product.getMfgDate(), outPutDateFormat);
                     if (dateMfg != null && selectedDate.getTime() != null
                             && dateMfg.after(selectedDate.getTime())) {
-                        Toast.makeText(getActivity(),
+                        Toast.makeText(activity,
                                 R.string.expdate_set_after_mfgdate,
                                 Toast.LENGTH_SHORT).show();
                     } else {
@@ -195,7 +194,8 @@ class ManualVanLoadBatchEntryDialog extends Dialog implements
                 }
             }
         }
-    }
+    };
+
 
     private class SaveBatch extends AsyncTask<Integer, Integer, Boolean> {
 
@@ -213,7 +213,7 @@ class ManualVanLoadBatchEntryDialog extends Dialog implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.loadManagementHelper.saveBatch(product);
+                ManualVanLoadHelper.getInstance(activity.getApplicationContext()).saveBatch(product);
             } catch (Exception e) {
                 Commons.printException("" + e);
                 return Boolean.FALSE;

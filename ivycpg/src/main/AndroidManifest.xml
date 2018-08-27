@@ -435,7 +435,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.van.ManualVanLoadActivity"
+            android:name="com.ivy.cpg.view.van.manualvanload.ManualVanLoadActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.van.StockViewActivity"

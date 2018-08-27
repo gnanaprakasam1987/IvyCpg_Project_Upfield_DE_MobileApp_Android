@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.manualvanload;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,9 +37,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.view.van.manualvanload.manualvanloadbatchentrydialog.ManualVanLoadBatchEntryDialog;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.SubDepotBo;
@@ -49,48 +49,37 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
 public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
-        BrandDialogInterface, OnClickListener, OnEditorActionListener,FiveLevelFilterCallBack {
+        BrandDialogInterface, OnClickListener, OnEditorActionListener, FiveLevelFilterCallBack {
 
     private static final String BRAND = "Brand";
     private static final String GENERAL = "General";
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private ArrayList<LoadManagementBO> filterlist;
-    private String brandFilterText = "BRAND";
     private DrawerLayout mDrawerLayout;
     private ListView lvwplist;
     private EditText mEdtSearchproductName;
     private TextView productName;
-    private TextView tvSelectedFilter, sihTitle, qtyTitle, itemCaseTitle, outeritemTitle, itempieceTitle, viewTitle;
-    private Button mBtnSearch;
-    private Button mBtnFilterPopup;
-    private Button mBtnClear;
+    private TextView tvSelectedFilter;
     private ViewFlipper viewFlipper;
     private BusinessModel bmodel;
     private HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
     private InputMethodManager inputManager;
-    private Vector<LoadManagementBO> vanlist;
     private ArrayList<LoadManagementBO> list;
     private int selectedSubDepotId;
     private boolean totQtyflag;
     private boolean isClicked;
     private MyAdapter mSchedule;
-    private Toolbar toolbar;
-    private TextView toolbarTxt;
-    private Button saveBtn;
-    LinearLayout keypadlty;
-    private boolean isFromPlanning = false;
-    private Intent loadActivity;
+    private ManualVanLoadHelper manualVanLoadHelper;
+
     android.content.DialogInterface.OnDismissListener vanloadDismissListener = new android.content.DialogInterface.OnDismissListener() {
         @Override
         public void onDismiss(DialogInterface dialog) {
@@ -104,14 +93,14 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     private VanLoadReturnProductDialog returnProductDialog;
     private ManualVanLoadDialog vanLoadDialog;
     private boolean isAddBatchDialogClicked = false;
-    private ManualVanLoadBatchEntryDialog batchEntryDialog;
+
     android.content.DialogInterface.OnDismissListener addBatch = new android.content.DialogInterface.OnDismissListener() {
 
         @Override
         public void onDismiss(DialogInterface dialog) {
             isAddBatchDialogClicked = false;
-            batchEntryDialog.dismiss();
-            Toast.makeText(ManualVanLoadActivity.this, R.string.batch_created_successfully, Toast.LENGTH_LONG).show();
+            dialog.dismiss();
+            showMessage(getString(R.string.batch_created_successfully));
             if (list != null && list.size() > 0) {
                 mSchedule = new MyAdapter(list);
                 lvwplist.setAdapter(mSchedule);
@@ -123,7 +112,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         @Override
         public void onDismiss(DialogInterface dialog) {
             isAddBatchDialogClicked = false;
-            batchEntryDialog.dismiss();
+            dialog.dismiss();
         }
     };
     private EditText quantity;
@@ -138,8 +127,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbarTxt = (TextView) findViewById(R.id.tv_toolbar_title);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         hideAndSeekViews();
         final Intent i = getIntent();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -155,7 +143,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
-        isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
+
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -164,7 +152,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setIcon(null);
         }
-
+        manualVanLoadHelper = ManualVanLoadHelper.getInstance(this.getApplicationContext());
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this,
                 mDrawerLayout,
                 R.string.ok,
@@ -189,7 +177,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        vanlist = bmodel.productHelper.getLoadMgmtProducts();
 
         updateBrandText("Brand", -1);
 
@@ -212,20 +199,20 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     private void hideAndSeekViews() {
 
         try {
-            saveBtn = (Button) findViewById(R.id.van_btn_save);
+            Button saveBtn = (Button) findViewById(R.id.van_btn_save);
             viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
             tvSelectedFilter = (TextView) findViewById(R.id.tvSkuName);
-            keypadlty = (LinearLayout) findViewById(R.id.ll_keypad);
+            LinearLayout keypadlty = (LinearLayout) findViewById(R.id.ll_keypad);
             mEdtSearchproductName = (EditText) findViewById(R.id.edt_searchproductName);
-            sihTitle = (TextView) findViewById(R.id.sihTitle);
-            qtyTitle = (TextView) findViewById(R.id.qtyTitle);
-            viewTitle = (TextView) findViewById(R.id.viewTitle);
-            itemCaseTitle = (TextView) findViewById(R.id.itemcasetitle);
-            outeritemTitle = (TextView) findViewById(R.id.outeritemcasetitle);
-            itempieceTitle = (TextView) findViewById(R.id.itempiecetitle);
-            mBtnSearch = (Button) findViewById(R.id.btn_search);
-            mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
-            mBtnClear = (Button) findViewById(R.id.btn_clear);
+            TextView sihTitle = (TextView) findViewById(R.id.sihTitle);
+            TextView qtyTitle = (TextView) findViewById(R.id.qtyTitle);
+            TextView viewTitle = (TextView) findViewById(R.id.viewTitle);
+            TextView itemCaseTitle = (TextView) findViewById(R.id.itemcasetitle);
+            TextView outeritemTitle = (TextView) findViewById(R.id.outeritemcasetitle);
+            TextView itempieceTitle = (TextView) findViewById(R.id.itempiecetitle);
+            Button mBtnSearch = (Button) findViewById(R.id.btn_search);
+            Button mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
+            Button mBtnClear = (Button) findViewById(R.id.btn_clear);
             productName = (TextView) findViewById(R.id.productName);
 
             saveBtn.setOnClickListener(this);
@@ -237,16 +224,16 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             lvwplist = (ListView) findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
 
-            toolbarTxt.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-            tvSelectedFilter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            sihTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            qtyTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            itemCaseTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            outeritemTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            itempieceTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            saveBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-            productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            mEdtSearchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+            tvSelectedFilter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            sihTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            qtyTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            itemCaseTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            outeritemTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            itempieceTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            saveBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+            productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+            mEdtSearchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
 
 
             if (bmodel.configurationMasterHelper.IS_BATCHWISE_VANLOAD) {
@@ -369,12 +356,12 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     public void onClick(View v) {
-        Button vw = (Button) v;
+        int btnId = v.getId();
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        if (vw == mBtnSearch) {
+        if (btnId == R.id.btn_search) {
             viewFlipper.showNext();
-        } else if (vw == mBtnFilterPopup) {
+        } else if (btnId == R.id.btn_filter_popup) {
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(
                     ManualVanLoadActivity.this);
             final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
@@ -408,7 +395,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     });
             bmodel.applyAlertDialogTheme(builderSingle);
 
-        } else if (vw == mBtnClear) {
+        } else if (btnId == R.id.btn_clear) {
+            viewFlipper.showPrevious();
             mEdtSearchproductName.setText("");
             /** set the following value to clear the **/
             mSelectedFilterMap.put("General", "All");
@@ -427,15 +415,14 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
             supportInvalidateOptionsMenu();
             updateGeneralText(GENERAL);
-        } else if (vw == saveBtn) {
+        } else if (btnId == R.id.van_btn_save) {
             if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
 
-
                 if (selectedSubDepotId != 0) {
-                    if (bmodel.loadManagementHelper.hasVanLoadDone()
+                    if (manualVanLoadHelper.hasVanLoadDone()
                             && selectedSubDepotId != 0) {
                         if (bmodel.configurationMasterHelper.VANLOAD_TYPE == 0) {
-                            new calculateLiability().execute();
+                            new CalculateLiabilityAsyncTask(ManualVanLoadActivity.this, selectedSubDepotId).execute();
                         } else {
                             showDialog(1);
                         }
@@ -456,7 +443,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
 
             } else {
-                if (bmodel.loadManagementHelper.hasVanLoadDone()) {
+                if (manualVanLoadHelper.hasVanLoadDone()) {
                     showDialog(1);
                 } else {
                     bmodel.showAlert(
@@ -471,7 +458,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     public void updateBrandText(String mFilterText, int id) {
         // Close the drawer
         mDrawerLayout.closeDrawers();
-        brandFilterText = mFilterText;
+
+        Vector<LoadManagementBO> vanlist = bmodel.productHelper.getLoadMgmtProducts();
 
         if (vanlist == null) {
             bmodel.showAlert(
@@ -516,19 +504,21 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        filterlist = new ArrayList<>();
+        ArrayList<LoadManagementBO> filterlist = new ArrayList<>();
+        Vector<LoadManagementBO> vanlist = bmodel.productHelper.getLoadMgmtProducts();
+
         if (mAttributeProducts != null) {
-            if (mFilteredPid!=0) {
-                    for (LoadManagementBO productBO : vanlist) {
-                        if (productBO.getIssalable() == 1) {
-                            if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
-                                // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                                if (mAttributeProducts.contains(productBO.getProductid())) {
-                                    filterlist.add(productBO);
-                                }
+            if (mFilteredPid != 0) {
+                for (LoadManagementBO productBO : vanlist) {
+                    if (productBO.getIssalable() == 1) {
+                        if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                            if (mAttributeProducts.contains(productBO.getProductid())) {
+                                filterlist.add(productBO);
                             }
                         }
                     }
+                }
             } else {
                 for (int pid : mAttributeProducts) {
                     for (LoadManagementBO productBO : vanlist) {
@@ -541,13 +531,13 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
         } else {
-            if (mFilteredPid!=0 && !mFilterText.isEmpty()) {
-                    for (LoadManagementBO loadMgtBO : vanlist) {
-                        if (loadMgtBO.getIssalable() == 1) {
-                            if (loadMgtBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
-                                filterlist.add(loadMgtBO);
-                            }
+            if (mFilteredPid != 0 && !mFilterText.isEmpty()) {
+                for (LoadManagementBO loadMgtBO : vanlist) {
+                    if (loadMgtBO.getIssalable() == 1) {
+                        if (loadMgtBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                            filterlist.add(loadMgtBO);
                         }
+                    }
                 }
             } else {
                 for (LoadManagementBO loadMgtBO : vanlist) {
@@ -578,6 +568,15 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
+        if (mSelectedIdByLevelId != null) {
+            for (Integer id : mSelectedIdByLevelId.keySet()) {
+                if (mSelectedIdByLevelId.get(id) > 0) {
+                    menu.findItem(R.id.menu_fivefilter).setIcon(
+                            R.drawable.ic_action_filter_select);
+                    break;
+                }
+            }
+        }
         // If the nav drawer is open, hide action items related to the content
         // view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
@@ -612,16 +611,18 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 isClicked = true;
                 int size = bmodel.productHelper.getBomReturnProducts().size();
                 if (size > 0) {
-                    new LoadReturnProductDialog().execute();
+                    new LoadReturnProductDialogAsyncTask(ManualVanLoadActivity.this, returnProDialogNumPress).execute();
                 } else {
-                    Toast.makeText(ManualVanLoadActivity.this,
-                            getResources().getString(R.string.data_not_mapped),
-                            Toast.LENGTH_SHORT).show();
+                    showMessage(getString(R.string.data_not_mapped));
                     isClicked = false;
                 }
             }
             return true;
         } else if (i == R.id.menu_fivefilter) {
+            if (inputManager.isAcceptingText())// hide soft key board after select expend menu
+                inputManager.hideSoftInputFromWindow(
+                        mEdtSearchproductName.getWindowToken(), 0);
+
             FiveFilterFragment();
             return true;
         }
@@ -629,18 +630,13 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     public void onBackButtonClick() {
-        if (bmodel.loadManagementHelper.hasVanLoadDone()) {
+        if (manualVanLoadHelper.hasVanLoadDone()) {
             showDialog(0);
         } else {
-            /*loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
-            if (isFromPlanning)
-                loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
-            else
-                loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");*/
+
             bmodel.moduleTimeStampHelper.saveModuleTimeStamp("Out");
             bmodel.moduleTimeStampHelper.setTid("");
             bmodel.moduleTimeStampHelper.setModuleCode("");
-            //startActivity(loadActivity);
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
@@ -686,15 +682,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        /*loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
-                                        if (isFromPlanning)
-                                            loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
-                                        else
-                                            loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");*/
                                         bmodel.moduleTimeStampHelper.saveModuleTimeStamp("Out");
                                         bmodel.moduleTimeStampHelper.setTid("");
                                         bmodel.moduleTimeStampHelper.setModuleCode("");
-                                        //startActivity(loadActivity);
+
                                         finish();/* User clicked OK so do some stuff */
                                     }
                                 })
@@ -717,7 +708,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        new SaveVanLoad().execute();
+                                        //new SaveVanLoad().execute();
+                                        new SaveVanLoadAsyncTask(ManualVanLoadActivity.this, selectedSubDepotId).execute();
                                     }
                                 })
                         .setNegativeButton(R.string.cancel,
@@ -794,16 +786,19 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         }
 
         protected void onPostExecute(Boolean result) {
-            if (list != null && list.size() > 0) {
-                mSchedule = new MyAdapter(list);
-                lvwplist.setAdapter(mSchedule);
-            }
+            mSchedule = new MyAdapter(list);
+            lvwplist.setAdapter(mSchedule);
+
 
         }
     }
 
     public void loadSearchedList() {
-        Vector<LoadManagementBO> items = vanlist;
+
+        if (mSelectedIdByLevelId != null)
+            mSelectedIdByLevelId.clear();
+
+        Vector<LoadManagementBO> items = bmodel.productHelper.getLoadMgmtProducts();
 
         if (items == null) {
             bmodel.showAlert(
@@ -847,103 +842,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    private void showProductSummaryDialog() {
-
-        // get prompts.xml view
-        LayoutInflater layoutInflater = LayoutInflater
-                .from(ManualVanLoadActivity.this);
-        final ViewGroup nullParent = null;
-
-        View promptView = layoutInflater.inflate(
-                R.layout.dialog_vanload_summary, nullParent, false);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                ManualVanLoadActivity.this);
-        alertDialogBuilder.setView(promptView);
-
-        final TextView tvProductPrice = (TextView) promptView
-                .findViewById(R.id.tv_product_price);
-        final TextView tvReturnProductPrice = (TextView) promptView
-                .findViewById(R.id.tv_returnprd_price);
-        final TextView tvTotalPrice = (TextView) promptView
-                .findViewById(R.id.tv_total_price);
-
-        final EditText edtPrice = (EditText) promptView
-                .findViewById(R.id.edt_price);
-        android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) ManualVanLoadActivity.this
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(edtPrice.getWindowToken(), 0);
-        edtPrice.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String qty = s.toString();
-                if (!"".equals(qty)) {
-                    bmodel.loadManagementHelper.setmVanLoadAmount(SDUtil
-                            .convertToFloat(qty));
-
-                }
-
-            }
-        });
-
-        String tv = SDUtil.roundIt(
-                bmodel.loadManagementHelper.calculateVanLoadProductPrice(), 2)
-                + "";
-
-        tvProductPrice.setText(tv);
-        tv = bmodel.getOrderHeaderBO()
-                .getRemainigValue() + "";
-        tvReturnProductPrice.setText(tv);
-
-        tv = SDUtil.roundIt(
-                bmodel.loadManagementHelper.calculateVanLoadProductPrice()
-                        + bmodel.getOrderHeaderBO().getRemainigValue(), 2)
-                + "";
-        tvTotalPrice.setText(tv);
-
-        // setup a dialog window
-        alertDialogBuilder
-                .setCancelable(false)
-                .setPositiveButton(R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                float totalPrice = SDUtil
-                                        .convertToFloat(tvTotalPrice.getText()
-                                                .toString());
-                                if (bmodel.loadManagementHelper.getmVanLoadAmount() == totalPrice) {
-                                    new SaveVanLoad().execute();
-
-                                } else {
-                                    Toast.makeText(ManualVanLoadActivity.this,
-                                            "Amount Mis match",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        })
-                .setNegativeButton(R.string.cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-        // create an alert dialog
-        bmodel.applyAlertDialogTheme(alertDialogBuilder);
-
-    }
-
     @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
         if (arg1 == EditorInfo.IME_ACTION_DONE) {
@@ -954,8 +852,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 searchAsync = new SearchAsync();
                 searchAsync.execute();
             } else {
-                Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
-                        .show();
+                showMessage(getString(R.string.enter_atleast_three_letters));
+
             }
             return true;
         }
@@ -966,6 +864,12 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         if (returnProductDialog != null) {
             if (returnProductDialog.isShowing()) {
                 returnProductDialog.numberPressed(vw);
+            } else {
+                activityKeypad(vw);
+            }
+        } else if (vanLoadDialog != null) {
+            if (vanLoadDialog.isShowing()) {
+                vanLoadDialog.numberPressed(vw);
             } else {
                 activityKeypad(vw);
             }
@@ -1059,12 +963,12 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     holder.listLayout = (LinearLayout) row.findViewById(R.id.inv_view_layout);
                     holder.rowLayout = (LinearLayout) row.findViewById(R.id.list_header_lty);
                     holder.productBO = items.get(position);
-                    holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.totQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.pieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, ManualVanLoadActivity.this));
+                    holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
+                    holder.totQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
+                    holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
+                    holder.pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
+                    holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
 
 
                     if (bmodel.configurationMasterHelper.IS_BATCHWISE_VANLOAD) {
@@ -1092,22 +996,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                         holder.outerQty.setVisibility(View.GONE);
 
 
-//                    holder.totQty.setOnTouchListener(new OnTouchListener() {
-//                        public boolean onTouch(View v, MotionEvent event) {
-//                            if (totQtyflag) {
-//                                totQtyflag = false;
-//                                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                                    vanLoadDialog = new ManualVanLoadDialog(
-//                                            ManualVanLoadActivity.this,
-//                                            holder.productBO,
-//                                            vanloadDismissListener);
-//                                    vanLoadDialog.show();
-//                                    vanLoadDialog.setCancelable(false);
-//                                }
-//                            }
-//                            return false;
-//                        }
-//                    });
                     holder.rowLayout.setOnClickListener(new OnClickListener() {
                         public void onClick(View v) {
                             if (totQtyflag) {
@@ -1119,8 +1007,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                 vanLoadDialog.show();
                                 vanLoadDialog.setCancelable(false);
                             }
-
-//
                         }
                     });
 
@@ -1152,7 +1038,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                     if (bmodel.configurationMasterHelper.IS_ADD_NEW_BATCH) {
                                         if (!isAddBatchDialogClicked) {
                                             isAddBatchDialogClicked = true;
-                                            batchEntryDialog = new ManualVanLoadBatchEntryDialog(
+                                            ManualVanLoadBatchEntryDialog batchEntryDialog = new ManualVanLoadBatchEntryDialog(
                                                     ManualVanLoadActivity.this,
                                                     holder.productBO, addBatch,
                                                     cancelBatch,
@@ -1341,146 +1227,14 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         LinearLayout listLayout, rowLayout;
     }
 
-    class SaveVanLoad extends AsyncTask<Integer, Integer, Boolean> {
-
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(ManualVanLoadActivity.this);
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-
-        }
-
+    /**
+     * this interface used to call numberPressed() method
+     * for access view from VanLoadReturnProductDialog
+     */
+    ReturnProDialogNumPress returnProDialogNumPress = new ReturnProDialogNumPress() {
         @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                bmodel.loadManagementHelper.saveVanLoad(vanlist, selectedSubDepotId);
-                // Clear the Values from the Objects after save in DB
-                if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
-                    bmodel.loadManagementHelper.clearBomReturnProductsTable();
-                }
-            } catch (Exception e) {
-                Commons.printException("" + e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE; // Return your real result here
+        public void dialogNumPress(Dialog dialog) {
+            returnProductDialog = (VanLoadReturnProductDialog) dialog;
         }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-            try {
-
-                alertDialog.dismiss();
-                Toast.makeText(ManualVanLoadActivity.this,
-                        getResources().getString(R.string.saved_successfully),
-                        Toast.LENGTH_SHORT).show();
-                /*loadActivity = new Intent(ManualVanLoadActivity.this, HomeScreenActivity.class);
-                if (isFromPlanning)
-                    loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
-                else
-                    loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");*/
-                bmodel.moduleTimeStampHelper.saveModuleTimeStamp("Out");
-                bmodel.moduleTimeStampHelper.setTid("");
-                bmodel.moduleTimeStampHelper.setModuleCode("");
-                //startActivity(loadActivity);
-                finish();
-                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-
-        }
-
-    }
-
-    class LoadReturnProductDialog extends AsyncTask<Integer, Integer, Boolean> {
-
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(ManualVanLoadActivity.this);
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                bmodel.loadManagementHelper.setReturnQty();
-                bmodel.productHelper.calculateOrderReturnValue();
-            } catch (Exception e) {
-                Commons.printException("" + e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE; // Return your real result here
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-            try {
-                alertDialog.dismiss();
-                returnProductDialog = new VanLoadReturnProductDialog(
-                        ManualVanLoadActivity.this, ManualVanLoadActivity.this);
-                returnProductDialog.show();
-                returnProductDialog.setCancelable(false);
-
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-
-        }
-
-    }
-
-    class calculateLiability extends AsyncTask<Integer, Integer, Boolean> {
-
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(ManualVanLoadActivity.this);
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                bmodel.loadManagementHelper.setReturnQty();
-                bmodel.productHelper.calculateOrderReturnValue();
-                if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
-                    bmodel.productHelper.setGroupWiseReturnQty();
-            } catch (Exception e) {
-                Commons.printException("" + e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE; // Return your real result here
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-            try {
-
-                alertDialog.dismiss();
-                showProductSummaryDialog();
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-
-        }
-
-    }
+    };
 }
