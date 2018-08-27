@@ -94,11 +94,11 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
 
     @Override
     public void computeDayAchivements() {
-        DailyReportBO outlet = businessModel.getDailyRep();
-        int totalcalls = businessModel.getTotalCallsForTheDayExcludingDeviatedVisits();
+        DailyReportBO outlet = dashBoardHelper.downloadDailyReport();
+        int totalcalls = dashBoardHelper.getTotalCallsForTheDayExcludingDeviatedVisits();
         //in getNoOfInvoiceAndValue getTotValues refers sum of invoice amt and getTotLines refers num of invoice
-        DailyReportBO dailrp = businessModel.getNoOfInvoiceAndValue();
-        DailyReportBO dailyrp_order = businessModel.getNoOfOrderAndValue();
+        DailyReportBO dailrp = dashBoardHelper.getNoOfInvoiceAndValue();
+        DailyReportBO dailyrp_order = dashBoardHelper.getNoOfOrderAndValue();
 
         for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
             if (dashBoardBO.getCode().equalsIgnoreCase(CODE1)) {
@@ -398,7 +398,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                 }
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_VISIT)) {
-                int visitedcalls = businessModel.getVisitedCallsForTheDayExcludingDeviatedVisits();
+                int visitedcalls = dashBoardHelper.getVisitedCallsForTheDayExcludingDeviatedVisits();
                 if (totalcalls == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
@@ -433,7 +433,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
 
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_SALE)) {
-                int productivecalls = businessModel.getProductiveCallsForTheDayExcludingDeviatedVisits();
+                int productivecalls = dashBoardHelper.getProductiveCallsForTheDayExcludingDeviatedVisits();
                 if (totalcalls == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
@@ -561,7 +561,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_INIT_VS_WEEKLY_OBJ)) {
                 //in getFocusBrandInvoiceAmt getTotValues refers sum of invoice amt of focus brands
-                DailyReportBO dailrp_focus_brand = businessModel.getFocusBrandInvoiceAmt();
+                DailyReportBO dailrp_focus_brand = dashBoardHelper.getFocusBrandInvoiceAmt();
                 dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(dailrp_focus_brand.getTotValues())) + "");
 
                 int kpiAcheived = 0;
@@ -592,7 +592,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
 
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE_INV)) {
-                double sales_ret_val = businessModel.getSalesReturnValue();
+                double sales_ret_val = dashBoardHelper.getSalesReturnValue();
                 if (SDUtil.convertToDouble(dailrp.getTotValues()) == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
@@ -626,7 +626,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
 
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE_ORD)) {
-                double sales_ret_val = businessModel.getSalesReturnValue();
+                double sales_ret_val = dashBoardHelper.getSalesReturnValue();
                 if (SDUtil.convertToDouble(dailyrp_order.getTotValues()) == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {
@@ -660,7 +660,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
 
 
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_FULLFILLMENT)) {
-                DailyReportBO dailyReportBO = businessModel.getFullFillmentValue();
+                DailyReportBO dailyReportBO = dashBoardHelper.getFullFillmentValue();
                 if (dailyReportBO.getLoaded() == 0) {
                     dashBoardBO.setKpiAcheived("0");
                 } else {

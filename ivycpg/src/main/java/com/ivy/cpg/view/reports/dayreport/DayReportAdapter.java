@@ -14,12 +14,12 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import java.util.Vector;
 
 
-public class MyAdapter extends BaseAdapter {
+public class DayReportAdapter extends BaseAdapter {
 
     private Vector<ConfigureBO> items;
     private BusinessModel mBusinessModel;
 
-    public MyAdapter(Vector<ConfigureBO> conList, BusinessModel businessModel) {
+    public DayReportAdapter(Vector<ConfigureBO> conList, BusinessModel businessModel) {
         items = conList;
         this.mBusinessModel = businessModel;
     }

@@ -4,42 +4,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/footer"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/footer"
-            android:layout_below="@id/root"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/nametv"
-                style="?attr/customListTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:layout_marginStart="1dp"
-                android:layout_weight="1"
-                android:tag="day_report_key"
-                android:text="@string/Name"
-                android:layout_marginLeft="1dp" />
-
-            <TextView
-                android:id="@+id/valuetv"
-                style="?attr/customListTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:tag="day_report_value"
-                android:text="@string/value" />
-        </LinearLayout>
 
         <GridView
             android:id="@+id/gridview"
@@ -51,5 +15,5 @@
             android:numColumns="2"
             android:padding="@dimen/outlet_left_margin"
             android:verticalSpacing="0dp" />
-    </LinearLayout>
+
 </RelativeLayout>
