@@ -216,8 +216,6 @@ public class AssetServiceActivity extends BaseActivity {
                 holder = new ViewHolder();
                 holder.tvAssetName = row.findViewById(R.id.tv_lt_assetname);
                 holder.tvSNO = row.findViewById(R.id.tv_lt_sno);
-                holder.tvInstall = row
-                        .findViewById(R.id.tv_lt_install);
                 holder.chkRemove = row.findViewById(R.id.chk);
                 holder.SPRemove = row.findViewById(R.id.sp_remove_reason);
                 holder.SPRemove.setEnabled(false);
@@ -279,7 +277,6 @@ public class AssetServiceActivity extends BaseActivity {
 
             holder.tvAssetName.setText(holder.productObj.getPOSMName());
 
-            holder.tvInstall.setText(holder.productObj.getNewInstallDate());
 
             String mSno = getResources().getString(
                     R.string.serial_no)
@@ -304,7 +301,7 @@ public class AssetServiceActivity extends BaseActivity {
         AssetTrackingBO productObj;
         TextView tvAssetName;
         TextView tvSNO;
-        TextView tvInstall;
+
         CheckBox chkRemove;
         Spinner SPRemove;
         int ref;

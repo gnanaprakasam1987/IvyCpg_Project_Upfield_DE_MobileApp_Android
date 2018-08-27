@@ -5,23 +5,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_toolbar"
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/material_tool_bar" />
-    </LinearLayout>
+        android:layout_alignParentTop="true" />
 
     <ListView
         android:id="@+id/recycler_asset_service"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/footer"
-        android:layout_below="@+id/ll_toolbar">
+        android:layout_below="@+id/toolbar">
 
     </ListView>
 
@@ -37,8 +34,8 @@
         <Button
             android:id="@+id/btn_delete"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:text="@string/asset_service"
             android:textAllCaps="false" />
