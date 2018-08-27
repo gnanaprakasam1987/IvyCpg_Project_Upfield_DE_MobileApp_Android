@@ -614,7 +614,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                 sellerBoHashmap.setInTime(sellerBoDocumentSnapshot.getInTime());
                 sellerBoHashmap.setOutTime(sellerBoDocumentSnapshot.getOutTime());
 
-                sellerBoHashmap.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(sellerBoDocumentSnapshot.getRetailerId()));
+                sellerBoHashmap.setRetailerName(sellerBoDocumentSnapshot.getRetailerName()!=null?sellerBoDocumentSnapshot.getRetailerName():"");
 
                 if(sellerBoHashmap.getLatitude() == 0 || sellerBoHashmap.getLongitude() == 0 ){
                     LatLng latLng = SupervisorActivityHelper.getInstance().retailerLatLngByRId(sellerBoHashmap.getRetailerId());

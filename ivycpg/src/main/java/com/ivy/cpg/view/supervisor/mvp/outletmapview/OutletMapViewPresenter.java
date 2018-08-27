@@ -273,12 +273,11 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         boolean isFocus = false;
 
         for (RetailerBo retailerBo : retailerList) {
-//            if (retailerBo.getLatitude() > 0 && retailerBo.getLongitude() > 0) {
-//                LatLng builderLatLng = new LatLng(retailerBo.getLatitude(),retailerBo.getLongitude());
-//                builder.include(builderLatLng);
-//                isFocus = true;
-//            }else
-                if (retailerBo.getMasterLatitude() > 0 && retailerBo.getMasterLatitude() > 0) {
+            if (retailerBo.getLatitude() > 0 && retailerBo.getLongitude() > 0) {
+                LatLng builderLatLng = new LatLng(retailerBo.getLatitude(),retailerBo.getLongitude());
+                builder.include(builderLatLng);
+                isFocus = true;
+            }else if (retailerBo.getMasterLatitude() > 0 && retailerBo.getMasterLatitude() > 0) {
                 LatLng builderLatLng = new LatLng(retailerBo.getMasterLatitude(),retailerBo.getMasterLongitude());
                 builder.include(builderLatLng);
                 isFocus = true;
@@ -363,12 +362,32 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
                         retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
                         retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+
+                        LatLng newRetailLatlng = new LatLng(retailerMasterBo.getLatitude(), retailerMasterBo.getLongitude());
+
+                        String title = retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getInTime();
+
+                        retailerMasterBo.getMarker().setPosition(newRetailLatlng);
+                        retailerMasterBo.getMarker().setSnippet(String.valueOf(retailerMasterBo.getRetailerId()));
+                        retailerMasterBo.getMarker().setTitle(title);
                     }
 
                 } else {
 
-                    retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
-                    retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+                    //retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                    //retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+
+                    if (documentSnapshotBo.getLatitude() == 0 || documentSnapshotBo.getLongitude() == 0) {
+                        retailerMasterBo.setLatitude(retailerMasterBo.getMasterLatitude());
+                        retailerMasterBo.setLongitude(retailerMasterBo.getMasterLongitude());
+                    } else {
+                        retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                        retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+                    }
+
+                    LatLng newRetailLatlng = new LatLng(retailerMasterBo.getLatitude(), retailerMasterBo.getLongitude());
+
+                    retailerMasterBo.getMarker().setPosition(newRetailLatlng);
                 }
 
                 try {
@@ -486,9 +505,8 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         else
             icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_grey);
 
-        if (retailerBo.getMasterLatitude() != 0 && retailerBo.getMasterLongitude() != 0) {
-
-            LatLng destLatLng = new LatLng(retailerBo.getMasterLatitude(), retailerBo.getMasterLongitude());
+        if (retailerBo.getLatitude() != 0 && retailerBo.getLongitude() != 0){
+            LatLng destLatLng = new LatLng(retailerBo.getLatitude(), retailerBo.getLongitude());
 
             MarkerOptions markerOptions = new MarkerOptions()
                     //.flat(true)
@@ -498,9 +516,9 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
                     .snippet(String.valueOf(retailerBo.getRetailerId()));
 
             outletMapView.setRetailerMarker(retailerBo,markerOptions);
-        }
-        else if (retailerBo.getLatitude() != 0 && retailerBo.getLongitude() != 0){
-            LatLng destLatLng = new LatLng(retailerBo.getLatitude(), retailerBo.getLongitude());
+        }else if (retailerBo.getMasterLatitude() != 0 && retailerBo.getMasterLongitude() != 0) {
+
+            LatLng destLatLng = new LatLng(retailerBo.getMasterLatitude(), retailerBo.getMasterLongitude());
 
             MarkerOptions markerOptions = new MarkerOptions()
                     //.flat(true)

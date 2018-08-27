@@ -328,7 +328,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
             if (sellerBo != null) {
                 String timeIn = convertMillisToTime(sellerBo.getInTime());
-                String retailerName = SupervisorActivityHelper.getInstance().retailerNameById(sellerBo.getRetailerId());
+                String retailerName = sellerBo.getRetailerName()!=null?sellerBo.getRetailerName():"";
                 String covered = String.valueOf(sellerBo.getCovered());
 
                 double latitude = sellerBo.getLatitude();
@@ -459,7 +459,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                     retailerBoObj.setInTime(documentSnapshotBo.getInTime());
                     retailerBoObj.setOutTime(documentSnapshotBo.getOutTime());
                     retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
-                    retailerBoObj.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(documentSnapshotBo.getRetailerId()));
+                    retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName()!=null?documentSnapshotBo.getRetailerName():"");
                     retailerBoObj.setVisitedSequence(retailersVisitedSequence + 1);
 
                     if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
