@@ -28,8 +28,8 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
@@ -132,8 +132,8 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
 
 
         ListView lvwplist = (ListView) findViewById(R.id.list);
-        headerText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        addLoadBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        headerText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+        addLoadBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
 
         MyAdapter mSchedule = new MyAdapter(product.getBatchlist());
         lvwplist.setAdapter(mSchedule);
@@ -325,10 +325,10 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
                         .findViewById(R.id.outerproductqtyCases);
                 holder.batchno = (MaterialSpinner) row.findViewById(R.id.batchno);
 
-                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.pieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.batchno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                holder.pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                holder.batchno.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
 
 
                 holder.caseQty.clearFocus();

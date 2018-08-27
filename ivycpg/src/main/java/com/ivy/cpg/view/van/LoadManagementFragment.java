@@ -21,7 +21,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
 import com.ivy.cpg.view.planogram.PlanoGramActivity;
@@ -44,6 +43,7 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
+import com.ivy.utils.NetworkUtils;
 
 import java.util.Vector;
 
@@ -68,12 +68,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
 
     private BusinessModel bmodel;
-
-
     private AlertDialog alertDialog;
-
     private View view;
-
     private Loadmanagemntreceiver mLoadmanagementReceiver;
 
     @Override
@@ -104,11 +100,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             }
 
             if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-                Toast.makeText(
-                        getActivity(),
-                        getResources()
-                                .getString(R.string.sessionout_loginagain),
-                        Toast.LENGTH_SHORT).show();
+                showMessage(getString(R.string.sessionout_loginagain));
                 getActivity().finish();
             }
 
@@ -143,9 +135,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
         registerReceiver();
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.sessionout_loginagain),
-                    Toast.LENGTH_SHORT).show();
+            showMessage(getString(R.string.sessionout_loginagain));
             getActivity().finish();
         }
 
@@ -224,10 +214,10 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 if (errorCode != null && errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     //	pd.dismiss();
-                    alertDialog.dismiss();
+                    alerDialogDismiss();
                     if (getActivity() != null)
                         bmodel.showAlert(
-                                getResources().getString(
+                                getString(
                                         R.string.stock_download_successfully), 0);
 
                 } else {
@@ -236,10 +226,9 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     String errorDownloadMessage = bmodel.synchronizationHelper
                             .getErrormessageByErrorCode().get(errorDownlodCode);
                     if (errorDownloadMessage != null) {
-                        Toast.makeText(getActivity(), errorDownloadMessage,
-                                Toast.LENGTH_SHORT).show();
+                        showMessage(errorDownloadMessage);
                     }
-                    alertDialog.dismiss();
+                    alerDialogDismiss();
                     break;
                 }
                 break;
@@ -254,84 +243,68 @@ public class LoadManagementFragment extends IvyBaseFragment {
         switch (menuItem.getConfigCode()) {
             case MENU_STOCK_PROPOSAL:
 
-                Intent stockProposalIntent = new Intent(getActivity(),
-                        StockProposalScreen.class);
-                stockProposalIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                stockProposalIntent.putExtra("screentitle", menuItem.getMenuName());
-                stockProposalIntent.putExtra("isFromLodMgt", true);
-                stockProposalIntent.putExtra("menuCode", menuItem.getConfigCode());
-                startActivity(stockProposalIntent);
+                navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), StockProposalScreen.class);
+
                 break;
 
             case MENU_MANUAL_VAN_LOAD:
 
-                new DownloadMethods(getActivity(), downloadInterface, menuItem.getConfigCode(), menuItem.getMenuName());
+                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
                 break;
 
             case MENU_ODAMETER:
 
-                Intent odameterintent = new Intent(getActivity(),
-                        OdaMeterScreen.class);
-                odameterintent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                odameterintent.putExtra("screentitle", menuItem.getMenuName());
-                startActivity(odameterintent);
+                navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), OdaMeterScreen.class);
 
                 break;
 
             case MENU_STOCK_VIEW:
 
-                new DownloadMethods(getActivity(), downloadInterface, menuItem.getConfigCode(), menuItem.getMenuName());
+                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
                 break;
 
             case MENU_VANLOAD_STOCK_VIEW:
 
-                new DownloadMethods(getActivity(), downloadInterface, menuItem.getConfigCode(), menuItem.getMenuName());
+                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
                 break;
 
             case MENU_VAN_UNLOAD:
 
-                new DownloadMethods(getActivity(), downloadInterface, menuItem.getConfigCode(), menuItem.getMenuName());
+                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
                 break;
 
             case MENU_VAN_PLANOGRAM:
 
-                new DownloadMethods(getActivity(), downloadInterface, menuItem.getConfigCode(), menuItem.getMenuName());
+                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
                 break;
 
             case MENU_DAMAGE_STOCK:
 
-                new DownloadMethods(getActivity(), downloadInterface, menuItem.getConfigCode(), menuItem.getMenuName());
+                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
                 break;
 
             case MENU_LOAD_WEBVIEW:
 
-                if (bmodel.isOnline()) {
-                    Intent i = new Intent(getActivity(), WebViewActivity.class);
-                    i.putExtra("screentitle", menuItem.getMenuName());
-                    i.putExtra("menucode", menuItem.getConfigCode());
-                    startActivity(i);
+                if (NetworkUtils.isNetworkConnected(getActivity())) {
+                    navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), WebViewActivity.class);
                 } else
-                    Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
+                    showMessage(getString(R.string.please_connect_to_internet));
                 break;
 
             case MENU_PLANNING:
 
                 if (bmodel.synchronizationHelper.isDayClosed()) {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.day_closed),
-                            Toast.LENGTH_SHORT).show();
+
+                    showMessage(getString(R.string.day_closed));
                 } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-                    Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
-                                    getResources().getString(R.string.please_redownload),
-                            Toast.LENGTH_SHORT).show();
+
+                    showMessage(getString(R.string.please_redownload));
                 } else {
                     bmodel.distributorMasterHelper.downloadDistributorsList();
                     bmodel.configurationMasterHelper
                             .setTradecoveragetitle(menuItem.getMenuName());
-                    Intent i = new Intent(getActivity(),
-                            PlanningVisitActivity.class);
-                    i.putExtra("isPlanningSub", true);
-                    startActivity(i);
+
+                    navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), PlanningVisitActivity.class);
                 }
 
                 break;
@@ -351,12 +324,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 break;
 
             case MENU_DASH_DAY:
-
-                Intent i = new Intent(getActivity(),
-                        DashBoardActivity.class);
-                i.putExtra("screentitle", menuItem.getMenuName());
-                startActivity(i);
-
+                navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), DashBoardActivity.class);
                 break;
 
             default:
@@ -448,12 +416,10 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
         int i = item.getItemId();
         if (i == R.id.menu_refresh) {
-            if (bmodel.isOnline()) {
-                new DownloadMethods(getActivity(), downloadInterface, "NewStock", "");
+            if (NetworkUtils.isNetworkConnected(getActivity())) {
+                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, "NewStock", "").execute();
             } else {
-                bmodel.showAlert(
-                        getResources()
-                                .getString(R.string.no_network_connection), 0);
+                bmodel.showAlert(getString(R.string.no_network_connection), 0);
             }
             return true;
         }
@@ -466,85 +432,74 @@ public class LoadManagementFragment extends IvyBaseFragment {
      * download method call based on menu code wise
      */
 
-    DownloadInterface downloadInterface = new DownloadInterface() {
+    DownloadAsyncTaskInterface downloadAsyncTaskInterface = new DownloadAsyncTaskInterface() {
         @Override
         public void showProgress(AlertDialog.Builder builder, String message) {
 
             builder = new AlertDialog.Builder(getActivity());
 
-            customProgressDialog(builder, getResources().getString(R.string.loading));
+            customProgressDialog(builder, getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
 
         @Override
         public void hideProgress() {
-            if (alertDialog.isShowing())
-                alertDialog.dismiss();
-            Toast.makeText(getActivity(),
-                    getActivity().getResources().getString(R.string.unable_to_load_data),
-                    Toast.LENGTH_SHORT).show();
+            alerDialogDismiss();
+            showMessage(getString(R.string.unable_to_load_data));
         }
 
         @Override
         public void intentCall(String menuCode, String menuName) {
-            if (alertDialog.isShowing())
-                alertDialog.dismiss();
-            Intent intent = null;
-            if (menuCode.equals(MENU_MANUAL_VAN_LOAD)) {
-                intent = new Intent(getActivity(),
-                        ManualVanLoadActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                intent.putExtra("screentitle", menuName);
-                startActivity(intent);
-            } else if (menuCode.equals(MENU_VANLOAD_STOCK_VIEW)) {
-                intent = new Intent(getActivity(),
-                        VanLoadStockApplyActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                intent.putExtra("screentitle", menuName);
-                startActivity(intent);
-            } else if (menuCode.equals(MENU_VAN_UNLOAD)) {
-                intent = new Intent(getActivity(),
-                        VanUnloadActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                intent.putExtra("screentitle", menuName);
-                startActivity(intent);
-            } else if (menuCode.equals(MENU_STOCK_VIEW)) {
-                intent = new Intent(getActivity(),
-                        StockViewActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                intent.putExtra("screentitle", menuName);
-                startActivity(intent);
-            } else if (menuCode.equals(MENU_VAN_PLANOGRAM)) {
-                PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
-                if (mPlanoGramHelper.getmChildLevelBo() != null && mPlanoGramHelper.getmChildLevelBo().size() > 0) {
-                    intent = new Intent(getActivity(),
-                            PlanoGramActivity.class);
-                    intent.putExtra("from", "1");
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.data_not_mapped),
-                            Toast.LENGTH_SHORT).show();
-                }
-            } else if (menuCode.equals(MENU_DAMAGE_STOCK)) {
-                intent = new Intent(getActivity(),
-                        DamageStockFragmentActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                intent.putExtra("screentitle", menuName);
-                startActivity(intent);
-            } else if (menuCode.equals("NewStock")) {
+            alerDialogDismiss();
 
-                if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    downloadVanload();
-                } else {
-                    String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
-                    if (errorMsg != null) {
-                        Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+            switch (menuCode) {
+
+                case MENU_MANUAL_VAN_LOAD:
+                    navigateToActivity(menuName, menuCode, ManualVanLoadActivity.class);
+                    break;
+
+                case MENU_VANLOAD_STOCK_VIEW:
+                    navigateToActivity(menuName, menuCode, VanLoadStockApplyActivity.class);
+                    break;
+
+                case MENU_VAN_UNLOAD:
+                    navigateToActivity(menuName, menuCode, VanUnloadActivity.class);
+                    break;
+
+                case MENU_STOCK_VIEW:
+                    navigateToActivity(menuName, menuCode, StockViewActivity.class);
+                    break;
+
+                case MENU_VAN_PLANOGRAM:
+                    PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
+                    if (mPlanoGramHelper.getmChildLevelBo() != null && mPlanoGramHelper.getmChildLevelBo().size() > 0) {
+                        navigateToActivity(menuName, menuCode, PlanoGramActivity.class);
                     } else {
-                        Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                        showMessage(getString(R.string.data_not_mapped));
                     }
-                }
+                    break;
+
+                case MENU_DAMAGE_STOCK:
+                    navigateToActivity(menuName, menuCode, DamageStockFragmentActivity.class);
+                    break;
+
+                case "NewStock":
+
+                    if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        downloadVanload();
+                    } else {
+                        String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                        if (errorMsg != null) {
+                            showMessage(errorMsg);
+                        } else {
+                            showMessage(getString(R.string.data_not_downloaded));
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
             }
 
 
@@ -615,14 +570,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
                 //updateModuleWiseTimeStampDetails(menuCode);
             } else if (menuCode.equals(MENU_VAN_PLANOGRAM)) {
-                PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
-                mPlanoGramHelper.loadConfigurations(getContext().getApplicationContext());
-                mPlanoGramHelper.mSelectedActivityName = menuName;
-                mPlanoGramHelper
-                        .downloadLevels(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM, "0");
-                mPlanoGramHelper.downloadPlanoGram(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM);
-                mPlanoGramHelper.downloadPlanoGramProductLocations(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
-                mPlanoGramHelper.loadPlanoGramInEditMode(getContext().getApplicationContext(), "0");
+                loadPlanogramData(menuName);
                 updateModuleWiseTimeStampDetails(menuCode);
             } else if (menuCode.equals(MENU_DAMAGE_STOCK)) {
                 SalesReturnHelper.getInstance(getActivity()).loadDamagedProductReport(getContext().getApplicationContext());
@@ -640,6 +588,32 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
         }
     };
+
+    /**
+     * Navigate to given activity Name
+     *
+     * @param menuName
+     * @param menuCode
+     * @param activityName
+     */
+    private void navigateToActivity(String menuName, String menuCode, Class activityName) {
+        Intent intent = new Intent(getActivity(), activityName);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("screentitle", menuName);
+        intent.putExtra("from", "1");
+        intent.putExtra("isFromLodMgt", true);
+        intent.putExtra("menuCode", menuCode);
+        intent.putExtra("isPlanningSub", true);
+        startActivity(intent);
+    }
+
+    /**
+     * dismiss alert Dialog
+     */
+    private void alerDialogDismiss() {
+        if (alertDialog.isShowing())
+            alertDialog.dismiss();
+    }
 
     /**
      * insert module wise time stamp details
@@ -670,16 +644,15 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private void showToastMessage(float distance) {
         String strTitle;
         if (distance == -1)
-            strTitle = getResources().getString(
+            strTitle = getString(
                     R.string.warehouse_location_mismatch);
         else if (distance == -2 || distance == -3)
-            strTitle = getResources().getString(
+            strTitle = getString(
                     R.string.not_able_to_find_user_location);
         else
-            strTitle = getResources().getString(R.string.you_are) + " "
-                    + distance + getResources().getString(R.string.mts_away);
-        Toast.makeText(getActivity(), strTitle, Toast.LENGTH_SHORT)
-                .show();
+            strTitle = getString(R.string.you_are) + " "
+                    + distance + getString(R.string.mts_away);
+        showMessage(strTitle);
     }
 
     /**
@@ -687,6 +660,23 @@ public class LoadManagementFragment extends IvyBaseFragment {
      */
     private void downloadVanload() {
         bmodel.synchronizationHelper.downloadVanloadFromServer();
+    }
+
+
+    /**
+     * Download Planogram Data's
+     *
+     * @param menuName
+     */
+    private void loadPlanogramData(String menuName) {
+        PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
+        mPlanoGramHelper.loadConfigurations(getContext().getApplicationContext());
+        mPlanoGramHelper.mSelectedActivityName = menuName;
+        mPlanoGramHelper
+                .downloadLevels(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM, "0");
+        mPlanoGramHelper.downloadPlanoGram(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM);
+        mPlanoGramHelper.downloadPlanoGramProductLocations(getContext().getApplicationContext(), MENU_VAN_PLANOGRAM, bmodel.getRetailerMasterBO().getRetailerID(), null);
+        mPlanoGramHelper.loadPlanoGramInEditMode(getContext().getApplicationContext(), "0");
     }
 
 

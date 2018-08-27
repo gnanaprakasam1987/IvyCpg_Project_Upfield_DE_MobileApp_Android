@@ -6,7 +6,7 @@ import android.app.AlertDialog;
  * Created by Hanifa on 20/8/18.
  */
 
-public interface DownloadInterface {
+public interface DownloadAsyncTaskInterface {
     void showProgress(AlertDialog.Builder builder, String message);
     void hideProgress();
     void intentCall(String menuCode,String menuName);

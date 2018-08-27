@@ -5623,6 +5623,8 @@ public class ConfigurationMasterHelper {
 
     private Typeface mFontBaloobhaiRegular;
 
+    @Deprecated
+    //this method moved into FontUitils class
     public Typeface getFontBaloobhai(FontType mFontType) {
         if (mFontType == FontType.REGULAR) {
             if (mFontBaloobhaiRegular == null)
@@ -5638,6 +5640,8 @@ public class ConfigurationMasterHelper {
     private Typeface mFontRobotoMedium;
     private Typeface mFontRobotoThin;
 
+    @Deprecated
+    //this method moved into FontUtils class
     public Typeface getFontRoboto(FontType mFontType) {
         if (mFontType == FontType.LIGHT) {
             if (mFontRobotoLight == null)
@@ -5656,6 +5660,8 @@ public class ConfigurationMasterHelper {
         return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
 
+    @Deprecated
+    //this method moved into FontUtils class
     public Typeface getProductNameFont() {
         return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
@@ -6234,7 +6240,7 @@ public class ConfigurationMasterHelper {
         Cursor c = db.selectSQL(sql);
         if (c != null && c.getCount() != 0) {
             if (c.moveToNext()) {
-                title = c.getString(c.getColumnIndex("RField")).equalsIgnoreCase("")?"Report":c.getString(c.getColumnIndex("RField"));
+                title = c.getString(c.getColumnIndex("RField")).equalsIgnoreCase("") ? "Report" : c.getString(c.getColumnIndex("RField"));
             }
             c.close();
             db.closeDB();

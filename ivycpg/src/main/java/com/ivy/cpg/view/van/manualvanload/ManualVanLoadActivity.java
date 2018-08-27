@@ -37,7 +37,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.ivy.cpg.view.van.manualvanload.manualvanloadbatchentrydialog.ManualVanLoadBatchEntryDialog;
@@ -50,9 +49,9 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,7 +100,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         public void onDismiss(DialogInterface dialog) {
             isAddBatchDialogClicked = false;
             dialog.dismiss();
-            Toast.makeText(ManualVanLoadActivity.this, R.string.batch_created_successfully, Toast.LENGTH_LONG).show();
+            showMessage(getString(R.string.batch_created_successfully));
             if (list != null && list.size() > 0) {
                 mSchedule = new MyAdapter(list);
                 lvwplist.setAdapter(mSchedule);
@@ -226,15 +225,15 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             lvwplist.setCacheColorHint(0);
 
 
-            tvSelectedFilter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            sihTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            qtyTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            itemCaseTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            outeritemTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            itempieceTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            saveBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-            productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            mEdtSearchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            tvSelectedFilter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            sihTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            qtyTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            itemCaseTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            outeritemTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            itempieceTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            saveBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+            productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+            mEdtSearchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
 
 
             if (bmodel.configurationMasterHelper.IS_BATCHWISE_VANLOAD) {
@@ -419,13 +418,11 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         } else if (btnId == R.id.van_btn_save) {
             if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
 
-
                 if (selectedSubDepotId != 0) {
                     if (manualVanLoadHelper.hasVanLoadDone()
                             && selectedSubDepotId != 0) {
                         if (bmodel.configurationMasterHelper.VANLOAD_TYPE == 0) {
-                            //new calculateLiability().execute();
-                            new CalculateLiabilityAsync(ManualVanLoadActivity.this, bmodel, selectedSubDepotId);
+                            new CalculateLiabilityAsyncTask(ManualVanLoadActivity.this, selectedSubDepotId).execute();
                         } else {
                             showDialog(1);
                         }
@@ -614,12 +611,9 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 isClicked = true;
                 int size = bmodel.productHelper.getBomReturnProducts().size();
                 if (size > 0) {
-                    //new LoadReturnProductDialog().execute();
-                    new LoadReturnProductDialogAsync(ManualVanLoadActivity.this, bmodel, returnProDialogNumPress);
+                    new LoadReturnProductDialogAsyncTask(ManualVanLoadActivity.this, returnProDialogNumPress).execute();
                 } else {
-                    Toast.makeText(ManualVanLoadActivity.this,
-                            getResources().getString(R.string.data_not_mapped),
-                            Toast.LENGTH_SHORT).show();
+                    showMessage(getString(R.string.data_not_mapped));
                     isClicked = false;
                 }
             }
@@ -715,7 +709,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         //new SaveVanLoad().execute();
-                                        new SaveVanLoadAsync(ManualVanLoadActivity.this, selectedSubDepotId);
+                                        new SaveVanLoadAsyncTask(ManualVanLoadActivity.this, selectedSubDepotId).execute();
                                     }
                                 })
                         .setNegativeButton(R.string.cancel,
@@ -858,8 +852,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 searchAsync = new SearchAsync();
                 searchAsync.execute();
             } else {
-                Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
-                        .show();
+                showMessage(getString(R.string.enter_atleast_three_letters));
+
             }
             return true;
         }
@@ -969,12 +963,12 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     holder.listLayout = (LinearLayout) row.findViewById(R.id.inv_view_layout);
                     holder.rowLayout = (LinearLayout) row.findViewById(R.id.list_header_lty);
                     holder.productBO = items.get(position);
-                    holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.totQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.pieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, ManualVanLoadActivity.this));
+                    holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
+                    holder.totQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
+                    holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
+                    holder.pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
+                    holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
 
 
                     if (bmodel.configurationMasterHelper.IS_BATCHWISE_VANLOAD) {
@@ -1002,22 +996,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                         holder.outerQty.setVisibility(View.GONE);
 
 
-//                    holder.totQty.setOnTouchListener(new OnTouchListener() {
-//                        public boolean onTouch(View v, MotionEvent event) {
-//                            if (totQtyflag) {
-//                                totQtyflag = false;
-//                                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                                    vanLoadDialog = new ManualVanLoadDialog(
-//                                            ManualVanLoadActivity.this,
-//                                            holder.productBO,
-//                                            vanloadDismissListener);
-//                                    vanLoadDialog.show();
-//                                    vanLoadDialog.setCancelable(false);
-//                                }
-//                            }
-//                            return false;
-//                        }
-//                    });
                     holder.rowLayout.setOnClickListener(new OnClickListener() {
                         public void onClick(View v) {
                             if (totQtyflag) {
@@ -1029,8 +1007,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                 vanLoadDialog.show();
                                 vanLoadDialog.setCancelable(false);
                             }
-
-//
                         }
                     });
 

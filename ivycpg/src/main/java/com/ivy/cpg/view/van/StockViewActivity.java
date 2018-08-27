@@ -41,9 +41,9 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,8 +121,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         expandlvwplist.setCacheColorHint(0);
 
         productName = (TextView) findViewById(R.id.productName);
-        productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
         productName.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 int inType = productName.getInputType();
@@ -163,10 +163,10 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         vect.addAll(Arrays.asList(getResources().getStringArray(
                 R.array.productFilterArray)));
         mSelectedFilterMap.put("General", GENERAL);
-        ((TextView) findViewById(R.id.product_name)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.sihCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.sihOuterTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.product_name)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        ((TextView) findViewById(R.id.sihCaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        ((TextView) findViewById(R.id.sihOuterTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        ((TextView) findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
 
         if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
                 bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||
@@ -796,10 +796,10 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                 holder.sihOuter = (TextView) row.findViewById(R.id.sih_outer);
                 holder.sih = (TextView) row.findViewById(R.id.sih);
 
-                holder.batchNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.sihCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.sihOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.batchNo.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, StockViewActivity.this));
+                holder.sihCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
+                holder.sihOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
+                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
 
 
                 if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
@@ -1041,11 +1041,11 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                 holder.prodcode = (TextView) row.findViewById(R.id.prdcode);
 
 
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.prodcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.sihCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.sihOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, StockViewActivity.this));
+                holder.prodcode.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, StockViewActivity.this));
+                holder.sihCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
+                holder.sihOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
+                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
 
                 if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
                     if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)

@@ -15,6 +15,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -43,6 +44,7 @@ public class ManualVanLoadHelper {
 
     /**
      * Load Data for Manual VanLoad Screen
+     *
      * @param menuCode - menu code is used to insert record into ModuleActivityDetails table
      */
     public void loadManuvalVanLoadData(String menuCode) {
@@ -123,6 +125,7 @@ public class ManualVanLoadHelper {
 
     /**
      * VanLoad Done validation
+     *
      * @return
      */
     public boolean hasVanLoadDone() {
@@ -181,7 +184,7 @@ public class ManualVanLoadHelper {
                                     else {
                                         batchid = "0";
                                     }
-                                    values = bmodel.QT(uid)
+                                    values = AppUtils.QT(uid)
                                             + ","
                                             + product.getProductid()
                                             + ","
@@ -191,17 +194,17 @@ public class ManualVanLoadHelper {
                                             + ","
                                             + totalsih
                                             + ","
-                                            + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                            + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                                             + ","
-                                            + bmodel.QT("Y")
+                                            + AppUtils.QT("Y")
                                             + ","
                                             + bo.getOuterQty() + ","
                                             + product.getCaseSize() + ","
                                             + product.getdUomid() + ","
                                             + product.getOuterSize() + ","
                                             + product.getdOuonid() + ","
-                                            + bmodel.QT(batchid) + ","
-                                            + bmodel.QT(bo.getBatchNo()) + ","
+                                            + AppUtils.QT(batchid) + ","
+                                            + AppUtils.QT(bo.getBatchNo()) + ","
                                             + selectedSubDepotID + "," + 1;
 
                                     db.insertSQL(DataMembers.tbl_vanload, columns,
@@ -213,7 +216,7 @@ public class ManualVanLoadHelper {
                     } else {
 
                         batchid = 0 + "";
-                        values = bmodel.QT(uid)
+                        values = AppUtils.QT(uid)
                                 + ","
                                 + product.getProductid()
                                 + ","
@@ -223,16 +226,16 @@ public class ManualVanLoadHelper {
                                 + ","
                                 + totalsih
                                 + ","
-                                + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                                 + ","
-                                + bmodel.QT("Y")
+                                + AppUtils.QT("Y")
                                 + ","
                                 + product.getOuterQty() + ","
                                 + product.getCaseSize() + ","
                                 + product.getdUomid() + ","
                                 + product.getOuterSize() + ","
                                 + product.getdOuonid() + ","
-                                + bmodel.QT(batchid) + ","
+                                + AppUtils.QT(batchid) + ","
                                 + 0 + ","
                                 + selectedSubDepotID + "," + 1;
 
@@ -259,9 +262,9 @@ public class ManualVanLoadHelper {
 
                         values = tranId
                                 + ","
-                                + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                                 + ","
-                                + bmodel.QT(bomReturnBo.getPid())
+                                + AppUtils.QT(bomReturnBo.getPid())
                                 + ","
                                 + bomReturnBo.getLiableQty()
                                 + ","
@@ -303,7 +306,7 @@ public class ManualVanLoadHelper {
                 values = tid + "," + mPaymentTypeId + ","
                         + SDUtil.format(getmVanLoadAmount(), 2, 0) + ","
                         + selectedSubDepotID + "," + uid + ","
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
 
                 db.insertSQL(DataMembers.tbl_SubDepotSettlement,
                         subDepotColumns, values);
@@ -324,7 +327,8 @@ public class ManualVanLoadHelper {
 
     /**
      * get product wise batch id
-     * @param pid - product id
+     *
+     * @param pid     - product id
      * @param batchno
      * @return
      */
@@ -336,7 +340,7 @@ public class ManualVanLoadHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT batchid from BatchMaster where batchNum="
-                            + bmodel.QT(batchno) + " and pid=" + pid);
+                            + AppUtils.QT(batchno) + " and pid=" + pid);
             if (c != null) {
                 while (c.moveToNext()) {
                     batchid = c.getString(0);
@@ -413,6 +417,7 @@ public class ManualVanLoadHelper {
 
     /**
      * Save Manual Van Load Batch entry details
+     *
      * @param product
      */
 
@@ -452,10 +457,10 @@ public class ManualVanLoadHelper {
 
             String columns = "batchid,batchNum,pid,MfgDate,ExpDate,is_new";
 
-            values = batchId + "," + bmodel.QT(product.getManualBatchNo())
+            values = batchId + "," + AppUtils.QT(product.getManualBatchNo())
                     + "," + product.getProductid() + ","
-                    + bmodel.QT(product.getMfgDate()) + ","
-                    + bmodel.QT(product.getExpDate()) + ", 1";
+                    + AppUtils.QT(product.getMfgDate()) + ","
+                    + AppUtils.QT(product.getExpDate()) + ", 1";
 
             db.insertSQL("BatchMaster", columns, values);
             db.closeDB();
