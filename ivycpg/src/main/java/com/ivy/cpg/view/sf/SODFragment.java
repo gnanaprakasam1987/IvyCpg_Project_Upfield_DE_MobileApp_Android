@@ -675,10 +675,7 @@ public class SODFragment extends IvyBaseFragment implements
                             for (int i = 0; i < mCategoryForDialog.size(); i++) {
 
                                 SODBO sodbo = mCategoryForDialog.get(i);
-                                if (sodbo.getLocations() != null)
-                                    sodbo.getLocations().get(mSelectedLocationIndex).setParentTotal(SDUtil
-                                            .convertToFloat(mParentTotal.getText()
-                                                    .toString()) + "");
+                                sodbo.getLocations().get(mSelectedLocationIndex).setParentTotal(mParentTotal.getText().toString());
 
                                 sodbo.setGap(Integer.toString(0));
                             }

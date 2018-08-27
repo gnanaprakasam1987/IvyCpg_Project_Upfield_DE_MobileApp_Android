@@ -77,7 +77,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
 
         BarDataSet set1;
         set1 = new BarDataSet(yVals1, "");
-        set1.setStackLabels(new String[]{getResources().getString(R.string.achieved), getResources().getString(R.string.target)});
+        set1.setStackLabels(new String[]{"% " + getResources().getString(R.string.achieved), "% " + getResources().getString(R.string.balance)});
         set1.setValueFormatter(new PercentageValueFormatter());
         set1.setDrawIcons(false);
         set1.setValueTextColor(Color.WHITE);
@@ -131,7 +131,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
 
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-            return String.valueOf(SDUtil.format(value, 0, 2) + "%");
+            return String.valueOf(SDUtil.format(value, 0, 0) + "%");
         }
     }
 }

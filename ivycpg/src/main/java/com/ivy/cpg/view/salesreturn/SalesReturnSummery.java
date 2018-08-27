@@ -674,7 +674,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             try {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                salesReturnHelper.saveSalesReturn(getApplicationContext(), "", "", false);
+                salesReturnHelper.saveSalesReturn(getApplicationContext(), "", "", false,false);
                 salesReturnHelper.clearSalesReturnTable(false);
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -713,7 +713,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     if ("1".equalsIgnoreCase(bmodel.getRetailerMasterBO().getRField4())) {
                         bmodel.productHelper.updateDistributorDetails();
                     }
-                    bmodel.mCommonPrintHelper.xmlRead("credit_note", false, mPrintList, keyValues, null);
+                    bmodel.mCommonPrintHelper.xmlRead("credit_note", false, mPrintList, keyValues, null,null);
                     Intent i = new Intent(SalesReturnSummery.this, CommonPrintPreviewActivity.class);
                     i.putExtra("IsFromOrder", true);
                     i.putExtra("isHomeBtnEnable", true);

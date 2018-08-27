@@ -653,7 +653,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             // Apply Item  level discount
             if (bModel.configurationMasterHelper.SHOW_DISCOUNT) {
-                double itemLevelDiscount = discountHelper.calculateItemLevelDiscount();
+                double itemLevelDiscount = discountHelper.calculateItemLevelDiscount(mOrderedProductList);
                 totalOrderValue = totalOrderValue - itemLevelDiscount;
             }
 
@@ -669,7 +669,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bModel.configurationMasterHelper.IS_EXCLUDE_TAX)
                     bModel.productHelper.taxHelper.updateProductWiseExcludeTax();
                 else {
-                    float totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
+                    double totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
                     totalOrderValue = totalOrderValue + totalTaxVal;
                 }
             }
@@ -697,7 +697,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bModel.getOrderHeaderBO() != null) {
                     bModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
                 }
-                totalOrderValue = totalOrderValue - billWiseDiscount;
+                totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount,bModel.configurationMasterHelper.VALUE_PRECISION_COUNT,0));
                 enteredDiscAmtOrPercent = billWiseDiscount;
 
             } else {
@@ -1759,6 +1759,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         signatureName = bModel.getOrderHeaderBO().getSignatureName();
                     }
 
+                    if(bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                            &&bModel.getOrderHeaderBO().getOrderValue()<orderHelper.getTotalReturnValue(mOrderedProductList)){
+                        Toast.makeText(this,getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
+                        isClick = false;
+                        return;
+                    }
 
                     // Don't write any code  after this dialog.. because it is just a confirmation dialog
                     orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
@@ -1773,6 +1779,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         getResources().getString(
                                 R.string.no_products_exists),
                         Toast.LENGTH_SHORT).show();
+                isClick=false;
             }
         }
     }
@@ -1894,6 +1901,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             orderHelper.invoiceDiscount = Double.toString(enteredDiscAmtOrPercent);
 
+
+                            if(bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                                    &&bModel.getOrderHeaderBO().getOrderValue()<orderHelper.getTotalReturnValue(mOrderedProductList)){
+                                Toast.makeText(this,getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
+                                isClick = false;
+                                return;
+                            }
 
                             // Don't write any code  after this dialog.. because it is just a confirmation dialog
                             orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
@@ -3101,7 +3115,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
 
-            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName);
+            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName,null);
             if (bModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
@@ -3187,7 +3201,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName);
+            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName,null);
 
 
             bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),

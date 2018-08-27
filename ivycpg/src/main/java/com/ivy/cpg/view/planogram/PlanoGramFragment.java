@@ -936,6 +936,10 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             this.items = items;
         }
 
+        void setListData(Vector<PlanoGramBO> listData){
+            this.items = listData;
+        }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -1239,8 +1243,13 @@ public class PlanoGramFragment extends IvyBaseFragment implements
      * Refresh list view
      */
     private void refreshList() {
-        planoAdapter = new PlanogramAdapter(mPlanoGramList);
-        plano_recycler.setAdapter(planoAdapter);
+        if (planoAdapter == null) {
+            planoAdapter = new PlanogramAdapter(mPlanoGramList);
+            plano_recycler.setAdapter(planoAdapter);
+        } else {
+            planoAdapter.setListData(mPlanoGramList);
+            planoAdapter.notifyDataSetChanged();
+        }
     }
 
     private void FiveFilterFragment() {

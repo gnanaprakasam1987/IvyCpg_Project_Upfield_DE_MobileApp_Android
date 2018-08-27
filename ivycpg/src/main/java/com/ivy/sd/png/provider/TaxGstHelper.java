@@ -924,8 +924,8 @@ public class TaxGstHelper implements TaxInterface {
     }
 
     @Override
-    public float updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS) {
-        float totalTaxAmount = 0;
+    public double updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS) {
+        double totalTaxAmount = 0;
         if (productMasterBOS != null && productMasterBOS.size() > 0) {
             for (ProductMasterBO productMasterBO : productMasterBOS) {
                 ProductMasterBO productBo = productMasterBO;
@@ -938,11 +938,11 @@ public class TaxGstHelper implements TaxInterface {
 
                             ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());
                             if (taxList != null) {
-                                float taxAmount = 0;
+                                double taxAmount = 0;
 
                                 for (TaxBO taxBO : taxList) {
                                     if (taxBO.getParentType().equals("0")) {
-                                        float calTax = SDUtil.truncateDecimal(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                                        double calTax = SDUtil.truncateDecimal(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
                                         taxBO.setTotalTaxAmount(calTax);
                                         taxAmount += calTax;
                                     }

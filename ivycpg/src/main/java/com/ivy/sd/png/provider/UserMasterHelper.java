@@ -293,6 +293,7 @@ public class UserMasterHelper {
      * @return - true or false
      */
     public boolean changePassword(int UserID, String pwd) {
+        LoginHelper.getInstance(context).loadPasswordConfiguration(context);
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {

@@ -100,6 +100,11 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 loadPayTypeList();
         }
 
+        if(!bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW){
+            view.findViewById(R.id.ll_disc).setVisibility(View.GONE);
+            view.findViewById(R.id.layout_vertical_line).setVisibility(View.GONE);
+        }
+
         return view;
     }
 
@@ -1199,7 +1204,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
                 if (totalDiscount > 0) {
                     sb.append(doPrintFormatingLeft(getResources().getString(R.string.discount) + " ", 10));
-                    sb.append(doPrintAddSpace(0, 18));
+                    sb.append(doPrintAddSpace(0, 17));
                     sb.append(doPrintFormatingRight(bmodel.formatValueBasedOnConfig(totalDiscount), 13));
                     sb.append(LineFeed(1));
                 }

@@ -9,7 +9,6 @@ import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
-import com.ivy.sd.png.bo.MerchandisingposmBO;
 import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.commons.SDUtil;
@@ -21,28 +20,23 @@ import java.util.Vector;
 
 import javax.inject.Inject;
 
-public class DayReportModel implements IDayReportModelPresenter {
+public class DayReportPresenterImpl implements DayReportPresenter {
 
     private Context mContext;
-    private IDayReportView mIDayReportView;
+    private DayReportView mDayReportView;
     private BusinessModel mBusinessModel;
     private Vector<ConfigureBO> mDayList = null;
 
     @Inject
     public DayReportHelper dayReportHelper;
 
-    public DayReportModel(Context context, IDayReportView IDayReportView, BusinessModel mBusinessModel) {
+    public DayReportPresenterImpl(Context context, DayReportView DayReportView, BusinessModel mBusinessModel) {
         this.mContext = context;
-        this.mIDayReportView = IDayReportView;
+        this.mDayReportView = DayReportView;
         this.mBusinessModel = mBusinessModel;
         ReportComponent reportComponent = DaggerReportComponent.builder().reportModule(new ReportModule((BusinessModel) mContext.getApplicationContext())).build();
         reportComponent.inject(this);
-        // dayReportHelper = reportComponent.provideDayReportHelper();
-    }
 
-    @Inject
-    public void initializeHelper(DayReportHelper dayReportHelper) {
-        //this.dayReportHelper = dayReportHelper;
     }
 
     private void updateDayReportData(Vector<ConfigureBO> mDayList) {
@@ -57,7 +51,7 @@ public class DayReportModel implements IDayReportModelPresenter {
             mBusinessModel.beatMasterHealper.setTodayBeatMasterBO(tempBeat);
         }
 
-        mBusinessModel.downloadDailyReport();
+        dayReportHelper.downloadDailyReport();
         //kellogs project specific
         for (ConfigureBO con : mDayList) {
             if (con.getConfigCode().equalsIgnoreCase("DAYRT29") ||
@@ -66,13 +60,13 @@ public class DayReportModel implements IDayReportModelPresenter {
                     con.getConfigCode().equalsIgnoreCase("DAYRT32") ||
                     con.getConfigCode().equalsIgnoreCase("DAYRT33") ||
                     con.getConfigCode().equalsIgnoreCase("DAYRT34")) {
-                mBusinessModel.downloadDailyReportKellogs();
+                dayReportHelper.downloadDailyReportKellogs();
                 break;
             }
         }
 
 
-        DailyReportBO outlet = mBusinessModel.getDailyRep();
+        DailyReportBO outlet = dayReportHelper.getDailyRep();
 
         int totalcalls = mBusinessModel.getTotalCallsForTheDay();
         int visitedcalls = mBusinessModel.getVisitedCallsForTheDay();
@@ -105,10 +99,7 @@ public class DayReportModel implements IDayReportModelPresenter {
                     con.setMenuNumber(productivecalls + "/" + visitedcalls);
 
 
-            } /*else if (con.getConfigCode().equalsIgnoreCase("DAYRT05")) {
-                //con.setMenuNumber(mBusinessModel.goldStoreValue());
-
-            }*/ else if (con.getConfigCode().equalsIgnoreCase("DAYRT06")) {
+            }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT06")) {
                 con.setMenuNumber(outlet.getTotLines());
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT33")) {
@@ -360,7 +351,7 @@ public class DayReportModel implements IDayReportModelPresenter {
 
 
         if (mBusinessModel.configurationMasterHelper.IS_SHOW_DROPSIZE) {
-            for (ConfigureBO config : mBusinessModel
+            for (ConfigureBO config : dayReportHelper
                     .downloadDailyReportDropSize(mBusinessModel.configurationMasterHelper.DROPSIZE_ORDER_TYPE)) {
                 ConfigureBO con = new ConfigureBO();
                 con.setMenuName(config.getMenuName() + " Drop Size");
@@ -370,8 +361,8 @@ public class DayReportModel implements IDayReportModelPresenter {
         }
 
 
-        MyAdapter myAdapter = new MyAdapter(mDayList, mBusinessModel);
-        mIDayReportView.setAdapter(myAdapter);
+        DayReportAdapter dayReportAdapter = new DayReportAdapter(mDayList, mBusinessModel);
+        mDayReportView.setAdapter(dayReportAdapter);
 
     }
 
