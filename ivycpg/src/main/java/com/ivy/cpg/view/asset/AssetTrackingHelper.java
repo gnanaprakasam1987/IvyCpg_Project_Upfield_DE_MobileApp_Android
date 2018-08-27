@@ -41,6 +41,8 @@ public class AssetTrackingHelper {
     private ArrayList<ReasonMaster> mPOSMConditionList = new ArrayList<>();
     private HashMap<String, String> mUniqueSerialNo;
 
+    private Vector<AssetTrackingBO> assetServiceList = null;
+
     public int mSelectedAssetID = 0;
     public String mSelectedImageName = "";
 
@@ -56,6 +58,7 @@ public class AssetTrackingHelper {
     private static final String ASSET_REASON = "AR";
     private static final String ASSET_REMARK = "ARR";
     private static final String ASSET_CONDITION = "CD";
+    private static final String CODE_ASSET_SERVICE = "AT10";
     public boolean SHOW_ASSET_TARGET;
     public boolean SHOW_ASSET_QTY;
     public boolean SHOW_ASSET_REASON;
@@ -73,6 +76,8 @@ public class AssetTrackingHelper {
     public boolean SHOW_REMARKS_ASSET;
     public boolean ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK;
     public boolean SHOW_MOVE_ASSET;
+
+    public boolean SHOW_SERVICE_ASSET;
 
 
     //POSM configuration
@@ -195,6 +200,7 @@ public class AssetTrackingHelper {
             SHOW_REMARKS_ASSET = false;
             ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = false;
             SHOW_MOVE_ASSET = false;
+            SHOW_SERVICE_ASSET = true;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -229,6 +235,8 @@ public class AssetTrackingHelper {
                         ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_MOVE_ASSET))
                         SHOW_MOVE_ASSET = true;
+                    else if (CODE_ASSET_SERVICE.equalsIgnoreCase(c.getString(0)))
+                        SHOW_SERVICE_ASSET = true;
                 }
                 c.close();
             }
@@ -1939,6 +1947,193 @@ public class AssetTrackingHelper {
         }
     }
 
+
+    public void deleteServiceTable(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+
+            db.openDataBase();
+            db.deleteSQL("AssetService", "retailerid=" + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()), false);
+        } catch (Exception e) {
+            db.closeDB();
+            e.printStackTrace();
+        }
+        db.closeDB();
+    }
+
+    public void saveAssetServiceDetails(Context mContext, String assetId, String serialNo, String mReasonID, String moduleName) {
+
+        if (mUniqueSerialNo == null)
+            mUniqueSerialNo = new HashMap<>();
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+
+            db.openDataBase();
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+            String addAssetColumns = "Uid,date,AssetId,serialNum,reasonid,retailerid";
+
+            String assetAddAndDeleteValues = id + ","
+                    + SDUtil.now(SDUtil.DATE_TIME_ID) + ","
+                    + QT(assetId) + "," + QT(serialNo) + ","
+                    + QT(mReasonID) + ","
+                    + QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+
+            db.insertSQL(DataMembers.tbl_AssetService, addAssetColumns,
+                    assetAddAndDeleteValues);
+
+            //add serial no for uniqueness
+            mUniqueSerialNo.put(serialNo, serialNo);
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
+
+    public void getAssetService(Context mContext, String moduleName) {
+        String type;
+        if (MENU_ASSET.equals(moduleName))
+            type = MERCH;
+        else
+            type = MERCH_INIT;
+        AssetTrackingBO assetBO;
+
+        assetServiceList = new Vector<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+
+            db.openDataBase();
+
+
+            int typeListId = 0;
+            String query1 = "select listid from StandardListMaster where ListCode=" + QT(type) + " and ListType='SBD_TYPE'";
+            Cursor c0 = db.selectSQL(query1);
+            if (c0.getCount() > 0) {
+                while (c0.moveToNext()) {
+                    typeListId = c0.getInt(0);
+                }
+            }
+            mBusinessModel.productHelper.getRetailerlevel(moduleName);
+
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("select distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Mappingid,SBD.Productid  from PosmMaster P  inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid where ");
+            sb.append("(SBD.SerialNO  in (select distinct serialNum from AssetAddDelete AAD where flag!='D' and AAD.TypeLovId=");
+            sb.append(typeListId);
+            sb.append(") or SBD.SerialNO not in (select distinct serialNum from AssetAddDelete AAD1 where AAD1.TypeLovid=");
+            sb.append(typeListId);
+            sb.append("))");
+            sb.append(" and SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
+            sb.append(QT(type));
+            sb.append(" and ListType='SBD_TYPE') ");
+            sb.append(" and AccountId in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getAccountid() + ")");
+            sb.append(" and Retailerid in(0,");
+            sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(" and Classid in (0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getClassid() + ")");
+            sb.append(" and Locid in(0,");
+            sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
+            sb.append(")");
+            sb.append(" and (Channelid in(0,");
+            sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
+            sb.append(" OR Channelid in (0,");
+            sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext));
+            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
+
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    assetBO = new AssetTrackingBO();
+                    assetBO.setPOSM(c.getString(0));
+                    assetBO.setPOSMName(c.getString(1));
+                    if (c.getString(2) != null && !"null".equals(c.getString(2)) && !"".equals(c.getString(2))) {
+                        assetBO.setSNO(c.getString(2));
+
+
+                    } else {
+                        assetBO.setSNO("0");
+                    }
+                    assetBO.setNewInstallDate(" ");
+                    assetBO.setFlag("N");
+                    assetBO.setSBDId(c.getString(3));
+                    assetBO.setBrand(c.getString(4));
+                    assetServiceList.add(assetBO);
+                }
+            }
+            String sb1 = "select distinct  AssetId,P.Posmdesc,serialNum,installdate,flag ,uid,Productid  from PosmMaster P  inner  join AssetAddDelete AAD on P.PosmId=AAD.AssetId where flag!='D'  and retailerid=" +
+                    QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + " and AAD.TypeLovId=" + typeListId;
+
+            Cursor c1 = db.selectSQL(sb1);
+            if (c1.getCount() > 0) {
+                while (c1.moveToNext()) {
+                    assetBO = new AssetTrackingBO();
+                    assetBO.setPOSM(c1.getString(0));
+                    assetBO.setPOSMName(c1.getString(1));
+                    if ("null".equals(c1.getString(2)) || "".equals(c1.getString(2))) {
+
+                        assetBO.setSNO("0");
+                    } else {
+                        assetBO.setSNO(c1.getString(2));
+                    }
+
+                    assetBO.setNewInstallDate(c1.getString(3));
+                    assetBO.setFlag("Y");
+                    assetBO.setSBDId(" ");
+                    assetBO.setBrand(c1.getString(6));
+                    assetServiceList.add(assetBO);
+                }
+            }
+
+
+            String query = "select   AAD.AssetId,AAD.serialNum,AAD.reasonid  from PosmMaster P  inner  join AssetService AAD on P.PosmId=AAD.AssetId where retailerid=" +
+                    QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+
+            Cursor c2 = db.selectSQL(query);
+            if (c2.getCount() > 0) {
+                while (c2.moveToNext()) {
+                    int reasonId = c2.getInt(c2.getColumnIndex("reasonid"));
+                    String serialNum = c2.getString(c2.getColumnIndex("serialNum"));
+                    int assetId = c2.getInt(c2.getColumnIndex("AssetId"));
+
+                    for (int i = 0; i < assetServiceList.size(); i++) {
+                        AssetTrackingBO assetTrackingBO = assetServiceList.get(i);
+                        if (assetTrackingBO.getPOSM().equalsIgnoreCase(String.valueOf(assetId)) && serialNum.equalsIgnoreCase(assetTrackingBO.getSNO())) {
+                            assetServiceList.get(i).setReason1ID(String.valueOf(reasonId));
+                            assetServiceList.get(i).setSelectedReason(true);
+                        }
+                    }
+                }
+            }
+            setAssetServiceList(assetServiceList);
+
+            c.close();
+            c1.close();
+            c2.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
+
+    public void setAssetServiceList(Vector<AssetTrackingBO> assetServiceList) {
+        this.assetServiceList = assetServiceList;
+    }
+
+    public Vector<AssetTrackingBO> getAssetServiceList() {
+        return assetServiceList;
+    }
 }
 
 
