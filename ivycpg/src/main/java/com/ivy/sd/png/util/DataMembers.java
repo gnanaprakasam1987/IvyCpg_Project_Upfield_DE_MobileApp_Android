@@ -673,6 +673,7 @@ public class DataMembers {
         uploadColumn.put(tbl_PlanogramHeader, tbl_PlanogramHeader_cols);
         uploadColumn.put(tbl_PlanogramDetail, tbl_PlanogramDetail_cols);
         uploadColumn.put(tbl_AssetAddDelete, tbl_AssetAddDelete_cols);
+        uploadColumn.put(tbl_AssetService, tbl_AssetService_cols);
         uploadColumn.put(tbl_outletjoincall, tbl_outletjoincall_cols);
         uploadColumn.put(tbl_PriceHeader, tbl_PriceHeader_cols);
         uploadColumn.put(tbl_PriceDetail, tbl_PriceDetail_cols);
@@ -868,7 +869,7 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_OrderDiscountDetail,
                 tbl_OrderDiscountDetail_cols);
 
-
+        uploadColumnWithRetailer.put(tbl_AssetService, tbl_AssetService_cols);
         uploadColumnWithRetailer.put(tbl_AssetAddDelete, tbl_AssetAddDelete_cols);
         uploadColumnWithRetailer.put(tbl_invoice_return_detail, tbl_invoice_return_detail_cols);
 
