@@ -479,7 +479,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
         boolean success = false;
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
-                && bmodel.mAttendanceHelper.isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
+                && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
             realTimeLocation.updateAttendanceIn(getContext(), "movement_tracking");
             int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation, getContext());
@@ -502,7 +502,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     private void stopLocationService(String reasonId) {
 
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
-                && bmodel.mAttendanceHelper.isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
+                && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
             RealTimeLocationTracking.stopLocationTracking(getContext());
             realTimeLocation.updateAttendanceOut(getContext(), REALTIME_LOCATION_PATH);
@@ -516,7 +516,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
      */
     private void uploadAttendance(String IN_OUT, String reasonId) {
         if (bmodel.configurationMasterHelper.IS_UPLOAD_ATTENDANCE
-                && bmodel.mAttendanceHelper.isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
+                && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
 
             if (IN_OUT.equalsIgnoreCase("IN")) {

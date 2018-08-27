@@ -716,7 +716,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             Toast.LENGTH_SHORT).show();
             }else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
                     && isInandOut
-                    && bmodel.mAttendanceHelper.isSellerWorking(getContext())) {
+                    && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.mark_attendance_working),
                         Toast.LENGTH_SHORT).show();
