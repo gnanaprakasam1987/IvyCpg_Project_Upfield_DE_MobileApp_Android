@@ -1275,5 +1275,7 @@
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
     <string name="store_activities">Actividades</string>
     <string name="stores">Clientes</string>
+    <string name="language">Language</string>
+    <string name="printer_settings">Printer Settings</string>
 
 </resources>

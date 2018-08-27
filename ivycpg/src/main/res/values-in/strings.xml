@@ -1265,6 +1265,8 @@
     <string name="total_value_less_than_actual_value">Total value is lesser than Actual value.</string>
     <string name="answer_to_take_photo">Answer to take photo.</string>
     <string name="value_exceeds_more_than_total">Value exceeds more than total.</string>
+    <string name="language">Language</string>
+    <string name="printer_settings">Printer Settings</string>
     <string name="sales_return_value_exceeds_order_value">Sales Return Value should not exceed Order Value.</string>
     <string name="tax_on">on</string>
     <string name="discount_amount">Discount Amount</string>
