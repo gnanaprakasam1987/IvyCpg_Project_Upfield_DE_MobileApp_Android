@@ -90,7 +90,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layout_nameinvoice"
                 android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_toLeftOf="@+id/ll_cancel">
 
                 <TextView
                     android:id="@+id/lpctxt"
@@ -156,22 +157,7 @@
                     android:textStyle="bold" />
 
 
-                <LinearLayout
-                    android:id="@+id/ll_cancel"
-                    android:layout_width="@dimen/list_item_width"
-                    android:layout_height="35dp"
-                    android:gravity="center"
-                    android:padding="2dp">
 
-                    <Button
-                        android:id="@+id/btn_cancel"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/icon_close"
-                        android:focusable="false" />
-
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -180,6 +166,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linearLayout_label"
                 android:layout_marginTop="@dimen/report_minus5dp"
+                android:layout_toLeftOf="@+id/ll_cancel"
                 android:orientation="horizontal">
 
                 <TextView
@@ -249,10 +236,30 @@
                     android:gravity="center"
                     android:maxLines="5"
                     android:padding="2dp"
-                    android:text="@string/weight"
+                    android:text="@string/zero"
                     android:textColor="@color/FullBlack"
                     android:textSize="@dimen/font_small"
                     android:layout_toRightOf="@+id/tv_tax_value" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_cancel"
+                android:layout_width="@dimen/list_item_width"
+                android:layout_height="35dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/linearLayout_label">
+
+                <ImageView
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/icon_close"
+                    android:focusable="false"
+                    />
 
             </LinearLayout>
         </RelativeLayout>

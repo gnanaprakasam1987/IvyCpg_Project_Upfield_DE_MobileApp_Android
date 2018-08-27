@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,8 +32,11 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.Map;
 import java.util.Vector;
@@ -266,43 +270,41 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
      */
     protected Dialog deleteAlertDialog() {
 
-        return new AlertDialog.Builder(getActivity())
-                .setIcon(null)
-                .setCancelable(false)
-                .setTitle("Do you want to delete Invoice?")
-                .setPositiveButton(getResources().getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                                businessModel.reportHelper
-                                        .deleteInvoiceDetail(mSelectedInvoiceReportBO);
-                                list = businessModel.reportHelper
-                                        .downloadInvoicereport();
-                                if (list.size() > 0) {
-                                    updateOrderGrid();
-                                } else {
-                                    MyAdapter mSchedule = new MyAdapter(
-                                            list);
-                                    listView.setAdapter(mSchedule);
-                                    Toast.makeText(
-                                            getActivity(),
-                                            getResources()
-                                                    .getString(
-                                                            R.string.no_invoice_exist),
-                                            Toast.LENGTH_SHORT).show();
-                                }
+        return new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                "", "Do you want to delete Invoice?",
+                false, getActivity().getResources().getString(R.string.ok),
+                getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
 
-                                mSelectedInvoiceReportBO = null;
+                businessModel.reportHelper
+                        .deleteInvoiceDetail(mSelectedInvoiceReportBO);
+                list = businessModel.reportHelper
+                        .downloadInvoicereport();
+                if (list.size() > 0) {
+                    updateOrderGrid();
+                } else {
+                    MyAdapter mSchedule = new MyAdapter(
+                            list);
+                    listView.setAdapter(mSchedule);
+                    Toast.makeText(
+                            getActivity(),
+                            getResources()
+                                    .getString(
+                                            R.string.no_invoice_exist),
+                            Toast.LENGTH_SHORT).show();
+                }
 
-                            }
-                        })
-                .setNegativeButton(
-                        getResources().getString(R.string.cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                            }
-                        }).create();
+                mSelectedInvoiceReportBO = null;
+
+            }
+        }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+            }
+        });
+
+
 
 
     }
@@ -335,7 +337,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 holder.text_value = (TextView) row.findViewById(R.id.PRDMRP);
                 holder.text_LPC = (TextView) row.findViewById(R.id.lpc);
                 holder.tvwDist = (TextView) row.findViewById(R.id.dist_txt);
-                holder.btnCancel = (Button) row.findViewById(R.id.btn_cancel);
+                holder.btnCancel = (ImageView) row.findViewById(R.id.btn_cancel);
                 holder.text_invoiceNumber = (TextView) row.findViewById(R.id.invoice_number);
                 holder.layout_cancel = (LinearLayout) row.findViewById(R.id.ll_cancel);
                 holder.tvWeight = (TextView) row.findViewById(R.id.tv_weight);
@@ -409,9 +411,10 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 holder.layout_cancel.setVisibility(View.GONE);
             }
 
-            if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
+            if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                 holder.tvWeight.setVisibility(View.GONE);
-            holder.label_weight.setVisibility(View.GONE);
+                holder.label_weight.setVisibility(View.GONE);
+            }
 
             if (businessModel.configurationMasterHelper.IS_SHOW_TAX_IN_REPORT) {
                 holder.tvTaxValue.setVisibility(View.VISIBLE);
@@ -436,7 +439,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         TextView text_value, text_LPC, tvwDist, tvTaxValue, tvDiscValue, label_LPC, label_PreOrPost, label_weight, label_taxValue, label_discount;
         TextView text_invoiceNumber;
         TextView tvWeight;
-        Button btnCancel;
+        ImageView btnCancel;
         LinearLayout layout_cancel;
     }
 

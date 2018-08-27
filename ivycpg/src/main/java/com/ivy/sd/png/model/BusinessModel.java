@@ -3757,7 +3757,9 @@ public class BusinessModel extends Application {
             getDigitalContentURLS().put(
                     DataMembers.img_Down_URL + "PRINT/" + "credit_note_print.xml",
                     DataMembers.PRINT);
-
+            getDigitalContentURLS().put(
+                    DataMembers.img_Down_URL + "PRINT/" + "eod_print.xml",
+                    DataMembers.PRINT);
 
             if (getDigitalContentURLS().size() > 0)
                 isDigiContentAvail = true;

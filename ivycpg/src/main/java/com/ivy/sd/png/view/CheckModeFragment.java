@@ -741,6 +741,10 @@ public class CheckModeFragment extends IvyBaseFragment
             mPaymentBO.setUpdatePayableamt(tempPaidAmt);
             getActivity().finish();
 
+            if(mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.RTGS)){
+                mPaymentBO.setAmount(0);
+                mPaymentBO.setUpdatePayableamt(0);
+            }
         }
 
     }

@@ -255,6 +255,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         text_BuyProductsTitle.setLayoutParams(layoutParams_BuyProductTitle);
                         text_BuyProductsTitle.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                         text_BuyProductsTitle.setTextSize(mTextViewSize);
+                        text_BuyProductsTitle.setMaxLines(2);
 
                         if (bModel.labelsMasterHelper.applyLabels(BUY_PRODUCT_TITLE_LABEL) != null)
                             text_BuyProductsTitle.setText(bModel.labelsMasterHelper.applyLabels(BUY_PRODUCT_TITLE_LABEL));

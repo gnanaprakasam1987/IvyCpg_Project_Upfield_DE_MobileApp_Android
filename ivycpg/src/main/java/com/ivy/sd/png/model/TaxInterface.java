@@ -43,7 +43,7 @@ public interface TaxInterface {
     HashMap<String, ArrayList<TaxBO>> getmTaxBoBatchProduct();
     ArrayList<TaxBO> getBillTaxList();
     LinkedHashMap<Integer, HashSet<Double>> getTaxPercentagerListByGroupId();
-    float updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS);
+    double updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS);
     float getTaxAmountByProduct(ProductMasterBO productMasterBO);
 
 
