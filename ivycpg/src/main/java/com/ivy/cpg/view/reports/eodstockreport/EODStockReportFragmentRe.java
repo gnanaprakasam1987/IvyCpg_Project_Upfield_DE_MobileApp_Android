@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
 
 import butterknife.BindView;
@@ -60,15 +61,30 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
 
         modelPresenter.setAdapter();
 
-        if (bmodel.configurationMasterHelper.SHOW_BUTTON_PRINT01) {
+        if (bmodel.configurationMasterHelper.SHOW_BUTTON_PRINT01
+                 &&(bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON
+                || bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA
+                || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE
+                || bmodel.configurationMasterHelper.COMMON_PRINT_LOGON
+                || bmodel.configurationMasterHelper.COMMON_PRINT_INTERMEC
+                || bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS)) {
             btnPrint.setVisibility(View.VISIBLE);
             layoutPrint.setVisibility(View.VISIBLE);
         }
 
         btnPrint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), EODStockReportPreviewScreen.class);
-                startActivity(i);
+                bmodel.mCommonPrintHelper.xmlRead("eod", false, null, null,null,bmodel.reportHelper.getEODStockReport());
+
+                Intent intent = new Intent(getActivity(),
+                        CommonPrintPreviewActivity.class);
+                intent.putExtra("IsFromOrder", false);
+                intent.putExtra("isFromEOD", true);
+                intent.putExtra("IsUpdatePrintCount", false);
+                intent.putExtra("isHomeBtnEnable", true);
+                intent.putExtra("sendMailAndLoadClass", "PRINT_FILE_ORDER");
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             }
         });
 

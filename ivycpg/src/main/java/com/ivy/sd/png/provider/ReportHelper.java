@@ -982,7 +982,7 @@ public class ReportHelper {
             sb = new StringBuffer();
             sb.append("select SD.Productid,sum(SD.totalQty),SD.batchid from SalesReturnDetails SD  inner join SalesReturnHeader SH on ");
             sb.append("SD.uid=SH.uid inner join Standardlistmaster SLM on SLM.listid=SD.condition  AND  SLM.ListType = 'REASON'");
-            sb.append(" inner join Standardlistmaster SLM1 on SLM.parentid=SLM1.listid and SLM1.ListCode='SRS' where SH.upload!='X'");
+            sb.append(" inner join Standardlistmaster SLM1 on SLM.parentid=SLM1.listid and SLM1.ListCode='SRS' where SH.upload!='X' and SH.IFLAG!=1");
             sb.append(" group by SD.Productid,SD.batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -1020,8 +1020,8 @@ public class ReportHelper {
 
             // get freeQty for crown FROM ORDER DETAIL
             sb = new StringBuffer();
-            sb.append("select OD.Productid,sum(OD.Qty),batchid from orderDetail OD  inner join OrderHeader OH on ");
-            sb.append("OD.orderid=OH.orderid where OH.upload!='X' and OH.is_vansales=1 and OD.Ordertype!=0 group by OD.Productid,batchid ");
+            sb.append("select FreeProductid,sum(case when uomCount!=0 then FreeQty*UomCount else FreeQty end) as Qty,batchid");
+            sb.append(" from SchemeFreeproductDetail SD INNER JOIN orderHeader OH ON OH.orderId=SD.orderId where OH.is_vansales=1 group by FreeProductid,batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -1032,8 +1032,8 @@ public class ReportHelper {
 
             // get freeQty for scheme free product from SchemeFreeProductDetail
             sb = new StringBuffer();
-            sb.append("select FreeProductid,sum(case when uomCount!=0 then FreeQty*UomCount else FreeQty end) as Qty,batchid");
-            sb.append(" from SchemeFreeproductDetail group by FreeProductid,batchid");
+            sb.append("select FreeProductid,sum(case when uomCount!=0 then FreeQty*UomCount else FreeQty end) as Qty,ifnull(batchid,0)");
+            sb.append(" from SchemeFreeproductDetail SD INNER JOIN orderHeader OH ON OH.orderId=SD.orderId where OH.is_vansales=1 and SD.upload!='X' group by FreeProductid,batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -1044,7 +1044,8 @@ public class ReportHelper {
 
             //load replacement qty
             sb = new StringBuffer();
-            sb.append("select pid,sum(case when uomCount!=0 then qty*UomCount else qty end) as Qty,batchid from SalesReturnReplacementDetails where upload!='X' group by pid,batchid");
+            sb.append("select pid,sum(case when uomCount!=0 then qty*UomCount else qty end) as Qty,batchid from SalesReturnReplacementDetails SD" +
+                    " INNER JOIN SalesReturnHeader SH ON SH.uid=SD.uid where SH.upload!='X' and SH.iflag!=1 group by pid,batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {

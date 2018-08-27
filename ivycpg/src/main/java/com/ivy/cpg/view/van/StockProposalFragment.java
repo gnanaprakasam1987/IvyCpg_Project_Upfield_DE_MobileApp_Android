@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -54,8 +55,8 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.SpecialFilterFragment;
-import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -137,7 +138,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
     private Vector<LoadManagementBO> stockPropVector;
     private ArrayList<LoadManagementBO> stockPropMylist;
-    private Intent loadActivity;
 
 
     private MyAdapter mSchedule;
@@ -1476,15 +1476,14 @@ public class StockProposalFragment extends IvyBaseFragment implements
                     Toast.LENGTH_SHORT).show();
 
             if (bundle.getBoolean("isFromLodMgt")) {
-                loadActivity = new Intent(getActivity(), HomeScreenActivity.class);
-                loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-                startActivity(loadActivity);
                 getActivity().finish();
                 getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             } else {
-                getActivity().finish();
+                HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                if (currentFragment != null) {
+                    currentFragment.detach("MENU_STK_PRO");
+                }
             }
-
         }
 
     }
@@ -1787,10 +1786,16 @@ public class StockProposalFragment extends IvyBaseFragment implements
         if (hasStockProposalDone()) {
             onCreateDialog(0);
         } else {
-            loadActivity = new Intent(getActivity(), HomeScreenActivity.class);
-            loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-            startActivity(loadActivity);
-            getActivity().finish();
+            if (bundle.getBoolean("isFromLodMgt")) {
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            } else {
+                HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                if (currentFragment != null) {
+                    currentFragment.detach("MENU_STK_PRO");
+                }
+            }
+
         }
     }
 
@@ -1824,10 +1829,15 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        loadActivity = new Intent(getActivity(), HomeScreenActivity.class);
-                                        loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-                                        startActivity(loadActivity);
-                                        getActivity().finish();
+                                        if (bundle.getBoolean("isFromLodMgt")) {
+                                            getActivity().finish();
+                                            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                                        } else {
+                                            HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                                            if (currentFragment != null) {
+                                                currentFragment.detach("MENU_STK_PRO");
+                                            }
+                                        }
                                     }
                                 })
                         .setNegativeButton("Cancel",
@@ -2761,8 +2771,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                if (bundle.getBoolean("isFromLodMgt"))
-                    onBackButtonClick();
+                onBackButtonClick();
             }
             return true;
         } else if (i == R.id.menu_spl_filter) {

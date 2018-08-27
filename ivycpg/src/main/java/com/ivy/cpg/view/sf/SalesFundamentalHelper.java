@@ -374,6 +374,7 @@ public class SalesFundamentalHelper {
                                 comLevel.setProductName(cursor.getString(2));
                                 comLevel.setIsOwn(cursor.getInt(3));
                                 comLevel.setNorm(cursor.getInt(4));
+                                comLevel.setLocations(cloneLocationList(getLocationList()));
                                 comLevel.setParentHierarchy(cursor.getString(5));
                                 getSODList().add(comLevel);
                                 break;

@@ -17,6 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 public class ExpenseSheetHelper {
 
@@ -27,7 +30,7 @@ public class ExpenseSheetHelper {
     private ArrayList<ExpenseSheetBO> pastMonthExpense;
     private ArrayList<SpinnerBO> expnenses;
 
-    public static final String MONTH_NAME[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Octr", "Nov", "Dec"};
+    private String MONTH_NAME[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Octr", "Nov", "Dec"};
 
     public ArrayList<ExpenseSheetBO> getCurrentMonthExpense() {
         return currentMonthExpense;
@@ -37,7 +40,7 @@ public class ExpenseSheetHelper {
         return expnenses;
     }
 
-    protected ExpenseSheetHelper(Context context) {
+    private ExpenseSheetHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context.getApplicationContext();
     }
@@ -47,6 +50,10 @@ public class ExpenseSheetHelper {
             instance = new ExpenseSheetHelper(context);
         }
         return instance;
+    }
+
+    public void clearInstance() {
+        instance = null;
     }
 
     public void loadExpenseData() {
@@ -105,7 +112,6 @@ public class ExpenseSheetHelper {
                     + "ORDER BY Date DESC";
             c = db.selectSQL(sql);
             if (c != null) {
-                String filterText = "";
                 while (c.moveToNext()) {
                     // for add month in the same list
                     int monthValue = SDUtil.convertToInt(c.getString(6));
@@ -212,7 +218,7 @@ public class ExpenseSheetHelper {
         return count;
     }
 
-    public double getExpenseTotal(String Tid, String date) {
+    private double getExpenseTotal(String Tid, String date) {
         double total = 0;
         try {
 
@@ -361,104 +367,122 @@ public class ExpenseSheetHelper {
         return imageList;
     }
 
-    public void updateHeaderInsert(String Tid, double totalAmount, String amountValue, int expType, ArrayList<String> imageList, String refID) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        try {
-            db.openDataBase();
+    public Single<Boolean> updateHeaderInsert(final String Tid, final String dateValue, final String amountValue,
+                                              final int expType, final ArrayList<String> imageList, final String refID) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                try {
+                    db.openDataBase();
 
-            String sql;
+                    String sql;
 
-            String expDetailCol = "Tid,typeID,amount,Refid";
-            String expImgDetailCol = "Tid,Refid,imagename";
-            String values;
+                    String expDetailCol = "Tid,typeID,amount,Refid";
+                    String expImgDetailCol = "Tid,Refid,imagename";
+                    String values;
 
-            String mtbl_expensedetail = "ExpenseDetail";
-            String mtbl_expenseimgdetail = "ExpenseImageDetails";
+                    String mtbl_expensedetail = "ExpenseDetail";
+                    String mtbl_expenseimgdetail = "ExpenseImageDetails";
 
 
-            //Updating toatal value in Expense Header
-            sql = "UPDATE ExpenseHeader SET TotalAmount = " + totalAmount
-                    + " WHERE Tid = " + Tid;
+                    double totalAmount = getExpenseTotal(Tid, dateValue) + SDUtil.convertToDouble(amountValue);
 
-            db.updateSQL(sql);
+                    //Updating toatal value in Expense Header
+                    sql = "UPDATE ExpenseHeader SET TotalAmount = " + totalAmount
+                            + " WHERE Tid = " + Tid;
 
-            //insert in Expense details
+                    db.updateSQL(sql);
 
-            values = Tid + ","
-                    + expType + ","
-                    + QT(amountValue) + ","
-                    + QT(refID);
+                    //insert in Expense details
 
-            db.insertSQL(mtbl_expensedetail, expDetailCol, values);
+                    values = Tid + ","
+                            + expType + ","
+                            + QT(amountValue) + ","
+                            + QT(refID);
 
-            //insert in imageDetail table
-            for (String image : imageList) {
+                    db.insertSQL(mtbl_expensedetail, expDetailCol, values);
 
-                values = Tid + ","
-                        + QT(refID) + ","
-                        + QT(image);
+                    //insert in imageDetail table
+                    for (String image : imageList) {
 
-                db.insertSQL(mtbl_expenseimgdetail, expImgDetailCol, values);
+                        values = Tid + ","
+                                + QT(refID) + ","
+                                + QT(image);
+
+                        db.insertSQL(mtbl_expenseimgdetail, expImgDetailCol, values);
+                    }
+
+                    db.closeDB();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    db.closeDB();
+                }
+
+                return Boolean.TRUE;
             }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-        }
+        });
     }
 
-    public void saveAllData(ExpensesBO expensesBO, String date) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        try {
-            db.openDataBase();
+    public Single<Boolean> saveAllData(final ExpensesBO expensesBO, final String date) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                try {
+                    db.openDataBase();
 
-            String expHeaderCol = "Tid,userid,date,TotalAmount,utcDate,Upload";
-            String expDetailCol = "Tid,typeID,amount,Refid";
-            String expImgDetailCol = "Tid,Refid,imagename";
-            String values;
+                    String expHeaderCol = "Tid,userid,date,TotalAmount,utcDate,Upload";
+                    String expDetailCol = "Tid,typeID,amount,Refid";
+                    String expImgDetailCol = "Tid,Refid,imagename";
+                    String values;
 
-            String mtbl_expenseheader = "ExpenseHeader";
-            String mtbl_expensedetail = "ExpenseDetail";
-            String mtbl_expenseimgdetail = "ExpenseImageDetails";
-
-
-            //insert value in Expense Header
-            values = expensesBO.getTid() + ","
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ","
-                    + QT(date) + ","
-                    + expensesBO.getAmount() + ","
-                    + DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) + ","
-                    + QT("N");
-
-            db.insertSQL(mtbl_expenseheader, expHeaderCol, values);
-
-            //insert in Expense details
-
-            values = expensesBO.getTid() + ","
-                    + expensesBO.getTypeId() + ","
-                    + QT(expensesBO.getAmount()) + ","
-                    + QT(expensesBO.getRefId());
-
-            db.insertSQL(mtbl_expensedetail, expDetailCol, values);
+                    String mtbl_expenseheader = "ExpenseHeader";
+                    String mtbl_expensedetail = "ExpenseDetail";
+                    String mtbl_expenseimgdetail = "ExpenseImageDetails";
 
 
-            for (String image : expensesBO.getImageList()) {
+                    //insert value in Expense Header
+                    values = expensesBO.getTid() + ","
+                            + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ","
+                            + QT(date) + ","
+                            + expensesBO.getAmount() + ","
+                            + DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) + ","
+                            + QT("N");
 
-                values = expensesBO.getTid() + ","
-                        + QT(expensesBO.getRefId()) + ","
-                        + QT(image);
+                    db.insertSQL(mtbl_expenseheader, expHeaderCol, values);
 
-                db.insertSQL(mtbl_expenseimgdetail, expImgDetailCol, values);
+                    //insert in Expense details
+
+                    values = expensesBO.getTid() + ","
+                            + expensesBO.getTypeId() + ","
+                            + QT(expensesBO.getAmount()) + ","
+                            + QT(expensesBO.getRefId());
+
+                    db.insertSQL(mtbl_expensedetail, expDetailCol, values);
+
+
+                    for (String image : expensesBO.getImageList()) {
+
+                        values = expensesBO.getTid() + ","
+                                + QT(expensesBO.getRefId()) + ","
+                                + QT(image);
+
+                        db.insertSQL(mtbl_expenseimgdetail, expImgDetailCol, values);
+                    }
+
+
+                    db.closeDB();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    db.closeDB();
+                }
+
+                return Boolean.TRUE;
             }
-
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-        }
+        });
     }
+
 
     public void deleteImageProof(String ImageName) {
         try {
@@ -481,31 +505,38 @@ public class ExpenseSheetHelper {
 
 
     //delete a row of expense with the images
-    public void deleteExpense(String refID, String Tid, String date, String amount) {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            String sql;
-            db.deleteSQL(DataMembers.tbl_expensedetails, "Refid="
-                    + QT(refID), false); // QT(ImageName));
-            db.deleteSQL(DataMembers.tbl_expenseimagedetails, "Refid="
-                    + QT(refID), false); // QT(ImageName));
+    public Single<Boolean> deleteExpense(final String refID, final String Tid, final String date, final String amount) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    String sql;
+                    db.deleteSQL(DataMembers.tbl_expensedetails, "Refid="
+                            + QT(refID), false); // QT(ImageName));
+                    db.deleteSQL(DataMembers.tbl_expenseimagedetails, "Refid="
+                            + QT(refID), false); // QT(ImageName));
 
-            double update_total = getExpenseTotal(Tid, date) - SDUtil.convertToDouble(amount);
+                    double update_total = getExpenseTotal(Tid, date) - SDUtil.convertToDouble(amount);
 
-            //Updating toatal value in Expense Header
-            sql = "UPDATE ExpenseHeader SET TotalAmount = " + update_total
-                    + " WHERE Tid = " + Tid
-                    + " AND date = " + QT(date);
+                    //Updating toatal value in Expense Header
+                    sql = "UPDATE ExpenseHeader SET TotalAmount = " + update_total
+                            + " WHERE Tid = " + Tid
+                            + " AND date = " + QT(date);
 
-            db.updateSQL(sql);
+                    db.updateSQL(sql);
 
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
+                    db.closeDB();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return Boolean.TRUE;
+            }
+        });
     }
+
 
     // Delete header if all transcation got deleted
     public void deleteHeader(String Tid) {

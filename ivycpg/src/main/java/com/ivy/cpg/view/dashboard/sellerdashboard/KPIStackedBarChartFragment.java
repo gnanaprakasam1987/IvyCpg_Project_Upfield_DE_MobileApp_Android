@@ -9,22 +9,28 @@ import android.view.ViewGroup;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class KPIStackedBarChartFragment extends IvyBaseFragment {
 
@@ -42,7 +48,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_kpi_stackedbar_chart, container, false);
 
-        if(this.getArguments() != null) {
+        if (this.getArguments() != null) {
             selectedInterval = this.getArguments().getString("selectedInterval");
         }
         bmodel = (BusinessModel) getActivity().getApplicationContext();
@@ -71,19 +77,20 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
 
         BarDataSet set1;
         set1 = new BarDataSet(yVals1, "");
+        set1.setStackLabels(new String[]{"% " + getResources().getString(R.string.achieved), "% " + getResources().getString(R.string.balance)});
+        set1.setValueFormatter(new PercentageValueFormatter());
         set1.setDrawIcons(false);
         set1.setValueTextColor(Color.WHITE);
         set1.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
         set1.setColors(MATERIAL_COLORS);
-        ArrayList<String> mStirngList = new ArrayList<>();
+        ArrayList<String> mStringList = new ArrayList<>();
         for (int i = 0; i < dashBoardList.size(); i++) {
             String text = dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText();
-            if(selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))){
-                mStirngList.add((dashBoardList.get(i).getMonthName() != null && dashBoardList.get(i).getMonthName().length() == 0) ?
+            if (selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))) {
+                mStringList.add((dashBoardList.get(i).getMonthName() != null && dashBoardList.get(i).getMonthName().length() == 0) ?
                         text : "(" + dashBoardList.get(i).getMonthName() + ")" + text);
-            } else{
-                mStirngList.add(text);
+            } else {
+                mStringList.add(text);
             }
         }
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
@@ -94,16 +101,18 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         data.setBarWidth(0.6f);
 
         mbarChart.setData(data);
-        mbarChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(mStirngList));
-        mbarChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
         XAxis xLabels = mbarChart.getXAxis();
         xLabels.setTextColor(Color.WHITE);
         xLabels.setTextSize(10f);
         xLabels.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         xLabels.setGranularity(1f);
+        xLabels.setValueFormatter(new IndexAxisValueFormatter(mStringList));
+        xLabels.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis yAxisRight = mbarChart.getAxisRight();
+        yAxisRight.setCenterAxisLabels(true);
+        yAxisRight.setDrawLabels(true);
         yAxisRight.setEnabled(false);
 
         YAxis yAxis = mbarChart.getAxisLeft();
@@ -112,7 +121,17 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         yAxis.setTextSize(10f);
         yAxis.setAxisMinimum(0f);
 
-        mbarChart.getLegend().setEnabled(false);
+        mbarChart.getLegend().setEnabled(true);
+        mbarChart.getLegend().setTextColor(Color.WHITE);
+
         mbarChart.animateY(500, Easing.EasingOption.EaseInOutQuad);
+    }
+
+    public class PercentageValueFormatter implements IValueFormatter {
+
+        @Override
+        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+            return String.valueOf(SDUtil.format(value, 0, 0) + "%");
+        }
     }
 }

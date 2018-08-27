@@ -10,6 +10,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.Vector;
 
@@ -45,7 +46,7 @@ public class VanUnLoadModuleHelper {
                 if (vanunloadbo.getCaseqty() > 0
                         || vanunloadbo.getPieceqty() > 0
                         || vanunloadbo.getOuterQty() > 0) {
-                    String values = bmodel.QT(uid)
+                    String values = AppUtils.QT(uid)
                             + ","
                             + vanunloadbo.getProductid()
                             + ","
@@ -54,7 +55,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + vanunloadbo.getBatchId()
                             + ","
-                            + bmodel.QT(vanunloadbo.getBatchNo())
+                            + AppUtils.QT(vanunloadbo.getBatchNo())
                             + ","
                             + vanunloadbo.getStocksih()
                             + ","
@@ -72,7 +73,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + vanunloadbo.getdOuonid()
                             + ","
-                            + bmodel.QT(bmodel.userMasterHelper
+                            + AppUtils.QT(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
                             + 1;
                     db.insertSQL(DataMembers.tbl_vanunload_details, columns,
@@ -257,7 +258,7 @@ public class VanUnLoadModuleHelper {
 
             if (c != null) {
                 while (c.moveToNext()) {
-                    String values = bmodel.QT(uid)
+                    String values = AppUtils.QT(uid)
                             + ","
                             + c.getInt(0)
                             + ","
@@ -265,7 +266,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(2)
                             + ","
-                            + bmodel.QT(c.getString(3))
+                            + AppUtils.QT(c.getString(3))
                             + ","
                             + c.getInt(4)
                             + ","
@@ -283,7 +284,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(8)
                             + ","
-                            + bmodel.QT(bmodel.userMasterHelper
+                            + AppUtils.QT(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
                             + 1;
 

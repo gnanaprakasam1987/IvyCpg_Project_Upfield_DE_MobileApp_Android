@@ -840,8 +840,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     }
 
                                     int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-                                    holder.total
-                                            .setText(totValue + "");
+                                    holder.total.setText(totValue + "");
                                     if (totValue > 0) {
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
@@ -917,8 +916,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     }
 
                                     int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-                                    holder.total
-                                            .setText(totValue + "");
+                                    holder.total.setText(totValue + "");
                                     if (totValue > 0) {
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
@@ -1007,8 +1005,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
 
                             int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
-                            holder.total
-                                    .setText(totValue + "");
+                            holder.total.setText(totValue + "");
                             if (totValue > 0) {
                                 holder.mReason.setEnabled(false);
                                 holder.mReason.setSelected(false);
@@ -1055,8 +1052,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                         .setFacingQty(w_cqty);
                                 String strProductObj = stockCheckPresenter.getProductTotalValue(holder.productObj)
                                         + "";
-                                holder.total
-                                        .setText(strProductObj);
+                                holder.total.setText(strProductObj);
                             } else {
                                 holder.facingQty.setText("0");
                             }

@@ -27,11 +27,13 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class DayReportFragment extends IvyBaseFragment implements IDayReportView {
+public class DayReportFragment extends IvyBaseFragment implements DayReportView {
 
-    private IDayReportModelPresenter dayReportModelPresenter;
+    private DayReportPresenter dayReportModelPresenter;
+
     @Inject
     public BusinessModel bModel;
+
     public static final String ZEBRA_3INCH = "3";
 
     @BindView(R.id.gridview)
@@ -48,7 +50,7 @@ public class DayReportFragment extends IvyBaseFragment implements IDayReportView
     }
 
     private void initModel() {
-        dayReportModelPresenter = new DayReportModel(getActivity(), DayReportFragment.this, bModel);
+        dayReportModelPresenter = new DayReportPresenterImpl(getActivity(), DayReportFragment.this, bModel);
     }
 
     @Override
@@ -61,31 +63,13 @@ public class DayReportFragment extends IvyBaseFragment implements IDayReportView
                 false);
 
         unbinder = ButterKnife.bind(this, view);
+
         if (bModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(), getResources().getString(R.string.sessionout_loginagain), Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
 
-        try {
-            if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.nametv).getTag()) != null)
-                ((TextView) view.findViewById(R.id.nametv)).
-                        setText(bModel.labelsMasterHelper
-                                .applyLabels(view.findViewById(R.id.nametv)
-                                        .getTag()));
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
 
-
-        try {
-            if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.valuetv).getTag()) != null)
-                ((TextView) view.findViewById(R.id.valuetv))
-                        .setText(bModel.labelsMasterHelper
-                                .applyLabels(view.findViewById(R.id.valuetv)
-                                        .getTag()));
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
 
         dayReportModelPresenter.downloadData();
 
@@ -141,8 +125,8 @@ public class DayReportFragment extends IvyBaseFragment implements IDayReportView
 
 
     @Override
-    public void setAdapter(MyAdapter myAdapter) {
-        dayReportGrid.setAdapter(myAdapter);
+    public void setAdapter(DayReportAdapter dayReportAdapter) {
+        dayReportGrid.setAdapter(dayReportAdapter);
     }
 
     @Override
@@ -156,122 +140,4 @@ public class DayReportFragment extends IvyBaseFragment implements IDayReportView
 
     }
 
-
-   /* private void doConnection(String printerName) {
-        try {
-            bModel.vanmodulehelper.downloadSubDepots();
-            ZebraPrinter printer = connect();
-            if (printer != null) {
-                printInvoice(printerName);
-            } else {
-                disconnect();
-                alertDialog.dismiss();
-                Toast.makeText(getActivity(), "Printer not connected ..", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public void printInvoice(String printerName) {
-
-        try {
-            if (printerName.equals(ZEBRA_3INCH)) {
-
-                zebraPrinterConnection.write(dayReportModelPresenter.printDataFor3InchPrinter());
-                alertDialog.dismiss();
-
-                bModel.showAlert(
-                        getResources().getString(
-                                R.string.printed_successfully), 0);
-            }
-
-            DemoSleeper.sleep(1500);
-            if (zebraPrinterConnection instanceof BluetoothConnection) {
-                String friendlyName = ((BluetoothConnection) zebraPrinterConnection)
-                        .getFriendlyName();
-
-                Commons.print(TAG + "friendlyName : " + friendlyName);
-                DemoSleeper.sleep(500);
-            }
-        } catch (ConnectionException e) {
-            Commons.printException(e);
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        } finally {
-            disconnect();
-        }
-    }
-
-
-    private static final String TAG = "DailyReportFragmentNew";
-    // boolean isPrinterLanguageDetected = false;
-
-    public ZebraPrinter connect() {
-
-        zebraPrinterConnection = new BluetoothConnection(getMacAddressFieldText());
-        SettingsHelper.saveBluetoothAddress(getActivity(), getMacAddressFieldText());
-
-        Commons.print(TAG + "PRINT MAC : " + getMacAddressFieldText());
-
-        try {
-            zebraPrinterConnection.open();
-        } catch (ConnectionException e) {
-            Commons.printException(e);
-            DemoSleeper.sleep(1000);
-            disconnect();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        ZebraPrinter printer = null;
-
-        //  isPrinterLanguageDetected = false;
-
-        if (zebraPrinterConnection.isConnected()) {
-            try {
-                printer = ZebraPrinterFactory.getInstance(PrinterLanguage.CPCL,
-                        zebraPrinterConnection);
-
-                PrinterLanguage pl = printer.getPrinterControlLanguage();
-
-                Commons.print(TAG + "PRINT LANGUAGE : " + pl);
-                // isPrinterLanguageDetected = true;
-            } catch (ConnectionException e) {
-
-                Commons.print(TAG + "PRINT LANGUAGE : UNKNOWN : PrinterConnectionException");
-                Commons.printException(e);
-                // isPrinterLanguageDetected = false;
-            }
-        }
-
-        return printer;
-    }
-
-
-    public String getMacAddressFieldText() {
-        String macAddress = null;
-        try {
-            SharedPreferences pref = getActivity().getSharedPreferences("PRINT",
-                    Context.MODE_PRIVATE);
-            macAddress = pref.getString("MAC", "");
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return macAddress;
-    }
-
-
-    private void disconnect() {
-        try {
-            if (zebraPrinterConnection != null) {
-                zebraPrinterConnection.close();
-                zebraPrinterConnection = null;
-            }
-        } catch (ConnectionException e) {
-            Commons.printException(e);
-        }
-    }*/
 }

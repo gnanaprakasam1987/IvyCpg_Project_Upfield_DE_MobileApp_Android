@@ -303,7 +303,7 @@ public class TaxHelper implements TaxInterface {
      * @param invoiceid
      */
     public void loadTaxDetailsForPrint(String invoiceid) {
-
+        mGroupIdList = new ArrayList<>();
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -317,7 +317,6 @@ public class TaxHelper implements TaxInterface {
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 int groupid = 0;
-                mGroupIdList = new ArrayList<>();
 
                 mTaxPercentagerListByGroupId = new LinkedHashMap<>();
                 mTaxBOByGroupId = new SparseArray<>();
@@ -831,8 +830,8 @@ public class TaxHelper implements TaxInterface {
     }
 
     @Override
-    public float updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS) {
-        float totalTaxAmount = 0;
+    public double updateProductWiseIncludeTax(List<ProductMasterBO> productMasterBOS) {
+        double totalTaxAmount = 0;
         if (productMasterBOS != null && productMasterBOS.size() > 0) {
             for (ProductMasterBO productMasterBO : productMasterBOS) {
                 ProductMasterBO productBo = productMasterBO;
@@ -845,10 +844,10 @@ public class TaxHelper implements TaxInterface {
 
                             ArrayList<TaxBO> taxList = mTaxListByProductId.get(productBo.getProductID());
                             if (taxList != null) {
-                                float taxAmount = 0;
+                                double taxAmount = 0;
                                 for (TaxBO taxBO : taxList) {
                                     if (taxBO.getParentType().equals("0")) {
-                                        float calTax = SDUtil.truncateDecimal(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                                        double calTax = SDUtil.truncateDecimal(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
                                         taxBO.setTotalTaxAmount(calTax);
                                         taxAmount += calTax;
                                     }

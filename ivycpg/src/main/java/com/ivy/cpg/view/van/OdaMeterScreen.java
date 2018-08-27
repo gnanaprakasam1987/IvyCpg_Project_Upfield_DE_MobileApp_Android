@@ -591,44 +591,13 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     private void tripEndInsideTry(String value) {
         try {
-            /*int indexOFdec = value.indexOf(".");
-
-            if (indexOFdec >= 0) {
-                if (value.substring(indexOFdec).length() > 2) {
-
-                    Toast.makeText(
-                            getApplicationContext(),
-                            getResources().getString(
-                                    R.string.value_exceeded),
-                            Toast.LENGTH_SHORT).show();
-                    tripEnding.setText(value.substring(0,
-                            value.length() - 1));
-                    endingvalue = SDUtil.convertToDouble(value
-                            .substring(0, value.length() - 1));
-
-                }
-            }*/
-        /*    if (value.length() > 6 && indexOFdec < 0) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        getResources().getString(
-                                R.string.value_exceeded),
-                        Toast.LENGTH_SHORT).show();
-                tripEnding.setText(value.substring(0,
-                        value.length() - 1));
-                endingvalue = SDUtil.convertToDouble(value
-                        .substring(0, value.length() - 1));
-
-            }*/
             if (endingvalue > startingvalue)
                 distanceCovered = endingvalue - startingvalue;
             else
                 distanceCovered = 0;
 
-            /*String tvDistanceCoveredEt = distanceCovered + "";
-            distanceCoveredEt.setText(tvDistanceCoveredEt);*/
             double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
-            // String tvDistanceCoveredEt = distance + "";
+
             distanceCoveredEt.setText(String.format("%.2f", distance));
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -637,43 +606,16 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     private void tripStartInsideTry(String value) {
         try {
-            /*int indexOFdec = value.indexOf('.');
 
-            if (indexOFdec >= 0 && value.substring(indexOFdec).length() > 2) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        getResources().getString(
-                                R.string.value_exceeded),
-                        Toast.LENGTH_SHORT).show();
-                tripStarting.setText(value.substring(0,
-                        value.length() - 1));
-                startingvalue = SDUtil.convertToDouble(value
-                        .substring(0, value.length() - 1));
-
-            }*/
-          /*  if (value.length() > 6 && indexOFdec < 0) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        getResources().getString(
-                                R.string.value_exceeded),
-                        Toast.LENGTH_SHORT).show();
-                tripStarting.setText(value.substring(0,
-                        value.length() - 1));
-                startingvalue = SDUtil.convertToDouble(value
-                        .substring(0, value.length() - 1));
-
-            }*/
             if (endingvalue > startingvalue)
                 distanceCovered = endingvalue - startingvalue;
             else
                 distanceCovered = 0;
 
-            //  String tvDistanceCoveredEt = distanceCovered + "";
-            //  distanceCoveredEt.setText(tvDistanceCoveredEt);
 
 
             double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
-            // String tvDistanceCoveredEt = distance + "";
+
             distanceCoveredEt.setText(String.format("%.2f", distance));
         } catch (Exception e) {
             Commons.printException("" + e);

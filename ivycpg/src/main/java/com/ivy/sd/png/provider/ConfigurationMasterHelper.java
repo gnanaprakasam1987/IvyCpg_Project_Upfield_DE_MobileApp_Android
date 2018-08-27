@@ -152,7 +152,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_CREDIT_DAYS = "PROFILE21";//
     private static final String CODE_SHOW_MAX_OUTSTANDING = "PROFILE22";//
 
-    private static final String CODE_INITIATIVE_MERCHANDISING = "VLD02";
+    //private static final String CODE_INITIATIVE_MERCHANDISING = "VLD02";
     private static final String CODE_SUGGESTED_ORDER_LOGIC = "ORDB18";
     // code added in v 35
 
@@ -206,7 +206,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_CREDIT_LIMIT_WITH_SOFT_ALERT = false;
     private static final String CODE_POST_DATE_ALLOW = "COLL01";
     private static final String CODE_DELIVERY_DATE = "ORDB30";
-    private static final String CODE_ALLOW_DECIMAL = "ORDB31";
+    //private static final String CODE_ALLOW_DECIMAL = "ORDB31";
     // NewOutlet
     private static final String CODE_NEWOUTLET_LOCATION = "OUTLOC";
     private static final String CODE_NEWOUTLET_IMAGETYPE = "OUTIMGTYPE";
@@ -673,7 +673,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CREDIT_DAYS;//
     public boolean SHOW_MAX_OUTSTANDING;//
 
-    public boolean SHOW_INITIATIVE_MERCHANDISING;
+    //public boolean SHOW_INITIATIVE_MERCHANDISING;
     // Added in 35 version
     public boolean SHOW_CALC;
 
@@ -1008,8 +1008,13 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_SKU_CODE = "FUN06";
     public boolean IS_SHOW_SKU_CODE;
 
+    private static final String CODE_SR_VALIDATE_BY_RETAILER_TYPE= "SR20";
+    public boolean IS_SR_VALIDATE_BY_RETAILER_TYPE;
 
-    int ROUND_DECIMAL_COUNT = 0;
+    private static final String CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL= "SR21";
+    public boolean IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL,IS_INDICATIVE_MASTER;
+
+    //int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
     private BusinessModel bmodel;
@@ -2023,7 +2028,7 @@ public class ConfigurationMasterHelper {
         this.IS_ENTRY_LEVEL_DISCOUNT = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) : false;
         this.SHOW_DISCOUNT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) : false;
 
-        this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
+        //this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
         this.SHOW_CALC = hashMapHHTModuleConfig.get(CODE_CALCULATOR) != null ? hashMapHHTModuleConfig.get(CODE_CALCULATOR) : false;
         this.IS_MUST_SELL = hashMapHHTModuleConfig.get(CODE_MUST_SELL) != null ? hashMapHHTModuleConfig.get(CODE_MUST_SELL) : false;
         this.SHOW_STK_ORD_SRP = hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STK_ORD_SRP) : false;
@@ -2324,7 +2329,7 @@ public class ConfigurationMasterHelper {
         this.printCount = hashMapHHTModuleOrder.get(CODE_PRINT_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PRINT_COUNT) : 0;
         this.photocount = hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_COUNT) : 0;
         this.raPhotoCount = hashMapHHTModuleOrder.get(CODE_ROAD_ACTIVITY_PHOTO_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_ROAD_ACTIVITY_PHOTO_COUNT) : 0;
-        this.ROUND_DECIMAL_COUNT = hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) != null ? hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) : 0;
+        //this.ROUND_DECIMAL_COUNT = hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) != null ? hashMapHHTModuleOrder.get(CODE_ALLOW_DECIMAL) : 0;
         this.photopercent = hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_PERCENT) != null ? hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_PERCENT) : 80;
         this.globalSeqId = hashMapHHTModuleOrder.get(CODE_GLOBAL_CATEGORY) != null ? hashMapHHTModuleOrder.get(CODE_GLOBAL_CATEGORY) : 0;
 
@@ -2622,6 +2627,10 @@ public class ConfigurationMasterHelper {
 
         this.IS_DISCOUNT_PRICE_PER = hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) : false;
         this.DISCOUNT_PRICE_PER = hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) : 50;
+
+        this.IS_SR_VALIDATE_BY_RETAILER_TYPE = hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) : false;
+        this.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) : false;
+        this.IS_INDICATIVE_MASTER= hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
     }
 
     private boolean isInOutModule() {
@@ -4395,8 +4404,9 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
                     codeValue = c.getString(0);
                 }
-            }
             c.close();
+            }
+
             if (codeValue != null) {
                 if (codeValue.equalsIgnoreCase(CODE_STK_ORD_ROW_BS))
                     IS_STK_ORD_BS = true;
@@ -5623,6 +5633,8 @@ public class ConfigurationMasterHelper {
 
     private Typeface mFontBaloobhaiRegular;
 
+    @Deprecated
+    //this method moved into FontUitils class
     public Typeface getFontBaloobhai(FontType mFontType) {
         if (mFontType == FontType.REGULAR) {
             if (mFontBaloobhaiRegular == null)
@@ -5638,6 +5650,8 @@ public class ConfigurationMasterHelper {
     private Typeface mFontRobotoMedium;
     private Typeface mFontRobotoThin;
 
+    @Deprecated
+    //this method moved into FontUtils class
     public Typeface getFontRoboto(FontType mFontType) {
         if (mFontType == FontType.LIGHT) {
             if (mFontRobotoLight == null)
@@ -5656,6 +5670,8 @@ public class ConfigurationMasterHelper {
         return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
 
+    @Deprecated
+    //this method moved into FontUtils class
     public Typeface getProductNameFont() {
         return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
@@ -6181,13 +6197,15 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
             if (codeValue != null) {
-
-                if (codeValue.equals("PS"))
-                    SHOW_VAN_STK_PS = true;
-                else if (codeValue.equals("CS"))
-                    SHOW_VAN_STK_CS = true;
-                else if (codeValue.equals("OU"))
-                    SHOW_VAN_STK_OU = true;
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    if (temp.equals("PS"))
+                        SHOW_VAN_STK_PS = true;
+                    else if (temp.equals("CS"))
+                        SHOW_VAN_STK_CS = true;
+                    else if (temp.equals("OU"))
+                        SHOW_VAN_STK_OU = true;
+                }
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -6203,6 +6221,11 @@ public class ConfigurationMasterHelper {
     public void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
         if (switchToPreSeller) {
             bmodel.configurationMasterHelper.downloadSwitchConfig();
+
+            bmodel.configurationMasterHelper.IS_INDICATIVE_SR=true;
+            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH=false;
+            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION=false;
+
         } else {
             SchemeDetailsMasterHelper schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(context);
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
@@ -6216,6 +6239,10 @@ public class ConfigurationMasterHelper {
             bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
             bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
             bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
+
+            bmodel.configurationMasterHelper.IS_INDICATIVE_SR=bmodel.configurationMasterHelper.IS_INDICATIVE_MASTER;
+            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH=true;
+            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION=true;
         }
 
     }
@@ -6234,7 +6261,7 @@ public class ConfigurationMasterHelper {
         Cursor c = db.selectSQL(sql);
         if (c != null && c.getCount() != 0) {
             if (c.moveToNext()) {
-                title = c.getString(c.getColumnIndex("RField")).equalsIgnoreCase("")?"Report":c.getString(c.getColumnIndex("RField"));
+                title = c.getString(c.getColumnIndex("RField")).equalsIgnoreCase("") ? "Report" : c.getString(c.getColumnIndex("RField"));
             }
             c.close();
             db.closeDB();

@@ -1,8 +1,7 @@
 package com.ivy.cpg.view.leaveapproval;
 
 
-import android.app.AlertDialog;
-import android.os.AsyncTask;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -20,21 +19,25 @@ import com.ivy.sd.png.bo.LeaveApprovalBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
 
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+
 public class ApprovedLeavesFragment extends IvyBaseFragment {
 
-    private BusinessModel bmodel;
-    private String CODE_PENDING = "R", CODE_APPROVED = "S", CODE_REJECTED = "D";
     private ArrayList<LeaveApprovalBO> approvedLeaves;
     private ListView lvLeavesList;
     private LinearLayout llFooter;
     private TextView tv_approve, tv_pending, tv_reject;
     private int selected_count = 0;
-    private LeaveApprovalBO leavesObj;
     private LeaveApprovalHelper leaveApprovalHelper;
+    private ProgressDialog progressDialogue;
+    private AppSchedulerProvider appSchedulerProvider;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,19 +46,17 @@ public class ApprovedLeavesFragment extends IvyBaseFragment {
         View view = inflater.inflate(R.layout.fragment_leave_history,
                 container, false);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-
         leaveApprovalHelper = LeaveApprovalHelper.getInstance(getActivity());
+        appSchedulerProvider = new AppSchedulerProvider();
 
         lvLeavesList = view.findViewById(R.id.lv_leaves_list);
         llFooter = view.findViewById(R.id.lv_footer);
         tv_approve = view.findViewById(R.id.tv_approve);
         tv_pending = view.findViewById(R.id.tv_pending);
         tv_reject = view.findViewById(R.id.tv_reject);
-        tv_approve.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        tv_pending.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        tv_reject.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        tv_approve.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        tv_pending.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        tv_reject.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         return view;
     }
@@ -67,6 +68,9 @@ public class ApprovedLeavesFragment extends IvyBaseFragment {
         tv_approve.setVisibility(View.GONE);
         llFooter.setVisibility(View.GONE);
         approvedLeaves = new ArrayList<>();
+
+        final String CODE_APPROVED = "S",CODE_PENDING = "R", CODE_REJECTED = "D";
+
         for (LeaveApprovalBO leaves : leaveApprovalHelper.getLeavePending()) {
             if (leaves.getStatusCode().equals(CODE_APPROVED)) {
                 leaves.setSelected(false);
@@ -82,17 +86,49 @@ public class ApprovedLeavesFragment extends IvyBaseFragment {
         tv_pending.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SaveAsyncTask(CODE_PENDING).execute();
+                processLeave(CODE_PENDING);
             }
         });
 
         tv_reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SaveAsyncTask(CODE_REJECTED).execute();
+                processLeave(CODE_REJECTED);
             }
         });
 
+
+    }
+
+    private void processLeave(String status) {
+        progressDialogue = ProgressDialog.show(getActivity(),
+                DataMembers.SD, getResources().getString(R.string.saving),
+                true, false);
+        for (int i = 0; i < approvedLeaves.size(); i++) {
+            if (approvedLeaves.get(i).isSelected()) {
+                for (int j = 0; j < leaveApprovalHelper.getLeavePending().size(); j++) {
+                    if (approvedLeaves.get(i).getRefId() == leaveApprovalHelper.getLeavePending().get(j).getRefId())
+                        leaveApprovalHelper.getLeavePending().get(j).setChanged(true);
+                    leaveApprovalHelper.getLeavePending().get(j).setStatusCode(status);
+                }
+            }
+        }
+        new CompositeDisposable().add(leaveApprovalHelper.updateLeaves()
+                .subscribeOn(appSchedulerProvider.io())
+                .observeOn(appSchedulerProvider.ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) {
+                        progressDialogue.dismiss();
+
+                        Toast.makeText(
+                                getActivity(),
+                                getResources().getString(
+                                        R.string.saved_successfully),
+                                Toast.LENGTH_SHORT).show();
+                        onStart();
+                    }
+                }));
 
     }
 
@@ -124,7 +160,7 @@ public class ApprovedLeavesFragment extends IvyBaseFragment {
         public @NonNull
         View getView(int position, View convertView, @NonNull ViewGroup viewGroup) {
             final LeaveViewHolder holder;
-            leavesObj = items.get(position);
+            LeaveApprovalBO leavesObj = items.get(position);
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
                 convertView = inflater.inflate(
@@ -142,13 +178,13 @@ public class ApprovedLeavesFragment extends IvyBaseFragment {
                 holder.ll_userLeaves = convertView.findViewById(R.id.ll_userLeaves);
                 holder.sel_img = convertView.findViewById(R.id.sel_img);
 
-                holder.tvUsername.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.tvLeavePeriod.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tvLeaveType.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tvStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_leaveperiod_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_leavetype_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_status_title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tvUsername.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+                holder.tvLeavePeriod.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tvLeaveType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_leaveperiod_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_leavetype_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.tv_status_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
 
 
                 convertView.setOnClickListener(new View.OnClickListener() {
@@ -207,73 +243,9 @@ public class ApprovedLeavesFragment extends IvyBaseFragment {
         ImageView sel_img;
     }
 
-    class SaveAsyncTask extends AsyncTask<Void, Integer, Boolean> {
-
-        //	private ProgressDialog progressDialogue;
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-        private String status_code;
-
-        SaveAsyncTask(String status_code) {
-            this.status_code = status_code;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... arg0) {
-
-            for (int i = 0; i < approvedLeaves.size(); i++) {
-                if (approvedLeaves.get(i).isSelected()) {
-                    for (int j = 0; j < leaveApprovalHelper.getLeavePending().size(); j++) {
-                        if (approvedLeaves.get(i).getRefId() == leaveApprovalHelper.getLeavePending().get(j).getRefId())
-                            leaveApprovalHelper.getLeavePending().get(j).setChanged(true);
-                        leaveApprovalHelper.getLeavePending().get(j).setStatusCode(status_code);
-                    }
-                }
-            }
-            try {
-                leaveApprovalHelper.saveStatusTransaction(leaveApprovalHelper.getLeavePending());
-                leaveApprovalHelper.loadLeaveData();
-
-                return Boolean.TRUE;
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-
-        }
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, getResources().getString(R.string.saving));
-            alertDialog = builder.create();
-            alertDialog.show();
-
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            try {
-                if (alertDialog != null)
-                    alertDialog.dismiss();
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-            if (result == Boolean.TRUE) {
-
-                Toast.makeText(
-                        getActivity(),
-                        getResources().getString(
-                                R.string.saved_successfully),
-                        Toast.LENGTH_SHORT).show();
-                onStart();
-
-            }
-
-        }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        leaveApprovalHelper.clearInstance();
     }
 }

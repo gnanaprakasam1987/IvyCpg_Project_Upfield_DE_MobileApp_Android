@@ -74,7 +74,6 @@ public class ReportActivity extends BaseActivity implements
         SellerListFragment.SellerSelectionInterface {
 
     private BusinessModel bmodel;
-    private String fromMenu;
 
     @Override
     public int getLayoutId() {
@@ -116,7 +115,6 @@ public class ReportActivity extends BaseActivity implements
         Bundle bun = getIntent().getExtras();
         if (bun != null) {
             ConfigureBO config = (ConfigureBO) bun.getSerializable("config");
-            fromMenu = bun.getString("FROM") != null ? bun.getString("FROM") : "";
             switchFragments(config);
         }
 
@@ -156,26 +154,13 @@ public class ReportActivity extends BaseActivity implements
             if (salesVolumeReportFragment != null) {
                 salesVolumeReportFragment.onBackButtonClick();
             } else {
-                if (fromMenu.equalsIgnoreCase("LOADMANAGEMENT")) {
-                    finish();
-                    overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                } else
-                    onBackButtonClick();
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
 
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void onBackButtonClick() {
-        /*Intent i = new Intent(ReportActivity.this, HomeScreenActivity.class);
-        i.putExtra("menuCode", "MENU_REPORT");
-        i.putExtra("title", "aaa");
-        startActivity(i);*/
-        finish();
-        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-
     }
 
     /**
@@ -282,14 +267,6 @@ public class ReportActivity extends BaseActivity implements
             commitFragment(transaction, config);
 
         } else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT)) {
-            CurrentReportViewFragment stockReportFragment = new CurrentReportViewFragment();
-            stockReportFragment.setArguments(getIntent().getExtras());
-            transaction.replace(R.id.fragment_content, stockReportFragment);
-
-            commitFragment(transaction, config);
-
-        }  else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_COLLECTION_REPORT)) {
 
             //  CollectionReportFragment collectionReportFragment = new CollectionReportFragment();
