@@ -36,7 +36,7 @@
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="@dimen/_80sdp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/outlet_no_image" />
+                android:src="@drawable/outlet_image_default" />
 
         </RelativeLayout>
 

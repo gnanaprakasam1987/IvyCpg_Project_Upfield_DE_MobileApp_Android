@@ -191,6 +191,8 @@
     <string name="show_results">Show Results</string>
     <string name="please_choose_address">Please choose any one address</string>
 
+    <string name="mark_attendance_working">Please Mark Attendance As Working To Proceed</string>
+
     <string name="planned_activities">Planned Activities</string>
 
     <string name="asset_service">Asset Service</string>

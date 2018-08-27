@@ -26,7 +26,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -55,83 +55,83 @@ public class GcmIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        bmodel = (BusinessModel) getApplicationContext();
-        Bundle extras = intent.getExtras();
-        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-        // The getMessageType() intent parameter must be the intent you received
-        // in your BroadcastReceiver.
-        String messageType = gcm.getMessageType(intent);
-        Commons.print("gcm received" + extras.isEmpty() + " type" + messageType);
-        if (!extras.isEmpty()) { // has effect of unparcelling Bundle
-            /*
-			 * Filter messages based on message type. Since it is likely that
-			 * GCM will be extended in the future with new message types, just
-			 * ignore any message types you're not interested in, or that you
-			 * don't recognize.
-			 */
-            if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR
-                    .equals(messageType)) {
-                sendNotification("Send error: " + extras.toString());
-            } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED
-                    .equals(messageType)) {
-                sendNotification("Deleted messages on server: "
-                        + extras.toString());
-                // If it's a regular GCM message, do some work.
-            } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
-                    .equals(messageType)) {
-                // This loop represents the service doing some work.
-                for (int i = 0; i < 5; i++) {
-                    Commons.print(TAG +
-                            ",Working... " + (i + 1) + "/5 @ "
-                            + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        Commons.printException(e);
-                    }
-                }
-                Commons.print(TAG + ",Completed work @ " + SystemClock.elapsedRealtime());
-
-                // Post notification of received message.
-                try {
-                    Commons.print(TAG + ",Received: " + extras.toString());
-                    String str, jsonType,jsonMsg;
-                    str = extras.getString("message");
-
-                    JSONArray array = new JSONArray(str);
-                    JSONObject jsonObject = new org.json.JSONObject(array
-                            .get(0).toString());
-                    jsonType = jsonObject.getString("Type");
-                    jsonMsg=jsonObject.getString("Message");
-
-                    if (jsonType.equals("STKALLOC")) {
-                        sendNotification(getResources().getString(
-                                R.string.stock_allocated));
-                    } else if (jsonType.equals("JPC")) {
-                        sendNotification(getResources().getString(
-                                R.string.visit_plan_updated));
-                    } else if (jsonType.equals("VST_PLN_REQ_STATUS")) {
-                        sendNotification(jsonMsg);
-                    } else if (jsonType.equals("VST_PLN_REQ_REMINDER")) {
-                        sendNotification(jsonMsg);
-                    } else if (jsonType.equalsIgnoreCase("MVP BADGE")) {
-                        sendNotification(jsonMsg);
-                        bmodel.saveNotification(jsonMsg, DatabaseUtils.sqlEscapeString(jsonObject.getString("icon")),"MVP BADGE");
-                    } else if (jsonType.equalsIgnoreCase("MESSAGE_NOTIFY")) {
-                        sendNotification(jsonMsg);
-                        bmodel.saveNotification(jsonMsg, DatabaseUtils.sqlEscapeString(jsonObject.getString("icon")),"MESSAGE_NOTIFY");
-                    } else if (jsonType.equals("NEWTSK")) {
-                        bmodel.parseJSONAndInsert(jsonObject
-                                .getJSONObject("Data"));
-                    }
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
-
-            }
-        }
-        // Release the wake lock provided by the WakefulBroadcastReceiver.
-        GcmBroadcastReceiver.completeWakefulIntent(intent);
+//        bmodel = (BusinessModel) getApplicationContext();
+//        Bundle extras = intent.getExtras();
+//        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+//        // The getMessageType() intent parameter must be the intent you received
+//        // in your BroadcastReceiver.
+//        String messageType = gcm.getMessageType(intent);
+//        Commons.print("gcm received" + extras.isEmpty() + " type" + messageType);
+//        if (!extras.isEmpty()) { // has effect of unparcelling Bundle
+//            /*
+//			 * Filter messages based on message type. Since it is likely that
+//			 * GCM will be extended in the future with new message types, just
+//			 * ignore any message types you're not interested in, or that you
+//			 * don't recognize.
+//			 */
+//            if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR
+//                    .equals(messageType)) {
+//                sendNotification("Send error: " + extras.toString());
+//            } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED
+//                    .equals(messageType)) {
+//                sendNotification("Deleted messages on server: "
+//                        + extras.toString());
+//                // If it's a regular GCM message, do some work.
+//            } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
+//                    .equals(messageType)) {
+//                // This loop represents the service doing some work.
+//                for (int i = 0; i < 5; i++) {
+//                    Commons.print(TAG +
+//                            ",Working... " + (i + 1) + "/5 @ "
+//                            + SystemClock.elapsedRealtime());
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException e) {
+//                        Commons.printException(e);
+//                    }
+//                }
+//                Commons.print(TAG + ",Completed work @ " + SystemClock.elapsedRealtime());
+//
+//                // Post notification of received message.
+//                try {
+//                    Commons.print(TAG + ",Received: " + extras.toString());
+//                    String str, jsonType,jsonMsg;
+//                    str = extras.getString("message");
+//
+//                    JSONArray array = new JSONArray(str);
+//                    JSONObject jsonObject = new org.json.JSONObject(array
+//                            .get(0).toString());
+//                    jsonType = jsonObject.getString("Type");
+//                    jsonMsg=jsonObject.getString("Message");
+//
+//                    if (jsonType.equals("STKALLOC")) {
+//                        sendNotification(getResources().getString(
+//                                R.string.stock_allocated));
+//                    } else if (jsonType.equals("JPC")) {
+//                        sendNotification(getResources().getString(
+//                                R.string.visit_plan_updated));
+//                    } else if (jsonType.equals("VST_PLN_REQ_STATUS")) {
+//                        sendNotification(jsonMsg);
+//                    } else if (jsonType.equals("VST_PLN_REQ_REMINDER")) {
+//                        sendNotification(jsonMsg);
+//                    } else if (jsonType.equalsIgnoreCase("MVP BADGE")) {
+//                        sendNotification(jsonMsg);
+//                        bmodel.saveNotification(jsonMsg, DatabaseUtils.sqlEscapeString(jsonObject.getString("icon")),"MVP BADGE");
+//                    } else if (jsonType.equalsIgnoreCase("MESSAGE_NOTIFY")) {
+//                        sendNotification(jsonMsg);
+//                        bmodel.saveNotification(jsonMsg, DatabaseUtils.sqlEscapeString(jsonObject.getString("icon")),"MESSAGE_NOTIFY");
+//                    } else if (jsonType.equals("NEWTSK")) {
+//                        bmodel.parseJSONAndInsert(jsonObject
+//                                .getJSONObject("Data"));
+//                    }
+//                } catch (Exception e) {
+//                    Commons.printException("" + e);
+//                }
+//
+//            }
+//        }
+//        // Release the wake lock provided by the WakefulBroadcastReceiver.
+//        GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     // Put the message into a notification and post it.
