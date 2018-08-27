@@ -37,7 +37,8 @@
         <Button
             android:id="@+id/btn_delete"
             style="?attr/roundedCustomButtonSmall"
-            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="@string/asset_service"
             android:textAllCaps="false" />

@@ -197,4 +197,6 @@
     <string name="planned_activities">Planned Activities</string>
 
     <string name="asset_service">Asset Service</string>
+    <string name="select_asset_service">Nothing selected to Service.</string>
+
 </resources>

@@ -1948,6 +1948,20 @@ public class AssetTrackingHelper {
     }
 
 
+    public void deleteServiceTable(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+
+            db.openDataBase();
+            db.deleteSQL("AssetService", "retailerid=" + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()), false);
+        } catch (Exception e) {
+            db.closeDB();
+            e.printStackTrace();
+        }
+        db.closeDB();
+    }
+
     public void saveAssetServiceDetails(Context mContext, String assetId, String serialNo, String mReasonID, String moduleName) {
 
         if (mUniqueSerialNo == null)
@@ -1958,7 +1972,6 @@ public class AssetTrackingHelper {
         try {
 
             db.openDataBase();
-
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
@@ -2094,10 +2107,9 @@ public class AssetTrackingHelper {
 
                     for (int i = 0; i < assetServiceList.size(); i++) {
                         AssetTrackingBO assetTrackingBO = assetServiceList.get(i);
-                        if (assetTrackingBO.getAssetID() == assetId && serialNum.equalsIgnoreCase(assetTrackingBO.getSerialNo())) {
-                            assetTrackingBO.setReason1ID(String.valueOf(reasonId));
-                            assetServiceList.remove(i);
-                            assetServiceList.addElement(assetTrackingBO);
+                        if (assetTrackingBO.getPOSM().equalsIgnoreCase(String.valueOf(assetId)) && serialNum.equalsIgnoreCase(assetTrackingBO.getSNO())) {
+                            assetServiceList.get(i).setReason1ID(String.valueOf(reasonId));
+                            assetServiceList.get(i).setSelectedReason(true);
                         }
                     }
                 }
