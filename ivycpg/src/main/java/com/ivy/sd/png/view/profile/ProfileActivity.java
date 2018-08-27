@@ -1425,6 +1425,16 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             mLocTimer.cancel();
             mLocTimer.purge();
         }
+
+        // Raj - Location listener started in on create, but here started again to handle resuming from route screen..
+        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
+            int permissionStatus = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                bmodel.locationUtil.startLocationListener();
+            }
+        }
+
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON) {
             mLocTimer = new Timer();
@@ -2257,7 +2267,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(msg);
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 //  updateCancel();

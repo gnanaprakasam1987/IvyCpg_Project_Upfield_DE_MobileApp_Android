@@ -40,7 +40,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.ivy.core.IvyConstants;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -58,7 +57,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.About;
-import com.ivy.sd.png.view.AttendanceActivity;
+import com.ivy.cpg.view.attendance.AttendanceActivity;
 import com.ivy.sd.png.view.ChangePasswordActivity;
 import com.ivy.sd.png.view.DistributorSelectionActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -69,7 +68,6 @@ import com.ivy.sd.png.view.UserSettingsActivity;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.UnknownFormatConversionException;
 
 

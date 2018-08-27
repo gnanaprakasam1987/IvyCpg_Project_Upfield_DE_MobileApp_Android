@@ -6,6 +6,7 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.BomReturnBO;
@@ -23,11 +24,8 @@ import java.util.Vector;
 public class LoadManagementHelper {
 
     private static LoadManagementHelper instance = null;
-    private int mPaymentTypeId;
-    private float mVanLoadAmount = 0;
     private Context context;
     private BusinessModel bmodel;
-    private Vector<VanLoadMasterBO> vanmasterbo = null;
     private ArrayList<SubDepotBo> subDepotList = null;
     private ArrayList<SubDepotBo> distributorList = null;
 
@@ -151,395 +149,6 @@ public class LoadManagementHelper {
         return temp;
     }
 
-    public boolean hasVanLoadDone() {
-
-        int siz = bmodel.productHelper.getLoadMgmtProducts().size();
-        if (siz == 0)
-            return false;
-        for (int i = 0; i < siz; ++i) {
-            LoadManagementBO product = bmodel.productHelper
-                    .getLoadMgmtProducts().get(i);
-            if (product.getPieceqty() > 0 || product.getCaseqty() > 0
-                    || product.getOuterQty() > 0)
-                return true;
-        }
-        return false;
-    }
-
-    public void saveVanLoad(Vector<LoadManagementBO> mylist,
-                            int selectedSubDepotID) {
-        String batchid;
-        String values;
-        DBUtil db = null;
-        LoadManagementBO product;
-        try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            int siz = mylist.size();
-            String columns = "uid,pid,caseQty,pcsQty,qty,date,upload,outerQty,duomQty,duomid,dOuomQty,dOuomId,BatchId,batchno,SubDepotId,Flag";
-
-            String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
-
-            for (int i = 0; i < siz; i++) {
-
-                product = mylist.get(i);
-
-                int totalsih = product.getCaseqty() * product.getCaseSize();
-
-                totalsih = totalsih + product.getPieceqty()
-                        + (product.getOuterQty() * product.getOuterSize());
-
-                if (product.getCaseqty() > 0 || product.getPieceqty() > 0
-                        || product.getOuterQty() > 0) {
-                    if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                        if (product.getBatchlist() != null && product.getBatchlist().size() > 0) {
-                            for (LoadManagementBO bo : product.getBatchlist()) {
-                                if (bo.getCaseqty() > 0 || bo.getPieceqty() > 0
-                                        || bo.getOuterQty() > 0) {
-                                    if (!bo.getBatchNo().equals("NA"))
-                                        batchid = getbatchid(product.getProductid(),
-                                                bo.getBatchNo());
-                                    else {
-                                        batchid = "0";
-                                    }
-                                    values = bmodel.QT(uid)
-                                            + ","
-                                            + product.getProductid()
-                                            + ","
-                                            + bo.getCaseqty()
-                                            + ","
-                                            + bo.getPieceqty()
-                                            + ","
-                                            + totalsih
-                                            + ","
-                                            + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                                            + ","
-                                            + bmodel.QT("Y")
-                                            + ","
-                                            + bo.getOuterQty() + ","
-                                            + product.getCaseSize() + ","
-                                            + product.getdUomid() + ","
-                                            + product.getOuterSize() + ","
-                                            + product.getdOuonid() + ","
-                                            + bmodel.QT(batchid) + ","
-                                            + bmodel.QT(bo.getBatchNo()) + ","
-                                            + selectedSubDepotID + "," + 1;
-
-                                    db.insertSQL(DataMembers.tbl_vanload, columns,
-                                            values);
-                                }
-                            }
-
-                        }
-                    } else {
-
-                        batchid = 0 + "";
-                        values = bmodel.QT(uid)
-                                + ","
-                                + product.getProductid()
-                                + ","
-                                + product.getCaseqty()
-                                + ","
-                                + product.getPieceqty()
-                                + ","
-                                + totalsih
-                                + ","
-                                + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                                + ","
-                                + bmodel.QT("Y")
-                                + ","
-                                + product.getOuterQty() + ","
-                                + product.getCaseSize() + ","
-                                + product.getdUomid() + ","
-                                + product.getOuterSize() + ","
-                                + product.getdOuonid() + ","
-                                + bmodel.QT(batchid) + ","
-                                + 0 + ","
-                                + selectedSubDepotID + "," + 1;
-
-                        db.insertSQL(DataMembers.tbl_vanload, columns,
-                                values);
-                    }
-                }
-
-            }
-
-            if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
-                ArrayList<BomReturnBO> returnProducts;
-                String returncolumns = "Uid,Date,Pid,LiableQty,pcsqty,Price, dUomId,TypeID,LineValue,SubDepotId,RefId";
-
-                returnProducts = bmodel.productHelper.getBomReturnProducts();
-
-                String tranId = bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID);
-
-                for (BomReturnBO bomReturnBo : returnProducts) {
-
-                    if (bomReturnBo.getLiableQty() > 0
-                            || bomReturnBo.getReturnQty() > 0) {
-
-                        values = tranId
-                                + ","
-                                + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                                + ","
-                                + bmodel.QT(bomReturnBo.getPid())
-                                + ","
-                                + bomReturnBo.getLiableQty()
-                                + ","
-                                + bomReturnBo.getReturnQty()
-                                + ","
-                                + bomReturnBo.getpSrp()
-                                + ","
-                                + bomReturnBo.getPieceUomId()
-                                + ","
-                                + bomReturnBo.getTypeId()
-                                + ","
-                                + ((bomReturnBo.getLiableQty() - bomReturnBo
-                                .getReturnQty()) * bomReturnBo
-                                .getpSrp()) + ","
-
-                                + selectedSubDepotID + "," + uid;
-
-                        db.insertSQL(DataMembers.tbl_vanunload_details,
-                                returncolumns, values);
-                    }
-
-                }
-
-                Cursor cursor = db
-                        .selectSQL("Select ListId from StandardListMaster where ListCode ='CA' and ListType ='COLLECTION_PAY_TYPE'");
-                if (cursor != null) {
-                    if (cursor.moveToNext()) {
-                        mPaymentTypeId = cursor.getInt(cursor
-                                .getColumnIndex("ListId"));
-                    }
-                    cursor.close();
-                }
-
-                String subDepotColumns = "Uid,PaymentType,Amount,SubDepotId,RefId,Date";
-
-                String tid = bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID);
-
-                values = tid + "," + mPaymentTypeId + ","
-                        + SDUtil.format(getmVanLoadAmount(), 2, 0) + ","
-                        + selectedSubDepotID + "," + uid + ","
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-
-                db.insertSQL(DataMembers.tbl_SubDepotSettlement,
-                        subDepotColumns, values);
-
-                bmodel.mEmptyReconciliationhelper
-                        .updateEmptyReconilationTable();
-
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            if (db != null) {
-                db.closeDB();
-            }
-            Commons.printException(e);
-        }
-    }
-
-    public String getbatchid(int pid, String batchno) {
-        String batchid = null;
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT batchid from BatchMaster where batchNum="
-                            + bmodel.QT(batchno) + " and pid=" + pid);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    batchid = c.getString(0);
-                }
-
-                c.close();
-            }
-            db.closeDB();
-        } catch (SQLException e) {
-            Commons.printException(e);
-        }
-        return batchid;
-
-    }
-
-    public void saveBatch(LoadManagementBO product) {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            String values;
-            db.createDataBase();
-            db.openDataBase();
-            int batchId = 1;
-            Cursor c = db.selectSQL("SELECT max(batchid)+1 FROM BatchMaster");
-            if (c != null) {
-
-                while (c.moveToNext()) {
-                    batchId = c.getInt(0);
-                }
-                c.close();
-            }
-            // create new VanloadMasterBO object and add batch list
-
-            LoadManagementBO vanloadBO;
-            for (LoadManagementBO batchListBO : product.getBatchlist()) {
-                if (batchListBO.getBatchnolist() == null) {
-                    batchListBO.setBatchnolist(new Vector<LoadManagementBO>());
-
-                }
-                vanloadBO = new LoadManagementBO();
-                vanloadBO.setBatchId(batchId + "");
-                vanloadBO.setBatchNo(product.getManualBatchNo());
-                vanloadBO.setMfgDate(product.getMfgDate());
-                vanloadBO.setExpDate(product.getExpDate());
-                vanloadBO.setProductid(product.getProductid());
-                batchListBO.getBatchnolist().add(vanloadBO);
-
-            }
-
-            String columns = "batchid,batchNum,pid,MfgDate,ExpDate,is_new";
-
-            values = batchId + "," + bmodel.QT(product.getManualBatchNo())
-                    + "," + product.getProductid() + ","
-                    + bmodel.QT(product.getMfgDate()) + ","
-                    + bmodel.QT(product.getExpDate()) + ", 1";
-
-            db.insertSQL("BatchMaster", columns, values);
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    /**
-     * set Return Qty to the ReturnableBomMasterBo and set
-     */
-    public void setReturnQty() {
-
-        for (BomReturnBO bom : bmodel.productHelper.getBomReturnProducts()) {
-            bom.setLiableQty(0);
-        }
-
-        for (LoadManagementBO sku : bmodel.productHelper.getLoadMgmtProducts()) {
-            for (BomMasterBO bomMasterBo : bmodel.productHelper.getBomMaster()) {
-
-                int bomPid = SDUtil.convertToInt(bomMasterBo.getPid());
-                if (sku.getProductid() == bomPid) {
-
-                    for (BomBO bomBo : bomMasterBo.getBomBO()) {
-                        if (bomBo.getUomID() == sku.getPiece_uomid()) {
-                            bomBo.setTotalQty(bomBo.getQty()
-                                    * sku.getPieceqty());
-                        } else if (bomBo.getUomID() == sku.getdUomid()) {
-                            bomBo.setTotalQty(bomBo.getQty() * sku.getCaseqty());
-                        } else if (bomBo.getUomID() == sku.getdOuonid()) {
-                            bomBo.setTotalQty(bomBo.getQty()
-                                    * sku.getOuterQty());
-                        }
-
-                        for (BomReturnBO returnBo : bmodel.productHelper
-                                .getBomReturnProducts()) {
-                            if (bomBo.getbPid().equals(returnBo.getPid())) {
-                                returnBo.setLiableQty(returnBo.getLiableQty()
-                                        + bomBo.getTotalQty());
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-
-    }
-
-    /**
-     * @return -calculateVanLoadProductPrice
-     */
-    public double calculateVanLoadProductPrice() {
-        double totalPrice = 0;
-        try {
-            int siz = bmodel.productHelper.getLoadMgmtProducts().size();
-            if (siz == 0)
-                return 0;
-            for (int i = 0; i < siz; ++i) {
-                LoadManagementBO product = bmodel.productHelper.getLoadMgmtProducts().get(i);
-                if (product.getPieceqty() > 0 || product.getCaseqty() > 0
-                        || product.getOuterQty() > 0)
-                    totalPrice = totalPrice
-                            + ((product.getPieceqty()
-                            + (product.getCaseqty() * product
-                            .getCaseSize()) + (product
-                            .getOuterQty() * product.getOuterSize())) * product
-                            .getBaseprice());
-
-            }
-            return totalPrice;
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return totalPrice;
-    }
-
-    /**
-     * Load the Qty in EmptyReconciliationDetail and VanUnloadDetails for
-     * Validation in Manaul Van Load while Collecting Return Products in sub
-     * Depot
-     */
-    public void loadVanLoadReturnProductValidation() {
-        DBUtil db = null;
-        Cursor c;
-        try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-            c = db.selectSQL("SELECT Pid,(SUM(QTY)) FROM EmptyReconciliationDetail GROUP BY Pid");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    for (BomReturnBO bom : bmodel.productHelper
-                            .getBomReturnProducts()) {
-                        if (c.getString(0).equals(bom.getPid())) {
-                            bom.setTotalReturnQty(c.getInt(1));
-                            break;
-                        }
-
-                    }
-
-                }
-
-                c.close();
-            }
-            db.closeDB();
-        } catch (SQLException e) {
-            if (db != null) {
-                db.closeDB();
-            }
-            Commons.printException(e);
-        }
-
-    }
-
-    public void clearBomReturnProductsTable() {
-        try {
-            for (BomReturnBO temp : bmodel.productHelper.getBomReturnProducts()) {
-                temp.setLiableQty(0);
-                temp.setReturnQty(0);
-            }
-
-            // Manually clear the objects in OrderHeaderBO
-            bmodel.setOrderHeaderBO(null);
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-
     public ArrayList<VanLoadMasterBO> downloadExistingUid() {
         DBUtil db = null;
         ArrayList<VanLoadMasterBO> mUidList = new ArrayList<>();
@@ -580,18 +189,8 @@ public class LoadManagementHelper {
         return new ArrayList<>();
     }
 
-    private Vector<VanLoadMasterBO> getVanLoad() {
-        return vanmasterbo;
-    }
 
 
-    public float getmVanLoadAmount() {
-        return mVanLoadAmount;
-    }
-
-    public void setmVanLoadAmount(float mVanLoadAmount) {
-        this.mVanLoadAmount = mVanLoadAmount;
-    }
 
     public boolean isSecondaryDistributorDone() {
         DBUtil db = null;
@@ -627,59 +226,43 @@ public class LoadManagementHelper {
     }
 
 
-    public void saveVanUnLoad(Vector<LoadManagementBO> mylist) {
+
+    public float checkIsAllowed(String menuString) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context,
+                    DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            LoadManagementBO vanunloadbo;
-            String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type";
-            String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
-            for (int i = 0; i < mylist.size(); i++) {
-                vanunloadbo = mylist.get(i);
-                if (vanunloadbo.getCaseqty() > 0
-                        || vanunloadbo.getPieceqty() > 0
-                        || vanunloadbo.getOuterQty() > 0) {
-                    String values = bmodel.QT(uid)
-                            + ","
-                            + vanunloadbo.getProductid()
-                            + ","
-                            + DatabaseUtils.sqlEscapeString(vanunloadbo
-                            .getProductname())
-                            + ","
-                            + vanunloadbo.getBatchId()
-                            + ","
-                            + bmodel.QT(vanunloadbo.getBatchNo())
-                            + ","
-                            + vanunloadbo.getStocksih()
-                            + ","
-                            + vanunloadbo.getCaseqty()
-                            + ","
-                            + vanunloadbo.getPieceqty()
-                            + ","
-                            + vanunloadbo.getOuterQty()
-                            + ","
-                            + vanunloadbo.getCaseSize()
-                            + ","
-                            + vanunloadbo.getOuterSize()
-                            + ","
-                            + vanunloadbo.getdUomid()
-                            + ","
-                            + vanunloadbo.getdOuonid()
-                            + ","
-                            + bmodel.QT(bmodel.userMasterHelper
-                            .getUserMasterBO().getDownloadDate()) + ","
-                            + 1;
-                    db.insertSQL(DataMembers.tbl_vanunload_details, columns,
-                            values);
+            Cursor c = db
+                    .selectSQL("SELECT latitude, longitude FROM WarehouseActivityMapping WHERE activity_code = "
+                            + DatabaseUtils.sqlEscapeString(menuString));
+            double wareLatitude = 0;
+            double wareLongitude = 0;
+            if (c != null) {
+                if (c.moveToNext()) {
+                    wareLatitude = c.getDouble(0);
+                    wareLongitude = c.getDouble(1);
                 }
+                c.close();
             }
             db.closeDB();
+
+            if (wareLatitude == 0 && wareLongitude == 0) {
+                return -1;
+            } else if (LocationUtil.latitude == 0
+                    && LocationUtil.longitude == 0) {
+                return -2;
+            } else {
+
+                float distance = LocationUtil.calculateDistance(wareLatitude,
+                        wareLongitude);
+                return distance;
+            }
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+        return -3;
     }
+
 
 }

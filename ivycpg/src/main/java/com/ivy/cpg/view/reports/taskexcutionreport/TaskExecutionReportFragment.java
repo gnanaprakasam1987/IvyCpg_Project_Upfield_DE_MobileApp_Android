@@ -374,14 +374,4 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
         LinearLayout ll_rowlayout;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                startActivity(new Intent(getActivity(), HomeScreenActivity.class));
-                getActivity().finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

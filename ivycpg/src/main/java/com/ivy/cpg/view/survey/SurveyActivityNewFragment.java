@@ -62,6 +62,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -124,7 +125,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private int index;
     private int top;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private int mFilteredProductId;
+    private int mFilteredProductId = -1;
     private boolean isViewMode;
     private TabLayout tabLayout;
     private Button saveButton;
@@ -244,7 +245,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }
 
     private void showUserDialog() {
-        childList = bmodel.mAttendanceHelper.loadChildUserList(getActivity().getApplicationContext());
+        childList = AttendanceHelper.getInstance(getActivity()).loadChildUserList(getActivity().getApplicationContext());
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();
@@ -521,7 +522,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 surveyBO = sBO;
             }
         }
-        if (mFilteredProductId != 0)
+
             loadQuestionFromFiveLevelFilter(surveyHelperNew.mSelectedSurvey, mFilteredProductId);
 
         /* Show or hide footer which display survey score and overall score*/
@@ -1630,7 +1631,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         getActivity(),
                         getResources()
                                 .getString(
-                                        R.string.answer_take_photo),
+                                        R.string.answer_to_take_photo),
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -1918,7 +1919,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         if (mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
                 || mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
-                || mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS")) {
+                || mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS")
+                || mMenuCode.equalsIgnoreCase("MENU_NEW_RET")) {
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
             menu.findItem(R.id.menu_reason).setVisible(false);
         }
@@ -2294,7 +2296,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         mQuestions = new ArrayList<>();
         for (QuestionBO question : items) {
             if (question.getSurveyid() == surveyId || surveyId == -1) {
-                if (question.getParentHierarchy().contains("/" + filteredProductId + "/")
+                if ((question.getParentHierarchy() != null && question.getParentHierarchy().contains("/" + filteredProductId + "/"))
                         || filteredProductId == -1 && question.getIsSubQuestion() == 0) {
                     mQuestions.add(question);
                 }

@@ -507,7 +507,7 @@ Activity
 <form class="project-refs-form" action="/IvyProjects/IvyCpg_Product_MobileApp_Android/refs/switch" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="destination" id="destination" value="blob" />
 <input type="hidden" name="path" id="path" value=".gitlab-ci.yml" />
 <div class="dropdown">
-<button class="dropdown-menu-toggle js-project-refs-dropdown" type="button" data-toggle="dropdown" data-selected="CPG126_Release" data-ref="CPG126_Release" data-refs-url="/IvyProjects/IvyCpg_Product_MobileApp_Android/refs?sort=updated_desc" data-field-name="ref" data-submit-form-on-click="true" data-visit="true"><span class="dropdown-toggle-text ">CPG126_Release</span><i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"></i></button>
+<button class="dropdown-menu-toggle js-project-refs-dropdown" type="button" data-toggle="dropdown" data-pcsSelected="CPG126_Release" data-ref="CPG126_Release" data-refs-url="/IvyProjects/IvyCpg_Product_MobileApp_Android/refs?sort=updated_desc" data-field-name="ref" data-submit-form-on-click="true" data-visit="true"><span class="dropdown-toggle-text ">CPG126_Release</span><i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"></i></button>
 <div class="dropdown-menu dropdown-menu-paging dropdown-menu-selectable git-revision-dropdown">
 <div class="dropdown-page-one">
 <div class="dropdown-title"><span>Switch branch/tag</span><button class="dropdown-title-button dropdown-menu-close" aria-label="Close" type="button"><i aria-hidden="true" data-hidden="true" class="fa fa-times dropdown-menu-close-icon"></i></button></div>

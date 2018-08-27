@@ -42,6 +42,7 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -659,6 +660,21 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                                 String.valueOf(totalOrderValue)),
                         Toast.LENGTH_LONG).show();
                 return;
+            }
+
+            if (bmodel.configurationMasterHelper.IS_SR_VALIDATE_BY_RETAILER_TYPE) {
+                if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
+                    if (OrderHelper.getInstance(getActivity()).returnReplacementAmountValidation(true,false,getActivity().getApplicationContext())) {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.return_products_not_matching_replacing_product_price), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                } else if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CREDIT")) {
+                    if (!OrderHelper.getInstance(getActivity()).returnReplacementAmountValidation(false,false,getActivity().getApplicationContext())) {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.return_products_price_less_than_replacing_product_price), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
             }
 
             salesReturnHelper.setLpcValue((String) lpcText.getText());

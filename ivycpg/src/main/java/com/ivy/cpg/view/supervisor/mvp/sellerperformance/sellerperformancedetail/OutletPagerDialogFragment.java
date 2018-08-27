@@ -186,7 +186,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
             private TextView tvStoreName,tvStoreAddress,tvVisitStatus,tvOrderValue,tvOrderValueText;
             private RecyclerView retailerVisitedRVP;
             private View visitedStatusView;
-            private ImageView retailImage;
+            private ImageView retailImage,noImage;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -199,6 +199,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 visitedStatusView = view.findViewById(R.id.status_color_view);
                 retailerVisitedRVP = view.findViewById(R.id.visited_retailer_items);
                 retailImage = view.findViewById(R.id.outlet_image);
+                noImage = view.findViewById(R.id.outlet_no_image);
 
                 ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
                 ((TextView)view.findViewById(R.id.tv_outtime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
@@ -234,6 +235,9 @@ public class OutletPagerDialogFragment extends DialogFragment {
             holder.tvStoreAddress.setText(visitedRetailers.get(position).getAddress());
 
             ArrayList<RetailerBo> retailerVisitedDetail = sellerPerformanceDetailPresenter.getRetailerVisitDetailsByRId(visitedRetailers.get(position).getRetailerId());
+
+            int outletDefaultDrawable = R.drawable.unbilled_bg_gradient;
+
             if(retailerVisitedDetail != null && retailerVisitedDetail.size() > 0) {
                 VisitedOutletInfoAdapter visitedOutletInfoAdapter =
                         new VisitedOutletInfoAdapter(context, retailerVisitedDetail);
@@ -248,6 +252,9 @@ public class OutletPagerDialogFragment extends DialogFragment {
                         holder.visitedStatusView.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.unbilled_bg_gradient));
                 }else {
                     holder.tvVisitStatus.setText("Covered");
+
+                    outletDefaultDrawable = R.drawable.covered_outlet_bg_gradient;
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
                         holder.visitedStatusView.setBackground(ContextCompat.getDrawable(context, R.drawable.covered_green));
                     else
@@ -257,7 +264,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
             setProfileImage(holder.retailImage,
                     visitedRetailers.get(position).getImgPath(),
-                    visitedRetailers.get(position).getRetailerId());
+                    visitedRetailers.get(position).getRetailerId(),outletDefaultDrawable,holder.noImage);
         }
 
         @Override
@@ -332,7 +339,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
         }
     }
 
-    private void setProfileImage(ImageView userView, String imagePath, int userId) {
+    private void setProfileImage(ImageView userView, String imagePath, int userId,int outletDefaultDrawable,ImageView noImage) {
         try {
             if (imagePath != null && !"".equals(imagePath)) {
                 String[] imgPaths = imagePath.split("/");
@@ -353,17 +360,22 @@ public class OutletPagerDialogFragment extends DialogFragment {
                         Glide.with(getContext())
                                 .load(imgFile)
                                 .centerCrop()
-                                .placeholder(R.drawable.unbilled_bg_gradient)
-                                .error(R.drawable.unbilled_bg_gradient)
+                                .placeholder(outletDefaultDrawable)
+                                .error(outletDefaultDrawable)
                                 .into(userView);
+
+                        noImage.setVisibility(View.GONE);
 
                     } catch (Exception e) {
                         Commons.printException("" + e);
                     }
                 } else {
                     userView
-                            .setImageResource(R.drawable.unbilled_bg_gradient);
+                            .setImageResource(outletDefaultDrawable);
                 }
+            }else {
+                userView
+                        .setImageResource(outletDefaultDrawable);
             }
         }catch(Exception e){
             Commons.printException(e);

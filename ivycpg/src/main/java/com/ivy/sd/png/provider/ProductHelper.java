@@ -1005,7 +1005,7 @@ public class ProductHelper {
                     + " A.HSNId as HSNId,"
                     + " HSN.HSNCode as HSNCode,"
                     + " A.IsDrug as IsDrug,A.ParentHierarchy as ParentHierarchy,"
-                    + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,"
+                    + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,F.ASRP as asrp,"
                     + " (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom"
                     + " from ProductMaster A";
@@ -1106,6 +1106,9 @@ public class ProductHelper {
 
                     product.setPriceoffvalue(c.getDouble(c.getColumnIndex("priceoffvalue")));
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
+                    product.setASRP(c.getInt(c.getColumnIndex("asrp"))); //added by murugan
+
+                    product.setASRP(c.getInt(c.getColumnIndex("asrp"))); //added by murugan
 
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
@@ -1894,6 +1897,7 @@ public class ProductHelper {
                 product.setRepCaseQty(0);
                 product.setRepOuterQty(0);
                 product.setSelectedSalesReturnPosition(0);
+                product.setTaxValue(0);
 
                 if (product.getSalesReturnReasonList() != null && product.getSalesReturnReasonList().size() != 0) {
                     for (SalesReturnReasonBO bo : product

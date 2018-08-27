@@ -82,7 +82,12 @@ public class VanLoadStockApplyHelper {
                 c.close();
             }
             Cursor c1 = db
-                    .selectSQL("select A.pid,sum(A.caseQty),sum(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,A.uid,sum(A.outerQty),B.dOuomQty,A.BatchId,C.batchNum, B.baseprice,A.Flag,IFNULL(A.LoadNo,A.uid),A.date,B.pCode from VanLoad A inner join productmaster B on A.pid=B.pid LEFT JOIN BatchMaster C on A.BatchId=C.batchid and A.pid=C.pid  group by A.pid,C.batchid ORDER BY B.rowid");
+                    .selectSQL("select A.pid,sum(A.caseQty),sum(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty," +
+                            "A.uid,sum(A.outerQty),B.dOuomQty,A.BatchId,C.batchNum, B.baseprice,A.Flag," +
+                            "IFNULL(A.LoadNo,A.uid),A.date,B.pCode from VanLoad A " +
+                            "inner join productmaster B on A.pid=B.pid " +
+                            "LEFT JOIN BatchMaster C on A.BatchId=C.batchid and A.pid=C.pid  " +
+                            "group by A.pid,C.batchid ORDER BY B.rowid");
             if (c1 != null) {
                 StockReportMasterAll = new Vector<VanLoadStockApplyBO>();
                 while (c1.moveToNext()) {
@@ -105,7 +110,7 @@ public class VanLoadStockApplyHelper {
                     stock1.setIsManualVanload(c1.getInt(13));
                     stock1.setLoadNO(c1.getString(14));
                     stock1.setDate(c1.getString(15));
-                    stock1.setProductCode(c.getString(16));
+                    stock1.setProductCode(c1.getString(16));
                     StockReportMasterAll.add(stock1);
                 }
                 c1.close();
