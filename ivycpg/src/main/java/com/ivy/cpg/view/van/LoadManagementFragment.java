@@ -214,7 +214,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 if (errorCode != null && errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     //	pd.dismiss();
-                    alerDialogDismiss();
+                    dismissAlertDialog();
                     if (getActivity() != null)
                         bmodel.showAlert(
                                 getString(
@@ -228,7 +228,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     if (errorDownloadMessage != null) {
                         showMessage(errorDownloadMessage);
                     }
-                    alerDialogDismiss();
+                    dismissAlertDialog();
                     break;
                 }
                 break;
@@ -445,13 +445,13 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
         @Override
         public void hideProgress() {
-            alerDialogDismiss();
+            dismissAlertDialog();
             showMessage(getString(R.string.unable_to_load_data));
         }
 
         @Override
         public void intentCall(String menuCode, String menuName) {
-            alerDialogDismiss();
+            dismissAlertDialog();
 
             switch (menuCode) {
 
@@ -487,7 +487,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 case "NewStock":
 
                     if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                        downloadVanload();
+                        downloadVanloadData();
                     } else {
                         String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
                         if (errorMsg != null) {
@@ -610,7 +610,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     /**
      * dismiss alert Dialog
      */
-    private void alerDialogDismiss() {
+    private void dismissAlertDialog() {
         if (alertDialog.isShowing())
             alertDialog.dismiss();
     }
@@ -658,7 +658,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     /**
      * Download VanLoad Stock from server
      */
-    private void downloadVanload() {
+    private void downloadVanloadData() {
         bmodel.synchronizationHelper.downloadVanloadFromServer();
     }
 
