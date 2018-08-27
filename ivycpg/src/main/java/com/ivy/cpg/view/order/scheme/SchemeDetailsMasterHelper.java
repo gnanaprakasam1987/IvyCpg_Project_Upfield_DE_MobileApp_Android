@@ -255,7 +255,8 @@ public class SchemeDetailsMasterHelper {
                         if (c.getInt(1) > 0) {
                             UP_SELLING_PERCENTAGE = c.getInt(1);
                         }
-                    }
+                    } else if (c.getString(0).equalsIgnoreCase(CODE_CHECK_SCHEME_WITH_ASRP))
+                        IS_CHECK_SCHEME_WITH_ASRP = true;
 
                     if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_CHECK)) {
                         IS_SCHEME_CHECK = true;
@@ -2835,20 +2836,25 @@ public class SchemeDetailsMasterHelper {
                         if (batchWiseList != null) {
 
                             for (ProductMasterBO batchProductBO : batchWiseList) {
+
                                 if (batchProductBO.getBatchid().equals(batchId)) {
 
-                                    if(IS_CHECK_SCHEME_WITH_ASRP){
-                                        int qty= batchProductBO.getOrderedPcsQty()
-                                                + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize())
-                                                + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize());
-                                        totalValue += qty*batchProductBO.getASRP();
-                                    }else{
-                                        totalValue += (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
-                                                + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCsrp())
-                                                + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
-                                    }
-                                    totalValue += getTotalAccumulationValue(schemeId, productId, isBatchWise, batchId);
+                                    if (batchProductBO.getOrderedPcsQty() > 0 || batchProductBO.getOrderedCaseQty() > 0 || batchProductBO.getOrderedOuterQty() > 0) {
 
+                                        if(IS_CHECK_SCHEME_WITH_ASRP){
+                                            int qty= batchProductBO.getOrderedPcsQty()
+                                                    + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize())
+                                                    + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize());
+                                            totalValue += qty*batchProductBO.getASRP();
+                                        }else{
+                                            totalValue += (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
+                                                    + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCsrp())
+                                                    + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
+                                        }
+                                        totalValue += getTotalAccumulationValue(schemeId, productId, isBatchWise, batchId);
+
+
+                                    }
                                 }
                             }
                         }
@@ -4193,14 +4199,17 @@ public class SchemeDetailsMasterHelper {
                                                         * schemeProductBO
                                                         .getQuantitySelected());
 
-                                            for (BomReturnBO returnBo : bModel.productHelper
-                                                    .getBomReturnProducts()) {
-                                                if (bomBo.getbPid().equals(
-                                                        returnBo.getPid())) {
-                                                    returnBo.setLiableQty(returnBo
-                                                            .getLiableQty()
-                                                            + bomBo.getTotalQty());
-                                                    break;
+                                            if(bModel.productHelper
+                                                    .getBomReturnProducts()!=null) {
+                                                for (BomReturnBO returnBo : bModel.productHelper
+                                                        .getBomReturnProducts()) {
+                                                    if (bomBo.getbPid().equals(
+                                                            returnBo.getPid())) {
+                                                        returnBo.setLiableQty(returnBo
+                                                                .getLiableQty()
+                                                                + bomBo.getTotalQty());
+                                                        break;
+                                                    }
                                                 }
                                             }
                                         }

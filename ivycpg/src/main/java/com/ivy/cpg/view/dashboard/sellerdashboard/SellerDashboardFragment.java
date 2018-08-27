@@ -207,7 +207,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         }
         if (categories != null) {
             setpUpSpinner(categories);
-            bmodel.downloadDailyReport();
+
         }
 
 

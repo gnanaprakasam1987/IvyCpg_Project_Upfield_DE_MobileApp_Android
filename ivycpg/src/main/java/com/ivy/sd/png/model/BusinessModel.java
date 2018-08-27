@@ -300,7 +300,7 @@ public class BusinessModel extends Application {
     private ArrayList<InvoiceHeaderBO> invoiceHeader;
 
     //private Vector payment;
-    private DailyReportBO dailyRep;
+
     private Vector<LocationBO> locvect;
     // private String deviateResonText = "Select";
     // Used to maintain edit mode value
@@ -1102,9 +1102,9 @@ public class BusinessModel extends Application {
                 if (c.getCount() > 0) {
                     flag = true;
                 }
+            c.close();
             }
 
-            c.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1127,9 +1127,9 @@ public class BusinessModel extends Application {
                     flag = true;
                     getRetailerMasterBO().setIsSurveyDone(true);
                 }
+            c.close();
             }
 
-            c.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1154,8 +1154,8 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            }
             c.close();
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1182,8 +1182,8 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            }
             c.close();
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1212,9 +1212,9 @@ public class BusinessModel extends Application {
                 if (c.moveToNext()) {
                     i += c.getFloat(0);
                 }
+            c.close();
             }
 
-            c.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1223,21 +1223,7 @@ public class BusinessModel extends Application {
         return i;
     }
 
-    public double getSumOfPlannedTarget() {
 
-        double f = 0;
-        try {
-            for (RetailerMasterBO temp : retailerMaster) {
-                if (temp.getIsToday() == 1) {
-                    f = f + temp.getDaily_target_planned();
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        return f;
-    }
 
     public double getAcheived() {
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -1288,8 +1274,8 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            }
             c.close();
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1313,8 +1299,8 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            }
             c.close();
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1912,8 +1898,8 @@ public class BusinessModel extends Application {
                         }
                     }
                 }
-            }
             c.close();
+            }
             db.closeDB();
 
         } catch (Exception e) {
@@ -1945,8 +1931,8 @@ public class BusinessModel extends Application {
                         }
                     }
                 }
-            }
             c.close();
+            }
 
             sql = "SELECT sum(AH.achscore),rm.retailerid  FROM  retailermaster rm"
                     + " join answerheader AH on rm.retailerid = ah.retailerid "
@@ -2413,258 +2399,11 @@ public class BusinessModel extends Application {
     }
 
     // // ****************** Daily Report
-    public void downloadDailyReport() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        StringBuffer sb = new StringBuffer();
-        dailyRep = new DailyReportBO();
-        Cursor c = null;
-
-        if (!configurationMasterHelper.IS_INVOICE) {
-            sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-            sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            c = db
-                    .selectSQL(sb.toString());
-            if (c != null) {
-                if (c.moveToNext()) {
-
-                    dailyRep.setEffCoverage(c.getString(0));
-                    dailyRep.setTotLines(c.getInt(1) + "");
-                    dailyRep.setTotValues(c.getDouble(2) + "");
-                }
-                c.close();
-            }
-        } else {
-            sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
-            sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            c = db
-                    .selectSQL(sb.toString());
-            if (c != null) {
-                if (c.moveToNext()) {
-                    dailyRep.setEffCoverage(c.getString(0));
-                    dailyRep.setTotLines(c.getInt(1) + "");
-                    dailyRep.setTotValues(c.getDouble(2) + "");
-                }
-                c.close();
-            }
-        }
-        sb = new StringBuffer();
-        sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-        c = db
-                .selectSQL(sb.toString());
-        if (c != null) {
-            if (c.moveToNext()) {
-
-                dailyRep.setMspValues(c.getString(0));
-                dailyRep.setNoofOrder(c.getString(1));
-
-            }
-            c.close();
-        }
-
-        sb = new StringBuffer();
-        sb.append("select sum(pieceQty),sum(caseQty),sum(outerQty) from OrderDetail OD ");
-        sb.append("inner join OrderHeader oh on oh.orderid=od.orderid ");
-        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-        c = db
-                .selectSQL(sb.toString());
-        if (c != null) {
-            if (c.moveToNext()) {
-
-                dailyRep.setPcsQty(c.getString(0));
-                dailyRep.setCsQty(c.getString(1));
-                dailyRep.setOuQty(c.getString(2));
-
-            }
-            c.close();
-        }
 
 
-        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM " +
-                "LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
-                + " where RBM.isdeviated='Y' and RBM.isVisited='Y'");
-
-        if (c != null) {
-            if (c.moveToNext()) {
-
-                dailyRep.setTotAdhoc(c.getString(0));
-            }
-        }
-
-        sb = new StringBuffer();
-        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
-        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
-        sb.append("LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = rm.RetailerID ");
-        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
-        c = db
-                .selectSQL(sb.toString());
-        if (c != null) {
-            if (c.moveToNext()) {
-
-                dailyRep.setTotAdhocProductive(c.getString(0));
-
-            }
-            c.close();
-        }
-
-        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
-                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
-                + " where RMI.isToday='1'");
-
-        if (c != null) {
-            if (c.moveToNext()) {
-
-                dailyRep.setTotPlanned(c.getString(0));
 
 
-            }
-            c.close();
-        }
-        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
-                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
-                + " where RBM.isVisited='Y' and RMI.isToday='1'");//space added before where condition
 
-        if (c != null) {
-            if (c.moveToNext()) {
-
-                dailyRep.setTotPlannedVisit(c.getString(0));
-
-
-            }
-            c.close();
-        }
-
-        sb = new StringBuffer();
-        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
-        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
-        sb.append(" inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid ");
-        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
-        c = db
-                .selectSQL(sb.toString());
-        if (c != null) {
-            if (c.moveToNext()) {
-
-                dailyRep.setTotPlannedProductive(c.getString(0));
-
-            }
-            c.close();
-        }
-
-        db.closeDB();
-    }
-
-    /**
-     * kellogs specific
-     */
-    public void downloadDailyReportKellogs() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        StringBuffer sb = new StringBuffer();
-        Cursor c = null;
-
-        sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-        c = db
-                .selectSQL(sb.toString());
-        if (c != null) {
-            if (c.moveToNext()) {
-
-                dailyRep.setKlgsEffCoverage(c.getString(0));
-                dailyRep.setKlgsTotLines(c.getInt(1) + "");
-                dailyRep.setKlgsTotValue(c.getDouble(2) + "");
-            }
-            c.close();
-        }
-
-        db.closeDB();
-    }
-
-
-    /**
-     * @param orderType 0 - piece; 1 - outer; 2 - case
-     * @return
-     */
-    public ArrayList<ConfigureBO> downloadDailyReportDropSize(int orderType) {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        ArrayList<ConfigureBO> categoryDropSizeBO = new ArrayList<ConfigureBO>();
-
-        int mCoveredStoreCount = 0;
-        int contentLevel = 0;
-        int parentLevel = 0;
-
-
-        Cursor c = db
-                .selectSQL("SELECT COUNT(DISTINCT Retailerid) FROM InvoiceMaster"
-                        + " WHERE InvoiceDate="
-                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-
-        if (c != null) {
-            if (c.moveToNext()) {
-                mCoveredStoreCount = c.getInt(0);
-            }
-            c.close();
-        }
-
-
-        if (mCoveredStoreCount > 0) {
-
-            String qty = "SUM(ID.Qty) AS QTY";
-
-            if (orderType == 1)
-                qty = "(SUM(ID.Qty)/ID.dOuomQty) AS QTY";
-            else if (orderType == 2)
-                qty = "(SUM(ID.Qty)/ID.uomCount) AS QTY";
-
-
-            c = db.selectSQL("SELECT IFNULL(PL1.Sequence,0), IFNULL(PL3.Sequence,0), PL1.LevelName FROM ConfigActivityFilter CF " +
-                    "LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter1 " +
-                    "LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent " +
-                    " WHERE CF.ActivityCode = 'MENU_STK_ORD'");
-            if (c != null) {
-                if (c.moveToNext()) {
-                    parentLevel = c.getInt(0);
-                    contentLevel = c.getInt(1);
-                }
-            }
-
-
-            int loopEnd = contentLevel - parentLevel + 1;
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("select pdname,sum(qty) from (");
-            sb.append("select PM1.pid as pdid,PM1.pname as pdname," + qty + "  FROM ProductMaster PM1 ");
-            for (int i = 2; i <= loopEnd; i++) {
-                sb.append("inner join productmaster PM" + i);
-                sb.append(" ON PM" + i + ".Parentid = PM" + (i - 1) + ".pid ");
-            }
-
-            sb.append("inner join invoicedetails id on id.productid=PM" + loopEnd + ".pid ");
-            sb.append(" WHERE PM1.PLid IN (SELECT levelid ");
-            sb.append(" FROM productlevel WHERE sequence=" + parentLevel + ")");
-            sb.append(" and ID.invoiceID IN(SELECT InvoiceNo FROM InvoiceMaster");
-            sb.append(" WHERE InvoiceDate=" + QT(userMasterHelper.getUserMasterBO().getDownloadDate()) + ")");
-            sb.append(" GROUP BY ID.ProductID ORDER BY PM1.Pid)");
-            sb.append(" group by pdid");
-            c = db.selectSQL(sb.toString());
-            if (c != null) {
-                while (c.moveToNext()) {
-                    ConfigureBO con = new ConfigureBO();
-                    con.setMenuName(c.getString(0));
-                    con.setMenuNumber((c.getInt(1) / mCoveredStoreCount) + "");
-                    categoryDropSizeBO.add(con);
-                }
-                c.close();
-            }
-        }
-
-
-        db.closeDB();
-
-        return categoryDropSizeBO;
-    }
 
     public Vector<NonproductivereasonBO> getMissedCallRetailers() {
 
@@ -2698,9 +2437,9 @@ public class BusinessModel extends Application {
 
                 }
 
+            c.close();
             }
 
-            c.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -3005,11 +2744,11 @@ public class BusinessModel extends Application {
                 }
             }
             orderDetailCursor.close();
+        db.closeDB();
 
         } catch (Exception e) {
             Commons.printException(e);
         }
-        db.closeDB();
         return list;
     }
 
@@ -3135,8 +2874,8 @@ public class BusinessModel extends Application {
                             isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", availability);
 
                 }
-            }
             orderDetailCursor.close();
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -3403,8 +3142,8 @@ public class BusinessModel extends Application {
                 if (orderDetailCursor.moveToNext()) {
                     orderId = orderDetailCursor.getString(0);
                 }
-            }
             orderDetailCursor.close();
+            }
             db.deleteSQL(DataMembers.tbl_distributor_order_header, "UId=" + QT(orderId)
                     + " and upload='N'", false);
             db.deleteSQL(DataMembers.tbl_distributor_order_detail, "UId=" + QT(orderId)
@@ -3440,8 +3179,8 @@ public class BusinessModel extends Application {
                 if (orderDetailCursor.moveToNext()) {
                     orderId = orderDetailCursor.getString(0);
                 }
-            }
             orderDetailCursor.close();
+            }
 
             db.deleteSQL(DataMembers.tbl_distributor_closingstock_header, "UId=" + QT(orderId)
                     + " and upload='N'", false);
@@ -3829,9 +3568,7 @@ public class BusinessModel extends Application {
         this.orderHeaderBO = orderHeaderBO;
     }
 
-    public DailyReportBO getDailyRep() {
-        return dailyRep;
-    }
+
 
 
     public RetailerMasterBO getRetailerMasterBO() {
@@ -8597,251 +8334,6 @@ public class BusinessModel extends Application {
         }
 
     }
-
-
-    public int getTotalCallsForTheDayExcludingDeviatedVisits() {
-        int total_calls = 0;
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT COUNT(DISTINCT RM.RETAILERID) FROM RETAILERMASTER RM inner join RetailerMasterInfo RMI " +
-                            "on RM.RetailerID = RMI.RetailerId where RMI.istoday = 1");
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext())
-                        total_calls = c.getInt(0);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("Error at getTotalCallsForTheDayExcludingDeviatedVisits", e);
-        }
-        return total_calls;
-    }
-
-    public int getVisitedCallsForTheDayExcludingDeviatedVisits() {
-        int visited_calls = 0;
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            Cursor c = db.selectSQL("select count(distinct RM.retailerid) from retailermaster RM inner join " +
-                    "RetailerBeatMapping RBM on RM.RetailerId = RBM.Retailerid where RM.isdeviated='N' and RBM.isVisited = 'Y'");
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    if (c.moveToNext()) {
-                        visited_calls = c.getInt(0);
-                    }
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(
-                    "Error at getVisitedCallsForTheDayExcludingDeviatedVisits", e);
-        }
-        return visited_calls;
-    }
-
-    public int getProductiveCallsForTheDayExcludingDeviatedVisits() {
-        int productive_calls = 0;
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = null;
-            if (configurationMasterHelper.IS_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-
-                if (beatMasterHealper.getTodayBeatMasterBO() == null
-                        || beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
-                    c = db.selectSQL("select distinct(i.Retailerid) from InvoiceMaster i" +
-                            " inner join retailermaster r on i.retailerid=r.retailerid inner join " +
-                            "RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid where RBM.isdeviated='N' and RBM.isVisited = 'Y'");
-                } else {
-                    c = db.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
-                            + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
-                            + "inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid"
-                            + " where RBM.isdeviated='N' or RMI.isToday=1 and i.IsPreviousInvoice = 0 and RBM.isVisited = 'Y'");
-                }
-            } else {
-                c = db.selectSQL("select  distinct(r.Retailerid) from OrderHeader o inner join retailermaster r " +
-                        "on o.retailerid=r.retailerid inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid " +
-                        "where o.upload!='X' and RBM.isdeviated='N' and RBM.isVisited = 'Y'");
-            }
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext())
-                        productive_calls = c.getCount();
-                }
-                c.close();
-            }
-
-            db.closeDB();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return productive_calls;
-    }
-
-    public DailyReportBO getNoOfInvoiceAndValue() {
-        DailyReportBO dailyRp = new DailyReportBO();
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select count(distinct Inv.InvoiceNo),sum(Inv.totalamount) from Invoicemaster Inv" +
-                            " INNER JOIN OrderHeader OH ON OH.orderId=Inv.OrderId where Inv.invoicedate = "
-                            + QT(userMasterHelper.getUserMasterBO().getDownloadDate()));
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        dailyRp.setTotLines(c.getInt(0) + "");
-                        dailyRp.setTotValues(c.getDouble(1) + "");
-                    }
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("Error at getNoOfInvoiceAndValue", e);
-        }
-        return dailyRp;
-    }
-
-    public DailyReportBO getNoOfOrderAndValue() {
-        DailyReportBO dailyRp = new DailyReportBO();
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select count(distinct orderid),sum(totalamount) from OrderHeader where invoicestatus =0 ");
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        dailyRp.setTotLines(c.getInt(0) + "");
-                        dailyRp.setTotValues(c.getDouble(1) + "");
-                    }
-                }
-                c.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("Error at getNoOfOrderAndValue", e);
-        }
-        return dailyRp;
-    }
-
-    public DailyReportBO getFocusBrandInvoiceAmt() {
-        DailyReportBO dailyRp = new DailyReportBO();
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select count(distinct OrderID),sum(FocusPackValues) from OrderHeader");
-            sb.append(" where invoicestatus=1");
-            Cursor c = db
-                    .selectSQL(sb.toString());
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        dailyRp.setEffCoverage(c.getInt(0) + "");
-                        dailyRp.setTotValues(c.getDouble(1) + "");
-                    }
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("Error at getFocusBrandInvoiceAmt", e);
-        }
-        return dailyRp;
-    }
-
-    public double getSalesReturnValue() {
-        double sale_return_value = 0;
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader where upload!='X'");
-            Cursor c = db
-                    .selectSQL(sb.toString());
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        sale_return_value = c.getDouble(1);
-                    }
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("Error at getFocusBrandInvoiceAmt", e);
-        }
-        return sale_return_value;
-    }
-
-    public DailyReportBO getFullFillmentValue() {
-        DailyReportBO dailyRp = new DailyReportBO();
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
-                    + "(select sum(qty) from invoiceDetails where productId = VL.pid) as delvQty,"
-                    + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
-            Cursor c = db
-                    .selectSQL(query);
-            int loadQty;
-            int deliverQty;
-            double price;
-            double deliveredValue = 0;
-            double loadedValue = 0;
-
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        loadQty = c.getInt(0) + (c.getInt(1) * c.getInt(2))
-                                + (c.getInt(3) * c.getInt(4));
-
-                        deliverQty = c.getInt(5);
-                        deliverQty = deliverQty < 0 ? 0 : deliverQty;
-
-                        price = c.getDouble(6);
-                        deliveredValue += deliverQty * price;
-                        loadedValue += loadQty * price;
-                    }
-                    dailyRp.setDelivered(deliveredValue);
-                    dailyRp.setLoaded(loadedValue);
-                }
-                c.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("Error at getFullFillmentValue", e);
-        }
-        return dailyRp;
-    }
-
 
     /**
      * Returns email credentials given

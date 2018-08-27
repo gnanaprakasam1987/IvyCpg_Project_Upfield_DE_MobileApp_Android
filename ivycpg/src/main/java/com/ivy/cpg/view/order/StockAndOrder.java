@@ -218,7 +218,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String TEMP_ORDDERIMG = "tempOrdImg";
     private final String TEMP_ADDRESSID = "tempAddressId";
     private double totalvalue = 0;
-    private final String FROM_HOME_SCREEN = "IsFromHomeScreen";
+
 
 
     private int mSelectedBrandID = 0;
@@ -264,7 +264,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private Vector<ProductMasterBO> productList = new Vector<>();
 
-    boolean isFromHomeScreen = false;
+
     private OrderHelper orderHelper;
 
     private static final int SALES_RETURN = 3;
@@ -313,7 +313,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? ""
                         : extras.getString(TEMP_ORDDERIMG);
                 tempAddressId = extras.getInt(TEMP_ADDRESSID);
-                isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
+
             }
         } else {
             OrderedFlag = (String) (savedInstanceState
@@ -338,7 +338,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     : savedInstanceState.getSerializable(TEMP_ORDDERIMG));
             tempAddressId = (int) (savedInstanceState
                     .getSerializable(TEMP_ADDRESSID));
-            isFromHomeScreen = savedInstanceState.getBoolean(FROM_HOME_SCREEN, false);
+
         }
 
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
@@ -464,7 +464,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
 
-        if (!isFromHomeScreen && bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+        if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.resetSRPvalues();
         }
 
@@ -958,7 +958,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? "" : extras
                     .getString(TEMP_ORDDERIMG);
             tempAddressId = extras.getInt(TEMP_ADDRESSID);
-            isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
+
             savedInstanceState.putSerializable(ORDER_FLAG, OrderedFlag);
             savedInstanceState.putSerializable(TEMP_PO, tempPo);
             savedInstanceState.putSerializable(TEMP_REMARK, tempRemark);
@@ -967,7 +967,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             savedInstanceState.putString(TEMP_ORDDERIMG, tempOrdImg);
             savedInstanceState.putSerializable(TEMP_ADDRESSID, tempAddressId);
             savedInstanceState.putSerializable(SCREEN_CODE, screenCode);
-            savedInstanceState.putSerializable(FROM_HOME_SCREEN, isFromHomeScreen);
+
         }
         super.onSaveInstanceState(savedInstanceState);
     }

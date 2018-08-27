@@ -125,7 +125,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private int index;
     private int top;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
-    private int mFilteredProductId =-1;
+    private int mFilteredProductId = -1;
     private boolean isViewMode;
     private TabLayout tabLayout;
     private Button saveButton;

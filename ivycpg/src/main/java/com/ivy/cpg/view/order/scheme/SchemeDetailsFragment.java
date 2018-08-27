@@ -266,6 +266,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                         text_BuyProductsTitle.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         text_BuyProductsTitle.setGravity(Gravity.LEFT | Gravity.CENTER);
                         text_BuyProductsTitle.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                        text_BuyProductsTitle.setMaxLines(2);
 
                         LinearLayout layout_Slab;
                         layout_Slab = new LinearLayout(mContext);
