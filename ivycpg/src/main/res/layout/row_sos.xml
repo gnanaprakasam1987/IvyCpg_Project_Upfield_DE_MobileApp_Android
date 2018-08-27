@@ -124,6 +124,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1.5"
             android:gravity="center"
+            android:textDirection="anyRtl"
             android:text="@string/zero" />
 
     </LinearLayout>

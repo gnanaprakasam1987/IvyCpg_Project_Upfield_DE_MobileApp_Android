@@ -161,7 +161,8 @@ public class ReplaceFragment extends IvyBaseFragment {
                             totalReturnQty = totalReturnQty + reasonBO.getPieceQty() + (reasonBO.getCaseQty() * productMasterBO.getCaseSize()) + (reasonBO.getOuterQty() * productMasterBO.getOutersize());
                         }
 
-                        if ((moduleFrom.equals("ORDER") || totalReturnQty >= totalRepQty) && (productMasterBO.getSIH() >= (totalRepQty + productMasterBO.getOrderedPcsQty()) || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
+                        if ((bmodel.configurationMasterHelper.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL || totalReturnQty >= totalRepQty)
+                                && (productMasterBO.getSIH() >= (totalRepQty + productMasterBO.getOrderedPcsQty()) || !bmodel.configurationMasterHelper.IS_SIH_VALIDATION)) {
                             productMasterBO.setRepPieceQty(enteredQty);
                         } else {
                             if (!("0".equals(qty))) {

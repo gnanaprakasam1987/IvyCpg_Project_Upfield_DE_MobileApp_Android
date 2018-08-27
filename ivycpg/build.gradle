@@ -36,7 +36,7 @@ android {
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 25
         multiDexEnabled true
         resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

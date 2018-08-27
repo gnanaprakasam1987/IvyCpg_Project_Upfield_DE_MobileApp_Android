@@ -131,7 +131,7 @@ public class OrderHelper {
      *
      * @param mContext current context
      */
-    public boolean saveOrder(Context mContext) {
+    public boolean saveOrder(Context mContext,boolean isInvoice) {
         DBUtil db = null;
         int isVanSales = 1;
         String uid = null;
@@ -227,7 +227,7 @@ public class OrderHelper {
                         StandardListMasterConstants.PRINT_FILE_ORDER + businessModel.invoiceNumber + ".txt";
             }
             String orderImagePath = "";
-            if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
+            if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE || businessModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
                 if (businessModel.getOrderHeaderBO().getOrderImageName().length() > 0)
                     orderImagePath = businessModel.userMasterHelper.getUserMasterBO().getDownloadDate()
                             .replace("/", "") + "/"
@@ -321,7 +321,7 @@ public class OrderHelper {
 
             // Save order details
             Vector<ProductMasterBO> finalProductList;
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty";
 
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
                 finalProductList = mSortedOrderedProducts;
@@ -509,7 +509,7 @@ public class OrderHelper {
                 updateCreditNoteprintList();
 
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
-                salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", false);
+                salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", false,isInvoice);
                 // salesReturnHelper.clearSalesReturnTable(true);
             }
 
@@ -534,7 +534,7 @@ public class OrderHelper {
      * @param productList
      * @return
      */
-    public boolean saveOrder(Context mContext, Vector<ProductMasterBO> productList) {
+    public boolean saveOrder(Context mContext, Vector<ProductMasterBO> productList,boolean isInvoice) {
         DBUtil db = null;
         int isVanSales = 1;
         String uid = null;
@@ -631,7 +631,7 @@ public class OrderHelper {
 
                 // Save order details
                 Vector<ProductMasterBO> finalProductList;
-                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP";
+                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty";
 
                 finalProductList = productList;
 
@@ -1021,7 +1021,7 @@ public class OrderHelper {
                     updateCreditNoteprintList();
 
                 if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
-                    salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", true);
+                    salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", true,isInvoice);
                     salesReturnHelper.clearSalesReturnTable(true);
                 }
 
@@ -1188,7 +1188,7 @@ public class OrderHelper {
         sb.append("," + businessModel.QT(productBo.getHsnCode()));
         sb.append("," + SDUtil.getWithoutExponential(totalValue));
         sb.append("," + productBo.getMRP());
-
+        sb.append("," + productBo.getIncreasedPcs());
         return sb;
 
     }
@@ -3150,15 +3150,17 @@ public class OrderHelper {
             SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
             if (schemeHelper.IS_SCHEME_ON) {
                 for (SchemeBO schemeBO : schemeHelper.getAppliedSchemeList()) {
-                    if (schemeBO.getFreeProducts() != null) {
-                        for (SchemeProductBO freeProductBO : schemeBO.getFreeProducts()) {
-                            if (freeProductBO.getQuantitySelected() > 0) {
+                    if(schemeBO.isQuantityTypeSelected()) {
+                        if (schemeBO.getFreeProducts() != null) {
+                            for (SchemeProductBO freeProductBO : schemeBO.getFreeProducts()) {
+                                if (freeProductBO.getQuantitySelected() > 0) {
 
-                                if (mDeliverQtyByProductId.get(freeProductBO.getProductId()) != null) {
-                                    int qty = mDeliverQtyByProductId.get(freeProductBO.getProductId());
-                                    mDeliverQtyByProductId.put(freeProductBO.getProductId(), (qty + freeProductBO.getQuantitySelected()));
-                                } else {
-                                    mDeliverQtyByProductId.put(freeProductBO.getProductId(), freeProductBO.getQuantitySelected());
+                                    if (mDeliverQtyByProductId.get(freeProductBO.getProductId()) != null) {
+                                        int qty = mDeliverQtyByProductId.get(freeProductBO.getProductId());
+                                        mDeliverQtyByProductId.put(freeProductBO.getProductId(), (qty + freeProductBO.getQuantitySelected()));
+                                    } else {
+                                        mDeliverQtyByProductId.put(freeProductBO.getProductId(), freeProductBO.getQuantitySelected());
+                                    }
                                 }
                             }
                         }
@@ -3611,5 +3613,76 @@ public class OrderHelper {
 
         }
         return line_total_price;
+    }
+
+    public boolean returnReplacementAmountValidation(boolean isCashCustomer,boolean isFromOrder,Context context) {
+
+        double totalReturnAmount = 0;
+        double totalReplaceAmount = 0;
+
+        SalesReturnHelper salesReturnHelper=SalesReturnHelper.getInstance(context);
+        Vector<ProductMasterBO> list=(!isFromOrder?salesReturnHelper.getSalesReturnProducts():businessModel.productHelper.getProductMaster()) ;
+
+        for (ProductMasterBO product : list){
+            List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
+            if (reasonList != null) {
+                int totalReturnQty=0;
+                for (SalesReturnReasonBO reasonBO : reasonList) {
+                    if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
+                        //Calculate sales return total qty and price.
+                        int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
+
+                        totalReturnQty+=totalQty;
+                    }
+                }
+                totalReturnAmount+=(totalReturnQty*product.getSrp());
+            }
+
+
+
+            // Calculate replacement qty price.
+            int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
+            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * product.getSrp();
+        }
+
+        //Check for whether the replacement amount and return amount are same, works only for Cash customer
+        if(isCashCustomer) {
+            if (totalReturnAmount == totalReplaceAmount)
+                return false;
+            else
+                return true;
+        }else{
+            //Check for whether the replacement amnt is not greater than the return amount, works only for Credit customer
+            if (totalReturnAmount >= totalReplaceAmount)
+                return true;
+            else
+                return false;
+        }
+    }
+
+    public double getTotalReturnValue(LinkedList<ProductMasterBO> productList){
+        double totalReturnAmount=0;
+        try {
+            for (ProductMasterBO product : productList) {
+                List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
+                if (reasonList != null) {
+                    int totalReturnQty = 0;
+                    for (SalesReturnReasonBO reasonBO : reasonList) {
+                        if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
+                            //Calculate sales return total qty and price.
+                            int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
+
+                            totalReturnQty += totalQty;
+                        }
+                    }
+                    totalReturnAmount += (totalReturnQty * product.getSrp());
+                }
+
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+        return  totalReturnAmount;
     }
 }

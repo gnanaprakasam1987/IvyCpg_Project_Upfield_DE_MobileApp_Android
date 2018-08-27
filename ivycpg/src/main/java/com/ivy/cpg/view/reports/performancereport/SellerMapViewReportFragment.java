@@ -41,14 +41,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.ui.IconGenerator;
-import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
-import com.ivy.cpg.view.reports.performancereport.OutletReportBO;
-import com.ivy.cpg.view.reports.performancereport.SellerListFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.profile.DirectionsJSONParser;
@@ -57,7 +53,6 @@ import com.ivy.utils.FontUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -93,6 +88,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
     private LatLngBounds.Builder builder = null;
 
     private OutletPerfomanceHelper outletPerfomanceHelper;
+    private ArrayList<Integer> mSelectedUsers = null;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -215,21 +211,40 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
         this.iv_deviated = infoWindow.findViewById(R.id.iv_deviate);
         this.infoSeller = infoWindow.findViewById(R.id.tv_seller);
 
-        this.infoTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-        this.infoLocName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-        this.infoAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-        this.infoTimeIn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-        this.infoTimeOut.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-        this.infoSalesValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-        this.infoSeller.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        this.infoTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        this.infoLocName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        this.infoAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        this.infoTimeIn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        this.infoTimeOut.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        this.infoSalesValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        this.infoSeller.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
-        ((TextView) infoWindow.findViewById(R.id.lbl_time_in)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-        ((TextView) infoWindow.findViewById(R.id.lbl_time_out)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-        ((TextView) infoWindow.findViewById(R.id.lbl_sales_value)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        ((TextView) infoWindow.findViewById(R.id.lbl_time_in)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        ((TextView) infoWindow.findViewById(R.id.lbl_time_out)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        ((TextView) infoWindow.findViewById(R.id.lbl_sales_value)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMyLocationEnabled(false);
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+
+        if (outletPerfomanceHelper.getLstUsers().size() == 1) {
+            mSelectedUsers = new ArrayList();
+            mSelectedUsers.add(outletPerfomanceHelper.getLstUsers().get(0).getUserId());
+            mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    updateUserSelection(mSelectedUsers, true);
+                }
+            });
+        } else {
+            mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    updateUserSelection(null, true);
+                }
+            });
+        }
+
 
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
@@ -278,10 +293,6 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
     }
 
     private void onBackButtonClick() {
-        Intent i = new Intent(getActivity(), HomeScreenActivity.class);
-        i.putExtra("menuCode", "MENU_REPORT");
-        i.putExtra("title", "aaa");
-        startActivity(i);
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 
@@ -315,7 +326,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
     @Override
     public void updateUserSelection(ArrayList<Integer> mSelectedUsers, boolean isAlluser) {
         try {
-
+            this.mSelectedUsers = mSelectedUsers;
             if (lstReports != null) {
 
                 LatLng storeLatLng;
@@ -346,20 +357,25 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                     for (OutletReportBO bo : lstReports) {
                         if (mSelectedUsers != null && mSelectedUsers.contains(bo.getUserId())) {
                             totalRetailers += 1;
+                            if (bo.isVisited != 0)
+                                totalRetailers += 1;
                         }
                     }
                 }
 
                 int sequence = 0;
                 for (OutletReportBO bo : lstReports) {
-                    if ((isAlluser && lstLastVisitedRetailerIds.contains(bo.getRetailerId()))
-                            || (mSelectedUsers != null && mSelectedUsers.contains(bo.getUserId()))) {
+                    if ((isAlluser && outletPerfomanceHelper.getLstUsers().size() > 1
+                            && lstLastVisitedRetailerIds.contains(bo.retailerId))
+                            || (mSelectedUsers != null && mSelectedUsers.contains(bo.userId))) {
 
                         if (isValidLatLng(bo.getLatitude(), bo.getLongitude())) {
                             if (bo.getLatitude() != 0 && bo.getLongitude() != 0) {
 
                                 if (!isAlluser) {
-                                    sequence += 1;
+                                    if (bo.isVisited != 0)
+                                        sequence += 1;
+
                                     bo.setSequence(sequence);
 
                                     //update screen title
@@ -385,14 +401,19 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                                         anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
                                         .snippet(bo.getRetailerId() + "");
 
-                                if (bo.getSequence() == 1) {
+                                if (bo.isVisited == 0) {
+                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_marker_nonvisited_person)));
+                                } else if (bo.sequence == 1) {
                                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("S")));
                                 } else if (bo.getSequence() != 0 && bo.getSequence() == totalRetailers) {
                                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("E")));
                                 } else {
                                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity(), R.drawable.ic_marker_person)));
                                 }
-                                markerList.add(markerOptions);
+
+                                if (bo.isVisited != 0) {
+                                    markerList.add(markerOptions);
+                                }
 
                                 mMap.addMarker(markerOptions);
 
@@ -474,7 +495,9 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                 infoTitle.setText(marker.getTitle());
                 int retailerd = SDUtil.convertToInt(marker.getSnippet());
                 for (OutletReportBO bo : lstReports) {
-                    if (bo.getRetailerId() == retailerd) {
+                    if ((mSelectedUsers == null
+                            && bo.getRetailerId() == retailerd)
+                            || (bo.getRetailerId() == retailerd && mSelectedUsers.contains(bo.userId))) {
                         infoLocName.setText(bo.getLocationName());
                         infoAddress.setText(bo.getAddress());
                         infoTimeIn.setText(bo.getTimeIn());

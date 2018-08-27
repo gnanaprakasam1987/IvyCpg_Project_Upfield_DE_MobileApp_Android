@@ -1919,9 +1919,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     orderDeliveryHelper.updateProductWithExcessStock(this);
                 }
 
+                // Tin Expiry validation
                 if (bmodel.configurationMasterHelper.IS_RESTRICT_ORDER_TAKING
                         && (bmodel.getRetailerMasterBO().getRField4().equals("1")
-                        || (bmodel.getRetailerMasterBO().getTinExpDate() != null && !bmodel.getRetailerMasterBO().getTinExpDate().isEmpty() && SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.getRetailerMasterBO().getTinExpDate(), "yyyy/MM/dd") > 0))) {
+                        || (bmodel.getRetailerMasterBO().getTinExpDate() != null
+                        && !bmodel.getRetailerMasterBO().getTinExpDate().isEmpty() &&
+                        SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                                bmodel.getRetailerMasterBO().getTinExpDate(), "yyyy/MM/dd") > 0))) {
                     bmodel.showAlert(getResources().getString(R.string.order_not_allowed_for_retailer), 0);
                     isCreated = false;
                     return;
@@ -3202,8 +3206,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
             }
-        }
-        if (menu.getConfigCode()
+        } else if (menu.getConfigCode()
                 .equals(MENU_SOD) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
@@ -3690,6 +3693,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 orderDeliveryHelper.downloadOrderDeliveryHeader(this);
 
                 if (orderDeliveryHelper.getOrderHeaders().size() > 0) {
+                    bmodel.outletTimeStampHelper
+                            .saveTimeStampModuleWise(
+                                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    SDUtil.now(SDUtil.TIME),
+                                    MENU_ORD_DELIVERY);
+
                     Intent i = new Intent(this,
                             OrderDeliveryActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

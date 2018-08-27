@@ -40,7 +40,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.ivy.core.IvyConstants;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -58,9 +57,10 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.About;
-import com.ivy.sd.png.view.AttendanceActivity;
+import com.ivy.cpg.view.attendance.AttendanceActivity;
 import com.ivy.sd.png.view.ChangePasswordActivity;
 import com.ivy.sd.png.view.DistributorSelectionActivity;
+import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PasswordLockDialogFragment;
 import com.ivy.sd.png.view.ResetPasswordDialog;
 import com.ivy.sd.png.view.UserSettingsActivity;
@@ -68,7 +68,6 @@ import com.ivy.sd.png.view.UserSettingsActivity;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.UnknownFormatConversionException;
 
 
@@ -285,8 +284,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
 
     @Override
     public void goToHomeScreen() {
-        BusinessModel.loadActivity(LoginScreen.this,
-                DataMembers.actHomeScreen);
+       // BusinessModel.loadActivity(LoginScreen.this,
+               // DataMembers.actHomeScreen);
+
+       Intent myIntent = new Intent(this, HomeScreenActivity.class);
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityForResult(myIntent, 0);
     }
 
     @Override

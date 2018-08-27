@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1320"
-    android:versionName="2.132.0.2243">
+    android:versionName="2.132.0.2523">
 
     <supports-screens
         android:anyDensity="true"
@@ -192,7 +192,7 @@
             android:name="com.ivy.sd.png.view.InitiativeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.AttendanceActivity"
+            android:name="com.ivy.cpg.view.attendance.AttendanceActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.NonVisitActivity"
@@ -203,9 +203,7 @@
         <activity
             android:name="com.ivy.sd.png.view.ViewImage"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.PlanningSubScreen"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
@@ -374,7 +372,7 @@
             android:name="com.ivy.cpg.view.stockcheck.CombinedStockFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.stockcheck.AvailabiltyCheckActivity"
+            android:name="com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
@@ -419,7 +417,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.van.ManualVanLoadActivity"
+            android:name="com.ivy.cpg.view.van.manualvanload.ManualVanLoadActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.van.StockViewActivity"
@@ -501,9 +499,7 @@
         <activity
             android:name="com.ivy.sd.png.view.DamageStockFragmentActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.van.CurrentStockBatchViewActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.sd.png.view.CaptureSignatureActivity"
             android:screenOrientation="portrait" />
@@ -524,7 +520,7 @@
             android:name="com.ivy.sd.png.view.EmptyReturnActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NonFieldActivity"
+            android:name="com.ivy.cpg.view.nonfield.NonFieldActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.RoadActivity"
@@ -591,7 +587,7 @@
             android:name="com.ivy.sd.print.CommonPrintPreviewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.TimeTrackingActivity"
+            android:name="com.ivy.cpg.view.attendance.inout.TimeTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.TLAttendanceActivity"
@@ -604,13 +600,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name="com.ivy.sd.png.view.LeaveApproval"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.ExpenseActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.WebViewActivity"
+            android:name="com.ivy.cpg.view.webview.WebViewActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.camera.NativeCameraActivity"
@@ -643,7 +633,7 @@
             android:name="com.ivy.sd.png.view.About"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NonFieldFragment"
+            android:name="com.ivy.cpg.view.nonfield.NonFieldFragment"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.profile.ProfileEditActivity"
@@ -771,13 +761,18 @@
             android:screenOrientation="portrait" />
         <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity"
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.asset.PosmGallery"
+            android:screenOrientation="portrait" />
+        android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.order.scheme.QPSSchemeApply"
             android:screenOrientation="portrait" />
 
         <activity
@@ -791,6 +786,10 @@
 
         <activity
             android:name="com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails.SalesReturnDetailsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.cpg.view.asset.AssetServiceActivity"
             android:screenOrientation="portrait" />
 
 

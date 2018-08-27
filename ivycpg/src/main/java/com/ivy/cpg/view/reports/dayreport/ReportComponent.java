@@ -14,7 +14,7 @@ import dagger.Component;
 @Component(modules = {ReportModule.class})
 public interface ReportComponent {
     DayReportHelper provideDayReportHelper();
-    void inject(DayReportModel main);
+    void inject(DayReportPresenterImpl main);
     void inject(OrderReportModel main);
     OrderReportHelper provideOrderReportHelper();
 }

@@ -63,7 +63,6 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
     private EditText tripEnding;
 
     private Context mContext;
-    private String imageUrl;
     private TextView distanceCoveredEt;
     private String imageFileName = "", photoNamePath;
     private double startingvalue;
@@ -73,17 +72,8 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
     private Button startjourney;
     private Button endjourney;
     private TypedArray typearr;
-    private Toolbar toolbar;
-    private TextView datevalue, timevalue, timevaluestart, endtimevalue, timeend, enddatevalue;
-    private CustomDigitalClock clk1, clk2;
-    private RelativeLayout  distancelayout;
-    private LinearLayout enddatetime_layout,endingtriplayout;
-    private Intent loadActivity;
-    private boolean isFromPlanning = false;
     private static final String TAG = "OdaMeterScreen";
-    final String ACTION_SCANNERINPUTPLUGIN = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
-    final String EXTRA_PARAMETER = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
-    final String DISABLE_PLUGIN = "DISABLE_PLUGIN";
+
     private static final int CAMERA_REQUEST_CODE = 1;
     private boolean isStartImg = false;
 
@@ -97,7 +87,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
             checkAndRequestPermissionAtRunTime(3);
         }
@@ -119,7 +109,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
+
         tripStarting = findViewById(R.id.trip_starting_reading);
         // capture image starting
         ivStartTrip = findViewById(R.id.starttripimgiv);
@@ -135,22 +125,22 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         tripEnding.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         tripEnding.setKeyListener(DigitsKeyListener.getInstance(false, true));
         distanceCoveredEt = findViewById(R.id.distance_covered);
-        datevalue = findViewById(R.id.datevalue);
-        timevalue = findViewById(R.id.timevalue);
-        timevaluestart = findViewById(R.id.timevaluestart);
-        endtimevalue = findViewById(R.id.endtimevalue);
-        timeend = findViewById(R.id.timeend);
-        enddatevalue = findViewById(R.id.enddatevalue);
+        TextView datevalue = findViewById(R.id.datevalue);
+        TextView timevalue = findViewById(R.id.timevalue);
+        TextView timevaluestart = findViewById(R.id.timevaluestart);
+        TextView endtimevalue = findViewById(R.id.endtimevalue);
+        TextView timeend = findViewById(R.id.timeend);
+        TextView enddatevalue = findViewById(R.id.enddatevalue);
         TextView vanno = findViewById(R.id.vanno);
         TextView vannovalue = findViewById(R.id.vannovalue);
         startjourney = findViewById(R.id.startjourney);
         endjourney = findViewById(R.id.endjourney);
-        endingtriplayout = findViewById(R.id.endingtriplayout);
-        distancelayout = findViewById(R.id.distancelayout);
-        enddatetime_layout = findViewById(R.id.enddatetime_layout);
+        LinearLayout endingtriplayout = findViewById(R.id.endingtriplayout);
+        RelativeLayout distancelayout = findViewById(R.id.distancelayout);
+        LinearLayout enddatetime_layout = findViewById(R.id.enddatetime_layout);
 
-        clk1 = findViewById(R.id.digitalClock1);
-        clk2 = findViewById(R.id.digitalClock2);
+        CustomDigitalClock clk1 = findViewById(R.id.digitalClock1);
+        CustomDigitalClock clk2 = findViewById(R.id.digitalClock2);
 
         vanno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         vannovalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -329,8 +319,8 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         if (product.getIsstarted() == 1 && product.getIsended() == 1) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-            String CurrentString = product.getStartdatetime().toString();
-            String CurrentString1 = product.getEndtime().toString();
+            String CurrentString = product.getStartdatetime();
+            String CurrentString1 = product.getEndtime();
             String[] separated = CurrentString.split(" ");
             timevaluestart.setText(separated[1]);
             datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(separated[0],
@@ -485,11 +475,6 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
                 String path = photoNamePath + "/" + imageFileName;
                 try {
-                    Intent i = new Intent();
-                    i.setAction(ACTION_SCANNERINPUTPLUGIN);
-                    i.putExtra(EXTRA_PARAMETER, DISABLE_PLUGIN);
-                    mContext.sendBroadcast(i);
-
                     Intent intent = new Intent(mContext, CameraActivity.class);
                     intent.putExtra(getResources().getString(R.string.quality), 40);
                     intent.putExtra(getResources().getString(R.string.path), path);
@@ -561,7 +546,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                         + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
                         + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/";
 
-                imageUrl = (path + imageFileName);
+                String imageUrl = (path + imageFileName);
 
 
                 Glide.with(getApplicationContext())
@@ -606,44 +591,13 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     private void tripEndInsideTry(String value) {
         try {
-            /*int indexOFdec = value.indexOf(".");
-
-            if (indexOFdec >= 0) {
-                if (value.substring(indexOFdec).length() > 2) {
-
-                    Toast.makeText(
-                            getApplicationContext(),
-                            getResources().getString(
-                                    R.string.value_exceeded),
-                            Toast.LENGTH_SHORT).show();
-                    tripEnding.setText(value.substring(0,
-                            value.length() - 1));
-                    endingvalue = SDUtil.convertToDouble(value
-                            .substring(0, value.length() - 1));
-
-                }
-            }*/
-        /*    if (value.length() > 6 && indexOFdec < 0) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        getResources().getString(
-                                R.string.value_exceeded),
-                        Toast.LENGTH_SHORT).show();
-                tripEnding.setText(value.substring(0,
-                        value.length() - 1));
-                endingvalue = SDUtil.convertToDouble(value
-                        .substring(0, value.length() - 1));
-
-            }*/
             if (endingvalue > startingvalue)
                 distanceCovered = endingvalue - startingvalue;
             else
                 distanceCovered = 0;
 
-            /*String tvDistanceCoveredEt = distanceCovered + "";
-            distanceCoveredEt.setText(tvDistanceCoveredEt);*/
             double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
-            // String tvDistanceCoveredEt = distance + "";
+
             distanceCoveredEt.setText(String.format("%.2f", distance));
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -652,43 +606,16 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     private void tripStartInsideTry(String value) {
         try {
-            /*int indexOFdec = value.indexOf('.');
 
-            if (indexOFdec >= 0 && value.substring(indexOFdec).length() > 2) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        getResources().getString(
-                                R.string.value_exceeded),
-                        Toast.LENGTH_SHORT).show();
-                tripStarting.setText(value.substring(0,
-                        value.length() - 1));
-                startingvalue = SDUtil.convertToDouble(value
-                        .substring(0, value.length() - 1));
-
-            }*/
-          /*  if (value.length() > 6 && indexOFdec < 0) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        getResources().getString(
-                                R.string.value_exceeded),
-                        Toast.LENGTH_SHORT).show();
-                tripStarting.setText(value.substring(0,
-                        value.length() - 1));
-                startingvalue = SDUtil.convertToDouble(value
-                        .substring(0, value.length() - 1));
-
-            }*/
             if (endingvalue > startingvalue)
                 distanceCovered = endingvalue - startingvalue;
             else
                 distanceCovered = 0;
 
-            //  String tvDistanceCoveredEt = distanceCovered + "";
-            //  distanceCoveredEt.setText(tvDistanceCoveredEt);
 
 
             double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
-            // String tvDistanceCoveredEt = distance + "";
+
             distanceCoveredEt.setText(String.format("%.2f", distance));
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -735,23 +662,16 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                         .setCancelable(false)
                         .setTitle(
                                 getResources().getString(R.string.doyouwantgoback))
-                        .setPositiveButton("Ok",
+                        .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-
-                                        loadActivity = new Intent(OdaMeterScreen.this, HomeScreenActivity.class);
-                                        if (isFromPlanning)
-                                            loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
-                                        else
-                                            loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-                                        startActivity(loadActivity);
                                         finish();
                                         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 
                                     }
                                 })
-                        .setNegativeButton("Cancel",
+                        .setNegativeButton(getResources().getString(R.string.cancel),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
@@ -768,16 +688,10 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                         .setTitle(
                                 getResources().getString(
                                         R.string.saved_successfully))
-                        .setPositiveButton("Ok",
+                        .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        loadActivity = new Intent(OdaMeterScreen.this, HomeScreenActivity.class);
-                                        if (isFromPlanning)
-                                            loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
-                                        else
-                                            loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-                                        startActivity(loadActivity);
                                         finish();
 
                                     }
@@ -795,7 +709,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                                 getResources()
                                         .getString(
                                                 R.string.ending_reading_should_be_greater_than_starting_reading))
-                        .setPositiveButton("Ok",
+                        .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
@@ -965,7 +879,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         Button view = (Button) v;
 
         if (view == startjourney) {
-            if (!(Double.compare(Double.valueOf(SDUtil.convertToDouble(tripStarting.getText().toString())), Double.valueOf(0)) > 0)) {
+            if (!(Double.compare(SDUtil.convertToDouble(tripStarting.getText().toString()), 0d) > 0)) {
                 showDialog(3);
             } else {
                 new SaveOdameter().execute();
@@ -975,7 +889,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
         if (view == endjourney) {
             bmodel.endjourneyclicked = true;
-            if (!(Double.compare(Double.valueOf(SDUtil.convertToDouble(tripStarting.getText().toString())), Double.valueOf(0)) > 0))
+            if (!(Double.compare(SDUtil.convertToDouble(tripStarting.getText().toString()), 0d) > 0))
                 showDialog(4);
             else {
                 if (SDUtil.convertToDouble(tripEnding.getText().toString()) < SDUtil

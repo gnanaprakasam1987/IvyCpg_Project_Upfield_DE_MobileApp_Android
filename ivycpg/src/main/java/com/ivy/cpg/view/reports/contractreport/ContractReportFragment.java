@@ -4,7 +4,6 @@ package com.ivy.cpg.view.reports.contractreport;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -110,10 +109,6 @@ public class ContractReportFragment extends IvyBaseFragment {
         unbinder.unbind();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
 
     class MyAdapter extends BaseAdapter {
         ArrayList<ContractBO> arrayList;

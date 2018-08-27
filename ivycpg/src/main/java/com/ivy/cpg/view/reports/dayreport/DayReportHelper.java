@@ -5,6 +5,8 @@ import android.database.Cursor;
 
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.commons.SDUtil;
@@ -21,6 +23,7 @@ public class DayReportHelper {
 
     private Context mContext;
     private BusinessModel mBusinessModel;
+    private DailyReportBO dailyRep;
 
     public DayReportHelper(Context context) {
         this.mContext = context;
@@ -173,6 +176,266 @@ public class DayReportHelper {
             Commons.printException(e);
         }
         return reportOrderDetBooking;
+    }
+
+    /**
+     * @param orderType 0 - piece; 1 - outer; 2 - case
+     * @return
+     */
+    public ArrayList<ConfigureBO> downloadDailyReportDropSize(int orderType) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        ArrayList<ConfigureBO> categoryDropSizeBO = new ArrayList<ConfigureBO>();
+
+        int mCoveredStoreCount = 0;
+        int contentLevel = 0;
+        int parentLevel = 0;
+
+
+        Cursor c = db
+                .selectSQL("SELECT COUNT(DISTINCT Retailerid) FROM InvoiceMaster"
+                        + " WHERE InvoiceDate='"
+                        + SDUtil.now(SDUtil.DATE_GLOBAL)+"'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+                mCoveredStoreCount = c.getInt(0);
+            }
+            c.close();
+        }
+
+
+        if (mCoveredStoreCount > 0) {
+
+            String qty = "SUM(ID.Qty) AS QTY";
+
+            if (orderType == 1)
+                qty = "(SUM(ID.Qty)/ID.dOuomQty) AS QTY";
+            else if (orderType == 2)
+                qty = "(SUM(ID.Qty)/ID.uomCount) AS QTY";
+
+
+            c = db.selectSQL("SELECT IFNULL(PL1.Sequence,0), IFNULL(PL3.Sequence,0), PL1.LevelName FROM ConfigActivityFilter CF " +
+                    "LEFT JOIN ProductLevel PL1 ON PL1.LevelId = CF.ProductFilter1 " +
+                    "LEFT JOIN ProductLevel PL3 ON PL3.LevelId = CF.ProductContent " +
+                    " WHERE CF.ActivityCode = 'MENU_STK_ORD'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    parentLevel = c.getInt(0);
+                    contentLevel = c.getInt(1);
+                }
+            }
+
+
+            int loopEnd = contentLevel - parentLevel + 1;
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("select pdname,sum(qty) from (");
+            sb.append("select PM1.pid as pdid,PM1.pname as pdname," + qty + "  FROM ProductMaster PM1 ");
+            for (int i = 2; i <= loopEnd; i++) {
+                sb.append("inner join productmaster PM" + i);
+                sb.append(" ON PM" + i + ".Parentid = PM" + (i - 1) + ".pid ");
+            }
+
+            sb.append("inner join invoicedetails id on id.productid=PM" + loopEnd + ".pid ");
+            sb.append(" WHERE PM1.PLid IN (SELECT levelid ");
+            sb.append(" FROM productlevel WHERE sequence=" + parentLevel + ")");
+            sb.append(" and ID.invoiceID IN(SELECT InvoiceNo FROM InvoiceMaster");
+            sb.append(" WHERE InvoiceDate='" + mBusinessModel.userMasterHelper.getUserMasterBO().getDownloadDate() + "')");
+            sb.append(" GROUP BY ID.ProductID ORDER BY PM1.Pid)");
+            sb.append(" group by pdid");
+            c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    ConfigureBO con = new ConfigureBO();
+                    con.setMenuName(c.getString(0));
+                    con.setMenuNumber((c.getInt(1) / mCoveredStoreCount) + "");
+                    categoryDropSizeBO.add(con);
+                }
+                c.close();
+            }
+        }
+
+
+        db.closeDB();
+
+        return categoryDropSizeBO;
+    }
+
+    public void downloadDailyReport() {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuffer sb = new StringBuffer();
+        dailyRep = new DailyReportBO();
+        Cursor c = null;
+
+        if (!mBusinessModel.configurationMasterHelper.IS_INVOICE) {
+            sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
+            sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            c = db
+                    .selectSQL(sb.toString());
+            if (c != null) {
+                if (c.moveToNext()) {
+
+                    dailyRep.setEffCoverage(c.getString(0));
+                    dailyRep.setTotLines(c.getInt(1) + "");
+                    dailyRep.setTotValues(c.getDouble(2) + "");
+                }
+                c.close();
+            }
+        } else {
+            sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
+            sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            c = db
+                    .selectSQL(sb.toString());
+            if (c != null) {
+                if (c.moveToNext()) {
+                    dailyRep.setEffCoverage(c.getString(0));
+                    dailyRep.setTotLines(c.getInt(1) + "");
+                    dailyRep.setTotValues(c.getDouble(2) + "");
+                }
+                c.close();
+            }
+        }
+        sb = new StringBuffer();
+        sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
+        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setMspValues(c.getString(0));
+                dailyRep.setNoofOrder(c.getString(1));
+
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select sum(pieceQty),sum(caseQty),sum(outerQty) from OrderDetail OD ");
+        sb.append("inner join OrderHeader oh on oh.orderid=od.orderid ");
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setPcsQty(c.getString(0));
+                dailyRep.setCsQty(c.getString(1));
+                dailyRep.setOuQty(c.getString(2));
+
+            }
+            c.close();
+        }
+
+
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM " +
+                "LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                + " where RBM.isdeviated='Y' and RBM.isVisited='Y'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotAdhoc(c.getString(0));
+            }
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
+        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
+        sb.append("LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = rm.RetailerID ");
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotAdhocProductive(c.getString(0));
+
+            }
+            c.close();
+        }
+
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                + " where RMI.isToday='1'");
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlanned(c.getString(0));
+
+
+            }
+            c.close();
+        }
+        c = db.selectSQL("select count(distinct RM.RetailerID) from RetailerMaster RM"
+                + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                + " where RBM.isVisited='Y' and RMI.isToday='1'");//space added before where condition
+
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlannedVisit(c.getString(0));
+
+
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(oh.RetailerID) from OrderHeader oh ");
+        sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
+        sb.append(" inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid ");
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setTotPlannedProductive(c.getString(0));
+
+            }
+            c.close();
+        }
+
+        db.closeDB();
+    }
+
+    /**
+     * kellogs specific
+     */
+    public void downloadDailyReportKellogs() {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.openDataBase();
+        StringBuffer sb = new StringBuffer();
+        Cursor c = null;
+
+        sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
+        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db
+                .selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+
+                dailyRep.setKlgsEffCoverage(c.getString(0));
+                dailyRep.setKlgsTotLines(c.getInt(1) + "");
+                dailyRep.setKlgsTotValue(c.getDouble(2) + "");
+            }
+            c.close();
+        }
+
+        db.closeDB();
+    }
+
+    public DailyReportBO getDailyRep(){
+        return dailyRep;
+    }
+
+    public String QT(String data) {
+        return "'" + data + "'";
     }
 
 }

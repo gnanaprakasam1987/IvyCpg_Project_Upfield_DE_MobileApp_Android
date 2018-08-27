@@ -107,8 +107,6 @@ public class DamageStockFragmentActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void onBackButtonClick() {
-        startActivity(new Intent(DamageStockFragmentActivity.this,
-                HomeScreenActivity.class).putExtra("menuCode", "MENU_LOAD_MANAGEMENT"));
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }

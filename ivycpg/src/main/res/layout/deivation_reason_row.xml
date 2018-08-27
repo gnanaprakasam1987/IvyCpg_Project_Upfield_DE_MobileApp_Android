@@ -27,4 +27,28 @@
         android:hint="@string/remark_hint"
         android:padding="12dp"
         android:layout_marginLeft="12dp" />
+
+    <LinearLayout
+        android:id="@+id/reasonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_10dp"
+        android:layout_marginTop="@dimen/dimen_4dp"
+        android:layout_marginBottom="@dimen/dimen_4dp"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/reasonSpinner"
+            android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:overlapAnchor="false" />
+
+        <TextView
+            android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+            android:layout_height="1dp"
+            android:background="@color/GRAY" />
+    </LinearLayout>
 </LinearLayout>

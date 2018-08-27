@@ -351,6 +351,9 @@
                 android:layout_toEndOf="@+id/llstockCheckedProductscount"
                 android:visibility="visible"
                 android:paddingLeft="20dp"
+                android:paddingStart="@dimen/dimen_20dp"
+                android:paddingRight="@dimen/dimen_20dp"
+                android:paddingEnd="@dimen/dimen_20dp"
                 android:layout_toRightOf="@id/llstockCheckedProductscount"
                 android:orientation="vertical">
 

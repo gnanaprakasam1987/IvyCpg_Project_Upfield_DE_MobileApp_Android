@@ -33,6 +33,7 @@ public class AssetTrackingBO {
     private String locationName;
     private ArrayList<String> imageList;
 
+
     public AssetTrackingBO() {
 
     }
@@ -68,6 +69,7 @@ public class AssetTrackingBO {
         this.targetLocId = assetTrackingBO.getTargetLocId();
         this.locationName = assetTrackingBO.getLocationName();
         this.imageList = assetTrackingBO.getImageList();
+        this.isSelectedReason = assetTrackingBO.isSelectedReason();
     }
 
     public int getExecutorQty() {
@@ -381,7 +383,7 @@ public class AssetTrackingBO {
     }
 
     public ArrayList<String> getImageList() {
-        if(imageList==null)
+        if (imageList == null)
             return new ArrayList<String>();
         return imageList;
     }
@@ -399,4 +401,15 @@ public class AssetTrackingBO {
     public void setParentHierarchy(String parentHierarchy) {
         this.parentHierarchy = parentHierarchy;
     }
+
+    public boolean isSelectedReason() {
+        return isSelectedReason;
+    }
+
+    public void setSelectedReason(boolean selectedReason) {
+        isSelectedReason = selectedReason;
+    }
+
+    private boolean isSelectedReason = false;
+
 }
