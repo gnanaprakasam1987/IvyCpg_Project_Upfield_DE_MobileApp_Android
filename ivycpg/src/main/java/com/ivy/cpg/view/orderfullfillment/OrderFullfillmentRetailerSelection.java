@@ -1,9 +1,8 @@
 package com.ivy.cpg.view.orderfullfillment;
 
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -33,16 +32,15 @@ import java.util.ArrayList;
 public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionBar implements SearchView.OnQueryTextListener {
     private BusinessModel bmodel;
     private ListView listView;
-    private OrderFullfillmentBO retailerObj;
-    private ArrayList<OrderFullfillmentBO> retailer;
-    private Toolbar toolbar;
+    private OrderFullfillmentHelper orderFullfillmentHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orderfullfillment_retailer_selection);
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        toolbar = findViewById(R.id.toolbar);
+        orderFullfillmentHelper = OrderFullfillmentHelper.getInstance(this);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -53,9 +51,9 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        listView = (ListView) findViewById(R.id.listView1);
+        listView = findViewById(R.id.listView1);
         listView.setCacheColorHint(0);
-        bmodel.orderfullfillmenthelper.downloadOrderFullfillmentRetailers();
+        orderFullfillmentHelper.downloadOrderFullfillmentRetailers();
         loadFilteredData((null));
     }
 
@@ -63,18 +61,17 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_order_fullfillment, menu);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu
-                .findItem(R.id.search));
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         setSearchTextColour(searchView);
         searchView.setOnQueryTextListener(this);
         searchView.setQueryHint("Search Retailer");
         // style searchbtn
-        ImageView searchBtn = (ImageView) searchView
+        ImageView searchBtn = searchView
                 .findViewById(R.id.search_button);
         searchBtn.setImageResource(R.drawable.icon_search);
 
         // style Clear Btn
-        ImageView close_btn = (ImageView) searchView
+        ImageView close_btn = searchView
                 .findViewById(R.id.search_close_btn);
         close_btn.setImageResource(R.drawable.ic_clear_red);
 
@@ -123,17 +120,18 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
             return items.size();
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public @NonNull
+        View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
             final ViewHolder holder;
-            retailerObj = (OrderFullfillmentBO) items.get(position);
+            OrderFullfillmentBO retailerObj = items.get(position);
 
             if (convertView == null) {
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(
-                        R.layout.activity_orderfullfillment_retailer_selection_list_item, null, false);
+                        R.layout.activity_orderfullfillment_retailer_selection_list_item, parent, false);
                 holder = new ViewHolder();
-                holder.outletNameTextView = (TextView) convertView.findViewById(R.id.outletName_tv);
+                holder.outletNameTextView = convertView.findViewById(R.id.outletName_tv);
                 holder.outletNameTextView.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
@@ -193,9 +191,9 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
     public void loadFilteredData(String filter) {
         try {
             OrderFullfillmentBO bo;
-            retailer = new ArrayList<OrderFullfillmentBO>();
-            for (int i = 0; i < bmodel.orderfullfillmenthelper.getOrderFullfillment().size(); i++) {
-                bo = bmodel.orderfullfillmenthelper.getOrderFullfillment().get(i);
+            ArrayList<OrderFullfillmentBO> retailer = new ArrayList<>();
+            for (int i = 0; i < orderFullfillmentHelper.getOrderFullfillment().size(); i++) {
+                bo = orderFullfillmentHelper.getOrderFullfillment().get(i);
 
                 if (filter != null) {
                     if (bo.getRetailername().toLowerCase().contains(filter.toLowerCase())) {
@@ -203,8 +201,8 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
                     }
                 } else
                     retailer.add(bo);
-
             }
+
             RetailerSelectionAdapter mSchedule = new RetailerSelectionAdapter(
                     retailer);
             // mSchedule.notifyDataSetChanged();
@@ -215,9 +213,7 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
     }
 
     private void setSearchTextColour(SearchView searchView) {
-        int searchPlateId = searchView.getContext().getResources()
-                .getIdentifier("android:id/search_src_text", null, null);
-        LinearLayout searchPlate = (LinearLayout) searchView
+        LinearLayout searchPlate = searchView
                 .findViewById(R.id.search_plate);
         searchPlate
 

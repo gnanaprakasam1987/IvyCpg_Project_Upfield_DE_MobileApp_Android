@@ -23,11 +23,11 @@ public class OrderFullfillmentHelper {
     private BusinessModel bmodel;
     private static OrderFullfillmentHelper instance = null;
     private ArrayList<OrderFullfillmentBO> oflist;
-    ArrayList<OrderFullfillmentBO> newlist;
+    private ArrayList<OrderFullfillmentBO> newlist;
 
-    protected OrderFullfillmentHelper(Context context) {
+    private OrderFullfillmentHelper(Context context) {
         this.context = context;
-        bmodel = (BusinessModel) context;
+        bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static OrderFullfillmentHelper getInstance(Context context) {
@@ -40,8 +40,8 @@ public class OrderFullfillmentHelper {
     /**
      * Load data from IndicativeOrder table *
      */
-    public ArrayList<OrderFullfillmentBO> downloadOrderFullfillmentRetailers() {
-        oflist = new ArrayList<OrderFullfillmentBO>();
+    public void downloadOrderFullfillmentRetailers() {
+        oflist = new ArrayList<>();
         try {
 
             OrderFullfillmentBO ofbo;
@@ -67,10 +67,9 @@ public class OrderFullfillmentHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return oflist;
     }
 
-    ArrayList<OrderFullfillmentBO> list;
+    private ArrayList<OrderFullfillmentBO> list;
 
     public ArrayList<OrderFullfillmentBO> getOrderFullfillment() {
         return oflist;
@@ -84,7 +83,7 @@ public class OrderFullfillmentHelper {
      * Load order fullfillment header *
      */
     public ArrayList<OrderFullfillmentBO> downloadOrderFullfillment(String rid) {
-        list = new ArrayList<OrderFullfillmentBO>();
+        list = new ArrayList<>();
         try {
             OrderFullfillmentBO bo;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -122,9 +121,9 @@ public class OrderFullfillmentHelper {
         return list;
     }
 
-    ArrayList<OrderFullfillmentBO> partialfullmentdetaillist;
+    private ArrayList<OrderFullfillmentBO> partialfullmentdetaillist;
 
-    public ArrayList<OrderFullfillmentBO> getPartialFullfillmentDetail() {
+    private ArrayList<OrderFullfillmentBO> getPartialFullfillmentDetail() {
         return partialfullmentdetaillist;
     }
 
@@ -132,9 +131,9 @@ public class OrderFullfillmentHelper {
      * Load PartialFullfillment Details *
      */
     public ArrayList<OrderFullfillmentBO> downloadPartialFullfillment(String orderid) {
-        Vector<Integer> pidset = new Vector<Integer>();
-        partialfullmentdetaillist = new ArrayList<OrderFullfillmentBO>();
-        ArrayList<OrderFullfillmentBO> listnew = new ArrayList<OrderFullfillmentBO>();
+        Vector<Integer> pidset = new Vector<>();
+        partialfullmentdetaillist = new ArrayList<>();
+        ArrayList<OrderFullfillmentBO> listnew = new ArrayList<>();
         try {
             OrderFullfillmentBO bo, bonew;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -229,7 +228,7 @@ public class OrderFullfillmentHelper {
             }
 
             //delete previous order
-            OrderFullfillmentBO pbo = null;
+            OrderFullfillmentBO pbo;
             for (int i = 0; i < list.size(); i++) {
                 Commons.print("size = " + list.get(i).getPartialdetailslist().size());
                 if (list.get(i).getPartialdetailslist().size() > 0) {
@@ -271,7 +270,7 @@ public class OrderFullfillmentHelper {
 
 
             OrderFullfillmentBO obo, newbo;
-            newlist = new ArrayList<OrderFullfillmentBO>();
+            newlist = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 obo = list.get(i);
                 for (int j = 0; j < getPartialFullfillmentDetail().size(); j++) {

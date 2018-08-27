@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.orderfullfillment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -34,12 +35,11 @@ import java.util.ArrayList;
  */
 public class PartialFullfillment extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
-    private ListView listView;
     private String orderid = "";
     ArrayList<OrderFullfillmentBO> partial;
     private EditText QUANTITY;
     private String append = "";
-    private Toolbar toolbar;
+    private OrderFullfillmentHelper orderFullfillmentHelper;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,9 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        orderFullfillmentHelper = OrderFullfillmentHelper.getInstance(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Set title to toolbar
         getSupportActionBar().setTitle(getResources().getString(R.string.partial_fullfillment));
@@ -65,8 +67,8 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
 
         if (getIntent().getExtras() != null)
             orderid = getIntent().getExtras().getString("orderid");
-        partial = bmodel.orderfullfillmenthelper.downloadPartialFullfillment(orderid);
-        listView = (ListView) findViewById(R.id.listView1);
+        partial = orderFullfillmentHelper.downloadPartialFullfillment(orderid);
+        ListView listView = findViewById(R.id.listView1);
         listView.setCacheColorHint(0);
 
         // On/Off order case and pcs
@@ -115,18 +117,17 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
         }
         PartialFullfillmentAdapter mSchedule = new PartialFullfillmentAdapter(
                 partial);
-        ;
         listView.setAdapter(mSchedule);
 
-        Button btnSave = (Button) findViewById(R.id.btn_save);
+        Button btnSave = findViewById(R.id.btn_save);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-            bmodel.orderfullfillmenthelper.savePartialFullfillment(partial, orderid);
-            Toast.makeText(PartialFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
-            finish();
+                orderFullfillmentHelper.savePartialFullfillment(partial, orderid);
+                Toast.makeText(PartialFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
     }
@@ -181,20 +182,21 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
             return items.size();
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public @NonNull
+        View getView(int position, View convertView, @NonNull ViewGroup parent) {
             try {
                 final ViewHolder holder;
-                partialobj = (OrderFullfillmentBO) items.get(position);
+                partialobj = items.get(position);
 
                 if (convertView == null) {
                     LayoutInflater inflater = getLayoutInflater();
                     convertView = inflater.inflate(
-                            R.layout.partial_fullfillment_list_item, null, false);
+                            R.layout.partial_fullfillment_list_item, parent, false);
                     holder = new ViewHolder();
-                    holder.productname = (CheckBox) convertView.findViewById(R.id.productnamecheckbox);
-                    holder.pieceqty = (EditText) convertView.findViewById(R.id.stock_and_order_listview_pcs_qty);
-                    holder.caseqty = (EditText) convertView.findViewById(R.id.stock_and_order_listview_case_qty);
-                    holder.outerqty = (EditText) convertView.findViewById(R.id.stock_and_order_listview_outer_case_qty);
+                    holder.productname = convertView.findViewById(R.id.productnamecheckbox);
+                    holder.pieceqty = convertView.findViewById(R.id.stock_and_order_listview_pcs_qty);
+                    holder.caseqty = convertView.findViewById(R.id.stock_and_order_listview_case_qty);
+                    holder.outerqty = convertView.findViewById(R.id.stock_and_order_listview_outer_case_qty);
 
                     // On/Off order case and pce
                     if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
@@ -229,8 +231,8 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                             });
                     holder.pieceqty.addTextChangedListener(new TextWatcher() {
                         public void afterTextChanged(Editable s) {
-                            String qty = "";
-                            if (!s.equals("0")) {
+                            String qty;
+                            if (!s.toString().equals("0")) {
                                 qty = s.toString();
                                 holder.partilaobjectholder.setPieceqty(SDUtil.convertToInt(qty));
                             }
@@ -247,8 +249,8 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                     });
                     holder.outerqty.addTextChangedListener(new TextWatcher() {
                         public void afterTextChanged(Editable s) {
-                            String qty = "";
-                            if (!s.equals("0")) {
+                            String qty;
+                            if (!s.toString().equals("0")) {
                                 qty = s.toString();
                                 holder.partilaobjectholder.setOuterqty(SDUtil.convertToInt(qty));
                             }
@@ -267,8 +269,8 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
 
                     holder.caseqty.addTextChangedListener(new TextWatcher() {
                         public void afterTextChanged(Editable s) {
-                            String qty = "";
-                            if (!s.equals("0")) {
+                            String qty;
+                            if (!s.toString().equals("0")) {
                                 qty = s.toString();
                                 Commons.print("qty" + qty);
                                 holder.partilaobjectholder.setCaseqty(SDUtil.convertToInt(qty));
@@ -329,6 +331,7 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                             return true;
                         }
                     });
+
                     convertView.setTag(holder);
                 } else {
                     holder = (ViewHolder) convertView.getTag();
@@ -337,9 +340,9 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                 try {
                     holder.partilaobjectholder = partialobj;
                     holder.productname.setText(holder.partilaobjectholder.getPname());
-                    holder.pieceqty.setText(holder.partilaobjectholder.getPieceqty() + "");
-                    holder.caseqty.setText(holder.partilaobjectholder.getCaseqty() + "");
-                    holder.outerqty.setText(holder.partilaobjectholder.getOuterqty() + "");
+                    holder.pieceqty.setText(String.valueOf(holder.partilaobjectholder.getPieceqty()));
+                    holder.caseqty.setText(String.valueOf(holder.partilaobjectholder.getCaseqty()));
+                    holder.outerqty.setText(String.valueOf(holder.partilaobjectholder.getOuterqty()));
 
                 } catch (Exception e) {
                     Commons.printException(e);
@@ -360,7 +363,7 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
     }
 
     public void eff() {
-        String s = (String) QUANTITY.getText().toString();
+        String s = QUANTITY.getText().toString();
         if (!s.equals("0") && !s.equals("0.0")) {
             QUANTITY.setText(QUANTITY.getText() + append);
         } else
@@ -375,13 +378,13 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
         } else {
             int id = vw.getId();
             if (id == R.id.calcdel) {
-                int s = SDUtil.convertToInt((String) QUANTITY.getText()
+                int s = SDUtil.convertToInt(QUANTITY.getText()
                         .toString());
                 s = s / 10;
-                QUANTITY.setText(s + "");
+                QUANTITY.setText(String.valueOf(s));
 
             } else {
-                Button ed = (Button) findViewById(vw.getId());
+                Button ed = findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
 

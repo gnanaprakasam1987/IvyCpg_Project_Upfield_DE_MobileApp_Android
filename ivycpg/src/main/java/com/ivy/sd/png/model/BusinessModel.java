@@ -268,7 +268,6 @@ public class BusinessModel extends Application {
     public DisInvoiceDetailsHelper disInvoiceDetailsHelper;
     public DistTimeStampHeaderHelper distTimeStampHeaderHelper;
     public PrintHelper printHelper;
-    public OrderFullfillmentHelper orderfullfillmenthelper;
     public ProfileHelper profilehelper;
     public MVPHelper mvpHelper;
     public JExcelHelper mJExcelHelper;
@@ -422,7 +421,6 @@ public class BusinessModel extends Application {
 
         // Shelf Share Helper
         mRetailerHelper = RetailerHelper.getInstance(this);
-        orderfullfillmenthelper = OrderFullfillmentHelper.getInstance(this);
         mvpHelper = MVPHelper.getInstance(this);
         distributorMasterHelper = DistributorMasterHelper.getInstance(this);
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
