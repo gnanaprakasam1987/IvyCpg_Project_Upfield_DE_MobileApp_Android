@@ -36,7 +36,7 @@ android {
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 25
         multiDexEnabled true
         resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -204,7 +204,9 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     //noinspection GradleCompatible
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
+//    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
+    implementation 'com.google.firebase:firebase-messaging:17.3.0'
+    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
     implementation 'com.google.firebase:firebase-database:15.0.1'
     implementation 'com.google.firebase:firebase-auth:15.1.0'
     implementation 'com.google.firebase:firebase-firestore:17.0.2'

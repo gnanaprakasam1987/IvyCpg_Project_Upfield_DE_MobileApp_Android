@@ -12,6 +12,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -125,6 +126,13 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
             messagetv.setText(msg);
     }
 
+    public void showMessage(String message) {
+        if (message != null) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
 }

@@ -383,7 +383,9 @@ public class BixolonIPrint extends Bixolon {
                 finish();
             } else {
                 finish();
-                BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
+               // BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
+                Intent  myIntent = new Intent(this, HomeScreenTwo.class);
+                startActivityForResult(myIntent, 0);
             }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         } else if (i1 == R.id.menu_print) {

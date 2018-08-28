@@ -1159,6 +1159,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     row = inflater.inflate(
                             R.layout.activity_stock_and_order_listview_gmi, parent,
                             false);
+                else if (bmodel.configurationMasterHelper.IS_STK_ORD_PROJECT)
+                    row = inflater.inflate(
+                            R.layout.order_listview_project, parent,
+                            false);
                 else
                     row = inflater.inflate(
                             R.layout.activity_stock_and_order_listview_new, parent,
@@ -4002,13 +4006,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
             }
-            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+            if (bmodel.configurationMasterHelper.IS_SR_VALIDATE_BY_RETAILER_TYPE) {
                 updatesalesReturnValue();
                 if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
-                    if (!orderHelper.isPendingReplaceAmt()) {
+                    if (!orderHelper.returnReplacementAmountValidation(true,true,this)) {
                         onnext();
                     } else {
-                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_not_matching_replacing_product_price), Toast.LENGTH_SHORT).show();
+                    }
+                } else if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CREDIT")) {
+                    if (orderHelper.returnReplacementAmountValidation(false,true,this)) {
+                        onnext();
+                    } else {
+                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_less_than_replacing_product_price), Toast.LENGTH_SHORT).show();
                     }
                 } else
                     onnext();

@@ -25,11 +25,19 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.cpg.locationservice.activitytracking.ActivityIntentService;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
+
+import java.util.Date;
+import java.util.Map;
 
 import static com.ivy.cpg.locationservice.LocationConstants.REALTIME_NOTIFICATION_ID;
 
@@ -44,6 +52,12 @@ public class RealTimeLocationService extends Service {
     private String activityName = "";
     private PendingIntent mPendingIntent;
     private ActivityRecognitionClient mActivityRecognitionClient;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private ListenerRegistration listenerRegistration;
+
+    private long supervisorLastUpdate ;
+    private final long timeDiff = 1000 * 60 * 30;
 
     @Override
     public IBinder onBind(Intent intent) {return null;}
@@ -61,6 +75,9 @@ public class RealTimeLocationService extends Service {
             realTimeLocation = (RealTimeLocation) bundle.getSerializable("REALTIME");
 
             buildNotification();
+
+            //listenSupervisorState();
+
             requestLocationUpdates();
             LocalBroadcastManager.getInstance(this).registerReceiver(activityBroadcastReceiver,
                     new IntentFilter(BROADCAST_DETECTED_ACTIVITY));
@@ -69,6 +86,7 @@ public class RealTimeLocationService extends Service {
             Intent mIntentService = new Intent(this, ActivityIntentService.class);
             mPendingIntent = PendingIntent.getService(this, 10, mIntentService, PendingIntent.FLAG_UPDATE_CURRENT);
             requestActivityUpdatesButtonHandler();
+
         }
 
         return START_STICKY;
@@ -128,7 +146,16 @@ public class RealTimeLocationService extends Service {
 
                         Commons.print("Service LocationDetailBO -- "+locationDetailBO);
 
-                        realTimeLocation.onRealTimeLocationReceived(locationDetailBO,getApplicationContext());
+
+//                        //Will update Location in Firestore only if Supervisor Visit Time less than 30 minutes
+//                        if (supervisorLastUpdate != 0) {
+//                            if ((System.currentTimeMillis() - supervisorLastUpdate) < timeDiff){
+
+                                realTimeLocation.onRealTimeLocationReceived(locationDetailBO,getApplicationContext());
+
+//                            }
+//
+//                        }
                     }
                 }
             }
@@ -171,7 +198,6 @@ public class RealTimeLocationService extends Service {
 
         return isBetterLocation;
     }
-
 
     class ActivityBroadcastReceiver extends BroadcastReceiver {
 
@@ -222,12 +248,29 @@ public class RealTimeLocationService extends Service {
         });
     }
 
+    private void listenSupervisorState(){
+        listenerRegistration = db.collection("SupervisorState")
+                .document("State")
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                        if (documentSnapshot != null){
+                            Map<String,Object> map = documentSnapshot.getData();
+                            if (map !=null) {
+                                Date date = (Date) map.get("lastUpdate");
+                                supervisorLastUpdate = date.getTime();
+                            }
+                        }
+                    }
+                });
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         stopLocationUpdates();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(activityBroadcastReceiver);
-
+        //listenerRegistration.remove();
         removeActivityUpdatesButtonHandler();
     }
 }

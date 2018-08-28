@@ -229,6 +229,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
             }
         };
         searchView.setOnQueryTextListener(textChangeListener);
+
         return true;
     }
 

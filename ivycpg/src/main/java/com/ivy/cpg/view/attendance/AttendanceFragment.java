@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.utils.FontUtils;
 
 import java.text.SimpleDateFormat;
@@ -357,7 +359,10 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
                     public void onClick(DialogInterface dialog, int which) {
 
                         if (idd == 1) {
-                            if (bmodel.configurationMasterHelper.SHOW_ATTENDANCE) {
+
+                            moveToHomeScreenActivity();
+                            getActivity().finish();
+                          /*  if (bmodel.configurationMasterHelper.SHOW_ATTENDANCE) {
                                 //bmodel.loadDashBordHome();
                                 BusinessModel.loadActivity(
                                         getActivity(),
@@ -368,7 +373,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
                                         getActivity(),
                                         DataMembers.actHomeScreen);
                                 getActivity().finish();
-                            }
+                            }*/
                         } else if (idd == 2) {
                             getActivity().finish();
                             try {
@@ -392,6 +397,14 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         bmodel.applyAlertDialogTheme(builder);
     }
 
+    private void moveToHomeScreenActivity(){
+
+      Intent  myIntent = new Intent(getActivity(), HomeScreenActivity.class);
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityForResult(myIntent, 0);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_homescreen, menu);
@@ -412,8 +425,9 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
 
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            BusinessModel.loadActivity(getActivity(),
-                    DataMembers.actHomeScreen);
+           /* BusinessModel.loadActivity(getActivity(),
+                    DataMembers.actHomeScreen);*/
+            moveToHomeScreenActivity();
             getActivity().finish();
 
             return true;

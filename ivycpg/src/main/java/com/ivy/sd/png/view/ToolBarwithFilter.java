@@ -250,7 +250,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
 
         mSearchTypeArray = new ArrayList<>();
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
-        mSearchTypeArray.add(getResources().getString(R.string.order_gcas));
+        mSearchTypeArray.add(getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(getResources().getString(
                 R.string.order_dialog_barcode));
 

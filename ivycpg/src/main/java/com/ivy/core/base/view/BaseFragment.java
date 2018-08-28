@@ -194,6 +194,11 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     }
 
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener,boolean isCancelable){
+
+
+    }
+
     @Override
     public void createNFCManager() {
 

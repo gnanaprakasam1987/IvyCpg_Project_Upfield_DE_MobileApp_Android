@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.PaymentBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
@@ -28,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CollectionReportFragmentNew extends Fragment implements ICollectionReportView {
+public class CollectionReportFragmentNew extends IvyBaseFragment implements ICollectionReportView {
 
     private Unbinder unbinder;
     private BusinessModel bModel;

@@ -21,18 +21,18 @@ import com.zebra.sdk.printer.ZebraPrinterFactory;
 public class DayReportPrintHelper {
     private BusinessModel bModel;
     private Context mContext;
-    private IDayReportModelPresenter iDayReportModelPresenter;
+    private DayReportPresenter dayReportPresenter;
 
     private Connection zebraPrinterConnection;
     private static final String TAG = "DailyReportFragmentNew";
     private AlertDialog alertDialog;
 
 
-    public DayReportPrintHelper(BusinessModel businessModel, Context context, AlertDialog alertDialog, IDayReportModelPresenter dayReportModelPresenter) {
+    public DayReportPrintHelper(BusinessModel businessModel, Context context, AlertDialog alertDialog, DayReportPresenter dayReportModelPresenter) {
         this.bModel = businessModel;
         this.mContext = context;
         this.alertDialog = alertDialog;
-        this.iDayReportModelPresenter = dayReportModelPresenter;
+        this.dayReportPresenter = dayReportModelPresenter;
     }
 
     public void doConnection(String printerName) {
@@ -78,7 +78,7 @@ public class DayReportPrintHelper {
     public void printInvoice(String printerName) {
         try {
             if (printerName.equals(DayReportFragment.ZEBRA_3INCH)) {
-                zebraPrinterConnection.write(iDayReportModelPresenter.printDataFor3InchPrinter());
+                zebraPrinterConnection.write(dayReportPresenter.printDataFor3InchPrinter());
                 alertDialog.dismiss();
                 bModel.showAlert(
                         mContext.getResources().getString(
