@@ -1365,7 +1365,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_STK_ORD_ROW = "ORDB69";
     private static final String CODE_STK_ORD_ROW_BS = "BS";
+    private static final String CODE_STK_ORD_ROW_PROJECT = "PROJECT";
     public boolean IS_STK_ORD_BS;
+    public boolean IS_STK_ORD_PROJECT;
 
     private static final String CODE_RESTRICT_ORDER_TAKING = "ORDB70";
     public boolean IS_RESTRICT_ORDER_TAKING;
@@ -3852,6 +3854,7 @@ public class ConfigurationMasterHelper {
             SHOW_NEW_OUTLET_OPPR = false;
             SHOW_NEW_OUTLET_ORDER = false;
             IS_STK_ORD_BS = false;
+            IS_STK_ORD_PROJECT= false;
             SHOW_SALES_RETURN_IN_ORDER = false;
 
             SHOW_CASE_SRP = false;
@@ -4410,6 +4413,8 @@ public class ConfigurationMasterHelper {
             if (codeValue != null) {
                 if (codeValue.equalsIgnoreCase(CODE_STK_ORD_ROW_BS))
                     IS_STK_ORD_BS = true;
+                else if (codeValue.equalsIgnoreCase(CODE_STK_ORD_ROW_PROJECT))
+                    IS_STK_ORD_PROJECT = true;
 
             }
 

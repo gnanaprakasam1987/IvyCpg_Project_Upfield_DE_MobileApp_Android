@@ -823,6 +823,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         }
 
+        if (hasSchemeApplied())
+            imageView_amountSplitUp.setColorFilter(getResources().getColor(R.color.new_orange));
     }
 
     private double calculateLineValue(ProductMasterBO productBO) {
@@ -3590,4 +3592,17 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         return false;
     }
 
+    private boolean hasSchemeApplied() {
+        for (ProductMasterBO productMasterBO : mOrderedProductList) {
+            if (productMasterBO.isPromo() && (productMasterBO.getSchemeProducts() != null
+                    && productMasterBO.getSchemeProducts().size() > 0)) {
+
+                if (!SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(productMasterBO.getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
+                    return productMasterBO.getSchemeProducts().size() > 0;
+                }
+            }
+        }
+
+        return false;
+    }
 }

@@ -3324,6 +3324,8 @@ public class ProductHelper {
     }
 
     public ArrayList<BomReturnBO> getBomReturnProducts() {
+        if (bomReturnProducts == null)
+            bomReturnProducts = new ArrayList<>();
         return bomReturnProducts;
     }
 
