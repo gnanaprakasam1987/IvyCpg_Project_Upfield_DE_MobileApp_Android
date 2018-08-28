@@ -288,8 +288,12 @@ public class CollectionFragmentNew extends IvyBaseFragment
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
             getActivity().finish();
-            BusinessModel.loadActivity(getActivity(),
-                    DataMembers.actHomeScreenTwo);
+           /* BusinessModel.loadActivity(getActivity(),
+                    DataMembers.actHomeScreenTwo);*/
+
+            Intent myIntent = new Intent(getActivity(), HomeScreenTwo.class);
+            startActivityForResult(myIntent, 0);
+
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (i == R.id.menu_advance_payment) {

@@ -8,11 +8,17 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -29,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -47,9 +54,10 @@ public class LoginHelper {
     private static final String CODE_FORGET_PWD = "PWD02";
 
     private final String SENDER_ID = "534457766184";
-    private GoogleCloudMessaging gcm;
+//    private GoogleCloudMessaging gcm;
     private static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
+    private static final String PROPERTY_IS_REG_ID_NEW = "registration_id_upload";
 
     private static final String CODE_PWD_LOCK = "FUN46";
     private static final String CODE_MAXIMUM_ATTEMPT_COUNT = "Max_Login_Attempt_count";
@@ -174,7 +182,7 @@ public class LoginHelper {
         return support_no;
     }
 
-    public void onGCMRegistration(Context mContext) {
+    /*public void onGCMRegistration(Context mContext) {
         businessModel.regid = getRegistrationId(mContext);
         Commons.printInformation("REG ID IS : " + businessModel.regid);
         if (businessModel.regid.isEmpty()) {
@@ -184,6 +192,39 @@ public class LoginHelper {
             } else {
                 Commons.printInformation("No valid Google Play Services APK found.");
             }
+        }
+    }*/
+
+    public void onFCMRegistration(final Context mContext) {
+        final SharedPreferences prefs = getGcmPreferences(mContext);
+        boolean registrationId = prefs.getBoolean(PROPERTY_IS_REG_ID_NEW, false);
+        if (registrationId) {
+            Commons.printInformation("Already Registered.");
+            return;
+        }
+
+        if (checkPlayServices(mContext.getApplicationContext())) {
+
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (!task.isSuccessful()) {
+                                Commons.printException(task.getException());
+                                return;
+                            }
+
+                            // Get new Instance ID token
+                            String token = task.getResult().getToken();
+
+                            registerInBackground(mContext,token);
+
+                        }
+                    });
+
+
+        } else {
+            Commons.printInformation("No valid Google Play Services APK found.");
         }
     }
 
@@ -267,16 +308,18 @@ public class LoginHelper {
      * Stores the registration ID and the app versionCode in the application's
      * shared preferences.
      */
-    private void registerInBackground(final Context mContext) {
+    private void registerInBackground(final Context mContext, final String token) {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
                 String msg;
                 try {
-                    if (gcm == null)
-                        gcm = GoogleCloudMessaging.getInstance(mContext);
+//                    if (gcm == null)
+//                        gcm = GoogleCloudMessaging.getInstance(mContext);
+//
+//                    businessModel.regid = gcm.register(SENDER_ID);
 
-                    businessModel.regid = gcm.register(SENDER_ID);
+                    businessModel.regid = token;
                     msg = "Device registered, registration ID=" + businessModel.regid;
                     businessModel.synchronizationHelper.updateAuthenticateToken(false);
                 } catch (Exception ex) {
@@ -316,6 +359,7 @@ public class LoginHelper {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
         editor.putInt(PROPERTY_APP_VERSION, appVersion);
+        editor.putBoolean(PROPERTY_IS_REG_ID_NEW, true);
         editor.apply();
     }
 

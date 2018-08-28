@@ -140,6 +140,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
     private boolean isPrintClicked;
     private boolean isHidePrintBtn;
     private boolean isFromInvoice;
+    private boolean isFromEOD;
     private int widthImage, heightImage;
     private String PRINT_STATE = "";
     private Toolbar toolbar;
@@ -179,6 +180,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         isFromCollection = getIntent().getExtras().getBoolean("isFromCollection", false);
         isHidePrintBtn = getIntent().getExtras().getBoolean("isHidePrintBtn", false);
         isFromInvoice = getIntent().getExtras().getBoolean("isFromInvoice", false);
+        isFromEOD= getIntent().getExtras().getBoolean("isFromEOD", false);
         sendMailAndLoadClass = getIntent().getExtras().getString("sendMailAndLoadClass");
         if (isHomeBtnEnable) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

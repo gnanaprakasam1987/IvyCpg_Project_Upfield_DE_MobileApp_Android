@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.mvp.FilterScreenFragment;
 import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
+import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
@@ -263,7 +264,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             @Override
             public void onMapLoaded() {
                 if (builder != null) {
-                    if (outletMapViewPresenter.areaBoundsTooSmall(builder.build(), 300)) {
+                    if (outletMapViewPresenter.checkAreaBoundsTooSmall(builder.build(), 300)) {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
                     } else {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
@@ -368,6 +369,21 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         };
         searchView.setOnQueryTextListener(textChangeListener);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void displaySearchItem(String searchText){
+        ArrayList<RetailerBo> detailsBos = new ArrayList<>(outletMapViewPresenter.getRetailerList());
+
+        outletListBos.clear();
+
+        for(int i = 0;i<detailsBos.size();i++){
+            if (detailsBos.get(i).getRetailerName().toLowerCase()
+                    .contains(searchText.toLowerCase()) ){
+                detailsBos.add(detailsBos.get(i));
+            }
+        }
+
+        outletListBos.addAll(detailsBos);
     }
 
     @Override

@@ -372,6 +372,11 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
         }
 
+        if (!assetTrackingHelper.SHOW_SERVICE_ASSET) {
+            menu.findItem(R.id.menu_assetservice).setVisible(false);
+        }
+
+
         if (drawerOpen) {
             menu.clear();
         }
@@ -437,6 +442,14 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                 Toast.makeText(getActivity(), getResources().getString(R.string.no_assets_exists),
                         Toast.LENGTH_SHORT).show();
             }
+            return true;
+        } else if (i == R.id.menu_assetservice) {
+
+
+            Intent intent = new Intent(getActivity(), AssetServiceActivity.class);
+            intent.putExtra("module", MENU_ASSET);
+            startActivity(intent);
+
             return true;
         }
         return super.onOptionsItemSelected(item);

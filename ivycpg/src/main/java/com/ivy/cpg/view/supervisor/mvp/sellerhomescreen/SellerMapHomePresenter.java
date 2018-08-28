@@ -17,11 +17,15 @@ import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,9 +33,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
@@ -54,10 +60,12 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.annotation.Nullable;
@@ -325,11 +333,42 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                                     case ADDED:
                                         setAttendanceValues(snapshot.getDocument());
                                         break;
+                                    case MODIFIED:
+                                        updateAttendanceValues(snapshot.getDocument());
                                 }
                             }
                         }
                     }
                 });
+    }
+
+    private void updateAttendanceValues(DocumentSnapshot document) {
+
+            System.out.println("setAttendanceValues documentSnapshot = " + document.getData().get("userId"));
+
+            Integer userId = (int) (long) document.getData().get("userId");
+
+            if (sellerInfoHasMap.get(userId) != null) {
+
+                if (document.getData().get("status") != null &&
+                        ((String) document.getData().get("status")).equalsIgnoreCase("day closed")){
+                    sellerInfoHasMap.get(userId).setSellerWorking(false);
+
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_out);
+                    if (sellerInfoHasMap.get(userId).getMarker() != null) {
+                        sellerInfoHasMap.get(userId).getMarker().setIcon(icon);
+                    }
+
+                }else {
+                    sellerInfoHasMap.get(userId).setSellerWorking(true);
+
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_in);
+                    if (sellerInfoHasMap.get(userId).getMarker() != null) {
+                        sellerInfoHasMap.get(userId).getMarker().setIcon(icon);
+                    }
+                }
+
+            }
     }
 
     @Override
@@ -480,6 +519,14 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         }
     }
 
+    public void setSupervisorLastVisit(){
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        stringObjectMap.put("lastUpdate", FieldValue.serverTimestamp());
+        db.collection("SupervisorState")
+                .document("State")
+                .set(stringObjectMap);
+    }
+
     private String loadUserLevel() {
 
         String code = "";
@@ -523,11 +570,12 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
             if (sellerInfoHasMap.get(userId) != null &&
                     !sellerInfoHasMap.get(userId).isAttendanceDone()) {
+
                 computeSellerAttendance(userId);
 
-                if (isToday())
-                    notifyAttendance();
             }
+
+            updateAttendanceValues(documentSnapshot);
         }
 
         computeSellerInfo();
@@ -566,7 +614,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                 sellerBoHashmap.setInTime(sellerBoDocumentSnapshot.getInTime());
                 sellerBoHashmap.setOutTime(sellerBoDocumentSnapshot.getOutTime());
 
-                sellerBoHashmap.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(sellerBoDocumentSnapshot.getRetailerId()));
+                sellerBoHashmap.setRetailerName(sellerBoDocumentSnapshot.getRetailerName()!=null?sellerBoDocumentSnapshot.getRetailerName():"");
 
                 if(sellerBoHashmap.getLatitude() == 0 || sellerBoHashmap.getLongitude() == 0 ){
                     LatLng latLng = SupervisorActivityHelper.getInstance().retailerLatLngByRId(sellerBoHashmap.getRetailerId());
@@ -640,12 +688,27 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     private void setMarkerHasMap(SellerBo sellerBo,MarkerOptions markerOptions) {
         if(!sellerIdHashSet.contains(sellerBo.getUserId())) {
+
+            if (!sellerInfoHasMap.get(sellerBo.getUserId()).isSellerWorking()) {
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_out);
+                markerOptions.icon(icon);
+            }else{
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_in);
+                markerOptions.icon(icon);
+            }
+
             sellerMapHomeView.createMarker(sellerInfoHasMap.get(sellerBo.getUserId()),markerOptions);
             sellerIdHashSet.add(sellerBo.getUserId());
 
             computeSellerInfo();
         }else{
             LatLng destLatLng = new LatLng(sellerBo.getLatitude(), sellerBo.getLongitude());
+
+            if (!sellerInfoHasMap.get(sellerBo.getUserId()).isSellerWorking()) {
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_out);
+                sellerInfoHasMap.get(sellerBo.getUserId()).getMarker().setIcon(icon);
+            }
+
             sellerMapHomeView.updateMaker(destLatLng,sellerInfoHasMap.get(sellerBo.getUserId()).getMarker());
         }
 
@@ -903,7 +966,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         return isSameDate;
     }
 
-    boolean areaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
+    boolean checkAreaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
         float[] result = new float[1];
         Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude, result);
         return result[0] < minDistanceInMeter;

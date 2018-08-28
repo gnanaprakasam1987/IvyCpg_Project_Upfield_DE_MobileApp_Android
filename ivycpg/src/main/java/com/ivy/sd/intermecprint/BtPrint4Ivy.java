@@ -44,6 +44,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -1329,8 +1330,11 @@ public class BtPrint4Ivy extends IvyBaseActivityNoActionBar {
                             .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
                     finish();
                     bmodel.productHelper.clearOrderTable();
-                    BusinessModel.loadActivity(this,
-                            DataMembers.actHomeScreenTwo);
+                   /* BusinessModel.loadActivity(this,
+                            DataMembers.actHomeScreenTwo);*/
+
+                    Intent  myIntent = new Intent(this, HomeScreenTwo.class);
+                    startActivityForResult(myIntent, 0);
                 }
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             } catch (Exception e1) {

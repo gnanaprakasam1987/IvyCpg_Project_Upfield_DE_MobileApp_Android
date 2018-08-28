@@ -526,8 +526,12 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                 .now(SDUtil.TIME));
         finish();
-        BusinessModel.loadActivity(this,
-                DataMembers.actHomeScreenTwo);
+      /*  BusinessModel.loadActivity(this,
+                DataMembers.actHomeScreenTwo);*/
+
+        Intent myIntent = new Intent(this, HomeScreenTwo.class);
+        startActivityForResult(myIntent, 0);
+
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 

@@ -47,17 +47,14 @@ public class ExpenseFragment extends IvyBaseFragment {
     private String Tid = "";
     private boolean isHeaderExists;
     private Context mContext;
-    TabLayout tabLayout;
+    private TabLayout tabLayout;
 
     private int exp_type = 0;
     private static final String TAG = "ExpenseFragment";
     private String imageFileName = "", amountValue, dateValue, photoNamePath;
     private ArrayList<String> imagesList;
 
-    // Disable Motorola ET1 Scanner Plugin
-    final String ACTION_SCANNERINPUTPLUGIN = "com.motorolasolutions.emdk.datawedge.api.ACTION_SCANNERINPUTPLUGIN";
-    final String EXTRA_PARAMETER = "com.motorolasolutions.emdk.datawedge.api.EXTRA_PARAMETER";
-    final String DISABLE_PLUGIN = "DISABLE_PLUGIN";
+
     private static final int CAMERA_REQUEST_CODE = 1;
     private ExpenseSheetHelper expenseSheetHelper;
     private AppSchedulerProvider appSchedulerProvider;
@@ -95,12 +92,16 @@ public class ExpenseFragment extends IvyBaseFragment {
         if (bundle == null)
             bundle = getActivity().getIntent().getExtras();
 
-        setScreenTitle(bundle.getString("screentitle"));
+        if (bundle != null) {
+            setScreenTitle(bundle.getString("screentitle"));
+        }
 
         et_exp_date = view.findViewById(R.id.et_exp_date);
         et_amount = view.findViewById(R.id.et_amount);
         sp_expenses = view.findViewById(R.id.sp_expenses);
+
         TextView tvcamera = view.findViewById(R.id.tv_camera);
+
         tvImgCount = view.findViewById(R.id.tv_img_count);
         TextView tvDone = view.findViewById(R.id.tv_done);
         TextView tvClear = view.findViewById(R.id.tv_clear);
@@ -349,12 +350,6 @@ public class ExpenseFragment extends IvyBaseFragment {
 
             String path = photoNamePath + "/" + imageFileName;
             try {
-                Intent i = new Intent();
-                i.setAction(ACTION_SCANNERINPUTPLUGIN);
-                i.putExtra(EXTRA_PARAMETER, DISABLE_PLUGIN);
-                mContext.sendBroadcast(i);
-
-
                 Intent intent = new Intent(mContext, CameraActivity.class);
                 intent.putExtra(getResources().getString(R.string.quality), 40);
                 intent.putExtra(getResources().getString(R.string.path), path);
