@@ -55,7 +55,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.ivy.appmodule.AppComponent;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
@@ -669,7 +668,6 @@ public class BusinessModel extends Application {
         this.dashboardUserFilterString = dashboardUserFilterString;
     }
 
-    private AppComponent appComponent;
 
     @Override
     public void onCreate() {
@@ -700,9 +698,7 @@ public class BusinessModel extends Application {
         return mApplicationComponent;
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
-    }
+
 
     @Override
     public void onTerminate() {
