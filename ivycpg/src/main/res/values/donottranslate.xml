@@ -209,4 +209,7 @@
     <string name="asset_service">Asset Service</string>
     <string name="select_asset_service">Nothing selected to Service.</string>
 
+    <string name="visit_plan_updated">Visit Plan Updated</string>
+    <string name="stock_allocated">Stock Allocated</string>
+
 </resources>
