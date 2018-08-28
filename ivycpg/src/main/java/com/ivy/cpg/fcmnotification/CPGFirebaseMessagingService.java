@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.DatabaseUtils;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -20,10 +21,15 @@ import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.JsonObject;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class CPGFirebaseMessagingService extends FirebaseMessagingService{
 
@@ -31,6 +37,10 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
     private static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_IS_REG_ID_NEW = "registration_id_upload";
     private static final String PROPERTY_APP_VERSION = "appVersion";
+
+    private int notifyId;
+
+    BusinessModel bmodel;
 
     /**
      * Called when message is received.
@@ -63,7 +73,10 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Commons.print(TAG+" Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification());
+//            sendNotification(remoteMessage.getNotification());
+
+            scheduleJob(remoteMessage);
+
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -169,17 +182,132 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
     private void scheduleJob(RemoteMessage remoteMessage) {
         // [START dispatch_job]
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("DataPayLoad",remoteMessage);
-
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
-        Job myJob = dispatcher.newJobBuilder()
-                .setService(NotificationJobService.class)
-                .setTag("my-job-tag")
-                .setExtras(bundle)
-                .build();
-        dispatcher.schedule(myJob);
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable("DataPayLoad",remoteMessage);
+//
+//        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+//        Job myJob = dispatcher.newJobBuilder()
+//                .setService(NotificationJobService.class)
+//                .setTag("my-job-tag")
+//                .setExtras(bundle)
+//                .build();
+//        dispatcher.schedule(myJob);
         // [END dispatch_job]
+
+        try {
+
+            bmodel = (BusinessModel) getApplicationContext();
+
+            String jsonType, jsonMsg;
+
+            if (remoteMessage == null)
+                return ;
+
+            JSONArray array = new JSONArray(remoteMessage.getData().get("body"));
+            JSONObject jsonObject = new org.json.JSONObject(array
+                    .get(0).toString());
+            jsonType = jsonObject.getString("Type");
+
+            if (jsonType.equals("STKALLOC")) {
+                notifyId = 1;
+                sendNotification(getResources().getString(R.string.stock_allocated));
+            } else if (jsonType.equals("JPC")) {
+                notifyId = 2;
+                sendNotification(getResources().getString(R.string.visit_plan_updated));
+            } else if (jsonType.equals("VST_PLN_REQ_STATUS")) {
+                notifyId = 3;
+                jsonMsg = jsonObject.getString("Message");
+                sendNotification(jsonMsg);
+            } else if (jsonType.equals("VST_PLN_REQ_REMINDER")) {
+                notifyId = 4;
+                jsonMsg = jsonObject.getString("Message");
+                sendNotification(jsonMsg);
+            }else if (jsonType.equalsIgnoreCase("MVP BADGE")) {
+                notifyId = 5;
+                jsonMsg = jsonObject.getString("Message");
+                sendNotification(jsonMsg);
+                bmodel.saveNotification(jsonMsg, DatabaseUtils.sqlEscapeString(jsonObject.getString("icon")), "MVP BADGE");
+            } else if (jsonType.equalsIgnoreCase("MESSAGE_NOTIFY")) {
+                notifyId = 6;
+                jsonMsg = jsonObject.getString("Message");
+                sendNotification(jsonMsg);
+                bmodel.saveNotification(jsonMsg, DatabaseUtils.sqlEscapeString(jsonObject.getString("icon")), "MESSAGE_NOTIFY");
+            } else if (jsonType.equals("NEWTSK")) {
+                bmodel.parseJSONAndInsert(jsonObject.getJSONObject("Data"));
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    private void sendNotification(RemoteMessage remoteMessage) {
+        Intent intent = new Intent(this, LoginScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        String channelId = "ChannelId";
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.launchericon)
+                        .setContentTitle(
+                                remoteMessage.getData().get("title") != null ? remoteMessage.getData().get("title") : "Notify")
+                        .setContentText(
+                                remoteMessage.getData().get("body") != null ? remoteMessage.getData().get("body") : "Success")
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notificationManager != null) {
+            // Since android Oreo notification channel is needed.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(channelId,
+                        "Channel human readable title",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        }
+    }
+
+    private void sendNotification(String message) {
+        Intent intent = new Intent(this, LoginScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        String channelId = "channelId";
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.launchericon)
+                        .setContentTitle(getResources().getString(R.string.app_name))
+                        .setContentText(message)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notificationManager != null) {
+
+            // Since android Oreo notification channel is needed.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(channelId,
+                        "Channel human readable title",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            notificationManager.notify(notifyId /* ID of notification */, notificationBuilder.build());
+        }
     }
 
 }
