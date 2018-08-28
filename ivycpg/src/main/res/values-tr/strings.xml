@@ -256,7 +256,6 @@
     <string name="Product_details">Ürün Detayları</string>
     <string name="new_task_saved">Yeni görev kaydedildi.</string>
     <string name="choose_brand">Ürün Ailesi Seç</string>
-    <string name="choose_category">Kategori seç</string>
     <string name="objective">Hedef</string>
     <string name="actual">Gerçekleşen</string>
     <string name="index">Gerç. Oranı</string>
@@ -427,7 +426,6 @@
     <string name="end_journey">Günü Bitir</string>
     <string name="journey_not_ended">Gün Bitirilmedi</string>
     <string name="batch_no">Batch No</string>
-    <string name="warehouse_location_not_assigned">Depo konumu girilmedi</string>
     <string name="you_are">You are</string>
     <string name="wouter">WO</string>
     <string name="souter">SHO</string>
@@ -503,9 +501,6 @@
     <string name="invaliddate">Geçersiz Tarih</string>
     <string name="saverequired">Kaydetmeniz Gerekiyor</string>
     <string name="cant_skip_go_by_sequence">Atlayamazsınız, Sıraya göre ilerleyin</string>
-    <string name="warehouse_barcode_not_assigned">Depo barkodu atanmadı</string>
-    <string name="not_able_to_scan_barcode">Barkod okunamıyor</string>
-    <string name="barcode_not_matched">Barkod eşleşmedi</string>
     <string name="duplicate">Çift</string>
     <string name="no_damaged_stock_to_unload">No damaged stock to unload</string>
     <string name="do_you_want_to_save_stock">Stoğu kaydetmek ister misin?</string>
@@ -605,8 +600,6 @@
     <string name="valid_key_oops_contact_device_admin">Başarılı Şifre! Lütfen Cihaz Yöneticisyle İletişime Geç</string>
     <string name="uploading_new_store">Yeni mağaza sisteme yükleniyor ve sistemden indiriliyor..</string>
     <string name="choose_location">Konum Seç</string>
-    <string name="visit_plan_updated">Ziyaret planı güncellendi</string>
-    <string name="stock_allocated">Stock Allocated</string>
     <string name="questscore">Soru Puanı</string>
     <string name="surevyscore">Anket Puanı</string>
     <string name="outer_price">Dış Koli Fiyatı</string>
@@ -726,8 +719,6 @@
     <string name="focus_show_3">\u0020focus product(s)</string>
     <string name="no_focus_show">Odak Ürün yok</string>
     <string name="mark_attendance">Please Mark Attendance To Proceed</string>
-    <string name="add_entry">Girdi ekleyin</string>
-    <string name="out_time">Out Time</string>
     <string name="out_time_error">Lütfen önceki Başlangıç/Bitiş zamanını tamamlayın</string>
     <string name="in_partial">kısmi</string>
     <string name="in_complete">tamamlanan</string>
@@ -769,7 +760,6 @@
     <string name="nfc_instruction">Authenticate will begin when you tap the NFC compatible tag with device</string>
     <string name="nfc_value_mismatched">Tag value is not matched</string>
     <string name="psq">PSQ</string>
-    <string name="expense_title">Masraf Sayfası</string>
     <string name="text_expense_type">Masraf Tipi</string>
     <string name="text_capture_proof">Capture proof</string>
     <string name="alert_exp_type">Lütfen masraf tipi seç!!</string>
@@ -1193,7 +1183,6 @@
     <string name="select_channel">Select channel</string>
     <string name="supplier_label">Supplier</string>
     <string name="note_label">Note</string>
-    <string name="return_products_price_not_matching_total_replacing_product_price">Return products price not matching total replacing product price</string>
     <string name="connection_error_please_try_again">Connection error. Please try again.</string>
     <string name="refreshing">Refreshing</string>
     <string name="no_space">No space available.</string>
@@ -1264,7 +1253,6 @@
     <string name="share_percent">Share %</string>
     <string name="total_value_less_than_actual_value">Total value is lesser than Actual value.</string>
     <string name="answer_to_take_photo">Answer to take photo.</string>
-    <string name="value_exceeds_more_than_total">Value exceeds more than total.</string>
     <string name="language">Language</string>
     <string name="printer_settings">Printer Settings</string>
     <string name="sales_return_value_exceeds_order_value">Sales Return Value should not exceed Order Value.</string>
@@ -1276,7 +1264,5 @@
     <string name="return_products_price_less_than_replacing_product_price">Return value should be higher than replacement value</string>
     <string name="return_products_not_matching_replacing_product_price">Return and Replacement value should be matched</string>
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
-    <string name="store_activities">Store Activities</string>
-    <string name="stores">Stores</string>
 
 </resources>

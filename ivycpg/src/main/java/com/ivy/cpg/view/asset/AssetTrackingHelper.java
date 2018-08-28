@@ -58,7 +58,7 @@ public class AssetTrackingHelper {
     private static final String ASSET_REASON = "AR";
     private static final String ASSET_REMARK = "ARR";
     private static final String ASSET_CONDITION = "CD";
-    private static final String CODE_ASSET_SERVICE = "AT10";
+    private static final String CODE_ASSET_SERVICE = "AT11";
     public boolean SHOW_ASSET_TARGET;
     public boolean SHOW_ASSET_QTY;
     public boolean SHOW_ASSET_REASON;
@@ -200,7 +200,7 @@ public class AssetTrackingHelper {
             SHOW_REMARKS_ASSET = false;
             ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = false;
             SHOW_MOVE_ASSET = false;
-            SHOW_SERVICE_ASSET = true;
+            SHOW_SERVICE_ASSET = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);

@@ -1159,6 +1159,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     row = inflater.inflate(
                             R.layout.activity_stock_and_order_listview_gmi, parent,
                             false);
+                else if (bmodel.configurationMasterHelper.IS_STK_ORD_PROJECT)
+                    row = inflater.inflate(
+                            R.layout.order_listview_project, parent,
+                            false);
                 else
                     row = inflater.inflate(
                             R.layout.activity_stock_and_order_listview_new, parent,

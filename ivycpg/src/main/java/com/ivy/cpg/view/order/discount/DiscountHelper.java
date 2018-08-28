@@ -574,20 +574,21 @@ public class DiscountHelper {
      */
     public void insertBillWiseDiscount(DBUtil db, String uid) {
         String columns = "Orderid,pid,typeid,Value,Percentage,Applylevelid,Retailerid,DiscountId,isCompanyGiven";
-        for (StoreWiseDiscountBO discountBO : mBillWiseDiscountList) {
-            StringBuffer sb = new StringBuffer();
-            sb.append(uid + "," + "0," + discountBO.getType() + ",");
-            if (discountBO.getIsPercentage() == 1) {
-                sb.append(discountBO.getDiscountValue() + "," + discountBO.getDiscount());
-            } else {
-                sb.append(discountBO.getDiscountValue() + ",0");
+        if (mBillWiseDiscountList != null) {
+            for (StoreWiseDiscountBO discountBO : mBillWiseDiscountList) {
+                StringBuffer sb = new StringBuffer();
+                sb.append(uid + "," + "0," + discountBO.getType() + ",");
+                if (discountBO.getIsPercentage() == 1) {
+                    sb.append(discountBO.getDiscountValue() + "," + discountBO.getDiscount());
+                } else {
+                    sb.append(discountBO.getDiscountValue() + ",0");
+                }
+
+                sb.append("," + discountBO.getApplyLevel() + "," + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) + "," + discountBO.getDiscountId() + "," + discountBO.getIsCompanyGiven());
+                db.insertSQL(DataMembers.tbl_InvoiceDiscountDetail, columns, sb.toString());
+                db.insertSQL(DataMembers.tbl_OrderDiscountDetail, columns, sb.toString());
             }
-
-            sb.append("," + discountBO.getApplyLevel() + "," + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID()) + "," + discountBO.getDiscountId() + "," + discountBO.getIsCompanyGiven());
-            db.insertSQL(DataMembers.tbl_InvoiceDiscountDetail, columns, sb.toString());
-            db.insertSQL(DataMembers.tbl_OrderDiscountDetail, columns, sb.toString());
         }
-
 
     }
 

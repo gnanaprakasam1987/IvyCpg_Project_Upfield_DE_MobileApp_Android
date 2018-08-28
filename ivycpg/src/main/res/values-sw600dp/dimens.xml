@@ -22,7 +22,6 @@
     <!-- Filter width -->
     <dimen name="filter_slider_width">470dp</dimen>
     <dimen name="filter_button_height">75dp</dimen>
-    <dimen name="filter_image_size">55dp</dimen>
     <dimen name="selected_filter_image_size">28dp</dimen>
 
 

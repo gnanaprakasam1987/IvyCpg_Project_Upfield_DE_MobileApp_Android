@@ -55,7 +55,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.ivy.appmodule.AppComponent;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
@@ -669,7 +668,6 @@ public class BusinessModel extends Application {
         this.dashboardUserFilterString = dashboardUserFilterString;
     }
 
-    private AppComponent appComponent;
 
     @Override
     public void onCreate() {
@@ -700,9 +698,7 @@ public class BusinessModel extends Application {
         return mApplicationComponent;
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
-    }
+
 
     @Override
     public void onTerminate() {
@@ -1146,7 +1142,7 @@ public class BusinessModel extends Application {
             Cursor c = db.selectSQL("select sum(ordervalue)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
                     + QT(retailerMasterBO.getRetailerID()) +
-                    " AND upload='N'");
+                    " AND upload='N' and invoicestatus=0");
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getDouble(0);
@@ -5698,13 +5694,29 @@ public class BusinessModel extends Application {
 
     public int getTotalLines() {
         try {
+            boolean isVansales;
+            if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                if (getRetailerMasterBO().getIsVansales() == 1) {
+                    isVansales = true;
+                } else {
+                    isVansales = false;
+                }
+
+            } else {
+                if (configurationMasterHelper.IS_INVOICE) {
+                    isVansales = true;
+                } else {
+                    isVansales = false;
+                }
+            }
+
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select LinesPerCall from orderHeader where retailerid="
+                    .selectSQL("select sum(LinesPerCall) from orderHeader where retailerid="
                             + QT(getRetailerMasterBO().getRetailerID())
-                            + " and upload='N'");
+                            + " and " + (isVansales ? "invoiceStatus=1" : "invoiceStatus=0") + " and upload='N'");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     int count = c.getInt(0);
