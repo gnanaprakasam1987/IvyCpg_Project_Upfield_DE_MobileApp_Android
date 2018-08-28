@@ -193,6 +193,7 @@
     <string name="mark_attendance_working">Please Mark Attendance As Working To Proceed</string>
 
     <string name="planned_activities">Planned Activities</string>
+    <string name="do_u_want_to_cancel">Do you want to cancel?</string>
 
     <string name="asset_service">Asset Service</string>
     <string name="select_asset_service">Nothing selected to Service.</string>
