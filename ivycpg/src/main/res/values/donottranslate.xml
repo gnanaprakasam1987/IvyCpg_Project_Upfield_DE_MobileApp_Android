@@ -193,4 +193,5 @@
 
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
     <string name="planned_activities">Planned Activities</string>
+    <string name="do_u_want_to_cancel">Do you want to cancel?</string>
 </resources>

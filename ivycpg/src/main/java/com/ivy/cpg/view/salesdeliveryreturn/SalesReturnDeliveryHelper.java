@@ -185,7 +185,7 @@ public class SalesReturnDeliveryHelper {
         });
     }
 
-    public boolean cancelSalesReturnDelivery(Context mContext, List<SalesReturnDeliveryDataModel> list, SalesReturnDeliveryDataBo salesReturnDeliveryDataBo){
+    public boolean cancelSalesReturnDelivery(Context mContext, SalesReturnDeliveryDataBo salesReturnDeliveryDataBo){
 
         try{
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -214,7 +214,7 @@ public class SalesReturnDeliveryHelper {
 
             String columns;
             String values;
-            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,isCanceFlag";
+            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,isCancel";
 
             values = AppUtils.QT(uid) + ","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
@@ -236,6 +236,7 @@ public class SalesReturnDeliveryHelper {
                     AppUtils.QT(salesReturnDeliveryDataBo.getUId())+","+AppUtils.QT("1");
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
+
             db.closeDB();
             return true;
         }catch (Exception e) {

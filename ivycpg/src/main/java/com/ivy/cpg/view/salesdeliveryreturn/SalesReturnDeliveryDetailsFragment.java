@@ -199,12 +199,12 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
         new AlertDialog.Builder(getActivity())
                 .setTitle("IvyCpg")
-                .setMessage(getActivity().getString(R.string.do_u_want_to_save))
+                .setMessage(getActivity().getString(R.string.do_u_want_to_cancel))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList, salesReturnDeliveryDataBo);
+                        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(getActivity(), salesReturnDeliveryDataBo);
                         if (isSuccess) {
-                            Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
                             (getActivity()).onBackPressed();
                         }
                     }})
