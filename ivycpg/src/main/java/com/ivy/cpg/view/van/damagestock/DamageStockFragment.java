@@ -46,7 +46,6 @@ public class DamageStockFragment extends Fragment {
     private DamageStockAdapter damageAdapter;
     private ArrayList<SalesReturnReportBO> damageList;
     private String text;
-    private Spannable spanYou;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,9 +73,9 @@ public class DamageStockFragment extends Fragment {
         if (damageStockHelper.getDamagedSalesReport() == null)
             return;
 
-        productName = (TextView) tempView.findViewById(R.id.productName);
-        lvwplist = (ListView) tempView.findViewById(R.id.list);
-        reasonSpinner = (MaterialSpinner) tempView.findViewById(R.id.reasonSpinner);
+        productName = tempView.findViewById(R.id.productName);
+        lvwplist = tempView.findViewById(R.id.list);
+        reasonSpinner = tempView.findViewById(R.id.reasonSpinner);
 
         productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         ((TextView) tempView.findViewById(R.id.product_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
@@ -118,9 +117,8 @@ public class DamageStockFragment extends Fragment {
         reasonAdapter
                 .setDropDownViewResource(R.layout.spinner_blacktext_list_item);
         damageList = new ArrayList<>();
-        for (SalesReturnReportBO bo : damageStockHelper
-                .getDamagedSalesReport())
-            damageList.add(bo);
+        damageList.addAll(damageStockHelper
+                .getDamagedSalesReport());
         Set<String> reasonSet = new LinkedHashSet<>();
         reasonSet.add(getResources().getString(R.string.all));
         for (SalesReturnReportBO salBo : damageStockHelper
@@ -192,9 +190,8 @@ public class DamageStockFragment extends Fragment {
     protected void updateDamageReport(String spinnerTxt) {
         damageList.clear();
         if ("All".equals(spinnerTxt)) {
-            for (SalesReturnReportBO bo : damageStockHelper
-                    .getDamagedSalesReport())
-                damageList.add(bo);
+            damageList.addAll(damageStockHelper
+                    .getDamagedSalesReport());
         } else {
             for (SalesReturnReportBO bo : damageStockHelper
                     .getDamagedSalesReport()) {
@@ -285,13 +282,13 @@ public class DamageStockFragment extends Fragment {
                 row = inflater.inflate(R.layout.row_damage_report, parent,
                         false);
                 holder = new ViewHolder();
-                holder.productname = (TextView) row
+                holder.productname = row
                         .findViewById(R.id.productname);
-                holder.caseqty = (TextView) row.findViewById(R.id.caseqty);
-                holder.pcsqty = (TextView) row.findViewById(R.id.pieceqty);
-                holder.outerqty = (TextView) row.findViewById(R.id.outerqty);
-                holder.reason = (TextView) row.findViewById(R.id.reason);
-                holder.batchnum = (TextView) row.findViewById(R.id.batchnum);
+                holder.caseqty = row.findViewById(R.id.caseqty);
+                holder.pcsqty = row.findViewById(R.id.pieceqty);
+                holder.outerqty = row.findViewById(R.id.outerqty);
+                holder.reason = row.findViewById(R.id.reason);
+                holder.batchnum = row.findViewById(R.id.batchnum);
 
                 holder.productname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
                 holder.caseqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
@@ -303,7 +300,7 @@ public class DamageStockFragment extends Fragment {
                 holder.productname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
                 text = getResources().getString(R.string.batch_no) + ": ";
-                spanYou = new SpannableString("you");
+                Spannable spanYou = new SpannableString("you");
                 spanYou.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spanYou.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 row.setOnClickListener(new OnClickListener() {
