@@ -20,6 +20,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.FilterFiveFragment;
 
 import java.util.Locale;
 
@@ -134,5 +135,24 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
         }
     }
 
+    public void loadFiveFilterFragment(Bundle bundle, int resId) {
+        try {
+
+            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm.findFragmentByTag("Fivefilter");
+            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+
+            // set Fragmentclass Arguments
+            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<Object>();
+            fragobj.setArguments(bundle);
+
+            ft.replace(resId, fragobj, "Fivefilter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
 
 }

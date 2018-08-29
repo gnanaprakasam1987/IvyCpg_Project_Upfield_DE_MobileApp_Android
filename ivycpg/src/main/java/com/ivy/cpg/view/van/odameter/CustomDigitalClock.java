@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.odameter;
 
 /**
  * Created by vikraman.a on 18-04-2017.

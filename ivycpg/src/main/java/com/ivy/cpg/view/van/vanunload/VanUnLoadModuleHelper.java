@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.vanunload;
 
 import android.content.Context;
 import android.database.Cursor;

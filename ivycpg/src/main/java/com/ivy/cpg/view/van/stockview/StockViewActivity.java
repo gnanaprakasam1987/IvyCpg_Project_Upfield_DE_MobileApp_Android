@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.stockview;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,19 +16,17 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -37,12 +35,10 @@ import android.widget.ViewFlipper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -104,6 +100,14 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                 GravityCompat.END);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
+
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
+
 
         viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
 
@@ -397,7 +401,16 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
 
                 mSelectedFilterMap.put("General", GENERAL);
             }
-            FiveFilterFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("serilizeContent",
+                    bmodel.configurationMasterHelper.getGenFilter());
+            bundle.putString("isFrom", "STK");
+            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
+
+            mDrawerLayout.openDrawer(GravityCompat.END);
+            loadFiveFilterFragment(bundle, R.id.right_drawer);
+
             return true;
         }
 
@@ -472,10 +485,14 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
             }
         }
 
-        expandableListAdapter = new ExpandableListAdapter(this, temp, listDataChild);
+
+        refreshView(temp, listDataChild);
+
+    }
+
+    private void refreshView(ArrayList<LoadManagementBO> temp, HashMap<String, ArrayList<LoadManagementBO>> listDataChild) {
+        expandableListAdapter = new ExpandableListAdapter(StockViewActivity.this, temp, listDataChild, stockViewInterface);
         expandlvwplist.setAdapter(expandableListAdapter);
-
-
     }
 
     @Override
@@ -577,8 +594,7 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
             }
         }
 
-        expandableListAdapter = new ExpandableListAdapter(this, temp, listDataChild);
-        expandlvwplist.setAdapter(expandableListAdapter);
+        refreshView(temp, listDataChild);
     }
 
     @Override
@@ -653,8 +669,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                 }
             }
         }
-        expandableListAdapter = new ExpandableListAdapter(this, filterlist, listDataChild);
-        expandlvwplist.setAdapter(expandableListAdapter);
+
+        refreshView(filterlist, listDataChild);
 
         mDrawerLayout.closeDrawers();
         if (mSelectedIdByLevelId != null)
@@ -744,577 +760,22 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
-    private class ExpandableListAdapter extends BaseExpandableListAdapter {
-        private Context context;
-        private ArrayList<LoadManagementBO> listDataHeader; // header titles
-        // child data in format of header title, child title
-        private HashMap<String, ArrayList<LoadManagementBO>> listDataChild;
-
-
-        ExpandableListAdapter(Context context, ArrayList<LoadManagementBO> listDataHeader,
-                              HashMap<String, ArrayList<LoadManagementBO>> listChildData) {
-
-            this.context = context;
-            this.listDataHeader = listDataHeader;
-            this.listDataChild = listChildData;
-
-
-        }
-
-
-        @Override
-        public Object getChild(int groupPosition, int childPosition) {
-            String keyPid = this.listDataHeader.get(groupPosition).getProductid() + "";
-            return this.listDataChild.get(keyPid)
-                    .get(childPosition);
-        }
-
-
-        @Override
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
-        }
-
-
-        @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-
-            LoadManagementBO childBoObj;
-            String tv;
-            childBoObj = (LoadManagementBO) getChild(groupPosition, childPosition);
-            final ViewHolder holder;
-            View row = convertView;
-            if (row == null) {
-
-                LayoutInflater inflater = getLayoutInflater();
-                row = inflater
-                        .inflate(R.layout.custom_child_listitem, parent, false);
-                holder = new ViewHolder();
-
-                holder.batchNo = (TextView) row.findViewById(R.id.batch_no);
-                holder.sihCase = (TextView) row.findViewById(R.id.sih_case);
-                holder.sihOuter = (TextView) row.findViewById(R.id.sih_outer);
-                holder.sih = (TextView) row.findViewById(R.id.sih);
-
-                holder.batchNo.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, StockViewActivity.this));
-                holder.sihCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
-                holder.sihOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
-                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
-
-
-                if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
-                    if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                        holder.sihCase.setVisibility(View.GONE);
-                    if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                        holder.sihOuter.setVisibility(View.GONE);
-                    if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                        holder.sih.setVisibility(View.GONE);
-                } else {
-                    holder.sihCase.setVisibility(View.GONE);
-                    holder.sihOuter.setVisibility(View.GONE);
-                }
-
-
-                row.setTag(holder);
-            } else {
-                holder = (ViewHolder) row.getTag();
-            }
-            tv = getResources().getString(
-                    R.string.batch_no)
-                    + ": " + childBoObj.getBatchNo() + "";
-            holder.batchNo.setText(tv);
-            if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
-                    bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||
-                    bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
-                holder.sihCase.setVisibility(View.GONE);
-                holder.sihOuter.setVisibility(View.GONE);
-                if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU) {
-                    if (childBoObj.getOuterSize() != 0) {
-                        tv = SDUtil.mathRoundoff((double) childBoObj.getStocksih() / childBoObj.getOuterSize()) + "";
-                        holder.sih.setText(tv);
-                    } else {
-                        tv = childBoObj.getStocksih() + "";
-                        holder.sih.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS) {
-                    if (childBoObj.getCaseSize() != 0) {
-                        tv = SDUtil.mathRoundoff((double) childBoObj.getStocksih() / childBoObj.getCaseSize()) + "";
-                        holder.sih.setText(tv);
-                    } else {
-                        tv = childBoObj.getStocksih() + "";
-                        holder.sih.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
-                    tv = childBoObj.getStocksih() + "";
-                    holder.sih.setText(tv);
-                }
-
-            } else if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
-                if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    if (childBoObj.getStocksih() == 0) {
-                        holder.sihCase.setText("0");
-                        holder.sihOuter.setText("0");
-                        holder.sih.setText("0");
-                    } else if (childBoObj.getCaseSize() == 0) {
-                        holder.sihCase.setText("0");
-                        if (childBoObj.getOuterSize() == 0) {
-                            holder.sihOuter.setText("0");
-                            tv = childBoObj.getStocksih() + "";
-                            holder.sih.setText(tv);
-                        } else {
-                            tv = childBoObj.getStocksih()
-                                    / childBoObj.getOuterSize() + "";
-                            holder.sihOuter.setText(tv);
-                            tv = childBoObj.getStocksih()
-                                    % childBoObj.getOuterSize() + "";
-                            holder.sih.setText(tv);
-                        }
-                    } else {
-                        tv = childBoObj.getStocksih()
-                                / childBoObj.getCaseSize() + "";
-                        holder.sihCase.setText(tv);
-                        if (childBoObj.getOuterSize() > 0
-                                && (childBoObj.getStocksih() % childBoObj.getCaseSize()) >= childBoObj
-                                .getOuterSize()) {
-                            tv = (childBoObj.getStocksih() % childBoObj
-                                    .getCaseSize())
-                                    / childBoObj.getOuterSize()
-                                    + "";
-                            holder.sihOuter.setText(tv);
-                            tv = (childBoObj.getStocksih() % childBoObj
-                                    .getCaseSize())
-                                    % childBoObj.getOuterSize()
-                                    + "";
-                            holder.sih.setText(tv);
-                        } else {
-                            holder.sihOuter.setText("0");
-                            tv = childBoObj.getStocksih()
-                                    % childBoObj.getCaseSize() + "";
-                            holder.sih.setText(tv);
-                        }
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    if (childBoObj.getStocksih() == 0) {
-                        holder.sihCase.setText("0");
-                        holder.sihOuter.setText("0");
-                    } else if (childBoObj.getCaseSize() == 0) {
-                        holder.sihCase.setText("0");
-                        if (childBoObj.getOuterSize() == 0) {
-                            holder.sihOuter.setText("0");
-                        } else {
-                            tv = childBoObj.getStocksih()
-                                    / childBoObj.getOuterSize() + "";
-                            holder.sihOuter.setText(tv);
-                        }
-                    } else {
-                        tv = childBoObj.getStocksih()
-                                / childBoObj.getCaseSize() + "";
-                        holder.sihCase.setText(tv);
-                        if (childBoObj.getOuterSize() > 0
-                                && (childBoObj.getStocksih() % childBoObj.getCaseSize()) >= childBoObj
-                                .getOuterSize()) {
-                            tv = (childBoObj.getStocksih() % childBoObj
-                                    .getCaseSize())
-                                    / childBoObj.getOuterSize()
-                                    + "";
-                            holder.sihOuter.setText(tv);
-                        } else {
-                            holder.sihOuter.setText("0");
-                        }
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    if (childBoObj.getStocksih() == 0) {
-                        holder.sih.setText("0");
-                        holder.sihOuter.setText("0");
-                    } else if (childBoObj.getOuterSize() == 0) {
-                        tv = childBoObj.getStocksih() + "";
-                        holder.sih.setText(tv);
-                        holder.sihOuter.setText("0");
-                    } else {
-                        tv = childBoObj.getStocksih()
-                                / childBoObj.getOuterSize() + "";
-                        holder.sihOuter.setText(tv);
-                        tv = childBoObj.getStocksih()
-                                % childBoObj.getOuterSize() + "";
-                        holder.sih.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    if (childBoObj.getStocksih() == 0) {
-                        holder.sih.setText("0");
-                        holder.sihCase.setText("0");
-                    } else if (childBoObj.getCaseSize() == 0) {
-                        tv = childBoObj.getStocksih() + "";
-                        holder.sih.setText(tv);
-                        holder.sihCase.setText("0");
-                    } else {
-                        tv = childBoObj.getStocksih()
-                                / childBoObj.getCaseSize() + "";
-                        holder.sihCase.setText(tv);
-                        tv = childBoObj.getStocksih()
-                                % childBoObj.getCaseSize() + "";
-                        holder.sih.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                    if (childBoObj.getStocksih() == 0) {
-                        holder.sihCase.setText("0");
-                    } else if (childBoObj.getCaseSize() == 0) {
-                        holder.sihCase.setText("0");
-                    } else {
-                        tv = childBoObj.getStocksih()
-                                / childBoObj.getCaseSize() + "";
-                        holder.sihCase.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    if (childBoObj.getStocksih() == 0) {
-                        holder.sihOuter.setText("0");
-                    } else if (childBoObj.getOuterSize() == 0) {
-                        holder.sihOuter.setText("0");
-                    } else {
-                        tv = childBoObj.getStocksih()
-                                / childBoObj.getOuterSize() + "";
-                        holder.sihOuter.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    tv = childBoObj.getStocksih() + "";
-                    holder.sih.setText(tv);
-                }
-            } else {
-                tv = childBoObj.getStocksih() + "";
-                holder.sih.setText(tv);
-            }
-
-            return row;
-        }
-
-
-        @Override
-        public int getGroupCount() {
-            return this.listDataHeader.size();
-        }
-
-        @Override
-        public int getChildrenCount(int groupPosition) {
-            String proid = String.valueOf(this.listDataHeader.get(groupPosition).getProductid());
-            return this.listDataChild.get(proid)
-                    .size();
-        }
-
-        @Override
-        public Object getGroup(int groupPosition) {
-            return this.listDataHeader.get(groupPosition);
-        }
-
-
-        @Override
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return false;
-        }
-
-        @Override
-        public View getGroupView(final int groupPosition, final boolean isExpanded, final View convertView, final ViewGroup parent) {
-            LoadManagementBO groupBoObj;
-            String tv;
-            groupBoObj = (LoadManagementBO) getGroup(groupPosition);
-            final GroupViewHolder holder;
-            View row = convertView;
-
-            if (row == null) {
-                LayoutInflater inflater = getLayoutInflater();
-                row = inflater
-                        .inflate(R.layout.row_stock_report, parent, false);
-                holder = new GroupViewHolder();
-
-                holder.psname = (TextView) row.findViewById(R.id.orderPRODNAME);
-                holder.sihCase = (TextView) row.findViewById(R.id.sih_case);
-                holder.sihOuter = (TextView) row.findViewById(R.id.sih_outer);
-                holder.sih = (TextView) row.findViewById(R.id.sih);
-                holder.prodcode = (TextView) row.findViewById(R.id.prdcode);
-
-
-                holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, StockViewActivity.this));
-                holder.prodcode.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, StockViewActivity.this));
-                holder.sihCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
-                holder.sihOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
-                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, StockViewActivity.this));
-
-                if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
-                    if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                        holder.sihCase.setVisibility(View.GONE);
-                    if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                        holder.sihOuter.setVisibility(View.GONE);
-                    if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                        holder.sih.setVisibility(View.GONE);
-                } else {
-                    holder.sihCase.setVisibility(View.GONE);
-                    holder.sihOuter.setVisibility(View.GONE);
-                }
-
-                if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
-                    holder.prodcode.setVisibility(View.GONE);
-
-
-                row.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        productName.setText(holder.pname);
-                        if (viewFlipper.getDisplayedChild() != 0) {
-                            viewFlipper.setInAnimation(StockViewActivity.this,
-                                    R.anim.in_from_left);
-                            viewFlipper.setOutAnimation(StockViewActivity.this,
-                                    R.anim.out_to_left);
-                            viewFlipper.showPrevious();
-                        }
-                    }
-                });
-                row.setTag(holder);
-            } else {
-                holder = (GroupViewHolder) row.getTag();
-            }
-
-            holder.psname.setText(groupBoObj.getProductshortname());
-            holder.pname = groupBoObj.getProductname();
-            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
-                String prodCode = getResources().getString(R.string.prod_code) + ": " +
-                        groupBoObj.getProductCode() + " ";
-                holder.prodcode.setText(prodCode);
-            }
-
-            if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
-                    bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||
-                    bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_PS) {
-                holder.sihCase.setVisibility(View.GONE);
-                holder.sihOuter.setVisibility(View.GONE);
-                if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU) {
-                    if (groupBoObj.getOuterSize() != 0) {
-                        tv = SDUtil.mathRoundoff((double) groupBoObj.getStocksih() / groupBoObj.getOuterSize()) + "";
-                        holder.sih.setText(tv);
-                    } else {
-                        tv = groupBoObj.getStocksih() + "";
-                        holder.sih.setText(tv);
-
-                    }
-                } else if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS) {
-                    if (groupBoObj.getCaseSize() != 0) {
-                        tv = SDUtil.mathRoundoff((double) groupBoObj.getStocksih() / groupBoObj.getCaseSize()) + "";
-                        holder.sih.setText(tv);
-                    } else {
-                        tv = groupBoObj.getStocksih() + "";
-                        holder.sih.setText(tv);
-
-                    }
-                } else {
-                    tv = groupBoObj.getStocksih() + "";
-                    holder.sih.setText(tv);
-
-                }
-            } else if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
-                if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    if (groupBoObj.getSih() == 0) {
-                        holder.sihCase.setText("0");
-                        holder.sihOuter.setText("0");
-                        holder.sih.setText("0");
-                    } else if (groupBoObj.getCaseSize() == 0) {
-                        holder.sihCase.setText("0");
-                        if (groupBoObj.getOuterSize() == 0) {
-                            holder.sihOuter.setText("0");
-                            tv = groupBoObj.getSih() + "";
-                            holder.sih.setText(tv);
-                        } else {
-                            tv = groupBoObj.getSih()
-                                    / groupBoObj.getOuterSize() + "";
-                            holder.sihOuter.setText(tv);
-                            tv = groupBoObj.getSih()
-                                    % groupBoObj.getOuterSize() + "";
-                            holder.sih.setText(tv);
-                        }
-                    } else {
-                        tv = groupBoObj.getSih()
-                                / groupBoObj.getCaseSize() + "";
-                        holder.sihCase.setText(tv);
-                        if (groupBoObj.getOuterSize() > 0
-                                && (groupBoObj.getSih() % groupBoObj.getCaseSize()) >= groupBoObj
-                                .getOuterSize()) {
-                            tv = (groupBoObj.getSih() % groupBoObj
-                                    .getCaseSize())
-                                    / groupBoObj.getOuterSize()
-                                    + "";
-                            holder.sihOuter.setText(tv);
-                            tv = (groupBoObj.getSih() % groupBoObj
-                                    .getCaseSize())
-                                    % groupBoObj.getOuterSize()
-                                    + "";
-                            holder.sih.setText(tv);
-                        } else {
-                            holder.sihOuter.setText("0");
-                            tv = groupBoObj.getSih()
-                                    % groupBoObj.getCaseSize() + "";
-                            holder.sih.setText(tv);
-                        }
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    if (groupBoObj.getSih() == 0) {
-                        holder.sihCase.setText("0");
-                        holder.sihOuter.setText("0");
-                    } else if (groupBoObj.getCaseSize() == 0) {
-                        holder.sihCase.setText("0");
-                        if (groupBoObj.getOuterSize() == 0) {
-                            holder.sihOuter.setText("0");
-                        } else {
-                            tv = groupBoObj.getSih()
-                                    / groupBoObj.getOuterSize() + "";
-                            holder.sihOuter.setText(tv);
-                        }
-                    } else {
-                        tv = groupBoObj.getSih()
-                                / groupBoObj.getCaseSize() + "";
-                        holder.sihCase.setText(tv);
-                        if (groupBoObj.getOuterSize() > 0
-                                && (groupBoObj.getSih() % groupBoObj.getCaseSize()) >= groupBoObj
-                                .getOuterSize()) {
-                            tv = (groupBoObj.getSih() % groupBoObj
-                                    .getCaseSize())
-                                    / groupBoObj.getOuterSize()
-                                    + "";
-                            holder.sihOuter.setText(tv);
-                        } else {
-                            holder.sihOuter.setText("0");
-                        }
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    if (groupBoObj.getSih() == 0) {
-                        holder.sih.setText("0");
-                        holder.sihOuter.setText("0");
-                    } else if (groupBoObj.getOuterSize() == 0) {
-                        tv = groupBoObj.getSih() + "";
-                        holder.sih.setText(tv);
-                        holder.sihOuter.setText("0");
-                    } else {
-                        tv = groupBoObj.getSih()
-                                / groupBoObj.getOuterSize() + "";
-                        holder.sihOuter.setText(tv);
-                        tv = groupBoObj.getSih()
-                                % groupBoObj.getOuterSize() + "";
-                        holder.sih.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    if (groupBoObj.getSih() == 0) {
-                        holder.sih.setText("0");
-                        holder.sihCase.setText("0");
-                    } else if (groupBoObj.getCaseSize() == 0) {
-                        tv = groupBoObj.getSih() + "";
-                        holder.sih.setText(tv);
-                        holder.sihCase.setText("0");
-                    } else {
-                        tv = groupBoObj.getSih()
-                                / groupBoObj.getCaseSize() + "";
-                        holder.sihCase.setText(tv);
-                        tv = groupBoObj.getSih()
-                                % groupBoObj.getCaseSize() + "";
-                        holder.sih.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                    if (groupBoObj.getSih() == 0) {
-                        holder.sihCase.setText("0");
-                    } else if (groupBoObj.getCaseSize() == 0) {
-                        holder.sihCase.setText("0");
-                    } else {
-                        tv = groupBoObj.getSih()
-                                / groupBoObj.getCaseSize() + "";
-                        holder.sihCase.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    if (groupBoObj.getSih() == 0) {
-                        holder.sihOuter.setText("0");
-                    } else if (groupBoObj.getOuterSize() == 0) {
-                        holder.sihOuter.setText("0");
-                    } else {
-                        tv = groupBoObj.getSih()
-                                / groupBoObj.getOuterSize() + "";
-                        holder.sihOuter.setText(tv);
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    tv = groupBoObj.getSih() + "";
-                    holder.sih.setText(tv);
-                }
-            } else {
-                tv = groupBoObj.getSih() + "";
-                holder.sih.setText(tv);
-            }
-
-
-            return row;
-        }
-
-
-        @Override
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return false;
-        }
-
-
-    }
-
-
-    class GroupViewHolder {
-        private String pname;
-        private TextView psname;
-        private TextView sih;
-        private TextView sihCase;
-        private TextView sihOuter;
-        private TextView prodcode;
-    }
-
-
-    class ViewHolder {
-        private TextView sih;
-        private TextView sihCase;
-        private TextView sihOuter;
-        private TextView batchNo;
-
-    }
-
     private void showExpandButton() {
         expand_collapse_button_enable = true;
     }
 
-    private void FiveFilterFragment() {
-        try {
-
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
-                    .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("serilizeContent",
-                    bmodel.configurationMasterHelper.getGenFilter());
-            bundle.putString("isFrom", "STK");
-            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
-
-            // set Fragmentclass Arguments
-            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
+    StockViewInterface stockViewInterface = new StockViewInterface() {
+        @Override
+        public void onRowClick(String pName) {
+            productName.setText(pName);
+            if (viewFlipper.getDisplayedChild() != 0) {
+                viewFlipper.setInAnimation(StockViewActivity.this,
+                        R.anim.in_from_left);
+                viewFlipper.setOutAnimation(StockViewActivity.this,
+                        R.anim.out_to_left);
+                viewFlipper.showPrevious();
+            }
         }
-    }
+    };
+
 }

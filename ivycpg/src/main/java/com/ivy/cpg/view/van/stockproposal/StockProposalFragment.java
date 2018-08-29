@@ -1,10 +1,9 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.stockproposal;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,26 +36,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.SpecialFilterFragment;
+import com.ivy.utils.FontUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -82,22 +77,17 @@ public class StockProposalFragment extends IvyBaseFragment implements
     protected BusinessModel bmodel;
 
     private ListView lvwplist;
-    private Button mBtn_Search, mBtnFilterPopup, mBtn_clear, mBtn_next;
     private TextView totalValueText, lpcText, productName;
     private EditText QUANTITY, mEdt_searchproductName, QUANTITY1;
     private String brandbutton, generalbutton;
-    private RelativeLayout footerLty;
+
 
     private DrawerLayout mDrawerLayout;
     private ViewFlipper viewFlipper;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private boolean isSpecialFilter_enabled = true;
-    boolean next_button_enabled = true;
-    boolean remarks_button_enable = true;
-    boolean scheme_button_enable = true;
-    boolean location_button_enable = true;
-    public boolean so_apply = false, std_apply = false, sih_apply = false;
+
 
     private String append = "";
     Vector<String> mgeneralFilterList;
@@ -128,11 +118,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
     private final String mSMP = "Filt22";
     public final String mNMustSell = "Filt16";
     public final String mStock = "Filt17";
-
     public boolean isSbd, isSbdGaps, isOrdered, isPurchased, isInitiative, isOnAllocation, isInStock, isPromo, isMustSell, isFocusBrand, isFocusBrand2, isSIH, isOOS, isNMustSell, isStock, isDiscount, isFocusBrand3, isFocusBrand4, isSMP;
-
-    public ArrayAdapter<StandardListBO> mLocationAdapter;
-    public int mSelectedLocationIndex;
     public HashMap<Integer, Integer> mSelectedIdByLevelId;
     private View view;
 
@@ -150,7 +136,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
     private double calculatedTotalvalue = 0;
     private LoadManagementBO stock;
     private String sihTitel, hvp3mTitlel, distInvTitle;
-    private Button saveBtn;
 
     SearchAsync searchAsync;
     Bundle bundle = null;
@@ -176,24 +161,25 @@ public class StockProposalFragment extends IvyBaseFragment implements
         viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
 
         mEdt_searchproductName = (EditText) view.findViewById(R.id.edt_searchproductName);
-        mBtn_Search = (Button) view.findViewById(R.id.btn_search);
-        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
-        mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
-        mBtn_next = (Button) view.findViewById(R.id.btn_next);
-        footerLty = (RelativeLayout) view.findViewById(R.id.footer1);
-        ((TextView) view.findViewById(R.id.productname)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.itemcasetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.outeritemcasetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.itempiecetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unitpricetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        Button mBtn_Search = (Button) view.findViewById(R.id.btn_search);
+        Button mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
+        Button mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
+        Button saveBtn = (Button) view.findViewById(R.id.btn_next);
+        saveBtn.setText(getResources().getString(R.string.save));
+        ((TextView) view.findViewById(R.id.productname)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.itemcasetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.outeritemcasetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.itempiecetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.unitpricetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         mBtn_Search.setOnClickListener(this);
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
         mBtn_clear.setOnEditorActionListener(this);
+        saveBtn.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
 
-        mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        mBtn_next.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+
 
         getOverflowMenu();
 
@@ -241,18 +227,18 @@ public class StockProposalFragment extends IvyBaseFragment implements
         totalValueText = (TextView) view.findViewById(R.id.totalValue);
         lpcText = (TextView) view.findViewById(R.id.lcp);
 
-        lpcText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        totalValueText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        ((TextView) view.findViewById(R.id.tv_unload_sih)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        ((TextView) view.findViewById(R.id.tv_unload_total_case)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        ((TextView) view.findViewById(R.id.tv_unload_total_outer)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        ((TextView) view.findViewById(R.id.tv_unload_total_piece)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        ((TextView) view.findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unload_total_sihTxt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unload_total_caseTxt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unload_total_outerTxt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unload_total_pieceTxt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        lpcText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
+        totalValueText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
+        ((TextView) view.findViewById(R.id.tv_unload_sih)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
+        ((TextView) view.findViewById(R.id.tv_unload_total_case)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
+        ((TextView) view.findViewById(R.id.tv_unload_total_outer)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
+        ((TextView) view.findViewById(R.id.tv_unload_total_piece)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
+        ((TextView) view.findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.unload_total_sihTxt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.unload_total_caseTxt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.unload_total_outerTxt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.unload_total_pieceTxt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         productName = (TextView) view.findViewById(R.id.productName);
         productName.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -397,8 +383,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 Log.i("e", e.getMessage());
             }
 
-        saveBtn = (Button) view.findViewById(R.id.btn_next);
-        saveBtn.setText(getResources().getString(R.string.save));
+
         if (!bmodel.configurationMasterHelper.SHOW_UNIT_PRICE)
             view.findViewById(R.id.unitpricetitle).setVisibility(View.GONE);
         view.findViewById(R.id.lpc_title).setVisibility(View.GONE);
@@ -409,25 +394,10 @@ public class StockProposalFragment extends IvyBaseFragment implements
             isSpecialFilter_enabled = true;
             generalbutton = GENERAL;
         }
-        hideNextButton();
-        hideRemarksButton();
-        hideShemeButton();
-        hideLocationButton();
+
         getActivity().supportInvalidateOptionsMenu();
-        new DownloadStockProposal().execute();
-        //updateBrandText("Brand", -1);
-
-        if (bmodel.configurationMasterHelper.SHOW_SO_APPLY)
-            so_apply = true;
-        if (bmodel.configurationMasterHelper.SHOW_STD_QTY_APPLY)
-            std_apply = true;
-
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onNextButtonClick();
-            }
-        });
+        // new DownloadStockProposal().execute();
+        updateBrandText("Brand", -1);
 
 
         mSearchTypeArray = new ArrayList<>();
@@ -480,12 +450,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
             Commons.printException("" + e);
         }
 
-        // load location filter
-        mLocationAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.select_dialog_singlechoice);
-
-        for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
-            mLocationAdapter.add(temp);
 
         mEdt_searchproductName
                 .setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -610,16 +574,16 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
                 holder.pname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-                holder.pname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.newProposalQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.newproposalpcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.proposalQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.sihCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.sihOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.unitprice.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.distinv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.pname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.newProposalQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.newproposalpcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.proposalQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.sihCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.sihOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.unitprice.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.distinv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
 
                 if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
@@ -706,15 +670,9 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                         holder.outerQty
                                                 .removeTextChangedListener(this);
                                         if (!isToastDisabled) {
-                                            Toast.makeText(
-                                                    getActivity(),
-                                                    String.format(
-                                                            getResources()
-                                                                    .getString(
-                                                                            R.string.exceed),
-                                                            holder.spbo
-                                                                    .getMaxQty()),
-                                                    Toast.LENGTH_SHORT).show();
+                                            showMessage(String.format(getString(R.string.exceed),
+                                                    holder.spbo.getMaxQty()));
+
                                         } else {
                                             isMaxExceedToast = true;
                                         }
@@ -769,12 +727,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                         }
 
                                         if (!isToastDisabled) {
-                                            Toast.makeText(
-                                                    getActivity(),
-                                                    getResources()
-                                                            .getString(
-                                                                    R.string.exceeded_credit_limit),
-                                                    Toast.LENGTH_SHORT).show();
+                                            showMessage(getString(R.string.exceeded_credit_limit));
                                         } else {
                                             isCreditLimitExceedToast = true;
                                         }
@@ -871,15 +824,10 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                         holder.newProposalQty
                                                 .removeTextChangedListener(this);
                                         if (!isToastDisabled) {
-                                            Toast.makeText(
-                                                    getActivity(),
-                                                    String.format(
-                                                            getResources()
-                                                                    .getString(
-                                                                            R.string.exceed),
-                                                            holder.spbo
-                                                                    .getMaxQty()),
-                                                    Toast.LENGTH_SHORT).show();
+
+                                            showMessage(String.format(getString(R.string.exceed),
+                                                    holder.spbo.getMaxQty()));
+
                                         } else {
                                             isMaxExceedToast = true;
                                         }
@@ -933,12 +881,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                         }
 
                                         if (!isToastDisabled) {
-                                            Toast.makeText(
-                                                    getActivity(),
-                                                    getResources()
-                                                            .getString(
-                                                                    R.string.exceeded_credit_limit),
-                                                    Toast.LENGTH_SHORT).show();
+                                            showMessage(getString(R.string.exceeded_credit_limit));
                                         } else {
                                             isCreditLimitExceedToast = true;
                                         }
@@ -1034,16 +977,9 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                                 holder.newproposalpcsQty
                                                         .removeTextChangedListener(this);
                                                 if (!isToastDisabled) {
-                                                    Toast.makeText(
-                                                            getActivity(),
-                                                            String.format(
-                                                                    getResources()
-                                                                            .getString(
-                                                                                    R.string.exceed),
-                                                                    holder.spbo
-                                                                            .getMaxQty()),
-                                                            Toast.LENGTH_SHORT)
-                                                            .show();
+                                                    showMessage(String.format(getString(
+                                                            R.string.exceed),
+                                                            holder.spbo.getMaxQty()));
                                                 } else {
                                                     isMaxExceedToast = true;
                                                 }
@@ -1115,13 +1051,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                                             .getStkpropcsqty());
                                                 }
                                                 if (!isToastDisabled) {
-                                                    Toast.makeText(
-                                                            getActivity(),
-                                                            getResources()
-                                                                    .getString(
-                                                                            R.string.exceeded_credit_limit),
-                                                            Toast.LENGTH_SHORT)
-                                                            .show();
+                                                    showMessage(getString(R.string.exceeded_credit_limit));
                                                 } else {
                                                     isCreditLimitExceedToast = true;
                                                 }
@@ -1471,9 +1401,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
             alertDialog.dismiss();
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.saved_successfully),
-                    Toast.LENGTH_SHORT).show();
+            showMessage(getString(R.string.saved_successfully));
 
             if (bundle.getBoolean("isFromLodMgt")) {
                 getActivity().finish();
@@ -1677,10 +1605,10 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
     @Override
     public void onClick(View v) {
-        Button vw = (Button) v;
+        int vw = v.getId();
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        if (vw == mBtn_Search) {
+        if (vw == R.id.btn_search) {
             viewFlipper.setInAnimation(getActivity(), R.anim.in_from_right);
             viewFlipper.setOutAnimation(getActivity(), R.anim.out_to_right);
             viewFlipper.showNext();
@@ -1688,7 +1616,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(mEdt_searchproductName,
                     InputMethodManager.SHOW_FORCED);
-        } else if (vw == mBtnFilterPopup) {
+        } else if (vw == R.id.btn_filter_popup) {
 
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(
                     getActivity());
@@ -1725,7 +1653,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                         }
                     });
             bmodel.applyAlertDialogTheme(builderSingle);
-        } else if (vw == mBtn_clear) {
+        } else if (vw == R.id.btn_clear) {
             mEdt_searchproductName.setText("");
 
             /** set the following value to clear the **/
@@ -1735,6 +1663,8 @@ public class StockProposalFragment extends IvyBaseFragment implements
             getActivity().supportInvalidateOptionsMenu();
 
             updateGeneralText(GENERAL);
+        } else if (vw == R.id.btn_next) {
+            onNextButtonClick();
         }
     }
 
@@ -1754,33 +1684,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
         }
     }
 
-    private void onNoteButtonClick() {
-
-    }
-
-    private void onDotBtnEnable() {
-        try {
-            (view.findViewById(R.id.calcdot)).setVisibility(View.VISIBLE);
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    private void onDotBtnDisable() {
-        try {
-            (view.findViewById(R.id.calcdot)).setVisibility(View.GONE);
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    private void onKeyInvisibleSub() {
-        try {
-            view.findViewById(R.id.keypad).setVisibility(View.GONE);
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
 
     private void onBackButtonClick() {
         if (hasStockProposalDone()) {
@@ -2007,17 +1910,11 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 Commons.print("Gor Run");
                 subHandler();
                 if (isMaxExceedToast)
-                    Toast.makeText(
-                            getActivity(),
-                            getResources().getString(
-                                    R.string.exceed_allocation),
-                            Toast.LENGTH_SHORT).show();
+                    showMessage(getString(R.string.exceed_allocation));
+
                 if (isCreditLimitExceedToast)
-                    Toast.makeText(
-                            getActivity(),
-                            getResources().getString(
-                                    R.string.exceeded_credit_limit),
-                            Toast.LENGTH_SHORT).show();
+                    showMessage(getString(R.string.exceeded_credit_limit));
+
                 isToastDisabled = false;
                 isMaxExceedToast = false;
                 isCreditLimitExceedToast = false;
@@ -2031,7 +1928,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
         sHandler.sendEmptyMessage(1);
     }
 
-    private Handler handler = new Handler();
+    private MyHandler handler = new MyHandler(getActivity());
 
     /**
      * An example getter to provide it to some external class
@@ -2484,8 +2381,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 searchAsync = new SearchAsync();
                 searchAsync.execute();
             } else {
-                Toast.makeText(getActivity(), "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
-                        .show();
+                showMessage(getString(R.string.enter_atleast_three_letters));
             }
             return true;
         }
@@ -2494,6 +2390,9 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
     @Override
     public void updateBrandText(String mFilterText, int bid) {
+
+        stockPropVector = bmodel.productHelper.getLoadMgmtProducts();
+
         // Close the drawer
         mDrawerLayout.closeDrawers();
 
@@ -2569,23 +2468,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
         getActivity().supportInvalidateOptionsMenu();
     }
 
-    public void showLocation() {
-        AlertDialog.Builder builder;
-
-        builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(null);
-        builder.setSingleChoiceItems(mLocationAdapter, mSelectedLocationIndex,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        mSelectedLocationIndex = item;
-                        dialog.dismiss();
-                        refreshList();
-                    }
-                });
-
-        bmodel.applyAlertDialogTheme(builder);
-    }
 
     @Override
     public void updateGeneralText(String mFilterText) {
@@ -2660,24 +2542,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
     }
 
 
-    public void hideNextButton() {
-        next_button_enabled = false;
-    }
-
-    public void hideRemarksButton() {
-        remarks_button_enable = false;
-    }
-
-    public void hideShemeButton() {
-        scheme_button_enable = false;
-    }
-
-
-    public void hideLocationButton() {
-        location_button_enable = false;
-    }
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -2711,41 +2575,31 @@ public class StockProposalFragment extends IvyBaseFragment implements
             else
                 menu.findItem(R.id.menu_spl_filter).setVisible(false);
 
-            if (next_button_enabled)
-                menu.findItem(R.id.menu_next).setVisible(!drawerOpen);
-            else
-                menu.findItem(R.id.menu_next).setVisible(false);
-            if (remarks_button_enable)
-                menu.findItem(R.id.menu_remarks).setVisible(!drawerOpen);
-            else
+            menu.findItem(R.id.menu_next).setVisible(false);
 
-                menu.findItem(R.id.menu_remarks).setVisible(false);
+            menu.findItem(R.id.menu_remarks).setVisible(false);
 
-            if (scheme_button_enable)
-                menu.findItem(R.id.menu_scheme).setVisible(!drawerOpen);
-            else
-                menu.findItem(R.id.menu_scheme).setVisible(false);
+            menu.findItem(R.id.menu_scheme).setVisible(false);
 
-            if (so_apply)
+
+            if (bmodel.configurationMasterHelper.SHOW_SO_APPLY)
                 menu.findItem(R.id.menu_apply_so).setVisible(!drawerOpen);
             else
                 menu.findItem(R.id.menu_apply_so).setVisible(false);
 
-            if (std_apply)
+            if (bmodel.configurationMasterHelper.SHOW_STD_QTY_APPLY)
                 menu.findItem(R.id.menu_apply_std_qty).setVisible(!drawerOpen);
             else
                 menu.findItem(R.id.menu_apply_std_qty).setVisible(false);
 
+
             if (bmodel.productHelper.getInStoreLocation().size() == 1)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
 
-            if (location_button_enable)
-                menu.findItem(R.id.menu_loc_filter).setVisible(!drawerOpen);
-            else
-                menu.findItem(R.id.menu_loc_filter).setVisible(false);
+            menu.findItem(R.id.menu_loc_filter).setVisible(false);
 
 
-            menu.findItem(R.id.menu_sih_apply).setVisible(true);
+            menu.findItem(R.id.menu_sih_apply).setVisible(false);
 
             // menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
@@ -2785,7 +2639,24 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 generalbutton = GENERAL;
                 mSelectedFilterMap.put("General", GENERAL);
             }
-            FiveFilterFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("serilizeContent",
+                    bmodel.configurationMasterHelper.getGenFilter());
+            bundle.putString("isFrom", "STK");
+            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
+
+            QUANTITY = null;
+            mDrawerLayout.openDrawer(GravityCompat.END);
+
+            loadFiveFilterFragment(bundle, R.id.right_drawer);
+
+            return true;
+        } else if (i == R.id.menu_apply_so) {
+            applyStockSo();
+            return true;
+        } else if (i == R.id.menu_apply_std_qty) {
+            applyStdQty();
             return true;
         }
 
@@ -2793,38 +2664,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
         return false;
     }
 
-    private void FiveFilterFragment() {
-        try {
-
-            QUANTITY = null;
-            mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
-                    .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("serilizeContent",
-                    bmodel.configurationMasterHelper.getGenFilter());
-            bundle.putString("isFrom", "STK");
-            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
-
-            // set Fragmentclass Arguments
-            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<>();
-            fragobj.setArguments(bundle);
-            ft.replace(R.id.right_drawer, fragobj, "Fivefilter");
-            ft.commit();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
-    protected void loadSchemeDialog() {
-        // TODO Auto-generated method stub
-
-    }
 
     public void applyStdQty() {
         isToastDisabled = true;
@@ -2848,12 +2687,24 @@ public class StockProposalFragment extends IvyBaseFragment implements
     }
 
     public void applyStockSo() {
-        // TODO Auto-generated method stub
 
-    }
-
-    public void applySIH() {
-        // TODO Auto-generated method stub
+        isToastDisabled = true;
+        if (bmodel.configurationMasterHelper.SHOW_STOCK_PRO_CREDIT_VALIDATION) {
+            if (doApplyStockQtyCalculation() > bmodel.userMasterHelper
+                    .getUserMasterBO().getCreditlimit()) {
+                onCreateDialog(3);
+            } else {
+                showProgDialog();
+                doApplyStockQtyStuff(false);
+                mSchedule.notifyDataSetChanged();
+                doToast();
+            }
+        } else {
+            showProgDialog();
+            doApplyStockQtyStuff(false);
+            mSchedule.notifyDataSetChanged();
+            doToast();
+        }
 
     }
 
@@ -2917,53 +2768,5 @@ public class StockProposalFragment extends IvyBaseFragment implements
         }
     }
 
-    class DownloadStockProposal extends AsyncTask<Integer, Integer, Boolean> {
-
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-
-
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(bundle.getString("menuCode")));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(bundle.getString("menuCode"),
-                        bmodel.productHelper.getFilterProductLevels()));
-
-                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
-                        bundle.getString("menuCode"), bundle.getString("menuCode"));
-
-                bmodel.updateProductUOM(bundle.getString("menuCode"), 2);
-                stockPropVector = bmodel.productHelper.getLoadMgmtProducts();
-                bmodel.stockProposalModuleHelper.loadInitiative();
-                bmodel.stockProposalModuleHelper.loadSBDData();
-                bmodel.stockProposalModuleHelper.loadPurchased();
-
-            } catch (Exception e) {
-                Commons.printException(e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE; // Return your real result here
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            alertDialog.dismiss();
-            updateBrandText("Brand", -1);
-        }
-
-    }
 
 }
