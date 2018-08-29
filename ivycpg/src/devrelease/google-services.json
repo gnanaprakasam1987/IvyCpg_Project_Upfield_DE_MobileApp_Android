@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "534457766184",
+    "firebase_url": "https://ivycpg-1138.firebaseio.com",
+    "project_id": "ivycpg-1138",
+    "storage_bucket": "ivycpg-1138.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534457766184:android:09b29fbcd4d51663",
+        "android_client_info": {
+          "package_name": "com.ivy.sd.png.asean.view"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534457766184-c20b9kaibnt15sn51kf7ur0hlu9s2djf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbasHC22iP250QdOp7ZJ3OUEbl5eO3TtI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

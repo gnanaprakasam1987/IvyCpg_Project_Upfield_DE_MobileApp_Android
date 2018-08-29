@@ -54,5 +54,12 @@
         android:title="@string/fivefilter"
         android:visible="false"
         ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_assetservice"
+        android:icon="@drawable/ic_action_content_remove"
+        android:orderInCategory="98"
+        android:title="Asset Service"
+        ivydist:showAsAction="never" />
 </menu>
 

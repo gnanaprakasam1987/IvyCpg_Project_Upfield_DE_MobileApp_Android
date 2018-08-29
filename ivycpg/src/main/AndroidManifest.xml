@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1320"
-    android:versionName="2.132.0.2484">
+    android:versionName="2.132.0.2523">
 
     <supports-screens
         android:anyDensity="true"
@@ -61,10 +61,6 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.ivy.sd.png.asean.view.permission.MAPS_RECEIVE" />
 
-    <!-- GCM  - used for push notification -->
-
-    <uses-permission android:name="com.ivy.sd.png.view.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <!-- Allows using PowerManager WakeLocks to keep processor from sleeping -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -137,21 +133,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.ivy.sd.png.view.GcmIntentService" />
         <service android:name="com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadService" />
-
-        <receiver
-            android:name="com.ivy.sd.png.view.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-
-                <!-- Receives the actual messages. -->
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="com.ivy.sd.png.view" />
-            </intent-filter>
-        </receiver>
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
@@ -435,16 +417,16 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.van.ManualVanLoadActivity"
+            android:name="com.ivy.cpg.view.van.manualvanload.ManualVanLoadActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.van.StockViewActivity"
+            android:name="com.ivy.cpg.view.van.stockview.StockViewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.van.OdaMeterScreen"
+            android:name="com.ivy.cpg.view.van.odameter.OdaMeterScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.van.StockProposalScreen"
+            android:name="com.ivy.cpg.view.van.stockproposal.StockProposalScreen"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.DeviceStatusActivity"
@@ -474,10 +456,10 @@
             android:name="com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.van.VanLoadStockViewActivity"
+            android:name="com.ivy.cpg.view.van.vanstockapply.VanLoadStockViewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.van.VanUnloadActivity"
+            android:name="com.ivy.cpg.view.van.vanunload.VanUnloadActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.print.PrintPreviewScreen"
@@ -515,7 +497,7 @@
             android:name="com.ivy.cpg.view.asset.AssetPosmRemoveActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DamageStockFragmentActivity"
+            android:name="com.ivy.cpg.view.van.damagestock.DamageStockFragmentActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -765,7 +747,6 @@
         <activity
             android:name="com.ivy.cpg.view.delivery.kellogs.OrderDeliveryDetailActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity"
             android:screenOrientation="portrait" />
@@ -778,10 +759,10 @@
         <activity
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
             android:screenOrientation="portrait" />
-            android:screenOrientation="portrait" />
         <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity"
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.order.scheme.UpSellingActivity"
@@ -789,7 +770,7 @@
         <activity
             android:name="com.ivy.cpg.view.asset.PosmGallery"
             android:screenOrientation="portrait" />
-            android:screenOrientation="portrait"/>
+        android:screenOrientation="portrait"/>
         <activity
             android:name="com.ivy.cpg.view.order.scheme.QPSSchemeApply"
             android:screenOrientation="portrait" />
@@ -806,6 +787,31 @@
         <activity
             android:name="com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails.SalesReturnDetailsActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.cpg.view.asset.AssetServiceActivity"
+            android:screenOrientation="portrait" />
+
+
+        <!--FCM Service Registration-->
+
+        <service
+            android:name="com.ivy.cpg.fcmnotification.CPGFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <!-- Set custom default icon. This is used when no icon is set for
+        incoming notification messages. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/launchericon" />
+        <!-- Set color used with incoming notification messages.
+         This is used when no color is set for the incoming  -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
 
 
     </application>

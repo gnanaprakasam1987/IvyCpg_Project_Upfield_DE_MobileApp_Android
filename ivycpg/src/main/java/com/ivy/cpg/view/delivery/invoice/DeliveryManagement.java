@@ -106,8 +106,11 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
 
-                BusinessModel.loadActivity(DeliveryManagement.this,
-                        DataMembers.actHomeScreenTwo);
+               /* BusinessModel.loadActivity(DeliveryManagement.this,
+                        DataMembers.actHomeScreenTwo);*/
+
+                Intent myIntent = new Intent(this, HomeScreenTwo.class);
+                startActivityForResult(myIntent, 0);
             }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             finish();

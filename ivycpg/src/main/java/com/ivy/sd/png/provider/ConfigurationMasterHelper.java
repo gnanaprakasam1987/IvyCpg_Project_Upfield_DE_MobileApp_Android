@@ -1008,6 +1008,11 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_SKU_CODE = "FUN06";
     public boolean IS_SHOW_SKU_CODE;
 
+    private static final String CODE_SR_VALIDATE_BY_RETAILER_TYPE= "SR20";
+    public boolean IS_SR_VALIDATE_BY_RETAILER_TYPE;
+
+    private static final String CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL= "SR21";
+    public boolean IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL,IS_INDICATIVE_MASTER;
 
     //int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
@@ -1360,7 +1365,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_STK_ORD_ROW = "ORDB69";
     private static final String CODE_STK_ORD_ROW_BS = "BS";
+    private static final String CODE_STK_ORD_ROW_PROJECT = "PROJECT";
     public boolean IS_STK_ORD_BS;
+    public boolean IS_STK_ORD_PROJECT;
 
     private static final String CODE_RESTRICT_ORDER_TAKING = "ORDB70";
     public boolean IS_RESTRICT_ORDER_TAKING;
@@ -2622,6 +2629,10 @@ public class ConfigurationMasterHelper {
 
         this.IS_DISCOUNT_PRICE_PER = hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) : false;
         this.DISCOUNT_PRICE_PER = hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) : 50;
+
+        this.IS_SR_VALIDATE_BY_RETAILER_TYPE = hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) : false;
+        this.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) : false;
+        this.IS_INDICATIVE_MASTER= hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
     }
 
     private boolean isInOutModule() {
@@ -3843,6 +3854,7 @@ public class ConfigurationMasterHelper {
             SHOW_NEW_OUTLET_OPPR = false;
             SHOW_NEW_OUTLET_ORDER = false;
             IS_STK_ORD_BS = false;
+            IS_STK_ORD_PROJECT= false;
             SHOW_SALES_RETURN_IN_ORDER = false;
 
             SHOW_CASE_SRP = false;
@@ -4401,6 +4413,8 @@ public class ConfigurationMasterHelper {
             if (codeValue != null) {
                 if (codeValue.equalsIgnoreCase(CODE_STK_ORD_ROW_BS))
                     IS_STK_ORD_BS = true;
+                else if (codeValue.equalsIgnoreCase(CODE_STK_ORD_ROW_PROJECT))
+                    IS_STK_ORD_PROJECT = true;
 
             }
 
@@ -5624,6 +5638,8 @@ public class ConfigurationMasterHelper {
 
     private Typeface mFontBaloobhaiRegular;
 
+    @Deprecated
+    //this method moved into FontUitils class
     public Typeface getFontBaloobhai(FontType mFontType) {
         if (mFontType == FontType.REGULAR) {
             if (mFontBaloobhaiRegular == null)
@@ -5639,6 +5655,8 @@ public class ConfigurationMasterHelper {
     private Typeface mFontRobotoMedium;
     private Typeface mFontRobotoThin;
 
+    @Deprecated
+    //this method moved into FontUtils class
     public Typeface getFontRoboto(FontType mFontType) {
         if (mFontType == FontType.LIGHT) {
             if (mFontRobotoLight == null)
@@ -5657,6 +5675,8 @@ public class ConfigurationMasterHelper {
         return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
 
+    @Deprecated
+    //this method moved into FontUtils class
     public Typeface getProductNameFont() {
         return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
@@ -6182,13 +6202,15 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
             if (codeValue != null) {
-
-                if (codeValue.equals("PS"))
-                    SHOW_VAN_STK_PS = true;
-                else if (codeValue.equals("CS"))
-                    SHOW_VAN_STK_CS = true;
-                else if (codeValue.equals("OU"))
-                    SHOW_VAN_STK_OU = true;
+                String codeSplit[] = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    if (temp.equals("PS"))
+                        SHOW_VAN_STK_PS = true;
+                    else if (temp.equals("CS"))
+                        SHOW_VAN_STK_CS = true;
+                    else if (temp.equals("OU"))
+                        SHOW_VAN_STK_OU = true;
+                }
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -6204,6 +6226,11 @@ public class ConfigurationMasterHelper {
     public void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
         if (switchToPreSeller) {
             bmodel.configurationMasterHelper.downloadSwitchConfig();
+
+            bmodel.configurationMasterHelper.IS_INDICATIVE_SR=true;
+            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH=false;
+            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION=false;
+
         } else {
             SchemeDetailsMasterHelper schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(context);
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
@@ -6217,6 +6244,10 @@ public class ConfigurationMasterHelper {
             bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
             bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
             bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
+
+            bmodel.configurationMasterHelper.IS_INDICATIVE_SR=bmodel.configurationMasterHelper.IS_INDICATIVE_MASTER;
+            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH=true;
+            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION=true;
         }
 
     }
@@ -6235,7 +6266,7 @@ public class ConfigurationMasterHelper {
         Cursor c = db.selectSQL(sql);
         if (c != null && c.getCount() != 0) {
             if (c.moveToNext()) {
-                title = c.getString(c.getColumnIndex("RField")).equalsIgnoreCase("")?"Report":c.getString(c.getColumnIndex("RField"));
+                title = c.getString(c.getColumnIndex("RField")).equalsIgnoreCase("") ? "Report" : c.getString(c.getColumnIndex("RField"));
             }
             c.close();
             db.closeDB();

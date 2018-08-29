@@ -10,7 +10,7 @@ public class SellerBo implements Parcelable {
 
     private int userId,billed,covered,target,retailerId,lpc,totallpc,productivityPercent,deviationCount;
     private String userName,retailerName,imagePath;
-    private boolean isAttendanceDone = false;
+    private boolean isAttendanceDone = false,isSellerWorking = true;
     private double latitude,longitude;
     private long orderValue, inTime, outTime,totalOrderValue,totalCallDuration;
     private Marker marker;
@@ -265,6 +265,14 @@ public class SellerBo implements Parcelable {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public boolean isSellerWorking() {
+        return isSellerWorking;
+    }
+
+    public void setSellerWorking(boolean sellerWorking) {
+        isSellerWorking = sellerWorking;
     }
 
     @Override

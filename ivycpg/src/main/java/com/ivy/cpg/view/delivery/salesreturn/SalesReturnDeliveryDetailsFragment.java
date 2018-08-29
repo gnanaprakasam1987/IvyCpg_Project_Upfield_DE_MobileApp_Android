@@ -193,6 +193,10 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     public void setSaveSalesReturn() {
         showConfirmAlert();
     }
+    @OnClick(R.id.btn_cancel)
+    public void setCancelSalesReturn() {
+        showConfirConfirmAlert();
+    }
 
     private void showConfirmAlert() {
 
@@ -200,7 +204,6 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                 .setTitle("IvyCpg")
                 .setMessage(getActivity().getString(R.string.do_u_want_to_save))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
                     public void onClick(DialogInterface dialog, int whichButton) {
                         boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList, salesReturnDeliveryDataBo);
                         if (isSuccess) {
@@ -209,6 +212,21 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         }
                     }
                 })
+                .setNegativeButton(android.R.string.no, null).show();
+    }
+    private void showConfirConfirmAlert() {
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle("IvyCpg")
+                .setMessage(getActivity().getString(R.string.do_u_want_to_cancel))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(getActivity(), salesReturnDeliveryDataBo);
+                        if (isSuccess) {
+                            Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
+                            (getActivity()).onBackPressed();
+                        }
+                    }})
                 .setNegativeButton(android.R.string.no, null).show();
     }
 

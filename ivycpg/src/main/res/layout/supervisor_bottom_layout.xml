@@ -21,7 +21,9 @@
         android:orientation="horizontal"
         android:weightSum="1">
 
-        <TextView
+        <com.ivy.cpg.view.supervisor.customviews.ticker.TickerView
+            app:ticker_defaultCharacterList="number"
+            app:ticker_animationDuration="1000"
             android:id="@+id/tv_ttl_market_seller"
             style="?attr/customListItemPrimary"
             android:layout_width="0dp"
@@ -64,7 +66,9 @@
             android:textColor="#262e4f"
             android:textSize="@dimen/_13sdp" />
 
-        <TextView
+        <com.ivy.cpg.view.supervisor.customviews.ticker.TickerView
+            app:ticker_defaultCharacterList="number"
+            app:ticker_animationDuration="1000"
             android:id="@+id/tv_ttl_absent_seller"
             style="?attr/customListItemPrimary"
             android:layout_width="0dp"
@@ -117,7 +121,9 @@
                     android:paddingTop="@dimen/_10sdp"
                     android:paddingBottom="@dimen/_10sdp">
 
-                    <TextView
+                    <com.ivy.cpg.view.supervisor.customviews.ticker.TickerView
+                        app:ticker_defaultCharacterList="number"
+                        app:ticker_animationDuration="1000"
                         android:id="@+id/tv_ttl_seller"
                         style="?attr/customListItemPrimary"
                         android:layout_width="wrap_content"
@@ -127,7 +133,8 @@
                         android:padding="@dimen/_5sdp"
                         android:text="0"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_18sdp" />
+                        android:textSize="@dimen/_18sdp"
+                        />
 
                     <TextView
                         android:id="@+id/tv_txt_ttl_seller"
@@ -170,7 +177,9 @@
                     android:paddingTop="@dimen/_10sdp"
                     android:paddingBottom="@dimen/_10sdp">
 
-                    <TextView
+                    <com.ivy.cpg.view.supervisor.customviews.ticker.TickerView
+                        app:ticker_defaultCharacterList="number"
+                        app:ticker_animationDuration="1000"
                         android:id="@+id/tv_order_value"
                         style="?attr/customListItemPrimary"
                         android:layout_width="wrap_content"
@@ -233,7 +242,9 @@
                     android:paddingTop="@dimen/_10sdp"
                     android:paddingBottom="@dimen/_10sdp">
 
-                    <TextView
+                    <com.ivy.cpg.view.supervisor.customviews.ticker.TickerView
+                        app:ticker_defaultCharacterList="number"
+                        app:ticker_animationDuration="1000"
                         android:id="@+id/tv_ttl_outlet"
                         style="?attr/customListItemPrimary"
                         android:layout_width="wrap_content"
@@ -297,7 +308,9 @@
                         android:paddingTop="@dimen/_10sdp"
                         android:paddingBottom="@dimen/_10sdp">
 
-                        <TextView
+                        <com.ivy.cpg.view.supervisor.customviews.ticker.TickerView
+                            app:ticker_defaultCharacterList="number"
+                            app:ticker_animationDuration="1000"
                             android:id="@+id/tv_covered_outlet"
                             style="?attr/customListItemPrimary"
                             android:layout_width="wrap_content"
@@ -351,7 +364,9 @@
                         android:paddingBottom="@dimen/_10sdp"
                         android:id="@+id/unbilled_layout">
 
-                        <TextView
+                        <com.ivy.cpg.view.supervisor.customviews.ticker.TickerView
+                            app:ticker_defaultCharacterList="number"
+                            app:ticker_animationDuration="1000"
                             android:id="@+id/tv_unbilled_outlet"
                             style="?attr/customListItemPrimary"
                             android:layout_width="wrap_content"

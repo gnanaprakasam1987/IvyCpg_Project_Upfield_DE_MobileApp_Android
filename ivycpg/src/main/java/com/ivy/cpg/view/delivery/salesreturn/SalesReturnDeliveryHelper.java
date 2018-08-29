@@ -50,7 +50,7 @@ public class SalesReturnDeliveryHelper {
                             "from SalesReturnHeader where retailerId ='" + businessModel.getRetailerMasterBO().getRetailerID() + "' " +
                             "AND upload='X' " +
                             "AND uid NOT IN (select ifnull(RefUID,0) from salesReturnHeader " +
-                            "where upload='Y') ");
+                            "where upload='Y'and isCanceFlag != 1) ");
 
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
@@ -172,6 +172,67 @@ public class SalesReturnDeliveryHelper {
 
             }
         });
+    }
+
+    public boolean cancelSalesReturnDelivery(Context mContext, SalesReturnDeliveryDataBo salesReturnDeliveryDataBo){
+
+        try{
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            BusinessModel businessModel = (BusinessModel) mContext.getApplicationContext();
+
+            String uid =  ("SR"
+                    + businessModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + SDUtil.now(SDUtil.DATE_TIME_ID));
+
+
+            // To generate Seqno based Sales Return Id
+            if (businessModel.configurationMasterHelper.SHOW_SR_SEQUENCE_NO) {
+                String seqNo;
+                businessModel.insertSeqNumber("SR");
+                seqNo = businessModel.downloadSequenceNo("SR");
+                uid = seqNo;
+            }
+
+            int indicativeFlag = 0;
+            if (businessModel.configurationMasterHelper.IS_INDICATIVE_SR)
+                indicativeFlag = 1;
+
+            String columns;
+            String values;
+            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,isCancel";
+
+            values = AppUtils.QT(uid) + ","
+                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                    + AppUtils.QT(businessModel.retailerMasterBO.getRetailerID()) + ","
+                    + businessModel.retailerMasterBO.getBeatID() + ","
+                    + businessModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "," + AppUtils.QT(salesReturnDeliveryDataBo.getReturnValue()) + "," + 0 + ","
+                    + AppUtils.QT(businessModel.retailerMasterBO.getRetailerCode()) + ","
+                    + AppUtils.QT(businessModel.getSaleReturnNote()) + ","
+                    + AppUtils.QT(businessModel.mSelectedRetailerLatitude + "") + ","
+                    + AppUtils.QT(businessModel.mSelectedRetailerLongitude + "") + ","
+                    + businessModel.retailerMasterBO.getDistributorId() + ","
+                    + businessModel.retailerMasterBO.getDistParentId() + ","
+                    + AppUtils.QT(salesReturnDeliveryDataBo.getSignaturePath()) + ","
+                    + AppUtils.QT(salesReturnDeliveryDataBo.getSignatureName()) + ","
+                    + indicativeFlag + ","
+                    + AppUtils.QT(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
+                    + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule())+"," +
+                    AppUtils.QT(salesReturnDeliveryDataBo.getUId())+","+AppUtils.QT("1");
+
+            db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
+
+            db.closeDB();
+            return true;
+        }catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        }
+
     }
 
     public boolean saveSalesReturnDelivery(Context mContext, List<SalesReturnDeliveryDataModel> list, SalesReturnDeliveryDataBo salesReturnDeliveryDataBo) {

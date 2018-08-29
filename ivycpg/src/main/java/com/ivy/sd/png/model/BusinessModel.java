@@ -55,7 +55,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.ivy.appmodule.AppComponent;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
@@ -138,7 +137,7 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
-import com.ivy.sd.png.provider.StockProposalModuleHelper;
+import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaskHelper;
@@ -445,7 +444,7 @@ public class BusinessModel extends Application {
 
     }
 
-    public static void loadActivity(Activity ctxx, String act) {
+    private void loadActivity(Activity ctxx, String act) {
         Intent myIntent;
         if (act.equals(DataMembers.actLoginScreen)) {
             myIntent = new Intent(ctxx, LoginScreen.class);
@@ -662,7 +661,6 @@ public class BusinessModel extends Application {
         this.dashboardUserFilterString = dashboardUserFilterString;
     }
 
-    private AppComponent appComponent;
 
     @Override
     public void onCreate() {
@@ -693,9 +691,7 @@ public class BusinessModel extends Application {
         return mApplicationComponent;
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
-    }
+
 
     @Override
     public void onTerminate() {
@@ -1139,7 +1135,7 @@ public class BusinessModel extends Application {
             Cursor c = db.selectSQL("select sum(ordervalue)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
                     + QT(retailerMasterBO.getRetailerID()) +
-                    " AND upload='N'");
+                    " AND upload='N' and invoicestatus=0");
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getDouble(0);
@@ -3184,7 +3180,8 @@ public class BusinessModel extends Application {
             Commons.printException("" + e);
         }
     }
-
+@Deprecated
+//this method moved into #NetWorkUitls class
     public boolean isOnline() {
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -3217,12 +3214,12 @@ public class BusinessModel extends Application {
                 } else if (idd == 2222) {
                     InvoicePrintZebra frm = (InvoicePrintZebra) ctx;
                     frm.finish();
-                    BusinessModel.loadActivity(ctx,
+                    loadActivity(ctx,
                             DataMembers.actHomeScreenTwo);
                 } else if (idd == 3333) {
                     ReAllocationActivity frm = (ReAllocationActivity) ctx;
                     frm.finish();
-                    BusinessModel.loadActivity(ctx, DataMembers.actHomeScreen);
+                    loadActivity(ctx, DataMembers.actHomeScreen);
                 } else if (idd == 1234) {
                     productHelper.clearOrderTable();
                     if (configurationMasterHelper.SHOW_BIXOLONII) {
@@ -3261,7 +3258,7 @@ public class BusinessModel extends Application {
                         loadActivity(frm, DataMembers.actHomeScreenTwo);
                         frm.finish();
                     } else {
-                        BusinessModel.loadActivity(ctx,
+                        loadActivity(ctx,
                                 DataMembers.actHomeScreenTwo);
                         BixolonIIPrint frm = (BixolonIIPrint) ctx;
                         frm.finish();
@@ -3306,18 +3303,18 @@ public class BusinessModel extends Application {
                 } else if (idd == DataMembers.SAVECOLLECTION) {
                     CollectionScreen frm = (CollectionScreen) ctx;
                     frm.finish();
-                    BusinessModel.loadActivity(ctx,
+                    loadActivity(ctx,
                             DataMembers.actHomeScreenTwo);
                 } else if (idd == 1000) {
                     ScreenActivationActivity frm = (ScreenActivationActivity) ctx;
                     frm.finish();
-                    BusinessModel.loadActivity(ctx, DataMembers.actLoginScreen);
+                    loadActivity(ctx, DataMembers.actLoginScreen);
                 } else if (idd == DataMembers.NOTIFY_ORDER_SAVED) {
                     OrderSummary frm = (OrderSummary) ctx;
                     Intent returnIntent = new Intent();
                     frm.setResult(Activity.RESULT_OK, returnIntent);
                     frm.finish();
-                    BusinessModel.loadActivity(ctx,
+                    loadActivity(ctx,
                             DataMembers.actHomeScreenTwo);
                 } else if (idd == DataMembers.NOTIFY_CLOSE_HOME) {
                     HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) ctx).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
@@ -3492,18 +3489,17 @@ public class BusinessModel extends Application {
                 } else if (idd == 1502) {
                     Gallery frm = (Gallery) ctx;
                     frm.finish();
-                    BusinessModel
-                            .loadActivity(ctx, DataMembers.actPhotocapture);
+                    loadActivity(ctx, DataMembers.actPhotocapture);
                 } else if (idd == DataMembers.NOTIFY_NEW_OUTLET_SAVED) {
                     NewOutlet frm = (NewOutlet) ctx;
                     frm.finish();
-                    BusinessModel.loadActivity(ctx, DataMembers.actHomeScreen);
+                    loadActivity(ctx, DataMembers.actHomeScreen);
                 } else if (idd == DataMembers.NOTIFY_ACTIVATION_TO_LOGIN) {
                     ScreenActivationActivity frm = (ScreenActivationActivity) ctx;
                     // ScreenActivationActivity frm = (ScreenActivationActivity)
                     // ctx;
                     frm.finish();
-                    BusinessModel.loadActivity(ctx, DataMembers.actLoginScreen);
+                    loadActivity(ctx, DataMembers.actLoginScreen);
                 } else if (idd == -881) {
                     // do nothing
                 } else if (idd == 5000) {
@@ -3515,7 +3511,7 @@ public class BusinessModel extends Application {
                 } else if (idd == DataMembers.NEWOUTLET_UPLOAD) {
                     NewOutlet frm = (NewOutlet) ctx;
                     frm.finish();
-                    BusinessModel.loadActivity(ctx, DataMembers.actHomeScreen);
+                    loadActivity(ctx, DataMembers.actHomeScreen);
                 } else if (idd == 5002) {
                     InvoiceReportDetail frm = (InvoiceReportDetail) ctx;
                     frm.finish();
@@ -3530,15 +3526,14 @@ public class BusinessModel extends Application {
                     frm.finish();
                 } else if (idd == 6004) {
                     CallAnalysisActivity callAnalysisActivity = (CallAnalysisActivity) ctx;
-                    BusinessModel.loadActivity(ctx, DataMembers.actPlanning);
+                    loadActivity(ctx, DataMembers.actPlanning);
                     callAnalysisActivity.finish();
                 } else if (idd == DataMembers.NOTIFY_ORDER_DELETED) {
                     OrderSummary frm = (OrderSummary) ctx;
                     Intent returnIntent = new Intent();
                     frm.setResult(Activity.RESULT_OK, returnIntent);
                     frm.finish();
-                    BusinessModel.loadActivity(ctx,
-                            DataMembers.actHomeScreenTwo);
+                    loadActivity(ctx, DataMembers.actHomeScreenTwo);
                 }
 
             }
@@ -3750,7 +3745,9 @@ public class BusinessModel extends Application {
             getDigitalContentURLS().put(
                     DataMembers.img_Down_URL + "PRINT/" + "credit_note_print.xml",
                     DataMembers.PRINT);
-
+            getDigitalContentURLS().put(
+                    DataMembers.img_Down_URL + "PRINT/" + "eod_print.xml",
+                    DataMembers.PRINT);
 
             if (getDigitalContentURLS().size() > 0)
                 isDigiContentAvail = true;
@@ -5690,13 +5687,29 @@ public class BusinessModel extends Application {
 
     public int getTotalLines() {
         try {
+            boolean isVansales;
+            if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                if (getRetailerMasterBO().getIsVansales() == 1) {
+                    isVansales = true;
+                } else {
+                    isVansales = false;
+                }
+
+            } else {
+                if (configurationMasterHelper.IS_INVOICE) {
+                    isVansales = true;
+                } else {
+                    isVansales = false;
+                }
+            }
+
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select LinesPerCall from orderHeader where retailerid="
+                    .selectSQL("select sum(LinesPerCall) from orderHeader where retailerid="
                             + QT(getRetailerMasterBO().getRetailerID())
-                            + " and upload='N'");
+                            + " and " + (isVansales ? "invoiceStatus=1" : "invoiceStatus=0") + " and upload='N'");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     int count = c.getInt(0);
@@ -8527,7 +8540,7 @@ public class BusinessModel extends Application {
         return 0;
     }
 
-    public boolean hasPendingInvoice(String date,String retailerIds) {
+    public boolean hasPendingInvoice(String date, String retailerIds) {
         try {
             double balance = 0;
             DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
@@ -8553,7 +8566,7 @@ public class BusinessModel extends Application {
         return false;
     }
 
-    public String getUserParentPosition(){
+    public String getUserParentPosition() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -8566,7 +8579,7 @@ public class BusinessModel extends Application {
                     String id = c.getString(0);
                     c.close();
                     db.closeDB();
-                    return id==null?"":id;
+                    return id == null ? "" : id;
                 }
                 c.close();
             }
@@ -8578,6 +8591,15 @@ public class BusinessModel extends Application {
         return "";
     }
 
+    String newlyaddedRetailer = "";
+
+    public String getNewlyaddedRetailer() {
+        return newlyaddedRetailer;
+    }
+
+    public void setNewlyaddedRetailer(String newlyaddedRetailer) {
+        this.newlyaddedRetailer = newlyaddedRetailer;
+    }
 }
 
 

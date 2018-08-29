@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.reports;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
 import com.ivy.cpg.view.reports.soho.SalesReturnReportHelperSOHO;
+import com.ivy.cpg.view.van.stockview.StockViewActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -200,11 +202,8 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 break;
             case StandardListMasterConstants.MENU_CURRENT_STOCK_REPORT:
 
-                if (bmodel.reportHelper.downloadCurrentStockReport().size() >= 1) {
-                    gotoReportActivity(config);
-                } else {
-                    showToast();
-                }
+                new DownloadCurrentStock(config.getMenuName()).execute();
+
                 break;
             case StandardListMasterConstants.MENU_DAY_REPORT:
 
@@ -477,5 +476,66 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 }
             }
         }
+    }
+
+
+    class DownloadCurrentStock extends AsyncTask<Integer, Integer, Boolean> {
+
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
+        private String menuName = "";
+
+        public DownloadCurrentStock(String menuName) {
+            this.menuName = menuName;
+        }
+
+
+        protected void onPreExecute() {
+            builder = new AlertDialog.Builder(getActivity());
+
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            try {
+                bmodel.configurationMasterHelper
+                        .loadStockUOMConfiguration();
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
+                        bmodel.productHelper.getFilterProductLevels()));
+                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
+                        "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
+
+
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return Boolean.FALSE;
+            }
+            return Boolean.TRUE;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+            // TO DO Auto-generated method stub
+
+        }
+
+        protected void onPostExecute(Boolean result) {
+            alertDialog.dismiss();
+
+            if (bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
+                Intent stockViewIntent = new Intent(getActivity(),
+                        StockViewActivity.class);
+                stockViewIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                stockViewIntent.putExtra("screentitle", menuName);
+                startActivity(stockViewIntent);
+            } else {
+                showToast();
+            }
+        }
+
     }
 }
