@@ -597,6 +597,52 @@ public class UploadHelper {
         return ohRowsArray;
     }
 
+    private JSONArray prepareDataForNewRetailerJSONUpload(DBUtil db, Handler handler,
+                                                          String tableName, String columns, String retailerID) {
+        Message msg;
+
+        JSONArray ohRowsArray = new JSONArray();
+
+        try {
+            Cursor cursor;
+            String columnArray[] = columns.split(",");
+
+            String retailerColumn = "RetailerID = " + QT(retailerID);
+            if (tableName.equals(DataMembers.tbl_nearbyRetailer) || tableName.equals(DataMembers.tbl_retailerPotential)) {
+                retailerColumn = "rid = " + QT(retailerID);
+            }
+
+            String sql = "select " + columns + " from " + tableName
+                    + " where upload='N' and " + retailerColumn;
+            cursor = db.selectSQL(sql);
+            if (cursor != null) {
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        JSONObject jsonObjRow = new JSONObject();
+                        int count = 0;
+                        for (String col : columnArray) {
+                            String value = cursor.getString(count);
+                            jsonObjRow.put(col, value);
+                            count++;
+                        }
+                        ohRowsArray.put(jsonObjRow);
+                    }
+
+                    msg = new Message();
+                    msg.obj = tableName + " collected to post";
+                    msg.what = DataMembers.NOTIFY_UPDATE;
+                    handler.sendMessage(msg);
+                }
+
+                cursor.close();
+
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return ohRowsArray;
+    }
+
     private JSONArray prepareDataForUploadJSONWithOutRetailer(DBUtil db,
                                                               String tableName, String columns) {
         JSONArray ohRowsArray = new JSONArray();
@@ -838,7 +884,7 @@ public class UploadHelper {
         return responseMessage;
     }
 
-    public String uploadNewOutlet(Handler handler, Context context) {
+    public String uploadNewOutlet(Handler handler, Context context, String retailerID) {
         String rid = "";
         try {
             this.handler = handler;
@@ -851,9 +897,9 @@ public class UploadHelper {
             Set<String> keys = DataMembers.uploadNewRetailerColumn.keySet();
 
             for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForUploadJSON(db,
+                JSONArray jsonArray = prepareDataForNewRetailerJSONUpload(db,
                         handler, tableName,
-                        DataMembers.uploadNewRetailerColumn.get(tableName));
+                        DataMembers.uploadNewRetailerColumn.get(tableName), retailerID);
 
                 if (jsonArray.length() > 0)
                     jsonobj.put(tableName, jsonArray);

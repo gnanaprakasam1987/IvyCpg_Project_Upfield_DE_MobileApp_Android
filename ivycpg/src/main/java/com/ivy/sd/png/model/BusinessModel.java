@@ -9096,6 +9096,15 @@ public class BusinessModel extends Application {
         return "";
     }
 
+    String newlyaddedRetailer = "";
+
+    public String getNewlyaddedRetailer() {
+        return newlyaddedRetailer;
+    }
+
+    public void setNewlyaddedRetailer(String newlyaddedRetailer) {
+        this.newlyaddedRetailer = newlyaddedRetailer;
+    }
 }
 
 
