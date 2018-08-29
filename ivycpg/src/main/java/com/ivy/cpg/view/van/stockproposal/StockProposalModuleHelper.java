@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.van.stockproposal;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,6 +10,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.Vector;
 
@@ -54,7 +55,7 @@ public class StockProposalModuleHelper {
 									+ " and upload='Y'");
 					if (stockcursor.getCount() > 0) {
 						stockcursor.moveToNext();
-						invid = QT(stockcursor.getString(0));
+						invid = AppUtils.QT(stockcursor.getString(0));
 					}
 					stockcursor.close();
 				}
@@ -81,19 +82,7 @@ public class StockProposalModuleHelper {
 							+ product.getdUomid() + "," + product.getCaseSize()
 							+ "," + product.getOuterSize() + ","
 							+ product.getdOuonid() + ","
-							+ QT(SDUtil.now(SDUtil.DATE_GLOBAL));
-					// db.executeQ("update " +
-					// DataMembers.tbl_StockProposalMaster
-					// + " set caseQty = " + product.getCaseQty()
-					// + ",outerQty=" + product.getOuterOrderedCaseQty()
-					// + ",uid = " + QT(invid) + ",pcsQty="
-					// + product.getPcsQty() + ",qty=" + product.getTotalqty()
-					// + ",duomid=" + product.getDuomid() + ",duomQty="
-					// + product.getCaseSize() + ",dOuomQty="
-					// + product.getOuterSize() + ",dOuomid="
-					// + product.getDouomid() + ",date="
-					// + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-					// + ",upload ='N' where pid = " + product.getProductId());
+							+ AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
 
 					String sql = "insert into " + "StockProposalMaster" + "("
 							+ columns + ") values(" + values + ")";
@@ -101,7 +90,6 @@ public class StockProposalModuleHelper {
 				}
 			}
 
-			// db.executeQ("update StockProposalMaster set uid= " + QT(invid));
 			db.closeDB();
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -109,10 +97,7 @@ public class StockProposalModuleHelper {
 		}
 	}
 
-	public String QT(String data) // Quote
-	{
-		return "'" + data + "'";
-	}
+
 
 	public void loadSBDData() {
 		try {

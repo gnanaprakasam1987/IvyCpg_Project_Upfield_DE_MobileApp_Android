@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.odameter;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,8 +36,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.ivy.lib.existing.DBUtil;
-import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
@@ -50,8 +47,8 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.FontUtils;
 
 import java.util.regex.Pattern;
 
@@ -76,6 +73,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private boolean isStartImg = false;
+    private OdameterHelper odameterHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +84,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         Intent i = getIntent();
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        odameterHelper = OdameterHelper.getInstance(this.getApplicationContext());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
@@ -142,23 +141,23 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         CustomDigitalClock clk1 = findViewById(R.id.digitalClock1);
         CustomDigitalClock clk2 = findViewById(R.id.digitalClock2);
 
-        vanno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        vannovalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.datetxtview)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.timetxtview)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.starttriptxtview)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.endtriptxtview)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.distencetxtview)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        datevalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        timevalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        vanno.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        vannovalue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) this.findViewById(R.id.datetxtview)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) this.findViewById(R.id.timetxtview)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) this.findViewById(R.id.starttriptxtview)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) this.findViewById(R.id.endtriptxtview)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) this.findViewById(R.id.distencetxtview)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        datevalue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,this));
+        timevalue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,this));
 
-        timevaluestart.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        endtimevalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        timevaluestart.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,this));
+        endtimevalue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,this));
 
-        timeend.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        enddatevalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        clk1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        clk2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        timeend.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,this));
+        enddatevalue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,this));
+        clk1.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,this));
+        clk2.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,this));
 
         photoNamePath = HomeScreenFragment.photoPath + "/";
         Commons.print("Photo Path, " + "" + photoNamePath);
@@ -613,7 +612,6 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                 distanceCovered = 0;
 
 
-
             double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
 
             distanceCoveredEt.setText(String.format("%.2f", distance));
@@ -800,79 +798,6 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
     }
 
-    public void saveOdameter(VanLoadMasterBO mylist) {
-        try {
-            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            db.executeQ("DELETE from Odameter");
-
-            if (!bmodel.configurationMasterHelper.SHOW_PHOTO_ODAMETER) {
-                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date";
-
-                String values = QT(bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID))
-                        + ","
-                        + mylist.getOdameterstart()
-                        + ","
-                        + mylist.getOdameterend()
-                        + ","
-                        + 1
-                        + ","
-                        + LocationUtil.latitude
-                        + ","
-                        + LocationUtil.longitude
-                        + ","
-                        + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
-                        + ","
-                        + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
-                        .getDownloadDate());
-                String sql = "insert into " + "Odameter" + "(" + columns
-                        + ") values(" + values + ")";
-                db.executeQ(sql);
-                db.closeDB();
-
-            } else {
-
-                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,startImage";
-
-                String values = QT(bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID))
-                        + ","
-                        + mylist.getOdameterstart()
-                        + ","
-                        + mylist.getOdameterend()
-                        + ","
-                        + 1
-                        + ","
-                        + LocationUtil.latitude
-                        + ","
-                        + LocationUtil.longitude
-                        + ","
-                        + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
-                        + ","
-                        + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
-                        .getDownloadDate())
-                        + ","
-                        + QT(mylist.getStartTripImg());
-                String sql = "insert into " + "Odameter" + "(" + columns
-                        + ") values(" + values + ")";
-                db.executeQ(sql);
-                db.closeDB();
-            }
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-    }
-
-    public String QT(String data) // Quote
-    {
-        return "'" + data + "'";
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -904,81 +829,6 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
     }
 
-    public void UpdateOdaMeter(VanLoadMasterBO mylist) {
-        try {
-            DBUtil db = new DBUtil(this, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db.selectSQL("select  count(uid) from Odameter");
-            String sql1, sql;
-            if (c != null) {
-                while (c.moveToNext())
-
-                    if (!bmodel.configurationMasterHelper.SHOW_PHOTO_ODAMETER) {
-                        if (c.getInt(0) == 0) {
-                            sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,isended,upload) values("
-                                    + mylist.getOdameterend()
-                                    + ","
-                                    + QT(SDUtil.now(SDUtil.TIME))
-                                    + ","
-                                    + LocationUtil.latitude
-                                    + ","
-                                    + LocationUtil.longitude
-                                    + ","
-                                    + 1
-                                    + ",N)";
-
-                            db.executeQ(sql1);
-                        } else {
-                            sql = "update Odameter set end="
-                                    + mylist.getOdameterend()
-                                    + ",endtime="
-                                    + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
-                                    + ",endlatitude=" + LocationUtil.latitude
-                                    + ",endlongitude=" + LocationUtil.longitude
-                                    + ",isended=" + 1 + ",upload='N'";
-                            db.executeQ(sql);
-                        }
-
-                        c.close();
-                    } else {
-
-                        if (c.getInt(0) == 0) {
-                            sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,endImage,isended,upload) values("
-                                    + mylist.getOdameterend()
-                                    + ","
-                                    + QT(SDUtil.now(SDUtil.TIME))
-                                    + ","
-                                    + LocationUtil.latitude
-                                    + ","
-                                    + LocationUtil.longitude
-                                    + ","
-                                    + mylist.getEndTripImg()
-                                    + ","
-                                    + 1
-                                    + ",N)";
-
-                            db.executeQ(sql1);
-                        } else {
-                            sql = "update Odameter set end="
-                                    + mylist.getOdameterend()
-                                    + ",endtime="
-                                    + QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
-                                    + ",endlatitude=" + LocationUtil.latitude
-                                    + ",endlongitude=" + LocationUtil.longitude
-                                    + ",endImage=" + QT(mylist.getEndTripImg())
-                                    + ",isended=" + 1 + ",upload='N'";
-                            db.executeQ(sql);
-                        }
-                        c.close();
-                    }
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
-
     class SaveOdameter extends AsyncTask<Integer, Integer, Boolean> {
 
         private AlertDialog.Builder builder;
@@ -995,7 +845,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                saveOdameter(product);
+                odameterHelper.saveOdameter(product);
             } catch (Exception e) {
                 Commons.printException("" + e);
                 return Boolean.FALSE;
@@ -1031,7 +881,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                UpdateOdaMeter(product);
+                odameterHelper.UpdateOdaMeter(product);
             } catch (Exception e) {
                 Commons.printException("" + e);
                 return Boolean.FALSE;

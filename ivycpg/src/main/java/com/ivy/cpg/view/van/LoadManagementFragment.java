@@ -26,10 +26,15 @@ import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
 import com.ivy.cpg.view.planogram.PlanoGramActivity;
 import com.ivy.cpg.view.planogram.PlanoGramHelper;
 import com.ivy.cpg.view.reports.ReportActivity;
-import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.van.damagestock.DamageStockFragmentActivity;
+import com.ivy.cpg.view.van.damagestock.DamageStockHelper;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadActivity;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadHelper;
+import com.ivy.cpg.view.van.odameter.OdaMeterScreen;
+import com.ivy.cpg.view.van.stockproposal.StockProposalScreen;
+import com.ivy.cpg.view.van.stockview.StockViewActivity;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyActivity;
+import com.ivy.cpg.view.van.vanunload.VanUnloadActivity;
 import com.ivy.cpg.view.webview.WebViewActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -40,9 +45,9 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.DamageStockFragmentActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
+import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
 import java.util.Vector;
@@ -71,6 +76,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private AlertDialog alertDialog;
     private View view;
     private Loadmanagemntreceiver mLoadmanagementReceiver;
+    private boolean isClick = false;
 
     @Override
     public void onAttach(Context context) {
@@ -242,89 +248,116 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
         switch (menuItem.getConfigCode()) {
             case MENU_STOCK_PROPOSAL:
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
 
-                navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), StockProposalScreen.class);
-
+                }
                 break;
 
             case MENU_MANUAL_VAN_LOAD:
-
-                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                }
                 break;
 
             case MENU_ODAMETER:
-
-                navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), OdaMeterScreen.class);
-
+                if (!isClick) {
+                    isClick = true;
+                    navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), OdaMeterScreen.class);
+                }
                 break;
 
             case MENU_STOCK_VIEW:
-
-                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                }
                 break;
 
             case MENU_VANLOAD_STOCK_VIEW:
-
-                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                }
                 break;
 
             case MENU_VAN_UNLOAD:
-
-                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                }
                 break;
 
             case MENU_VAN_PLANOGRAM:
-
-                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                }
                 break;
 
             case MENU_DAMAGE_STOCK:
-
-                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                }
                 break;
 
             case MENU_LOAD_WEBVIEW:
-
-                if (NetworkUtils.isNetworkConnected(getActivity())) {
-                    navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), WebViewActivity.class);
-                } else
-                    showMessage(getString(R.string.please_connect_to_internet));
+                if (!isClick) {
+                    isClick = true;
+                    if (NetworkUtils.isNetworkConnected(getActivity())) {
+                        navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), WebViewActivity.class);
+                    } else {
+                        isClick = false;
+                        showMessage(getString(R.string.please_connect_to_internet));
+                    }
+                }
                 break;
 
             case MENU_PLANNING:
 
-                if (bmodel.synchronizationHelper.isDayClosed()) {
+                if (!isClick) {
+                    isClick = true;
+                    if (bmodel.synchronizationHelper.isDayClosed()) {
+                        showMessage(getString(R.string.day_closed));
+                        isClick = false;
+                    } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
+                        showMessage(getString(R.string.please_redownload));
+                        isClick = false;
+                    } else {
+                        bmodel.distributorMasterHelper.downloadDistributorsList();
+                        bmodel.configurationMasterHelper
+                                .setTradecoveragetitle(menuItem.getMenuName());
 
-                    showMessage(getString(R.string.day_closed));
-                } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
-
-                    showMessage(getString(R.string.please_redownload));
-                } else {
-                    bmodel.distributorMasterHelper.downloadDistributorsList();
-                    bmodel.configurationMasterHelper
-                            .setTradecoveragetitle(menuItem.getMenuName());
-
-                    navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), PlanningVisitActivity.class);
+                        navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), PlanningVisitActivity.class);
+                    }
                 }
 
                 break;
 
             case MENU_TASK_REPORT:
+                if (!isClick) {
+                    isClick = true;
+                    ConfigureBO configureBO = new ConfigureBO();
+                    configureBO.setMenuName(menuItem.getMenuName());
+                    configureBO.setConfigCode(MENU_TASK_REPORT);
 
-                ConfigureBO configureBO = new ConfigureBO();
-                configureBO.setMenuName(menuItem.getMenuName());
-                configureBO.setConfigCode(MENU_TASK_REPORT);
-
-                Intent intent = new Intent(getActivity(), ReportActivity.class);
-                Bundle bun = new Bundle();
-                bun.putSerializable("config", configureBO);
-                intent.putExtras(bun);
-                startActivity(intent);
+                    Intent intent = new Intent(getActivity(), ReportActivity.class);
+                    Bundle bun = new Bundle();
+                    bun.putSerializable("config", configureBO);
+                    intent.putExtras(bun);
+                    startActivity(intent);
+                }
 
                 break;
 
             case MENU_DASH_DAY:
-                navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), DashBoardActivity.class);
+                if (!isClick) {
+                    isClick = true;
+                    navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), DashBoardActivity.class);
+                }
                 break;
 
             default:
@@ -382,7 +415,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             }
 
             holder.config = configTemp;
-            holder.menuBTN.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.menuBTN.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
             holder.menuBTN.setText(configTemp.getMenuName());
 
             return convertView;
@@ -446,33 +479,58 @@ public class LoadManagementFragment extends IvyBaseFragment {
         @Override
         public void hideProgress() {
             dismissAlertDialog();
+            isClick = false;
             showMessage(getString(R.string.unable_to_load_data));
         }
 
         @Override
         public void intentCall(String menuCode, String menuName) {
             dismissAlertDialog();
-
+            isClick = false;
             switch (menuCode) {
 
+                case MENU_STOCK_PROPOSAL:
+                    if (bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
+                        navigateToActivity(menuName, menuCode, StockProposalScreen.class);
+                    } else {
+                        showMessage(getString(R.string.data_not_mapped));
+                    }
+                    break;
+
                 case MENU_MANUAL_VAN_LOAD:
-                    navigateToActivity(menuName, menuCode, ManualVanLoadActivity.class);
+                    if (bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
+                        navigateToActivity(menuName, menuCode, ManualVanLoadActivity.class);
+                    } else {
+                        showMessage(getString(R.string.data_not_mapped));
+                    }
                     break;
 
                 case MENU_VANLOAD_STOCK_VIEW:
-                    navigateToActivity(menuName, menuCode, VanLoadStockApplyActivity.class);
+                    if (bmodel.stockreportmasterhelper.getStockReportMaster().size() > 0) {
+                        navigateToActivity(menuName, menuCode, VanLoadStockApplyActivity.class);
+                    } else {
+                        showMessage(getString(R.string.data_not_mapped));
+                    }
                     break;
 
                 case MENU_VAN_UNLOAD:
-                    navigateToActivity(menuName, menuCode, VanUnloadActivity.class);
+                    if (bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
+                        navigateToActivity(menuName, menuCode, VanUnloadActivity.class);
+                    } else {
+                        showMessage(getString(R.string.data_not_mapped));
+                    }
                     break;
 
                 case MENU_STOCK_VIEW:
-                    navigateToActivity(menuName, menuCode, StockViewActivity.class);
+                    if (bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
+                        navigateToActivity(menuName, menuCode, StockViewActivity.class);
+                    } else {
+                        showMessage(getString(R.string.data_not_mapped));
+                    }
                     break;
 
                 case MENU_VAN_PLANOGRAM:
-                    PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
+                    PlanoGramHelper mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity().getApplicationContext());
                     if (mPlanoGramHelper.getmChildLevelBo() != null && mPlanoGramHelper.getmChildLevelBo().size() > 0) {
                         navigateToActivity(menuName, menuCode, PlanoGramActivity.class);
                     } else {
@@ -481,7 +539,13 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     break;
 
                 case MENU_DAMAGE_STOCK:
-                    navigateToActivity(menuName, menuCode, DamageStockFragmentActivity.class);
+                    if (DamageStockHelper.getInstance(getActivity().
+                            getApplicationContext()).
+                            getDamagedSalesReport().size() > 0) {
+                        navigateToActivity(menuName, menuCode, DamageStockFragmentActivity.class);
+                    } else {
+                        showMessage(getString(R.string.data_not_mapped));
+                    }
                     break;
 
                 case "NewStock":
@@ -524,65 +588,79 @@ public class LoadManagementFragment extends IvyBaseFragment {
             }
 
 
-            if (menuCode.equals(MENU_MANUAL_VAN_LOAD)) {
+            switch (menuCode) {
+                case MENU_STOCK_PROPOSAL:
+                    loadStockProposalData(menuCode);
+                    break;
 
-                ManualVanLoadHelper.getInstance(getActivity().getApplicationContext()).loadManuvalVanLoadData(menuCode);
+                case MENU_MANUAL_VAN_LOAD:
+                    ManualVanLoadHelper.getInstance(getActivity().getApplicationContext()).loadManuvalVanLoadData(menuCode);
+                    break;
 
-            } else if (menuCode.equals(MENU_VANLOAD_STOCK_VIEW)) {
-                if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
-                    if (distance == -1)
-                        showToastMessage(-1);
-                    else if (distance == -2 || distance == -3)
-                        showToastMessage(distance);
-                    else if (distance <= ConfigurationMasterHelper.vanDistance)
+                case MENU_VANLOAD_STOCK_VIEW:
+                    if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+                        if (distance == -1)
+                            showToastMessage(-1);
+                        else if (distance == -2 || distance == -3)
+                            showToastMessage(distance);
+                        else if (distance <= ConfigurationMasterHelper.vanDistance)
+                            vanLoadSubRoutine();
+                        else
+                            showToastMessage(distance);
+                    } else {
                         vanLoadSubRoutine();
-                    else
-                        showToastMessage(distance);
-                } else {
-                    vanLoadSubRoutine();
-                }
-                updateModuleWiseTimeStampDetails(menuCode);
-            } else if (menuCode.equals(MENU_VAN_UNLOAD)) {
+                    }
+                    updateModuleWiseTimeStampDetails(menuCode);
+                    break;
 
-                if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
-                    if (distance == -1)
-                        showToastMessage(-1);
-                    else if (distance == -2 || distance == -3)
-                        showToastMessage(distance);
-                    else if (distance <= ConfigurationMasterHelper.vanDistance) {
+                case MENU_VAN_UNLOAD:
+                    if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+                        if (distance == -1)
+                            showToastMessage(-1);
+                        else if (distance == -2 || distance == -3)
+                            showToastMessage(distance);
+                        else if (distance <= ConfigurationMasterHelper.vanDistance) {
+                            bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
+                                    "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
+
+                            bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
+                        } else
+                            showToastMessage(distance);
+                    } else {
                         bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                                 "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
 
                         bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
-                    } else
-                        showToastMessage(distance);
-                } else {
+                    }
+                    updateModuleWiseTimeStampDetails(menuCode);
+                    break;
+
+                case MENU_STOCK_VIEW:
+                    bmodel.configurationMasterHelper
+                            .loadStockUOMConfiguration();
                     bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
-                            "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
+                            "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
+                    //updateModuleWiseTimeStampDetails(menuCode);
+                    break;
 
-                    bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
-                }
-                updateModuleWiseTimeStampDetails(menuCode);
-            } else if (menuCode.equals(MENU_STOCK_VIEW)) {
-                bmodel.configurationMasterHelper
-                        .loadStockUOMConfiguration();
-                bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
-                        "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
-                //updateModuleWiseTimeStampDetails(menuCode);
-            } else if (menuCode.equals(MENU_VAN_PLANOGRAM)) {
-                loadPlanogramData(menuName);
-                updateModuleWiseTimeStampDetails(menuCode);
-            } else if (menuCode.equals(MENU_DAMAGE_STOCK)) {
-                SalesReturnHelper.getInstance(getActivity()).loadDamagedProductReport(getContext().getApplicationContext());
-                updateModuleWiseTimeStampDetails(menuCode);
-            } else if (menuCode.equals("NewStock")) {
-                try {
+                case MENU_VAN_PLANOGRAM:
+                    loadPlanogramData(menuName);
+                    updateModuleWiseTimeStampDetails(menuCode);
+                    break;
 
-                    bmodel.synchronizationHelper.updateAuthenticateToken(false);
+                case MENU_DAMAGE_STOCK:
+                    DamageStockHelper.getInstance(getActivity().getApplicationContext()).loadDamagedProductReport(getActivity());
+                    updateModuleWiseTimeStampDetails(menuCode);
+                    break;
+                case "NewStock":
+                    try {
 
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
+                        bmodel.synchronizationHelper.updateAuthenticateToken(false);
+
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                    break;
             }
 
 
@@ -597,6 +675,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
      * @param activityName
      */
     private void navigateToActivity(String menuName, String menuCode, Class activityName) {
+        isClick = false;
         Intent intent = new Intent(getActivity(), activityName);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("screentitle", menuName);
@@ -662,7 +741,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
         bmodel.synchronizationHelper.downloadVanloadFromServer();
     }
 
-
     /**
      * Download Planogram Data's
      *
@@ -679,6 +757,24 @@ public class LoadManagementFragment extends IvyBaseFragment {
         mPlanoGramHelper.loadPlanoGramInEditMode(getContext().getApplicationContext(), "0");
     }
 
+    /**
+     * Load Stock proposal Data's
+     * @param menuCode
+     */
+    private void loadStockProposalData(String menuCode) {
+
+        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuCode));
+        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(menuCode,
+                bmodel.productHelper.getFilterProductLevels()));
+
+        bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
+                menuCode, menuCode);
+
+        bmodel.updateProductUOM(menuCode, 2);
+        bmodel.stockProposalModuleHelper.loadInitiative();
+        bmodel.stockProposalModuleHelper.loadSBDData();
+        bmodel.stockProposalModuleHelper.loadPurchased();
+    }
 
     public class Loadmanagemntreceiver extends BroadcastReceiver {
         public static final String RESPONSE = "com.ivy.intent.action.LoadManagement";

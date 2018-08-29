@@ -20,16 +20,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ivy.cpg.view.van.VanLoadStockViewActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -38,12 +35,10 @@ import java.util.Vector;
 public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener {
     private BusinessModel bmodel;
     private Vector<VanLoadStockApplyBO> mylist;
-    private Button applybtn, rejectbtn;
     private String uid = null;
     Vector<String> SIHApplyById;
     private HashMap<String, Integer> mManuvalVanloadFlagByuid;
     private String screenTitle = null;
-    private boolean isFromPlanning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +47,6 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        Commons.print("vanloadstockview activity");
         setContentView(R.layout.activity_van_load_stock_apply);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         bmodel = (BusinessModel) this.getApplicationContext();
@@ -64,16 +58,16 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         TextView toolbarTxt = (TextView) findViewById(R.id.tv_toolbar_title);
         TextView labelTxt1 = (TextView) findViewById(R.id.tv_van_loadNo);
         TextView labelTxt2 = (TextView) findViewById(R.id.total_linesTitle);
-        applybtn = (Button) findViewById(R.id.van_btn_accept);
-        rejectbtn = (Button) findViewById(R.id.van_btn_reject);
+        Button applybtn = (Button) findViewById(R.id.van_btn_accept);
+        Button rejectbtn = (Button) findViewById(R.id.van_btn_reject);
         RecyclerView stockApplyListView = (RecyclerView) findViewById(R.id.list);
         LinearLayout bottomLayout = (LinearLayout) findViewById(R.id.bottom_layout);
 
-        toolbarTxt.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        labelTxt1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        labelTxt2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        applybtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        rejectbtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        toolbarTxt.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
+        labelTxt1.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        labelTxt2.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        applybtn.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
+        rejectbtn.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
 
 
         setSupportActionBar(toolbar);
@@ -86,7 +80,6 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        isFromPlanning = getIntent().getBooleanExtra("planingsub", false);
         screenTitle = getIntent().getStringExtra("screentitle");
         stockApplyListView.setHasFixedSize(true);
         stockApplyListView.setLayoutManager(new LinearLayoutManager(this));
@@ -95,9 +88,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         applybtn.setOnClickListener(this);
         rejectbtn.setOnClickListener(this);
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.sessionout_loginagain),
-                    Toast.LENGTH_SHORT).show();
+            showMessage(getString(R.string.sessionout_loginagain));
             finish();
         }
 
@@ -145,8 +136,8 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
     @Override
     public void onClick(View v) {
-        Button view = (Button) v;
-        if (view == applybtn) {
+        int BtnId = v.getId();
+        if (BtnId == R.id.van_btn_accept) {
 
             if (uid != null && selected_position != -1) {
 
@@ -156,18 +147,6 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                     public void onPositiveButtonClick() {
                         SIHApplyById.add(uid);
                         new UpdateSIH().execute();
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
-                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
-                        } else {
-                            applybtn.setBackgroundResource(R.drawable.round_disabled_btn);
-                            rejectbtn.setBackgroundResource(R.drawable.round_disabled_btn);
-                        }
-                        applybtn.setTextColor(Color.WHITE);
-                        applybtn.setEnabled(false);
-                        rejectbtn.setTextColor(Color.WHITE);
-                        rejectbtn.setEnabled(false);
                     }
                 }, new CommonDialog.negativeOnClickListener() {
                     @Override
@@ -175,10 +154,10 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                     }
                 }).show();
             } else {
-                Toast.makeText(getApplicationContext(), "Check any one list", Toast.LENGTH_SHORT).show();
+                showMessage(getString(R.string.check_any_one_list));
             }
 
-        } else if (view == rejectbtn) {
+        } else if (BtnId == R.id.van_btn_reject) {
             if (uid != null && selected_position != -1) {
 
                 new CommonDialog(getApplicationContext(), this, "", getResources().getString(
@@ -186,18 +165,6 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                     @Override
                     public void onPositiveButtonClick() {
                         SIHApplyById.add(uid);
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
-                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
-                        } else {
-                            applybtn.setBackgroundResource(R.drawable.round_disabled_btn);
-                            rejectbtn.setBackgroundResource(R.drawable.round_disabled_btn);
-                        }
-                        applybtn.setTextColor(Color.WHITE);
-                        applybtn.setEnabled(false);
-                        rejectbtn.setTextColor(Color.WHITE);
-                        rejectbtn.setEnabled(false);
                         new RejectVanload().execute();
                     }
                 }, new CommonDialog.negativeOnClickListener() {
@@ -206,7 +173,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                     }
                 }).show();
             } else {
-                Toast.makeText(getApplicationContext(), "Check any one list", Toast.LENGTH_SHORT).show();
+                showMessage(getString(R.string.check_any_one_list));
             }
         }
 
@@ -245,59 +212,34 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             holder.vanLoadDateTxt.setText(projObj.getDate());
             holder.totalLineTxt.setText(proTotLine + "");
 
+
             if (selected_position == position) {
                 holder.radioButtonList.setChecked(true);
-
             } else {
                 holder.radioButtonList.setChecked(false);
-
             }
+
+            if ((bmodel.startjourneyclicked
+                    && bmodel.configurationMasterHelper.STOCK_APPROVAL) || SIHApplyById.contains(projObj.getUid())) {
+                holder.radioButtonList.setEnabled(false);
+                if (holder.radioButtonList.isChecked())
+                    holder.radioButtonList.setChecked(false);
+            } else {
+                holder.radioButtonList.setEnabled(true);
+            }
+
             holder.radioButtonList.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     uid = projObj.getUid();
 
-
                     if (((AppCompatRadioButton) v).isChecked()) {
                         selected_position = position;
-
                     } else {
                         selected_position = -1;
-
                     }
-
                     notifyDataSetChanged();
-                    // Following code will not allow user to apply stock if journey started.
-                    // Also If load is already applied, then it will not allow to apply again.
-                    if ((bmodel.startjourneyclicked
-                            && bmodel.configurationMasterHelper.STOCK_APPROVAL) || SIHApplyById.contains(uid)) {
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
-                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.round_disabled_btn));
-                        } else {
-                            applybtn.setBackgroundResource(R.drawable.round_disabled_btn);
-                            rejectbtn.setBackgroundResource(R.drawable.round_disabled_btn);
-                        }
-                        applybtn.setEnabled(false);
-                        applybtn.setTextColor(Color.WHITE);
-                        rejectbtn.setEnabled(false);
-                        rejectbtn.setTextColor(Color.WHITE);
-                    } else {
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            applybtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
-                            rejectbtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_rounded_corner_blue));
-                        } else {
-                            applybtn.setBackgroundResource(R.drawable.button_rounded_corner_blue);
-                            rejectbtn.setBackgroundResource(R.drawable.button_rounded_corner_blue);
-                        }
-                        applybtn.setEnabled(true);
-                        rejectbtn.setEnabled(true);
-                    }
-
-
                 }
             });
 
@@ -340,9 +282,9 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                 vanLoadDateTxt = (TextView) itemView.findViewById(R.id.vanLoad_date);
                 totalLineTxt = (TextView) itemView.findViewById(R.id.total_lines_txt);
 
-                vanLoadNoTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                vanLoadDateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                totalLineTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                vanLoadNoTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, VanLoadStockApplyActivity.this));
+                vanLoadDateTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, VanLoadStockApplyActivity.this));
+                totalLineTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, VanLoadStockApplyActivity.this));
 
             }
         }
@@ -357,20 +299,11 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
-
         if (id == android.R.id.home) {
-           /* Intent loadActivity = new Intent(VanLoadStockApplyActivity.this, HomeScreenActivity.class);
-            if (isFromPlanning)
-                loadActivity.putExtra("menuCode", "MENU_PLANNING_SUB");
-            else
-                loadActivity.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-            startActivity(loadActivity);*/
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -416,15 +349,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
         protected void onPostExecute(Boolean result) {
             alertDialog.dismiss();
-            Toast.makeText(VanLoadStockApplyActivity.this, "Vanload Stock Applied ",
-                    Toast.LENGTH_SHORT).show();
-            if (isFromPlanning)
-                startActivity(new Intent(VanLoadStockApplyActivity.this,
-                        HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING_SUB"));
-            else
-                startActivity(new Intent(VanLoadStockApplyActivity.this,
-                        HomeScreenActivity.class).putExtra("menuCode", "MENU_LOAD_MANAGEMENT"));
-
+            showMessage(getString(R.string.vanload_stock_applied));
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 
@@ -458,8 +383,8 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         protected void onPostExecute(Boolean result) {
 
             alertDialog.dismiss();
-            Toast.makeText(VanLoadStockApplyActivity.this, "Vanload Stock Rejected ",
-                    Toast.LENGTH_SHORT).show();
+            showMessage(getString(R.string.vanload_reject_applied));
+
         }
 
     }

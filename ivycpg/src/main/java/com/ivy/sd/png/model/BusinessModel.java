@@ -86,7 +86,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
@@ -106,7 +105,6 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
-import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
@@ -140,7 +138,7 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
-import com.ivy.sd.png.provider.StockProposalModuleHelper;
+import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaskHelper;
@@ -8598,6 +8596,15 @@ public class BusinessModel extends Application {
         return "";
     }
 
+    String newlyaddedRetailer = "";
+
+    public String getNewlyaddedRetailer() {
+        return newlyaddedRetailer;
+    }
+
+    public void setNewlyaddedRetailer(String newlyaddedRetailer) {
+        this.newlyaddedRetailer = newlyaddedRetailer;
+    }
 }
 
 

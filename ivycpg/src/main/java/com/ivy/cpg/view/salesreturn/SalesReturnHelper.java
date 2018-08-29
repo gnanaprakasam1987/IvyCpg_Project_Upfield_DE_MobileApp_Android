@@ -30,7 +30,7 @@ public class SalesReturnHelper {
     private final BusinessModel bmodel;
     private String lpcValue;
     private double returnValue;
-    private List<SalesReturnReportBO> damagedSalesReport;
+
 
     private static SalesReturnHelper instance = null;
     private double saleableValue = 0;
@@ -681,55 +681,7 @@ public class SalesReturnHelper {
         return "'" + data + "'";
     }
 
-    public void loadDamagedProductReport(Context mContext) {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            damagedSalesReport = new ArrayList<>();
-            Cursor c = db
-                    .selectSQL("SELECT DISTINCT PM.PName,SRD.batchid, IFNULL(BM.batchNUM,''),RM.ListName,SRD.Pqty," +
-                            " SRD.Cqty, SRD.outerQty, SRD.oldmrp, SRD.mfgdate, SRD.expdate, SRH.ReturnValue, SRH.Lpc,SRD.ProductID," +
-                            " PM.dUomQty,PM.dUomId,PM.dOuomQty,PM.dOuomid,PM.sih,PM.psname FROM SalesReturnDetails SRD" +
-                            " INNER JOIN SalesReturnHeader SRH ON SRD.uid = SRH.uid and SRH.upload!='X' " +
-                            " INNER JOIN StandardListMaster RM ON SRD.Condition = RM.ListId" +
-                            " AND SRD.reason_type=1 AND SRH.unload=0 AND RM.ParentId = (SELECT ListId FROM StandardListMaster WHERE ListType ='REASON_TYPE' AND ListCode = 'SR')" +
-                            " LEFT JOIN BatchMaster BM on SRD.ProductID = BM.pid AND SRD.batchid = BM.batchid " +
-                            " INNER JOIN ProductMaster PM on SRD.ProductID = PM.PID  " +
-                            " GROUP BY RM.ListName, PM.PID ORDER BY RM.ListName, PM.PName");
-            if (c != null && c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    SalesReturnReportBO salBO = new SalesReturnReportBO();
-                    salBO.setProductName(c.getString(0));
-                    salBO.setBatchId(c.getInt(1));
-                    salBO.setBatchNumber(c.getString(2));
-                    salBO.setReasonDesc(c.getString(3));
-                    salBO.setPieceQty(c.getInt(4));
-                    salBO.setCaseQty(c.getInt(5));
-                    salBO.setOuterQty(c.getInt(6));
-                    salBO.setProductid(c.getString(12));
-                    salBO.setdUomQty(c.getInt(13));
-                    salBO.setdUomId(c.getInt(14));
-                    salBO.setdOuomQty(c.getInt(15));
-                    salBO.setdOuomid(c.getInt(16));
-                    salBO.setSih(c.getInt(17));
-                    salBO.setProductSortName(c.getString(18));
-                    damagedSalesReport.add(salBO);
-                }
-            }
-            if (c != null) {
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
 
-    public List<SalesReturnReportBO> getDamagedSalesReport() {
-        return damagedSalesReport;
-    }
 
     public void getSalesReturnGoods(Context mContext) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,

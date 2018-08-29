@@ -5836,7 +5836,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
                 if (mParam.equalsIgnoreCase("1")) {
                     if (bmodel.isOnline())
-                        new UploadNewOutlet().execute("");
+                        new UploadNewOutlet(bmodel.getNewlyaddedRetailer()).execute("");
                     else
                         bmodel.showAlert(getActivity().getResources().getString(R.string.please_connect_to_internet), 0);
                 } else {
@@ -5879,6 +5879,12 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     class UploadNewOutlet extends AsyncTask<String, Void, Boolean> {
+        String retailerID = "";
+
+        public UploadNewOutlet(String retailerID){
+            this.retailerID = retailerID;
+        }
+
         protected void onPreExecute() {
 
             builder = new AlertDialog.Builder(getActivity());
@@ -5895,7 +5901,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
             if (bmodel.isOnline()) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
-                String rid = mUploadHelper.uploadNewOutlet(getHandler(), getActivity().getApplicationContext());
+                String rid = mUploadHelper.uploadNewOutlet(getHandler(), getActivity().getApplicationContext(), retailerID);
 
                 if (rid.equals("-1")) {
                     getHandler().sendEmptyMessage(
@@ -5942,6 +5948,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if (result) {
+                bmodel.setNewlyaddedRetailer("");
                 getHandler().sendEmptyMessage(
                         DataMembers.NOTIFY_NEW_OUTLET_SAVED);
             }

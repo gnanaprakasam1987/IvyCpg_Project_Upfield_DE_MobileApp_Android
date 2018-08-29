@@ -2123,7 +2123,7 @@ public class NewOutletHelper {
 
 
             db.insertSQL("RetailerMaster", column, value);
-
+            bmodel.setNewlyaddedRetailer(getId());
 
             column = "RetailerID,contactname,ContactName_LName,contactNumber," +
                     "contact_title,contact_title_lovid,IsPrimary,Upload";

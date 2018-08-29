@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/damage_fragment"
-        android:name="com.ivy.sd.png.view.DamageStockFragment"
+        android:name="com.ivy.cpg.view.van.damagestock.DamageStockFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:tag="damage_stock" />

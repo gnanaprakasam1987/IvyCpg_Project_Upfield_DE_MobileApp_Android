@@ -1,8 +1,7 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.van.damagestock;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.database.SQLException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,17 +22,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.commons.MaterialSpinner;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,14 +37,14 @@ import java.util.List;
 import java.util.Set;
 
 public class DamageStockFragment extends Fragment {
-    SalesReturnHelper salesReturnHelper;
+    DamageStockHelper damageStockHelper;
     private BusinessModel bmodel;
     private ListView lvwplist;
     private View tempView;
     private TextView productName;
     private MaterialSpinner reasonSpinner;
     private DamageStockAdapter damageAdapter;
-    private List<SalesReturnReportBO> damageList;
+    private ArrayList<SalesReturnReportBO> damageList;
     private String text;
     private Spannable spanYou;
 
@@ -74,20 +69,21 @@ public class DamageStockFragment extends Fragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
+        damageStockHelper = DamageStockHelper.getInstance(getActivity().getApplicationContext());
 
-        if (salesReturnHelper.getDamagedSalesReport() == null)
+        if (damageStockHelper.getDamagedSalesReport() == null)
             return;
+
         productName = (TextView) tempView.findViewById(R.id.productName);
         lvwplist = (ListView) tempView.findViewById(R.id.list);
         reasonSpinner = (MaterialSpinner) tempView.findViewById(R.id.reasonSpinner);
 
-        productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)tempView.findViewById(R.id.product_txt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)tempView.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)tempView.findViewById(R.id.outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)tempView.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView)tempView.findViewById(R.id.reasonTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) tempView.findViewById(R.id.product_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) tempView.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) tempView.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) tempView.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) tempView.findViewById(R.id.reasonTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(tempView.findViewById(
@@ -122,12 +118,12 @@ public class DamageStockFragment extends Fragment {
         reasonAdapter
                 .setDropDownViewResource(R.layout.spinner_blacktext_list_item);
         damageList = new ArrayList<>();
-        for (SalesReturnReportBO bo : salesReturnHelper
+        for (SalesReturnReportBO bo : damageStockHelper
                 .getDamagedSalesReport())
             damageList.add(bo);
         Set<String> reasonSet = new LinkedHashSet<>();
         reasonSet.add(getResources().getString(R.string.all));
-        for (SalesReturnReportBO salBo : salesReturnHelper
+        for (SalesReturnReportBO salBo : damageStockHelper
                 .getDamagedSalesReport())
             reasonSet.add(salBo.getReasonDesc());
         Iterator<String> itr = reasonSet.iterator();
@@ -196,11 +192,11 @@ public class DamageStockFragment extends Fragment {
     protected void updateDamageReport(String spinnerTxt) {
         damageList.clear();
         if ("All".equals(spinnerTxt)) {
-            for (SalesReturnReportBO bo : salesReturnHelper
+            for (SalesReturnReportBO bo : damageStockHelper
                     .getDamagedSalesReport())
                 damageList.add(bo);
         } else {
-            for (SalesReturnReportBO bo : salesReturnHelper
+            for (SalesReturnReportBO bo : damageStockHelper
                     .getDamagedSalesReport()) {
                 if (bo.getReasonDesc().equals(spinnerTxt))
                     damageList.add(bo);
@@ -226,55 +222,6 @@ public class DamageStockFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void UnloadDamageStock() {
-        try {
-            SalesReturnReportBO bo;
-            String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,dUomId,douomqty,dOuomid,date,type";
-            for (int i = 0; i < damageList.size(); i++) {
-                bo = damageList.get(i);
-                String values = bmodel.QT(uid)
-                        + ","
-                        + bmodel.QT(bo.getProductid())
-                        + ","
-                        + bmodel.QT(bo.getProductName())
-                        + ","
-                        + bo.getBatchId()
-                        + ","
-                        + bmodel.QT(bo.getBatchNumber())
-                        + ","
-                        + bo.getSih()
-                        + ","
-                        + bo.getCaseQty()
-                        + ","
-                        + bo.getPieceQty()
-                        + ","
-                        + bo.getOuterQty()
-                        + ","
-                        + bo.getdUomQty()
-                        + ","
-                        + bo.getdUomId()
-                        + ","
-                        + bo.getdOuomQty()
-                        + ","
-                        + bo.getdOuomid()
-                        + ","
-                        + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
-                        .getDownloadDate()) + "," + 0;
-                db.insertSQL(DataMembers.tbl_vanunload_details, columns, values);
-                db.executeQ("update SalesReturnHeader set unload=1 where upload!='X'");
-            }
-
-            db.closeDB();
-        } catch (SQLException e) {
-            Commons.printException("" + e);
-        }
-    }
 
     public void showAlertOkCancel() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -285,7 +232,7 @@ public class DamageStockFragment extends Fragment {
                 new android.content.DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
-                        UnloadDamageStock();
+                        damageStockHelper.UnloadDamageStock(getActivity(), damageList);
                         Toast.makeText(getActivity(), "Damaged stock unloaded",
                                 Toast.LENGTH_SHORT).show();
                         getActivity().finish();
@@ -346,17 +293,17 @@ public class DamageStockFragment extends Fragment {
                 holder.reason = (TextView) row.findViewById(R.id.reason);
                 holder.batchnum = (TextView) row.findViewById(R.id.batchnum);
 
-                holder.productname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.caseqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.pcsqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.outerqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.reason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.batchnum.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.productname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.caseqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.pcsqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.outerqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.reason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.batchnum.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
                 holder.productname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-              text = getResources().getString(R.string.batch_no)+": ";
-              spanYou = new SpannableString("you");
+                text = getResources().getString(R.string.batch_no) + ": ";
+                spanYou = new SpannableString("you");
                 spanYou.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spanYou.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 row.setOnClickListener(new OnClickListener() {
@@ -381,7 +328,7 @@ public class DamageStockFragment extends Fragment {
             tv = product.getReasonDesc() + "";
             holder.reason.setText(tv);
             tv = product.getBatchNumber() + "";
-            holder.batchnum.setText(text+tv);
+            holder.batchnum.setText(text + tv);
 
             if (position % 2 == 0) {
                 row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_even_item_bg));

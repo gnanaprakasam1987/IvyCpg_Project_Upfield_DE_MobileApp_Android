@@ -625,6 +625,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
             getActivity().finish();
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (i1 == R.id.menu_joincall) {
             Intent planningIntent = new Intent(getActivity(),

@@ -590,9 +590,10 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         else
             menu.findItem(R.id.menu_bottle_return).setVisible(false);
 
-
         menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
+        if (drawerOpen)
+            menu.clear();
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -623,7 +624,16 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 inputManager.hideSoftInputFromWindow(
                         mEdtSearchproductName.getWindowToken(), 0);
 
-            FiveFilterFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("serilizeContent", bmodel.configurationMasterHelper.getGenFilter());
+            bundle.putString("isFrom", "STK");
+            bundle.putSerializable("selectedFilter", mSelectedIdByLevelId);
+
+            quantity = null;
+            mDrawerLayout.openDrawer(GravityCompat.END);
+
+            loadFiveFilterFragment(bundle,R.id.right_drawer);
+
             return true;
         }
         return super.onOptionsItemSelected(item);
