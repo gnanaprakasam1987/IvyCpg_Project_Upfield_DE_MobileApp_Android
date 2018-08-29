@@ -231,21 +231,25 @@ public class RealTimeLocationService extends Service {
     }
 
     public void removeActivityUpdatesButtonHandler() {
-        Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(
-                mPendingIntent);
-        task.addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void result) {
-                Commons.print("Removed activity updates successfully");
-            }
-        });
 
-        task.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Commons.print("Failed to remove activity updates");
-            }
-        });
+        if (mActivityRecognitionClient !=null && mPendingIntent !=null) {
+
+            Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(
+                    mPendingIntent);
+            task.addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    Commons.print("Removed activity updates successfully");
+                }
+            });
+
+            task.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Commons.print("Failed to remove activity updates");
+                }
+            });
+        }
     }
 
     private void listenSupervisorState(){
@@ -268,8 +272,18 @@ public class RealTimeLocationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopUpdateWorks();
+    }
+
+    private void stopUpdateWorks(){
         stopLocationUpdates();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(activityBroadcastReceiver);
+
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(activityBroadcastReceiver);
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+
         //listenerRegistration.remove();
         removeActivityUpdatesButtonHandler();
     }
