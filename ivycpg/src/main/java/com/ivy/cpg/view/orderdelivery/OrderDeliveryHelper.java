@@ -882,6 +882,12 @@ public class OrderDeliveryHelper {
                         if (mTotalDeliverQtyByPid.get(productBO.getProductID()) != null) {
                             if (mTotalDeliverQtyByPid.get(productBO.getProductID()) > prodQty) {
                                 updateExcessSih = mTotalDeliverQtyByPid.get(productBO.getProductID()) - prodQty;
+
+//                                if (headProductMasterBO.getDSIH() >= mTotalDeliverQtyByPid.get(productBO.getProductID()))
+//                                    updateExcessSih = mTotalDeliverQtyByPid.get(productBO.getProductID()) - prodQty;
+//                                else
+//                                    updateExcessSih = headProductMasterBO.getDSIH() - prodQty;
+
                             }
                         }
 

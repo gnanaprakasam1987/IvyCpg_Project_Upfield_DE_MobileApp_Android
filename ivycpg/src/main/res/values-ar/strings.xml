@@ -255,7 +255,6 @@
     <string name="Product_details">تفاصيل المنتجات </string>
     <string name="new_task_saved">مهمة جديدة تم حفظها </string>
     <string name="choose_brand">اختيار الماركة </string>
-    <string name="choose_category">اختيار التصنيف</string>
     <string name="objective">الغرض </string>
     <string name="actual">فعلياً</string>
     <string name="index">الفهرس</string>
@@ -423,7 +422,6 @@
     <string name="end_journey">نهاية الرحلة </string>
     <string name="journey_not_ended">الرحلة غير منتهية. </string>
     <string name="batch_no">رقم التشغيلة.</string>
-    <string name="warehouse_location_not_assigned">موقع المخزن غير معين.</string>
     <string name="you_are">انتم </string>
     <string name="disc_amt">قيمة الخصم </string>
     <string name="enter_cheque_no">أدخل رقم الشيك.</string>
@@ -492,9 +490,6 @@
     <string name="invaliddate">التاريخ غير ساري المفعول.</string>
     <string name="saverequired">حفظ البيانات مطلوب.</string>
     <string name="cant_skip_go_by_sequence">لا يمكن تخطي الخطوة اتبع التسلسل.</string>
-    <string name="warehouse_barcode_not_assigned">باركود المخزن غير معين.</string>
-    <string name="not_able_to_scan_barcode">غير قادر على مسح الباركود.</string>
-    <string name="barcode_not_matched">الباركود غير متوافق.</string>
     <string name="duplicate">نسخة مكررة.</string>
     <string name="no_damaged_stock_to_unload">لا يوجد مخزون تالف لتفريغه.</string>
     <string name="do_you_want_to_save_stock">هل ترغب في حفظ المخزون.</string>
@@ -584,8 +579,6 @@
     <string name="valid_key_oops_contact_device_admin">مفتاح ساري المفعول نرجو الاتصال بمدير الجهاز.</string>
     <string name="uploading_new_store">تفريغ وتحميل متجر جديد.</string>
     <string name="choose_location">اختيار المكان.</string>
-    <string name="visit_plan_updated">تحديث خطة الزيارة.</string>
-    <string name="stock_allocated">المخزون المخصص.</string>
     <string name="questscore">درجة السؤال </string>
     <string name="surevyscore">درجة المسح </string>
     <string name="outer_price">السعر الخارجي </string>
@@ -667,8 +660,6 @@
     <string name="select_feedback_reason">نرجو اختيار سبب التقييم.</string>
     <string name="url_not_mapped">عنوان URL لم يتم توصيفه.</string>
     <string name="checking_time">فحص الوقت.</string>
-    <string name="add_entry">أفضل إدخال البيانات.</string>
-    <string name="out_time">انقضاء الوقت.</string>
     <string name="out_time_error">نرجو إكمال وقت البداية / النهاية السابق.</string>
     <string name="in_partial">جزئي </string>
     <string name="in_complete">كامل </string>
@@ -1072,7 +1063,6 @@
     <string name="select_channel">اختيار قناة التوزيع.</string>
     <string name="supplier_label">المورد </string>
     <string name="note_label">ملاحظة </string>
-    <string name="return_products_price_not_matching_total_replacing_product_price">سعر المنتجات المرتجعة لا يتوافق مع سعر المنتجات المستبدلة الإجمالي.</string>
     <string name="connection_error_please_try_again">خطأ توصيل نرجو المحاولة مرة أخرى.</string>
     <string name="refreshing">تحديث </string>
     <string name="no_space">لا توجد مساحة متوافرة.</string>
@@ -1150,7 +1140,6 @@
     <string name="enter_otp_skip_seq">Enter OTP for Skip Sequence</string>
     <string name="enter_password">يرجى إدخال كلمة المرور</string>
     <string name="exceed_indicative_order">You have exceeded Indicative order.</string>
-    <string name="expense_title">Expense Sheet</string>
     <string name="fivefilter">Fivefilter</string>
     <string name="foc">FfoOC</string>
     <string name="focus_show_1">You have not ordered\u0020</string>
@@ -1264,7 +1253,6 @@
     <string name="share_percent">شارك ٪</string>
     <string name="total_value_less_than_actual_value">القيمة الإجمالية أقل من القيمة الفعلي.</string>
     <string name="answer_to_take_photo">أجب على السؤال لالتقاط صورة.</string>
-    <string name="value_exceeds_more_than_total">تتجاوز القيمة أكثر من الإجمالي.</string>
     <string name="language">لغة</string>
     <string name="printer_settings">إعدادات الطابعة</string>
     <string name="sales_return_value_exceeds_order_value">Sales Return Value should not exceed Order Value.</string>
@@ -1275,7 +1263,5 @@
     <string name="return_products_price_less_than_replacing_product_price">Return value should be higher than replacement value</string>
     <string name="return_products_not_matching_replacing_product_price">Return and Replacement value should be matched</string>
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
-    <string name="store_activities">Store Activities</string>
-    <string name="stores">Stores</string>
 
 </resources>

@@ -8,6 +8,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -17,6 +18,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +33,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -42,6 +44,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
+import com.ivy.cpg.view.supervisor.customviews.ticker.TickerView;
 import com.ivy.cpg.view.supervisor.mvp.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
@@ -67,8 +70,9 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
     private GoogleMap mMap;
     private BottomSheetBehavior bottomSheetBehavior;
-    private TextView totalSeller, absentSeller, marketSeller
-            , tvCoveredOutlet, tvUnbilledOutlet, tvTotalOutlet, tvOrderValue,tvSellerProductivePercent;
+    private TickerView totalSeller,tvOrderValue,tvUnbilledOutlet
+            ,tvTotalOutlet,tvCoveredOutlet,absentSeller,marketSeller;
+    private TextView  tvSellerProductivePercent;
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName;
@@ -117,8 +121,6 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         }
 
         selectedDate = SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN);
-
-
 
         sellerMapHomePresenter = new SellerMapHomePresenter();
         sellerMapHomePresenter.setView(this,getContext());
@@ -339,8 +341,10 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             public void OnPageChanged(int oldPosition, int newPosition) {
 
                 double angle = 130.0;
+
                 double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.supervisor_home_map_info_x);
                 double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.supervisor_home_map_info_y));
+
                 inMarketSellerArrayList.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(inMarketSellerArrayList.get(newPosition).getMarker().getPosition()));
@@ -532,6 +536,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     public void firebaseLoginSuccess() {
 
         updateSellerInfoByDate(selectedDate);
+//        sellerMapHomePresenter.setSupervisorLastVisit();
 
     }
 
@@ -543,9 +548,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     @Override
     public void createMarker(SellerBo sellerBo,MarkerOptions markerOptions) {
 
-        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
         Marker marker = mMap.addMarker(markerOptions);
-        marker.setIcon(icon);
 
         sellerBo.setMarker(marker);
     }
@@ -563,7 +566,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             @Override
             public void onMapLoaded() {
 
-                if (sellerMapHomePresenter.areaBoundsTooSmall(builder.build(), 300)) {
+                if (sellerMapHomePresenter.checkAreaBoundsTooSmall(builder.build(), 300)) {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
                 } else {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
@@ -735,5 +738,20 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         super.onDetach();
         if (sellerMapHomePresenter != null)
             sellerMapHomePresenter.removeFirestoreListener();
+    }
+
+//    public static double dpToPx(double dp)
+//    {
+//        DisplayMetrics displaymetrics = new DisplayMetrics();
+//        dp = TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, (float) dp, displaymetrics );
+//
+//        return dp;
+//    }
+
+    public double dpToPx(double dp) {
+        float density = getResources()
+                .getDisplayMetrics()
+                .density;
+        return dp * density;
     }
 }

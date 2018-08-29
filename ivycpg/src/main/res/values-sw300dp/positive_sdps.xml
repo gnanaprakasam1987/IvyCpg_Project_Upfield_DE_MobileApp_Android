@@ -601,10 +601,13 @@
 	<dimen name="_599sdp">599.00dp</dimen>
 	<dimen name="_600sdp">600.00dp</dimen>
 
-	<dimen name="supervisor_home_map_info_x">1.08dp</dimen>
+	<dimen name="supervisor_home_map_info_x">0.95dp</dimen>
 	<dimen name="supervisor_home_map_info_y">0.20dp</dimen>
 
-	<dimen name="outlet_map_info_x">1.5dp</dimen>
-	<dimen name="outlet_map_info_y">0.38dp</dimen>
+	<dimen name="outlet_map_info_x">1.54dp</dimen>
+	<dimen name="outlet_map_info_y">0.42dp</dimen>
+
+	<dimen name="info_window_x">1dp</dimen>
+	<dimen name="dp_0_5">1.2dp</dimen>
 
 </resources>

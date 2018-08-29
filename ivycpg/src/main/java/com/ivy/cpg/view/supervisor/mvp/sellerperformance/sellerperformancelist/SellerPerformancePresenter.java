@@ -75,7 +75,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
             db.openDataBase();
 
             String queryStr = "select um.userId,um.userName,count(sm.userId),um.ProfileImagePath from usermaster um " +
-                    "left join SupRetailerMaster sm on sm.userId = um.userid where isDeviceuser!=1 and userlevel = '"+loadUserLevel()+"' and sm.date ='"+date+"'  group by um.userid";
+                    "left join SupRetailerMaster sm on sm.userId = um.userid and sm.date ='"+date+"' where isDeviceuser!=1 and userlevel = '"+loadUserLevel()+"' group by um.userid";
 
             Cursor c = db.selectSQL(queryStr);
             if (c != null) {
@@ -133,10 +133,10 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
                                 }
                             }
 
-                            sellerPerformanceView.updateSellerPerformanceList(new ArrayList<>(sellerInfoHasMap.values()));
-
                             prepareChartData(userId,getPreviousDays(date, -CHART_DAYS_COUNT));
                         }
+
+                        sellerPerformanceView.updateSellerPerformanceList(new ArrayList<>(sellerInfoHasMap.values()));
                     }
                 });
     }

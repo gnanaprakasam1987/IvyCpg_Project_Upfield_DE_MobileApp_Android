@@ -2,6 +2,7 @@ package com.ivy.cpg.view.salesreturn;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -35,8 +36,10 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,17 +147,19 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                 }
             }
         }
-        MyAdapter mSchedule = new MyAdapter(list);
+        MyAdapter mSchedule = new MyAdapter(list,this);
         lvwplist.setAdapter(mSchedule);
     }
 
     class MyAdapter extends ArrayAdapter<SalesReturnReasonBO> {
         final ArrayList<SalesReturnReasonBO> items;
+        private Context mContext;
 
-        MyAdapter(ArrayList<SalesReturnReasonBO> items) {
+        MyAdapter(ArrayList<SalesReturnReasonBO> items,Context context) {
             super(SalesReturnSummery.this, R.layout.row_salesreturn_summery,
                     items);
             this.items = items;
+            this.mContext =context;
         }
 
         public SalesReturnReasonBO getItem(int position) {
@@ -200,35 +205,35 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                 holder.lotnumber = (TextView) row.findViewById(R.id.lotnumber);
 
                 //typefaces
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tvReason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.mfgDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.oldMrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.expDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.invoiceno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.srpedit.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.lotnumber.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.pieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.srPieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.srCaseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.srOuterQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.tvReason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.mfgDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.oldMrp.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.expDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.invoiceno.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.srpedit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.lotnumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.srPieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.srCaseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+                holder.srOuterQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
 
-                ((TextView) row.findViewById(R.id.tv_prodname_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.reasonTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.mfgDateTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.expDateTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.invoicenoTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.lotnumberTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.oldMrpTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.srpeditTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.srPcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.srCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.srOutercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) row.findViewById(R.id.tv_prodname_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.reasonTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.mfgDateTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.expDateTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.invoicenoTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.lotnumberTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.oldMrpTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.srpeditTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.srPcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.srCaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                ((TextView) row.findViewById(R.id.srOutercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
 
                 if (!salesReturnHelper.SHOW_SALES_RET_CASE) {
                     ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
@@ -584,8 +589,12 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                                             PHOTO_PATH, salesReturnHelper.getSignatureName());
                                 salesReturnHelper.clearTransaction(getApplicationContext());
                                 Toast.makeText(SalesReturnSummery.this, getResources().getString(R.string.tran_deleted_successfully), Toast.LENGTH_LONG).show();
-                                BusinessModel.loadActivity(SalesReturnSummery.this,
-                                        DataMembers.actHomeScreenTwo);
+                               /* BusinessModel.loadActivity(SalesReturnSummery.this,
+                                        DataMembers.actHomeScreenTwo);*/
+
+                                //  DataMembers.actHomeScreenTwo);
+                                Intent  myIntent = new Intent(SalesReturnSummery.this, HomeScreenTwo.class);
+                                startActivityForResult(myIntent, 0);
                                 finish();
                             }
                         })

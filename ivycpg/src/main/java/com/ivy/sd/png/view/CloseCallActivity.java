@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -296,8 +297,10 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
     public void onBack() {
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                 .now(SDUtil.TIME));
-        BusinessModel.loadActivity(CloseCallActivity.this,
-                DataMembers.actHomeScreenTwo);
+        /*BusinessModel.loadActivity(CloseCallActivity.this,
+                DataMembers.actHomeScreenTwo);*/
+        Intent myIntent = new Intent(this, HomeScreenTwo.class);
+        startActivityForResult(myIntent, 0);
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         finish();
     }

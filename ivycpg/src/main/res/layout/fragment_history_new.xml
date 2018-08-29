@@ -30,6 +30,7 @@
             card_view:cardBackgroundColor="?customLayoutBackground"
             card_view:cardCornerRadius="4dp"
             card_view:cardElevation="3dp"
+            android:visibility="gone"
             card_view:cardUseCompatPadding="true">
 
             <LinearLayout

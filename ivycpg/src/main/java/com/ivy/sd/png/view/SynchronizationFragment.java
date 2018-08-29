@@ -764,8 +764,9 @@ public class SynchronizationFragment extends IvyBaseFragment
                     dismissCurrentProgressDialog();
                     if (isSwitchUser) {
                         getActivity().finish();
-                        BusinessModel.loadActivity(getActivity(),
-                                DataMembers.actHomeScreen);
+                        /*BusinessModel.loadActivity(getActivity(),
+                                DataMembers.actHomeScreen);*/
+                        moveToHomeScreenActivity();
                     } else {
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
                     }
@@ -991,7 +992,10 @@ public class SynchronizationFragment extends IvyBaseFragment
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.pls_upload_images_before_download), 0);
-                } else {
+                } else if(!UploadHelper.getInstance(getContext()).isAttendanceCompleted(getContext())){
+                    showAttendanceNotCompletedToast();
+                }
+                else {
                     if (!selectedRetailerDownloadCheckBox.isChecked()) {
                         if (bmodel.configurationMasterHelper.SHOW_DOWNLOAD_ALERT)
                             showAlertForDownload();
@@ -1330,8 +1334,9 @@ public class SynchronizationFragment extends IvyBaseFragment
                     dismissCurrentProgressDialog();
                     if (isSwitchUser) {
                         getActivity().finish();
-                        BusinessModel.loadActivity(getActivity(),
-                                DataMembers.actHomeScreen);
+                       /* BusinessModel.loadActivity(getActivity(),
+                                DataMembers.actHomeScreen);*/
+                        moveToHomeScreenActivity();
                     } else {
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
                     }
@@ -1356,6 +1361,15 @@ public class SynchronizationFragment extends IvyBaseFragment
             }
         }
     };
+
+
+    private void moveToHomeScreenActivity(){
+
+        Intent  myIntent = new Intent(getActivity(), HomeScreenActivity.class);
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        getActivity().startActivityForResult(myIntent, 0);
+    }
 
     /**
      * If there is a progress dialog, dismiss it and set progressDialog to null.
@@ -2029,8 +2043,9 @@ public class SynchronizationFragment extends IvyBaseFragment
             } else {
                 if (isSwitchUser) {
                     getActivity().finish();
-                    BusinessModel.loadActivity(getActivity(),
-                            DataMembers.actHomeScreen);
+                   /* BusinessModel.loadActivity(getActivity(),
+                            DataMembers.actHomeScreen);*/
+                    moveToHomeScreenActivity();
                 } else {
                     bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
                 }

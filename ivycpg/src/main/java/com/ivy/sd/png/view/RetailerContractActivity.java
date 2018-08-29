@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -144,8 +145,11 @@ public class RetailerContractActivity extends IvyBaseActivityNoActionBar {
     public void onBack() {
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                 .now(SDUtil.TIME));
-        BusinessModel.loadActivity(RetailerContractActivity.this,
-                DataMembers.actHomeScreenTwo);
+       // BusinessModel.loadActivity(RetailerContractActivity.this,
+             //   DataMembers.actHomeScreenTwo);
+
+        Intent myIntent = new Intent(this, HomeScreenTwo.class);
+        startActivityForResult(myIntent, 0);
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }

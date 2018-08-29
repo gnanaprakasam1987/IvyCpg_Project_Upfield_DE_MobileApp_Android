@@ -179,7 +179,6 @@
     <string name="last_download_on">Last Download: </string>
     <string name="last_upload_on">Last Upload: </string>
     <string name="select_category">Select Category</string>
-    <string name="answer_take_photo">Answer the question to take photo.</string>
     <string name="retailer_contact_menu">Retailer Contact Menu not Available!</string>
     <string name="retailer_contact_list">Contact data not Available!</string>
     <string name="not_able_to_register_visit">Not able to register the visit</string>
@@ -191,7 +190,17 @@
     <string name="show_results">Show Results</string>
     <string name="please_choose_address">Please choose any one address</string>
 
+    <string name="mark_attendance_working">Please Mark Attendance As Working To Proceed</string>
+
     <string name="planned_activities">Planned Activities</string>
+    <string name="do_u_want_to_cancel">Do you want to cancel?</string>
+
+    <string name="asset_service">Asset Service</string>
+    <string name="select_asset_service">Nothing selected to Service.</string>
+
+    <string name="visit_plan_updated">Visit Plan Updated</string>
+    <string name="stock_allocated">Stock Allocated</string>
+
     <string name="vanload_stock_applied">VanLoad Stock Applied </string>
     <string name="vanload_reject_applied">VanLoad Stock Rejected</string>
     <string name="check_any_one_list">Check any one list</string>

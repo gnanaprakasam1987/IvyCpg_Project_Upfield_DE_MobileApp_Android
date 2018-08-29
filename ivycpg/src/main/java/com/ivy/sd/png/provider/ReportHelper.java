@@ -995,7 +995,7 @@ public class ReportHelper {
             // get OrderQty(sold) FROM ORDER DETAIL
             sb = new StringBuffer();
             sb.append("select productid,sum(Qty),batchid as Qty from orderdetail OD inner join Orderheader OH on ");
-            sb.append("OH.orderid =OD.orderid where OH.is_vansales=1 and od.ordertype=0 and OH.upload!='X' group by productid,batchid");
+            sb.append("OH.orderid =OD.orderid where OH.is_vansales=1 and od.ordertype=0 and OH.upload!='X' and OH.invoiceStatus=1 group by productid,batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {

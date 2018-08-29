@@ -975,11 +975,32 @@ public class SalesReturnHelper {
         double returnValue = 0;
         DBUtil db = null;
         try {
+            boolean isVansales;
+            if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                if (bmodel.getRetailerMasterBO().getIsVansales() == 1) {
+                    isVansales = true;
+                } else {
+                    isVansales = false;
+                }
+
+            } else {
+                if (bmodel.configurationMasterHelper.IS_INVOICE) {
+                    isVansales = true;
+                } else {
+                    isVansales = false;
+                }
+            }
             db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            String sb = "select Returnvalue from SalesReturnHeader where RetailerId=" +
-                    bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + " and upload='N' and distributorid=" + bmodel.retailerMasterBO.getDistributorId();
+            String sb = "select sum(SRH.Returnvalue) from SalesReturnHeader SRH inner join OrderHeader OH on OH.OrderID = SRH.RefModuleTId where SRH.RetailerId=" +
+                    bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId();
+
+            if (isVansales) {
+                sb += " and OH.invoicestatus = 1";
+            } else {
+                sb += " and OH.invoicestatus = 0";
+            }
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 if (c.moveToFirst()) {
