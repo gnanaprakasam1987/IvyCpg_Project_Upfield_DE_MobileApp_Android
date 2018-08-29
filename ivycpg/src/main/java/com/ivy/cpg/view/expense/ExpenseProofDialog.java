@@ -243,12 +243,14 @@ public class ExpenseProofDialog extends DialogFragment {
                 new android.content.DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteFilePath.delete();
-                        expenseSheetHelper.deleteImageProof(deleteImageName);
-                        if (expenseSheetHelper.getImagesList(refID).size() > 0)
-                            imgGrid.setAdapter(new MyAdapter(expenseSheetHelper.getImagesList(refID)));
-                        else
-                            getDialog().dismiss();
+                        boolean isDelete = deleteFilePath.delete();
+                        if (isDelete) {
+                            expenseSheetHelper.deleteImageProof(deleteImageName);
+                            if (expenseSheetHelper.getImagesList(refID).size() > 0)
+                                imgGrid.setAdapter(new MyAdapter(expenseSheetHelper.getImagesList(refID)));
+                            else
+                                getDialog().dismiss();
+                        }
                     }
 
                 });

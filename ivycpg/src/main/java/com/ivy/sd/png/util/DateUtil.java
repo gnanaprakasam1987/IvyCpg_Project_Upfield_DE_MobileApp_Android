@@ -1,5 +1,7 @@
 package com.ivy.sd.png.util;
 
+import android.support.annotation.NonNull;
+
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
 import java.text.ParseException;
@@ -178,5 +180,17 @@ public class DateUtil {
         c.add(Calendar.DATE, noofDays); //same with c.add(Calendar.DAY_OF_MONTH, 1);
         // convert calendar to date
         return c.getTime();
+    }
+
+
+    /**
+     *
+     * @param format input date format
+     * @return SimpleDateFormat
+     */
+
+    @NonNull
+    public static SimpleDateFormat getDateFormat (String format){
+        return new SimpleDateFormat(format,Locale.US);
     }
 }

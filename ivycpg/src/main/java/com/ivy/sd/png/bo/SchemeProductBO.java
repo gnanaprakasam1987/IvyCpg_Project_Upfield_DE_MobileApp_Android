@@ -474,4 +474,99 @@ public class SchemeProductBO {
     public String getProductCode() {
         return productCode;
     }
+
+    //Added for QPS Tracker
+    private int orderedPcsQty, increasedPcsQty, orderedCasesQty, increasedCasesQty, totalOrderedQty;
+    private float pcsPrice, casesPrice;
+    private String parentID, getType;
+
+    public int getOrderedPcsQty() {
+        return orderedPcsQty;
+    }
+
+    public void setOrderedPcsQty(int orderedPcsQty) {
+        this.orderedPcsQty = orderedPcsQty;
+    }
+
+    public int getOrderedCasesQty() {
+        return orderedCasesQty;
+    }
+
+    public void setOrderedCasesQty(int orderedCasesQty) {
+        this.orderedCasesQty = orderedCasesQty;
+    }
+
+    public int getIncreasedPcsQty() {
+        return increasedPcsQty;
+    }
+
+    public void setIncreasedPcsQty(int increasedPcsQty) {
+        this.increasedPcsQty = increasedPcsQty;
+    }
+
+    public int getIncreasedCasesQty() {
+        return increasedCasesQty;
+    }
+
+    public void setIncreasedCasesQty(int increasedCasesQty) {
+        this.increasedCasesQty = increasedCasesQty;
+    }
+
+    public float getPcsPrice() {
+        return pcsPrice;
+    }
+
+    public void setPcsPrice(float pcsPrice) {
+        this.pcsPrice = pcsPrice;
+    }
+
+    public float getCasesPrice() {
+        return casesPrice;
+    }
+
+    public void setCasesPrice(float casesPrice) {
+        this.casesPrice = casesPrice;
+    }
+
+    public int getTotalOrderedQty() {
+        return totalOrderedQty;
+    }
+
+    public void setTotalOrderedQty(int totalOrderedQty) {
+        this.totalOrderedQty = totalOrderedQty;
+    }
+
+    public String getParentID() {
+        return parentID;
+    }
+
+    public void setParentID(String parentID) {
+        this.parentID = parentID;
+    }
+
+    public String getGetType() {
+        return getType;
+    }
+
+    public void setGetType(String getType) {
+        this.getType = getType;
+    }
+
+    boolean pcsSelected, casesSelected;
+
+    public boolean isPcsSelected() {
+        return pcsSelected;
+    }
+
+    public void setPcsSelected(boolean pcsSelected) {
+        this.pcsSelected = pcsSelected;
+    }
+
+    public boolean isCasesSelected() {
+        return casesSelected;
+    }
+
+    public void setCasesSelected(boolean casesSelected) {
+        this.casesSelected = casesSelected;
+    }
 }

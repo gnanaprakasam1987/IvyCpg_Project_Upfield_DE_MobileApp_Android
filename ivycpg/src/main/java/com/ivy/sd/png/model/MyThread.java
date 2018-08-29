@@ -117,7 +117,7 @@ public class MyThread extends Thread {
                 bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
                 if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-                    LoginHelper.getInstance(ctx).onGCMRegistration(ctx.getApplicationContext());
+                    LoginHelper.getInstance(ctx).onFCMRegistration(ctx.getApplicationContext());
                 if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
                     bmodel.downloadChatCredentials();
 
@@ -278,7 +278,7 @@ public class MyThread extends Thread {
 
                 }
 
-                if (orderHelper.saveOrder(ctx, bill1Products) && orderHelper.saveOrder(ctx, bill2Products)) {
+                if ( orderHelper.saveOrder(ctx, bill2Products,false)) {
 
                     bmodel.setOrderHeaderBO(null);
 
@@ -332,7 +332,7 @@ public class MyThread extends Thread {
             } else {
 
                 // Save Order
-                if (orderHelper.saveOrder(ctx)) {
+                if (orderHelper.saveOrder(ctx,false)) {
                     // Save Discount
 //            bmodel.saveInvoiceDiscountDetails();
 
@@ -393,7 +393,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             // Save Order
-            if (orderHelper.saveOrder(ctx)) {
+            if (orderHelper.saveOrder(ctx,false)) {
 
                 bmodel.setOrderHeaderBO(null);
 
@@ -600,7 +600,7 @@ public class MyThread extends Thread {
 
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-            if (orderHelper.saveOrder(ctx)) {
+            if (orderHelper.saveOrder(ctx,true)) {
 
                 bmodel.setOrderHeaderNote("");
 

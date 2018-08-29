@@ -74,6 +74,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.order.scheme.UpSellingActivity;
@@ -217,7 +218,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String TEMP_ORDDERIMG = "tempOrdImg";
     private final String TEMP_ADDRESSID = "tempAddressId";
     private double totalvalue = 0;
-    private final String FROM_HOME_SCREEN = "IsFromHomeScreen";
+
 
 
     private int mSelectedBrandID = 0;
@@ -263,7 +264,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private Vector<ProductMasterBO> productList = new Vector<>();
 
-    boolean isFromHomeScreen = false;
+
     private OrderHelper orderHelper;
 
     private static final int SALES_RETURN = 3;
@@ -312,7 +313,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? ""
                         : extras.getString(TEMP_ORDDERIMG);
                 tempAddressId = extras.getInt(TEMP_ADDRESSID);
-                isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
+
             }
         } else {
             OrderedFlag = (String) (savedInstanceState
@@ -337,7 +338,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     : savedInstanceState.getSerializable(TEMP_ORDDERIMG));
             tempAddressId = (int) (savedInstanceState
                     .getSerializable(TEMP_ADDRESSID));
-            isFromHomeScreen = savedInstanceState.getBoolean(FROM_HOME_SCREEN, false);
+
         }
 
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
@@ -463,7 +464,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
 
-        if (!isFromHomeScreen && bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
+        if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
             bmodel.resetSRPvalues();
         }
 
@@ -957,7 +958,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tempOrdImg = extras.getString(TEMP_ORDDERIMG) == null ? "" : extras
                     .getString(TEMP_ORDDERIMG);
             tempAddressId = extras.getInt(TEMP_ADDRESSID);
-            isFromHomeScreen = extras.getBoolean(FROM_HOME_SCREEN, false);
+
             savedInstanceState.putSerializable(ORDER_FLAG, OrderedFlag);
             savedInstanceState.putSerializable(TEMP_PO, tempPo);
             savedInstanceState.putSerializable(TEMP_REMARK, tempRemark);
@@ -966,7 +967,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             savedInstanceState.putString(TEMP_ORDDERIMG, tempOrdImg);
             savedInstanceState.putSerializable(TEMP_ADDRESSID, tempAddressId);
             savedInstanceState.putSerializable(SCREEN_CODE, screenCode);
-            savedInstanceState.putSerializable(FROM_HOME_SCREEN, isFromHomeScreen);
+
         }
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -1157,6 +1158,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (bmodel.configurationMasterHelper.IS_STK_ORD_BS)
                     row = inflater.inflate(
                             R.layout.activity_stock_and_order_listview_gmi, parent,
+                            false);
+                else if (bmodel.configurationMasterHelper.IS_STK_ORD_PROJECT)
+                    row = inflater.inflate(
+                            R.layout.order_listview_project, parent,
                             false);
                 else
                     row = inflater.inflate(
@@ -4001,13 +4006,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
             }
-            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+            if (bmodel.configurationMasterHelper.IS_SR_VALIDATE_BY_RETAILER_TYPE) {
                 updatesalesReturnValue();
                 if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
-                    if (!orderHelper.isPendingReplaceAmt()) {
+                    if (!orderHelper.returnReplacementAmountValidation(true,true,this)) {
                         onnext();
                     } else {
-                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_not_matching_total_replacing_product_price), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_not_matching_replacing_product_price), Toast.LENGTH_SHORT).show();
+                    }
+                } else if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CREDIT")) {
+                    if (orderHelper.returnReplacementAmountValidation(false,true,this)) {
+                        onnext();
+                    } else {
+                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_less_than_replacing_product_price), Toast.LENGTH_SHORT).show();
                     }
                 } else
                     onnext();
@@ -4391,12 +4402,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
-            Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
-            init.putExtra("ScreenCode", screenCode);
-            init.putExtra("ForScheme", screenCode);
-            startActivity(init);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
+            if(schemeHelper.IS_SCHEME_QPS_TRACKING){
+                Intent init = new Intent(StockAndOrder.this, QPSSchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            } else {
+                Intent init = new Intent(StockAndOrder.this, SchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            }
         } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
             Intent init = new Intent(StockAndOrder.this, OrderDiscount.class);
             init.putExtra("ScreenCode", screenCode);

@@ -30,6 +30,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.Utils;
@@ -326,7 +327,12 @@ SynchronizationHelper {
                 File files[] = f.listFiles(new FilenameFilter() {
                     public boolean accept(File directory, String fileName) {
 
+                        if (fileName.endsWith(".pdf")) {
+                            return fileName.endsWith(".pdf");
+                        }
+
                         return fileName.endsWith(".jpg");
+
                     }
                 });
 
@@ -776,7 +782,6 @@ SynchronizationHelper {
             db.closeDB();
 
 
-
             deleteDBFromSD();
 
             try {
@@ -850,7 +855,7 @@ SynchronizationHelper {
         int hhtCount = 0, standList = 0;
         try {
             c = db.selectSQL("select count(hhtCode) from "
-                    + DataMembers.tbl_HhtModuleMaster+" Where ForSwitchSeller = 0");
+                    + DataMembers.tbl_HhtModuleMaster + " Where ForSwitchSeller = 0");
             if (c != null) {
                 if (c.moveToNext()) {
                     hhtCount = c.getInt(0);
@@ -1093,7 +1098,7 @@ SynchronizationHelper {
                     firstValue = firstValue.replaceAll("\\[", "").replaceAll("\\]",
                             "");*/
 
-                firstValue=firstValue.substring(1,firstValue.length()-1);
+                firstValue = firstValue.substring(1, firstValue.length() - 1);
 
                 firstValue = firstValue.replace("\\/", "/");
 
@@ -2244,7 +2249,7 @@ SynchronizationHelper {
 
 
     public Vector<String> getOtpGenerateResponse(String headerinfo, String data,
-                                                          String appendurl) {
+                                                 String appendurl) {
         // Update Security key
         updateAuthenticateToken(false);
         StringBuilder url = new StringBuilder();
@@ -2397,9 +2402,9 @@ SynchronizationHelper {
                     bmodel.getApplicationVersionNumber());
             jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
-                   DeviceUtils.getIMEINumber(context));
+                    DeviceUtils.getIMEINumber(context));
             jsonObj.put("RegistrationId", bmodel.regid);
-            jsonObj.put("DeviceUniqueId",DeviceUtils.getDeviceId(context));
+            jsonObj.put("DeviceUniqueId", DeviceUtils.getDeviceId(context));
             Commons.print("Update Authentication Token " + jsonObj.toString());
             // adding additional two parameters
             addDeviceValidationParameters(false, jsonObj);
@@ -2907,10 +2912,10 @@ SynchronizationHelper {
             db.closeDB();
         }
 
-       return downloadUrl;
+        return downloadUrl;
     }
 
-    public void downloadWareHouseStock(String wareHouseWebApi){
+    public void downloadWareHouseStock(String wareHouseWebApi) {
 
         try {
 
@@ -3849,7 +3854,7 @@ SynchronizationHelper {
             } else {
                 isPwd = password.equals(jointCallUser.getPassword());
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
             return false;
         }
@@ -3995,7 +4000,7 @@ SynchronizationHelper {
         bmodel.labelsMasterHelper.downloadLabelsMaster();
 
         //check attendance
-        HomeScreenFragment.isLeave_today = bmodel.mAttendanceHelper.checkLeaveAttendance(context);
+        HomeScreenFragment.isLeave_today = AttendanceHelper.getInstance(context).checkLeaveAttendance(context);
 
         //save sales return with Old batchid for the product
         bmodel.productHelper.loadOldBatchIDMap();
@@ -4011,7 +4016,7 @@ SynchronizationHelper {
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-            LoginHelper.getInstance(context).onGCMRegistration(context);
+            LoginHelper.getInstance(context).onFCMRegistration(context);
 
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
             bmodel.downloadChatCredentials();
@@ -4168,7 +4173,7 @@ SynchronizationHelper {
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
         return downloadurl;

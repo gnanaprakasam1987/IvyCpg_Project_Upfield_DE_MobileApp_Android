@@ -44,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -515,7 +516,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 Date selected = DateUtil.convertStringToDateObject(delDate, ConfigurationMasterHelper.outDateFormat);
                 mCalendar.setTime(selected);
             } else {
-                bModel.mAttendanceHelper.downWeekOffs(OrderSummary.this);
+                NonFieldHelper.getInstance(this).downWeekOffs(OrderSummary.this);
                 mCalendar.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
                 mCalendar = dateValidation(mCalendar);
@@ -652,7 +653,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             // Apply Item  level discount
             if (bModel.configurationMasterHelper.SHOW_DISCOUNT) {
-                double itemLevelDiscount = discountHelper.calculateItemLevelDiscount();
+                double itemLevelDiscount = discountHelper.calculateItemLevelDiscount(mOrderedProductList);
                 totalOrderValue = totalOrderValue - itemLevelDiscount;
             }
 
@@ -668,7 +669,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bModel.configurationMasterHelper.IS_EXCLUDE_TAX)
                     bModel.productHelper.taxHelper.updateProductWiseExcludeTax();
                 else {
-                    float totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
+                    double totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
                     totalOrderValue = totalOrderValue + totalTaxVal;
                 }
             }
@@ -696,7 +697,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bModel.getOrderHeaderBO() != null) {
                     bModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
                 }
-                totalOrderValue = totalOrderValue - billWiseDiscount;
+                totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount,bModel.configurationMasterHelper.VALUE_PRECISION_COUNT,0));
                 enteredDiscAmtOrPercent = billWiseDiscount;
 
             } else {
@@ -822,6 +823,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         }
 
+        if (hasSchemeApplied())
+            imageView_amountSplitUp.setColorFilter(getResources().getColor(R.color.new_orange));
     }
 
     private double calculateLineValue(ProductMasterBO productBO) {
@@ -931,8 +934,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
         /*
-        * enable attach file option
-        * */
+         * enable attach file option
+         * */
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
             if (bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
@@ -1758,6 +1761,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         signatureName = bModel.getOrderHeaderBO().getSignatureName();
                     }
 
+                    if(bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                            &&bModel.getOrderHeaderBO().getOrderValue()<orderHelper.getTotalReturnValue(mOrderedProductList)){
+                        Toast.makeText(this,getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
+                        isClick = false;
+                        return;
+                    }
 
                     // Don't write any code  after this dialog.. because it is just a confirmation dialog
                     orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
@@ -1772,6 +1781,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         getResources().getString(
                                 R.string.no_products_exists),
                         Toast.LENGTH_SHORT).show();
+                isClick=false;
             }
         }
     }
@@ -1893,6 +1903,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             orderHelper.invoiceDiscount = Double.toString(enteredDiscAmtOrPercent);
 
+
+                            if(bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                                    &&bModel.getOrderHeaderBO().getOrderValue()<orderHelper.getTotalReturnValue(mOrderedProductList)){
+                                Toast.makeText(this,getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
+                                isClick = false;
+                                return;
+                            }
 
                             // Don't write any code  after this dialog.. because it is just a confirmation dialog
                             orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);
@@ -2859,8 +2876,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), "yyyy/MM/dd");
-            if (bModel.mAttendanceHelper.isHoliday(dbDateFormat, OrderSummary.this)
-                    || bModel.mAttendanceHelper.isWeekOff(dbDateFormat)) {
+            if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
+                    || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
                 Toast.makeText(OrderSummary.this, "The Selected day is a holiday", Toast.LENGTH_SHORT).show();
             }
 
@@ -2888,8 +2905,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar dateValidation(Calendar selectedDate) {
         String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
                 selectedDate.getTime(), "yyyy/MM/dd");
-        if (bModel.mAttendanceHelper.isHoliday(dbDateFormat, OrderSummary.this)
-                || bModel.mAttendanceHelper.isWeekOff(dbDateFormat)) {
+        if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
+                || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
             selectedDate.add(Calendar.DAY_OF_MONTH, 1);
             return dateValidation(selectedDate);
         } else {
@@ -3100,7 +3117,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
 
-            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName);
+            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName,null);
             if (bModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
@@ -3186,7 +3203,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName);
+            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName,null);
 
 
             bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
@@ -3575,4 +3592,17 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         return false;
     }
 
+    private boolean hasSchemeApplied() {
+        for (ProductMasterBO productMasterBO : mOrderedProductList) {
+            if (productMasterBO.isPromo() && (productMasterBO.getSchemeProducts() != null
+                    && productMasterBO.getSchemeProducts().size() > 0)) {
+
+                if (!SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(productMasterBO.getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
+                    return productMasterBO.getSchemeProducts().size() > 0;
+                }
+            }
+        }
+
+        return false;
+    }
 }

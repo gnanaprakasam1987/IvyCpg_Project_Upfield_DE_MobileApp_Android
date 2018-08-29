@@ -2,43 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
+        style="?textTitleStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/height_default_screen_title"
         android:orientation="vertical"
-        android:padding="3dp" >
+        android:padding="3dp">
 
         <TextView
-            android:id="@+id/textView1"
-            style="?textTitleStyle"
+            android:id="@+id/title_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/vanload_summary" />
+            android:padding="@dimen/dimens_1dp"
+            android:text="@string/vanload_summary"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_small" />
     </LinearLayout>
     <!-- just draw a red line -->
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none" >
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp" >
+                android:layout_margin="15dp">
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/load_price_label_tv"
                     style="?textFieldStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/skuwise_right_margin"
+                    android:layout_marginRight="@dimen/skuwise_right_margin"
                     android:text="@string/vanload_productprice" />
 
                 <TextView
@@ -58,12 +63,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp" >
+                android:layout_margin="15dp">
 
                 <TextView
                     style="?textFieldStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/unload_price_label_tv"
                     android:text="@string/vanunload_productprice" />
 
                 <TextView
@@ -72,7 +78,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/zero" />
+                    android:layout_marginEnd="@dimen/skuwise_right_margin"
+                    android:layout_marginRight="@dimen/skuwise_right_margin" />
+                android:text="@string/zero" />
             </LinearLayout>
 
             <View
@@ -83,12 +91,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp" >
+                android:layout_margin="15dp">
 
                 <TextView
                     style="?textFieldStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/total_amt_label_tv"
+                    android:layout_marginEnd="@dimen/skuwise_right_margin"
+                    android:layout_marginRight="@dimen/skuwise_right_margin"
                     android:text="@string/total_amount_due" />
 
                 <TextView
@@ -108,23 +119,26 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp" >
+                android:layout_margin="10dp">
 
                 <TextView
                     style="?textFieldStyle"
+                    android:id="@+id/entered_amt_label_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/dimens_1dp"
+                    android:layout_marginRight="@dimen/dimens_1dp"
                     android:text="@string/enter_amount" />
 
                 <EditText
                     android:id="@+id/edt_price"
                     style="@style/EditText"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/edittext_height"
                     android:layout_gravity="center"
-                    android:maxLength="14"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:maxLength="14" />
             </LinearLayout>
 
             <View

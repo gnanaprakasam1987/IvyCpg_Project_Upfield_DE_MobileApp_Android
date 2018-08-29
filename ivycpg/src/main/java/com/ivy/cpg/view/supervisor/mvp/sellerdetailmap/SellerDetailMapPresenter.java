@@ -117,7 +117,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                         LatLng destLatLng = new LatLng(retailerBo.getMasterLatitude(), retailerBo.getMasterLongitude());
 
                         MarkerOptions markerOptions = new MarkerOptions()
-                                .flat(true)
+                                //.flat(true)
                                 .title(retailerBo.getRetailerName())
                                 .position(destLatLng)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey))
@@ -328,7 +328,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
             if (sellerBo != null) {
                 String timeIn = convertMillisToTime(sellerBo.getInTime());
-                String retailerName = SupervisorActivityHelper.getInstance().retailerNameById(sellerBo.getRetailerId());
+                String retailerName = sellerBo.getRetailerName()!=null?sellerBo.getRetailerName():"";
                 String covered = String.valueOf(sellerBo.getCovered());
 
                 double latitude = sellerBo.getLatitude();
@@ -361,14 +361,34 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
                 RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
+                if (retailerMasterBo == null) {
+                    retailerMasterHashmap.put(documentSnapshotBo.getRetailerId(),documentSnapshotBo);
+
+                    retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
+                }
+
                 if (retailerMasterBo != null) {
+
+                    if (!retailerMasterBo.getIsDeviated() && documentSnapshotBo.getIsDeviated()){
+                        retailerMasterBo.setIsDeviated(true);
+                    }
 
                     BitmapDescriptor icon;
                     if (retailerMasterBo.getIsOrdered() || documentSnapshotBo.getOrderValue() > 0) {
-                        icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
+
+                        if (retailerMasterBo.getIsDeviated())
+                            icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green_deviated);
+                        else
+                            icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_green);
+
+
                         retailerMasterBo.setIsOrdered(true);
                     } else {
-                        icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
+                        if (retailerMasterBo.getIsDeviated())
+                            icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange_deviated);
+                        else
+                            icon = BitmapDescriptorFactory.fromResource(R.drawable.marker_orange);
+
                         retailerMasterBo.setIsOrdered(false);
                     }
 
@@ -386,22 +406,25 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                     if (lastVisited < retailerMasterBo.getMasterSequence())
                         lastVisited = retailerMasterBo.getMasterSequence();
 
-                    if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0) {
+                    if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0){
 
-                        retailerMasterBo.setMasterLatitude(documentSnapshotBo.getLatitude());
-                        retailerMasterBo.setMasterLongitude(documentSnapshotBo.getLongitude());
+                        if(documentSnapshotBo.getLatitude() != 0 && documentSnapshotBo.getLongitude() != 0){
 
-                        retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
-                        retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
+                            retailerMasterBo.setMasterLatitude(documentSnapshotBo.getLatitude());
+                            retailerMasterBo.setMasterLongitude(documentSnapshotBo.getLongitude());
 
-                        MarkerOptions markerOptions = new MarkerOptions()
-                                .flat(true)
-                                .title(retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getInTime())
-                                .position(destLatLng)
-                                .icon(icon)
-                                .snippet(String.valueOf(retailerMasterBo.getRetailerId()));
+                            retailerMasterBo.setLatitude(documentSnapshotBo.getLatitude());
+                            retailerMasterBo.setLongitude(documentSnapshotBo.getLongitude());
 
-                        sellerMapView.setRetailerMarker(retailerMasterBo, markerOptions);
+                            MarkerOptions markerOptions = new MarkerOptions()
+                                    //.flat(true)
+                                    .title(retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getInTime())
+                                    .position(destLatLng)
+                                    .icon(icon)
+                                    .snippet(String.valueOf(retailerMasterBo.getRetailerId()));
+
+                            sellerMapView.setRetailerMarker(retailerMasterBo, markerOptions);
+                        }
 
                     } else {
 
@@ -436,7 +459,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                     retailerBoObj.setInTime(documentSnapshotBo.getInTime());
                     retailerBoObj.setOutTime(documentSnapshotBo.getOutTime());
                     retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
-                    retailerBoObj.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(documentSnapshotBo.getRetailerId()));
+                    retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName()!=null?documentSnapshotBo.getRetailerName():"");
                     retailerBoObj.setVisitedSequence(retailersVisitedSequence + 1);
 
                     if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
@@ -491,7 +514,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         return new ArrayList<>(retailerVisitDetailsByRId.values());
     }
 
-    boolean areaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
+    boolean checkAreaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
         float[] result = new float[1];
         Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude, result);
         return result[0] < minDistanceInMeter;

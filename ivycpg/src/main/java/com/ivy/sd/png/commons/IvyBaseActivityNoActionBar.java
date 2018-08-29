@@ -268,5 +268,13 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             messagetv.setText(msg);
     }
 
+    public void showMessage(String message) {
+        if (message != null) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 }
