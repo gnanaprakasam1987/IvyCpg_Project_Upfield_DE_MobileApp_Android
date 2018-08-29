@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.vanstockapply;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,16 +32,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.print.DemoSleeper;
+import com.ivy.utils.FontUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -111,20 +110,13 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
         lvwplist.setCacheColorHint(0);
 
         productname = (TextView) view.findViewById(R.id.productName);
-        productname.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.prod_label)).setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.batchidTitle)).setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.outerTitle)).setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.totaltitle)).setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        productname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.prod_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.batchidTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.totaltitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
 
         productname.setOnTouchListener(new OnTouchListener() {
@@ -219,27 +211,6 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
             menu.findItem(R.id.menu_print).setVisible(true);
     }
 
-    public void updateStockReportGrid() {
-        Vector<VanLoadStockApplyBO> mylist1;
-        if (mylist == null) {
-            bmodel.showAlert(
-                    getResources().getString(R.string.no_products_exists), 0);
-            return;
-        }
-        mylist1 = bmodel.stockreportmasterhelper.getStockReportMasterAll();
-        int siz = mylist1.size();
-        ArrayList<VanLoadStockApplyBO> temp = new ArrayList<>();
-        for (int i = 0; i < siz; ++i) {
-
-            VanLoadStockApplyBO ret = mylist1.get(i);
-
-            temp.add(ret);
-        }
-
-        MyAdapter mSchedule = new MyAdapter(temp);
-        lvwplist.setAdapter(mSchedule);
-
-    }
 
     public void updateVanload(String uid) {
         if (mylist == null) {
@@ -750,13 +721,13 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                 holder.outerqty = (TextView) row.findViewById(R.id.outerqty);
                 holder.batchid = (TextView) row.findViewById(R.id.batchid);
 
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.productCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.caseqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.pcsqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.unitprice.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.outerqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.batchid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.productCode.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.caseqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.pcsqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.unitprice.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.outerqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.batchid.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
 
                 row.setOnClickListener(new OnClickListener() {

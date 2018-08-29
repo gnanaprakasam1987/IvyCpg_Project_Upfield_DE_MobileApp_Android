@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,6 +24,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.FilterFiveFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +77,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
             /*Below code used to change the layout direction */
-            if(locale.getLanguage().equalsIgnoreCase("ar"))
+            if (locale.getLanguage().equalsIgnoreCase("ar"))
                 layoutDirection(View.LAYOUT_DIRECTION_RTL);
             else
                 layoutDirection(View.LAYOUT_DIRECTION_LTR);
@@ -100,7 +100,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
      View.LAYOUT_DIRECTION_RTL 1
      View.LAYOUT_DIRECTION_LTR 0
      */
-    private void layoutDirection(int view ){
+    private void layoutDirection(int view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             IvyBaseActivityNoActionBar.this.getWindow().getDecorView().setLayoutDirection(view);
         }
@@ -273,6 +273,26 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void loadFiveFilterFragment(Bundle bundle, int resId) {
+        try {
+
+            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm.findFragmentByTag("Fivefilter");
+            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+
+            // set Fragmentclass Arguments
+            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<Object>();
+            fragobj.setArguments(bundle);
+
+            ft.replace(resId, fragobj, "Fivefilter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException("" + e);
         }
     }
 

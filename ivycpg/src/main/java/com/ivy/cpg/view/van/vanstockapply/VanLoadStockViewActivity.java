@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.van;
+package com.ivy.cpg.view.van.vanstockapply;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;

@@ -17,10 +17,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
-
-import io.reactivex.Observable;
-import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Created by rajkumar.s on 14-07-2016.
@@ -39,10 +35,11 @@ public class CreditNoteReportFragment extends Fragment {
         ListView listView = view.findViewById(R.id.creditnote_listview);
         Button btnPrint = view.findViewById(R.id.print);
 
-        ArrayList<CreditNoteListBO> creditNoteList = CreditNoteHelper.getInstance().loadCreditNote(getActivity());
-        if (bModel.configurationMasterHelper.IS_PRINT_CREDIT_NOTE_REPORT
-                && creditNoteList.size() > 0) {
+        if (bModel.configurationMasterHelper.IS_PRINT_CREDIT_NOTE_REPORT)
             btnPrint.setVisibility(View.VISIBLE);
+
+        ArrayList<CreditNoteListBO> creditNoteList = CreditNoteHelper.getInstance().loadCreditNote(getActivity());
+        if (creditNoteList.size() > 0) {
             MyAdapter adapter = new MyAdapter(creditNoteList);
             listView.setAdapter(adapter);
         }

@@ -14,7 +14,7 @@
 
     <fragment
         android:id="@+id/stock_proposal_fragment"
-        android:name="com.ivy.cpg.view.van.StockProposalFragment"
+        android:name="com.ivy.cpg.view.van.stockproposal.StockProposalFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

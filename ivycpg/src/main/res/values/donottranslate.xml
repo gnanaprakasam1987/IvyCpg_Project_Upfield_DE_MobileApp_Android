@@ -201,4 +201,7 @@
     <string name="visit_plan_updated">Visit Plan Updated</string>
     <string name="stock_allocated">Stock Allocated</string>
 
+    <string name="vanload_stock_applied">VanLoad Stock Applied </string>
+    <string name="vanload_reject_applied">VanLoad Stock Rejected</string>
+    <string name="check_any_one_list">Check any one list</string>
 </resources>
