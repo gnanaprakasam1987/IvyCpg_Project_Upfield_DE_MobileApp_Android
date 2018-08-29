@@ -463,7 +463,7 @@ public class OrderDeliveryHelper {
         double totalvalue = 0;
         int totalProdQty = 0;
         //Product wise Tax amount will be calculated according to the tax rate
-        float taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
+        double taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
         for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
             ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
             if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
@@ -719,7 +719,7 @@ public class OrderDeliveryHelper {
             if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(context);
                 salesReturnHelper.setSalesReturnID(businessModel.QT(uid));
-                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, businessModel.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode());
+                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, businessModel.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),false);
             }
 
             updateOrderDeliverySIH(db, isEdit);

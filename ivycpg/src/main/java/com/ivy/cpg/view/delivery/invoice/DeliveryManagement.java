@@ -20,6 +20,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -105,9 +106,6 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
             if (getIntent().getStringExtra("From") == null) {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-
-               /* BusinessModel.loadActivity(DeliveryManagement.this,
-                        DataMembers.actHomeScreenTwo);*/
 
                 Intent myIntent = new Intent(this, HomeScreenTwo.class);
                 startActivityForResult(myIntent, 0);

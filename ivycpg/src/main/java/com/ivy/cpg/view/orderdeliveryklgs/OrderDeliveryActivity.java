@@ -271,7 +271,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                                 orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size()-1).
                                         setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(OrderDeliveryActivity.this,orderId));
 
-                                bmodel.mCommonPrintHelper.xmlRead("invoice", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null,null);
+                                bmodel.mCommonPrintHelper.xmlRead("invoice", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null,null,null);
 
                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
