@@ -291,7 +291,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.ivy.sd.png.view.OrderFullfillmentRetailerSelection"
+            android:name="com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection"
             android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -305,10 +305,10 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.ivy.sd.png.view.OrderFullfillment"
+            android:name="com.ivy.cpg.view.orderfullfillment.OrderFullfillment"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PartialFullfillment"
+            android:name="com.ivy.cpg.view.orderfullfillment.PartialFullfillment"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.HomeScreenActivity"
@@ -578,10 +578,10 @@
             android:name="com.ivy.sd.png.view.SerialNoEntryScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DeliveryManagement"
+            android:name="com.ivy.cpg.view.delivery.invoice.DeliveryManagement"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DeliveryManagementDetail"
+            android:name="com.ivy.cpg.view.delivery.invoice.DeliveryManagementDetail"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.print.CommonPrintPreviewActivity"
@@ -673,15 +673,15 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DeliveryOrderActivity"
+            android:name="com.ivy.cpg.view.delivery.foodempire.DeliveryOrderActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DeliveryOrderSummary"
+            android:name="com.ivy.cpg.view.delivery.foodempire.DeliveryOrderSummary"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DeliveryOrderScheme"
+            android:name="com.ivy.cpg.view.delivery.foodempire.DeliveryOrderScheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
@@ -742,10 +742,10 @@
             android:name="com.ivy.sd.png.view.BackUpSellerActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity"
+            android:name="com.ivy.cpg.view.delivery.kellogs.OrderDeliveryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.orderdelivery.OrderDeliveryDetailActivity"
+            android:name="com.ivy.cpg.view.delivery.kellogs.OrderDeliveryDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity"
@@ -781,7 +781,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.ivy.cpg.view.salesdeliveryreturn.SalesReturnDeliveryActivity"
+            android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryActivity"
             android:screenOrientation="portrait" />
 
         <activity

@@ -47,6 +47,9 @@ import com.ivy.cpg.view.dashboard.KellogsDashBoardActivity;
 import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
 import com.ivy.cpg.view.dashboard.olddashboard.SKUWiseTargetActivity;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashBoardActivity;
+import com.ivy.cpg.view.delivery.foodempire.DeliveryOrderActivity;
+import com.ivy.cpg.view.delivery.invoice.DeliveryManagement;
+import com.ivy.cpg.view.delivery.invoice.DeliveryManagementHelper;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
@@ -57,8 +60,8 @@ import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
-import com.ivy.cpg.view.orderdelivery.OrderDeliveryActivity;
-import com.ivy.cpg.view.orderdelivery.OrderDeliveryHelper;
+import com.ivy.cpg.view.delivery.kellogs.OrderDeliveryActivity;
+import com.ivy.cpg.view.delivery.kellogs.OrderDeliveryHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
@@ -69,7 +72,7 @@ import com.ivy.cpg.view.price.PriceTrackCompActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.promotion.PromotionHelper;
 import com.ivy.cpg.view.promotion.PromotionTrackingActivity;
-import com.ivy.cpg.view.salesdeliveryreturn.SalesReturnDeliveryActivity;
+import com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sf.SODActivity;
@@ -1368,7 +1371,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     }
                 } else if (menuDB.get(i).getConfigCode().equals(MENU_CONTRACT_VIEW)) {
                     if (menuDB.get(i).getHasLink() == 1) {
-                        if (bmodel.deliveryManagementHelper.isDeliveryMgtDone())
+                        if (DeliveryManagementHelper.getInstance(this).isDeliveryMgtDone())
                             menuDB.get(i).setDone(true);
                     } else {
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
