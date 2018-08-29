@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.delivery.invoice;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.DeliveryManagementHelper;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -33,10 +33,10 @@ public class DeliveryManagementRetailersFragment extends IvyBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_delivery_retailers, container, false);
-        retailer_selection = (RecyclerView) view.findViewById(R.id.retailer_selection);
-        int sizeLarge = SCREENLAYOUT_SIZE_LARGE; // For 7" tablet
+        retailer_selection = view.findViewById(R.id.retailer_selection);
+
         boolean is7InchTablet = this.getResources().getConfiguration()
-                .isLayoutSizeAtLeast(sizeLarge);
+                .isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
 
         businessModel = (BusinessModel) getActivity().getApplicationContext();
 
@@ -49,7 +49,6 @@ public class DeliveryManagementRetailersFragment extends IvyBaseFragment {
 
         retailer_selection.setLayoutManager(gridLayoutManager);
 
-//        retailer_selection.setAdapter(new RetailerSelectionAdapter(DeliveryManagementHelper.getInstance(getContext()).getInvoicedRetailerList()));
         return view;
     }
 
@@ -86,7 +85,6 @@ public class DeliveryManagementRetailersFragment extends IvyBaseFragment {
                 public void onClick(View v) {
                     businessModel.setRetailerMasterBO(holder.retailerMasterBO);
                     businessModel.configurationMasterHelper.loadDeliveryUOMConfiguration();
-                    businessModel.mSelectedActivityName = holder.retailerMasterBO.getRetailerName();
                     Intent i = new Intent(getActivity(), DeliveryManagement.class);
                     i.putExtra("screentitle", holder.retailerMasterBO.getRetailerName());
                     i.putExtra("From", "HOME MENU");
@@ -111,9 +109,9 @@ public class DeliveryManagementRetailersFragment extends IvyBaseFragment {
 
             public ViewHolder(View v) {
                 super(v);
-                retailer_name = (TextView) v.findViewById(R.id.tv_retailername);
-                retailer_card = (CardView) v.findViewById(R.id.retailer_card);
-                retailer_name.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                retailer_name = v.findViewById(R.id.tv_retailername);
+                retailer_card = v.findViewById(R.id.retailer_card);
+                retailer_name.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
             }
 

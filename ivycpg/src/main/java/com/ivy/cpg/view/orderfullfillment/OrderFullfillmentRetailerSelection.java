@@ -222,4 +222,10 @@ public class OrderFullfillmentRetailerSelection extends IvyBaseActivityNoActionB
         // .setBackgroundResource(R.drawable.abc_ab_share_pack_holo_dark);
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        orderFullfillmentHelper.clearInstance();
+    }
 }

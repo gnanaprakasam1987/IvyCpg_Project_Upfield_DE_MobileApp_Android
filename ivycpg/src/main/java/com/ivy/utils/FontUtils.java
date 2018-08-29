@@ -39,7 +39,7 @@ public class FontUtils {
         return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
 
-    public Typeface getProductNameFont(Context context) {
+    public static Typeface getProductNameFont(Context context) {
         return Typeface.createFromAsset(context.getAssets(), "font/Roboto-Medium.ttf");
     }
 }

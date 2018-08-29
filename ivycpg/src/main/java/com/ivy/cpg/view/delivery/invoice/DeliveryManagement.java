@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.delivery.invoice;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,9 +18,9 @@ import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -28,12 +28,9 @@ import java.util.ArrayList;
  * Created by rajesh.k on 22-02-2016.
  */
 public class DeliveryManagement extends IvyBaseActivityNoActionBar {
-    private static final String TAG = "DeliveryManageMent";
     private BusinessModel bmodel;
     private ArrayList<InvoiceHeaderBO> mInvoiceList;
     private ListView mInvoiceLV;
-    private InvoiceHeaderBO mSelectedInvoiceHeaderBO;
-    private Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,8 +39,8 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        mInvoiceLV = (ListView) findViewById(R.id.lv_invoicelist);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mInvoiceLV = findViewById(R.id.lv_invoicelist);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -51,16 +48,20 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        setScreenTitle("" + bmodel.mSelectedActivityName);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            setScreenTitle(bundle.getString("screentitle"));
+        }
 
 
         updateData();
     }
 
     private void updateData() {
-
-        bmodel.deliveryManagementHelper.downloadInvoiceDetails();
-        mInvoiceList = bmodel.deliveryManagementHelper.getInvoiceList();
+        DeliveryManagementHelper deliveryManagementHelper = DeliveryManagementHelper.getInstance(this);
+        deliveryManagementHelper.downloadInvoiceDetails();
+        mInvoiceList = deliveryManagementHelper.getInvoiceList();
 
         if (mInvoiceList != null) {
             if (mInvoiceList.size() > 0) {
@@ -140,20 +141,20 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                 convertView = inflater.inflate(
                         R.layout.list_delivery_management, parent,
                         false);
-                holder.invoicenoTV = (TextView) convertView.findViewById(R.id.tv_invoice_no);
-                holder.invoiceDateTV = (TextView) convertView.findViewById(R.id.tv_invoice_date);
-                holder.totalLinesTV = (TextView) convertView.findViewById(R.id.tv_total_lines);
-                holder.totalAmountTV = (TextView) convertView.findViewById(R.id.tv_amount);
+                holder.invoicenoTV = convertView.findViewById(R.id.tv_invoice_no);
+                holder.invoiceDateTV = convertView.findViewById(R.id.tv_invoice_date);
+                holder.totalLinesTV = convertView.findViewById(R.id.tv_total_lines);
+                holder.totalAmountTV = convertView.findViewById(R.id.tv_amount);
 
-                holder.invoicenoTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.invoiceDateTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.totalLinesTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.totalAmountTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.invoicenoTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagement.this));
+                holder.invoiceDateTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagement.this));
+                holder.totalLinesTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagement.this));
+                holder.totalAmountTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagement.this));
 
-                ((TextView) convertView.findViewById(R.id.tv_invoice_no)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                ((TextView) convertView.findViewById(R.id.tv_amount)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                ((TextView) convertView.findViewById(R.id.tv_invoice_date)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                ((TextView) convertView.findViewById(R.id.tv_total_lines)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                ((TextView) convertView.findViewById(R.id.tv_invoice_no)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagement.this));
+                ((TextView) convertView.findViewById(R.id.tv_amount)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagement.this));
+                ((TextView) convertView.findViewById(R.id.tv_invoice_date)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagement.this));
+                ((TextView) convertView.findViewById(R.id.tv_total_lines)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagement.this));
 
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(convertView.findViewById(
@@ -179,7 +180,6 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mSelectedInvoiceHeaderBO = holder.invoiceHeaderBO;
                         Intent i = new Intent(DeliveryManagement.this, DeliveryManagementDetail.class);
                         i.putExtra("invoiceno",
                                 holder.invoiceHeaderBO.getInvoiceNo());
@@ -196,10 +196,10 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                 holder = (Holder) convertView.getTag();
             }
             holder.invoiceHeaderBO = mInvoiceList.get(position);
-            holder.invoicenoTV.setText("" + holder.invoiceHeaderBO.getInvoiceNo() + "");
-            holder.invoiceDateTV.setText("" + holder.invoiceHeaderBO.getInvoiceDate() + "");
-            holder.totalAmountTV.setText("" + holder.invoiceHeaderBO.getInvoiceAmount() + "");
-            holder.totalLinesTV.setText("" + holder.invoiceHeaderBO.getLinesPerCall() + "");
+            holder.invoicenoTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceNo()));
+            holder.invoiceDateTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceDate()));
+            holder.totalAmountTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceAmount()));
+            holder.totalLinesTV.setText(String.valueOf(holder.invoiceHeaderBO.getLinesPerCall()));
             return convertView;
         }
     }

@@ -5,7 +5,7 @@ import com.ivy.sd.png.asean.view.BuildConfig;
 public interface
 ApplicationConfigs {
 
-    String DB_NAME = "ivycpg_v19";
+    String DB_NAME = "ivycpg_v19Y";
 
     boolean withActivation = BuildConfig.ACTIVATION;
 

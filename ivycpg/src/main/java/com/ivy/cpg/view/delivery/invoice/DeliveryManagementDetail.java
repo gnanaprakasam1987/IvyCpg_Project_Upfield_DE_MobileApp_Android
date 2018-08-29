@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.delivery.invoice;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,11 +43,14 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.CaptureSignatureActivity;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,32 +75,27 @@ import javax.mail.internet.MimeMultipart;
 public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar implements View.OnClickListener {
     private static final String TAG = "DeliveryManagementDetail";
     private BusinessModel bmodel;
-    private TextView mInvoiceNoTV;
     private MaterialSpinner mInvoiceTypeSpin;
     private ListView mProductDetailsLV;
     private LinearLayout mTitleLL, mKeyPadLL;
     private ArrayList<ProductMasterBO> mProductList;
 
-    private static final String DELIVERY_TYPE = "DELIVERY_TYPE";
-
-    private ArrayList<String> mDeliveryTypeList;
     private String mInvoiceNo = "";
     private MyAdapter myAdapter;
 
     private EditText QUANTITY;
     private String append = "";
     private String mSelectedItem;
-    private AlertDialog.Builder build;
     private AlertDialog alertDialog;
     private int flag = -1;
 
     private int mSelectedPrintCount = 0;
     private AlertDialog.Builder builder10;
 
-    private TextView tv_sihTitle, chk_title;
-    private Toolbar toolbar;
+    private TextView chk_title;
     private Button saveBtn;
 
+    private DeliveryManagementHelper deliveryManagementHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +103,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        deliveryManagementHelper = DeliveryManagementHelper.getInstance(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -113,18 +113,18 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        mInvoiceNoTV = (TextView) findViewById(R.id.tv_invoice_no);
-        mInvoiceTypeSpin = (MaterialSpinner) findViewById(R.id.spin_payment);
-        mProductDetailsLV = (ListView) findViewById(R.id.lv_productlist);
-        mTitleLL = (LinearLayout) findViewById(R.id.ll_title);
-        mKeyPadLL = (LinearLayout) findViewById(R.id.ll_keypad);
-        mDeliveryTypeList = new ArrayList<String>();
+        TextView mInvoiceNoTV = findViewById(R.id.tv_invoice_no);
+        mInvoiceTypeSpin = findViewById(R.id.spin_payment);
+        mProductDetailsLV = findViewById(R.id.lv_productlist);
+        mTitleLL = findViewById(R.id.ll_title);
+        mKeyPadLL = findViewById(R.id.ll_keypad);
+        ArrayList<String> mDeliveryTypeList = new ArrayList<>();
         mDeliveryTypeList.add(getResources().getString(R.string.fullfilled));
         mDeliveryTypeList.add(getResources().getString(R.string.partially_fullfilled));
         mDeliveryTypeList.add(getResources().getString(R.string.rejected));
 
-        tv_sihTitle = (TextView) findViewById(R.id.sihTitle);
-        chk_title = (TextView) findViewById(R.id.chk_title);
+        TextView tv_sihTitle = findViewById(R.id.sihTitle);
+        chk_title = findViewById(R.id.chk_title);
         if (!bmodel.configurationMasterHelper.IS_SIH_VALIDATION_ON_DELIVERY)
             tv_sihTitle.setVisibility(View.GONE);
 
@@ -138,18 +138,16 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         myAdapter = new MyAdapter();
         if (getIntent().getExtras() != null) {
             mInvoiceNo = getIntent().getExtras().getString("invoiceno");
-            //mInvoiceHeaderBO=(InvoiceHeaderBO)getIntent().getParcelableArrayExtra("invoiceBo");
         }
 
         mInvoiceNoTV.setText(mInvoiceNo);
         setScreenTitle("" + mInvoiceNo);
 
         // load data
-        bmodel.deliveryManagementHelper.downloadDeliveryProductDetails(mInvoiceNo);
-        //bmodel.deliveryManagementHelper.downloadInvoiceProductDetails(mInvoiceNo);
-        mProductList = bmodel.deliveryManagementHelper.getmInvoiceDetailsList();
+        deliveryManagementHelper.downloadDeliveryProductDetails(mInvoiceNo);
+        mProductList = deliveryManagementHelper.getmInvoiceDetailsList();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(DeliveryManagementDetail.this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(DeliveryManagementDetail.this,
                 android.R.layout.simple_spinner_item, mDeliveryTypeList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mInvoiceTypeSpin.setAdapter(adapter);
@@ -181,9 +179,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             }
         });
 
-        saveBtn = (Button) findViewById(R.id.btn_save);
+        saveBtn = findViewById(R.id.btn_save);
         saveBtn.setOnClickListener(this);
-        saveBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        saveBtn.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
     }
 
     @Override
@@ -204,12 +202,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     mProductDetailsLV.invalidateViews();
                     Toast.makeText(DeliveryManagementDetail.this, getResources().getString(R.string.stock_not_available), Toast.LENGTH_SHORT).show();
                 } else {
-                    android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
                     CustomFragment dialogFragment = new CustomFragment(this);
-                    /*Bundle bundle = new Bundle();
-                    bundle.putString("title", "Delivery Management Dialog");
-                    bundle.putString("textviewTitle", getResources().getString(R.string.do_u_want_to_save_delivery_management));
-                    dialogFragment.setArguments(bundle);*/
                     dialogFragment.show();
                 }
 
@@ -246,20 +239,20 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 convertView = inflater.inflate(
                         R.layout.list_delivery_product_details, parent,
                         false);
-                holder.deliveryCB = (CheckBox) convertView.findViewById(R.id.cb_delivery);
-                holder.productNameTV = (TextView) convertView.findViewById(R.id.tv_productname);
-                holder.batchNoTV = (TextView) convertView.findViewById(R.id.tv_batch_no);
-                holder.pieceET = (EditText) convertView.findViewById(R.id.edit_pcs_qty);
-                holder.caseET = (EditText) convertView.findViewById(R.id.edit_case_qty);
-                holder.outerET = (EditText) convertView.findViewById(R.id.edit_outer_qty);
-                holder.sih = (TextView) convertView.findViewById(R.id.sih);
+                holder.deliveryCB = convertView.findViewById(R.id.cb_delivery);
+                holder.productNameTV = convertView.findViewById(R.id.tv_productname);
+                holder.batchNoTV = convertView.findViewById(R.id.tv_batch_no);
+                holder.pieceET = convertView.findViewById(R.id.edit_pcs_qty);
+                holder.caseET = convertView.findViewById(R.id.edit_case_qty);
+                holder.outerET = convertView.findViewById(R.id.edit_outer_qty);
+                holder.sih = convertView.findViewById(R.id.sih);
 
-                holder.productNameTV.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                holder.batchNoTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.pieceET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.caseET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.outerET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.productNameTV.setTypeface(FontUtils.getProductNameFont(DeliveryManagementDetail.this));
+                holder.batchNoTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
+                holder.pieceET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
+                holder.caseET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
+                holder.outerET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
+                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
 
                 if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_PC)
                     holder.pieceET.setVisibility(View.GONE);
@@ -290,9 +283,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                             holder.productBO.setLocalOrderCaseqty(holder.productBO.getOrderedCaseQty());
                             holder.productBO.setLocalOrderOuterQty(holder.productBO.getOrderedOuterQty());
 
-                            holder.pieceET.setText(holder.productBO.getInit_pieceqty() + "");
-                            holder.caseET.setText(holder.productBO.getInit_caseqty() + "");
-                            holder.outerET.setText(holder.productBO.getInit_OuterQty() + "");
+                            holder.pieceET.setText(String.valueOf(holder.productBO.getInit_pieceqty()));
+                            holder.caseET.setText(String.valueOf(holder.productBO.getInit_caseqty()));
+                            holder.outerET.setText(String.valueOf(holder.productBO.getInit_OuterQty()));
                             QUANTITY = null;
                         } else {
                             holder.pieceET.setEnabled(true);
@@ -484,17 +477,17 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
             if (holder.productBO.getBatchNo() != null) {
                 holder.batchNoTV.setVisibility(View.VISIBLE);
-                holder.batchNoTV.setText(holder.productBO.getBatchNo() + "");
+                holder.batchNoTV.setText(String.valueOf(holder.productBO.getBatchNo()));
             } else {
                 holder.batchNoTV.setVisibility(View.GONE);
             }
 
-            holder.pieceET.setText(holder.productBO.getInit_pieceqty() + "");
-            holder.caseET.setText(holder.productBO.getInit_caseqty() + "");
-            holder.outerET.setText(holder.productBO.getInit_OuterQty() + "");
+            holder.pieceET.setText(String.valueOf(holder.productBO.getInit_pieceqty()));
+            holder.caseET.setText(String.valueOf(holder.productBO.getInit_caseqty()));
+            holder.outerET.setText(String.valueOf(holder.productBO.getInit_OuterQty()));
             holder.deliveryCB.setChecked(holder.productBO.isCheked());
 
-            holder.sih.setText(holder.productBO.getSIH() + "");//bmodel.productHelper.getProductMasterBOById(holder.productBO.getProductID()).getSIH() + "");
+            holder.sih.setText(String.valueOf(holder.productBO.getSIH()));
             if (holder.productBO.isCheked()) {
 
                 holder.pieceET.setEnabled(false);
@@ -516,9 +509,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     holder.productBO.setLocalOrderCaseqty(holder.productBO.getOrderedCaseQty());
                     holder.productBO.setLocalOrderOuterQty(holder.productBO.getOrderedOuterQty());
 
-                    holder.pieceET.setText(holder.productBO.getInit_pieceqty() + "");
-                    holder.caseET.setText(holder.productBO.getInit_caseqty() + "");
-                    holder.outerET.setText(holder.productBO.getInit_OuterQty() + "");
+                    holder.pieceET.setText(String.valueOf(holder.productBO.getInit_pieceqty()));
+                    holder.caseET.setText(String.valueOf(holder.productBO.getInit_caseqty()));
+                    holder.outerET.setText(String.valueOf(holder.productBO.getInit_OuterQty()));
                     QUANTITY = null;
                 }
             }
@@ -585,7 +578,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 bmodel.deleteFiles(HomeScreenFragment.photoPath,
                         signName);
 
-            ArrayList<InvoiceHeaderBO> invoiceList = bmodel.deliveryManagementHelper.getInvoiceList();
+            ArrayList<InvoiceHeaderBO> invoiceList = deliveryManagementHelper.getInvoiceList();
             if (invoiceList.size() == 1) {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
@@ -614,12 +607,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     Toast.makeText(DeliveryManagementDetail.this, getResources().getString(R.string.stock_not_available), Toast.LENGTH_SHORT).show();
                     return false;
                 } else {
-                    android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
                     CustomFragment dialogFragment = new CustomFragment(this);
-                    /*Bundle bundle = new Bundle();
-                    bundle.putString("title", "Delivery Management Dialog");
-                    bundle.putString("textviewTitle", getResources().getString(R.string.do_u_want_to_save_delivery_management));
-                    dialogFragment.setArguments(bundle);*/
                     dialogFragment.show();
                 }
 
@@ -711,7 +699,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 "</tr>";
 
         int sno = 0;
-        for (ProductMasterBO bo : bmodel.deliveryManagementHelper.getmInvoiceDetailsList()) {
+        for (ProductMasterBO bo : deliveryManagementHelper.getmInvoiceDetailsList()) {
 
             int deliverd_qty = bo.getInit_pieceqty() + (bo.getInit_caseqty() * bo.getCaseSize()) + (bo.getInit_OuterQty() * bo.getOutersize());
             int totalQty = bo.getOrderedPcsQty() + (bo.getOrderedCaseQty() * bo.getCaseSize()) + (bo.getOrderedOuterQty() * bo.getOutersize());
@@ -745,7 +733,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
     }
 
     public void eff() {
-        String s = (String) QUANTITY.getText().toString();
+        String s = QUANTITY.getText().toString();
         if (!s.equals("0") && !s.equals("0.0")) {
             QUANTITY.setText(QUANTITY.getText() + append);
         } else
@@ -760,13 +748,13 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         } else {
             int id = vw.getId();
             if (id == R.id.calcdel) {
-                int s = SDUtil.convertToInt((String) QUANTITY.getText()
+                int s = SDUtil.convertToInt(QUANTITY.getText()
                         .toString());
                 s = s / 10;
                 QUANTITY.setText(s + "");
 
             } else {
-                Button ed = (Button) findViewById(vw.getId());
+                Button ed = findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
 
@@ -811,7 +799,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            build = new AlertDialog.Builder(DeliveryManagementDetail.this);
+            AlertDialog.Builder build = new AlertDialog.Builder(DeliveryManagementDetail.this);
 
             customProgressDialog(build, getResources().getString(R.string.saving));
             alertDialog = build.create();
@@ -820,7 +808,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
         @Override
         protected Void doInBackground(Void... params) {
-            bmodel.deliveryManagementHelper.saveDeliveryManagement(mInvoiceNo, mSelectedItem, signName, signPath, contactName, contactNo);
+            deliveryManagementHelper.saveDeliveryManagement(mInvoiceNo, mSelectedItem, signName, signPath, contactName, contactNo);
             bmodel.saveModuleCompletion("MENU_DELIVERY_MGMT");
 
             return null;
@@ -832,13 +820,13 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
             alertDialog.dismiss();
 
-            bmodel.deliveryManagementHelper.downloadEmailAccountCredentials();
+            deliveryManagementHelper.downloadEmailAccountCredentials();
             if (bmodel.configurationMasterHelper.IS_SEND_EMAIL_STATEMENT_FOR_DELIVERY
                     && bmodel.isOnline()
                     && bmodel.getRetailerMasterBO().getEmail() != null
                     && !bmodel.getRetailerMasterBO().getEmail().equals("")
-                    && bmodel.deliveryManagementHelper.getUserName() != null && !bmodel.deliveryManagementHelper.getUserName().equals("")
-                    && bmodel.deliveryManagementHelper.getUserPassword() != null && !bmodel.deliveryManagementHelper.getUserPassword().equals("")) {
+                    && deliveryManagementHelper.getUserName() != null && !deliveryManagementHelper.getUserName().equals("")
+                    && deliveryManagementHelper.getUserPassword() != null && !deliveryManagementHelper.getUserPassword().equals("")) {
                 sendEmail();
 
             } else {
@@ -851,9 +839,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                         product.setOrderedOuterQty(product.getInit_OuterQty());
                     }
 
-                    Vector<ProductMasterBO> productList = new Vector<ProductMasterBO>(mProductList);
+                    Vector<ProductMasterBO> productList = new Vector<>(mProductList);
                     //Collections.copy(productList, mProductList);
-                    bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null,null);
+                    bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null, null);
                     Intent i = new Intent(DeliveryManagementDetail.this, CommonPrintPreviewActivity.class);
                     i.putExtra("IsFromOrder", true);
                     i.putExtra("isHomeBtnEnable", true);
@@ -864,7 +852,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     finish();
 
                 } else {
-                    if (bmodel.deliveryManagementHelper.getInvoiceList().size() <= 1) {
+                    if (deliveryManagementHelper.getInvoiceList().size() <= 1) {
                         if (getIntent().getStringExtra("From") == null) {
                             Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
                             startActivity(i);
@@ -884,7 +872,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         }
     }
 
-    public class CustomFragment extends Dialog {
+    private class CustomFragment extends Dialog {
         private String mTitle = "";
         private String mTextviewTitle = "";
 
@@ -897,7 +885,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         private String[] mPrintCountArray;
         private Context context;
 
-        public CustomFragment(@NonNull Context context) {
+        private CustomFragment(@NonNull Context context) {
             super(context);
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             this.context = context;
@@ -921,26 +909,24 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             super.onCreate(savedInstanceState);
             mTitle = "Delivery Management Dialog";
             mTextviewTitle = getResources().getString(R.string.do_u_want_to_save_delivery_management);
-
-
         }
 
         @Override
         public void onStart() {
             super.onStart();
             setTitle(mTitle);
-            mTitleTV = (TextView) rootView.findViewById(R.id.title);
+            mTitleTV = rootView.findViewById(R.id.title);
             if (mTitleTV != null) {
-                mTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                mTitleTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,DeliveryManagementDetail.this));
             }
-            mOkBtn = (Button) rootView.findViewById(R.id.btn_ok);
-            mDismisBtn = (Button) rootView.findViewById(R.id.btn_dismiss);
-            mCountLV = (ListView) rootView.findViewById(R.id.lv_colletion_print);
+            mOkBtn = rootView.findViewById(R.id.btn_ok);
+            mDismisBtn = rootView.findViewById(R.id.btn_dismiss);
+            mCountLV = rootView.findViewById(R.id.lv_colletion_print);
             mCountLV.setVisibility(View.GONE);
             mTitleTV.setText(mTextviewTitle);
             mPrintCountArray = bmodel.printHelper.getPrintCountArray();
-            ArrayList<String> countList = new ArrayList<String>(Arrays.asList(mPrintCountArray));
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(DeliveryManagementDetail.this, android.R.layout.simple_list_item_single_choice, countList);
+            ArrayList<String> countList = new ArrayList<>(Arrays.asList(mPrintCountArray));
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(DeliveryManagementDetail.this, android.R.layout.simple_list_item_single_choice, countList);
             if (flag == 0) {
                 mCountLV.setVisibility(View.VISIBLE);
                 mCountLV.setAdapter(adapter);
@@ -979,7 +965,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     if (flag == -1)
                         dismiss();
                     else {
-                        ArrayList<InvoiceHeaderBO> invoiceList = bmodel.deliveryManagementHelper.getInvoiceList();
+                        ArrayList<InvoiceHeaderBO> invoiceList = deliveryManagementHelper.getInvoiceList();
                         if (invoiceList.size() == 1) {
 
                             if (getIntent().getStringExtra("From") == null) {
@@ -1044,7 +1030,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         ProgressDialog progressDialog;
         String cid;
 
-        public SendMail(Context ctx, String toEmailId, String subject, String message, String cid, String photoPath) {
+        private SendMail(Context ctx, String toEmailId, String subject, String message, String cid, String photoPath) {
             this.mContext = ctx;
             this.toEmailId = toEmailId;
             this.subject = subject;
@@ -1079,14 +1065,14 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     new javax.mail.Authenticator() {
                         //Authenticating the password
                         protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(bmodel.deliveryManagementHelper.getUserName(), bmodel.deliveryManagementHelper.getUserPassword());
+                            return new PasswordAuthentication(deliveryManagementHelper.getUserName(), deliveryManagementHelper.getUserPassword());
                         }
                     });
 
             try {
 
                 Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(bmodel.deliveryManagementHelper.getUserName()));
+                message.setFrom(new InternetAddress(deliveryManagementHelper.getUserName()));
                 message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmailId));
                 message.setSubject(subject);
                 //  mm.setContent(message,"text/html; charset=utf-8");
@@ -1150,9 +1136,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                     product.setOrderedOuterQty(product.getInit_OuterQty());
                 }
 
-                Vector<ProductMasterBO> productList = new Vector<ProductMasterBO>(mProductList);
+                Vector<ProductMasterBO> productList = new Vector<>(mProductList);
                 //Collections.copy(productList, mProductList);
-                bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null,null);
+                bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null, null);
                 Intent i = new Intent(DeliveryManagementDetail.this, CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("isHomeBtnEnable", true);
@@ -1163,7 +1149,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 finish();
 
             } else {
-                if (bmodel.deliveryManagementHelper.getInvoiceList().size() <= 1) {
+                if (deliveryManagementHelper.getInvoiceList().size() <= 1) {
                     if (getIntent().getStringExtra("From") == null) {
                         Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
                         startActivity(i);

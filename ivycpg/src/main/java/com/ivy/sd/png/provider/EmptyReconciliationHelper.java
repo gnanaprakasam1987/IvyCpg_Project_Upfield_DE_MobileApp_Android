@@ -413,7 +413,7 @@ public class EmptyReconciliationHelper {
 					int SIH=bmodel.productHelper.getProductMasterBOById(cursor.getString(0)).getSIH();
 					bmodel.productHelper.getProductMasterBOById(cursor.getString(0)).setSIH((SIH+(cursor.getInt(1) - cursor.getInt(2))));
 
-					if(bmodel.deliveryManagementHelper.isProductAvailableinSIHmaster(cursor.getString(0))) {
+					if(isProductAvailableinSIHmaster(cursor.getString(0))) {
 
 						db.updateSQL("update StockInHandMaster set qty=(qty+" + (cursor.getInt(1) - cursor.getInt(2)) + ") where pid=" + cursor.getString(0));
 					}
@@ -558,6 +558,26 @@ public class EmptyReconciliationHelper {
 
 	public String QT(String data) {
 		return "'" + data + "'";
+	}
+
+	private boolean isProductAvailableinSIHmaster(String productId) {
+		DBUtil db = null;
+		try {
+			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+			db.openDataBase();
+			Cursor c = db.selectSQL("select qty from StockInHandMaster where pid=" + productId);
+			if (c != null) {
+				if (c.getCount() > 0) {
+					return true;
+				}
+				c.close();
+			}
+		} catch (Exception e) {
+			Commons.print(e.getMessage());
+		} finally {
+			db.closeDB();
+		}
+		return false;
 	}
 
 }

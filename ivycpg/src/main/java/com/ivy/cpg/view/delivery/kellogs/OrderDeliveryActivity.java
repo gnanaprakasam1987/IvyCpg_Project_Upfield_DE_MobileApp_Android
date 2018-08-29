@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.orderdelivery;
+package com.ivy.cpg.view.delivery.kellogs;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -27,6 +27,7 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -36,7 +37,6 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
     private RecyclerView recyclerView;
     OrderDeliveryHelper orderDeliveryHelper;
     ArrayList<OrderHeader> orderHeaders;
-    private MyAdapter myAdapter;
     final String Str_ACCEPT = "ACCEPT";
     final String Str_VIEW = "VIEW";
     final String Str_EDIT = "EDIT";
@@ -93,7 +93,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         prepareScreenData();
     }
     private void prepareScreenData(){
-        myAdapter = new MyAdapter();
+        MyAdapter myAdapter = new MyAdapter();
         recyclerView.setAdapter(myAdapter);
         myAdapter.notifyDataSetChanged();
     }
@@ -118,15 +118,15 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 orderAccept = view.findViewById(R.id.accept_btn);
                 orderEdit = view.findViewById(R.id.edit_btn);
 
-                orderId.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                orderDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                orderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                orderLine.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                orderId.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
+                orderDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
+                orderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
+                orderLine.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
 
-                ((TextView)view.findViewById(R.id.order_delivery_listview_id_heading)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView)view.findViewById(R.id.order_delivery_listview_date_heading)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView)view.findViewById(R.id.order_delivery_listview_line_head)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView)view.findViewById(R.id.order_delivery_listview_value_heading)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView)view.findViewById(R.id.order_delivery_listview_id_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
+                ((TextView)view.findViewById(R.id.order_delivery_listview_date_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
+                ((TextView)view.findViewById(R.id.order_delivery_listview_line_head)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
+                ((TextView)view.findViewById(R.id.order_delivery_listview_value_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
 
                 (view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }

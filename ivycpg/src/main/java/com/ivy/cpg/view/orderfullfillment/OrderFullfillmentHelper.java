@@ -36,7 +36,9 @@ public class OrderFullfillmentHelper {
         }
         return instance;
     }
-
+    public void clearInstance() {
+        instance = null;
+    }
     /**
      * Load data from IndicativeOrder table *
      */
