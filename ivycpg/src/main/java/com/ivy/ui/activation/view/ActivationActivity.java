@@ -81,6 +81,8 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
                     showMessage(R.string.telephony_not_avail);
             else
                 showMessage(getString(R.string.permission_enable_msg) + " " + getString(R.string.permission_phone));
+        else
+            showMessage(getResources().getString(R.string.no_network_connection));
     }
 
     @OnClick(R.id.tv_already_activated)
@@ -93,7 +95,8 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
                     showMessage(R.string.telephony_not_avail);
             else
                 showMessage(getString(R.string.permission_enable_msg) + " " + getString(R.string.permission_phone));
-
+        else
+            showMessage(getResources().getString(R.string.no_network_connection));
     }
 
     @Override
