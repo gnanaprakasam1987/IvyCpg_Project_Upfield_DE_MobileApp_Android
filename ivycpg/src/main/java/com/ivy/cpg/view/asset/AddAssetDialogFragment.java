@@ -301,7 +301,8 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
             try {
                 if (!mAsset.getSelectedItem().toString()
                         .equals(SELECT)
-
+                        && !mBrand.getSelectedItem().toString()
+                        .equals(SELECT)
                         && !mSNO.getText().toString().equals("")) {
                     if (!assetTrackingHelper
                             .getUniqueSerialNo(mSNO.getText()
