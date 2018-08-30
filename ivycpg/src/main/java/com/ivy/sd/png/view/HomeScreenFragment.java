@@ -57,6 +57,7 @@ import com.ivy.cpg.view.dashboard.olddashboard.DashboardFragment;
 import com.ivy.cpg.view.dashboard.olddashboard.SkuWiseTargetFragment;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.delivery.invoice.DeliveryManagementRetailersFragment;
+import com.ivy.cpg.view.denomination.DenominationFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.expense.ExpenseFragment;
@@ -157,6 +158,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_SUPERVISOR_REALTIME = "MENU_SUPERVISOR_REALTIME";
     private static final String MENU_SUPERVISOR_MOVEMENT = "MENU_SUPERVISOR_MOVEMENT";
     private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_ACTIVITY";
+    private static final String MENU_DENOMINATION = "MENU_DENOMINATION";
     private static final String MENU_ROUTE_KPI = "MENU_ROUTE_KPI";
 //    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
 
@@ -282,6 +284,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_SUPERVISOR_MOVEMENT, R.drawable.ic_new_retailer_icon);
         menuIcons.put(MENU_SUPERVISOR_CALLANALYSIS, R.drawable.ic_new_retailer_icon);
         menuIcons.put(MENU_ROUTE_KPI, R.drawable.ic_vector_dashboard);
+        menuIcons.put(MENU_DENOMINATION, R.drawable.ic_vector_dashboard);
         // Load the HHTMenuTable
         bmodel.configurationMasterHelper.downloadMainMenu();
         if (getActivity().getIntent().getBooleanExtra("fromSettingScreen", false))
@@ -716,14 +719,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
-            }else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
+            } else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
                     && isInandOut
                     && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.mark_attendance_working),
                         Toast.LENGTH_SHORT).show();
-            }
-            else if (!bmodel.synchronizationHelper.isDataAvailable()) {
+            } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
                 Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
                                 getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
@@ -1522,6 +1524,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 || menuItem.getConfigCode().equals(MENU_SUPERVISOR_MOVEMENT)
                 || menuItem.getConfigCode().equals(MENU_SUPERVISOR_CALLANALYSIS)) {
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
+        } else if (menuItem.getConfigCode().equals(MENU_DENOMINATION)) {
+            switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
         }
 
     }
@@ -1616,9 +1620,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         PlanDeviationFragment planDeviationFragment = (PlanDeviationFragment) fm
                 .findFragmentByTag(MENU_NON_FIELD);
         TaskFragment taskFragment = (TaskFragment) fm.findFragmentByTag(MENU_TASK_NEW);
+
         BackUpSellerFragment backUpSellerFragment = (BackUpSellerFragment) fm.findFragmentByTag(MENU_BACKUP_SELLER);
 
         SellersMapHomeFragment supervisorMapCFragment = (SellersMapHomeFragment) fm.findFragmentByTag(MENU_SUPERVISOR_CALLANALYSIS);
+
+        DenominationFragment denominationFragment = (DenominationFragment) fm.findFragmentByTag(MENU_DENOMINATION);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1732,6 +1739,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (supervisorMapCFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
                 && supervisorMapCFragment.isVisible()) {
             return;
+        } else if (denominationFragment != null && (fragmentName.equals(MENU_DENOMINATION))
+                && denominationFragment.isVisible()) {
+            return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
@@ -1807,6 +1817,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(backUpSellerFragment);
         if (supervisorMapCFragment != null)
             ft.remove(supervisorMapCFragment);
+        if (denominationFragment != null)
+            ft.remove(denominationFragment);
 
         Bundle bndl;
         Fragment fragment;
@@ -2152,6 +2164,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_ROUTE_KPI);
+                break;
+            case MENU_DENOMINATION:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                fragment = new DenominationFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_DENOMINATION);
                 break;
         }
         ft.commit();
