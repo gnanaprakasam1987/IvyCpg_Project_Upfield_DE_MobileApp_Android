@@ -351,7 +351,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             @Override
             public void onMapLoaded() {
                 if(builder != null) {
-                    if (sellerMapViewPresenter.areaBoundsTooSmall(builder.build(), 300)) {
+                    if (sellerMapViewPresenter.checkAreaBoundsTooSmall(builder.build(), 300)) {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
                     } else {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
@@ -458,6 +458,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_supervisor_screen, menu);
+
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
@@ -476,6 +477,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             }
         };
         searchView.setOnQueryTextListener(textChangeListener);
+
         return true;
     }
 

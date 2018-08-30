@@ -346,6 +346,7 @@ public class UserMasterHelper {
      * @deprecated
      */
     public boolean changePassword(int UserID, String pwd) {
+        LoginHelper.getInstance(context).loadPasswordConfiguration(context);
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {

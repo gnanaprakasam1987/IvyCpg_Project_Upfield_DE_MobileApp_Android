@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
@@ -43,6 +44,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -352,7 +354,11 @@ public class PrintPreviewScreen extends IvyBaseActivityNoActionBar {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 finish();
-                BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
+               // BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
+
+                //  DataMembers.actHomeScreenTwo);
+                Intent myIntent = new Intent(this, HomeScreenTwo.class);
+                startActivityForResult(myIntent, 0);
             }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;

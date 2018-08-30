@@ -375,7 +375,9 @@
                             android:dividerHeight="1dp"
                             android:fitsSystemWindows="true"
                             android:groupIndicator="@null"
-                            android:visibility="gone"></ExpandableListView>
+                            android:visibility="gone">
+
+                        </ExpandableListView>
 
                     </RelativeLayout>
                 </android.support.v7.widget.CardView>

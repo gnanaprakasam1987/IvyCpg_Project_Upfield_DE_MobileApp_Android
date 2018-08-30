@@ -1336,19 +1336,4 @@ negative button and neutral button -->
     </style>
 
 
-    <style name="MVPTheme.Blue.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="MVPTheme.Blue.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="ButtonApplyFilter" parent="Base.Widget.AppCompat.Button">
-        <item name="android:layout_height">@dimen/btn_round_corner_height</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:textColor">@color/btn_round_text_color</item>
-        <item name="android:textSize">@dimen/btn_round_corner_text_size</item>
-        <item name="android:paddingLeft">@dimen/btn_round_corner_padding</item>
-        <item name="android:paddingRight">@dimen/btn_round_corner_padding</item>
-        <item name="android:minWidth">@dimen/btn_round_corner_width</item>
-        <item name="android:background">@drawable/filter_screen_apply</item>
-    </style>
-
 </resources>

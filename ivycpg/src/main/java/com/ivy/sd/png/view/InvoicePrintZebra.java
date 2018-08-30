@@ -99,7 +99,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         orderHelper = OrderHelper.getInstance(this);
-        
+
         mStatusTV = (TextView) findViewById(R.id.status_tv);
         statusField = (TextView) findViewById(R.id.status_bar);
         mDateTimeTV = (TextView) findViewById(R.id.date_time_tv);
@@ -226,17 +226,17 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
     private String updateConnectionState() {
 
-        Commons.print(TAG+ ",update connection state called");
+        Commons.print(TAG + ",update connection state called");
         String state = "FALSE";
         if (mBluetoothAdapter != null) {
-            Commons.print(TAG+ ",Bluetooth adapter not null");
+            Commons.print(TAG + ",Bluetooth adapter not null");
             if (mBluetoothAdapter.isEnabled()) {
                 isBluetoothEnabled = true;
             }
         }
 
         if (isBluetoothEnabled) {
-            Commons.print(TAG+ ",bluetooth enabled");
+            Commons.print(TAG + ",bluetooth enabled");
 
             // if (mBxlService.Connect() == 0) {
             if (isConnected()) {
@@ -264,7 +264,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
             state = "NO_BLUETOOTH";
         }
 
-        Commons.print(TAG+ ",state" + state);
+        Commons.print(TAG + ",state" + state);
 
         return state;
     }
@@ -478,8 +478,12 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
             bmodel.productHelper.clearOrderTable();
             disconnect();
             finish();
-            if (!isFromReport)
-                BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
+            // if (!isFromReport)
+            //  BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
+            if (!isFromReport) {
+                Intent myIntent = new Intent(this, HomeScreenTwo.class);
+                startActivityForResult(myIntent, 0);
+            }
 
         } else if (i1 == R.id.print_btn) {// doConnectionTest();
             new loadPrinter().execute();
@@ -514,15 +518,15 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         zebraPrinterConnection = new BluetoothPrinterConnection(
                 getMacAddressFieldText());
         SettingsHelper.saveBluetoothAddress(this, getMacAddressFieldText());
-        Commons.print(TAG+ ",getMacAddressFieldText() : " + getMacAddressFieldText());
+        Commons.print(TAG + ",getMacAddressFieldText() : " + getMacAddressFieldText());
 
         // if (!zebraPrinterConnection.isConnected()) {
         try {
-            Commons.print(TAG+ ",trying to open printer");
+            Commons.print(TAG + ",trying to open printer");
             zebraPrinterConnection.open();
             setStatus("Connected", Color.GREEN);
         } catch (ZebraPrinterConnectionException e) {
-            Commons.print(TAG+ ",trying to open printer exception");
+            Commons.print(TAG + ",trying to open printer exception");
             setStatus("Comm Error! Disconnecting", Color.RED);
             DemoSleeper.sleep(1000);
             disconnect();
@@ -549,10 +553,10 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
                 disconnect();
             }
         } else {
-            Commons.print(TAG+ ",printer connection fails here");
+            Commons.print(TAG + ",printer connection fails here");
         }
 
-        Commons.print(TAG+ ",printer" + printer);
+        Commons.print(TAG + ",printer" + printer);
 
         return printer;
     }
@@ -603,14 +607,14 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         } catch (ZebraPrinterConnectionException e) {
             setStatus(e.getMessage(), Color.RED);
         } finally {
-            Commons.print(TAG+ ",not connected in send test label");
+            Commons.print(TAG + ",not connected in send test label");
             disconnect();
         }
     }
 
     private byte[] getConfigLabel(String PrintableText) {
 
-        Commons.print(TAG+ ",getconfiglabel called");
+        Commons.print(TAG + ",getconfiglabel called");
 
         PrinterLanguage printerLanguage = printer.getPrinterControlLanguage();
 
@@ -694,7 +698,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         long Memorypercentage = ((VmtotalMemory - VmfreeMemory) * 100)
                 / VmtotalMemory;
 
-        Commons.print(TAG+","+ FunctionName + "Before Memorypercentage" + Memorypercentage
+        Commons.print(TAG + "," + FunctionName + "Before Memorypercentage" + Memorypercentage
                 + "% VmtotalMemory[" + VmtotalMemory + "] " + "VmfreeMemory["
                 + VmfreeMemory + "] " + "VmmaxMemory[" + VmmaxMemory + "] ");
 
@@ -706,7 +710,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
         VmtotalMemory = Runtime.getRuntime().totalMemory();
         Memorypercentage = ((VmtotalMemory - VmfreeMemory) * 100)
                 / VmtotalMemory;
-        Commons.print(TAG+","+ FunctionName + "_After Memorypercentage" + Memorypercentage
+        Commons.print(TAG + "," + FunctionName + "_After Memorypercentage" + Memorypercentage
                 + "% VmtotalMemory[" + VmtotalMemory + "] " + "VmfreeMemory["
                 + VmfreeMemory + "] " + "VmmaxMemory[" + VmmaxMemory + "] ");
     }
@@ -729,7 +733,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
         protected void onPreExecute() {
             /*progressDialogue = ProgressDialog.show(InvoicePrintZebra.this,
-					DataMembers.SD, "Printing...", true, false);*/
+                    DataMembers.SD, "Printing...", true, false);*/
 
             builder = new AlertDialog.Builder(InvoicePrintZebra.this);
 
@@ -757,11 +761,11 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
     public void printInvoice() {
 
-        Commons.print(TAG+ ",Print Invoice FN ");
+        Commons.print(TAG + ",Print Invoice FN ");
 
         String PRINT_STATE = updateConnectionState();
 
-        Commons.print(TAG+ ",print state in print invoice : " + PRINT_STATE);
+        Commons.print(TAG + ",print state in print invoice : " + PRINT_STATE);
 
         if (PRINT_STATE.equals("TRUE")) {
 
@@ -775,7 +779,7 @@ public class InvoicePrintZebra extends IvyBaseActivityNoActionBar implements OnC
 
             mPrintBTN.setOnClickListener(null);
 
-            Commons.print(TAG+ ",mPrintProducts length : " + mPrintProducts.length());
+            Commons.print(TAG + ",mPrintProducts length : " + mPrintProducts.length());
 
             if (!mPrintProducts.equals("")) {
                 Logs.debug(TAG, "Printer connected mprintproduct not null");

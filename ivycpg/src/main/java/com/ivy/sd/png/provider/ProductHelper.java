@@ -1118,6 +1118,7 @@ public class ProductHelper {
 
                     product.setPriceoffvalue(c.getDouble(c.getColumnIndex("priceoffvalue")));
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
+                    product.setASRP(c.getInt(c.getColumnIndex("asrp"))); //added by murugan
 
                     product.setASRP(c.getInt(c.getColumnIndex("asrp"))); //added by murugan
 
@@ -1908,6 +1909,7 @@ public class ProductHelper {
                 product.setRepCaseQty(0);
                 product.setRepOuterQty(0);
                 product.setSelectedSalesReturnPosition(0);
+                product.setTaxValue(0);
 
                 if (product.getSalesReturnReasonList() != null && product.getSalesReturnReasonList().size() != 0) {
                     for (SalesReturnReasonBO bo : product
@@ -3334,6 +3336,8 @@ public class ProductHelper {
     }
 
     public ArrayList<BomReturnBO> getBomReturnProducts() {
+        if (bomReturnProducts == null)
+            bomReturnProducts = new ArrayList<>();
         return bomReturnProducts;
     }
 

@@ -4,6 +4,7 @@ package com.ivy.sd.png.view;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -158,8 +159,10 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                 .now(SDUtil.TIME));
         resetRemarksBO();
-        BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
-                DataMembers.actHomeScreenTwo);
+       /* BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
+                DataMembers.actHomeScreenTwo);*/
+        Intent myIntent = new Intent(this, HomeScreenTwo.class);
+        startActivityForResult(myIntent, 0);
         finish();
     }
 
@@ -283,9 +286,12 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
                                         bmodel.outletTimeStampHelper
                                                 .updateTimeStampModuleWise(SDUtil
                                                         .now(SDUtil.TIME));
-                                        BusinessModel.loadActivity(
+                                     /*   BusinessModel.loadActivity(
                                                 CallAnalysisActivityKlgs.this,
-                                                DataMembers.actHomeScreenTwo);
+                                                DataMembers.actHomeScreenTwo);*/
+
+                                        Intent myIntent = new Intent(CallAnalysisActivityKlgs.this, HomeScreenTwo.class);
+                                        startActivityForResult(myIntent, 0);
                                         finish();
                                     }
                                 });
@@ -390,8 +396,11 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
             resetRemarksBO();
-            BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
-                    DataMembers.actHomeScreenTwo);
+           /* BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
+                    DataMembers.actHomeScreenTwo);*/
+
+            Intent myIntent = new Intent(CallAnalysisActivityKlgs.this, HomeScreenTwo.class);
+            startActivityForResult(myIntent, 0);
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }

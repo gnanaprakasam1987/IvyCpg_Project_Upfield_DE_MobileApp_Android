@@ -40,6 +40,7 @@ public class CommonDialog extends Dialog {
     private boolean imgDisplay;
     private boolean isMoveNext, isDynamicImageAvail = false;
     private String imageSrc;
+    private boolean isCancelable = false;
 
 
     public CommonDialog(Context bContext, Context context, String title, String msg,
@@ -89,6 +90,19 @@ public class CommonDialog extends Dialog {
         this.posClickListener = posClickListener;
         this.negBtnTxt = negBtnTxt;
         this.negClickListener = negClickListener;
+
+    }
+
+    public CommonDialog(Context context, String title, String msg,
+                        String posBtnTxt,PositiveClickListener posClickListener,boolean isCancel) {
+        super(context);
+        this.context = context;
+        this.title = title;
+        this.msg = msg;
+        this.posBtnTxt = posBtnTxt;
+        this.posClickListener = posClickListener;
+        this.isCancelable = isCancel;
+
 
     }
 
@@ -166,7 +180,7 @@ public class CommonDialog extends Dialog {
             view = View.inflate(context, R.layout.common_dialog_layout, null);
 
         setContentView(view);
-        setCancelable(false);
+        setCancelable(isCancelable);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         TextView txtTitle = (TextView) view.findViewById(R.id.title);

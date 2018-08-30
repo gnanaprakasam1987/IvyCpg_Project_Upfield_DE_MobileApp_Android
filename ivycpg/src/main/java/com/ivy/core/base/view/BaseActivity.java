@@ -34,6 +34,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -316,9 +317,9 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     @Override
     public void showMessage(String message) {
         if (message != null) {
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -397,7 +398,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         if (isReplace) {
             for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
-                fragmentManager.popBackStack();  }
+                fragmentManager.popBackStack();}
             fragmentManager.executePendingTransactions();
         }
 
@@ -449,8 +450,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         this.screenTitle = title;
         TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);
         mScreenTitleTV.setText(title);
-
-
+        mScreenTitleTV.setTypeface(FontUtils.getFontBalooHai(this,FontUtils. FontType.REGULAR));
     }
 
     public void showDialog(String msg) {
@@ -521,6 +521,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener) {
         CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener);
         dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    @Override
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
+
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener,isCancelable);
+        dialog.setCancelable(true);
         dialog.show();
     }
 

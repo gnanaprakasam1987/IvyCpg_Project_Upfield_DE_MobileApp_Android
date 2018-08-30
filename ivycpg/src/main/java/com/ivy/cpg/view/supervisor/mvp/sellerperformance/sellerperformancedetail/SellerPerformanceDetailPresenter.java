@@ -50,6 +50,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
@@ -360,8 +361,16 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
                 RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
-                if (retailerMasterBo != null) {
+                if (retailerMasterBo == null) {
+                    retailerMasterHashmap.put(documentSnapshotBo.getRetailerId(), documentSnapshotBo);
 
+                    retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
+
+                    if (retailerMasterBo.getIsDeviated())
+                        selectedSeller.setDeviationCount(selectedSeller.getDeviationCount() + 1);
+                }
+
+                if (retailerMasterBo != null) {
 
                     if (retailerMasterBo.getIsOrdered() || documentSnapshotBo.getOrderValue() > 0) {
                         retailerMasterBo.setIsOrdered(true);
@@ -398,7 +407,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                     retailerBoObj.setInTime(documentSnapshotBo.getInTime());
                     retailerBoObj.setOutTime(documentSnapshotBo.getOutTime());
                     retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
-                    retailerBoObj.setRetailerName(SupervisorActivityHelper.getInstance().retailerNameById(documentSnapshotBo.getRetailerId()));
+                    retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName()!=null?documentSnapshotBo.getRetailerName():"");
 
                     if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
                         retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()).add(retailerBoObj);
@@ -764,10 +773,15 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     }
 
     String convertSecondsToHMmSs(long seconds) {
-        long s = seconds % 60;
-        long m = (seconds / 60) % 60;
-        long h = (seconds / (60 * 60)) % 24;
-        return String.format(Locale.US,"%02d:%02d", h,m);
+
+        try {
+            long m = TimeUnit.MILLISECONDS.toMinutes(seconds);
+            long h = TimeUnit.MILLISECONDS.toHours(seconds);
+            return String.format(Locale.US, "%02d h : %02d m", h, m);
+        }catch(Exception e){
+            Commons.printException(e);
+            return "00:00:00";
+        }
     }
 
 }
