@@ -2063,7 +2063,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             enableSchemeModule();
                                             loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
                                             loadOrderSummaryScreen(menuConfigCode);
-                                        }
+                                            }
+                                        }, false, new OrderTransactionListDialog.OnDismissListener() {
+                                            @Override
+                                            public void onDismiss() {
+                                                isCreated = false;
+                                                isClick = false;
+                                            }
                                     });
                                     obj.show();
                                     obj.setCancelable(false);
@@ -2145,12 +2151,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         .getRetailerID())) {
                     bmodel.setEdit(true);
 
-                    if (bmodel.isEdit()) {
+                    /*if (bmodel.isEdit()) {
                         orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                 .getRetailerID(), null);
                         orderHelper.loadSerialNo(this);
                         enableSchemeModule();
-                    }
+                    }*/
                     bmodel.productHelper.loadRetailerWiseProductWisePurchased();
                     bmodel.productHelper
                             .loadRetailerWiseProductWiseP4StockAndOrderQty();
@@ -2182,13 +2188,78 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
 
-                    OrderSummary.mCurrentActivityCode = menu.getConfigCode();
+//                    OrderSummary.mCurrentActivityCode = menu.getConfigCode();
+//
+//                    Intent i = new Intent(HomeScreenTwo.this,
+//                            OrderSummary.class);
+//                    i.putExtra("FromClose", "Closing");
+//                    startActivity(i);
+//                    finish();
 
-                    Intent i = new Intent(HomeScreenTwo.this,
-                            OrderSummary.class);
-                    i.putExtra("FromClose", "Closing");
-                    startActivity(i);
-                    finish();
+                    bmodel.productHelper.downloadIndicativeOrderList();//moved here to check size of indicative order
+                    orderHelper.selectedOrderId = "";
+                    if (bmodel.productHelper.getIndicativeList() != null
+                            && bmodel.productHelper.getIndicativeList().size() < 1
+                            && bmodel.configurationMasterHelper.IS_MULTI_STOCKORDER) {
+                        if (bmodel.isEdit()) {
+                            orderHelper.selectedOrderId = "";//cleared to avoid reuse of id
+                            final String menuConfigCode = menu.getConfigCode();
+                            final String menuName = menu.getMenuName();
+                            OrderTransactionListDialog obj = new OrderTransactionListDialog(getApplicationContext(), HomeScreenTwo.this, new OrderTransactionListDialog.newOrderOnClickListener() {
+                                @Override
+                                public void onNewOrderButtonClick() {
+                                    //the methods that were called during normal stock and order loading in non edit mode are called here
+                                    //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
+                                    bmodel.setOrderHeaderBO(null);
+                                    loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
+                                    loadstockorderscreen(menuConfigCode);
+                                }
+                            }, new OrderTransactionListDialog.oldOrderOnClickListener() {
+                                @Override
+                                public void onOldOrderButtonClick(String id) {
+                                    OrderHelper.getInstance(HomeScreenTwo.this).selectedOrderId = id;
+                                    //the methods that were called during normal stock and order loading in edit mode are called here
+                                    //selectedOrderId is passed to loadOrderedProducts method  to load ordered products for that id
+                                    //loadSerialNo,enableSchemeModule included as these were called in edit mode
+                                    OrderHelper.getInstance(HomeScreenTwo.this).loadOrderedProducts(HomeScreenTwo.this, bmodel.getRetailerMasterBO()
+                                            .getRetailerID(), id);
+                                    OrderHelper.getInstance(HomeScreenTwo.this).loadSerialNo(HomeScreenTwo.this);
+                                    enableSchemeModule();
+                                    loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
+                                    loadOrderSummaryScreen(menuConfigCode);
+                                }
+                            }, true, new OrderTransactionListDialog.OnDismissListener() {
+                                @Override
+                                public void onDismiss() {
+                                    isCreated = false;
+                                }
+                            });
+                            obj.show();
+                            obj.setCancelable(false);
+                        } else {
+                            OrderSummary.mCurrentActivityCode = menu.getConfigCode();
+
+                            Intent i = new Intent(HomeScreenTwo.this,
+                                    OrderSummary.class);
+                            i.putExtra("FromClose", "Closing");
+                            startActivity(i);
+                            finish();
+                        }
+                    } else {
+                        if (bmodel.isEdit()) {
+                            orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
+                                    .getRetailerID(), null);
+                            orderHelper.loadSerialNo(this);
+                            enableSchemeModule();
+                        }
+                        loadRequiredMethodsForStockAndOrder(menu.getConfigCode(), menu.getMenuName());
+                        if (bmodel.isEdit()) {
+                            loadOrderSummaryScreen(menu.getConfigCode());
+
+                        } else {
+                            loadstockorderscreen(menu.getConfigCode());
+                        }
+                    }
 
                 } else {
                     Toast.makeText(
@@ -4674,10 +4745,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private void setRetailerProfileImage() {
         Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
         int size = profileConfig.size();
+        boolean hasImageConfig = false;
         for (int i = 0; i < size; i++) {
             int flag = profileConfig.get(i).isFlag();
             String configCode = profileConfig.get(i).getConfigCode();
             if (configCode.equals("PROFILE60") && flag == 1) {
+
+                hasImageConfig = true;
+
                 if (bmodel.profilehelper.hasProfileImagePath(bmodel.retailerMasterBO) &&
                         bmodel.retailerMasterBO.getProfileImagePath() != null && !"".equals(bmodel.retailerMasterBO.getProfileImagePath())) {
                     retProfileImage.setVisibility(View.VISIBLE);
@@ -4716,6 +4791,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 break;
             }
         }
+
+        if (!hasImageConfig)
+            MyAppbar.setExpanded(false);
     }
 
     private void setImageFromCamera(RetailerMasterBO retailerObj) {
