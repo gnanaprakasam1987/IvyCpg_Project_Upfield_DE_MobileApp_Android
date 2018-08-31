@@ -1151,6 +1151,7 @@ public class SurveyHelperNew {
                                     optionScore = questionBO.getQuestScore();
 
                                 if ("TEXT".equals(questionBO.getQuestionType())
+                                        || "FREE_TEXT".equals(questionBO.getQuestionType())
                                         || "NUM".equals(questionBO.getQuestionType())
                                         || "PERC".equals(questionBO.getQuestionType())
                                         || "EMAIL".equals(questionBO.getQuestionType())
@@ -1342,6 +1343,7 @@ public class SurveyHelperNew {
                                         optionScore = questionBO.getQuestScore();
 
                                     if ("TEXT".equals(questionBO.getQuestionType())
+                                            || "FREE_TEXT".equals(questionBO.getQuestionType())
                                             || "NUM".equals(questionBO.getQuestionType())
                                             || "PERC".equals(questionBO.getQuestionType())
                                             || "EMAIL".equals(questionBO.getQuestionType())
