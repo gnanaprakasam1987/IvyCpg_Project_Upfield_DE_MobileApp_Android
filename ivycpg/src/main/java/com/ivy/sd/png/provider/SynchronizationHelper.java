@@ -2519,9 +2519,9 @@ SynchronizationHelper {
     }
 
     /*Methods used add deviceID's json Validation params
-     *  - isDeviceChanged - false - validate -1 and Update -0
-     *  - isDeviceChaned - True - validate -0 and Update - 1
-     *  if activation false or is in internal activation ie uses ivy apis both values set to 0*/
+    *  - isDeviceChanged - false - validate -1 and Update -0
+    *  - isDeviceChaned - True - validate -0 and Update - 1
+    *  if activation false or is in internal activation ie uses ivy apis both values set to 0*/
     public void addDeviceValidationParameters(boolean isDeviceChanged, JSONObject jsonObject) {
         int mDeviceIdValidate, mDeviceIdChange;
         try {

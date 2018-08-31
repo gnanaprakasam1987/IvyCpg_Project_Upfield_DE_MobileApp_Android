@@ -389,6 +389,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         final String mSMP = "Filt22";
         final String mCompertior = "Filt23";
         final String mShelf = "Filt24";
+        final String mDeadProducts = "Filt15";
 
         return generaltxt.equalsIgnoreCase(mSbd) && ret.isRPS()
                 || (generaltxt.equalsIgnoreCase(mOrdered) && (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedOuterQty() > 0))
@@ -411,7 +412,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
                 || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
                 || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
-                || (generaltxt.equalsIgnoreCase(mShelf) && ((ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > 0) || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1));
+                || (generaltxt.equalsIgnoreCase(mShelf) && ((ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > 0 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > 0) || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1)
+                || (generaltxt.equalsIgnoreCase(mDeadProducts) && ret.getmDeadProduct() == 1));
     }
 
     /**
