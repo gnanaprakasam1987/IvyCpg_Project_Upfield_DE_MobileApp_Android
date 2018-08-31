@@ -329,7 +329,12 @@ SynchronizationHelper {
                 File files[] = f.listFiles(new FilenameFilter() {
                     public boolean accept(File directory, String fileName) {
 
+                        if (fileName.endsWith(".pdf")) {
+                            return fileName.endsWith(".pdf");
+                        }
+
                         return fileName.endsWith(".jpg");
+
                     }
                 });
 
@@ -4013,7 +4018,7 @@ SynchronizationHelper {
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
-            LoginHelper.getInstance(context).onGCMRegistration(context);
+            LoginHelper.getInstance(context).onFCMRegistration(context);
 
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
             bmodel.downloadChatCredentials();

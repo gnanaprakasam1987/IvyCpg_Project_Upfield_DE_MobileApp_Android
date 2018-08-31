@@ -115,10 +115,6 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
         try {
             mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
                 public void afterTextChanged(Editable s) {
-                    if (s.length() > 0) {
-
-
-                    }
                     if (s.length() >= 3) {
                         loadSearchedList();
                     }
@@ -790,16 +786,6 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                         }
                     });
 
-                    row.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-
-                            productName.setText(holder.pname);
-
-                            inputManager.hideSoftInputFromWindow(
-                                    mEdt_searchproductName.getWindowToken(), 0);
-
-                        }
-                    });
 
                     row.setTag(holder);
                 } else {

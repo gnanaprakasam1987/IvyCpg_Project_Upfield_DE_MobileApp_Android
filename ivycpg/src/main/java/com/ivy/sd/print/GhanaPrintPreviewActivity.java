@@ -1,6 +1,7 @@
 package com.ivy.sd.print;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
@@ -41,6 +42,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -688,7 +690,11 @@ public class GhanaPrintPreviewActivity extends IvyBaseActivityNoActionBar {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 finish();
-                BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
+              //  BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
+
+                //  DataMembers.actHomeScreenTwo);
+                Intent myIntent = new Intent(this, HomeScreenTwo.class);
+                startActivityForResult(myIntent, 0);
             }
             return true;
         } else if (i == R.id.menu_print) {

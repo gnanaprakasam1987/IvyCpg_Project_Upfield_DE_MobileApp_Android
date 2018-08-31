@@ -208,7 +208,7 @@ public class OutletTimeStampHelper {
 					+ bmodel.retailerMasterBO.getBeatID() + "," + QT(date)
 					+ "," + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
 					+ QT(date + " " + timeIn) + "," + QT(date + " " + timeIn)
-					+ "," + QT("") + ","
+					+ "," + QT(bmodel.retailerMasterBO.getRetailerName()) + ","
 					+ QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
 					+ QT(LocationUtil.latitude + "") + ","
 					+ QT(LocationUtil.longitude + "")+","

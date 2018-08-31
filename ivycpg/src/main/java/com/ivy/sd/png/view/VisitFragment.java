@@ -74,7 +74,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
+public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
 
     private static final String CODE_PRODUCTIVE = "Filt_01";
     private static final String CODE_NON_PRODUCTIVE = "Filt_02";
@@ -624,30 +624,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     public boolean onOptionsItemSelected(MenuItem item) {
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
-            if (getArguments().getString("Newplanningsub") != null) {
-                if ("Planningsub"
-                        .equals(getArguments().getString("Newplanningsub"))) {
-                    Intent i = new Intent(getActivity(),
-                            HomeScreenActivity.class);
-                    i.putExtra("menuCode", "MENU_PLANNING_SUB");
-                    startActivity(i);
-                    getActivity().finish();
-                } else {
-                    Intent i = new Intent(getActivity(),
-                            HomeScreenActivity.class);
-                    i.putExtra("menuCode", "MENU_PLANNING_SUB");
-                    startActivity(i);
-                    getActivity().finish();
-                    bmodel.setRetailerMasterBO(new RetailerMasterBO());
-                }
-            } else {
-                Intent i = new Intent(getActivity(),
-                        HomeScreenActivity.class);
-                i.putExtra("menuCode", "MENU_PLANNING_SUB");
-                startActivity(i);
-                getActivity().finish();
-                bmodel.setRetailerMasterBO(new RetailerMasterBO());
-            }
+            getActivity().finish();
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (i1 == R.id.menu_joincall) {
             Intent planningIntent = new Intent(getActivity(),

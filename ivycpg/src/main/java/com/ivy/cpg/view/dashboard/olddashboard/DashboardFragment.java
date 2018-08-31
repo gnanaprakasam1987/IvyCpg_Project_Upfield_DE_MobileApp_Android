@@ -273,14 +273,9 @@ public class DashboardFragment extends IvyBaseFragment implements DashboardContr
                 bmodel.saveModuleCompletion(menuCode);
                 getActivity().finish();
             } else {
-                Intent j = new Intent(getActivity(), HomeScreenActivity.class);
-                if (isFromPlanning)
-                    j.putExtra("menuCode", "MENU_PLANNING_SUB");
-                else
-                    j.putExtra("menuCode", "MENU_LOAD_MANAGEMENT");
-                startActivity(j);
                 getActivity().finish();
             }
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (i == R.id.menu_next) {
             Intent intent = new Intent(getActivity(), HomeScreenActivity.class);

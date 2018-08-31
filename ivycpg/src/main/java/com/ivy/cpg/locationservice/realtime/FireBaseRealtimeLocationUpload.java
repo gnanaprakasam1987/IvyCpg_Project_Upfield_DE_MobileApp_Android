@@ -86,10 +86,12 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
     public void updateAttendanceIn(final Context context, String pathNode) {
         int userId = 0;
         String userName = "";
+        String parentPositionIds="";
         UserMasterBO userMasterBO = getUserDetail(context);
         if (userMasterBO != null) {
             userId = userMasterBO.getUserid();
             userName = String.valueOf(userMasterBO.getUserName());
+            parentPositionIds = userMasterBO.getBackupSellerID(); // Getting Parent Position ids
         }
 
         Map<String, Object> attendanceObj = new HashMap<>();
@@ -99,7 +101,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         attendanceObj.put("userId",userId);
         attendanceObj.put("userName",userName);
 
-        String[] splitSupervisorIds = getSupervisorIds(context).split("/");
+        String[] splitSupervisorIds = parentPositionIds.split("/");
 
         for(String ids :splitSupervisorIds) {
             if (!ids.isEmpty())
@@ -143,10 +145,12 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
     private void updateFirebaseData(Context context, LocationDetailBO locationDetailBO) {
         int userId = 0 ;
         String userName = "";
+        String parentPositionIds="";
         UserMasterBO userMasterBO = getUserDetail(context);
         if (userMasterBO != null) {
             userId = userMasterBO.getUserid();
             userName = String.valueOf(userMasterBO.getUserName());
+            parentPositionIds = userMasterBO.getBackupSellerID(); // Getting Parent Position ids
         }
 
         Map<String, Object> locationObj = new HashMap<>();
@@ -161,7 +165,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         locationObj.put("activityType",locationDetailBO.getActivityType());
         locationObj.put("time",System.currentTimeMillis());
 
-        String[] splitSupervisorIds = getSupervisorIds(context).split("/");
+        String[] splitSupervisorIds = parentPositionIds.split("/");
 
         for(String ids :splitSupervisorIds)
             if (!ids.isEmpty())
@@ -186,11 +190,12 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             db.createDataBase();
             db.openDataBase();
 
-            Cursor cursor = db.selectSQL("select userid,username from usermaster where isDeviceuser=1");
+            Cursor cursor = db.selectSQL("select userid,username,parentpositionids from usermaster where isDeviceuser=1");
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToNext()) {
                 userMasterBO = new UserMasterBO();
                 userMasterBO.setUserid(cursor.getInt(0));
                 userMasterBO.setUserName(cursor.getString(1));
+                userMasterBO.setBackupSellerID(cursor.getString(2)); //Storing Parent Position Ids
 
 //                userMasterBO.setUserid(8);
 //                userMasterBO.setUserName("Mansoor");

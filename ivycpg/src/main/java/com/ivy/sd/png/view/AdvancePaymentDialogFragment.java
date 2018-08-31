@@ -970,8 +970,12 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
             getActivity().finish();
-            BusinessModel.loadActivity(getActivity(),
-                    DataMembers.actHomeScreenTwo);
+           /* BusinessModel.loadActivity(getActivity(),
+                    DataMembers.actHomeScreenTwo);*/
+
+            //  DataMembers.actHomeScreenTwo);
+            Intent  myIntent = new Intent(getActivity(), HomeScreenTwo.class);
+            startActivityForResult(myIntent, 0);
             return true;
         }
         return super.onOptionsItemSelected(item);

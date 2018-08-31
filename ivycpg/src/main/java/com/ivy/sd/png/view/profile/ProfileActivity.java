@@ -74,11 +74,11 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.CustomMapFragment;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MapWrapperLayout;
@@ -585,9 +585,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         /*
-        *
-        * Show dynamic report based on Retailer
-        * */
+         *
+         * Show dynamic report based on Retailer
+         * */
         dynamicReportTitle = bmodel.configurationMasterHelper.getDynamicReportTitle();
 
         if (bmodel.configurationMasterHelper.SHOW_SALES_VALUE_DR) {
@@ -1425,6 +1425,16 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             mLocTimer.cancel();
             mLocTimer.purge();
         }
+
+        // Raj - Location listener started in on create, but here started again to handle resuming from route screen..
+        if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
+            int permissionStatus = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                bmodel.locationUtil.startLocationListener();
+            }
+        }
+
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON) {
             mLocTimer = new Timer();
@@ -2226,19 +2236,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 if (!visitClick && !isFromPlanning && !isFromPlanningSub) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_VISIT"));
-                    finish();
                 } else if (isFromPlanning) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING"));
-                    finish();
 
-                } else if (isFromPlanningSub) {
-                    startActivity(new Intent(ProfileActivity.this,
-                            HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING_SUB"));
-                    finish();
-                } else {
-                    finish();
                 }
+                finish();
             }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }

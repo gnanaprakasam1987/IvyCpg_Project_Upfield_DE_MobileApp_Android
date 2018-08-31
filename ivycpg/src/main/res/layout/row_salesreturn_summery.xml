@@ -4,7 +4,9 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="@dimen/card_margin">
+    android:paddingBottom="@dimen/dimen_6dp"
+    android:paddingLeft="@dimen/card_margin"
+    android:paddingRight="@dimen/card_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,19 +23,19 @@
 
             <TextView
                 android:id="@+id/tv_prodname_title"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/product_name"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/product_name" />
 
             <TextView
                 android:id="@+id/productName"
-                style="@style/TextViewListItemPrimary"
+                style="?attr/customListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
-                android:text="cjashcjk" />
+                android:text="cjashcjk"
+                android:textColor="@color/black_bg1" />
 
         </LinearLayout>
 
@@ -47,12 +49,11 @@
 
             <TextView
                 android:id="@+id/reasonTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="reason"
-                android:text="@string/reason"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/reason" />
 
             <TextView
                 android:id="@+id/tv_reason"
@@ -74,12 +75,11 @@
 
             <TextView
                 android:id="@+id/mfgDateTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="mfg_date"
-                android:text="@string/mfg_date"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/mfg_date" />
 
             <TextView
                 android:id="@+id/mfgDate"
@@ -101,12 +101,11 @@
 
             <TextView
                 android:id="@+id/expDateTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="exp_date"
-                android:text="@string/exp_date"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/exp_date" />
 
             <TextView
                 android:id="@+id/expDate"
@@ -134,11 +133,10 @@
 
             <TextView
                 android:id="@+id/invoicenoTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/invoice_no"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/invoice_no" />
 
             <TextView
                 android:id="@+id/invoiceno"
@@ -160,12 +158,11 @@
 
             <TextView
                 android:id="@+id/lotnumberTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="lotnumber"
-                android:text="@string/lot_number"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/lot_number" />
 
             <TextView
                 android:id="@+id/lotnumber"
@@ -187,12 +184,11 @@
 
             <TextView
                 android:id="@+id/oldMrpTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="old_mrp"
-                android:text="@string/old_mrp"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/old_mrp" />
 
             <TextView
                 android:id="@+id/oldMrp"
@@ -214,12 +210,11 @@
 
             <TextView
                 android:id="@+id/srpeditTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="srp"
-                android:text="@string/srp"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/srp" />
 
             <TextView
                 android:id="@+id/srpedit"
@@ -247,12 +242,11 @@
 
             <TextView
                 android:id="@+id/pcsTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="item_piece"
-                android:text="@string/item_piece"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/item_piece" />
 
             <TextView
                 android:id="@+id/productqtyPieces"
@@ -274,12 +268,11 @@
 
             <TextView
                 android:id="@+id/caseTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="item_case"
-                android:text="@string/item_case"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/item_case" />
 
             <TextView
                 android:id="@+id/productqtyCases"
@@ -301,12 +294,11 @@
 
             <TextView
                 android:id="@+id/outercaseTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="item_outer"
-                android:text="@string/item_outer"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/item_outer" />
 
             <TextView
                 android:id="@+id/outerproductqtyCases"
@@ -328,12 +320,11 @@
 
             <TextView
                 android:id="@+id/srPcsTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="item_sr_piece"
-                android:text="@string/rep_pcs"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/rep_pcs" />
 
             <TextView
                 android:id="@+id/srQtyPcs"
@@ -355,12 +346,11 @@
 
             <TextView
                 android:id="@+id/srCaseTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="item_sr_case"
-                android:text="@string/rep_case"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/rep_case" />
 
             <TextView
                 android:id="@+id/srQtyCases"
@@ -382,12 +372,11 @@
 
             <TextView
                 android:id="@+id/srOutercaseTitle"
+                style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tag="item_sr_outer"
-                android:text="@string/rep_outer"
-                android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/greyed_text_size" />
+                android:text="@string/rep_outer" />
 
             <TextView
                 android:id="@+id/srQtyouter"

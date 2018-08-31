@@ -12,6 +12,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -19,6 +20,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.FilterFiveFragment;
 
 import java.util.Locale;
 
@@ -125,6 +127,32 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
             messagetv.setText(msg);
     }
 
+    public void showMessage(String message) {
+        if (message != null) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    public void loadFiveFilterFragment(Bundle bundle, int resId) {
+        try {
+
+            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm.findFragmentByTag("Fivefilter");
+            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+
+            // set Fragmentclass Arguments
+            FilterFiveFragment<Object> fragobj = new FilterFiveFragment<Object>();
+            fragobj.setArguments(bundle);
+
+            ft.replace(resId, fragobj, "Fivefilter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
 
 }

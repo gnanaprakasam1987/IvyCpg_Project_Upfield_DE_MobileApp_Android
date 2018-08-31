@@ -131,10 +131,6 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
     }
 
     private void onBackButtonClick() {
-        Intent i = new Intent(getActivity(), HomeScreenActivity.class);
-        i.putExtra("menuCode", "MENU_REPORT");
-        i.putExtra("title", "aaa");
-        startActivity(i);
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }

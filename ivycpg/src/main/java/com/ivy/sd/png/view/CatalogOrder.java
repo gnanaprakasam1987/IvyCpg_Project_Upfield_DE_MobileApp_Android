@@ -202,7 +202,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         search_toolbar = (CardView) findViewById(R.id.search_toolbar);
         bottom_layout = (LinearLayout) findViewById(R.id.bottom_layout);
 
-        search_txt = (EditText) search_toolbar.findViewById(R.id.search_txt);
+        search_txt = (EditText) search_toolbar.findViewById(R.id.edt_searchproductName);
         search_txt.setOnEditorActionListener(this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -1403,6 +1403,16 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             if (bmodel.hasOrder()) {
 
+                if (bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+                        !bmodel.configurationMasterHelper.IS_INVOICE &&
+                        bmodel.productHelper.getSalesReturnValue() >= totalvalue) {
+                    Toast.makeText(this,
+                            getResources().getString(R.string.order_value_cannot_be_lesser_than_the_sales_return_value),
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
                 //if this config IS_RFIELD1_ENABLED enabled below code will work
                 //and
                 if (bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
@@ -1486,6 +1496,16 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             } else {
                 if (hasStockOnly()) {
+
+                    if (bmodel.configurationMasterHelper.IS_ORD_SR_VALUE_VALIDATE &&
+                            !bmodel.configurationMasterHelper.IS_INVOICE &&
+                            bmodel.productHelper.getSalesReturnValue() > totalvalue) {
+                        Toast.makeText(this,
+                                getResources().getString(R.string.order_value_cannot_be_lesser_than_the_sales_return_value),
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                     showDialog(1);
                 } else
                     bmodel.showAlert(

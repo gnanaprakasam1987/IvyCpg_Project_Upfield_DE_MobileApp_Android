@@ -4,7 +4,6 @@
     <!-- Normal Colors in general -->
     <color name="Black">#616161</color>
     <color name="Orange">#FDB813</color>
-    <color name="Orange100">#FFF3E0</color>
     <color name="Yellow">#FFFF00</color>
     <color name="Burgundy">#800000</color>
     <color name="RED">#FF0000</color>
@@ -314,7 +313,6 @@
     <color name="chart_productivity_line">#1AE547</color>
     <color name="chart_covered_line">#007AFF</color>
     <color name="chart_horizontal_line_color">#33ffffff</color>
-    <color name="chart_vertical_bar_color">#4DFFFFFF</color>
 
 
 </resources>

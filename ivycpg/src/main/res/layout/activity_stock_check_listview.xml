@@ -43,7 +43,8 @@
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimen_2dp"
                 android:gravity="start|center"
-                android:maxLines="1"
+                android:singleLine="true"
+                android:ellipsize="marquee"
                 android:text="@string/product_name" />
 
             <TextView

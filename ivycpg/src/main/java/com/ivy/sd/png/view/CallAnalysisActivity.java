@@ -23,7 +23,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +43,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.UploadPresenterImpl;
-import com.ivy.cpg.view.van.VanUnLoadModuleHelper;
+import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -1225,9 +1224,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                                         bmodel.outletTimeStampHelper
                                                 .updateTimeStampModuleWise(SDUtil
                                                         .now(SDUtil.TIME));
-                                        BusinessModel.loadActivity(
+                                       /* BusinessModel.loadActivity(
                                                 CallAnalysisActivity.this,
-                                                DataMembers.actHomeScreenTwo);
+                                                DataMembers.actHomeScreenTwo);*/
+                                        Intent  myIntent = new Intent(CallAnalysisActivity.this, HomeScreenTwo.class);
+                                        startActivityForResult(myIntent, 0);
                                         finish();
                                     }
                                 });
@@ -1564,8 +1565,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
             resetRemarksBO();
-            BusinessModel.loadActivity(CallAnalysisActivity.this,
-                    DataMembers.actHomeScreenTwo);
+           /* BusinessModel.loadActivity(CallAnalysisActivity.this,
+                    DataMembers.actHomeScreenTwo);*/
+            Intent myIntent = new Intent(this, HomeScreenTwo.class);
+            startActivityForResult(myIntent, 0);
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }

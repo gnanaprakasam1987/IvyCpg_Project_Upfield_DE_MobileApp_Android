@@ -8,6 +8,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +19,7 @@ public class VanLoadStockApplyHelper {
     private Context context;
     private BusinessModel bmodel;
     private static VanLoadStockApplyHelper instance = null;
-    private Vector<VanLoadStockApplyBO> StockReportMaster = null;
-    private Vector<VanLoadStockApplyBO> StockReportMasterAll = null;
+    private Vector<VanLoadStockApplyBO> stockReportMaster = null;
     private HashMap<String, ArrayList<String>> mBatchIDByProductID;
 
     protected VanLoadStockApplyHelper(Context context) {
@@ -38,9 +38,10 @@ public class VanLoadStockApplyHelper {
      * @return
      */
     public Vector<VanLoadStockApplyBO> downloadStockReportMaster() {
+        DBUtil db = null;
         try {
             VanLoadStockApplyBO stock, stock1;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+            db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             String query = "select A.pid,sum(A.caseQty),SUM(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,"
@@ -52,7 +53,7 @@ public class VanLoadStockApplyHelper {
             Cursor c = db.selectSQL(query);
 
             if (c != null) {
-                StockReportMaster = new Vector<VanLoadStockApplyBO>();
+                stockReportMaster = new Vector<VanLoadStockApplyBO>();
                 while (c.moveToNext()) {
                     stock = new VanLoadStockApplyBO();
                     stock.setProductId(c.getInt(0));
@@ -75,68 +76,32 @@ public class VanLoadStockApplyHelper {
                     stock.setLoadNO(c.getString(16));
                     stock.setDate(c.getString(17));
                     stock.setProductCode(c.getString(18));
-                    StockReportMaster.add(stock);
+                    stockReportMaster.add(stock);
                     if (c.getInt(11) == 1)
                         bmodel.startjourneyclicked = true;
                 }
                 c.close();
             }
-            Cursor c1 = db
-                    .selectSQL("select A.pid,sum(A.caseQty),sum(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty," +
-                            "A.uid,sum(A.outerQty),B.dOuomQty,A.BatchId,C.batchNum, B.baseprice,A.Flag," +
-                            "IFNULL(A.LoadNo,A.uid),A.date,B.pCode from VanLoad A " +
-                            "inner join productmaster B on A.pid=B.pid " +
-                            "LEFT JOIN BatchMaster C on A.BatchId=C.batchid and A.pid=C.pid  " +
-                            "group by A.pid,C.batchid ORDER BY B.rowid");
-            if (c1 != null) {
-                StockReportMasterAll = new Vector<VanLoadStockApplyBO>();
-                while (c1.moveToNext()) {
-                    stock1 = new VanLoadStockApplyBO();
-                    stock1.setProductId(c1.getInt(0));
-                    stock1.setCaseQuantity(c1.getInt(1));
-                    stock1.setPieceQuantity(c1.getInt(2));
-                    stock1.setProductName(c1.getString(3));
-                    stock1.setProductShortName(c1.getString(4));
-                    stock1.setMrp(c1.getFloat(5));
-                    stock1.setCaseSize(c1.getInt(6));
-                    stock1.setUid(c1.getString(7));
-                    stock1.setOuterQty(c1.getInt(8));
-                    stock1.setOuterSize(c1.getInt(9));
-                    stock1.setTotalQty((c1.getInt(1) * c1.getInt(6))
-                            + c1.getInt(2) + (c1.getInt(8) * c1.getInt(9)));
-                    stock1.setBatchId(c1.getInt(10));
-                    stock1.setBatchNumber(c1.getString(11));
-                    stock1.setBasePrice(c1.getFloat(12));
-                    stock1.setIsManualVanload(c1.getInt(13));
-                    stock1.setLoadNO(c1.getString(14));
-                    stock1.setDate(c1.getString(15));
-                    stock1.setProductCode(c1.getString(16));
-                    StockReportMasterAll.add(stock1);
-                }
-                c1.close();
-            }
-            db.closeDB();
+            return stockReportMaster;
         } catch (Exception e) {
-
             Commons.printException(e);
+        } finally {
+            if (db != null)
+                db.closeDB();
         }
-        return StockReportMaster;
+        return new Vector<>();
     }
 
     public void setStockReportMaster(
             Vector<VanLoadStockApplyBO> stockReportMaster) {
-        StockReportMaster = stockReportMaster;
+        stockReportMaster = stockReportMaster;
     }
 
     public Vector<VanLoadStockApplyBO> getStockReportMaster() {
 
-        return StockReportMaster;
+        return stockReportMaster;
     }
 
-    public Vector<VanLoadStockApplyBO> getStockReportMasterAll() {
-
-        return StockReportMasterAll;
-    }
 
     /**
      * @param mylist
@@ -159,7 +124,7 @@ public class VanLoadStockApplyHelper {
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct A.pid,A.caseQty,A.pcsQty,B.pname,B.psname,B.mrp,B.dUomQty,A.uid,A.outerQty,B.dOuomQty,");
             sb.append("A.BatchId,o.isstarted from VanLoad A inner join productmaster B on A.pid=B.pid  ");
-            sb.append(" left join Odameter o where A.uid=" + bmodel.QT(uid)
+            sb.append(" left join Odameter o where A.uid=" + AppUtils.QT(uid)
                     + " and A.upload='N'");
 
             Cursor c = db.selectSQL(sb.toString());
@@ -171,7 +136,7 @@ public class VanLoadStockApplyHelper {
                     if (isAlreadyStockAvailable(c.getString(0), c.getString(10), db)) {
                         String sql = "update StockInHandMaster set upload='N',qty=qty+"
                                 + totalQty + " where pid=" + c.getString(0)
-                                + " and batchid=" + bmodel.QT(c.getString(10));
+                                + " and batchid=" + AppUtils.QT(c.getString(10));
                         db.executeQ(sql);
                     } else {
                         String columns = "pid,batchid,qty";
@@ -227,8 +192,8 @@ public class VanLoadStockApplyHelper {
             String sql1 = "insert into StockApply(uid,date,status,upload) values("
                     + uid
                     + ","
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME))
-                    + ",'A'," + bmodel.QT(upload) + ")";
+                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME))
+                    + ",'A'," + AppUtils.QT(upload) + ")";
             db.executeQ(sql1);
 
             db.closeDB();
@@ -248,7 +213,7 @@ public class VanLoadStockApplyHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            db.updateSQL("update vanload set upload='N' where uid=" + bmodel.QT(uid));
+            db.updateSQL("update vanload set upload='N' where uid=" + AppUtils.QT(uid));
             db.close();
         } catch (Exception e) {
 
@@ -257,36 +222,43 @@ public class VanLoadStockApplyHelper {
 
     public void downloadBatchwiseVanlod() {
         mBatchIDByProductID = new HashMap<String, ArrayList<String>>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        Cursor c = db
-                .selectSQL("select A.pid,S.batchid from productmaster A inner join Stockinhandmaster S on A.pid=s.pid");
-        if (c.getCount() > 0) {
-            String productid = "";
-            ArrayList<String> batchIDList = new ArrayList<String>();
-            while (c.moveToNext()) {
-                if (!productid.equals(c.getString(0))) {
-                    if (!productid.equals("")) {
-                        mBatchIDByProductID.put(productid, batchIDList);
-                        batchIDList = new ArrayList<String>();
-                        batchIDList.add(c.getString(1));
-                        productid = c.getString(0);
+        DBUtil db = null;
+        try {
 
+            db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select A.pid,S.batchid from productmaster A inner join Stockinhandmaster S on A.pid=s.pid");
+            if (c.getCount() > 0) {
+                String productid = "";
+                ArrayList<String> batchIDList = new ArrayList<String>();
+                while (c.moveToNext()) {
+                    if (!productid.equals(c.getString(0))) {
+                        if (!productid.equals("")) {
+                            mBatchIDByProductID.put(productid, batchIDList);
+                            batchIDList = new ArrayList<String>();
+                            batchIDList.add(c.getString(1));
+                            productid = c.getString(0);
+
+                        } else {
+                            batchIDList.add(c.getString(1));
+                            productid = c.getString(0);
+                        }
                     } else {
                         batchIDList.add(c.getString(1));
-                        productid = c.getString(0);
                     }
-                } else {
-                    batchIDList.add(c.getString(1));
                 }
+                if (batchIDList.size() > 0) {
+                    mBatchIDByProductID.put(productid, batchIDList);
+                }
+                c.close();
             }
-            if (batchIDList.size() > 0) {
-                mBatchIDByProductID.put(productid, batchIDList);
-            }
-
-            c.close();
-            db.close();
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            if (db != null)
+                db.closeDB();
         }
 
     }
@@ -320,7 +292,7 @@ public class VanLoadStockApplyHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select count(distinct pid) from VanLoad" +
-                    " where uid =" + bmodel.QT(uid));
+                    " where uid =" + AppUtils.QT(uid));
 
             if (c != null) {
                 if (c.moveToNext()) {
@@ -357,8 +329,8 @@ public class VanLoadStockApplyHelper {
             String sql1 = "insert into StockApply(uid,date,status,upload) values("
                     + uid
                     + ","
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME))
-                    + ",'C'," + bmodel.QT(upload) + ")";
+                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME))
+                    + ",'C'," + AppUtils.QT(upload) + ")";
             db.executeQ(sql1);
             db.closeDB();
         } catch (Exception e) {
