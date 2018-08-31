@@ -16,14 +16,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ivy.core.base.presenter.BaseIvyPresenter;
+import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.core.base.view.BaseIvyView;
+import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.photocapture.adapter.PhotoGalleryAdapter;
 import com.ivy.ui.photocapture.adapter.PhotoGridAdapter;
+import com.ivy.ui.photocapture.di.DaggerPhotoCaptureComponent;
+import com.ivy.ui.photocapture.di.DaggerPhotoGalleryComponent;
+import com.ivy.ui.photocapture.di.PhotoGalleryModule;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
@@ -33,10 +41,15 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PhotoGalleryActivity extends BaseActivity {
+
+    @Inject
+    BaseIvyPresenter<BaseIvyView> presenter;
 
     @BindView(R.id.toolbar)
     Toolbar mToolBar;
@@ -65,6 +78,14 @@ public class PhotoGalleryActivity extends BaseActivity {
 
     @Override
     public void initializeDi() {
+        DaggerPhotoGalleryComponent.builder()
+                .photoGalleryModule(new PhotoGalleryModule(this))
+                .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
+                .build()
+                .inject(this);
+/*        ((BusinessModel) getApplication()).getComponent().inject(this);
+        presenter.onCreate();*/
+
 
     }
 

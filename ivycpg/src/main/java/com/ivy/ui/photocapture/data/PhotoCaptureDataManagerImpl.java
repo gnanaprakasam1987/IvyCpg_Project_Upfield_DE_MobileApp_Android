@@ -200,8 +200,6 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                     return photoTypeMasterBOS;
                 } catch (Exception ignored) {
 
-                } finally {
-                    mDbUtil.closeDB();
                 }
 
                 return new ArrayList<>();

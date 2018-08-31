@@ -10,6 +10,7 @@ import com.ivy.core.di.scope.PerActivity;
 import com.ivy.core.di.scope.UserInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
+import com.ivy.ui.photocapture.view.PhotoGalleryActivity;
 
 import dagger.Component;
 
@@ -18,5 +19,4 @@ import dagger.Component;
 public interface PhotoCaptureComponent {
 
     void inject(PhotoCaptureActivity photoCaptureActivity);
-
 }

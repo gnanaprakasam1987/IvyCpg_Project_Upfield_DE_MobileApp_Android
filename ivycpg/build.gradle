@@ -40,9 +40,9 @@ android {
         multiDexEnabled true
         resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"${BASE_KELLOGS_DEV_URL}\"")
-        buildConfigField("String", "TEST_USER_NAME", "\"${TEST_KELLOGS_USER_NAME}\"")
-        buildConfigField("String", "TEST_PASSWORD", "\"${TEST_KELLOGS_PASSWORD}\"")
+        buildConfigField("String", "BASE_URL", "\"${BASE_CPG_PROD_QA_DMS}\"")
+        buildConfigField("String", "TEST_USER_NAME", "\"${TEST_PROD_QA_USER_NAME}\"")
+        buildConfigField("String", "TEST_PASSWORD", "\"${TEST_PROD_QA_PASSWORD}\"")
         buildConfigField("boolean", "IS_AUTO_LOGIN_ENABLED", IS_AUTO_LOGIN_ENABLED)
     }
 

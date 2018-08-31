@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.google.android.gms.common.util.DbUtils;
+import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
@@ -61,5 +62,7 @@ public interface IvyAppComponent {
     void inject(BusinessModel businessModel);
 
     void inject(BaseFragment baseFragment);
+
+    void inject(BaseActivity baseActivity);
 
 }
