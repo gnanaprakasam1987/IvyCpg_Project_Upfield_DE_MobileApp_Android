@@ -39,7 +39,6 @@ public class DBUtil extends SQLiteOpenHelper {
     }
 
     public void insertSQL(String tbl, String columns, String content) {
-        db.beginTransaction();
         String sql = "insert into " + tbl + "(" + columns + ") values("
                 + content + ")";
         if (BuildConfig.DEBUG) {
