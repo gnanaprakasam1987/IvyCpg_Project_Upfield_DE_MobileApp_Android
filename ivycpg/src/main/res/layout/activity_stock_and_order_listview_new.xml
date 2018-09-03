@@ -52,12 +52,22 @@
                 android:id="@+id/ivInfoicon"
                 android:layout_width="@dimen/info_icon"
                 android:layout_height="@dimen/info_icon"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/slant_view_bg"
+                android:layout_toStartOf="@+id/slant_view_bg"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/list_item_padding"
                 android:src="@drawable/ic_info_new"
                 android:tint="@color/black_bg1" />
+
+            <com.ivy.sd.png.view.SlantView
+                android:id="@+id/slant_view_bg"
+                android:layout_width="@dimen/info_icon"
+                android:layout_height="@dimen/info_icon"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@color/RED"
+                android:visibility="visible">
+            </com.ivy.sd.png.view.SlantView>
 
             <TextView
                 android:id="@+id/stock_and_order_listview_productcode"
