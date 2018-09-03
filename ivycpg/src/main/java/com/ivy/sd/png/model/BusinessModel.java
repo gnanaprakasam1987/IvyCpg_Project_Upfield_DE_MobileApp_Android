@@ -113,7 +113,7 @@ import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.DeliveryManagementHelper;
+import com.ivy.cpg.view.delivery.invoice.DeliveryManagementHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
@@ -126,7 +126,6 @@ import com.ivy.sd.png.provider.ModuleTimeStampHelper;
 import com.ivy.sd.png.provider.NewOutletAttributeHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
-import com.ivy.sd.png.provider.OrderFullfillmentHelper;
 import com.ivy.sd.png.provider.OrderStatusReportHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PrintHelper;
@@ -266,11 +265,9 @@ public class BusinessModel extends Application {
     public DisInvoiceDetailsHelper disInvoiceDetailsHelper;
     public DistTimeStampHeaderHelper distTimeStampHeaderHelper;
     public PrintHelper printHelper;
-    public OrderFullfillmentHelper orderfullfillmenthelper;
     public ProfileHelper profilehelper;
     public MVPHelper mvpHelper;
     public JExcelHelper mJExcelHelper;
-    public DeliveryManagementHelper deliveryManagementHelper;
     public CommonPrintHelper mCommonPrintHelper;
     public DynamicReportHelper dynamicReportHelper;
     public RetailerContractHelper retailerContractHelper;
@@ -420,14 +417,12 @@ public class BusinessModel extends Application {
 
         // Shelf Share Helper
         mRetailerHelper = RetailerHelper.getInstance(this);
-        orderfullfillmenthelper = OrderFullfillmentHelper.getInstance(this);
         mvpHelper = MVPHelper.getInstance(this);
         distributorMasterHelper = DistributorMasterHelper.getInstance(this);
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
         distTimeStampHeaderHelper = DistTimeStampHeaderHelper.getInstance(this);
         profilehelper = ProfileHelper.getInstance(this);
         mJExcelHelper = JExcelHelper.getInstance(this);
-        deliveryManagementHelper = DeliveryManagementHelper.getInstance(this);
         mCommonPrintHelper = CommonPrintHelper.getInstance(this);
         dynamicReportHelper = DynamicReportHelper.getInstance(this);
         teamLeadermasterHelper = TeamLeaderMasterHelper.getInstance(this);

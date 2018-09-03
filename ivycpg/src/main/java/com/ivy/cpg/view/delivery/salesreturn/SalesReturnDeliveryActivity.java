@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.salesdeliveryreturn;
+package com.ivy.cpg.view.delivery.salesreturn;
 
 
 import android.content.Intent;
@@ -42,11 +42,11 @@ public class SalesReturnDeliveryActivity extends IvyBaseActivityNoActionBar {
 
         SalesReturnDeliveryFragment salesReturnDeliveryFragment = new SalesReturnDeliveryFragment();
 
-        addFragment(salesReturnDeliveryFragment, true, false);
+        addFragment(salesReturnDeliveryFragment, false);
 
     }
 
-    public void addFragment(Fragment fragment, boolean isBakStack, boolean isReplace) {
+    public void addFragment(Fragment fragment, boolean isReplace) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 

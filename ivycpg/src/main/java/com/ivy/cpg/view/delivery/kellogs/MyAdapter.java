@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.orderdelivery;
+package com.ivy.cpg.view.delivery.kellogs;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -23,6 +23,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
@@ -36,7 +37,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     private InputMethodManager inputManager;
 
-    MyAdapter(Vector<ProductMasterBO> productList,BusinessModel bmodel,Context context){
+    MyAdapter(Vector<ProductMasterBO> productList, BusinessModel bmodel, Context context) {
         this.context = context;
         this.productList = productList;
         this.bmodel = bmodel;
@@ -46,8 +47,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView productName,srQty,sihQty,srpQty;
-        private EditText pieceQty,caseQty,outerQty;
+        private TextView productName, srQty, sihQty, srpQty;
+        private EditText pieceQty, caseQty, outerQty;
 
         public MyViewHolder(View view) {
             super(view);
@@ -60,13 +61,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             sihQty = view.findViewById(R.id.sih_qty);
             srpQty = view.findViewById(R.id.sales_replace_qty);
 
-            productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            productName.setTypeface(FontUtils.getProductNameFont(context));
 
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
                 pieceQty.setVisibility(View.GONE);
             else {
                 try {
-                    pieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
                     if (bmodel.labelsMasterHelper.applyLabels(pieceQty.getTag()) != null)
                         pieceQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(pieceQty.getTag()));
@@ -79,7 +80,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 caseQty.setVisibility(View.GONE);
             else {
                 try {
-                    caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
                     if (bmodel.labelsMasterHelper.applyLabels(caseQty.getTag()) != null)
                         caseQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(caseQty.getTag()));
@@ -92,7 +93,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 outerQty.setVisibility(View.GONE);
             else {
                 try {
-                    outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
                     if (bmodel.labelsMasterHelper.applyLabels(outerQty.getTag()) != null)
                         outerQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(outerQty.getTag()));
@@ -105,7 +106,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 sihQty.setVisibility(View.GONE);
             else {
                 try {
-                    sihQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    sihQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
                     if (bmodel.labelsMasterHelper.applyLabels(sihQty.getTag()) != null)
                         sihQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(sihQty.getTag()));
@@ -118,7 +119,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 srpQty.setVisibility(View.GONE);
             else {
                 try {
-                    srpQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    srpQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
                     if (bmodel.labelsMasterHelper.applyLabels(srpQty.getTag()) != null)
                         srpQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(srpQty.getTag()));
@@ -131,7 +132,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 srQty.setVisibility(View.GONE);
             else {
                 try {
-                    srQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    srQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
                     if (bmodel.labelsMasterHelper.applyLabels(srQty.getTag()) != null)
                         srQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(srQty.getTag()));
@@ -168,8 +169,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.outerQty.setText(String.valueOf(productList.get(position).getOrderedOuterQty()));
 
         holder.pieceQty.setTag(String.valueOf(productList.get(position).getOrderedPcsQty()));
-        holder.caseQty.setTag(String.valueOf(productList.get(position).getOrderedCaseQty()*productList.get(position).getCaseSize()));
-        holder.outerQty.setTag(String.valueOf(productList.get(position).getOrderedOuterQty()*productList.get(position).getOutersize()));
+        holder.caseQty.setTag(String.valueOf(productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize()));
+        holder.outerQty.setTag(String.valueOf(productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize()));
 
         holder.sihQty.setText(String.valueOf(productList.get(position).getSIH()));
 
@@ -183,9 +184,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             holder.srQty.setText(strTotal);
         }
 
-        int totalReplaceQty =  (productList.get(position).getRepCaseQty() * productList.get(position).getCaseSize())
-                +productList.get(position).getRepPieceQty()
-                +(productList.get(position).getRepOuterQty() * productList.get(position).getOutersize());
+        int totalReplaceQty = (productList.get(position).getRepCaseQty() * productList.get(position).getCaseSize())
+                + productList.get(position).getRepPieceQty()
+                + (productList.get(position).getRepOuterQty() * productList.get(position).getOutersize());
 
         holder.srpQty.setText(String.valueOf(totalReplaceQty));
 
@@ -220,15 +221,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         + (SDUtil.convertToInt(qty))
                         + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize())
                         + productList.get(position).getRepPieceQty()
-                        + (productList.get(position).getRepCaseQty()*productList.get(position).getCaseSize())
-                        + (productList.get(position).getRepOuterQty()*productList.get(position).getOutersize());
+                        + (productList.get(position).getRepCaseQty() * productList.get(position).getCaseSize())
+                        + (productList.get(position).getRepOuterQty() * productList.get(position).getOutersize());
 
-                int storedPieceQty = 0 ;
-                if(holder.pieceQty.getTag()!=null && !holder.pieceQty.getTag().toString().equals(""))
+                int storedPieceQty = 0;
+                if (holder.pieceQty.getTag() != null && !holder.pieceQty.getTag().toString().equals(""))
                     storedPieceQty = Integer.valueOf(holder.pieceQty.getTag().toString());
 
                 if (totalQty <= productList.get(position).getSIH() &&
-                        SDUtil.convertToInt(qty) <= storedPieceQty ) {
+                        SDUtil.convertToInt(qty) <= storedPieceQty) {
                     if (!"".equals(qty)) {
                         productList.get(position).setOrderedPcsQty(SDUtil
                                 .convertToInt(qty));
@@ -248,13 +249,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                                     R.string.exceed),
                                             productList.get(position).getSIH()),
                                     Toast.LENGTH_SHORT).show();
-                        }else if(SDUtil.convertToInt(qty) > storedPieceQty){
+                        } else if (SDUtil.convertToInt(qty) > storedPieceQty) {
                             Toast.makeText(
                                     context,
-                                    String.format(
-                                            context.getResources().getString(
-                                                    R.string.exceed_ordered_value),
-                                            storedPieceQty),
+                                    context.getResources().getString(
+                                            R.string.exceed_ordered_value),
                                     Toast.LENGTH_SHORT).show();
                         }
 
@@ -296,7 +295,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         });
 
 
-
         holder.caseQty.addTextChangedListener(new TextWatcher() {
             @SuppressLint("StringFormatInvalid")
             public void afterTextChanged(Editable s) {
@@ -313,11 +311,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         + (productList.get(position).getOrderedPcsQty())
                         + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize())
                         + productList.get(position).getRepPieceQty()
-                        + (productList.get(position).getRepCaseQty()*productList.get(position).getCaseSize())
-                        + (productList.get(position).getRepOuterQty()*productList.get(position).getOutersize());
+                        + (productList.get(position).getRepCaseQty() * productList.get(position).getCaseSize())
+                        + (productList.get(position).getRepOuterQty() * productList.get(position).getOutersize());
 
-                int storedcaseQty = 0 ;
-                if(holder.caseQty.getTag()!=null && !holder.caseQty.getTag().toString().equals(""))
+                int storedcaseQty = 0;
+                if (holder.caseQty.getTag() != null && !holder.caseQty.getTag().toString().equals(""))
                     storedcaseQty = Integer.valueOf(holder.caseQty.getTag().toString());
 
                 if (totalQty <= productList.get(position).getSIH() &&
@@ -341,13 +339,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                                     R.string.exceed),
                                             productList.get(position).getSIH()),
                                     Toast.LENGTH_SHORT).show();
-                        }else if((SDUtil.convertToInt(qty) * productList.get(position).getCaseSize()) > storedcaseQty){
+                        } else if ((SDUtil.convertToInt(qty) * productList.get(position).getCaseSize()) > storedcaseQty) {
                             Toast.makeText(
                                     context,
                                     String.format(
                                             context.getResources().getString(
                                                     R.string.exceed_ordered_value),
-                                            storedcaseQty/productList.get(position).getCaseSize()),
+                                            storedcaseQty / productList.get(position).getCaseSize()),
                                     Toast.LENGTH_SHORT).show();
                         }
 
@@ -405,12 +403,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         + (productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize())
                         + (productList.get(position).getOrderedPcsQty())
                         + productList.get(position).getRepPieceQty()
-                        + (productList.get(position).getRepCaseQty()*productList.get(position).getCaseSize())
-                        + (productList.get(position).getRepOuterQty()*productList.get(position).getOutersize());
+                        + (productList.get(position).getRepCaseQty() * productList.get(position).getCaseSize())
+                        + (productList.get(position).getRepOuterQty() * productList.get(position).getOutersize());
 
 
-                int storedouterQty = 0 ;
-                if(holder.outerQty.getTag()!=null && !holder.outerQty.getTag().toString().equals(""))
+                int storedouterQty = 0;
+                if (holder.outerQty.getTag() != null && !holder.outerQty.getTag().toString().equals(""))
                     storedouterQty = Integer.valueOf(holder.outerQty.getTag().toString());
 
                 if (totalQty <= productList.get(position).getSIH() &&
@@ -434,13 +432,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                                     R.string.exceed),
                                             productList.get(position).getSIH()),
                                     Toast.LENGTH_SHORT).show();
-                        }else if((SDUtil.convertToInt(qty) * productList.get(position).getOutersize()) > storedouterQty){
+                        } else if ((SDUtil.convertToInt(qty) * productList.get(position).getOutersize()) > storedouterQty) {
                             Toast.makeText(
                                     context,
-                                    String.format(
-                                            context.getResources().getString(
-                                                    R.string.exceed_ordered_value),
-                                            storedouterQty/productList.get(position).getOutersize()),
+                                    context.getResources().getString(
+                                            R.string.exceed_ordered_value),
                                     Toast.LENGTH_SHORT).show();
                         }
 

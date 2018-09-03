@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.orderfullfillment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -24,7 +25,6 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,14 +46,11 @@ import java.util.GregorianCalendar;
  */
 public class OrderFullfillment extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
-    private ListView listView;
-    // private OrderFullfillmentBO retailerObj;
-    private ArrayList<OrderFullfillmentBO> retailer, retailer1;
-    private ArrayList<ReasonMaster> reason;
+    private ArrayList<OrderFullfillmentBO> retailer;
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
     static Button dateBtn;
     private static String outPutDateFormat;
-    private Toolbar toolbar;
+    private OrderFullfillmentHelper orderFullfillmentHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +58,9 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        orderFullfillmentHelper = OrderFullfillmentHelper.getInstance(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Set title to toolbar
@@ -74,17 +73,17 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
 
         outPutDateFormat = bmodel.configurationMasterHelper.outDateFormat;
 
-        listView = (ListView) findViewById(R.id.listView1);
+        ListView listView = findViewById(R.id.listView1);
         listView.setCacheColorHint(0);
 
         bmodel.reasonHelper.downloadOrderFullfillmentReason();
-        retailer = bmodel.orderfullfillmenthelper.downloadOrderFullfillment(bmodel.getOrderfullfillmentbo().getRetailerid());
+        retailer = orderFullfillmentHelper.downloadOrderFullfillment(bmodel.getOrderfullfillmentbo().getRetailerid());
         OrderfullfillmentAdapter mSchedule = new OrderfullfillmentAdapter(
                 retailer);
         // mSchedule.notifyDataSetChanged();
         listView.setAdapter(mSchedule);
 
-        Button btnSave = (Button) findViewById(R.id.btn_save);
+        Button btnSave = findViewById(R.id.btn_save);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
 
@@ -130,7 +129,7 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
         return false;
     }
 
-    private void onSave(){
+    private void onSave() {
         if (hasNoData()) {
             Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.no_data_tosave), Toast.LENGTH_SHORT).show();
         } else if (isPartial()) {
@@ -143,13 +142,13 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
                             if (hasFullfillData()) {
                                 if (hasRejected()) {
                                     if (hasRejectedData()) {
-                                        bmodel.orderfullfillmenthelper.SaveOrderFullfillment(retailer);
+                                        orderFullfillmentHelper.SaveOrderFullfillment(retailer);
                                         Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                                         finish();
                                     } else
                                         Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.select_reason), Toast.LENGTH_SHORT).show();
                                 } else {
-                                    bmodel.orderfullfillmenthelper.SaveOrderFullfillment(retailer);
+                                    orderFullfillmentHelper.SaveOrderFullfillment(retailer);
                                     Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
@@ -158,13 +157,13 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
                         } else {
                             if (hasRejected()) {
                                 if (hasRejectedData()) {
-                                    bmodel.orderfullfillmenthelper.SaveOrderFullfillment(retailer);
+                                    orderFullfillmentHelper.SaveOrderFullfillment(retailer);
                                     Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                                     finish();
                                 } else
                                     Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.select_reason), Toast.LENGTH_SHORT).show();
                             } else {
-                                bmodel.orderfullfillmenthelper.SaveOrderFullfillment(retailer);
+                                orderFullfillmentHelper.SaveOrderFullfillment(retailer);
                                 Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -178,13 +177,13 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
                 if (hasFullfillData()) {
                     if (hasRejected()) {
                         if (hasRejectedData()) {
-                            bmodel.orderfullfillmenthelper.SaveOrderFullfillment(retailer);
+                            orderFullfillmentHelper.SaveOrderFullfillment(retailer);
                             Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                             finish();
                         } else
                             Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.select_reason), Toast.LENGTH_SHORT).show();
                     } else {
-                        bmodel.orderfullfillmenthelper.SaveOrderFullfillment(retailer);
+                        orderFullfillmentHelper.SaveOrderFullfillment(retailer);
                         Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -197,14 +196,14 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
                 } else {
                     if (hasRejected()) {
                         if (hasRejectedData()) {
-                            bmodel.orderfullfillmenthelper.SaveOrderFullfillment(retailer);
+                            orderFullfillmentHelper.SaveOrderFullfillment(retailer);
                             Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                             finish();
                         } else
                             Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.select_reason), Toast.LENGTH_SHORT).show();
                     } else {
 
-                        bmodel.orderfullfillmenthelper.SaveOrderFullfillment(retailer);
+                        orderFullfillmentHelper.SaveOrderFullfillment(retailer);
                         Toast.makeText(OrderFullfillment.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                         finish();
 
@@ -218,7 +217,7 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
     @Override
     protected void onStart() {
         super.onStart();
-        reason = bmodel.reasonHelper.getOrderFullfillmentReason();
+        ArrayList<ReasonMaster> reason = bmodel.reasonHelper.getOrderFullfillmentReason();
 
         spinnerAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_bluetext_layout, reason);
@@ -248,7 +247,8 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
             return ofitems.size();
         }
 
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public @NonNull
+        View getView(final int position, View convertView, @NonNull ViewGroup parent) {
 
             final ViewHolder holder;
 
@@ -257,23 +257,22 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
             if (convertView == null) {
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(
-                        R.layout.order_fullfillment_list_item, null, false);
+                        R.layout.order_fullfillment_list_item, parent, false);
 
                 holder = new ViewHolder();
 
-                holder.orderno = (TextView) convertView.findViewById(R.id.orderno);
-                holder.value = (TextView) convertView.findViewById(R.id.value);
-                holder.lines = (TextView) convertView.findViewById(R.id.lines);
+                holder.orderno = convertView.findViewById(R.id.orderno);
+                holder.value = convertView.findViewById(R.id.value);
+                holder.lines = convertView.findViewById(R.id.lines);
 
-                holder.deliverydate = (Button) convertView.findViewById(R.id.deliverydate);
+                holder.deliverydate = convertView.findViewById(R.id.deliverydate);
 
-                holder.reason = (Spinner) convertView.findViewById(R.id.spinner);
+                holder.reason = convertView.findViewById(R.id.spinner);
                 holder.reason.setAdapter(spinnerAdapter);
 
-                // holder.radioGroup = (RadioGroup) convertView.findViewById(R.id.rg);
-                holder.rej = (RadioButton) convertView.findViewById(R.id.rejected);
-                holder.partial = (RadioButton) convertView.findViewById(R.id.pfullfilled);
-                holder.fullfilled = (RadioButton) convertView.findViewById(R.id.fullfilled);
+                holder.rej = convertView.findViewById(R.id.rejected);
+                holder.partial = convertView.findViewById(R.id.pfullfilled);
+                holder.fullfilled = convertView.findViewById(R.id.fullfilled);
 
                 holder.rej.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -366,7 +365,6 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
                     public void onClick(View v) {
 
                         try {
-                            // if (holder.radioGroup.getCheckedRadioButtonId() == R.id.pfullfilled) {
                             if (holder.retailerObjectHolder.getDeliverydate() != null && !holder.retailerObjectHolder.getDeliverydate().equalsIgnoreCase(getResources().getString(R.string.select_date))) {
                                 if (!holder.reason.getSelectedItem().toString().equalsIgnoreCase(getResources().getString(R.string.select_reason))) {
                                     Intent myIntent = new Intent(OrderFullfillment.this, PartialFullfillment.class);
@@ -411,8 +409,8 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
                 holder.retailerObjectHolder = ofitems.get(position);
 
                 holder.orderno.setText(holder.retailerObjectHolder.getOrderNo());
-                holder.value.setText(holder.retailerObjectHolder.getValue() + "");
-                holder.lines.setText(holder.retailerObjectHolder.getLineval() + "");
+                holder.value.setText(String.valueOf(holder.retailerObjectHolder.getValue()));
+                holder.lines.setText(String.valueOf(holder.retailerObjectHolder.getLineval()));
 
                 if (holder.retailerObjectHolder.getStatus().equalsIgnoreCase("P")) {
                     holder.reason.setEnabled(true);
@@ -477,7 +475,6 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
             private TextView orderno, value, lines;
             private Spinner reason;
             private Button deliverydate;
-            private RadioGroup radioGroup;
             private RadioButton rej, partial, fullfilled;
         }
 
@@ -487,12 +484,13 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
             DatePickerDialog.OnDateSetListener {
 
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
+        public @NonNull
+        Dialog onCreateDialog(Bundle savedInstanceState) {
             final Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,this, year, month, day);
+            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -523,8 +521,8 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
 
     private boolean isPartial() {
 
-        for (int i = 0; i < bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().size(); i++) {
-            if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("P"))
+        for (int i = 0; i < orderFullfillmentHelper.getOrderFullfillmentHeader().size(); i++) {
+            if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("P"))
                 return true;
         }
         return false;
@@ -532,9 +530,9 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
 
     private boolean hasPartialist() {
 
-        for (int i = 0; i < bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().size(); i++) {
-            if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("P"))
-                if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getPartialdetailslist().size() > 0)
+        for (int i = 0; i < orderFullfillmentHelper.getOrderFullfillmentHeader().size(); i++) {
+            if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("P"))
+                if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getPartialdetailslist().size() > 0)
                     return true;
         }
         return false;
@@ -542,9 +540,9 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
 
     private boolean hasFullfillData() {
 
-        for (int i = 0; i < bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().size(); i++) {
-            if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("F")) {
-                if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getDeliverydate() == null)
+        for (int i = 0; i < orderFullfillmentHelper.getOrderFullfillmentHeader().size(); i++) {
+            if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("F")) {
+                if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getDeliverydate() == null)
                     return false;
             }
         }
@@ -553,8 +551,8 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
 
     private boolean hasFullfill() {
 
-        for (int i = 0; i < bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().size(); i++) {
-            if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("F")) {
+        for (int i = 0; i < orderFullfillmentHelper.getOrderFullfillmentHeader().size(); i++) {
+            if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("F")) {
                 return true;
             }
         }
@@ -563,8 +561,8 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
 
     private boolean hasRejected() {
 
-        for (int i = 0; i < bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().size(); i++) {
-            if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("R")) {
+        for (int i = 0; i < orderFullfillmentHelper.getOrderFullfillmentHeader().size(); i++) {
+            if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("R")) {
                 return true;
             }
         }
@@ -572,9 +570,9 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
     }
 
     private boolean hasRejectedData() {
-        for (int i = 0; i < bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().size(); i++) {
-            if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("R")) {
-                if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getReasonId() == null)
+        for (int i = 0; i < orderFullfillmentHelper.getOrderFullfillmentHeader().size(); i++) {
+            if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("R")) {
+                if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getReasonId() == null)
                     return false;
             }
         }
@@ -582,8 +580,8 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
     }
 
     private boolean hasRejectedDataForNoStatus() {
-        for (int i = 0; i < bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().size(); i++) {
-            if (bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getReasonId() == null || !bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getReasonId().equals("0"))
+        for (int i = 0; i < orderFullfillmentHelper.getOrderFullfillmentHeader().size(); i++) {
+            if (orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getReasonId() == null || !orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getReasonId().equals("0"))
                 return false;
 
         }
@@ -611,8 +609,8 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
 
     private boolean hasNoData() {
 
-        for (int i = 0; i < bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().size(); i++) {
-            if (!bmodel.orderfullfillmenthelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("D"))
+        for (int i = 0; i < orderFullfillmentHelper.getOrderFullfillmentHeader().size(); i++) {
+            if (!orderFullfillmentHelper.getOrderFullfillmentHeader().get(i).getStatus().equalsIgnoreCase("D"))
                 return false;
         }
         return true;

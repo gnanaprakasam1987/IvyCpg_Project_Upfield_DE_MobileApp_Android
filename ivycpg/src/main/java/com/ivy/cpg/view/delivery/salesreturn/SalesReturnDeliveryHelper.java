@@ -1,19 +1,15 @@
-package com.ivy.cpg.view.salesdeliveryreturn;
+package com.ivy.cpg.view.delivery.salesreturn;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 
-import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.AppUtils;
 
 import java.util.List;
@@ -40,14 +36,14 @@ public class SalesReturnDeliveryHelper {
 
         return Observable.create(new ObservableOnSubscribe<Vector<SalesReturnDeliveryDataBo>>() {
             @Override
-            public void subscribe(final ObservableEmitter<Vector<SalesReturnDeliveryDataBo>> subscriber) throws Exception {
+            public void subscribe(final ObservableEmitter<Vector<SalesReturnDeliveryDataBo>> subscriber) {
 
                 try {
+                    loadConfigurations(context);
                     BusinessModel businessModel = (BusinessModel) context.getApplicationContext();
                     Vector<SalesReturnDeliveryDataBo> returnDeliveryDataModelVector = new Vector<>();
                     DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
 
-                    // +businessModel.getRetailerMasterBO().getRetailerID()
                     dbUtil.openDataBase();
                     Cursor cursor = dbUtil.selectSQL("Select " +
                             "uid,date,ReturnValue,Lpc,invoiceid,SignaturePath,ImgName,RefModule,RefModuleTId " +
@@ -70,12 +66,6 @@ public class SalesReturnDeliveryHelper {
                             salesReturnDeliveryDataModel.setRefModuleTId(cursor.getString(cursor.getColumnIndex("RefModuleTId")));
 
 
-                            // setSignaturePath(String.valueOf(cursor.getString(22)) != null ? String.valueOf(cursor.getString(22)) : "");
-                            //setSignatureName(String.valueOf(cursor.getString(21)) != null ? String.valueOf(cursor.getString(21)) : "");
-                            // setRefModule(String.valueOf(cursor.getString(23)) != null ? String.valueOf(cursor.getString(23)) : "");
-                            //setRefModuleTId(String.valueOf(cursor.getString(24)));
-                            // setReturnValue(Double.valueOf(cursor.getString(6)));
-
                             returnDeliveryDataModelVector.add(salesReturnDeliveryDataModel);
                         }
 
@@ -96,7 +86,7 @@ public class SalesReturnDeliveryHelper {
 
         return Observable.create(new ObservableOnSubscribe<Vector<SalesReturnDeliveryDataModel>>() {
             @Override
-            public void subscribe(final ObservableEmitter<Vector<SalesReturnDeliveryDataModel>> subscriber) throws Exception {
+            public void subscribe(final ObservableEmitter<Vector<SalesReturnDeliveryDataModel>> subscriber) {
 
                 try {
                     BusinessModel businessModel = (BusinessModel) context.getApplicationContext();
@@ -166,7 +156,6 @@ public class SalesReturnDeliveryHelper {
 
                             salesReturnDeliveryDataModel.setActualCaseQuantity(cursor.getInt(cursor.getColumnIndex("ActCaseQty")));
                             salesReturnDeliveryDataModel.setActualPieceQuantity(cursor.getInt(cursor.getColumnIndex("ActPcsQty")));
-
 
 
                             returnDeliveryDataModelVector.add(salesReturnDeliveryDataModel);
@@ -279,7 +268,7 @@ public class SalesReturnDeliveryHelper {
                 c.close();
             }
 
-           String uid =  ("SR"
+            String uid = ("SR"
                     + businessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
 
@@ -388,7 +377,7 @@ public class SalesReturnDeliveryHelper {
                         + AppUtils.QT(salesReturnDeliveryDataBo.getSignatureName()) + ","
                         + indicativeFlag + ","
                         + AppUtils.QT(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
-                        + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule())+"," +
+                        + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule()) + "," +
                         AppUtils.QT(salesReturnDeliveryDataBo.getUId());
 
                 db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
@@ -403,9 +392,45 @@ public class SalesReturnDeliveryHelper {
 
     }
 
+    public boolean SHOW_SALES_RET_CASE, SHOW_SALES_RET_PCS;
 
+    /**
+     * This method will load salesreturn related configurations and set the variables.
+     */
+    public void loadConfigurations(Context mContext) {
+        try {
+            SHOW_SALES_RET_CASE = false;
+            SHOW_SALES_RET_PCS = false;
 
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='SR01' and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            String codeValue = null;
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+            }
+            if (codeValue != null) {
+                String[] codeSplit = codeValue.split(",");
+                for (String temp : codeSplit) {
+                    if ("CS".equalsIgnoreCase(temp))
+                        SHOW_SALES_RET_CASE = true;
+                    else if ("PS".equalsIgnoreCase(temp))
+                        SHOW_SALES_RET_PCS = true;
 
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
 
 }

@@ -61,6 +61,8 @@ public class MovementTrackingLocationUtil implements LocationListener, GoogleApi
     @TargetApi(23)
     public void startLocationListener() {
 
+        stopLocationListener();
+
         /* Notify user that google play service is not available */
         if (!isGooglePlayServicesAvailable()) {
             Toast.makeText(context,

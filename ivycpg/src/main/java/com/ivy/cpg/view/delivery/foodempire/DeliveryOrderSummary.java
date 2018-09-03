@@ -1,9 +1,10 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.delivery.foodempire;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,12 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -25,9 +26,11 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.OrderRemarkDialog;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +67,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             isPartialOrder = extras.getBoolean("isPartial");
         }
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar =  findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -80,8 +83,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        listView = (ListView) findViewById(R.id.list);
-        btnSave = (Button) findViewById(R.id.btn_next);
+        listView =  findViewById(R.id.list);
+        btnSave =  findViewById(R.id.btn_next);
         if (isPartialOrder)
             btnSave.setText(getResources().getString(R.string.partial_delivery));
         else
@@ -176,7 +179,6 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
         getMenuInflater().inflate(R.menu.menu_deliverydetails, menu);
 
         menu.findItem(R.id.menu_save).setVisible(false);
-        /** on/off the items based on the configuration **/
         MenuItem reviewAndPo = menu.findItem(R.id.menu_review);
         reviewAndPo.setVisible(true);
 
@@ -241,8 +243,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             return items.size();
         }
 
-        public View getView(final int position, View convertView,
-                            ViewGroup parent) {
+        public @NonNull View getView(final int position, View convertView,
+                     @NonNull ViewGroup parent) {
             final ViewHolder holder;
             ProductMasterBO product = items.get(position);
 
@@ -256,33 +258,33 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                 holder = new ViewHolder();
 
 
-                holder.psname = (TextView) row
+                holder.psname =  row
                         .findViewById(R.id.PRODUCTNAME);
 
-                holder.tv_pcs = (TextView) row
+                holder.tv_pcs =  row
                         .findViewById(R.id.P_QUANTITY);
-                holder.tv_case = (TextView) row
+                holder.tv_case =  row
                         .findViewById(R.id.C_QUANTITY);
-                holder.tv_outer = (TextView) row
+                holder.tv_outer =  row
                         .findViewById(R.id.OC_QUANTITY);
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                ( row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
                 //setting typefaces
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                holder.psname.setTypeface(FontUtils.getProductNameFont(DeliveryOrderSummary.this));
 
-                holder.tv_pcs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_case.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_outer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_pcs.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderSummary.this));
+                holder.tv_case.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderSummary.this));
+                holder.tv_outer.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderSummary.this));
 
 
                 // Order Field - Enable/Disable
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    ((LinearLayout) row.findViewById(R.id.llCase)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderSummary.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -294,10 +296,10 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    ((LinearLayout) row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderSummary.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -309,10 +311,10 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                    ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderSummary.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outercaseTitle))
@@ -335,9 +337,9 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
             holder.psname.setText(holder.productObj.getProductShortName());
 
-            holder.tv_outer.setText(holder.productObj.getDeliveredOuterQty() + "");
-            holder.tv_case.setText(holder.productObj.getDeliveredCaseQty() + "");
-            holder.tv_pcs.setText(holder.productObj.getDeliveredPcsQty() + "");
+            holder.tv_outer.setText(String.valueOf(holder.productObj.getDeliveredOuterQty()));
+            holder.tv_case.setText(String.valueOf(holder.productObj.getDeliveredCaseQty()));
+            holder.tv_pcs.setText(String.valueOf(holder.productObj.getDeliveredPcsQty()));
 
 
             return row;
@@ -371,8 +373,6 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
                     List<SchemeProductBO> schemeproductList = schemeBO
                             .getBuyingProducts();
-                    int i = 0;
-                    boolean isBuyProductAvailable = false;
                     if (schemeproductList != null) {
 
                         // Getting total order value of buy products
@@ -397,12 +397,10 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                             if (productBO != null) {
                                 if (!productidList.contains(productBO.getProductID())) {
                                     productidList.add(productBO.getProductID());
-                                    i = i++;
                                     if (productBO != null) {
                                         if (productBO.getOrderedPcsQty() > 0
                                                 || productBO.getOrderedCaseQty() > 0
                                                 || productBO.getOrderedOuterQty() > 0) {
-                                            isBuyProductAvailable = true;
                                             if (schemeBO.isAmountTypeSelected()) {
                                                 schemeProductBo.setDiscountValue(schemeBO.getSelectedAmount());
 
@@ -551,21 +549,8 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
 
                                             } else if (schemeBO
                                                     .isQuantityTypeSelected()) {
-                                                // no need to show free products here..
-                                              /*  updateSchemeFreeProduct(schemeBO,
-                                                        productBO);*/
                                                 break;
                                             }
-                                        } else {
-                                            // no need to show free products here..
-                                           /* if (schemeBO.isQuantityTypeSelected()) {
-                                                // if  Accumulation scheme's buy product not avaliable, free product set in First order product object
-                                                if (i == schemeproductList.size() && !isBuyProductAvailable) {
-                                                    ProductMasterBO firstProductBO = mOrderedProductList.get(0);
-                                                    updateSchemeFreeProduct(schemeBO,
-                                                            firstProductBO);
-                                                }
-                                            }*/
                                         }
                                     }
                                 }

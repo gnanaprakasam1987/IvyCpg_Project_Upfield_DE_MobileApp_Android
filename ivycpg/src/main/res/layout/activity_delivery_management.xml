@@ -16,7 +16,6 @@
         android:background="@color/screen_bg_color"
         android:cacheColorHint="@null"
         android:divider="@null"
-        android:dividerHeight="@dimen/ret_list_div"
         android:fitsSystemWindows="true"
         android:scrollbars="none"
         android:listSelector="@color/GRAY_TEXT" />

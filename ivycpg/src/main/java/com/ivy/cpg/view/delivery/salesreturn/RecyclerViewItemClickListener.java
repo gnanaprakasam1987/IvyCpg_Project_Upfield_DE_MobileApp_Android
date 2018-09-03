@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.salesdeliveryreturn;
+package com.ivy.cpg.view.delivery.salesreturn;
 
 import android.view.View;
 

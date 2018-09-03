@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.delivery.foodempire;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.InputType;
@@ -24,13 +25,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -39,12 +40,16 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.CustomKeyBoard;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
+
+import jxl.format.Font;
 
 /**
  * Created by rajkumar.s on 9/18/2017.
@@ -54,7 +59,6 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
     View view;
     DrawerLayout mDrawerLayout;
-    FrameLayout drawer;
     BusinessModel bmodel;
     Vector<ProductMasterBO> mylist;
     ListView listView;
@@ -79,31 +83,31 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        mDrawerLayout = (DrawerLayout) view.findViewById(
+        mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
 
-        listView = (ListView) view.findViewById(
+        listView = view.findViewById(
                 R.id.listview);
         inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
+        viewFlipper = view.findViewById(R.id.view_flipper);
 
-        mEdt_searchproductName = (EditText) view.findViewById(R.id.edt_searchproductName);
+        mEdt_searchproductName = view.findViewById(R.id.edt_searchproductName);
         mEdt_searchproductName.setOnEditorActionListener(this);
 
-        mBtn_Search = (Button) view.findViewById(R.id.btn_search);
+        mBtn_Search = view.findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
-        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup = view.findViewById(R.id.btn_filter_popup);
         mBtnFilterPopup.setOnClickListener(this);
-        mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
+        mBtn_clear = view.findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
 
-        btnNext = (Button) view.findViewById(R.id.btn_next);
+        btnNext = view.findViewById(R.id.btn_next);
         btnNext.setOnClickListener(this);
 
-        productName = (TextView) view.findViewById(R.id.productName);
-        productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        productName = view.findViewById(R.id.productName);
+        productName.setTypeface(FontUtils.getProductNameFont(getActivity()));
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
         return view;
     }
@@ -309,8 +313,9 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
             return items.size();
         }
 
-        public View getView(final int position, View convertView,
-                            ViewGroup parent) {
+        public @NonNull
+        View getView(final int position, View convertView,
+                     @NonNull ViewGroup parent) {
             final ViewHolder holder;
             ProductMasterBO product = items.get(position);
 
@@ -324,54 +329,54 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 holder = new ViewHolder();
 
 
-                holder.psname = (TextView) row
+                holder.psname = row
                         .findViewById(R.id.stock_and_order_listview_productname);
 
-                holder.caseQty = (EditText) row
+                holder.caseQty = row
                         .findViewById(R.id.stock_and_order_listview_case_qty);
-                holder.pcsQty = (EditText) row
+                holder.pcsQty = row
                         .findViewById(R.id.stock_and_order_listview_pcs_qty);
-                holder.outerQty = (EditText) row
+                holder.outerQty = row
                         .findViewById(R.id.stock_and_order_listview_outer_case_qty);
 
-                holder.tv_pcs_ordered = (TextView) row
+                holder.tv_pcs_ordered = row
                         .findViewById(R.id.tv_ordered_pcs);
-                holder.tv_case_ordered = (TextView) row
+                holder.tv_case_ordered = row
                         .findViewById(R.id.tv_ordered_case);
-                holder.tv_outer_ordered = (TextView) row
+                holder.tv_outer_ordered = row
                         .findViewById(R.id.tv_ordered_outer);
 
-                holder.sih = (TextView) row
+                holder.sih = row
                         .findViewById(R.id.tv_sih);
 
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 //setting typefaces
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                holder.psname.setTypeface(FontUtils.getProductNameFont(getActivity()));
 
-                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.pcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-
-                holder.tv_pcs_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_case_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_outer_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.pcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
 
-                ((TextView) row.findViewById(R.id.sihTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.sih.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_pcs_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tv_case_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tv_outer_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+
+
+                ((TextView) row.findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
 
                 // Order Field - Enable/Disable
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                    ((LinearLayout) row.findViewById(R.id.llCase)).setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.ll_ordered_case)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_ordered_case)).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        ((TextView) row.findViewById(R.id.tv_ordered_case_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                        ((TextView) row.findViewById(R.id.tv_ordered_case_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -391,12 +396,12 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    ((LinearLayout) row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.ll_ordered_pcs)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_ordered_pcs)).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        ((TextView) row.findViewById(R.id.tv_ordered_pcs_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                        ((TextView) row.findViewById(R.id.tv_ordered_pcs_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -415,12 +420,12 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
-                    ((LinearLayout) row.findViewById(R.id.ll_ordered_outer)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_ordered_outer)).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) row.findViewById(R.id.outerTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        ((TextView) row.findViewById(R.id.tv_ordered_outer_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                        ((TextView) row.findViewById(R.id.tv_ordered_outer_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outerTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outerTitle))
@@ -930,12 +935,12 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
             }
 
 
-            holder.sih.setText(holder.productObj.getSIH() + "");
+            holder.sih.setText(String.valueOf(holder.productObj.getSIH()));
 
 
-            holder.tv_outer_ordered.setText(holder.productObj.getOrderedOuterQty() + "");
-            holder.tv_case_ordered.setText(holder.productObj.getOrderedCaseQty() + "");
-            holder.tv_pcs_ordered.setText(holder.productObj.getOrderedPcsQty() + "");
+            holder.tv_outer_ordered.setText(String.valueOf(holder.productObj.getOrderedOuterQty()));
+            holder.tv_case_ordered.setText(String.valueOf(holder.productObj.getOrderedCaseQty()));
+            holder.tv_pcs_ordered.setText(String.valueOf(holder.productObj.getOrderedPcsQty()));
 
 
             return row;
@@ -982,7 +987,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
 
             } else {
-                Button ed = (Button) getActivity().findViewById(vw.getId());
+                Button ed = getActivity().findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
                 // val = SDUtil.convertToInt(append);
@@ -1064,7 +1069,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
                 } else {
                     //to
-                    SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
+                    SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
                     if (schemeHelper.getAppliedSchemeList() != null && schemeHelper.getAppliedSchemeList().size() > 0) {
                         //scheme available
 

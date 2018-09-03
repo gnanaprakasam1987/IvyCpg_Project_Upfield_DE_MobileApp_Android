@@ -1,21 +1,17 @@
-package com.ivy.cpg.view.salesdeliveryreturn;
+package com.ivy.cpg.view.delivery.salesreturn;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 
 import java.util.Vector;
@@ -95,7 +91,7 @@ public class SalesReturnDeliveryFragment extends IvyBaseFragment implements Recy
 
         SalesReturnDeliveryAdapter salesReturnDeliveryAdapter =
                 new SalesReturnDeliveryAdapter(getActivity().getApplicationContext(), SalesReturnDeliveryFragment.this,
-                        salesReturnDeliveryDataModels, false);
+                        salesReturnDeliveryDataModels);
         recyclerView.setAdapter(salesReturnDeliveryAdapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -109,8 +105,6 @@ public class SalesReturnDeliveryFragment extends IvyBaseFragment implements Recy
         String data = new Gson().toJson(salesReturnDeliveryDataModelsList.get(adapterPosition));
         bundle.putString("DATA", data);
 
-        //bundle.putInt("LPC", salesReturnDeliveryDataModelsList.get(adapterPosition).getLpc());
-        //bundle.putString("RETURN", salesReturnDeliveryDataModelsList.get(adapterPosition).getReturnValue());
         SalesReturnDeliveryDetailsFragment salesReturnDeliveryFragment = new SalesReturnDeliveryDetailsFragment();
         salesReturnDeliveryFragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -122,13 +116,6 @@ public class SalesReturnDeliveryFragment extends IvyBaseFragment implements Recy
         getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         transaction.commit();
 
-
-        // ((SalesReturnDeliveryActivity) getActivity()).addFragment( salesReturnDeliveryFragment, true, true);
-
-
     }
 
-    public void numberPressed(View vw) {
-
-    }
 }
