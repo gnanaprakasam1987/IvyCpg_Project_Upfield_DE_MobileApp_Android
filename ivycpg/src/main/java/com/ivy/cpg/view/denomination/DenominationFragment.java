@@ -3,6 +3,7 @@ package com.ivy.cpg.view.denomination;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -17,9 +18,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
@@ -135,6 +138,26 @@ public class DenominationFragment extends IvyBaseFragment {
         amountTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
         mScrollView.addView(getRootLinearLayout());
+        downLoadTotalCashInHand();
+
+
+    }
+
+    /*Download the Total cash in hand at the end of the day from payment table.*/
+    private void downLoadTotalCashInHand(){
+        String todalAmount="0";
+        DBUtil dbUtil = new DBUtil(getActivity(), DataMembers.DB_NAME,DataMembers.DB_PATH);
+        dbUtil.openDataBase();
+        Cursor cursor=dbUtil.selectSQL("SELECT ifnull(sum(amount),0) FROM Payment pt inner join StandardListMaster sd on sd.ListId = pt.CashMode where sd.ListCode = 'CA'");
+
+        if(cursor!=null){
+            while (cursor.moveToNext()){
+                todalAmount= cursor.getString(0);
+            }
+            cursor.close();
+        }
+        dbUtil.closeDB();
+        mTodayCollectionTextview.setText(todalAmount);
     }
 
     private LinearLayout getRootLinearLayout() {
@@ -190,16 +213,17 @@ public class DenominationFragment extends IvyBaseFragment {
                     if (!isEmptyString(values)) {
 
                         int temp = denominationInputValues.get(key);
+
                         totalValues = totalValues + (Integer.valueOf(values) * temp);
 
                         if (key == dinominationAmount.getTag()) {
                             int amount = Integer.valueOf(values) * temp;
                             dinominationAmount.setText(String.valueOf(amount));
                         }
+
                     } else
-                        if (key == dinominationAmount.getTag()) {
+                        if (key == dinominationAmount.getTag())
                             dinominationAmount.setText("0");
-                        }
                 }
 
                 mTotalCollectionTextview.setText("Total :" + String.valueOf(totalValues));
