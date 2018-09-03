@@ -39,8 +39,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 android:padding="@dimen/_10sdp"
+                android:maxLines="4"
                 android:textColor="@color/Black"
                 android:textSize="@dimen/footer_lbl_text_size" />
 
