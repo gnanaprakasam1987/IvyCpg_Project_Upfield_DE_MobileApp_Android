@@ -33,7 +33,7 @@ public class ContractReportFragment extends IvyBaseFragment {
     CompositeDisposable compositeDisposable;
     Unbinder unbinder;
 
-    @BindView(R.id.listView)
+    @BindView(R.id.listView_contract)
     ListView listView;
 
     @Override
