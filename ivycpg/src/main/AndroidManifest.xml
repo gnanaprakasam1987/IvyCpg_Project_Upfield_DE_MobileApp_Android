@@ -759,7 +759,8 @@
         <activity
             android:name="com.ivy.sd.png.view.SyncStatusActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity"
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity"
@@ -785,12 +786,13 @@
             android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.ivy.ui.photocapture.view.PhotoGalleryActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.ui.photocapture.view.PhotoGalleryActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name="com.ivy.ui.photocapture.view.PhotoCaptureActivity"
-            android:screenOrientation="portrait"/>
-
+        <activity
+            android:name="com.ivy.ui.photocapture.view.PhotoCaptureActivity"
+            android:screenOrientation="portrait" />
 
 
         <activity
@@ -804,18 +806,17 @@
 
         <!--FCM Service Registration-->
 
-        <service
-            android:name="com.ivy.cpg.fcmnotification.CPGFirebaseMessagingService">
+        <service android:name="com.ivy.cpg.fcmnotification.CPGFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <service
-            android:exported="false"
-            android:name="com.ivy.cpg.fcmnotification.NotificationJobService">
+            android:name="com.ivy.cpg.fcmnotification.NotificationJobService"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
 

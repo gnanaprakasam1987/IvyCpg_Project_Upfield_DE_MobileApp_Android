@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -91,21 +92,21 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        initializeDi();
+
+    }
+
+    private void initScreen() {
         this.setContentView(this.getLayoutId());
 
         checkAndRequestPermissionAtRunTime(PHONE_STATE_AND_WRITE_PERMISSON);
-
-        initializeDi();
 
         setUpDefaults();
 
         getMessageFromAliens();
 
         initVariables();
-
         setUpViews();
-
-
     }
 
     private void setUpDefaults() {
@@ -480,37 +481,45 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     @Override
     public void setBlueTheme() {
         setTheme(R.style.MVPTheme_Blue);
+        initScreen();
     }
 
     @Override
     public void setPinkTheme() {
         setTheme(R.style.MVPTheme_Pink);
+        initScreen();
     }
 
     @Override
     public void setGreenTheme() {
         setTheme(R.style.MVPTheme_Green);
+        initScreen();
     }
 
     @Override
     public void setNavyBlueTheme() {
         setTheme(R.style.MVPTheme_NBlue);
+        initScreen();
     }
 
     @Override
     public void setOrangeTheme() {
         setTheme(R.style.MVPTheme_Orange);
+        initScreen();
     }
 
     @Override
     public void setRedTheme() {
         setTheme(R.style.MVPTheme_Red);
+        initScreen();
     }
 
     @Override
     public void setFontSize(String fontSize) {
         setFontStyle(fontSize);
     }
+
+
 
     @Override
     public void showAlert(String title, String msg) {
