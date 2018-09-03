@@ -46,10 +46,16 @@ public class UserDataManagerImpl implements UserDataManager {
         this.appDataProvider = appDataProvider;
         this.configurationMasterHelper = configurationMasterHelper;
 
-        mDbUtil.createDataBase();
+    }
 
+    private void initDb() {
+        mDbUtil.createDataBase();
         if(mDbUtil.isDbNullOrClosed())
             mDbUtil.openDataBase();
+    }
+
+    private void shutDownDb(){
+        mDbUtil.closeDB();
     }
 
     @Override
@@ -60,6 +66,7 @@ public class UserDataManagerImpl implements UserDataManager {
                 try {
 
 
+                    initDb();
                     Cursor c = mDbUtil.selectSQL("select " + DataMembers.tbl_userMaster_cols
                             + " from Usermaster where isDeviceUser=1");
 
@@ -128,6 +135,7 @@ public class UserDataManagerImpl implements UserDataManager {
                 } catch (Exception ignored) {
                 }
 
+                shutDownDb();
                 return null;
             }
         });
@@ -141,6 +149,7 @@ public class UserDataManagerImpl implements UserDataManager {
             public Boolean call() {
                 try {
 
+                    initDb();
 
                     Cursor c = mDbUtil.selectSQL("select " + DataMembers.tbl_userMaster_cols
                             + " from " + DataMembers.tbl_userMaster
@@ -189,8 +198,10 @@ public class UserDataManagerImpl implements UserDataManager {
                         c.close();
 
                     }
+                    shutDownDb();
                     return true;
                 } catch (Exception e) {
+                    shutDownDb();
                     return false;
                 }
             }
@@ -204,6 +215,7 @@ public class UserDataManagerImpl implements UserDataManager {
             public Void call() {
                 try {
 
+                    initDb();
 
                     StringBuilder sb = new StringBuilder();
 
@@ -276,6 +288,7 @@ public class UserDataManagerImpl implements UserDataManager {
                 } catch (Exception ignored) {
                 }
 
+                shutDownDb();
                 return null;
             }
         });
@@ -288,6 +301,7 @@ public class UserDataManagerImpl implements UserDataManager {
             public Void call() {
                 try {
 
+                    initDb();
 
                     String sb = "Select DName,CNumber,Address1,Address2,Address3,TinNo,CSTNo,FaxNo,code,GSTNumber from DistributorMaster " +
                             "where did=" + appDataProvider.getUser().getDistributorid();
@@ -311,6 +325,7 @@ public class UserDataManagerImpl implements UserDataManager {
                 } catch (Exception ignored) {
                 }
 
+                shutDownDb();
                 return null;
             }
         });
@@ -318,6 +333,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
     @Override
     public Completable changeUserPassword(final int userID, final String pwd) {
+        initDb();
         return Single.zip(Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() {
@@ -389,6 +405,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
                 } catch (Exception ignored) {
                 }
+                shutDownDb();
                 return null;
             }
         });
@@ -402,6 +419,7 @@ public class UserDataManagerImpl implements UserDataManager {
                 try {
 
 
+                    initDb();
                     String query = "update userMaster set distributorid=" + parentId
                             + ", branchid=" + distid + ", distributorName='" + distname + "' where userID=" + appDataProvider.getUser().getUserid();
 
@@ -413,6 +431,7 @@ public class UserDataManagerImpl implements UserDataManager {
                 } catch (Exception ignored) {
                 }
 
+                shutDownDb();
                 return null;
             }
         });
@@ -425,6 +444,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public String call() {
                 try {
+                    initDb();
 
                     String filter = "";
                     String sql = "select RField from "
@@ -469,11 +489,13 @@ public class UserDataManagerImpl implements UserDataManager {
                                 }
                                 c.close();
                             }
+                            shutDownDb();
 
                             return userList;
                         } catch (Exception ignored) {
                         }
 
+                        shutDownDb();
                         return new ArrayList<>();
                     }
                 });
@@ -488,6 +510,7 @@ public class UserDataManagerImpl implements UserDataManager {
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
 
+                    initDb();
                     String codeChild = "CHILD";
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where isDeviceuser!=1 AND relationship =" + QT(codeChild);
@@ -503,11 +526,13 @@ public class UserDataManagerImpl implements UserDataManager {
                         }
                         c.close();
                     }
+                    shutDownDb();
 
                     return userList;
                 } catch (Exception ignored) {
                 }
 
+                shutDownDb();
                 return new ArrayList<>();
             }
         });
@@ -519,6 +544,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
+                    initDb();
 
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where distributorid = " + distributorId;
@@ -535,10 +561,12 @@ public class UserDataManagerImpl implements UserDataManager {
                         c.close();
                     }
 
+                    shutDownDb();
                     return userList;
                 } catch (Exception ignored) {
                 }
 
+                shutDownDb();
                 return new ArrayList<>();
             }
         });
@@ -550,6 +578,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
+                    initDb();
 
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where distributorid in (" + distributorIds + ")";
@@ -566,10 +595,12 @@ public class UserDataManagerImpl implements UserDataManager {
                         c.close();
                     }
 
+                    shutDownDb();
                     return userList;
                 } catch (Exception ignored) {
                 }
 
+                shutDownDb();
                 return new ArrayList<>();
             }
         });
@@ -582,6 +613,7 @@ public class UserDataManagerImpl implements UserDataManager {
             public Void call() {
                 try {
 
+                    initDb();
 
                     String tid = appDataProvider.getUser().getUserid()
                             + "" + appDataProvider.getRetailMaster().getRetailerID()
@@ -600,6 +632,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
                 } catch (Exception ignored) {
                 }
+                shutDownDb();
                 return null;
             }
         });
@@ -611,6 +644,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
+                    initDb();
 
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where isDeviceuser = 1 OR relationship =" + QT("CHILD");
@@ -626,11 +660,13 @@ public class UserDataManagerImpl implements UserDataManager {
                         }
                         c.close();
                     }
+                    shutDownDb();
 
                     return userList;
                 } catch (Exception ignored) {
                 }
 
+                shutDownDb();
                 return new ArrayList<>();
             }
         });
@@ -642,6 +678,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public ArrayList<UserMasterBO> call() throws Exception {
                 try {
+                    initDb();
 
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
                     String query = "select userid,username from usermaster where relationship =" + QT("CHILD") + " OR relationship = 'ASSOCIATE'";
@@ -658,9 +695,11 @@ public class UserDataManagerImpl implements UserDataManager {
                         c.close();
                     }
 
+                    shutDownDb();
                     return userList;
                 } catch (Exception ignored) {
                 }
+                shutDownDb();
 
                 return new ArrayList<>();
             }
@@ -673,6 +712,7 @@ public class UserDataManagerImpl implements UserDataManager {
             @Override
             public Boolean call() {
                 try {
+                    initDb();
 
                     Cursor c = mDbUtil
                             .selectSQL("SELECT Value FROM UserEditDetail  where Code='ProfileImagePath' AND UserID=" + userId);
@@ -684,8 +724,10 @@ public class UserDataManagerImpl implements UserDataManager {
                         }
                         c.close();
                     }
+                    shutDownDb();
                     return false;
                 } catch (Exception e) {
+                    shutDownDb();
                     return false;
                 }
             }

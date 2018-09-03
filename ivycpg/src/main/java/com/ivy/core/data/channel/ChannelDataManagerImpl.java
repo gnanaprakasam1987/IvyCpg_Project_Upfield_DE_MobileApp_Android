@@ -28,11 +28,17 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
     @Inject
     public ChannelDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider) {
         this.mDbUtil = dbUtil;
-
         this.appDataProvider = appDataProvider;
+    }
+
+    private void initDb() {
         mDbUtil.createDataBase();
-        if (mDbUtil.isDbNullOrClosed())
+        if(mDbUtil.isDbNullOrClosed())
             mDbUtil.openDataBase();
+    }
+
+    private void shutDownDb(){
+        mDbUtil.closeDB();
     }
 
     @Override
@@ -43,6 +49,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
             public Integer call() {
                 int channelId = 0;
                 try {
+                    initDb();
 
                     Cursor c = mDbUtil.selectSQL("select levelid from channellevel order by Sequence desc limit 2");
                     if (c.getCount() > 0) {
@@ -80,6 +87,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                         } catch (Exception ignored) {
 
                         }
+                        shutDownDb();
 
                         return channelMaster;
                     }
@@ -97,6 +105,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
 
                 int subChannelLevelId = 0;
                 try {
+                    initDb();
 
 
                     Cursor c = mDbUtil.selectSQL("select levelid from channellevel order by Sequence desc limit 1");
@@ -136,6 +145,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                         } catch (Exception ignored) {
 
                         }
+                        shutDownDb();
 
                         return channelMaster;
                     }
@@ -152,6 +162,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
 
                 int channelId = 0;
                 try {
+                    initDb();
 
                     Cursor c = mDbUtil.selectSQL("select levelid from channellevel order by Sequence desc limit 2");
                     if (c.getCount() > 0) {
@@ -186,6 +197,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                         } catch (Exception ignored) {
 
                         }
+                        shutDownDb();
                         return channelName;
                     }
                 });
@@ -201,6 +213,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
 
                 int subChannelLevelId = 0;
                 try {
+                    initDb();
 
                     Cursor c = mDbUtil.selectSQL("select levelid from channellevel order by Sequence desc limit 1");
                     if (c.getCount() > 0) {
@@ -234,6 +247,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                         } catch (Exception ignored) {
 
                         }
+                        shutDownDb();
                         return channelName;
                     }
                 });
@@ -254,6 +268,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                 int mChildLevel = 0;
                 int mContentLevel = 0;
                 try {
+                    initDb();
 
                     Cursor c = mDbUtil.selectSQL("select min(Sequence) as childlevel," +
                             "(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId where ch.ChId=" + channelId + ") " +
@@ -308,6 +323,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                         } catch (Exception ignored) {
 
                         }
+                        shutDownDb();
                         return str;
                     }
                 });
@@ -325,6 +341,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                 int mChildLevel = 0;
                 int mContentLevel = 0;
                 try {
+                    initDb();
 
                     String sb = "select min(Sequence) as childlevel,(select Sequence from LocationLevel l1 " +
                             "inner join locationmaster lm on l1.id=LM.loclevelid where lm.locid=" +
@@ -384,6 +401,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                         if (str.endsWith(","))
                             str = str.substring(0, str.length() - 1);
 
+                        shutDownDb();
                         return str;
                     }
                 });

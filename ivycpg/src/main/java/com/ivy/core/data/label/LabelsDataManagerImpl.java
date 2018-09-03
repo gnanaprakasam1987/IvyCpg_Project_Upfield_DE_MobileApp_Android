@@ -26,10 +26,16 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
     public LabelsDataManagerImpl(@DataBaseInfo DBUtil dbUtil, SharedPreferenceHelper sharedPreferenceHelper) {
         this.mDbUtil = dbUtil;
         this.mSharedPreferenceHelper = sharedPreferenceHelper;
-        mDbUtil.createDataBase();
+    }
 
-        if (mDbUtil.isDbNullOrClosed())
+    private void initDb() {
+        mDbUtil.createDataBase();
+        if(mDbUtil.isDbNullOrClosed())
             mDbUtil.openDataBase();
+    }
+
+    private void shutDownDb(){
+        mDbUtil.closeDB();
     }
 
     @Override
@@ -39,14 +45,17 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
             public String call() {
                 try {
 
+                    initDb();
                     Cursor c = mDbUtil
                             .selectSQL("SELECT value from LabelsMaster where lang = " + QT(mSharedPreferenceHelper.getPreferredLanguage()) + " AND key = " + QT(key));
                     if (c.moveToNext()) {
+                        shutDownDb();
                         return c.getString(0);
                     }
 
                 } catch (Exception ignored) {
                 }
+                shutDownDb();
                 return "";
             }
         });
@@ -61,6 +70,7 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
                 try {
 
 
+                    initDb();
                     String query = "SELECT value from LabelsMaster where lang = " + QT(mSharedPreferenceHelper.getPreferredLanguage()) + " AND (";
 
                     for (int i = 0; i < keyList.length; i++) {
@@ -80,6 +90,7 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
                 } catch (Exception ignored) {
 
                 }
+                shutDownDb();
                 return labelMap;
             }
         });
@@ -92,6 +103,7 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
             public HashMap<String, String> call() {
                 HashMap<String, String> labelMap = new HashMap<>();
                 try {
+                    initDb();
 
 
                     String query = "SELECT value from LabelsMaster where lang = " + QT(mSharedPreferenceHelper.getPreferredLanguage());
@@ -106,6 +118,7 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
                 } catch (Exception ignored) {
 
                 }
+                shutDownDb();
                 return labelMap;
             }
         });

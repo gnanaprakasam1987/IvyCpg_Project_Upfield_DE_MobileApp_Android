@@ -38,10 +38,17 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
     @Inject
     public PhotoCaptureDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider) {
         mDbUtil = dbUtil;
+        this.appDataProvider = appDataProvider;
+    }
+
+    private void initDb() {
         mDbUtil.createDataBase();
         if(mDbUtil.isDbNullOrClosed())
             mDbUtil.openDataBase();
-        this.appDataProvider = appDataProvider;
+    }
+
+    private void shutDownDb(){
+        mDbUtil.closeDB();
     }
 
     @Override
@@ -50,7 +57,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
             @Override
             public ArrayList<PhotoCaptureProductBO> call() {
                 try {
-
+                    initDb();
                     ArrayList<PhotoCaptureProductBO> photoCaptureProductBOS = new ArrayList<>();
                     String query = "SELECT DISTINCT PID, PName, ParentId FROM ProductMaster WHERE Plid IN (SELECT ProductFilter1 FROM ConfigActivityFilter  WHERE ActivityCode = 'MENU_PHOTO') ORDER BY PID";
                     Cursor c = mDbUtil.selectSQL(query);
@@ -64,12 +71,12 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                         }
                         c.close();
                     }
-
+                    shutDownDb();
                     return photoCaptureProductBOS;
                 } catch (Exception ignored) {
                     ignored.printStackTrace();
                 }
-
+                shutDownDb();
                 return new ArrayList<>();
             }
         });
@@ -81,6 +88,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
             @Override
             public ArrayList<PhotoCaptureLocationBO> call() {
                 try {
+                    initDb();
                     ArrayList<PhotoCaptureLocationBO> photoCaptureLocationBOS = new ArrayList<>();
                     String sql1 = "SELECT phototypeid,PC.pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName,SM.ListName,PM.PName,SML.ListName FROM Photocapture PC " +
                             "LEFT JOIN StandardListMaster SM ON SM.ListId=phototypeid " +
@@ -115,12 +123,13 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
                             photoCaptureLocationBOS.add(lbo);
                         }
+                        shutDownDb();
                         return photoCaptureLocationBOS;
                     }
                 } catch (Exception ignored) {
                 }
 
-
+                shutDownDb();
                 return new ArrayList<>();
             }
         });
@@ -135,7 +144,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
             public ArrayList<PhotoCaptureLocationBO> call() {
 
                 try {
-
+                    initDb();
                     ArrayList<PhotoCaptureLocationBO> photoCaptureLocationBOS = new ArrayList<>();
 
                     String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
@@ -161,10 +170,11 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                         locations.setLocationName("Store");
                         photoCaptureLocationBOS.add(locations);
                     }
-
+                    shutDownDb();
                     return photoCaptureLocationBOS;
                 } catch (Exception ignored) {
                 }
+                shutDownDb();
                 return new ArrayList<>();
             }
         });
@@ -179,7 +189,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
             public ArrayList<PhotoTypeMasterBO> call() {
 
                 try {
-                    mDbUtil.openDataBase();
+                    initDb();
 
                     ArrayList<PhotoTypeMasterBO> photoTypeMasterBOS = new ArrayList<>();
 
@@ -197,11 +207,13 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                         }
                         c.close();
                     }
+                    shutDownDb();
                     return photoTypeMasterBOS;
                 } catch (Exception ignored) {
 
                 }
 
+                shutDownDb();
                 return new ArrayList<>();
             }
         });
@@ -214,6 +226,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
             @Override
             public Boolean call() {
                 try {
+                    initDb();
                     Cursor cursor = mDbUtil.selectSQL("SELECT Uid FROM "
                             + DataMembers.actPhotocapture + " WHERE RetailerId = "
                             + appDataProvider.getRetailMaster().getRetailerID()
@@ -298,8 +311,10 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
                             }
 
+                            shutDownDb();
                             return true;
                         } catch (Exception ignored) {
+                            shutDownDb();
                             return false;
                         }
                     }
@@ -310,7 +325,6 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
     @Override
     public void tearDown() {
-        if (mDbUtil != null)
-            mDbUtil.closeDB();
+        shutDownDb();
     }
 }
