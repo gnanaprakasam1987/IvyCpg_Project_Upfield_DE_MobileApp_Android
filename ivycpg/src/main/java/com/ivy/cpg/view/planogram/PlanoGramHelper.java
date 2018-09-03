@@ -608,6 +608,8 @@ public class PlanoGramHelper {
     }
 
     public Vector<PlanoGramBO> getPlanogramMaster() {
+        if (mPlanoGramMaster == null)
+            mPlanoGramMaster = new Vector<>();
         return mPlanoGramMaster;
     }
 
@@ -634,6 +636,8 @@ public class PlanoGramHelper {
 
 
     public Vector<StandardListBO> getInStoreLocation() {
+        if (mLocationList == null)
+            mLocationList = new Vector<>();
         return mLocationList;
     }
 

@@ -3594,12 +3594,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean hasSchemeApplied() {
         for (ProductMasterBO productMasterBO : mOrderedProductList) {
-            if (productMasterBO.isPromo() && (productMasterBO.getSchemeProducts() != null
-                    && productMasterBO.getSchemeProducts().size() > 0)) {
-
-                if (!SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(productMasterBO.getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
-                    return productMasterBO.getSchemeProducts().size() > 0;
-                }
+            if (productMasterBO.getSchemeDiscAmount()>0 || productMasterBO.getProductDiscAmount()>0) {
+                return true;
             }
         }
 
