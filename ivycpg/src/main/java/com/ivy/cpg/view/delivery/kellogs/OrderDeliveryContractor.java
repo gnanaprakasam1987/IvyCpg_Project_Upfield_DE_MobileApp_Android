@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.orderdelivery;
+package com.ivy.cpg.view.delivery.kellogs;
 
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;

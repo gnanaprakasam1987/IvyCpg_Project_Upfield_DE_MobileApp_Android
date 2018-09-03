@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.salesdeliveryreturn;
+package com.ivy.cpg.view.delivery.salesreturn;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,6 +26,7 @@ import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 
 import java.util.List;
@@ -46,13 +47,11 @@ import io.reactivex.schedulers.Schedulers;
 public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
     private Unbinder unbinder;
-    private CompositeDisposable compositeDisposable;
 
     @BindView(R.id.SalesReturn_Details)
     RecyclerView recyclerView;
 
     private SalesReturnDeliveryDataBo salesReturnDeliveryDataBo = null;
-
 
 
     @Nullable
@@ -73,7 +72,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
             String data = getArguments().getString("DATA");
             salesReturnDeliveryDataBo =
                     new Gson().fromJson(data, SalesReturnDeliveryDataBo.class);
-          //  uId = salesReturnDeliveryDataBo.getUId();
+            //  uId = salesReturnDeliveryDataBo.getUId();
         }
         if (salesReturnDeliveryDataBo != null)
             getSalesReturnDeliveryDetails(salesReturnDeliveryDataBo.getUId());
@@ -83,6 +82,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     private void setLabelMaserValue(View view) {
 
         BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
+        SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
 
 
         try {
@@ -112,6 +112,24 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         .setText(businessModel.labelsMasterHelper
                                 .applyLabels(view.findViewById(R.id.actual_PcQty)
                                         .getTag()));
+
+            ((TextView) view.findViewById(R.id.cqty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            ((TextView) view.findViewById(R.id.piececqty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            ((TextView) view.findViewById(R.id.actual_caseQty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            ((TextView) view.findViewById(R.id.actual_PcQty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+
+            ((TextView) view.findViewById(R.id.btn_save)).setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+
+            if (!salesReturnDeliveryHelper.SHOW_SALES_RET_PCS) {
+                (view.findViewById(R.id.piececqty)).setVisibility(View.GONE);
+                (view.findViewById(R.id.actual_PcQty)).setVisibility(View.GONE);
+            }
+
+            if (!salesReturnDeliveryHelper.SHOW_SALES_RET_CASE) {
+                (view.findViewById(R.id.cqty)).setVisibility(View.GONE);
+                (view.findViewById(R.id.actual_caseQty)).setVisibility(View.GONE);
+            }
+
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -125,7 +143,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     }
 
     private void getSalesReturnDeliveryDetails(String uId) {
-        compositeDisposable = new CompositeDisposable();
+        CompositeDisposable compositeDisposable = new CompositeDisposable();
         compositeDisposable.add((Disposable) SalesReturnDeliveryHelper.getInstance().downloadSaleReturnDeliveryDetails(getActivity(), uId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -192,7 +210,8 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                             Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
                             (getActivity()).onBackPressed();
                         }
-                    }})
+                    }
+                })
                 .setNegativeButton(android.R.string.no, null).show();
     }
     private void showConfirConfirmAlert() {
@@ -217,27 +236,23 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     private String append = "";
 
     public void numberPressed(View vw) {
-        if (QUANTITY == null) {
-            //businessModel.showAlert(
-            // getResources().getString(R.string.please_select_item), 0);
-        } else {
-            int id = vw.getId();
-            if (id == R.id.calcdel) {
-                String s = QUANTITY.getText().toString();
-                if (!(s.length() == 0)) {
-                    s = s.substring(0, s.length() - 1);
-                    if (s.length() == 0) {
-                        s = "";
-                    }
+
+        int id = vw.getId();
+        if (id == R.id.calcdel) {
+            String s = QUANTITY.getText().toString();
+            if (!(s.length() == 0)) {
+                s = s.substring(0, s.length() - 1);
+                if (s.length() == 0) {
+                    s = "";
                 }
-                QUANTITY.setText(s);
-            } else {
-                if (getView() != null) {
-                    Button ed = (Button) getView().findViewById(vw.getId());
-                    append = ed.getText().toString();
-                }
-                eff();
             }
+            QUANTITY.setText(s);
+        } else {
+            if (getView() != null) {
+                Button ed = getView().findViewById(vw.getId());
+                append = ed.getText().toString();
+            }
+            eff();
         }
     }
 
@@ -421,6 +436,24 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                     returnPieceQuantity = itemView.findViewById(R.id.txt_returnPieceQuantity);
                     actualCaseQuantity = itemView.findViewById(R.id.txt_actualCaseQuantity);
                     actualPieceQuantity = itemView.findViewById(R.id.txt_actualPieceQuantity);
+
+                    productName.setTypeface(FontUtils.getProductNameFont(mContext));
+                    reason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                    returnCaseQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                    returnPieceQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                    actualCaseQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                    actualPieceQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+
+                    SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
+                    if (!salesReturnDeliveryHelper.SHOW_SALES_RET_PCS) {
+                        returnPieceQuantity.setVisibility(View.GONE);
+                        actualPieceQuantity.setVisibility(View.GONE);
+                    }
+
+                    if (!salesReturnDeliveryHelper.SHOW_SALES_RET_CASE) {
+                        returnCaseQuantity.setVisibility(View.GONE);
+                        actualCaseQuantity.setVisibility(View.GONE);
+                    }
                 }
                 itemView.setOnClickListener(this);
             }
@@ -441,8 +474,4 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-   /* private void onBackButtonClick() {
-        getActivity().finish();
-        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-    }*/
 }

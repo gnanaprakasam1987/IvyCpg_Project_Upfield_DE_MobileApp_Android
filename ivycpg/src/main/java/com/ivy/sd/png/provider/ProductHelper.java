@@ -2177,7 +2177,7 @@ public class ProductHelper {
             for (int i = 0; i < genfilter.size(); i++) {
                 if (genfilter.get(i).getConfigCode()
                         .equalsIgnoreCase(filtername)) {
-                    if (!genfilter.get(i).getMenuNumber().equals("0"))
+                    if (!genfilter.get(i).getMenuNumber().equals("0") && !genfilter.get(i).getMenuNumber().equals(""))
                         return Color.parseColor((genfilter.get(i)
                                 .getMenuNumber()));
                     else

@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.orderdelivery;
+package com.ivy.cpg.view.delivery.kellogs;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -27,11 +27,9 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     private OrderDeliveryContractor.OrderDeliveryView orderDeliveryView;
     private Context context;
     private OrderDeliveryHelper orderDeliveryHelper;
-    CommonDialog commonDialog;
 
     private int mPrintCountInput = 1;
     private int mDataPrintCount = 0;
-    private int mTotalNumbersPrinted = 0;
 
     private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -263,7 +261,6 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                 mOutputStream.write((bmodel.mCommonPrintHelper.getInvoiceData().toString()).getBytes());
                 mOutputStream.flush();
                 mDataPrintCount++;
-                mTotalNumbersPrinted++;
             }
 
             mOutputStream.close();
@@ -283,7 +280,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
             macAddress = pref.getString("MAC", "");
             SharedPreferences.Editor editor = pref.edit();
             editor.putString("MAC", macAddress);
-            editor.commit();
+            editor.apply();
         } catch (Exception e) {
             Commons.printException(e);
         }

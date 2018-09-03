@@ -360,7 +360,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CAMERA_REQUEST_CODE) {
-            if (resultCode == 1) {
+            if (resultCode == 1 && mPlanoGramList != null) {
                 for (PlanoGramBO planBo : mPlanoGramList) {
                     if (planBo.getPid() == productId) {
 //                        planBo.setPlanogramCameraImgName(imageFileName);
@@ -374,7 +374,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     }
                 }
                 planoAdapter.notifyDataSetChanged();
-            } else {
+            } else if (mPlanoGramList != null) {
                 for (PlanoGramBO planBo : mPlanoGramList) {
                     if (planBo.getPid() == productId) {
                         planBo.setAdherence(null);

@@ -1,7 +1,8 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.delivery.foodempire;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -34,7 +36,6 @@ import java.util.Vector;
 public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements View.OnClickListener {
 
     BusinessModel bmodel;
-    Vector<ProductMasterBO> mylist;
     ListView listView;
     Button btnSave;
     Toolbar toolbar;
@@ -51,7 +52,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar =  findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -64,20 +65,19 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        chk_isScheme = (CheckBox) findViewById(R.id.chk_isScheme);
-        listView = (ListView) findViewById(R.id.list);
-        btnSave = (Button) findViewById(R.id.btn_next);
+        chk_isScheme =  findViewById(R.id.chk_isScheme);
+        listView =  findViewById(R.id.list);
+        btnSave =  findViewById(R.id.btn_next);
         btnSave.setOnClickListener(this);
 
         loadProducts();
 
     }
 
-    private ArrayList<SchemeProductBO> mFreeProductList;
 
     private void loadProducts() {
         try {
-            mFreeProductList = new ArrayList<>();
+            ArrayList<SchemeProductBO> mFreeProductList = new ArrayList<>();
             for (SchemeBO schemeBO : SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getAppliedSchemeList()) {
 
                 if (schemeBO.isQuantityTypeSelected()) {
@@ -143,8 +143,8 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
             return items.size();
         }
 
-        public View getView(final int position, View convertView,
-                            ViewGroup parent) {
+        public @NonNull View getView(final int position, View convertView,
+                            @NonNull ViewGroup parent) {
             final ViewHolder holder;
             SchemeProductBO product = items.get(position);
 
@@ -158,35 +158,35 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                 holder = new ViewHolder();
 
 
-                holder.psname = (TextView) row
+                holder.psname =  row
                         .findViewById(R.id.stock_and_order_listview_productname);
 
 
-                holder.tv_pcs_ordered = (TextView) row
+                holder.tv_pcs_ordered =  row
                         .findViewById(R.id.tv_pcs);
-                holder.tv_case_ordered = (TextView) row
+                holder.tv_case_ordered =  row
                         .findViewById(R.id.tv_case);
-                holder.tv_outer_ordered = (TextView) row
+                holder.tv_outer_ordered =  row
                         .findViewById(R.id.tv_outer);
 
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                ( row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
                 //setting typefaces
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                holder.psname.setTypeface(FontUtils.getProductNameFont(DeliveryOrderScheme.this));
 
-                holder.tv_pcs_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_case_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_outer_ordered.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_pcs_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderScheme.this));
+                holder.tv_case_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderScheme.this));
+                holder.tv_outer_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderScheme.this));
 
 
                 // Order Field - Enable/Disable
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.tv_case_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.tv_case_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderScheme.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_case_Title).getTag()) != null)
                             ((TextView) row.findViewById(R.id.tv_case_Title))
@@ -198,10 +198,10 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    ((LinearLayout) row.findViewById(R.id.ll_pcs)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.ll_pcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.tv_pcs_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.tv_pcs_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderScheme.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_pcs_Title).getTag()) != null)
                             ((TextView) row.findViewById(R.id.tv_pcs_Title))
@@ -213,10 +213,10 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                    ((LinearLayout) row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.tv_outer_Title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.tv_outer_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderScheme.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_outer_Title).getTag()) != null)
                             ((TextView) row.findViewById(R.id.tv_outer_Title))
@@ -240,13 +240,13 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
             holder.psname.setText(holder.productObj.getProductName());
 
             if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                holder.tv_case_ordered.setText(holder.productObj.getDeliverQtyCase() + "");
+                holder.tv_case_ordered.setText(String.valueOf(holder.productObj.getDeliverQtyCase()));
             }
             if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                holder.tv_pcs_ordered.setText(holder.productObj.getDeliverQtyPcs() + "");
+                holder.tv_pcs_ordered.setText(String.valueOf(holder.productObj.getDeliverQtyPcs()));
             }
             if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                holder.tv_outer_ordered.setText(holder.productObj.getDeliverQtyOuter() + "");
+                holder.tv_outer_ordered.setText(String.valueOf(holder.productObj.getDeliverQtyOuter()));
             }
 
             return row;

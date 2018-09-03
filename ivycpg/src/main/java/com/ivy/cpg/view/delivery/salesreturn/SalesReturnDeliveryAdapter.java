@@ -1,38 +1,29 @@
-package com.ivy.cpg.view.salesdeliveryreturn;
+package com.ivy.cpg.view.delivery.salesreturn;
 
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.view.DeliveryManagementDetail;
+import com.ivy.utils.FontUtils;
 
 import java.util.List;
 import java.util.Vector;
+
+import jxl.format.Font;
 
 public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder> {
     private RecyclerViewItemClickListener recyclerViewItemClickListener;
     private List<SalesReturnDeliveryDataBo> salesReturnDeliveryDataModelsList;
     private Context mContext;
-    private boolean isDetails;
 
-    private EditText QUANTITY;
     /**
      * Initialize the values
      *
@@ -42,11 +33,10 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
      */
 
     public SalesReturnDeliveryAdapter(Context context, RecyclerViewItemClickListener recyclerViewItemClickListener,
-                                      Vector<SalesReturnDeliveryDataBo> salesReturnDeliveryDataModels, boolean isDetails) {
+                                      Vector<SalesReturnDeliveryDataBo> salesReturnDeliveryDataModels) {
         this.recyclerViewItemClickListener = recyclerViewItemClickListener;
         mContext = context;
         this.salesReturnDeliveryDataModelsList = salesReturnDeliveryDataModels;
-        this.isDetails = isDetails;
     }
 
 
@@ -72,19 +62,18 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
      */
     @Override
     public void onBindViewHolder(final SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder holder, final int position) {
-            holder.relativeLayout.setVisibility(View.VISIBLE);
-            holder.uId.setText(("UId : ") + salesReturnDeliveryDataModelsList.get(position).getUId());
-            holder.dateReturn.setText("Date : " + salesReturnDeliveryDataModelsList.get(position).getDate());
+        holder.relativeLayout.setVisibility(View.VISIBLE);
+        holder.uId.setText(("UId : ") + salesReturnDeliveryDataModelsList.get(position).getUId());
+        holder.dateReturn.setText("Date : " + salesReturnDeliveryDataModelsList.get(position).getDate());
 
-            holder.uId.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.dateReturn.setTypeface(((BusinessModel) mContext).configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        holder.uId.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+        holder.dateReturn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
     }
 
     @Override
     public int getItemCount() {
         return salesReturnDeliveryDataModelsList.size();
     }
-
 
 
     /**
@@ -94,7 +83,7 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
      */
 
     public class SalesReturnDeliveryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView uId, dateReturn ;
+        TextView uId, dateReturn;
         RelativeLayout relativeLayout;
 
 

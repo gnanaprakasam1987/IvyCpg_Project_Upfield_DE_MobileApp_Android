@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.orderdelivery;
+package com.ivy.cpg.view.delivery.kellogs;
 
  /*New Module Order Delivery Details
     Download methods for Order Header,Order Detail,Salesreturn header
@@ -805,17 +805,16 @@ public class OrderDeliveryHelper {
     private void insertProductLevelTax(String orderId, DBUtil db,
                                        ProductMasterBO productBO, TaxBO taxBO, String invoiceId) {
         String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,invoiceid";
-        StringBuffer values = new StringBuffer();
+        StringBuffer values;
+        values = new StringBuffer();
 
-        values.append(businessModel.QT(orderId) + "," + productBO.getProductID() + ","
-                + taxBO.getTaxRate() + ",");
-        values.append(taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
-                + "," + businessModel.getRetailerMasterBO().getRetailerID());
-        values.append("," + taxBO.getGroupId() + ",0" + "," + businessModel.QT(invoiceId));
+        values.append(businessModel.QT(orderId)).append(",").append(productBO.getProductID()).append(",").append(taxBO.getTaxRate()).append(",");
+        values.append(taxBO.getTaxType()).append(",").append(taxBO.getTotalTaxAmount()).append(",").append(businessModel.getRetailerMasterBO().getRetailerID());
+        values.append(",").append(taxBO.getGroupId()).append(",0").append(",").append(businessModel.QT(invoiceId));
         db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 
-    public int isCreditNoteCreated(Context mContext, String orderId) {
+    private int isCreditNoteCreated(Context mContext, String orderId) {
         int flag = 0;
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -837,7 +836,7 @@ public class OrderDeliveryHelper {
         return flag;
     }
 
-    public boolean isValueReturned(Context mContext, String orderId) {
+    private boolean isValueReturned(Context mContext, String orderId) {
         boolean flag = false;
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -930,11 +929,6 @@ public class OrderDeliveryHelper {
 
     private HashMap<String, Integer> excessQtyMap = new HashMap<>();
 
-    public int getExcessQtyById(String productId) {
-        if (excessQtyMap == null || excessQtyMap.size() == 0)
-            return 0;
-        return excessQtyMap.get(productId) != null ? excessQtyMap.get(productId) : 0;
-    }
 
     /*Update Excess stock QTY in Product master SIH. Works only inside this module*/
     public void updateProductWithExcessStock(Context mContext) {
@@ -985,12 +979,11 @@ public class OrderDeliveryHelper {
             }
             businessModel.invoiceNumber = invoiceno;
 
-            StringBuffer sb = new StringBuffer();
-            sb.append("select PM.pid,PM.psname,ID.pcsQty,ID.caseQty,ID.OuterQty,ifnull(BM.Batchnum,\"\"),PM.duomQty,PM.douomQty,ID.Qty,PM.piece_uomid,PM.dUomId,PM.dOuomid,rate,caseprice,outerprice from InvoiceDetails ID ");
-            sb.append("inner join Productmaster PM on PM.pid=ID.productid ");
-            sb.append("left join batchmaster BM on ID.productid=BM.pid and ID.batchid=BM.batchid ");
-            sb.append("where ID.invoiceID=" + businessModel.QT(invoiceno));
-            Cursor c = db.selectSQL(sb.toString());
+            String sb = "select PM.pid,PM.psname,ID.pcsQty,ID.caseQty,ID.OuterQty,ifnull(BM.Batchnum,\"\"),PM.duomQty,PM.douomQty,ID.Qty,PM.piece_uomid,PM.dUomId,PM.dOuomid,rate,caseprice,outerprice from InvoiceDetails ID " +
+                    "inner join Productmaster PM on PM.pid=ID.productid " +
+                    "left join batchmaster BM on ID.productid=BM.pid and ID.batchid=BM.batchid " +
+                    "where ID.invoiceID=" + businessModel.QT(invoiceno);
+            Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 ProductMasterBO productBO;
                 while (c.moveToNext()) {

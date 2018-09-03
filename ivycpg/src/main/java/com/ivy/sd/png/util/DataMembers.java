@@ -25,7 +25,7 @@ public class DataMembers {
     public static String SERVER_URL = BuildConfig.BASE_URL;
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
-    //    public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
+    //public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
     public static final String AUTHENTICATE = "/usermaster/SecureAuthenticateUser";
     public static final String CHANGE_PWD = "/ChangePassword/Validate";
 
@@ -236,7 +236,7 @@ public class DataMembers {
     public static final String tbl_retailerMaster = "RetailerMaster";
 
     public static final String tbl_AssetService= "AssetService";
-    private static final String tbl_AssetService_cols = "Uid,date,AssetId,,serialNum,reasonid,retailerid";
+    private static final String tbl_AssetService_cols = "Uid,date,AssetId,serialNum,reasonid,retailerid";
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
     private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId,reasonid,remarks,toRetailerId";

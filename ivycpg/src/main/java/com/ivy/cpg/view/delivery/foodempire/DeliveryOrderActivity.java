@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.delivery.foodempire;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,15 +16,13 @@ import com.ivy.sd.png.util.Commons;
 
 public class DeliveryOrderActivity extends IvyBaseActivityNoActionBar {
 
-    Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_delivery_order);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
