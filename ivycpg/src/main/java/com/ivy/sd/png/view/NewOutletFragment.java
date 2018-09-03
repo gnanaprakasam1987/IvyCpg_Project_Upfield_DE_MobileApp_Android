@@ -3124,7 +3124,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             case "TINNUM":
                 return outlet.getTinno();
             case "TINEXPDATE":
-                return outlet.getTinExpDate();
+                return outlet.getTinExpDate() == null ? "" : outlet.getTinExpDate();
             case "PINCODE":
                 return outlet.getPincode();
             case "RFIELD3":
@@ -3144,9 +3144,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             case "FOOD_LICENCE_NUM":
                 return outlet.getFoodLicenseNo();
             case "DRUG_LICENSE_EXP_DATE":
-                return outlet.getDlExpDate();
+                return outlet.getDlExpDate() == null ? "" : outlet.getDlExpDate();
             case "FOOD_LICENCE_EXP_DATE":
-                return outlet.getFlExpDate();
+                return outlet.getFlExpDate() == null ? "" : outlet.getFlExpDate();
             case "RFIELD4":
                 return outlet.getrField4();
             case "RFIELD7":
@@ -3487,7 +3487,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     /**
-     *update selected item into priorityProductIDList
+     * update selected item into priorityProductIDList
+     *
      * @param position
      * @param standardListBO
      */
@@ -3512,7 +3513,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
 
     /**
-     *  update selected item into priorityProductAutoCompleteTextView by comma separate
+     * update selected item into priorityProductAutoCompleteTextView by comma separate
+     *
      * @param mPriorityProductList
      */
     @Override
@@ -5130,7 +5132,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     protected void onCreateDialogNew(int flag) {
-        if(flag==1) {
+        if (flag == 1) {
             AlertDialog.Builder builderGPS = new AlertDialog.Builder(getActivity())
                     .setIcon(null)
                     .setTitle(getResources().getString(R.string.enable_gps))
@@ -5144,8 +5146,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                                 }
                             });
             bmodel.applyAlertDialogTheme(builderGPS);
-        }
-        else if(flag==2){
+        } else if (flag == 2) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                     .setIcon(null)
                     .setTitle(getResources().getString(R.string.saved_successfully))
@@ -5155,7 +5156,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                                                     int whichButton) {
                                     HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
                                     if (currentFragment != null) {
-                                        currentFragment.detach("MENU_NEW_RETAILER");
+                                        currentFragment.detach("MENU_NEW_RET");
                                     }
                                 }
                             });
@@ -5859,7 +5860,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 //                        getActivity().finish();
                     } else {
 
-                       onCreateDialogNew(2);
+                        onCreateDialogNew(2);
 
                     }
 
@@ -5881,7 +5882,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     class UploadNewOutlet extends AsyncTask<String, Void, Boolean> {
         String retailerID = "";
 
-        public UploadNewOutlet(String retailerID){
+        public UploadNewOutlet(String retailerID) {
             this.retailerID = retailerID;
         }
 

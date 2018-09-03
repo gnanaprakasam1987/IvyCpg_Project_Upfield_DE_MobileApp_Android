@@ -43,7 +43,7 @@ public class ContractReportFragment extends IvyBaseFragment {
                 false);
         BusinessModel bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        unbinder = ButterKnife.bind(view);
+        unbinder = ButterKnife.bind(this,view);
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -190,7 +190,7 @@ public class ContractReportFragment extends IvyBaseFragment {
         TextView noOfDaysTV;
 
         ViewHolder(View view) {
-            ButterKnife.bind(view);
+            ButterKnife.bind(this,view);
         }
 
 

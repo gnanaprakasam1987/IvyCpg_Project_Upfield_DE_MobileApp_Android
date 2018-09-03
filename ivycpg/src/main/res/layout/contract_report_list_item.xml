@@ -1,81 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="11.5">
-        <TextView
-            android:id="@+id/tvSNO"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:text="" />
+    android:orientation="horizontal"
+    android:weightSum="28">
 
-        <TextView
-            android:id="@+id/tvOutletCode"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:text="" />
+    <TextView
+        android:id="@+id/tvSNO"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="" />
 
-        <TextView
-            android:id="@+id/tvOutletName"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:text="" />
-        <TextView
-            android:id="@+id/tvSubChannel"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:text="" />
-        <TextView
-            android:id="@+id/tvContractId"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:text="" />
-        <TextView
-            android:id="@+id/tvTradeType"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:text="" />
-        <TextView
-            android:id="@+id/tvStartDate"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:text="" />
-        <TextView
-            android:id="@+id/tvEndDate"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:text="" />
-        <TextView
-            android:id="@+id/tvNoOfDays"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:text="" />
+    <TextView
+        android:id="@+id/tvOutletCode"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tvOutletName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tvSubChannel"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tvContractId"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tvTradeType"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tvStartDate"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tvEndDate"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tvNoOfDays"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="" />
 </LinearLayout>

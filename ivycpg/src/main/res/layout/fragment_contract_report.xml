@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,27 +10,31 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:scrollbars="none">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/ListHeader"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/list_header_height"
+                android:background="@color/list_title_bg_color"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingStart="@dimen/list_padding_left_n_right"
                 android:paddingEnd="@dimen/list_padding_left_n_right"
-                android:background="@color/list_title_bg_color"
-                android:weightSum="11.5">
+                android:paddingStart="@dimen/list_padding_left_n_right"
+                android:weightSum="28">
+
                 <TextView
                     android:id="@+id/labelSNO"
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:layout_margin="2dp"
                     android:gravity="center"
                     android:text="@string/serial_no" />
 
@@ -39,9 +43,10 @@
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:layout_margin="2dp"
+                    android:gravity="center"
                     android:text="Outlet Code" />
 
                 <TextView
@@ -49,80 +54,88 @@
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:layout_margin="2dp"
+                    android:gravity="center"
                     android:text="Outlet Name" />
+
                 <TextView
                     android:id="@+id/labelSubChannel"
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:layout_margin="2dp"
+                    android:gravity="center"
                     android:text="Sub Channel" />
+
                 <TextView
                     android:id="@+id/labelContractID"
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="4"
+                    android:layout_margin="2dp"
+                    android:gravity="center"
                     android:text="Contract ID" />
+
                 <TextView
                     android:id="@+id/labelTradeType"
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:layout_margin="2dp"
+                    android:gravity="center"
                     android:text="Type of Trade Offer" />
+
                 <TextView
                     android:id="@+id/labelStartDate"
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:layout_margin="2dp"
+                    android:gravity="center"
                     android:text="Start Date" />
+
                 <TextView
                     android:id="@+id/labelEndDate"
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:layout_margin="2dp"
+                    android:gravity="center"
                     android:text="End Date" />
+
                 <TextView
                     android:id="@+id/labelNoOfDays"
                     style="?attr/customListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:layout_margin="2dp"
+                    android:gravity="center"
                     android:text="Days to Expire" />
             </LinearLayout>
+
             <ListView
-                android:id="@+id/listView"
+                android:id="@+id/listView_contract"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:cacheColorHint="@null"
                 android:divider="@android:color/white"
                 android:dividerHeight="1dp"
-                android:fitsSystemWindows="true"/>
+                android:fitsSystemWindows="true" />
         </LinearLayout>
     </HorizontalScrollView>
-    <FrameLayout
-        android:id="@+id/right_drawer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:background="@drawable/background_noise" />
-</android.support.v4.widget.DrawerLayout>
+</RelativeLayout>
