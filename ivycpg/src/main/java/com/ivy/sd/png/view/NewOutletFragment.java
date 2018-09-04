@@ -64,6 +64,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.sync.UploadHelper;
@@ -75,9 +76,11 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.bo.NewOutletBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SpinnerBO;
@@ -201,6 +204,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     private boolean isLocation2 = false;
     private boolean isContactTitle = false;
     private boolean isAttribute = false;
+    private boolean isDistributor = false;
 
     NewRetailerReceiver receiver;
     private AlertDialog.Builder builder;
@@ -327,10 +331,20 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         if (screenMode == EDIT
                                 || (!bmodel.newOutletHelper.isRetailerAlreadyAvailable(bmodel.newOutletHelper.getNewoutlet().getOutletName(),
                                 bmodel.newOutletHelper.getNewoutlet().getPincode()))) {
-                            if (!bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_UPLOAD) {
-                                new SaveNewOutlet().execute("");
+
+                            if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER
+                                    && bmodel.hasOrder()
+                                    && (isDistributor
+                                    && bmodel.getRetailerMasterBO().getDistributorId() != 0
+                                    && bmodel.getRetailerMasterBO().getDistributorId()
+                                    != SDUtil.convertToInt(((DistributorMasterBO) distributorSpinner.getSelectedItem()).getDId()))) {
+                                onCreateDialogNew(3);
                             } else {
-                                new SaveNewOutlet().execute("1");
+                                if (!bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_UPLOAD) {
+                                    new SaveNewOutlet().execute("");
+                                } else {
+                                    new SaveNewOutlet().execute("1");
+                                }
                             }
                         } else {
                             Toast.makeText(getActivity(), R.string.retailer_already_available, Toast.LENGTH_LONG).show();
@@ -510,6 +524,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
 
 
+                } else if ("DISTRIBUTOR"
+                        .equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
+                    isDistributor = true;
                 }
             }
         }
@@ -3124,7 +3141,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             case "TINNUM":
                 return outlet.getTinno();
             case "TINEXPDATE":
-                return outlet.getTinExpDate();
+                return outlet.getTinExpDate() == null ? "" : outlet.getTinExpDate();
             case "PINCODE":
                 return outlet.getPincode();
             case "RFIELD3":
@@ -3144,9 +3161,9 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             case "FOOD_LICENCE_NUM":
                 return outlet.getFoodLicenseNo();
             case "DRUG_LICENSE_EXP_DATE":
-                return outlet.getDlExpDate();
+                return outlet.getDlExpDate() == null ? "" : outlet.getDlExpDate();
             case "FOOD_LICENCE_EXP_DATE":
-                return outlet.getFlExpDate();
+                return outlet.getFlExpDate() == null ? "" : outlet.getFlExpDate();
             case "RFIELD4":
                 return outlet.getrField4();
             case "RFIELD7":
@@ -3487,7 +3504,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     /**
-     *update selected item into priorityProductIDList
+     * update selected item into priorityProductIDList
+     *
      * @param position
      * @param standardListBO
      */
@@ -3512,7 +3530,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 
 
     /**
-     *  update selected item into priorityProductAutoCompleteTextView by comma separate
+     * update selected item into priorityProductAutoCompleteTextView by comma separate
+     *
      * @param mPriorityProductList
      */
     @Override
@@ -5091,6 +5110,32 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                 return true;
             }
         } else if (i == R.id.menu_order) {
+
+            if (isDistributor) {
+                DistributorMasterBO distBo = (DistributorMasterBO) distributorSpinner.getSelectedItem();
+                if (distBo.getDId().equals("0")) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.select_distributor), Toast.LENGTH_LONG).show();
+                    return true;
+                }
+
+                if (bmodel.getRetailerMasterBO().getDistributorId() != Integer.parseInt(distBo.getDId()) || !bmodel.hasOrder()) {
+                    if (mdistributortypeMasterList != null)
+                        bmodel.getRetailerMasterBO().setDistributorId(Integer.parseInt(distBo.getDId()));
+
+                    bmodel.updatePriceGroupId(false);
+
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
+                            bmodel.productHelper.getFilterProductLevels()));
+                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+                    if (genericObjectPair != null) {
+                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
+                    }
+                }
+            }
+
+
             bmodel.configurationMasterHelper.downloadProductDetailsList();
             /* Settign color **/
             bmodel.configurationMasterHelper.downloadFilterList();
@@ -5130,36 +5175,78 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     }
 
     protected void onCreateDialogNew(int flag) {
-        if(flag==1) {
-            AlertDialog.Builder builderGPS = new AlertDialog.Builder(getActivity())
-                    .setIcon(null)
-                    .setTitle(getResources().getString(R.string.enable_gps))
-                    .setPositiveButton(getResources().getString(R.string.ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-                                    Intent myIntent = new Intent(
-                                            android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                    startActivity(myIntent);
-                                }
-                            });
-            bmodel.applyAlertDialogTheme(builderGPS);
-        }
-        else if(flag==2){
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                    .setIcon(null)
-                    .setTitle(getResources().getString(R.string.saved_successfully))
-                    .setPositiveButton(getResources().getString(R.string.ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-                                    HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
-                                    if (currentFragment != null) {
-                                        currentFragment.detach("MENU_NEW_RETAILER");
+        switch (flag) {
+            case 1:
+                AlertDialog.Builder builderGPS = new AlertDialog.Builder(getActivity())
+                        .setIcon(null)
+                        .setTitle(getResources().getString(R.string.enable_gps))
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        Intent myIntent = new Intent(
+                                                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                        startActivity(myIntent);
                                     }
-                                }
-                            });
-            bmodel.applyAlertDialogTheme(builder);
+                                });
+                bmodel.applyAlertDialogTheme(builderGPS);
+                break;
+            case 2:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(getResources().getString(R.string.saved_successfully))
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                                        if (currentFragment != null) {
+                                            currentFragment.detach("MENU_NEW_RET");
+                                        }
+                                    }
+                                });
+                bmodel.applyAlertDialogTheme(builder);
+                break;
+            case 3:
+                builder = new AlertDialog.Builder(getActivity())
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(getString(R.string.new_outlet_order))
+                        .setPositiveButton(getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+
+                                        if (bmodel.isEdit()) {
+                                            bmodel.productHelper
+                                                    .clearOrderTableAndUpdateSIH();
+                                        }
+                                        bmodel.productHelper.clearOrderTable();
+                                        OrderHelper.getInstance(getActivity()).setSerialNoListByProductId(null);
+
+                                        if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
+                                            bmodel.productHelper
+                                                    .clearBomReturnProductsTable();
+                                        // clear ordered list
+                                        if (bmodel.newOutletHelper.getOrderedProductList().size() > 0)
+                                            bmodel.newOutletHelper.getOrderedProductList().clear();
+
+                                        if (!bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_UPLOAD) {
+                                            new SaveNewOutlet().execute("");
+                                        } else {
+                                            new SaveNewOutlet().execute("1");
+                                        }
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                    }
+                                });
+                bmodel.applyAlertDialogTheme(builder);
+                break;
         }
     }
 
@@ -5859,7 +5946,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
 //                        getActivity().finish();
                     } else {
 
-                       onCreateDialogNew(2);
+                        onCreateDialogNew(2);
 
                     }
 
@@ -5881,7 +5968,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
     class UploadNewOutlet extends AsyncTask<String, Void, Boolean> {
         String retailerID = "";
 
-        public UploadNewOutlet(String retailerID){
+        public UploadNewOutlet(String retailerID) {
             this.retailerID = retailerID;
         }
 
@@ -6478,8 +6565,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         }
 
         if (savedInstanceState != null) {
-            outlet.setImageId((Vector<Integer>) savedInstanceState.getSerializable("ImageIdList"));
-            outlet.setImageName((Vector<String>) savedInstanceState.getSerializable("ImageNameList"));
+            outlet.setImageId((ArrayList<Integer>) savedInstanceState.getSerializable("ImageIdList"));
+            outlet.setImageName((ArrayList<String>) savedInstanceState.getSerializable("ImageNameList"));
             uID = savedInstanceState.getString("uid");
         }
 

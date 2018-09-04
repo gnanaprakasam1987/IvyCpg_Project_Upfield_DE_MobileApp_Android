@@ -1058,6 +1058,13 @@
                     android:textColor="@color/black_bg1"
                     android:textSize="@dimen/font_micro_small" />
             </LinearLayout>
+
+            <com.ivy.sd.png.view.SlantView
+                android:id="@+id/slant_view_bg"
+                android:layout_width="@dimen/info_icon"
+                android:layout_height="@dimen/info_icon"
+                android:background="@color/RED"
+                android:visibility="visible" />
         </LinearLayout>
     </LinearLayout>
 

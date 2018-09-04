@@ -93,8 +93,8 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.otr_new_request);
 
         bmodel = (BusinessModel) getApplicationContext();
