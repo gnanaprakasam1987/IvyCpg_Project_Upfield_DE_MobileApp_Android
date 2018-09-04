@@ -114,7 +114,6 @@ import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.delivery.invoice.DeliveryManagementHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
@@ -1200,7 +1199,7 @@ public class BusinessModel extends Application {
                 if (c.moveToNext()) {
                     i += c.getFloat(0);
                 }
-            c.close();
+                c.close();
             }
 
             db.closeDB();
@@ -1210,7 +1209,6 @@ public class BusinessModel extends Application {
 
         return i;
     }
-
 
 
     public double getAcheived() {
@@ -1262,7 +1260,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1287,7 +1285,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -7942,14 +7940,14 @@ public class BusinessModel extends Application {
         StringBuilder sb = new StringBuilder();
 
         try {
-            sb.append("SELECT groupId FROM RetailerPriceGroup ");
+            sb.append("SELECT groupId FROM RetailerPriceGroup WHERE");
 
             if (isRetailer) {
-                sb.append(" WHERE retailerId =" + getRetailerMasterBO().getRetailerID()
-                        + " AND distributorId =" + getRetailerMasterBO().getDistributorId());
-            } else {
-                sb.append(" WHERE distributorId =" + getRetailerMasterBO().getDistributorId());
+                sb.append(" retailerId =" + getRetailerMasterBO().getRetailerID() + " AND");
             }
+
+            sb.append(" distributorId =" + getRetailerMasterBO().getDistributorId());
+
 
             Cursor c = db.selectSQL(sb.toString());
 
