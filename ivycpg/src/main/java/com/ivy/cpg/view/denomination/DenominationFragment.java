@@ -217,7 +217,7 @@ public class DenominationFragment extends IvyBaseFragment {
 
                 String s = et.toString();
 
-                int totalValues = 0;
+                double totalValues = 0;
 
                 for (Integer key : editTextHashMap.keySet()) {
 
@@ -225,19 +225,20 @@ public class DenominationFragment extends IvyBaseFragment {
 
                     if (!isEmptyString(values)) {
 
-                        int temp = Integer.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
+                        double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
 
-                        totalValues = totalValues + (Integer.valueOf(values) * temp);
+                        totalValues = totalValues + (Double.valueOf(values) * temp);
 
-                        if (totalValues <= Integer.valueOf(initialTotalAmount))
+                        if (totalValues <= Double.valueOf(initialTotalAmount))
                             if (key == dinominationAmount.getTag()) {
-                                int amount = Integer.valueOf(values) * temp;
+                                double amount = Double.valueOf(values) * temp;
                                 dinominationAmount.setText(String.valueOf(amount));
                             }
                     } else if (key == dinominationAmount.getTag()){
                         dinominationAmount.setText("0");
                     }
                 }
+
                 if (totalValues <= Integer.valueOf(initialTotalAmount))
                     mTotalCollectionTextview.setText("Total :" + String.valueOf(totalValues));
                  else
@@ -271,7 +272,7 @@ public class DenominationFragment extends IvyBaseFragment {
 
     private void saveCollectionReference() {
 
-        int totalValues = 0;
+        double totalValues = 0;
 
         for (Integer key : editTextHashMap.keySet()) {
 
@@ -279,13 +280,13 @@ public class DenominationFragment extends IvyBaseFragment {
 
             if (!isEmptyString(count)) {
 
-                int temp = Integer.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
+                double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
 
-                totalValues = totalValues + (Integer.valueOf(count) * temp);
+                totalValues = totalValues + (Double.valueOf(count) * temp);
             }
         }
 
-        if (totalValues != Integer.valueOf(initialTotalAmount)){
+        if (totalValues != Double.valueOf(initialTotalAmount)){
             Toast.makeText(getActivity(), "Total amount not match with you denomination count amount", Toast.LENGTH_SHORT).show();
         }else {
             insertData();
