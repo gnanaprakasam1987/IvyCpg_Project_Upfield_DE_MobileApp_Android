@@ -15,12 +15,4 @@ public class HHTModuleBO {
     public void setModule(String module) {
         Module = module;
     }
-
-    public String getWeightage() {
-        return Weightage;
-    }
-
-    public void setWeightage(String weightage) {
-        Weightage = weightage;
-    }
 }
