@@ -2002,24 +2002,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 if (holder.slant_view != null) {
 
                     try {
-                        if (holder.productObj.getTextColor() == getResources().getColor(android.R.color.black)) {
-                            if (holder.productObj.isPromo()) {
-                                holder.slant_view.setVisibility(View.VISIBLE);
-                                holder.slant_view_bg.setBackgroundColor(Color.RED);
-                            } else {
-                                holder.slant_view.setVisibility(View.GONE);
-                            }
+                        if (holder.productObj.isPromo()) {
+                            holder.slant_view_bg.setVisibility(View.VISIBLE);
+                            holder.slant_view_bg.setBackgroundColor(Color.RED);
                         } else {
-                            holder.slant_view_bg.setBackgroundColor(holder.productObj.getTextColor());
+                            holder.slant_view_bg.setVisibility(View.GONE);
                         }
                     } catch (Exception e) {
                         Commons.printException(e);
-                        if (holder.productObj.isPromo()) {
-                            holder.slant_view.setVisibility(View.VISIBLE);
-                            holder.slant_view_bg.setBackgroundColor(Color.RED);
-                        } else {
-                            holder.slant_view.setVisibility(View.GONE);
-                        }
                     }
 
                 }
