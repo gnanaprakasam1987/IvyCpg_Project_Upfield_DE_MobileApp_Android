@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -2566,9 +2567,17 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
 
         protected void onPostExecute(Integer result) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.menu_not_available),
-                    Toast.LENGTH_LONG).show();
+            try {
+                getFragmentManager().executePendingTransactions();
+                Activity activity = getActivity();
+                if (activity != null && isAdded()) {
+                    Toast.makeText(activity,
+                            getResources().getString(R.string.menu_not_available),
+                            Toast.LENGTH_LONG).show();
+                }
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
 
         }
     }
