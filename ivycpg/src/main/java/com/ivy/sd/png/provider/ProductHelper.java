@@ -1142,11 +1142,15 @@ public class ProductHelper {
                 taxHelper.downloadProductTaxDetails();
             }
 
-            if (filterProductLevels.size() > 0)
-                downloadLeastBrandProductMapping(mContentLevelId, filterProductLevels.size(), moduleCode);
-
-            downloadAttributeProductMapping();
             downloadAttributes();
+            if (getmAttributesList().size() > 0)
+                downloadAttributeProductMapping();
+
+
+            if (filterProductLevels.size() > 0
+                    && (getLstProductAttributeMapping() != null
+                    && getLstProductAttributeMapping().size() > 0))
+                downloadLeastBrandProductMapping(mContentLevelId, filterProductLevels.size(), moduleCode);
 
 
         } catch (Exception e) {

@@ -1408,8 +1408,8 @@ public class NewOutletHelper {
     }
 
 
-    private Vector<String> loadImgList(String retailerID, DBUtil db) {
-        Vector<String> imgList = new Vector<>();
+    private ArrayList<String> loadImgList(String retailerID, DBUtil db) {
+        ArrayList<String> imgList = new ArrayList<>();
         try {
             Cursor c1;
             String query = "Select ImageName from NewOutletImage where RetailerId=" + bmodel.QT(retailerID);

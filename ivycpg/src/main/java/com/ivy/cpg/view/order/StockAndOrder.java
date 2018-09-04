@@ -3610,14 +3610,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
             try {
-                if (holder.productObj.getTextColor() == getResources().getColor(android.R.color.black)) {
-                    if (holder.productObj.isPromo()) {
+                if (holder.productObj.isPromo()) {
+                    if (holder.productObj.getTextColor() == getResources().getColor(android.R.color.black)) {
+
                         holder.slant_view_bg.setBackgroundColor(Color.RED);
                     } else {
-                        holder.slant_view_bg.setVisibility(View.GONE);
+                        holder.slant_view_bg.setBackgroundColor(holder.productObj.getTextColor());
                     }
                 } else {
-                    holder.slant_view_bg.setBackgroundColor(holder.productObj.getTextColor());
+                    holder.slant_view_bg.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
                 Commons.printException(e);

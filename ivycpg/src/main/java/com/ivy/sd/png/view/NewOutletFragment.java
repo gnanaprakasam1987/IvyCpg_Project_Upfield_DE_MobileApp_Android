@@ -6565,8 +6565,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
         }
 
         if (savedInstanceState != null) {
-            outlet.setImageId((Vector<Integer>) savedInstanceState.getSerializable("ImageIdList"));
-            outlet.setImageName((Vector<String>) savedInstanceState.getSerializable("ImageNameList"));
+            outlet.setImageId((ArrayList<Integer>) savedInstanceState.getSerializable("ImageIdList"));
+            outlet.setImageName((ArrayList<String>) savedInstanceState.getSerializable("ImageNameList"));
             uID = savedInstanceState.getString("uid");
         }
 

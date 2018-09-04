@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +37,34 @@ public class ContractReportFragment extends IvyBaseFragment {
     @BindView(R.id.listView_contract)
     ListView listView;
 
+    @BindView(R.id.labelSNO)
+    TextView snoLabelTV;
+
+    @BindView(R.id.labelOutletCode)
+    TextView outletCodeLabelTV;
+
+    @BindView(R.id.labelOutletName)
+    TextView outletNameLabelTV;
+
+    @BindView(R.id.labelSubChannel)
+    TextView subChannelLabelTV;
+
+    @BindView(R.id.labelContractID)
+    TextView contractIdLabelTV;
+
+    @BindView(R.id.labelTradeType)
+    TextView tradeLabelTV;
+
+    @BindView(R.id.labelStartDate)
+    TextView startDateLabelTV;
+
+    @BindView(R.id.labelEndDate)
+    TextView endDateLabelTV;
+
+    @BindView(R.id.labelNoOfDays)
+    TextView noOfDaysLabelTV;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -43,7 +72,18 @@ public class ContractReportFragment extends IvyBaseFragment {
                 false);
         BusinessModel bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        unbinder = ButterKnife.bind(this,view);
+        unbinder = ButterKnife.bind(this, view);
+
+        snoLabelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        outletCodeLabelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        outletNameLabelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        subChannelLabelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        contractIdLabelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        tradeLabelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        startDateLabelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        endDateLabelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        noOfDaysLabelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -141,6 +181,16 @@ public class ContractReportFragment extends IvyBaseFragment {
                         R.layout.contract_report_list_item, parent, false);
                 holder = new ViewHolder(convertView);
 
+                holder.snoTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.outletCodeTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.outletNameTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.subChannelTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.contractIdTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tradeTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.startDateTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.endDateTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.noOfDaysTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -190,7 +240,7 @@ public class ContractReportFragment extends IvyBaseFragment {
         TextView noOfDaysTV;
 
         ViewHolder(View view) {
-            ButterKnife.bind(this,view);
+            ButterKnife.bind(this, view);
         }
 
 

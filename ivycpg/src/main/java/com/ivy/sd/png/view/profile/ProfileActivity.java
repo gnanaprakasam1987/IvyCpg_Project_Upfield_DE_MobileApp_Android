@@ -1662,7 +1662,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                 bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
                 bmodel.updatePriceGroupId(true);
-                showMessage(getString(R.string.distributor_name) + " selected "
+                showMessage(getString(R.string.distributor_name) + " "
+                        + getString(R.string.selected) + " "
                         + mSupplierList.get(0).getSupplierName());
                 loadHomeScreenTwo(bmodel.getRetailerMasterBO());
                 return;
