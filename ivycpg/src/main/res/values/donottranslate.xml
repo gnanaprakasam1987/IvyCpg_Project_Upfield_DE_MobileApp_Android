@@ -204,4 +204,9 @@
     <string name="vanload_stock_applied">VanLoad Stock Applied </string>
     <string name="vanload_reject_applied">VanLoad Stock Rejected</string>
     <string name="check_any_one_list">Check any one list</string>
+
+    <string name="no_collection_reason">No collection \nReason</string>
+
+    <string name="invoice_with_no_collection">Invoice With No Collection Reason Found</string>
+
 </resources>

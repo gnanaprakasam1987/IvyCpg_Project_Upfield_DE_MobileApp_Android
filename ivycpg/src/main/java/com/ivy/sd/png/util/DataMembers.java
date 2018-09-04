@@ -597,6 +597,14 @@ public class DataMembers {
     private static final String tbl_RetailerScoreDetail = "RetailerScoreDetails";
     private static final String tbl_RetailerScoreDetail_cols = "Tid,ModuleCode,Weightage,Score";
 
+    private static final String tbl_CollectionDueHeader="CollectionDueHeader";
+    private static final String tbl_CollectionDueHeader_cols="Date,SubmittedDate,RetailerId,uid,DistributorId";
+
+
+    private static final String tbl_CollectionDueDetails="CollectionDueDetails";
+    private static final String tbl_CollectionDueDetails_cols="InvoiceNo,ReasonId,ReasonOthers";
+
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -763,6 +771,9 @@ public class DataMembers {
 
         uploadColumn.put(tbl_RetailerScoreHeader, tbl_RetailerScoreHeader_cols);
         uploadColumn.put(tbl_RetailerScoreDetail, tbl_RetailerScoreDetail_cols);
+
+        uploadColumn.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
+        uploadColumn.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -893,6 +904,9 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_display_scheme_enrollment_header, tbl_display_scheme_enrollment_cols);
         uploadColumnWithRetailer.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
         uploadColumnWithRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
+
+        uploadColumnWithRetailer.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
+        uploadColumnWithRetailer.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

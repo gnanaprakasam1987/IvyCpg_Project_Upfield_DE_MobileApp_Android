@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -62,6 +63,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
     private LinearLayout bottomLayout;
     private double preCollectionValue, currentCollectionValue;
     private CardView cardViewLayout;
+    private boolean isFromCollection = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
 
         final int creditNotePos=getArguments().getInt("position",0);
         isAdvancePaymentAvailable=getArguments().getBoolean("IsAdvancePaymentAvailable", false);
+        isFromCollection=getArguments().getBoolean("FromCollection", false);
 
         mPaymentList=bmodel.collectionHelper.getCollectionPaymentList();
         mPaymentBO=mPaymentList.get(creditNotePos);
@@ -243,10 +246,27 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         if (btn == applyBtn) {
             mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
             mPaymentBO.setAmount(currentCollectionValue);
+
+            if (isFromCollection){
+                Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
+                bmodel.mSelectedActivityName = "Bill Payment";
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+            }
             getActivity().finish();
 
         } else if (btn == cancelBtn) {
             mPaymentBO.setAmount(preCollectionValue);
+            if (isFromCollection){
+                Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
+                bmodel.mSelectedActivityName = "Bill Payment";
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+            }
             getActivity().finish();
         }
 
@@ -419,6 +439,14 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         int i = item.getItemId();
         if (i == android.R.id.home) {
             mPaymentBO.setAmount(preCollectionValue);
+            if (isFromCollection){
+                Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
+                bmodel.mSelectedActivityName = "Bill Payment";
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+            }
             getActivity().finish();
         }
         return super.onOptionsItemSelected(item);
