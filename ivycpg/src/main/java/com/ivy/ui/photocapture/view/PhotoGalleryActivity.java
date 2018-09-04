@@ -83,10 +83,6 @@ public class PhotoGalleryActivity extends BaseActivity {
                 .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
                 .build()
                 .inject(this);
-/*        ((BusinessModel) getApplication()).getComponent().inject(this);
-        presenter.onCreate();*/
-
-
     }
 
     @Override

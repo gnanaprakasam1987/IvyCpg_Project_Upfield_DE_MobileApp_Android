@@ -40,9 +40,9 @@ android {
         multiDexEnabled true
         resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"${BASE_CPG_PROD_QA_DMS}\"")
-        buildConfigField("String", "TEST_USER_NAME", "\"${TEST_PROD_QA_USER_NAME}\"")
-        buildConfigField("String", "TEST_PASSWORD", "\"${TEST_PROD_QA_PASSWORD}\"")
+        buildConfigField("String", "BASE_URL", "\"${BASE_JNJ_IND_DEV_URL}\"")
+        buildConfigField("String", "TEST_USER_NAME", "\"${TEST_JNJ_IND_USER_NAME}\"")
+        buildConfigField("String", "TEST_PASSWORD", "\"${TEST_JNJ_IND_PASSWORD}\"")
         buildConfigField("boolean", "IS_AUTO_LOGIN_ENABLED", IS_AUTO_LOGIN_ENABLED)
     }
 
@@ -87,6 +87,7 @@ android {
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
             testCoverageEnabled = true
+            debuggable false
 
         }
         release {
@@ -142,6 +143,7 @@ android {
 
                // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
                 res.srcDirs =  [
+                        'src/main/res/layouts/dashboard',
                         'src/main/res/layouts/photocapture',
                         'src/main/res/layouts/activation',
                         'src/main/res/layouts',

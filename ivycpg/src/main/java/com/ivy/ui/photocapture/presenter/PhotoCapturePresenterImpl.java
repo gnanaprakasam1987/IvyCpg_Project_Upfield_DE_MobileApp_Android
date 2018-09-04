@@ -17,7 +17,6 @@ import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.data.PhotoCaptureDataManager;
@@ -84,7 +83,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
                 photoCaptureDataManager.fetchLocations(),
                 new Function3<ArrayList<PhotoCaptureProductBO>, ArrayList<PhotoTypeMasterBO>, ArrayList<PhotoCaptureLocationBO>, Object>() {
                     @Override
-                    public Boolean apply(ArrayList<PhotoCaptureProductBO> photoCaptureProductBOS, ArrayList<PhotoTypeMasterBO> photoTypeMasterBOS, ArrayList<PhotoCaptureLocationBO> photoCaptureLocationBOS) throws Exception {
+                    public Boolean apply(ArrayList<PhotoCaptureProductBO> photoCaptureProductBOS, ArrayList<PhotoTypeMasterBO> photoTypeMasterBOS, ArrayList<PhotoCaptureLocationBO> photoCaptureLocationBOS) {
                         mProductBOS.clear();
                         mProductBOS.addAll(photoCaptureProductBOS);
 
@@ -159,7 +158,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<String>() {
                     @Override
-                    public void accept(String value) throws Exception {
+                    public void accept(String value) {
                         getIvyView().setToolBarTitle(value);
                     }
                 }));
@@ -236,14 +235,14 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
                 getDataManager().updateModuleTime(HomeScreenTwo.MENU_PHOTO),
                 new Function3<Boolean, Boolean, Boolean, Boolean>() {
                     @Override
-                    public Boolean apply(Boolean isDataUpdated, Boolean isTimeStampUpdated, Boolean isModuleTimeUpdated) throws Exception {
+                    public Boolean apply(Boolean isDataUpdated, Boolean isTimeStampUpdated, Boolean isModuleTimeUpdated) {
                         return isDataUpdated && isTimeStampUpdated && isModuleTimeUpdated;
                     }
                 }).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(Boolean isUpdated) throws Exception {
+                    public void accept(Boolean isUpdated) {
 
                         if (isUpdated) {
                             getIvyView().showUpdatedDialog();
