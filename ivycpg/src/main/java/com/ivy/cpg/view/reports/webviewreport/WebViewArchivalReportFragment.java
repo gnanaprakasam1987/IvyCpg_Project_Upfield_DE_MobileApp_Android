@@ -68,7 +68,7 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        webViewReportHelper = WebViewReportHelper.getInstance(getActivity());
+        webViewReportHelper = WebViewReportHelper.getInstance(getActivity().getApplicationContext());
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),

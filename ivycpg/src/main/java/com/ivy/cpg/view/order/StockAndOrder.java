@@ -118,6 +118,7 @@ import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
+import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
 
 import java.util.ArrayList;
@@ -218,7 +219,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String TEMP_ORDDERIMG = "tempOrdImg";
     private final String TEMP_ADDRESSID = "tempAddressId";
     private double totalvalue = 0;
-
 
 
     private int mSelectedBrandID = 0;
@@ -1259,6 +1259,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 holder.text_allocation = row.findViewById(R.id.stock_and_order_listview_allocation);
                 holder.layout_allocation = row.findViewById(R.id.llAllocation);
+
+                //slant view
+                holder.slant_view_bg = (SlantView) row.findViewById(R.id.slant_view_bg);
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -3605,6 +3608,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.wsih.setText(wSIH);
             }
 
+
+            try {
+                if (holder.productObj.isPromo()) {
+                    holder.slant_view_bg.setVisibility(View.VISIBLE);
+                    holder.slant_view_bg.setBackgroundColor(Color.RED);
+                } else {
+                    holder.slant_view_bg.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
             //set order Qty based on UOM wise
 
             if (bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM
@@ -3749,6 +3764,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         private EditText uom_qty;
         private Button tv_uo_names;
+        private SlantView slant_view_bg;
 
 
     }
@@ -4009,13 +4025,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.configurationMasterHelper.IS_SR_VALIDATE_BY_RETAILER_TYPE) {
                 updatesalesReturnValue();
                 if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
-                    if (!orderHelper.returnReplacementAmountValidation(true,true,this)) {
+                    if (!orderHelper.returnReplacementAmountValidation(true, true, this)) {
                         onnext();
                     } else {
                         Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_not_matching_replacing_product_price), Toast.LENGTH_SHORT).show();
                     }
                 } else if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CREDIT")) {
-                    if (orderHelper.returnReplacementAmountValidation(false,true,this)) {
+                    if (orderHelper.returnReplacementAmountValidation(false, true, this)) {
                         onnext();
                     } else {
                         Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_less_than_replacing_product_price), Toast.LENGTH_SHORT).show();
@@ -4402,7 +4418,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
-            if(schemeHelper.IS_SCHEME_QPS_TRACKING){
+            if (schemeHelper.IS_SCHEME_QPS_TRACKING) {
                 Intent init = new Intent(StockAndOrder.this, QPSSchemeApply.class);
                 init.putExtra("ScreenCode", screenCode);
                 init.putExtra("ForScheme", screenCode);
