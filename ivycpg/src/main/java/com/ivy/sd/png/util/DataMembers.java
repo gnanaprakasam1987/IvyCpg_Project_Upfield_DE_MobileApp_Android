@@ -598,7 +598,7 @@ public class DataMembers {
     private static final String tbl_RetailerScoreDetail_cols = "Tid,ModuleCode,Weightage,Score";
 
     private static final String tbl_CollectionDueHeader="CollectionDueHeader";
-    private static final String tbl_CollectionDueHeader_cols="Date,SubmittedDate,RetailerId,uid,DistributorId";
+    private static final String tbl_CollectionDueHeader_cols="Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
 
 
     private static final String tbl_CollectionDueDetails="CollectionDueDetails";

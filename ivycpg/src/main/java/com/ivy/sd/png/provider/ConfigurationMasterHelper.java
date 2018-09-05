@@ -1504,6 +1504,13 @@ public class ConfigurationMasterHelper {
     public boolean IS_DISCOUNT_PRICE_PER;
     public double DISCOUNT_PRICE_PER = 50;
 
+    private static final String CODE_NAVIGATE_CREDIT_NOTE_SCREEN = "COLL19";
+    public boolean IS_NAVIGATE_CREDIT_NOTE_SCREEN;
+
+    private static final String CODE_NO_COLLECTION_REASON = "COLL18";
+    public boolean SHOW_NO_COLLECTION_REASON;
+
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2633,6 +2640,10 @@ public class ConfigurationMasterHelper {
         this.IS_SR_VALIDATE_BY_RETAILER_TYPE = hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) : false;
         this.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) : false;
         this.IS_INDICATIVE_MASTER= hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
+
+
+        this.IS_NAVIGATE_CREDIT_NOTE_SCREEN= hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) : false;
+        this.SHOW_NO_COLLECTION_REASON= hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) != null ? hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) : false;
     }
 
     private boolean isInOutModule() {

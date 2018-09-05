@@ -105,13 +105,14 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
 
                     deletePreviousTransaction(db,invoiceHeaderBO);
 
-                    String columns = "Date,SubmittedDate,RetailerId,uid,DistributorId";
+                    String columns = "Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
 
                     String values = bmodel.QT(invoiceHeaderBO.getInvoiceDate())+","+
                             bmodel.QT(SDUtil.now(8))+","+
                             bmodel.QT(invoiceHeaderBO.getRetailerId())+","+
                             uid+","+
-                            bmodel.QT(bmodel.getRetailerMasterBO().getDistributorId()+"");
+                            bmodel.getRetailerMasterBO().getDistributorId()+","+
+                            bmodel.getRetailerMasterBO().getDistParentId();
 
                     db.insertSQL("CollectionDueHeader",columns,values);
 

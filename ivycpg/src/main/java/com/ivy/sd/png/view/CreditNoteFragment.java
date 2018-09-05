@@ -247,26 +247,12 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
             mPaymentBO.setAmount(currentCollectionValue);
 
-            if (isFromCollection){
-                Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
-                bmodel.mSelectedActivityName = "Bill Payment";
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-
-            }
+            checkFromCollectionScreen();
             getActivity().finish();
 
         } else if (btn == cancelBtn) {
             mPaymentBO.setAmount(preCollectionValue);
-            if (isFromCollection){
-                Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
-                bmodel.mSelectedActivityName = "Bill Payment";
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-
-            }
+            checkFromCollectionScreen();
             getActivity().finish();
         }
 
@@ -439,17 +425,21 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         int i = item.getItemId();
         if (i == android.R.id.home) {
             mPaymentBO.setAmount(preCollectionValue);
-            if (isFromCollection){
-                Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
-                bmodel.mSelectedActivityName = "Bill Payment";
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-
-            }
+            checkFromCollectionScreen();
             getActivity().finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkFromCollectionScreen() {
+        if (isFromCollection){
+            Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
+            bmodel.mSelectedActivityName = "Bill Payment";
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+        }
     }
 
     public void numberPressed(View vw) {

@@ -110,29 +110,6 @@ public class CollectionFragmentNew extends IvyBaseFragment
         bmodel.setContext(getActivity());
     }
 
-    private boolean isCreditNoteAvailable() {
-        boolean isAvaiable = false;
-        String modeID = bmodel.getStandardListIdAndType(
-                "CNAP",
-                StandardListMasterConstants.CREDIT_NOTE_TYPE);
-        if (bmodel.collectionHelper.getCreditNoteList() != null) {
-            ArrayList<CreditNoteListBO> mCreditNoteList = new ArrayList<>();
-            for (CreditNoteListBO bo : bmodel.collectionHelper
-                    .getCreditNoteList()) {
-                if (bo.getRetailerId().equals(
-                        bmodel.getRetailerMasterBO().getRetailerID())
-                        && !bo.isUsed() && (!modeID.equals(bo.getTypeId() + "")))
-                    mCreditNoteList.add(bo);
-            }
-            if (mCreditNoteList.size() > 0)
-                isAvaiable = true;
-
-        }
-
-
-        return isAvaiable;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -158,7 +135,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
                             Toast.LENGTH_SHORT).show();
                 else {
 
-                    if (bmodel.configurationMasterHelper.IS_NAVIGATE_CREDIT_NOTE_SCREEN) {
+                    if (bmodel.configurationMasterHelper.IS_NAVIGATE_CREDIT_NOTE_SCREEN &&
+                            mPaymentList != null && mPaymentList.size() > 0) {
 
                         int pos = 0;
                         for (PaymentBO paymentBO : mPaymentList) {
@@ -1189,6 +1167,29 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 Commons.printException("" + e);
             }
         }
+    }
+
+    private boolean isCreditNoteAvailable() {
+        boolean isAvaiable = false;
+        String modeID = bmodel.getStandardListIdAndType(
+                "CNAP",
+                StandardListMasterConstants.CREDIT_NOTE_TYPE);
+        if (bmodel.collectionHelper.getCreditNoteList() != null) {
+            ArrayList<CreditNoteListBO> mCreditNoteList = new ArrayList<>();
+            for (CreditNoteListBO bo : bmodel.collectionHelper
+                    .getCreditNoteList()) {
+                if (bo.getRetailerId().equals(
+                        bmodel.getRetailerMasterBO().getRetailerID())
+                        && !bo.isUsed() && (!modeID.equals(bo.getTypeId() + "")))
+                    mCreditNoteList.add(bo);
+            }
+            if (mCreditNoteList.size() > 0)
+                isAvaiable = true;
+
+        }
+
+
+        return isAvaiable;
     }
 
 }

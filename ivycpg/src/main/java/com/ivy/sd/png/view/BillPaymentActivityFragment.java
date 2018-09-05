@@ -105,6 +105,29 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             view.findViewById(R.id.layout_vertical_line).setVisibility(View.GONE);
         }
 
+        /*if (bmodel.configurationMasterHelper.IS_NAVIGATE_CREDIT_NOTE_SCREEN && getArguments()!=null
+                && getArguments().getBoolean("FromCollection",false)) {
+
+            int pos = 0;
+            for (PaymentBO paymentBO : mPaymentList) {
+
+                if (paymentBO.getCashMode().equals("CN")
+                        && isCreditNoteAvailable()) {
+                    Intent intent = new Intent(getActivity(), PaymentModeActivity.class);
+                    intent.putExtra("position", pos);
+                    intent.putExtra("IsAdvancePaymentAvailable", false);
+                    intent.putExtra("paymode", "" + paymentBO.getCashMode());
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+                    break;
+
+                }
+
+                pos = pos + 1;
+            }
+        }*/
+
         return view;
     }
 
