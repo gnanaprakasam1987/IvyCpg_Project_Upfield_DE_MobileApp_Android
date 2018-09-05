@@ -76,6 +76,7 @@ import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.van.LoadManagementHelper;
+import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -113,7 +114,6 @@ import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.delivery.invoice.DeliveryManagementHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
@@ -137,7 +137,6 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
-import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaskHelper;
@@ -692,7 +691,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     @Override
     public void onTerminate() {
 
@@ -1091,7 +1089,7 @@ public class BusinessModel extends Application {
                 if (c.getCount() > 0) {
                     flag = true;
                 }
-            c.close();
+                c.close();
             }
 
             db.closeDB();
@@ -1116,7 +1114,7 @@ public class BusinessModel extends Application {
                     flag = true;
                     getRetailerMasterBO().setIsSurveyDone(true);
                 }
-            c.close();
+                c.close();
             }
 
             db.closeDB();
@@ -1143,7 +1141,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1171,7 +1169,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1201,7 +1199,7 @@ public class BusinessModel extends Application {
                 if (c.moveToNext()) {
                     i += c.getFloat(0);
                 }
-            c.close();
+                c.close();
             }
 
             db.closeDB();
@@ -1211,7 +1209,6 @@ public class BusinessModel extends Application {
 
         return i;
     }
-
 
 
     public double getAcheived() {
@@ -1263,7 +1260,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1288,7 +1285,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1887,7 +1884,7 @@ public class BusinessModel extends Application {
                         }
                     }
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
 
@@ -1920,7 +1917,7 @@ public class BusinessModel extends Application {
                         }
                     }
                 }
-            c.close();
+                c.close();
             }
 
             sql = "SELECT sum(AH.achscore),rm.retailerid  FROM  retailermaster rm"
@@ -2390,10 +2387,6 @@ public class BusinessModel extends Application {
     // // ****************** Daily Report
 
 
-
-
-
-
     public Vector<NonproductivereasonBO> getMissedCallRetailers() {
 
         Vector<NonproductivereasonBO> nonProductiveVector = new Vector<NonproductivereasonBO>();
@@ -2426,7 +2419,7 @@ public class BusinessModel extends Application {
 
                 }
 
-            c.close();
+                c.close();
             }
 
             db.closeDB();
@@ -2733,7 +2726,7 @@ public class BusinessModel extends Application {
                 }
             }
             orderDetailCursor.close();
-        db.closeDB();
+            db.closeDB();
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -2863,7 +2856,7 @@ public class BusinessModel extends Application {
                             isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", availability);
 
                 }
-            orderDetailCursor.close();
+                orderDetailCursor.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -3131,7 +3124,7 @@ public class BusinessModel extends Application {
                 if (orderDetailCursor.moveToNext()) {
                     orderId = orderDetailCursor.getString(0);
                 }
-            orderDetailCursor.close();
+                orderDetailCursor.close();
             }
             db.deleteSQL(DataMembers.tbl_distributor_order_header, "UId=" + QT(orderId)
                     + " and upload='N'", false);
@@ -3168,7 +3161,7 @@ public class BusinessModel extends Application {
                 if (orderDetailCursor.moveToNext()) {
                     orderId = orderDetailCursor.getString(0);
                 }
-            orderDetailCursor.close();
+                orderDetailCursor.close();
             }
 
             db.deleteSQL(DataMembers.tbl_distributor_closingstock_header, "UId=" + QT(orderId)
@@ -3180,7 +3173,8 @@ public class BusinessModel extends Application {
             Commons.printException("" + e);
         }
     }
-@Deprecated
+
+    @Deprecated
 //this method moved into #NetWorkUitls class
     public boolean isOnline() {
 
@@ -3555,8 +3549,6 @@ public class BusinessModel extends Application {
     public void setOrderHeaderBO(OrderHeader orderHeaderBO) {
         this.orderHeaderBO = orderHeaderBO;
     }
-
-
 
 
     public RetailerMasterBO getRetailerMasterBO() {
@@ -7941,14 +7933,23 @@ public class BusinessModel extends Application {
     }
 
 
-    public void updateGroupIdForRetailer() {
+    public void updatePriceGroupId(boolean isRetailer) {
 
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
+        StringBuilder sb = new StringBuilder();
 
         try {
-            Cursor c = db
-                    .selectSQL("SELECT groupId from RetailerPriceGroup where retailerId=" + getRetailerMasterBO().getRetailerID() + " and distributorId=" + getRetailerMasterBO().getDistributorId());
+            sb.append("SELECT groupId FROM RetailerPriceGroup WHERE");
+
+            if (isRetailer) {
+                sb.append(" retailerId =" + getRetailerMasterBO().getRetailerID() + " AND");
+            }
+
+            sb.append(" distributorId =" + getRetailerMasterBO().getDistributorId());
+
+
+            Cursor c = db.selectSQL(sb.toString());
 
             if (c != null) {
                 if (c.getCount() > 0) {

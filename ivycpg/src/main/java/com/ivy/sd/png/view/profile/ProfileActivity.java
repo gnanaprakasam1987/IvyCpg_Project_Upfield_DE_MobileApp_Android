@@ -1657,46 +1657,50 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE) {
 
             ArrayList<SupplierMasterBO> mSupplierList = bmodel.downloadSupplierDetails();
-            mSupplierAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.select_dialog_singlechoice, mSupplierList);
+            if (mSupplierList != null && mSupplierList.size() == 1) {
+                SupplierMasterBO supplierBo = mSupplierList.get(0);
+                bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
+                bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                bmodel.updatePriceGroupId(true);
+                showMessage(getString(R.string.distributor_name) + " "
+                        + getString(R.string.selected) + " "
+                        + mSupplierList.get(0).getSupplierName());
+                loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                return;
+            } else {
 
-         /*   mDefaultSupplierSelection = bmodel.getSupplierPosition(mSupplierList);
+                mSupplierAdapter = new ArrayAdapter<>(this,
+                        android.R.layout.select_dialog_singlechoice, mSupplierList);
 
-            if (mSupplierList != null && mSupplierList.size() > 0) {
-                bmodel.getRetailerMasterBO().setSupplierBO(
-                        mSupplierList.get(mDefaultSupplierSelection));
-                bmodel.getRetailerMasterBO().setDistributorId(mSupplierList.get(mDefaultSupplierSelection).getSupplierID());
-            }*/
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(getResources().getString(R.string.select_distributor))
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
-                    .setIcon(null)
-                    .setCancelable(false)
-                    .setTitle(getResources().getString(R.string.select_distributor))
+                        .setSingleChoiceItems(mSupplierAdapter,
+                                0,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
 
-                    .setSingleChoiceItems(mSupplierAdapter,
-                            0,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
+                                        SupplierMasterBO supplierBo = mSupplierAdapter
+                                                .getItem(which);
+                                        bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
+                                        bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                        bmodel.updatePriceGroupId(true);
 
-                                    SupplierMasterBO supplierBo = mSupplierAdapter
-                                            .getItem(which);
-                                    bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
-                                    bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
-                                    bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
-                                    bmodel.updateGroupIdForRetailer();
+                                        dialog.dismiss();
 
-                                    dialog.dismiss();
-
-                                    loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                                        loadHomeScreenTwo(bmodel.getRetailerMasterBO());
 
 
-                                }
-                            });
-            bmodel.applyAlertDialogTheme(builder);
+                                    }
+                                });
+                bmodel.applyAlertDialogTheme(builder);
 
-            return;
+                return;
+            }
         }
 
         loadHomeScreenTwo(bmodel.getRetailerMasterBO());

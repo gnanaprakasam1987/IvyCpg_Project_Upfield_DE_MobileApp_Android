@@ -1954,7 +1954,7 @@ public class AssetTrackingHelper {
         try {
 
             db.openDataBase();
-            db.deleteSQL("AssetService", "retailerid=" + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()), false);
+            db.deleteSQL("AssetServiceRequest", "retailerid=" + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()), false);
         } catch (Exception e) {
             db.closeDB();
             e.printStackTrace();
@@ -1978,7 +1978,7 @@ public class AssetTrackingHelper {
             String addAssetColumns = "Uid,date,AssetId,serialNum,reasonid,retailerid";
 
             String assetAddAndDeleteValues = id + ","
-                    + SDUtil.now(SDUtil.DATE_TIME_ID) + ","
+                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + QT(assetId) + "," + QT(serialNo) + ","
                     + QT(mReasonID) + ","
                     + QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
@@ -2095,7 +2095,7 @@ public class AssetTrackingHelper {
             }
 
 
-            String query = "select   AAD.AssetId,AAD.serialNum,AAD.reasonid  from PosmMaster P  inner  join AssetService AAD on P.PosmId=AAD.AssetId where retailerid=" +
+            String query = "select   AAD.AssetId,AAD.serialNum,AAD.reasonid  from PosmMaster P  inner  join AssetServiceRequest AAD on P.PosmId=AAD.AssetId where retailerid=" +
                     QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
 
             Cursor c2 = db.selectSQL(query);
