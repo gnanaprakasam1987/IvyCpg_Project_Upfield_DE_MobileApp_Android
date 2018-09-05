@@ -135,14 +135,11 @@ public class DenominationFragment extends IvyBaseFragment {
     private void init() {
         Bundle extras = getArguments();
         try {
-            if (extras != null) {
-                setScreenTitle(extras.getString("screentitle"));
-            }
-        } catch (Exception e) {
+            setScreenTitle(extras.getString("screentitle"));
+        } catch (NullPointerException e) {
             setScreenTitle("Denomination");
             Commons.printException(e);
         }
-
         currencyTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         quentyTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         amountTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
