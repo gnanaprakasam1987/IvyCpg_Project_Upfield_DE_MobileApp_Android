@@ -343,6 +343,9 @@ public class DayReportPresenterImpl implements DayReportPresenter {
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT28")) {
 
                 con.setMenuNumber(outlet.getTotAdhocProductive() + "/" + outlet.getTotAdhoc());
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT35")) {
+
+                con.setMenuNumber(mBusinessModel.formatValue(mBusinessModel.fitscoreHelper.getFitScoreAverage()) + "");
             }
         }
 

@@ -9,45 +9,47 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 /**
- * Created by mayuri.v on 9/22/2017.
+ * Created by mayuri.v on 9/22/2017
  */
 public class OrderTransactionListDialog extends Dialog {
     private final newOrderOnClickListener newOrderClickListener;
     private final oldOrderOnClickListener oldOrderClickListener;
+    private final OnDismissListener onDismissListener;
     private Context context;
-    private Context bContext;
     protected BusinessModel bmodel;
-    private View rootView;
+    private boolean hideNewOrder;
 
-    public OrderTransactionListDialog(Context bContext, Context context, newOrderOnClickListener newOrderClickListener, oldOrderOnClickListener oldOrderClickListener) {
+    OrderTransactionListDialog(Context bContext, Context context, newOrderOnClickListener newOrderClickListener, oldOrderOnClickListener oldOrderClickListener, boolean hideNewOrder, OnDismissListener onDismissListener) {
         super(context);
         this.context = context;
-        this.bContext = bContext;
         bmodel = (BusinessModel) bContext;
         this.newOrderClickListener = newOrderClickListener;
         this.oldOrderClickListener = oldOrderClickListener;
+        this.hideNewOrder = hideNewOrder;
+        this.onDismissListener = onDismissListener;
     }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        View view = null;
+        View view;
         view = View.inflate(context, R.layout.order_transaction_dialog_layout, null);
         setContentView(view);
 
-        RecyclerView transaction_list_view = (RecyclerView) findViewById(R.id.transaction_list);
+        RecyclerView transaction_list_view = findViewById(R.id.transaction_list);
         ViewGroup.LayoutParams params = transaction_list_view.getLayoutParams();
         if (bmodel.getOrderIDList().size() > 7) {
             params.height = (int) context.getResources().getDimension(R.dimen.dialog_height);
-            ;
         } else {
             params.height = RecyclerView.LayoutParams.WRAP_CONTENT;
         }
@@ -57,7 +59,9 @@ public class OrderTransactionListDialog extends Dialog {
         transaction_list_view.setLayoutManager(linearLayoutManager);
         transaction_list_view.setAdapter(new TransactionListAdapter());
 
-        TextView new_order_tv = ((TextView) findViewById(R.id.new_order_tv));
+        Button new_order_tv = findViewById(R.id.new_order_btn);
+        if (hideNewOrder)
+            new_order_tv.setVisibility(View.GONE);
         new_order_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +69,16 @@ public class OrderTransactionListDialog extends Dialog {
                 dismiss();
             }
         });
-        new_order_tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        new_order_tv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+        Button close = findViewById(R.id.cancel_btn);
+        close.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                onDismissListener.onDismiss();
+            }
+        });
     }
 
     public interface newOrderOnClickListener {
@@ -74,6 +87,10 @@ public class OrderTransactionListDialog extends Dialog {
 
     public interface oldOrderOnClickListener {
         void onOldOrderButtonClick(String s);
+    }
+
+    public interface OnDismissListener {
+        void onDismiss();
     }
 
     public class TransactionListAdapter extends RecyclerView.Adapter<TransactionListAdapter.MyViewHolder> {
@@ -122,7 +139,7 @@ public class OrderTransactionListDialog extends Dialog {
 
             public MyViewHolder(View view) {
                 super(view);
-                orderid = (TextView) view.findViewById(R.id.orderid);
+                orderid = view.findViewById(R.id.orderid);
                 orderid.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             }
         }

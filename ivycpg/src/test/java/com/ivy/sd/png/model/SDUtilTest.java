@@ -14,7 +14,7 @@ public class SDUtilTest {
 
     @Test
     public void checkFormat(){
-        String str = SDUtil.format(12.3449,2,0);
+        String str = SDUtil.format(12.345,2,0);
         Assert.assertTrue(str.equals("12.34"));
     }
 }

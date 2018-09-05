@@ -51,7 +51,7 @@ public class SOreportFragment extends Fragment {
             browser.getSettings().setAllowFileAccess(false);
             browser.getSettings().setDomStorageEnabled(true);
             browser.getSettings().setAllowUniversalAccessFromFileURLs(true);
-            browser.loadUrl(WebViewReportHelper.getInstance(getActivity()).getWebReportUrl() + bmodel.userMasterHelper.getUserMasterBO().getUserid());//"http://192.168.1.155/IvyCPG/IvyCPG_Piramal_Ind_Web/dayreport/Index");
+            browser.loadUrl(WebViewReportHelper.getInstance(getActivity().getApplicationContext()).getWebReportUrl() + bmodel.userMasterHelper.getUserMasterBO().getUserid());//"http://192.168.1.155/IvyCPG/IvyCPG_Piramal_Ind_Web/dayreport/Index");
             browser.setWebViewClient(new WebViewClient());
         }
         catch (Exception e){

@@ -15,13 +15,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="8">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:orientation="vertical">
 
             <LinearLayout
@@ -41,6 +41,7 @@
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_weight="1"
                     android:text="@string/product_name"
+                    android:ellipsize="marquee"
                     android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/list_margin" />
 
@@ -73,15 +74,41 @@
                 android:orientation="horizontal"
                 android:padding="3dp">
 
-                <TextView
-                    android:id="@+id/stock_and_order_listview_ssrp"
-                    style="?attr/customListItemSecondary"
+                <LinearLayout
+                    android:id="@+id/llSrp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginStart="@dimen/margin_5px"
-                    android:maxLines="1"
-                    android:text="@string/srp"
-                    android:layout_marginLeft="@dimen/margin_5px" />
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/margin_5px">
+
+                    <TextView
+                        android:id="@+id/srpTitle"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:tag="srp"
+                        android:text="@string/srp" />
+
+                    <TextView
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/dimen_1dp"
+                        android:layout_marginStart="@dimen/dimen_1dp"
+                        android:maxLines="1"
+                        android:text=":" />
+
+                    <TextView
+                        android:id="@+id/stock_and_order_listview_srp"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/zero" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_ppq"
@@ -159,6 +186,43 @@
                         android:maxLines="1"
                         android:text="@string/zero" />
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/llSo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_5px"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/soTitle"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="so_piece"
+                        android:maxLines="1"
+                        android:text="@string/so" />
+
+                    <TextView
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_1dp"
+                        android:layout_marginRight="@dimen/dimen_1dp"
+                        android:maxLines="1"
+                        android:text=":" />
+
+                    <TextView
+                        android:id="@+id/stock_and_order_listview_so"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|end"
+                        android:text="@string/zero"
+                        android:maxLines="1"
+                        android:textColor="@color/black_bg1"
+                        android:textSize="@dimen/font_micro_small" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/llwsih"
@@ -511,41 +575,6 @@
                         android:text="@string/zero" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/llSrp"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/margin_5px"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="@dimen/margin_5px">
-
-                    <TextView
-                        android:id="@+id/srpTitle"
-                        style="?attr/customListItemSecondary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:tag="srp"
-                        android:text="@string/srp" />
-
-                    <TextView
-                        style="?attr/customListItemSecondary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dimen_1dp"
-                        android:layout_marginStart="@dimen/dimen_1dp"
-                        android:maxLines="1"
-                        android:text=":" />
-
-                    <TextView
-                        android:id="@+id/stock_and_order_listview_srp"
-                        style="?attr/customListItemSecondary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:text="@string/zero" />
-                </LinearLayout>
             </LinearLayout>
 
             <View
@@ -573,54 +602,151 @@
                     android:layout_toLeftOf="@+id/lltotwight">
 
                     <LinearLayout
-                        android:id="@+id/llAvail"
-                        android:layout_width="0dp"
+                        android:id="@+id/llFoc"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center_horizontal"
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/shelfPcsCB"
+                            android:id="@+id/focTitle"
+                            style="?attr/customListItemSecondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:tag="item_foc"
+                            android:text="@string/foc" />
+
+                        <EditText
+                            android:id="@+id/stock_and_order_listview_foc"
+                            style="@style/EditText_ListItem"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:maxLength="5"
+                            android:text="@string/zero" />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/llUom_Qty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/uomTitle"
+                            style="?attr/customListItemSecondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:tag="uom_qty"
+                            android:text="@string/qty" />
+
+                        <EditText
+                            android:id="@+id/stock_and_order_listview_uom_qty"
+                            style="@style/EditText_ListItem"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            android:text="@string/zero" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llUom_dropdwon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dimens_4dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="?attr/customListItemSecondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <Button
+                            android:id="@+id/tv_uo_name"
+                            style="?attr/boxCustomButtonSmallGrey"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="@string/item_piece"
+                            android:textColor="@color/black_bg1" />
+
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/iv_stock"
+                        android:layout_width="@dimen/info_icon"
+                        android:layout_height="@dimen/info_icon"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/ivInfoicon"
+                        android:layout_toStartOf="@+id/ivInfoicon"
+                        android:padding="@dimen/list_item_padding"
+                        android:src="@drawable/activity_icon_stock_check"
+                        android:tint="@color/black_bg1" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_stock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_5px"
+                        android:layout_marginStart="@dimen/margin_5px"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/text_stock_title"
                             style="?attr/customListItemSecondary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
-                            android:text="@string/avail" />
-
-                        <CheckBox
-                            android:id="@+id/stock_and_order_listview_cb"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/llShelfCase"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                            android:tag="item_sr_piece"
+                            android:text="@string/stock" />
 
                         <TextView
-                            android:id="@+id/shelfCaseTitle"
                             style="?attr/customListItemSecondary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:tag="shelf_case"
-                            android:text="@string/sc" />
+                            android:layout_marginEnd="@dimen/dimen_1dp"
+                            android:layout_marginStart="@dimen/dimen_1dp"
+                            android:maxLines="1"
+                            android:text=":" />
 
-                        <EditText
-                            android:id="@+id/stock_and_order_listview_sc_qty"
-                            style="@style/EditText_ListItem"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/text_stock"
+                            style="?attr/customListItemSecondary"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="start" />
-
+                            android:maxLines="1"
+                            android:text="@string/zero" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/stock_and_order_listview_allocation"
+                        style="?attr/customListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/zero" />
+
+                    <TextView
+                        android:id="@+id/stock_and_order_listview_productcode"
+                        style="?attr/customListItemPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/stock_and_order_listview_productname"
+                        android:layout_gravity="end|center"
+                        android:layout_marginBottom="-2dp"
+                        android:layout_marginRight="@dimen/dimens_4dp"
+                        android:layout_marginTop="@dimen/dimens_6dp"
+                        android:gravity="start|center"
+                        android:maxLines="1"
+                        android:text="@string/prod_code"
+                        android:textSize="@dimen/font_nano_small"
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:id="@+id/llShelfOuter"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/widht_medium"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
@@ -643,29 +769,31 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/llShelfPc"
+                        android:id="@+id/llStkRtEdit"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/shelfPcsTitle"
+                            android:id="@+id/stkRtTitle"
                             style="?attr/customListItemSecondary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:tag="shelf_piece"
-                            android:text="@string/sp" />
+                            android:tag="sales_return"
+                            android:text="@string/sr" />
 
                         <EditText
-                            android:id="@+id/stock_and_order_listview_sp_qty"
+                            android:id="@+id/stock_and_order_listview_sales_return_qty"
                             style="@style/EditText_ListItem"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="start" />
+                            android:layout_height="match_parent"
+                            android:gravity="start"
+                            android:maxLength="8"
+                            android:text="@string/zero"
+                            android:visibility="gone" />
 
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:id="@+id/llOuter"
@@ -769,35 +897,85 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="5"
             android:orientation="horizontal"
-            android:weightSum="4">
+            android:weightSum="6">
+            <LinearLayout
+                android:id="@+id/llAvail"
+                android:layout_width="@dimen/widht_medium"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/shelfPcsCB"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/avail" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/btn_availability"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    />
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/llSo"
+                android:id="@+id/llShelfCase"
                 android:layout_width="@dimen/widht_medium"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/soTitle"
+                    android:id="@+id/shelfCaseTitle"
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:tag="so_piece"
-                    android:text="@string/so" />
+                    android:tag="shelf_case"
+                    android:text="@string/sc" />
+
+                <EditText
+                    android:id="@+id/stock_and_order_listview_sc_qty"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llShelfPc"
+                android:layout_width="@dimen/widht_medium"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/stock_and_order_listview_so"
+                    android:id="@+id/shelfPcsTitle"
                     style="?attr/customListItemSecondary"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center|end"
-                    android:text="@string/zero"
-                    android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:layout_height="wrap_content"
+                    android:tag="shelf_piece"
+                    android:text="@string/sp" />
+
+                <EditText
+                    android:id="@+id/stock_and_order_listview_sp_qty"
+                    style="@style/EditText_ListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start" />
+
             </LinearLayout>
+
+
 
             <LinearLayout
                 android:id="@+id/llCase"
@@ -880,6 +1058,13 @@
                     android:textColor="@color/black_bg1"
                     android:textSize="@dimen/font_micro_small" />
             </LinearLayout>
+
+            <com.ivy.sd.png.view.SlantView
+                android:id="@+id/slant_view_bg"
+                android:layout_width="@dimen/info_icon"
+                android:layout_height="@dimen/info_icon"
+                android:background="@color/RED"
+                android:visibility="visible" />
         </LinearLayout>
     </LinearLayout>
 
