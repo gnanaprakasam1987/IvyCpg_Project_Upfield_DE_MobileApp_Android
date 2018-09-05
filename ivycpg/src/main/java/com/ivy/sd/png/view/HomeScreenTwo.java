@@ -10,6 +10,8 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -52,6 +54,9 @@ import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashBoardActivity;
 import com.ivy.cpg.view.delivery.foodempire.DeliveryOrderActivity;
 import com.ivy.cpg.view.delivery.invoice.DeliveryManagement;
 import com.ivy.cpg.view.delivery.invoice.DeliveryManagementHelper;
+import com.ivy.cpg.view.delivery.kellogs.OrderDeliveryActivity;
+import com.ivy.cpg.view.delivery.kellogs.OrderDeliveryHelper;
+import com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
@@ -62,8 +67,6 @@ import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
-import com.ivy.cpg.view.delivery.kellogs.OrderDeliveryActivity;
-import com.ivy.cpg.view.delivery.kellogs.OrderDeliveryHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.photocapture.PhotoCaptureHelper;
@@ -74,7 +77,6 @@ import com.ivy.cpg.view.price.PriceTrackCompActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.promotion.PromotionHelper;
 import com.ivy.cpg.view.promotion.PromotionTrackingActivity;
-import com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sf.SODActivity;
@@ -175,6 +177,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_ORD_DELIVERY = "MENU_DELIVERY_MGMT_ORD";
     public static final String MENU_SALES_RET_DELIVERY = "MENU_SALES_RET_DELIVERY";
 
+    private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
+    private final int SALES_TYPES = 2;// show preVan seller dialog
+    private final int ORDER_TYPES = 3;// show Order Type Dialog
+    private final int MANDATORY_MODULE_CLOSE_CALL = 4;// show Mandatory dialog while try close call when mandatory module is not completed
+    private final int MANDATORY_MODULE = 5;//show Mandatory dialog with initial time(one time) in home screen Two
+
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
     private static final String PRE_SALES = "PreSales";
@@ -186,11 +194,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private String title;
     private Vector<ConfigureBO> menuDB = new Vector<>();
     private String[] mSalesTypeArray = {PRE_SALES, VAN_SALES};
-    private String[] mOrderTypeArray;
+    private ArrayAdapter mOrderTypeAadapter;
     private ArrayList<StandardListBO> mOrderTypeList;
     private ArrayList<SupplierMasterBO> mSupplierList;
-    private ArrayAdapter<SupplierMasterBO> mSupplierAdapter;
-    private int mDefaultSupplierSelection = 0;
     private IconicAdapter mSchedule;
     private boolean isClick = false;
     private boolean isCreated;
@@ -636,8 +642,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE
                     && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
                 mSupplierList = bmodel.downloadSupplierDetails();
-                mSupplierAdapter = new ArrayAdapter<>(this,
-                        R.layout.supplier_selection_list_adapter, mSupplierList);
                 if (mSupplierList != null && mSupplierList.size() > 0)
                     updateDefaultSupplierSelection();
             }
@@ -656,10 +660,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         if (bmodel.configurationMasterHelper.SHOW_ORDER_TYPE_DIALOG) {
             mOrderTypeList = bmodel.productHelper.getTypeList(ORDER_TYPE);
             if (mOrderTypeList != null && mOrderTypeList.size() > 0) {
-                mOrderTypeArray = new String[mOrderTypeList.size()];
+                mOrderTypeAadapter = new ArrayAdapter<>(this,
+                        R.layout.supplier_selection_list_adapter, mOrderTypeList);
                 if (bmodel.getRetailerMasterBO().getOrderTypeId() != null) {
                     for (int i = 0; i < mOrderTypeList.size(); i++) {
-                        mOrderTypeArray[i] = mOrderTypeList.get(i).getListName();
 
                         if (bmodel.getRetailerMasterBO().getOrderTypeId().equals(mOrderTypeList.get(i).getListID())) {
                             mOrderTypeCheckedItem = i;
@@ -727,13 +731,17 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
         // this dialog will return when mandatory module is not completed otherwise not show
         if (isMandatoryDialogShow && bmodel.configurationMasterHelper.IS_CHECK_MODULE_MANDATORY)
-            onCreateDialog(6);
+            onCreateDialog(MANDATORY_MODULE);
     }
 
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.supplier_new);
+        drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
+        menu.findItem(R.id.menu_supplier_selection).setIcon(drawable);
+
         if (!bmodel.configurationMasterHelper.SHOW_DGTC)
             menu.findItem(R.id.menu_dgtc).setVisible(false);
         if (!bmodel.configurationMasterHelper.IS_PHOTO_CAPTURE)
@@ -851,23 +859,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
             return true;
         } else if (i1 == R.id.menu_sales_selection) {
-            showDialog(2);
+            showDialog(SALES_TYPES);
             return true;
         } else if (i1 == R.id.menu_supplier_selection) {
-            // checking first position- because if primary available then there is a
-            // need to show seggregated view
-            if (!bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
-                    && mSupplierList.size() > 0 && mSupplierList.get(0).getIsPrimary() == 1) {
-                SupplierSelectionDialog dialog = new SupplierSelectionDialog();
-                dialog.show(getSupportFragmentManager(), "supplier");
-                //Bundle bndl=new Bundle();
-                dialog.setCancelable(false);
-            } else {
-                if (mSupplierList != null && mSupplierList.size() > 0) {
-                    updateDefaultSupplierSelection();
-                    showDialog(3);
-                }
-            }
+
+            SupplierSelectionDialog dialog = new SupplierSelectionDialog(HomeScreenTwo.this, mSupplierList);
+            dialog.show();
 
             return true;
         } else if (i1 == R.id.menu_dgtc) {
@@ -903,7 +900,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             return true;
         } else if (i1 == R.id.menu_order_type) {
             if (mOrderTypeList != null && mOrderTypeList.size() > 0) {
-                showDialog(4);
+                showDialog(ORDER_TYPES);
             } else {
                 Toast.makeText(this, "No order type available ", Toast.LENGTH_SHORT).show();
             }
@@ -918,7 +915,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
     private void updateDefaultSupplierSelection() {
         try {
-            mDefaultSupplierSelection = bmodel.getSupplierPosition(mSupplierList);
+            int mDefaultSupplierSelection = bmodel.getSupplierPosition(mSupplierList);
             if (mSupplierList != null && mSupplierList.size() > 0) {
                 bmodel.getRetailerMasterBO().setSupplierBO(
                         mSupplierList.get(mDefaultSupplierSelection));
@@ -1872,7 +1869,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                                         finish();
                                     } else {
-                                        showDialog(1);
+                                        showDialog(INVOICE_CREDIT_BALANCE);
                                     }
                                 } else {
 
@@ -1931,7 +1928,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
-                isClick=false;
+                isClick = false;
             }
 
         } else if (menu.getConfigCode().equals(MENU_STK_ORD)
@@ -2065,13 +2062,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             enableSchemeModule();
                                             loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
                                             loadOrderSummaryScreen(menuConfigCode);
-                                            }
-                                        }, false, new OrderTransactionListDialog.OnDismissListener() {
-                                            @Override
-                                            public void onDismiss() {
-                                                isCreated = false;
-                                                isClick = false;
-                                            }
+                                        }
+                                    }, false, new OrderTransactionListDialog.OnDismissListener() {
+                                        @Override
+                                        public void onDismiss() {
+                                            isCreated = false;
+                                            isClick = false;
+                                        }
                                     });
                                     obj.show();
                                     obj.setCancelable(false);
@@ -2814,7 +2811,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 finish();
             } else {
                 if (bmodel.configurationMasterHelper.IS_JUMP)
-                    onCreateDialog(5);
+                    onCreateDialog(MANDATORY_MODULE_CLOSE_CALL);
                 else
                     Toast.makeText(
                             this,
@@ -3535,7 +3532,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
             } else {
                 if (bmodel.configurationMasterHelper.IS_JUMP)
-                    onCreateDialog(5);
+                    onCreateDialog(MANDATORY_MODULE_CLOSE_CALL);
                 else
                     Toast.makeText(
                             this,
@@ -3563,7 +3560,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     finish();
                 } else {
                     if (bmodel.configurationMasterHelper.IS_JUMP)
-                        onCreateDialog(5);
+                        onCreateDialog(MANDATORY_MODULE_CLOSE_CALL);
                     else
                         Toast.makeText(
                                 this,
@@ -3981,7 +3978,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                     finish();
                 } else {
-                    showDialog(1);
+                    showDialog(INVOICE_CREDIT_BALANCE);
                 }
             } else {
                 bmodel.outletTimeStampHelper
@@ -4081,9 +4078,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-            case 0:
-                break;
-            case 1:
+
+            case INVOICE_CREDIT_BALANCE:
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(HomeScreenTwo.this)
                         .setIcon(null)
                         .setCancelable(false)
@@ -4100,11 +4096,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 });
                 bmodel.applyAlertDialogTheme(builder1);
                 break;
-            case 2:
+
+            case SALES_TYPES:
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(HomeScreenTwo.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle("Select")
+                        .setTitle(getString(R.string.plain_select))
                         .setSingleChoiceItems(mSalesTypeArray,
                                 bmodel.getRetailerMasterBO().getIsVansales(),
                                 new DialogInterface.OnClickListener() {
@@ -4139,42 +4136,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 });
                 bmodel.applyAlertDialogTheme(builder2);
                 break;
-            case 3:
-                AlertDialog.Builder builder3 = new AlertDialog.Builder(HomeScreenTwo.this)
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.select_supplier))
 
-                        .setSingleChoiceItems(mSupplierAdapter,
-                                mDefaultSupplierSelection,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-
-                                        SupplierMasterBO supplierBo = mSupplierAdapter
-                                                .getItem(which);
-
-                                        bmodel.getRetailerMasterBO().setSupplierBO(
-                                                supplierBo);
-                                        bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
-                                        bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
-                                        bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
-                                        bmodel.updateRetailerWiseSupplierType(supplierBo
-                                                .getSupplierID());
-                                        retailerCodeTxt.setText(supplierBo.getSupplierName());
-                                        dialog.dismiss();
-
-                                    }
-                                });
-                bmodel.applyAlertDialogTheme(builder3);
-                break;
-            case 4:
+            case ORDER_TYPES:
                 AlertDialog.Builder builder4 = new AlertDialog.Builder(HomeScreenTwo.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle("Select")
-                        .setSingleChoiceItems(mOrderTypeArray,
+                        .setTitle(getString(R.string.select_order_type))
+                        .setSingleChoiceItems(mOrderTypeAadapter,
                                 mOrderTypeCheckedItem,
                                 new DialogInterface.OnClickListener() {
 
@@ -4183,13 +4151,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                         int which) {
                                         final String typeId = mOrderTypeList.get(which).getListID();
                                         bmodel.getRetailerMasterBO().setOrderTypeId(typeId);
+                                        mOrderTypeCheckedItem = which;
                                         dialog.dismiss();
 
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder4);
                 break;
-            case 5:
+
+            case MANDATORY_MODULE_CLOSE_CALL:
                 AlertDialog.Builder builder5 = new AlertDialog.Builder(HomeScreenTwo.this)
                         .setIcon(null)
                         .setCancelable(false)
@@ -4208,7 +4178,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 bmodel.applyAlertDialogTheme(builder5);
                 break;
-            case 6:
+
+            case MANDATORY_MODULE:
                 String mandatoryStr = getMandatoryModules(2);
                 if (mandatoryStr.length() > 0) {
                     AlertDialog.Builder builder6 = new AlertDialog.Builder(HomeScreenTwo.this)
@@ -4914,7 +4885,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
     /**
      * Load Sales Download method in Async Task
-     *
      */
     class DownloadSalesReturnProducts extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;

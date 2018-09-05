@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.attendance.AttendanceHelper;
-import com.ivy.cpg.view.delivery.invoice.DeliveryManagement;
 import com.ivy.cpg.view.delivery.invoice.DeliveryManagementHelper;
 import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.sd.png.asean.view.R;
@@ -210,11 +209,14 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     @Override
     public void upload() {
 
-        if (mBModel.synchronizationHelper.checkSIHTable())
+        if (mBModel.synchronizationHelper.checkSIHTable()
+                && !mBModel.synchronizationHelper.getUploadUrl("UPLDSIH").isEmpty())
             startSync(UPLOAD_STOCK_IN_HAND);
-        else if (mBModel.synchronizationHelper.checkStockTable())
+        else if (mBModel.synchronizationHelper.checkStockTable()
+                && !mBModel.synchronizationHelper.getUploadUrl("UPLDSTOK").isEmpty())
             startSync(UPLOAD_STOCK_APPLY);
-        else if (mBModel.synchronizationHelper.checkLoyaltyPoints())
+        else if (mBModel.synchronizationHelper.checkLoyaltyPoints()
+                && !mBModel.synchronizationHelper.getUploadUrl("UPLDLOYALTY").isEmpty())
             startSync(UPLOAD_LOYALTY_POINTS);
         else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
                 && !isDayClosed) {
