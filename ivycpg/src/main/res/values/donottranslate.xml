@@ -212,4 +212,5 @@
     <string name="type_of_trade_offer">Type of Trade Offer</string>
     <string name="days_to_expire">Days to Expire</string>
     <string name="selected">selected</string>
+    <string name="select_order_type">Select order type</string>
 </resources>
