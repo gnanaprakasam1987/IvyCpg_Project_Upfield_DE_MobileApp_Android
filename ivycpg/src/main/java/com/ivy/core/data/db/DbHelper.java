@@ -13,4 +13,6 @@ public interface DbHelper extends AppDataManagerContract{
     Single<Double> getOrderValue();
 
     Single<Boolean> updateModuleTime(String moduleName);
+
+    Single<Boolean> saveModuleCompletion(String menuName);
 }

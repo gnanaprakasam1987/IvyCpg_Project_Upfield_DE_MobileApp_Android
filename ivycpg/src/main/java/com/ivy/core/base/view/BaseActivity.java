@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -550,6 +551,18 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void onBackPressed() {
+    }
+
+    public void startActivity(Class activity){
+        Intent intent = new Intent(this, activity);
+        startActivity(intent);
+
+    }
+
+    public void startActivityAndFinish(Class activity){
+        startActivity(activity);
+        finish();
+
     }
 }
 

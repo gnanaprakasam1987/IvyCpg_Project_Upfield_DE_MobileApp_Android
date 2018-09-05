@@ -13,5 +13,8 @@ public interface SellerDashboardContract {
 
     interface SellerDashboardPresenter<V extends SellerDashboardContract.SellerDashboardView> extends BaseIvyPresenter<V> {
 
+        void saveModuleCompletion(String menuCode);
+
+        void updateTimeStampModuleWise();
     }
 }

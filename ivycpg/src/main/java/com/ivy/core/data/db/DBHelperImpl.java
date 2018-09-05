@@ -31,11 +31,11 @@ public class DBHelperImpl implements DbHelper {
 
     private void initDb() {
         mDbUtil.createDataBase();
-        if(mDbUtil.isDbNullOrClosed())
+        if (mDbUtil.isDbNullOrClosed())
             mDbUtil.openDataBase();
     }
 
-    private void shutDownDb(){
+    private void shutDownDb() {
         mDbUtil.closeDB();
     }
 
@@ -159,6 +159,39 @@ public class DBHelperImpl implements DbHelper {
                 shutDownDb();
 
                 return false;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> saveModuleCompletion(final String menuName) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    initDb();
+                    Cursor c = mDbUtil
+                            .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
+                                    + appDataProvider.getRetailMaster().getRetailerID() + " AND MENU_CODE = " + QT(menuName));
+
+                    if (c.getCount() == 0) {
+                        String columns = "Retailerid,MENU_CODE";
+
+                        String values = appDataProvider.getRetailMaster().getRetailerID() + ","
+                                + QT(menuName);
+
+                        mDbUtil.insertSQL("ModuleCompletionReport", columns, values);
+
+                    }
+                    c.close();
+                    shutDownDb();
+                    return true;
+                } catch (Exception e) {
+                    shutDownDb();
+                    return false;
+                }
+
+
             }
         });
     }

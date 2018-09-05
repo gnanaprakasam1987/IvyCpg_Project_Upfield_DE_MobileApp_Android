@@ -219,4 +219,12 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     }
 
+    public void startActivity(Class activity){
+        ((BaseActivity)getActivity()).startActivity(activity);
+    }
+
+    public void startActivityAndFinish(Class activity){
+        ((BaseActivity)getActivity()).startActivityAndFinish(activity);
+    }
+
 }

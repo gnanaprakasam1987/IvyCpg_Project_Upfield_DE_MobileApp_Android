@@ -708,7 +708,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     /*******************************************************************************************************************************************************************************/
 
 
@@ -966,10 +965,10 @@ public class BusinessModel extends Application {
      */
 
     /**
-     * @deprecated
-     * @See {@link AppUtils#QT(String)}
      * @param data
      * @return
+     * @See {@link AppUtils#QT(String)}
+     * @deprecated
      */
     public String QT(String data) {
         return "'" + data + "'";
@@ -3583,21 +3582,19 @@ public class BusinessModel extends Application {
     }
 
 
-
-
     /**
-     * @deprecated
-     * @See {@link AppDataProviderImpl#getRetailMaster()}
      * @return
+     * @See {@link AppDataProviderImpl#getRetailMaster()}
+     * @deprecated
      */
     public RetailerMasterBO getRetailerMasterBO() {
         return retailerMasterBO;
     }
 
     /**
-     * @deprecated
-     * @See {@link AppDataProviderImpl#setRetailerMaster(RetailerMasterBO)}
      * @return
+     * @See {@link AppDataProviderImpl#setRetailerMaster(RetailerMasterBO)}
+     * @deprecated
      */
     public void setRetailerMasterBO(RetailerMasterBO retailerMasterBO) {
         // Until all the code is refactored, Retail master is updated in the Appdataprovider and business model
@@ -5598,6 +5595,11 @@ public class BusinessModel extends Application {
         }
     }
 
+    @Deprecated
+    /**
+     * This has been moved to  Dbhelper
+     * @See {@link DBHelperImpl#saveModuleCompletion(String)}
+     */
     public boolean saveModuleCompletion(String menuName) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,

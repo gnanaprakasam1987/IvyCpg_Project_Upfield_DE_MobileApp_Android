@@ -99,6 +99,11 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public Single<Boolean> saveModuleCompletion(String menuName) {
+        return dbHelper.saveModuleCompletion(menuName);
+    }
+
+    @Override
     public void setInTime(String inTime) {
         appDataProvider.setInTime(inTime);
     }
