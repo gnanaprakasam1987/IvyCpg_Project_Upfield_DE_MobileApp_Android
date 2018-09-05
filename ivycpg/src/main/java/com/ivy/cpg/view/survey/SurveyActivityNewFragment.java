@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -77,7 +78,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
@@ -523,7 +523,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             }
         }
 
-            loadQuestionFromFiveLevelFilter(surveyHelperNew.mSelectedSurvey, mFilteredProductId);
+        loadQuestionFromFiveLevelFilter(surveyHelperNew.mSelectedSurvey, mFilteredProductId);
 
         /* Show or hide footer which display survey score and overall score*/
         if (surveyHelperNew.SHOW_TOTAL_SCORE_IN_SURVEY) {
@@ -1566,8 +1566,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             isClicked = false;
                             surveyPhcapture = questBO;
                             imageName = "SVY_"
-                                    + bmodel.retailerMasterBO
-                                    .getRetailerID() + "_"
+                                    + (bmodel.retailerMasterBO.getRetailerID() == null
+                                    ? 0 : bmodel.retailerMasterBO.getRetailerID()) + "_"
                                     + questBO.getSurveyid() + "_"
                                     + questBO.getQuestionID() + "_"
                                     + SDUtil.now(SDUtil.DATE_TIME_ID)
@@ -2203,11 +2203,14 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                             startActivity(intent);
+                            getActivity().finish();
                         } else if ("HomeScreen".equals(mFrom)) {
-                            Intent intent = new Intent(getActivity(), HomeScreenActivity.class);
-                            startActivity(intent);
+                            HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                            if (currentFragment != null) {
+                                currentFragment.detach(mMenuCode);
+                            }
                         }
-                        getActivity().finish();
+
                     }
                 }
             }, new CommonDialog.negativeOnClickListener() {

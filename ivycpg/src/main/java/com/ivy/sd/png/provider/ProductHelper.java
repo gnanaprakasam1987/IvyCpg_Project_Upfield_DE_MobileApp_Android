@@ -1154,11 +1154,15 @@ public class ProductHelper {
                 taxHelper.downloadProductTaxDetails();
             }
 
-            if (filterProductLevels.size() > 0)
-                downloadLeastBrandProductMapping(mContentLevelId, filterProductLevels.size(), moduleCode);
-
-            downloadAttributeProductMapping();
             downloadAttributes();
+            if (getmAttributesList().size() > 0)
+                downloadAttributeProductMapping();
+
+
+            if (filterProductLevels.size() > 0
+                    && (getLstProductAttributeMapping() != null
+                    && getLstProductAttributeMapping().size() > 0))
+                downloadLeastBrandProductMapping(mContentLevelId, filterProductLevels.size(), moduleCode);
 
 
         } catch (Exception e) {
@@ -1275,6 +1279,7 @@ public class ProductHelper {
         String PRODUCT_DISTRIBUTION_TYPE_ROUTE = "ROUTE";
         String PRODUCT_DISTRIBUTION_TYPE_RETAILER = "RETAILER";
         String PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE = "SALES_TYPE";
+        String PRODUCT_DISTRIBUTION_TYPE_DISTRIBUTOR = "DISTRIBUTOR";
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1298,6 +1303,8 @@ public class ProductHelper {
                     stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getRetailerID() + ")");
                 } else if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE)) {
                     stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getSalesTypeId() + ")");
+                } else if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_DISTRIBUTOR)) {
+                    stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
                 }
                 cursor = db.selectSQL(stringBuilder.toString());
                 if (cursor.getCount() > 0) {
