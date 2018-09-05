@@ -250,6 +250,10 @@ public class ProductDetailsFragment extends IvyBaseFragment {
                     break;
                 }
 
+                case "PRODET15": {
+                    value = "" + productMasterBO.getMarginPrice();
+                    break;
+                }
             }
         }
         return value;
