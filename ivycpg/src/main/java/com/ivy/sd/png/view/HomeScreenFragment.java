@@ -103,7 +103,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener, PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
+public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener
+        , PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
     private BusinessModel bmodel;
 
     //used to save the photo
@@ -1591,7 +1592,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private void switchFragment(String fragmentName, String menuName) {
         android.support.v4.app.FragmentManager fm = getFragmentManager();
 
-        NewOutletFragment mNewOutletFragment = (NewOutletFragment) fm
+        NewoutletContainerFragment mNewOutletFragment = (NewoutletContainerFragment) fm
                 .findFragmentByTag(MENU_NEW_RETAILER);
 
         VisitFragment mVisitFragment = (VisitFragment) fm
@@ -1912,7 +1913,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                fragment = new NewOutletFragment();
+                fragment = new NewoutletContainerFragment();
                 fragment.setArguments(bndl);
                 fromHomeScreen = true;
                 ft.add(R.id.fragment_content, fragment,
@@ -2298,6 +2299,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         setScreenTitle(getResources().getString(R.string.app_name));
     }
+
 
     @Override
     public void onDestroy() {

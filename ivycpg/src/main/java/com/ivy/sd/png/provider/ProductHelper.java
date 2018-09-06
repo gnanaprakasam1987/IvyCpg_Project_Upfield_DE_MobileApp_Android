@@ -5576,7 +5576,7 @@ public class ProductHelper {
                 }
         } catch (Exception e) {
             Commons.printException(e);
-            return true;
+            return false;
         }
         return false;
     }

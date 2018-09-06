@@ -3,15 +3,15 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
+
     <include
         android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar"
-        />
+        layout="@layout/material_tool_bar" />
 
     <fragment
         android:id="@+id/newoutlet_fragment"
-        android:name="com.ivy.sd.png.view.NewOutletFragment"
+        android:name="com.ivy.sd.png.view.NewoutletContainerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp" />

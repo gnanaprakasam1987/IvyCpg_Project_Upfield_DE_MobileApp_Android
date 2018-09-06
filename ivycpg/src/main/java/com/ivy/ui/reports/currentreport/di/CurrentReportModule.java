@@ -75,8 +75,6 @@ public class CurrentReportModule {
     }
 
 
-
-
     @Provides
     @PerActivity
     ICurrentReportContract.ICurrentReportModelPresenter<ICurrentReportContract.ICurrentReportView> providesCurrentReportPresenter(CurrentReportPresenterImpl<ICurrentReportContract.ICurrentReportView> currentReportPresenter) {

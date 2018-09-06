@@ -732,6 +732,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         // this dialog will return when mandatory module is not completed otherwise not show
         if (isMandatoryDialogShow && bmodel.configurationMasterHelper.IS_CHECK_MODULE_MANDATORY)
             onCreateDialog(MANDATORY_MODULE);
+
     }
 
 

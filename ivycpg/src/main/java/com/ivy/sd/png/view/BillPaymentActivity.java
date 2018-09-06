@@ -52,7 +52,7 @@ public class BillPaymentActivity extends IvyBaseActivityNoActionBar implements R
     }
 
     @Override
-    protected void onResumeFragments() {
+    protected void onResume() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         /*BillPaymentActivityFragment bPAFragment = new BillPaymentActivityFragment();
@@ -63,9 +63,9 @@ public class BillPaymentActivity extends IvyBaseActivityNoActionBar implements R
         bPAFragment.setArguments(bundle);*/
 
         ft.replace(R.id.fragment, new BillPaymentActivityFragment());
-        ft.commitAllowingStateLoss();
+        ft.commit();
 
-        super.onResumeFragments();
+        super.onResume();
     }
 
     @Override

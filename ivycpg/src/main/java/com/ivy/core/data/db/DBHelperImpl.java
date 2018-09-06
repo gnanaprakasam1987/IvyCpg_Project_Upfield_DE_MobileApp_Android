@@ -24,6 +24,8 @@ public class DBHelperImpl implements DbHelper {
 
     @Override
     public Single<String> getThemeColor() {
+
+
         return Single.fromCallable(new Callable<String>() {
             @Override
             public String call() {

@@ -44,9 +44,13 @@ public class CurrentReportPresenterImpl<V extends ICurrentReportContract.ICurren
     @Inject
     public CurrentReportPresenterImpl(DataManager dataManager,
                                       SchedulerProvider schedulerProvider,
-                                      CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper,
+                                      CompositeDisposable compositeDisposable,
+                                      ConfigurationMasterHelper configurationMasterHelper,
                                       CurrentReportManager currentReportManager,
-                                      UserMasterHelper userMasterHelper, LabelsMasterHelper labelsMasterHelper, ProductHelper productHelper, ICurrentReportContract.ICurrentReportView view) {
+                                      UserMasterHelper userMasterHelper,
+                                      LabelsMasterHelper labelsMasterHelper,
+                                      ProductHelper productHelper,
+                                      ICurrentReportContract.ICurrentReportView view) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, (V) view);
         this.configurationMasterHelper = configurationMasterHelper;
         this.currentReportManager = currentReportManager;
@@ -143,8 +147,6 @@ public class CurrentReportPresenterImpl<V extends ICurrentReportContract.ICurren
         userMasterHelper.downloadUserDetails();
         labelsMasterHelper.downloadLabelsMaster();
     }
-
-
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onDestroyView() {

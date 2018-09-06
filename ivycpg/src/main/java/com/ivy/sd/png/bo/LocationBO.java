@@ -37,9 +37,6 @@ public class LocationBO {
     private int photoid;
     private int availability = -1;
 
-
-
-
     private ArrayList<NearExpiryDateBO> nearexpiryDate;
 
     public LocationBO(LocationBO locObj) {

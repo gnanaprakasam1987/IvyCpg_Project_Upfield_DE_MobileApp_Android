@@ -48,10 +48,8 @@ public class NewOutlet extends IvyBaseActivityNoActionBar {
     @Override
     protected void onResume() {
         super.onResume();
-        NewOutletFragment newOutletFragment=(NewOutletFragment) getSupportFragmentManager().findFragmentById(R.id.newoutlet_fragment);
-
+        NewoutletContainerFragment newOutletFragment=(NewoutletContainerFragment) getSupportFragmentManager().findFragmentById(R.id.newoutlet_fragment);
         newOutletFragment.onViewStateRestored(instate);
-
     }
 
     protected void passData(AppCompatEditText editText[],Bundle instate) {

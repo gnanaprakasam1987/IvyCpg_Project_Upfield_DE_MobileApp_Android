@@ -76,7 +76,8 @@
                     android:text="@string/cancel"
                     android:textColor="@color/Black"
                     android:textSize="@dimen/font_micro_small"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:layout_marginRight="@dimen/profile_history_20dp" />
 
                 <Button
                     android:id="@+id/btn_done"

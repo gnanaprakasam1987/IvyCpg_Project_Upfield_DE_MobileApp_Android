@@ -27,17 +27,11 @@ import java.util.Vector;
 
 
 public class RetailerHelper {
-
-
     private Context mContext;
     private BusinessModel bmodel;
     private static RetailerHelper instance = null;
-
-
     private ArrayList<RetailerMissedVisitBO> mMissedRetailerList;
     private ArrayList<RetailerMissedVisitBO> mMissedRetailerDetails;
-
-
     private List<VisitConfiguration> visitPlanning;
     private List<VisitConfiguration> visitCoverage;
     private String contractType;
@@ -47,7 +41,6 @@ public class RetailerHelper {
     public ArrayList<RetailerMasterBO> deviateRetailerList;
     private ArrayList<StandardListBO> mRetailerSelectionFilter;
     public ArrayList<RetailerMasterBO> retailerTargetList;
-
 
     protected RetailerHelper(Context context) {
         this.mContext = context;
@@ -78,9 +71,9 @@ public class RetailerHelper {
         return contractStartDate;
     }
 
+
     public void loadContractData() {
         try {
-
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
@@ -229,7 +222,6 @@ public class RetailerHelper {
      * Method to update planned retailer from date
      */
     public void getPlannedRetailerFromDate() {
-
 
         //Added by Rajkumar
         ArrayList<RetailerMasterBO> retailerWIthSequence = new ArrayList<>();
