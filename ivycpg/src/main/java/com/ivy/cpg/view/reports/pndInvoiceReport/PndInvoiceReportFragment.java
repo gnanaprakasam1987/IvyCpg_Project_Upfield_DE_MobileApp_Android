@@ -72,7 +72,7 @@ public class PndInvoiceReportFragment extends IvyBaseFragment {
         alertDialog = builder.create();
         alertDialog.show();*/
 
-        compositeDisposable.add((Disposable) PendingInvoiceHelper.getInstance().downloadPndInvoice(getActivity())
+        compositeDisposable.add((Disposable) PendingInvoiceHelper.getInstance().downloadPndInvoice(getActivity().getApplicationContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableObserver<ArrayList<PndInvoiceReportBo>>() {
                     @Override
