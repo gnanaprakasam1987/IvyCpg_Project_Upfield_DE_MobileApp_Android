@@ -261,6 +261,9 @@ public class DataMembers {
     public static final String tbl_DailyTargetPlanned = "DailyTargetPlanned";
     private static final String tbl_DailyTargetPlanned_cols = "TargetID,RetailerID,TargetValue,Date,IsGoldenStore";
 
+    public static final String tbl_DenominationMaster= "DenominationMaster";
+    private static final String tbl_DenominationMaster_cols = "id,name,value";
+
     public static final String tbl_orderHeader = "OrderHeader";
     public static final String tbl_orderDetails = "OrderDetail";
     public static final String tbl_orderReturnDetails = "OrderReturnDetail";
@@ -774,6 +777,7 @@ public class DataMembers {
 
         uploadColumn.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
         uploadColumn.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
+        uploadColumn.put(tbl_DenominationMaster, tbl_DenominationMaster_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -907,6 +911,7 @@ public class DataMembers {
 
         uploadColumnWithRetailer.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
         uploadColumnWithRetailer.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
+        uploadColumnWithRetailer.put(tbl_DenominationMaster, tbl_DenominationMaster_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();
