@@ -220,7 +220,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private double totalvalue = 0;
 
 
-
     private int mSelectedBrandID = 0;
     private String mSelectedFiltertext = "Brand";
 
@@ -4009,13 +4008,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.configurationMasterHelper.IS_SR_VALIDATE_BY_RETAILER_TYPE) {
                 updatesalesReturnValue();
                 if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
-                    if (!orderHelper.returnReplacementAmountValidation(true,true,this)) {
+                    if (!orderHelper.returnReplacementAmountValidation(true, true, this)) {
                         onnext();
                     } else {
                         Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_not_matching_replacing_product_price), Toast.LENGTH_SHORT).show();
                     }
                 } else if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CREDIT")) {
-                    if (orderHelper.returnReplacementAmountValidation(false,true,this)) {
+                    if (orderHelper.returnReplacementAmountValidation(false, true, this)) {
                         onnext();
                     } else {
                         Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_less_than_replacing_product_price), Toast.LENGTH_SHORT).show();
@@ -4402,7 +4401,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
-            if(schemeHelper.IS_SCHEME_QPS_TRACKING){
+            if (schemeHelper.IS_SCHEME_QPS_TRACKING) {
                 Intent init = new Intent(StockAndOrder.this, QPSSchemeApply.class);
                 init.putExtra("ScreenCode", screenCode);
                 init.putExtra("ForScheme", screenCode);
@@ -4456,10 +4455,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             } else {
                 bmodel.productHelper.clearOrderTable();
 
-                bmodel.outletTimeStampHelper
-                        .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
-                startActivity(new Intent(StockAndOrder.this,
-                        HomeScreenTwo.class));
+
+                if (!orderHelper.isQuickCall) {
+                    bmodel.outletTimeStampHelper
+                            .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                    startActivity(new Intent(StockAndOrder.this,
+                            HomeScreenTwo.class));
+                }
                 finish();
 
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -4487,11 +4489,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN)
                             bmodel.productHelper
                                     .clearBomReturnProductsTable();
-
-                        startActivity(new Intent(
-                                StockAndOrder.this,
-                                HomeScreenTwo.class));
-                        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                        if (!orderHelper.isQuickCall) {
+                            startActivity(new Intent(
+                                    StockAndOrder.this,
+                                    HomeScreenTwo.class));
+                            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                        }
                         finish();
                     }
                 }, new CommonDialog.negativeOnClickListener() {
@@ -4582,11 +4585,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         getResources().getString(
                                 R.string.stock_saved),
                         Toast.LENGTH_SHORT).show();
-
-                startActivity(new Intent(
-                        StockAndOrder.this,
-                        HomeScreenTwo.class));
-                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                if (!orderHelper.isQuickCall) {
+                    startActivity(new Intent(
+                            StockAndOrder.this,
+                            HomeScreenTwo.class));
+                    overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                }
                 finish();
 
             }
@@ -5510,11 +5514,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), OrderedFlag)) {
-                        bmodel.saveModuleCompletion(OrderedFlag);
-                        bmodel.outletTimeStampHelper
-                                .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
-                        startActivity(new Intent(StockAndOrder.this,
-                                HomeScreenTwo.class));
+                        if (!orderHelper.isQuickCall) {
+                            bmodel.saveModuleCompletion(OrderedFlag);
+                            bmodel.outletTimeStampHelper
+                                    .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                            startActivity(new Intent(StockAndOrder.this,
+                                    HomeScreenTwo.class));
+                        }
                         finish();
                     }
                 }

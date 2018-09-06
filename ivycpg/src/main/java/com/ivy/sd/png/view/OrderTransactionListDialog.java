@@ -28,7 +28,7 @@ public class OrderTransactionListDialog extends Dialog {
     protected BusinessModel bmodel;
     private boolean hideNewOrder;
 
-    OrderTransactionListDialog(Context bContext, Context context, newOrderOnClickListener newOrderClickListener, oldOrderOnClickListener oldOrderClickListener, boolean hideNewOrder, OnDismissListener onDismissListener) {
+    public OrderTransactionListDialog(Context bContext, Context context, newOrderOnClickListener newOrderClickListener, oldOrderOnClickListener oldOrderClickListener, boolean hideNewOrder, OnDismissListener onDismissListener) {
         super(context);
         this.context = context;
         bmodel = (BusinessModel) bContext;

@@ -205,4 +205,5 @@
     <string name="vanload_reject_applied">VanLoad Stock Rejected</string>
     <string name="check_any_one_list">Check any one list</string>
     <string name="new_order">New Order</string>
+    <string name="withold_title">With Hold Tax</string>
 </resources>

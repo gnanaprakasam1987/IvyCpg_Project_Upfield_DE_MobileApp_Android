@@ -65,6 +65,7 @@ import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
 import com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection;
+import com.ivy.cpg.view.quickcall.QuickCallFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
@@ -166,6 +167,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET"; //Deleiver Management
     private static final String MENU_OFLNE_PLAN = "MENU_OFLNE_PLAN"; //Offline Planning
     private static final String MENU_SUBD = "MENU_SUBD";
+    private static final String MENU_Q_CALL = "MENU_QUICK_CALL";
 
 
     private String roadTitle;
@@ -249,6 +251,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_MVP, R.drawable.ic_mvp_icon);
         menuIcons.put(MENU_VISIT, R.drawable.ic_vector_tradecoverage);
         menuIcons.put(MENU_SUBD, R.drawable.ic_vector_gallery);
+        menuIcons.put(MENU_Q_CALL, R.drawable.ic_vector_tradecoverage);
         menuIcons.put(MENU_LOAD_MANAGEMENT, R.drawable.ic_load_mgmt_icon);
         menuIcons.put(MENU_NEW_RETAILER, R.drawable.ic_new_retailer_icon);
         menuIcons.put(MENU_LOAD_REQUEST, R.drawable.ic_stock_proposal_icon);
@@ -716,14 +719,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
-            }else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
+            } else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
                     && isInandOut
                     && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.mark_attendance_working),
                         Toast.LENGTH_SHORT).show();
-            }
-            else if (!bmodel.synchronizationHelper.isDataAvailable()) {
+            } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
                 Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
                                 getResources().getString(R.string.please_redownload),
                         Toast.LENGTH_SHORT).show();
@@ -1522,6 +1524,60 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 || menuItem.getConfigCode().equals(MENU_SUPERVISOR_MOVEMENT)
                 || menuItem.getConfigCode().equals(MENU_SUPERVISOR_CALLANALYSIS)) {
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
+        } else if (menuItem.getConfigCode().equals(MENU_Q_CALL)) {
+            if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
+                boolean bool = bmodel.locationUtil.isGPSProviderEnabled();
+                if (!bool) {
+                    Integer resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
+                    if (resultCode == ConnectionResult.SUCCESS)
+                        bmodel.requestLocation(getActivity());
+                    else
+                        showDialog(1);
+                    return;
+                }
+            }
+
+            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    "yyyy/MM/dd") > 0)
+                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (bmodel.synchronizationHelper.isDayClosed()) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.day_closed),
+                        Toast.LENGTH_SHORT).show();
+            } else if (isLeave_today) {
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.mark_attendance),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.leaveToday),
+                            Toast.LENGTH_SHORT).show();
+            } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
+                Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
+                                getResources().getString(R.string.please_redownload),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                if (bmodel.getRetailerMaster().size() > 0) {
+                    if (!isClicked) {
+                        isClicked = false;
+                        bmodel.distributorMasterHelper.downloadDistributorsList();
+                        bmodel.configurationMasterHelper
+                                .setSubdtitle(menuItem.getMenuName());
+
+                        switchFragment(MENU_Q_CALL, menuItem.getMenuName());
+                    }
+
+                } else {
+                    Toast.makeText(getActivity(), "No Retailer Available", Toast.LENGTH_LONG).show();
+                }
+
+            }
         }
 
     }
@@ -1619,6 +1675,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         BackUpSellerFragment backUpSellerFragment = (BackUpSellerFragment) fm.findFragmentByTag(MENU_BACKUP_SELLER);
 
         SellersMapHomeFragment supervisorMapCFragment = (SellersMapHomeFragment) fm.findFragmentByTag(MENU_SUPERVISOR_CALLANALYSIS);
+
+        QuickCallFragment mQuickCallFragment = (QuickCallFragment) fm
+                .findFragmentByTag(MENU_Q_CALL);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1732,6 +1791,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (supervisorMapCFragment != null && (fragmentName.equals(MENU_SUPERVISOR_CALLANALYSIS))
                 && supervisorMapCFragment.isVisible()) {
             return;
+        } else if (mQuickCallFragment != null && (fragmentName.equals(MENU_Q_CALL))
+                &&  mQuickCallFragment.isVisible()) {
+            return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
@@ -1807,6 +1869,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(backUpSellerFragment);
         if (supervisorMapCFragment != null)
             ft.remove(supervisorMapCFragment);
+        if (mQuickCallFragment != null)
+            ft.remove(mQuickCallFragment);
 
         Bundle bndl;
         Fragment fragment;
@@ -2152,6 +2216,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_ROUTE_KPI);
+                break;
+
+            case MENU_Q_CALL:
+                fragment = new QuickCallFragment();
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_Q_CALL);
                 break;
         }
         ft.commit();

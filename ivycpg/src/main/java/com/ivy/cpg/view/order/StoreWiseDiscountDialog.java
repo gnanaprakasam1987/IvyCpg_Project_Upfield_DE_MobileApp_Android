@@ -14,6 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,7 +44,8 @@ public class StoreWiseDiscountDialog extends DialogFragment {
     public InputMethodManager inputManager;
     private double mTotalOrderValue,mEnteredDiscAmtOrPercent;
     private DiscountHelper discountHelper;
-
+    private boolean isWithHold;
+    private CheckBox cbwithhold;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
 
         mTotalOrderValue = getArguments().getDouble("totalValue", 0);
         mEnteredDiscAmtOrPercent = getArguments().getDouble("enteredDiscAmtOrPercent", 0);
+        isWithHold = getArguments().getBoolean("isWithHold", false);
         discountHelper = DiscountHelper.getInstance(getActivity());
 
     }
@@ -104,6 +108,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
         TextView mMaxRangeTV = getView().findViewById(R.id.tv_max_range);
         TextView mTitleTv = getView().findViewById(R.id.tvTitle);
         mDiscountET = getView().findViewById(R.id.edit_discount_value);
+        cbwithhold = getView().findViewById(R.id.cbwithhold);
 
         mTitleTv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         mDiscountET.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -121,6 +126,14 @@ public class StoreWiseDiscountDialog extends DialogFragment {
             mMaxRangeTV.setText("Discount  :");
             String strDiscCnt = mEnteredDiscAmtOrPercent + "";
             mDiscountET.setText(strDiscCnt);
+        }else if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 3) {
+            mTitleTv.setText(getResources().getString(R.string.withold_title));
+            mMinRangeTV.setVisibility(View.GONE);
+            mDiscountET.setVisibility(View.GONE);
+            mMaxRangeTV.setText(getResources().getString(R.string.withold_title) + "-" + OrderHelper.getInstance(getActivity()).withHoldDiscount);
+            cbwithhold.setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.card_keyboard).setVisibility(View.GONE);
+            cbwithhold.setChecked(isWithHold);
         }
         getView().findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
         mDiscountET.setOnTouchListener(new View.OnTouchListener() {
@@ -168,7 +181,12 @@ public class StoreWiseDiscountDialog extends DialogFragment {
 
         });
 
-
+        cbwithhold.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isWithHold = isChecked;
+            }
+        });
         Button mDoneBTN = getView().findViewById(R.id.btn_done);
         mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mDoneBTN.setOnClickListener(new View.OnClickListener() {
@@ -176,7 +194,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
             public void onClick(View v) {
                 if (mStorewiseDiscountBO != null) {
                     if (isValidate()) {
-                        mDialogResult.onDiscountDismiss(String.valueOf(mStorewiseDiscountBO.getAppliedDiscount()), mStorewiseDiscountBO.getIsPercentage(), mStorewiseDiscountBO.getDiscountId(), mStorewiseDiscountBO.getIsCompanyGiven());
+                        mDialogResult.onDiscountDismiss(String.valueOf(mStorewiseDiscountBO.getAppliedDiscount()), mStorewiseDiscountBO.getIsPercentage(), mStorewiseDiscountBO.getDiscountId(), mStorewiseDiscountBO.getIsCompanyGiven(),isWithHold);
                         getDialog().dismiss();
                     } else {
                         Toast.makeText(
@@ -185,7 +203,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
                                 Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    mDialogResult.onDiscountDismiss(mDiscountET.getText().toString(), 0, 0, 0);
+                    mDialogResult.onDiscountDismiss(mDiscountET.getText().toString(), 0, 0, 0,isWithHold);
                     getDialog().dismiss();
                 }
             }
@@ -194,7 +212,7 @@ public class StoreWiseDiscountDialog extends DialogFragment {
 
 
     public interface OnMyDialogResult {
-        void onDiscountDismiss(String result, int result1, int result3, int result4);
+        void onDiscountDismiss(String result, int result1, int result3, int result4,boolean iswithHold);
 
         void cancel();
     }
