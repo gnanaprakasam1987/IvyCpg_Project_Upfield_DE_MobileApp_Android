@@ -179,7 +179,7 @@ public class UserMasterHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
-        db.closeDB();
+        if (db != null) db.closeDB();
         return true;
     }
 
