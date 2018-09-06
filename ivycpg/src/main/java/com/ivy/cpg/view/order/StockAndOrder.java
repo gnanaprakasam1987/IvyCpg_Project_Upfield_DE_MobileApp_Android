@@ -337,7 +337,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .getSerializable(TEMP_ORDDERIMG) == null ? ""
                     : savedInstanceState.getSerializable(TEMP_ORDDERIMG));
             tempAddressId = (int) (savedInstanceState
-                    .getSerializable(TEMP_ADDRESSID));
+                    .getSerializable(TEMP_ADDRESSID) == null ? 0
+                    : savedInstanceState.getSerializable(TEMP_ADDRESSID));
 
         }
 

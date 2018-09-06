@@ -781,6 +781,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             + (productBO.getOrderedOuterQty() * productBO
                             .getOsrp());
 
+                    // Set the calculated flat line values in productBO
+                    totalOrderValue += lineValue;
+
                     productBO.setDiscount_order_value(lineValue);
                     productBO.setSchemeAppliedValue(lineValue);
                     productBO.setOrderPricePiece(productBO.getSrp());

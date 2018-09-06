@@ -953,7 +953,7 @@ public class DiscountHelper {
                         if (schemeBO.isAmountTypeSelected()) {
                             for (SchemeProductBO schemeProductBo : schemeProductList) {
                                 totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
-                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId());
+                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),false);
                             }
                         }
 
