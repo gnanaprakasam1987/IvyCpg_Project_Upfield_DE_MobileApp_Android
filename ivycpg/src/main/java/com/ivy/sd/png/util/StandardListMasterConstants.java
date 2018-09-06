@@ -117,4 +117,6 @@ public class StandardListMasterConstants {
 		mActivityCodeByMenuCode.put("MENU_VAN_UNLOAD", "VUNLOAD");
 		mActivityCodeByMenuCode.put("MENU_PS_STKORD", "PSSTKORD");
 	}
+
+	public static final String NO_COLLECTION_REASON_TYPE = "COLLECTION_DUE";
 }
