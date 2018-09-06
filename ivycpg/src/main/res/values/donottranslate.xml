@@ -213,6 +213,7 @@
     <string name="days_to_expire">Days to Expire</string>
     <string name="selected">selected</string>
     <string name="select_order_type">Select order type</string>
+    <string name="withold_title">With Hold Tax</string>
 
     <string name="no_collection_reason">No collection \nReason</string>
 

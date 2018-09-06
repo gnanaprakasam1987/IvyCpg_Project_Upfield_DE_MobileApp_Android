@@ -1822,6 +1822,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                             if (bmodel.isEdit()) {
+                                OrderHelper.getInstance(this).isQuickCall=false;
                                 Intent intent = new Intent(HomeScreenTwo.this,
                                         OrderSummary.class);
                                 intent.putExtra("ScreenCode", "MENU_ORDER");
@@ -1860,6 +1861,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                         SDUtil.now(SDUtil.DATE_GLOBAL),
                                                         SDUtil.now(SDUtil.TIME),
                                                         menu.getConfigCode());
+                                        OrderHelper.getInstance(this).isQuickCall=false;
                                         Intent i = new Intent(HomeScreenTwo.this,
                                                 StockAndOrder.class);
                                         i.putExtra("OrderFlag", "Nothing");
@@ -1891,6 +1893,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                                     SDUtil.now(SDUtil.TIME),
                                                     menu.getConfigCode());
+                                    OrderHelper.getInstance(this).isQuickCall=false;
                                     Intent i = new Intent(HomeScreenTwo.this,
                                             StockAndOrder.class);
                                     i.putExtra("OrderFlag", "Nothing");
@@ -2236,6 +2239,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             obj.show();
                             obj.setCancelable(false);
                         } else {
+                            OrderHelper.getInstance(this).isQuickCall=false;
                             OrderSummary.mCurrentActivityCode = menu.getConfigCode();
 
                             Intent i = new Intent(HomeScreenTwo.this,
@@ -3843,6 +3847,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     }
 
     private void loadOrderSummaryScreen(String menuConfigCode) {
+        OrderHelper.getInstance(this).isQuickCall=false;
         Intent intent = new Intent(HomeScreenTwo.this,
                 OrderSummary.class);
         if (menuConfigCode.equals(MENU_CATALOG_ORDER)) {
@@ -3971,7 +3976,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     SDUtil.now(SDUtil.TIME),
                                     menu);
-
+                    OrderHelper.getInstance(this).isQuickCall=false;
                     Intent intent = new Intent(HomeScreenTwo.this,
                             StockAndOrder.class);
                     startActivity(intent);
@@ -4002,6 +4007,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 //                            Intent intent = new Intent(HomeScreenTwo.this,
 //                                    StockAndOrder.class);
+                OrderHelper.getInstance(this).isQuickCall=false;
+
                 Intent intent;
                 if (menu.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
 //                                bmodel.productHelper
@@ -4683,6 +4690,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             bmodel.productHelper.updateIndicateOrder();
                         }
                         //      setImagefromCamera(mProductID, mTypeID);
+                        OrderHelper.getInstance(HomeScreenTwo.this).isQuickCall=false;
                         if (menuCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
                             Intent i = new Intent(HomeScreenTwo.this,
                                     StockAndOrder.class);
