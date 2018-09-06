@@ -359,7 +359,7 @@ public class CheckModeFragment extends IvyBaseFragment
                         else
                             qty = "";
 
-                        mCollectAmountET.setText(bmodel.formatValue(SDUtil.convertToDouble(SDUtil.getWithoutExponential(qty))));
+                        mCollectAmountET.setText(SDUtil.getWithoutExponential(qty));
                         Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                                 Toast.LENGTH_SHORT).show();
                     } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CHEQUE)) {
@@ -371,7 +371,7 @@ public class CheckModeFragment extends IvyBaseFragment
                         else
                             qty = "";
 
-                        mCollectAmountET.setText(bmodel.formatValue(SDUtil.convertToDouble(SDUtil.getWithoutExponential(qty))));
+                        mCollectAmountET.setText(SDUtil.getWithoutExponential(qty));
                         Toast.makeText(
                                 getActivity(),
                                 getResources()
@@ -384,7 +384,7 @@ public class CheckModeFragment extends IvyBaseFragment
                 } else {
                     qty = qty.length() > 1 ? qty
                             .substring(0, qty.length() - 1) : "0";
-                    mCollectAmountET.setText(bmodel.formatValue(SDUtil.convertToDouble(SDUtil.getWithoutExponential(qty))));
+                    mCollectAmountET.setText(SDUtil.getWithoutExponential(qty));
                 }
             }
         });
