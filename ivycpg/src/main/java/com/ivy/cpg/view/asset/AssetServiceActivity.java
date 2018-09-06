@@ -113,7 +113,7 @@ public class AssetServiceActivity extends BaseActivity {
         }
 
         mAssetReasonList = new ArrayList<>();
-        bModel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_SERVICE");
+        bModel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_SER_REQ");
         mAssetReasonList.add(new ReasonMaster("0", "--Select Reason--"));
         mAssetReasonList.addAll(bModel.reasonHelper.getAssetReasonsBasedOnType());
         mAssetReasonSpinAdapter = new ArrayAdapter<>(AssetServiceActivity.this,

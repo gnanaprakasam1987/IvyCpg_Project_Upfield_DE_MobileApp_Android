@@ -8,7 +8,7 @@ public class ParentSchemeBO {
 
     // For QPS Tracker Header
     private int schemeID;
-    private String schemeDesc, buyType;
+    private String schemeDesc, schemeShortDesc, buyType;
     private double cumulativePurchase, curSlabCumSchAmt, curSlabrsorPer, nextSlabBalance,
             nextSlabCumSchAmt, nextSlabrsorPer;
     private boolean selected;
@@ -27,6 +27,14 @@ public class ParentSchemeBO {
 
     public void setSchemeDesc(String schemeDesc) {
         this.schemeDesc = schemeDesc;
+    }
+
+    public String getSchemeShortDesc() {
+        return schemeShortDesc;
+    }
+
+    public void setSchemeShortDesc(String schemeShortDesc) {
+        this.schemeShortDesc = schemeShortDesc;
     }
 
     public String getBuyType() {

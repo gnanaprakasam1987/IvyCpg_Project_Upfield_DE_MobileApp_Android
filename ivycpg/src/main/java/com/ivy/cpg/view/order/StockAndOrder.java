@@ -118,6 +118,7 @@ import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
+import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
 
 import java.util.ArrayList;
@@ -1258,6 +1259,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 holder.text_allocation = row.findViewById(R.id.stock_and_order_listview_allocation);
                 holder.layout_allocation = row.findViewById(R.id.llAllocation);
+
+                //slant view
+                holder.slant_view_bg = (SlantView) row.findViewById(R.id.slant_view_bg);
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -3604,6 +3608,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.wsih.setText(wSIH);
             }
 
+
+            try {
+                if (holder.productObj.isPromo()) {
+                    holder.slant_view_bg.setVisibility(View.VISIBLE);
+                    holder.slant_view_bg.setBackgroundColor(Color.RED);
+                } else {
+                    holder.slant_view_bg.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
             //set order Qty based on UOM wise
 
             if (bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM
@@ -3748,6 +3764,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         private EditText uom_qty;
         private Button tv_uo_names;
+        private SlantView slant_view_bg;
 
 
     }

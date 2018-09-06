@@ -84,12 +84,11 @@ public class FitScoreHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("Select Module, Weightage from HHTModuleWeightage"); //MENU_STK_ORD
+                    .selectSQL("Select distinct Module from HHTModuleWeightage"); //MENU_STK_ORD
             if (c != null) {
                 while (c.moveToNext()) {
                     hhtModuleBO = new HHTModuleBO();
                     hhtModuleBO.setModule(c.getString(0));
-                    hhtModuleBO.setWeightage(c.getString(1));
                     hhtModuleList.add(hhtModuleBO);
                 }
             }
@@ -144,7 +143,16 @@ public class FitScoreHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("Select Weightage from HHTModuleWeightage where Module ='" + Module + "'"); //MENU_STK_ORD
+                    .selectSQL("SELECT DISTINCT Weightage FROM HHTModuleWeightage A " +
+                            "INNER JOIN HHTModuleWeightageMapping B " +
+                            "ON A.GroupID = B.GroupID LEFT JOIN RetailerMaster RM " +
+                            "ON RM.subchannelid = B.CriteriaId " +
+                            "AND B.CriteriaType = 'CHANNEL' " +
+                            "LEFT JOIN RetailerAttribute RA " +
+                            "ON (RA.AttributeId = B.CriteriaId AND B.CriteriaType = 'RTR_ATTRIBUTE') " +
+                            "WHERE A.Module = '" + Module + "' and " +
+                            "(RM.RetailerID = '" + bmodel.getRetailerMasterBO().getRetailerID() + "' or " +
+                            "RA.RetailerID = '" + bmodel.getRetailerMasterBO().getRetailerID() + "') LIMIT 1");
             if (c != null) {
                 while (c.moveToNext()) {
                     weightage = c.getInt(0);
@@ -204,12 +212,16 @@ public class FitScoreHelper {
                 PID = "PID";
             }
             Cursor c = db
-                    .selectSQL("Select distinct A.PName,D.FromNorm,case when (ifnull(D.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,E.Weightage,B.Score from object1 A " +
+                    .selectSQL("Select distinct A.PName,'',case when (ifnull(D.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end as Achieved,'','' from ProductMaster A " +
                             Qry +
                             "inner join WeightageHeader C on C.CriteriaID = B.RetailerID " +
                             "inner join WeightageProductDetail D on C.HeaderID = D.HeaderID and D.ProductID = B." + PID + " " +
-                            "inner join HHTModuleWeightage E on E.Module = C.Module where C.CriteriaID = '" + retailerID + "' and E.Module = '" + Module + "'" +
-                            " AND B.Score>0");
+                            "inner join HHTModuleWeightage E on E.Module = C.Module " +
+                            "inner join HHTModuleWeightageMapping HWM ON E.GroupID = HWM.GroupID " +
+                            "left join RetailerMaster RM ON RM.subchannelid = HWM.CriteriaId AND HWM.CriteriaType = 'CHANNEL' " +
+                            "left join RetailerAttribute RA ON (RA.AttributeId = HWM.CriteriaId AND HWM.CriteriaType = 'RTR_ATTRIBUTE') " +
+                            "where C.CriteriaID = '" + retailerID + "' and E.Module = '" + Module + "' " +
+                            "AND B.Score>0 and (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "')");
             if (c != null) {
                 while (c.moveToNext()) {
                     weightageBO = new FitScoreBO();
@@ -249,24 +261,18 @@ public class FitScoreHelper {
                 Qry = "inner join PriceCheckDetail B on A.Pid = B.PID ";
                 PID = "PID";
             }
-//            Cursor c = db
-//                    .selectSQL("Select distinct A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from object1 A " +
-//                            Qry +
-//                            "inner join ProductTaggingCriteriaMapping C on C.CriteriaID = B.retailerID " +
-//                            "inner join ProductTaggingMaster D ON D.groupid=C.groupid " +
-//                            "inner join ProductTaggingGroupMapping E ON E.groupid=D.groupid and E.PID = B." + PID + " " +
-//                            "inner join StandardListMaster F on F.ListID = D.TaggingTypelovID " +
-//                            "inner join HHTModuleWeightage G on G.Module = F.ListCode " +
-//                            "WHERE C.CriteriaID = '" + retailerID + "' and G.Module = '" + Module + "'");
             Cursor c = db
-                    .selectSQL("Select distinct A.PName,E.FromNorm,case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end,G.Weightage,B.Score from object1 A " +
+                    .selectSQL("Select distinct A.PName,'',case when (ifnull(E.FromNorm,0)<ifnull(B.Score,0)) then 'Y' else 'N' end as achieved,'','' from ProductMaster A " +
                             Qry +
                             "inner join StandardListMaster F on F.ListID = D.TaggingTypelovID " +
                             "inner join ProductTaggingMaster D ON D.TaggingTypelovID  =F.ListID " +
                             "inner join ProductTaggingGroupMapping E ON E.groupid=D.groupid and E.PID = B." + PID + " " +
-                            "inner join HHTModuleWeightage G on G.Module = F.ListCode WHERE G.Module = '" + Module + "'" +
-                            " AND B.retailerid=" + retailerID +
-                            " AND B.Score>0");
+                            "inner join HHTModuleWeightage G on G.Module = F.ListCode " +
+                            "inner join HHTModuleWeightageMapping HWM ON G.GroupID = HWM.GroupID " +
+                            "left join RetailerMaster RM ON RM.subchannelid = HWM.CriteriaId AND HWM.CriteriaType = 'CHANNEL' " +
+                            "left join RetailerAttribute RA ON (RA.AttributeId = HWM.CriteriaId AND HWM.CriteriaType = 'RTR_ATTRIBUTE') " +
+                            "WHERE G.Module = '" + Module + "' AND B.retailerid=" + retailerID +
+                            " AND B.Score>0 and (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "')");
 
             if (c != null) {
                 while (c.moveToNext()) {
@@ -304,18 +310,16 @@ public class FitScoreHelper {
                 ListCode = "MERCH_INIT";
             }
             Cursor c = db
-                    .selectSQL("Select distinct A.PosmDesc,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from PosmMaster A " +
+                    .selectSQL("Select distinct A.PosmDesc,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,'','' from PosmMaster A " +
                             "inner join AssetDetail B on A.Posmid = B.AssetID " +
                             "inner join AssetHeader C on C.Uid = B.UID " +
                             "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
-                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'" +
-                            " AND B.Score>0");
-//            Cursor c = db
-//                    .selectSQL("Select A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score from object1 A " +
-//                            "inner join AssetDetail B on A.Pid = B.ProductID " +
-//                            "inner join AssetHeader C on C.Uid = B.UID " +
-//                            "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
-//                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "'");
+                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' " +
+                            "inner join HHTModuleWeightageMapping HWM ON E.GroupID = HWM.GroupID " +
+                            "left join RetailerMaster RM ON RM.subchannelid = HWM.CriteriaId AND HWM.CriteriaType = 'CHANNEL' " +
+                            "left join RetailerAttribute RA ON (RA.AttributeId = HWM.CriteriaId AND HWM.CriteriaType = 'RTR_ATTRIBUTE') " +
+                            "where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "' " +
+                            "AND B.Score>0 and (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "')");
             if (c != null) {
                 while (c.moveToNext()) {
                     weightageBO = new FitScoreBO();
@@ -344,10 +348,14 @@ public class FitScoreHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("Select distinct A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,E.Weightage,B.Score " +
-                            "from object1 A inner join PromotionDetail B on A.Pid = B.BrandID " +
-                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' where B.RetailerID = '" + retailerID + "'" +
-                            " AND B.Score>0");
+                    .selectSQL("Select distinct A.PromoName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,'','' " +
+                            "from PromotionProductMapping A inner join PromotionDetail B on A.PromoId = B.PromotionID " +
+                            "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' " +
+                            "inner join HHTModuleWeightageMapping HWM ON E.GroupID = HWM.GroupID " +
+                            "left join RetailerMaster RM ON RM.subchannelid = HWM.CriteriaId AND HWM.CriteriaType = 'CHANNEL' " +
+                            "left join RetailerAttribute RA ON (RA.AttributeId = HWM.CriteriaId AND HWM.CriteriaType = 'RTR_ATTRIBUTE') " +
+                            "where B.RetailerID = '" + retailerID + "'" +
+                            " AND B.Score>0 and (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "')");
             if (c != null) {
                 while (c.moveToNext()) {
                     weightageBO = new FitScoreBO();
@@ -375,9 +383,11 @@ public class FitScoreHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
+            Double target = 0.0;
+
             for (HHTModuleBO hhtModule : hhtModuleList) {
                 Cursor c = db
-                        .selectSQL("Select Ifnull(A.Score,0),A.Weightage from RetailerScoreDetails A inner join RetailerScoreHeader B " +
+                        .selectSQL("Select Ifnull(A.Score,0) as Score,A.Weightage from RetailerScoreDetails A inner join RetailerScoreHeader B " +
                                 "on A.Tid = B.Tid where B.RetailerID = '" + retailerID + "' and A.ModuleCode ='" + hhtModule.getModule() + "'");
                 if (c != null) {
                     while (c.moveToNext()) {
@@ -392,15 +402,50 @@ public class FitScoreHelper {
                 c.close();
             }
 
+            Cursor c = db
+                    .selectSQL("SELECT DISTINCT Module, Weightage FROM HHTModuleWeightage A " +
+                            "INNER JOIN HHTModuleWeightageMapping B ON A.GroupID = B.GroupID " +
+                            "LEFT JOIN RetailerMaster RM ON RM.subchannelid = B.CriteriaId AND B.CriteriaType = 'CHANNEL' " +
+                            "LEFT JOIN RetailerAttribute RA ON (RA.AttributeId = B.CriteriaId AND B.CriteriaType = 'RTR_ATTRIBUTE') " +
+                            "WHERE (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "') LIMIT 5");
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    target = target + c.getDouble(1);
+                }
+            }
+            c.close();
+
             FitScoreChartBO fitChart = new FitScoreChartBO();
             fitChart.setAchieved(SDUtil.roundIt(weightage, 2));
-            fitChart.setTarget("100.00");
+            fitChart.setTarget(target + "");
             fitChart.setModule("ALL");
             fitScoreChartList.add(fitChart);
         } catch (Exception e) {
             Commons.printException(e);
         }
         setFitScoreChartList(fitScoreChartList);
+    }
+
+    public double getFitScoreAverage() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db.selectSQL("Select sum(0+Score)/count(RetailerID) from RetailerScoreHeader where Date ="
+                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    return c.getDouble(0);
+                }
+            }
+            c.close();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return 0;
     }
 
 }

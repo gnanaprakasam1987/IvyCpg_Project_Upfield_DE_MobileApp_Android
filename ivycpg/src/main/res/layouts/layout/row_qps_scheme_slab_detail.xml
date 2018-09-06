@@ -34,7 +34,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.7"
                     android:gravity="left|center_vertical"
                     android:paddingLeft="@dimen/dimen_5dp"
                     android:tag="scheme_detail_productname"
@@ -71,7 +71,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.3"
                     android:gravity="center"
                     android:tag="scheme_detail_uom"
                     android:text="UOM" />
@@ -131,14 +131,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_weight="0.8"
+                android:layout_weight="0.7"
                 android:gravity="left"
                 android:paddingLeft="@dimen/dimen_5dp"
                 android:text="Product Name" />
 
             <TextView
                 android:id="@+id/tv_pcs_ordered_qty"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
@@ -149,7 +149,7 @@
 
             <TextView
                 android:id="@+id/tv_cases_ordered_qty"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
@@ -160,40 +160,42 @@
 
             <TextView
                 android:id="@+id/tv_uom"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="0" />
 
             <EditText
                 android:id="@+id/tv_pcs_final_qty"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
                 android:layout_weight="0.2"
                 android:gravity="center"
+                android:maxLength="4"
                 android:text="0" />
 
             <EditText
                 android:id="@+id/tv_cases_final_qty"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
                 android:layout_weight="0.2"
                 android:gravity="center"
+                android:maxLength="4"
                 android:text="0" />
 
             <TextView
                 android:id="@+id/tv_gqt"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"

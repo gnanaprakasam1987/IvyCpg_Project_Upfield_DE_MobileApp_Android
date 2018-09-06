@@ -1,5 +1,6 @@
 package com.ivy.sd.png.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -51,6 +52,7 @@ import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.attendance.AttendanceFragment;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
+import com.ivy.cpg.view.attendance.inout.TimeTrackingFragment;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.IncentiveDashboardFragment;
 import com.ivy.cpg.view.dashboard.olddashboard.DashboardFragment;
@@ -91,7 +93,6 @@ import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.attendance.inout.TimeTrackingFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -1892,6 +1893,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
                 }
+                //clear distributor id and group id
+                bmodel.getRetailerMasterBO().setDistributorId(0);
+                bmodel.getRetailerMasterBO().setGroupId(0);
 
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
@@ -2255,6 +2259,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     .findFragmentByTag(MENU_LOAD_REQUEST);
             if (mStockProposalFragment != null) {
                 ft.detach(mStockProposalFragment);
+                ft.commit();
+            }
+        } else if (MENU_SURVEY_SW.equals(menuCode)
+                || MENU_SURVEY01_SW.equals(menuCode)) {
+            SurveyActivityNewFragment mSurveyActivityNewFragment = (SurveyActivityNewFragment) fm
+                    .findFragmentByTag(menuCode);
+            if (mSurveyActivityNewFragment != null) {
+                ft.detach(mSurveyActivityNewFragment);
                 ft.commit();
             }
         }
@@ -2636,9 +2648,17 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
 
         protected void onPostExecute(Integer result) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.menu_not_available),
-                    Toast.LENGTH_LONG).show();
+            try {
+                getFragmentManager().executePendingTransactions();
+                Activity activity = getActivity();
+                if (activity != null && isAdded()) {
+                    Toast.makeText(activity,
+                            getResources().getString(R.string.menu_not_available),
+                            Toast.LENGTH_LONG).show();
+                }
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
 
         }
     }
