@@ -45,6 +45,7 @@ import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CatalogOrder;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,7 +103,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mExpandableLV = findViewById(R.id.elv);
         Button btnNext = findViewById(R.id.btn_next);
-        btnNext.setTypeface(bModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btnNext.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
         findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
 
         Bundle extras = getIntent().getExtras();
@@ -208,7 +209,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
     private void applyHeaderLabels() {
         try {
             ((TextView) findViewById(R.id.tv_schemeduration_header)).setTypeface(
-                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_schemeduration_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_schemeduration_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_schemeduration_header).getTag()));
@@ -217,7 +218,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_schemetype_header)).setTypeface(
-                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_schemetype_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_schemetype_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_schemetype_header).getTag()));
@@ -226,7 +227,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_cumulative_purchase_header)).setTypeface(
-                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_cumulative_purchase_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_cumulative_purchase_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_cumulative_purchase_header).getTag()));
@@ -235,7 +236,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_curslab_sch_amt_header)).setTypeface(
-                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_curslab_sch_amt_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_curslab_sch_amt_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_curslab_sch_amt_header).getTag()));
@@ -244,7 +245,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_curslab_rs_per_header)).setTypeface(
-                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_curslab_rs_per_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_curslab_rs_per_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_curslab_rs_per_header).getTag()));
@@ -253,7 +254,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_nextslab_header)).setTypeface(
-                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_nextslab_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_nextslab_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_nextslab_header).getTag()));
@@ -262,7 +263,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_nextslab_sch_amt_header)).setTypeface(
-                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_nextslab_sch_amt_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_nextslab_sch_amt_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_nextslab_sch_amt_header).getTag()));
@@ -271,7 +272,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_nextslab_rs_per_header)).setTypeface(
-                    bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_nextslab_rs_per_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_nextslab_rs_per_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_nextslab_rs_per_header).getTag()));
@@ -300,7 +301,9 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                     if (schemeProduct.getProductId().equalsIgnoreCase(product.getProductID())) {
                         schemeHeader.setCaseScheme(product.getCaseUomId() == schemeProduct.getUomID());
                         schemeHeader.setEveryCaseUOM(product.getCaseUomId() == schemeHeader.getEveryUomId());
-
+                        if (schemeHeader.isCaseScheme() && !schemeProduct.getUomDescription().contains("(")) {
+                            schemeProduct.setUomDescription(schemeProduct.getUomDescription() + "(" + product.getCaseSize() + ")");
+                        }
                         // Order Cases Quantity Calculation
                         if (product.getOrderedCaseQty() > 0 && schemeProduct.getIncreasedCasesQty() == 0 && schemeProduct.getIncreasedPcsQty() == 0) {
                             int everyqty = 0, qty = 0;
@@ -483,6 +486,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         for (SchemeProductBO schemeBO : schemeHeader.getBuyingProducts()) {
                             buyType = (schemeBO.getBuyType() != null) ? schemeBO.getBuyType() : "";
                             getType = (schemeBO.getGetType() != null) ? schemeBO.getGetType() : "";
+                            parentSchemeBO.setSchemeShortDesc(schemeBO.getGroupName());
                         }
 
                         //Calculating Static cumulative purchase, Cur Sch Details
@@ -549,6 +553,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                                 parentSchemeBO.setCalculatedCumulativePurchase(schemeHeader.isCaseScheme() ? schemeHeader.getTotalCaseQty() :
                                         schemeHeader.getTotalPieceQty());
                             }
+                            parentSchemeBO.setSchemeShortDesc(schemeBO.getGroupName());
                             schemeList.add(schemeBO);
                         }
                         for (SchemeProductBO schemeBO : schemeHeader.getFreeProducts()) {
@@ -599,6 +604,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         //List<SchemeProductBO> schemeBuyingList = checkNextSlabBuyProducts(entry.getKey(), parentSchemeBO.getCumulativePurchase());
                         for (SchemeProductBO schemeBO : schemeHeader.getBuyingProducts()) {
                             buyType = (schemeBO.getBuyType() != null) ? schemeBO.getBuyType() : "";
+                            parentSchemeBO.setSchemeShortDesc(schemeBO.getGroupName());
                         }
                         SchemaQPSAchHistoryBO qpsHistoryBO = historyMap.get(schemeHeader.getParentId() + "");
                         if (currentSchemeList.get(schemeHeader.getParentId()) == null) {
@@ -677,6 +683,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         for (SchemeProductBO schemeBO : schemeHeader.getBuyingProducts()) {
                             buyType = (schemeBO.getBuyType() != null) ? schemeBO.getBuyType() : "";
                             getType = (schemeBO.getGetType() != null) ? schemeBO.getGetType() : "";
+                            parentSchemeBO.setSchemeShortDesc(schemeBO.getGroupName());
                             if (schemeBO.getBuyType().matches("SV|QTY")) {
                                 schemebuyQty = schemeBO.getBuyQty();
                                 parentSchemeBO.setCalculatednextSlabBalance(Math.max(0, schemeBO.getBuyQty() - parentSchemeBO.getCalculatedCumulativePurchase()));
@@ -831,207 +838,195 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         @Override
         public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View view, ViewGroup parent) {
             final SchemeProductDetailHolder holder;
-            if (view == null) {
-                holder = new SchemeProductDetailHolder();
-                // Other views
-                view = mInflater.inflate(R.layout.row_qps_scheme_slab_detail, parent, false);
+//            if (view == null) {
+            holder = new SchemeProductDetailHolder();
+            // Other views
+            view = mInflater.inflate(R.layout.row_qps_scheme_slab_detail, parent, false);
 
-                holder.tv_productName = view.findViewById(R.id.tv_productName);
-                holder.tv_pcs_ordered_qty = view.findViewById(R.id.tv_pcs_ordered_qty);
-                holder.tv_cases_ordered_qty = view.findViewById(R.id.tv_cases_ordered_qty);
-                holder.tv_uom = view.findViewById(R.id.tv_uom);
-                holder.tv_pcs_final_qty = view.findViewById(R.id.tv_pcs_final_qty);
-                holder.tv_cases_final_qty = view.findViewById(R.id.tv_cases_final_qty);
-                holder.tv_gqt = view.findViewById(R.id.tv_gqt);
-                holder.lnrSchemeHeader = view.findViewById(R.id.lnrSchemeHeader);
+            holder.tv_productName = view.findViewById(R.id.tv_productName);
+            holder.tv_pcs_ordered_qty = view.findViewById(R.id.tv_pcs_ordered_qty);
+            holder.tv_cases_ordered_qty = view.findViewById(R.id.tv_cases_ordered_qty);
+            holder.tv_uom = view.findViewById(R.id.tv_uom);
+            holder.tv_pcs_final_qty = view.findViewById(R.id.tv_pcs_final_qty);
+            holder.tv_cases_final_qty = view.findViewById(R.id.tv_cases_final_qty);
+            holder.tv_gqt = view.findViewById(R.id.tv_gqt);
+            holder.lnrSchemeHeader = view.findViewById(R.id.lnrSchemeHeader);
 
-                //typeface
-                holder.tv_productName.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_pcs_ordered_qty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_cases_ordered_qty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_uom.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_pcs_final_qty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_cases_final_qty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_gqt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            //typeface
+            holder.tv_productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+            holder.tv_pcs_ordered_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+            holder.tv_cases_ordered_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+            holder.tv_uom.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+            holder.tv_pcs_final_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+            holder.tv_cases_final_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+            holder.tv_gqt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
 
-                try {
-                    ((TextView) view.findViewById(R.id.tv_header_productName)).setTypeface(
-                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_productName).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.tv_header_productName)).setText(bModel.labelsMasterHelper
-                                .applyLabels(view.findViewById(R.id.tv_header_productName).getTag()));
-                } catch (Exception e) {
-                    Commons.printException(e + "");
-                }
-                try {
-                    ((TextView) view.findViewById(R.id.tv_header_pcs_ordered_qty)).setTypeface(
-                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_pcs_ordered_qty).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.tv_header_pcs_ordered_qty)).setText(bModel.labelsMasterHelper
-                                .applyLabels(view.findViewById(R.id.tv_header_pcs_ordered_qty).getTag()));
-                } catch (Exception e) {
-                    Commons.printException(e + "");
-                }
-                try {
-                    ((TextView) view.findViewById(R.id.tv_header_cases_ordered_qty)).setTypeface(
-                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_cases_ordered_qty).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.tv_header_cases_ordered_qty)).setText(bModel.labelsMasterHelper
-                                .applyLabels(view.findViewById(R.id.tv_header_cases_ordered_qty).getTag()));
-                } catch (Exception e) {
-                    Commons.printException(e + "");
-                }
-                try {
-                    ((TextView) view.findViewById(R.id.tv_header_uom)).setTypeface(
-                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_uom).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.tv_header_uom)).setText(bModel.labelsMasterHelper
-                                .applyLabels(view.findViewById(R.id.tv_header_uom).getTag()));
-                } catch (Exception e) {
-                    Commons.printException(e + "");
-                }
-                try {
-                    ((TextView) view.findViewById(R.id.tv_header_pcs_final_qty)).setTypeface(
-                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_pcs_final_qty).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.tv_header_pcs_final_qty)).setText(bModel.labelsMasterHelper
-                                .applyLabels(view.findViewById(R.id.tv_header_pcs_final_qty).getTag()));
-                } catch (Exception e) {
-                    Commons.printException(e + "");
-                }
-                try {
-                    ((TextView) view.findViewById(R.id.tv_header_cases_final_qty)).setTypeface(
-                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_cases_final_qty).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.tv_header_cases_final_qty)).setText(bModel.labelsMasterHelper
-                                .applyLabels(view.findViewById(R.id.tv_header_cases_final_qty).getTag()));
-                } catch (Exception e) {
-                    Commons.printException(e + "");
-                }
-                try {
-                    ((TextView) view.findViewById(R.id.tv_header_gqt)).setTypeface(
-                            bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_gqt).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.tv_header_gqt)).setText(bModel.labelsMasterHelper
-                                .applyLabels(view.findViewById(R.id.tv_header_gqt).getTag()));
-                } catch (Exception e) {
-                    Commons.printException(e + "");
-                }
-
-                holder.tv_pcs_final_qty.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        QUANTITY = holder.tv_pcs_final_qty;
-                        QUANTITY.setTag(holder.schemeProducts);
-                        int inType = holder.tv_pcs_final_qty.getInputType();
-                        holder.tv_pcs_final_qty.setInputType(InputType.TYPE_NULL);
-                        holder.tv_pcs_final_qty.onTouchEvent(motionEvent);
-                        holder.tv_pcs_final_qty.setInputType(inType);
-                        holder.tv_pcs_final_qty.selectAll();
-                        holder.tv_pcs_final_qty.requestFocus();
-                        inputManager.hideSoftInputFromWindow(holder.tv_pcs_final_qty.getWindowToken(), 0);
-                        return true;
-                    }
-                });
-                holder.tv_pcs_final_qty.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        if (!s.toString().equals(holder.schemeProducts.getIncreasedPcsQty() + "")) {
-                            schemeHelper.resetSchemeQPSListforData();
-                            for (SchemeBO scheme : schemeIDList) {
-                                List<SchemeProductBO> productList = scheme.getBuyingProducts();
-                                for (SchemeProductBO product : productList) {
-                                    if (product.getProductId().equals(holder.schemeProducts.getProductId())) {
-                                        product.setIncreasedPcsQty(SDUtil.convertToInt(s.toString()));
-                                    }
-                                    if (product.getProductId().equals(holder.schemeProducts.getProductId()) &&
-                                            product.getSchemeId() == holder.schemeProducts.getSchemeId()) {
-                                        product.setPcsSelected(true);
-                                        product.setCasesSelected(false);
-                                    } else {
-                                        product.setPcsSelected(false);
-                                        product.setCasesSelected(false);
-                                    }
-                                }
-                            }
-                            currentSchemeList = new HashMap<>();
-                            nextSchemeList = new HashMap<>();
-                            checkSlabandsetProduct();
-                            buildListView();
-                            mExpandableAdapterNew.notifyDataSetChanged();
-                        }
-                    }
-                });
-                holder.tv_cases_final_qty.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        QUANTITY = holder.tv_cases_final_qty;
-                        QUANTITY.setTag(holder.schemeProducts);
-                        int inType = holder.tv_cases_final_qty.getInputType();
-                        holder.tv_cases_final_qty.setInputType(InputType.TYPE_NULL);
-                        holder.tv_cases_final_qty.onTouchEvent(motionEvent);
-                        holder.tv_cases_final_qty.setInputType(inType);
-                        holder.tv_cases_final_qty.selectAll();
-                        holder.tv_cases_final_qty.requestFocus();
-                        inputManager.hideSoftInputFromWindow(holder.tv_cases_final_qty.getWindowToken(), 0);
-                        return true;
-                    }
-                });
-                holder.tv_cases_final_qty.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        if (!s.toString().equals(holder.schemeProducts.getIncreasedCasesQty() + "")) {
-                            schemeHelper.resetSchemeQPSListforData();
-                            for (SchemeBO scheme : schemeIDList) {
-                                List<SchemeProductBO> productList = scheme.getBuyingProducts();
-                                for (SchemeProductBO product : productList) {
-                                    if (product.getProductId().equals(holder.schemeProducts.getProductId())) {
-                                        product.setIncreasedCasesQty(SDUtil.convertToInt(s.toString()));
-                                    }
-                                    if (product.getProductId().equals(holder.schemeProducts.getProductId()) &&
-                                            product.getSchemeId() == holder.schemeProducts.getSchemeId()) {
-                                        product.setCasesSelected(true);
-                                        product.setPcsSelected(false);
-                                    } else {
-                                        product.setCasesSelected(false);
-                                        product.setPcsSelected(false);
-                                    }
-                                }
-                            }
-                            currentSchemeList = new HashMap<>();
-                            nextSchemeList = new HashMap<>();
-                            checkSlabandsetProduct();
-                            buildListView();
-                            mExpandableAdapterNew.notifyDataSetChanged();
-                        }
-                    }
-                });
-                view.setTag(holder);
-            } else {
-                holder = (SchemeProductDetailHolder) view.getTag();
+            try {
+                ((TextView) view.findViewById(R.id.tv_header_productName)).setTypeface(
+                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_productName).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.tv_header_productName)).setText(bModel.labelsMasterHelper
+                            .applyLabels(view.findViewById(R.id.tv_header_productName).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+            try {
+                ((TextView) view.findViewById(R.id.tv_header_pcs_ordered_qty)).setTypeface(
+                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_pcs_ordered_qty).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.tv_header_pcs_ordered_qty)).setText(bModel.labelsMasterHelper
+                            .applyLabels(view.findViewById(R.id.tv_header_pcs_ordered_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+            try {
+                ((TextView) view.findViewById(R.id.tv_header_cases_ordered_qty)).setTypeface(
+                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_cases_ordered_qty).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.tv_header_cases_ordered_qty)).setText(bModel.labelsMasterHelper
+                            .applyLabels(view.findViewById(R.id.tv_header_cases_ordered_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+            try {
+                ((TextView) view.findViewById(R.id.tv_header_uom)).setTypeface(
+                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_uom).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.tv_header_uom)).setText(bModel.labelsMasterHelper
+                            .applyLabels(view.findViewById(R.id.tv_header_uom).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+            try {
+                ((TextView) view.findViewById(R.id.tv_header_pcs_final_qty)).setTypeface(
+                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_pcs_final_qty).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.tv_header_pcs_final_qty)).setText(bModel.labelsMasterHelper
+                            .applyLabels(view.findViewById(R.id.tv_header_pcs_final_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+            try {
+                ((TextView) view.findViewById(R.id.tv_header_cases_final_qty)).setTypeface(
+                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_cases_final_qty).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.tv_header_cases_final_qty)).setText(bModel.labelsMasterHelper
+                            .applyLabels(view.findViewById(R.id.tv_header_cases_final_qty).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+            try {
+                ((TextView) view.findViewById(R.id.tv_header_gqt)).setTypeface(
+                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_gqt).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.tv_header_gqt)).setText(bModel.labelsMasterHelper
+                            .applyLabels(view.findViewById(R.id.tv_header_gqt).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
             }
 
-            holder.schemeProducts = mSchemeDoneList.get(groupPosition).getSchemeList().get(childPosition);
+            holder.tv_pcs_final_qty.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    QUANTITY = holder.tv_pcs_final_qty;
+                    QUANTITY.setTag(holder.schemeProducts.getParentID() + "," + holder.schemeProducts.getProductId() + ",0");
+                    int inType = holder.tv_pcs_final_qty.getInputType();
+                    holder.tv_pcs_final_qty.setInputType(InputType.TYPE_NULL);
+                    holder.tv_pcs_final_qty.onTouchEvent(motionEvent);
+                    holder.tv_pcs_final_qty.setInputType(inType);
+                    holder.tv_pcs_final_qty.selectAll();
+                    holder.tv_pcs_final_qty.setFocusable(true);
+                    holder.tv_pcs_final_qty.requestFocus();
+                    return true;
+                }
+            });
+            holder.tv_pcs_final_qty.addTextChangedListener(new CustomTextWatcher(holder.tv_pcs_final_qty) {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (!s.toString().equals(holder.schemeProducts.getIncreasedPcsQty() + "")) {
+                        schemeHelper.resetSchemeQPSListforData();
+                        for (SchemeBO scheme : schemeIDList) {
+                            List<SchemeProductBO> productList = scheme.getBuyingProducts();
+                            for (SchemeProductBO product : productList) {
+                                if (product.getProductId().equals(holder.schemeProducts.getProductId())) {
+                                    product.setIncreasedPcsQty(SDUtil.convertToInt(s.toString()));
+                                }
+                            }
+                        }
+                        currentSchemeList = new HashMap<>();
+                        nextSchemeList = new HashMap<>();
+                        checkSlabandsetProduct();
+                        buildListView();
+                        mExpandableAdapterNew.notifyDataSetChanged();
+                    }
+                }
+            });
+            holder.tv_cases_final_qty.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    QUANTITY = holder.tv_cases_final_qty;
+                    QUANTITY.setTag(holder.schemeProducts.getParentID() + "," + holder.schemeProducts.getProductId() + ",1");
+                    int inType = holder.tv_cases_final_qty.getInputType();
+                    holder.tv_cases_final_qty.setInputType(InputType.TYPE_NULL);
+                    holder.tv_cases_final_qty.onTouchEvent(motionEvent);
+                    holder.tv_cases_final_qty.setInputType(inType);
+                    holder.tv_cases_final_qty.selectAll();
+                    holder.tv_cases_final_qty.setFocusable(true);
+                    holder.tv_cases_final_qty.requestFocus();
+                    return true;
+                }
+            });
+            holder.tv_cases_final_qty.addTextChangedListener(new CustomTextWatcher(holder.tv_cases_final_qty) {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (!s.toString().equals(holder.schemeProducts.getIncreasedCasesQty() + "")) {
+                        schemeHelper.resetSchemeQPSListforData();
+                        for (SchemeBO scheme : schemeIDList) {
+                            List<SchemeProductBO> productList = scheme.getBuyingProducts();
+                            for (SchemeProductBO product : productList) {
+                                if (product.getProductId().equals(holder.schemeProducts.getProductId())) {
+                                    product.setIncreasedCasesQty(SDUtil.convertToInt(s.toString()));
+                                }
+                            }
+                        }
+                        currentSchemeList = new HashMap<>();
+                        nextSchemeList = new HashMap<>();
+                        checkSlabandsetProduct();
+                        buildListView();
+                        mExpandableAdapterNew.notifyDataSetChanged();
+                    }
+                }
+            });
+            view.setTag(holder);
+//            } else {
+//                holder = (SchemeProductDetailHolder) view.getTag();
+//            }
+
+            holder.schemeProducts = (SchemeProductBO) getChild(groupPosition,
+                    childPosition);
+            holder.group = groupPosition;
+            holder.child = childPosition;
+
             if (childPosition != 0) {
                 holder.lnrSchemeHeader.setVisibility(View.GONE);
             } else {
@@ -1042,9 +1037,6 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             holder.tv_uom.setText(holder.schemeProducts.getUomDescription());
             holder.tv_pcs_ordered_qty.setText(holder.schemeProducts.getOrderedPcsQty() + "");
             holder.tv_cases_ordered_qty.setText(holder.schemeProducts.getOrderedCasesQty() + "");
-            holder.tv_pcs_final_qty.setText(holder.schemeProducts.getIncreasedPcsQty() + "");
-            holder.tv_cases_final_qty.setText(holder.schemeProducts.getIncreasedCasesQty() + "");
-
             String gqt = "";
             if (holder.schemeProducts.getIncreasedPcsQty() == 0 && holder.schemeProducts.getIncreasedCasesQty() == 0) {
                 gqt = (holder.schemeProducts.getOrderedPcsQty() + (holder.schemeProducts.getOrderedCasesQty() * holder.schemeProducts.getCasesPrice())) + "";
@@ -1052,15 +1044,28 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 gqt = (holder.schemeProducts.getIncreasedPcsQty() + (holder.schemeProducts.getIncreasedCasesQty() * holder.schemeProducts.getCasesPrice())) + "";
             }
             holder.tv_gqt.setText(gqt);
+            holder.tv_pcs_final_qty.setText(holder.schemeProducts.getIncreasedPcsQty() + "");
+            holder.tv_cases_final_qty.setText(holder.schemeProducts.getIncreasedCasesQty() + "");
 
-            if (holder.schemeProducts.isPcsSelected()) {
-                holder.tv_pcs_final_qty.setFocusable(true);
-                holder.tv_pcs_final_qty.requestFocus();
-            }
-
-            if (holder.schemeProducts.isCasesSelected()) {
-                holder.tv_cases_final_qty.setFocusable(true);
-                holder.tv_cases_final_qty.requestFocus();
+            try {
+                if (QUANTITY != null && QUANTITY.getTag() != null) {
+                    String[] tag = QUANTITY.getTag().toString().split(",");
+                    if (tag[0].equals(holder.schemeProducts.getParentID()) && tag[1].equals(holder.schemeProducts.getProductId())) {
+                        if (tag[2].equals("0")) {
+                            QUANTITY = holder.tv_pcs_final_qty;
+                            QUANTITY.setTag(holder.schemeProducts.getParentID() + "," +
+                                    holder.schemeProducts.getProductId() + "," + "0");
+                        } else if (tag[2].equals("1")) {
+                            QUANTITY = holder.tv_cases_final_qty;
+                            QUANTITY.setTag(holder.schemeProducts.getParentID() + "," +
+                                    holder.schemeProducts.getProductId() + "," + "1");
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Error " + e.toString());
+                System.out.println("Focus on Error " + groupPosition + "," + childPosition);
+                e.printStackTrace();
             }
             return view;
         }
@@ -1106,6 +1111,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
 
                 holder.tv_scheme = view
                         .findViewById(R.id.tv_scheme);
+                holder.tv_scheme_secondary_title = view.findViewById(R.id.tv_scheme_secondary_title);
                 holder.tv_schemeDuration = view
                         .findViewById(R.id.tv_schemeduration);
                 holder.tv_schemeType = view.findViewById(R.id.tv_schemetype);
@@ -1134,22 +1140,23 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 holder.tv_calculated_nextslab_rs_per = view
                         .findViewById(R.id.tv_next_scheme_per_amt);
                 //typeface
-                holder.tv_scheme.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_schemeDuration.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_schemeType.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_cumulative_purchase.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_curslab_sch_amt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_curslab_rs_per.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_nextslab.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_nextslab_sch_amt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_nextslab_rs_per.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_scheme.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_scheme_secondary_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_schemeDuration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_schemeType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_cumulative_purchase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_curslab_sch_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_curslab_rs_per.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_nextslab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_nextslab_sch_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_nextslab_rs_per.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
 
-                holder.tv_calculated_cumulative_purchase.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_calculated_curslab_sch_amt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_calculated_curslab_rs_per.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_calculated_nextslab.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_calculated_nextslab_sch_amt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_calculated_nextslab_rs_per.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_calculated_cumulative_purchase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_calculated_curslab_sch_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_calculated_curslab_rs_per.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_calculated_nextslab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_calculated_nextslab_sch_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_calculated_nextslab_rs_per.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
                 view.setTag(holder);
             } else {
                 holder = (SchemeProductHolder) view.getTag();
@@ -1157,6 +1164,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
 
             holder.parentSchemeBO = mSchemeDoneList.get(groupPosition).getParentScheme();
             holder.tv_scheme.setText(holder.parentSchemeBO.getSchemeDesc());
+            holder.tv_scheme_secondary_title.setText(holder.parentSchemeBO.getSchemeShortDesc());
             String periodStart = "";
             String periodEnd = "";
             holder.tv_schemeDuration.setText(periodStart + " - " + periodEnd);
@@ -1198,6 +1206,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         private ProductMasterBO productBO;
         private ParentSchemeBO parentSchemeBO;
         private TextView tv_scheme;
+        private TextView tv_scheme_secondary_title;
         private TextView tv_schemeDuration;
         private TextView tv_schemeType;
         private TextView tv_cumulative_purchase;
@@ -1223,6 +1232,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 tv_uom, tv_gqt;
         EditText tv_pcs_final_qty, tv_cases_final_qty;
         LinearLayout lnrSchemeHeader;
+        int group, child;
     }
 
     /**
@@ -1457,6 +1467,25 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         if (!isAvailable && downFlag) nextList.addAll(availableList.get(0).getFreeProducts());
         //}
         return nextList;
+    }
+
+    private class CustomTextWatcher implements TextWatcher {
+        private EditText mEditText;
+
+        public CustomTextWatcher(EditText et) {
+            mEditText = et;
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before,
+                                  int count) {
+        }
+
+        public void afterTextChanged(Editable s) {
+        }
     }
 
 }
