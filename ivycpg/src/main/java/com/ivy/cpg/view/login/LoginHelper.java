@@ -155,12 +155,11 @@ public class LoginHelper {
     }
 
     public String getSupportNo(Context mContext) {
-        DBUtil db = null;
+        DBUtil db = new DBUtil(mContext.getApplicationContext(), DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
         String support_no = "";
 
         try {
-            db = new DBUtil(mContext.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
 
             db.openDataBase();
             String sb = "select listname from standardlistmaster " +
