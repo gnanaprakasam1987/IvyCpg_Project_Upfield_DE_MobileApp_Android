@@ -58,10 +58,10 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
 
         setScreenTitle("No Collection Reason");
 
-        ((TextView)findViewById(R.id.invoice_no)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-        ((TextView)findViewById(R.id.invoice_date)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-        ((TextView)findViewById(R.id.invoice_amount)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-        ((TextView)findViewById(R.id.invoice_reason)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        ((TextView) findViewById(R.id.invoice_no)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        ((TextView) findViewById(R.id.invoice_date)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        ((TextView) findViewById(R.id.invoice_amount)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        ((TextView) findViewById(R.id.invoice_reason)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
 
         recyclerView = findViewById(R.id.invoice_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -85,73 +85,85 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
 
     }
 
-    private void storeReason(){
+    private void storeReason() {
 
-        boolean isReasonAdded = false;
+        try {
+            DBUtil db = new DBUtil(NoCollectionReasonActivity.this, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
 
-        for (NoCollectionReasonBo invoiceHeaderBO : mInvioceList){
-            if (!invoiceHeaderBO.getNoCollectionReasonId().equals("0") && !invoiceHeaderBO.getNoCollectionReasonId().equals("")){
+            boolean isReasonAdded = false;
 
-                isReasonAdded = true;
+            int pos = 0;
+            for (NoCollectionReasonBo invoiceHeaderBO : mInvioceList) {
+                if (!invoiceHeaderBO.getNoCollectionReasonId().equals("0") &&
+                        !invoiceHeaderBO.getNoCollectionReasonId().equals("")) {
 
-                try {
-                    DBUtil db = new DBUtil(NoCollectionReasonActivity.this, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
-                    db.openDataBase();
+                    isReasonAdded = true;
+
 
                     String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                             + SDUtil.now(SDUtil.DATE_TIME_ID);
                     String uid = bmodel.QT(id);
 
-                    deletePreviousTransaction(db,invoiceHeaderBO);
+                    String columns = "", values;
+                    if (pos == 0) {
 
-                    String columns = "Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
+                        deletePreviousTransaction(db, invoiceHeaderBO);
 
-                    String values = bmodel.QT(invoiceHeaderBO.getInvoiceDate())+","+
-                            bmodel.QT(SDUtil.now(8))+","+
-                            bmodel.QT(invoiceHeaderBO.getRetailerId())+","+
-                            uid+","+
-                            bmodel.getRetailerMasterBO().getDistributorId()+","+
-                            bmodel.getRetailerMasterBO().getDistParentId();
+                        columns = "Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
 
-                    db.insertSQL("CollectionDueHeader",columns,values);
+                        values = bmodel.QT(invoiceHeaderBO.getInvoiceDate()) + "," +
+                                bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," +
+                                bmodel.QT(invoiceHeaderBO.getRetailerId()) + "," +
+                                uid + "," +
+                                bmodel.getRetailerMasterBO().getDistributorId() + "," +
+                                bmodel.getRetailerMasterBO().getDistParentId();
+
+                        db.insertSQL("CollectionDueHeader", columns, values);
+                    }
 
 
-                    columns = "InvoiceNo,ReasonId,ReasonOthers";
+                    columns = "InvoiceNo,ReasonId,ReasonOthers,uid";
 
-                    values = bmodel.QT(invoiceHeaderBO.getInvoiceNo())+","+
-                            bmodel.QT(invoiceHeaderBO.getNoCollectionReasonId())+","+
-                            bmodel.QT(invoiceHeaderBO.getNoCollectionReason()==null?"":invoiceHeaderBO.getNoCollectionReason());
+                    values = bmodel.QT(invoiceHeaderBO.getInvoiceNo()) + "," +
+                            bmodel.QT(invoiceHeaderBO.getNoCollectionReasonId()) + "," +
+                            bmodel.QT(invoiceHeaderBO.getNoCollectionReason() == null ? "" : invoiceHeaderBO.getNoCollectionReason()) + "," +
+                            uid;
 
-                    db.insertSQL("CollectionDueDetails",columns,values);
+                    db.insertSQL("CollectionDueDetails", columns, values);
 
-                    db.closeDB();
-                } catch (Exception e) {
-                    Commons.printException(e);
+                    pos = pos + 1;
+
+
                 }
-
             }
-        }
 
-        if (isReasonAdded) {
-            Toast.makeText(this, "No Collection Reasons Saved", Toast.LENGTH_SHORT).show();
+            db.closeDB();
 
-            finish();
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            if (isReasonAdded) {
+                Toast.makeText(this, "No Collection Reasons Saved", Toast.LENGTH_SHORT).show();
+
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
         }
 
     }
 
-    private void deletePreviousTransaction(DBUtil db,NoCollectionReasonBo noCollectionReasonBo){
+    private void deletePreviousTransaction(DBUtil db, NoCollectionReasonBo noCollectionReasonBo) {
 
 
-        Cursor c = db.selectSQL("select uid from CollectionDueDetails where InvoiceNo ='"+noCollectionReasonBo.getInvoiceNo()+"'");
+        Cursor c = db.selectSQL("select uid from CollectionDueHeader where RetailerId ='"+bmodel.getRetailerMasterBO().getRetailerID()+"'");
 
-        if (c != null && c.moveToNext()){
+        if (c != null && c.moveToNext()) {
 
-            db.deleteSQL("CollectionDueDetails","uid = '"+c.getString(0)+"'",false);
-            db.deleteSQL("CollectionDueHeader","uid = '"+c.getString(0)+"'",false);
+            db.deleteSQL("CollectionDueDetails", "uid = '" + c.getString(0) + "'", false);
+            db.deleteSQL("CollectionDueHeader", "uid = '" + c.getString(0) + "'", false);
 
+            c.close();
         }
     }
 
@@ -162,7 +174,7 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private Spinner noCollectionReasonSpnr;
-            private TextView invoiceNumber,invoiceAmt,invoicedate;
+            private TextView invoiceNumber, invoiceAmt, invoicedate;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -172,9 +184,9 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
                 invoicedate = view.findViewById(R.id.invoice_date);
                 invoiceAmt = view.findViewById(R.id.invoice_amount);
 
-                invoiceNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,NoCollectionReasonActivity.this));
-                invoicedate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,NoCollectionReasonActivity.this));
-                invoiceAmt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,NoCollectionReasonActivity.this));
+                invoiceNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, NoCollectionReasonActivity.this));
+                invoicedate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, NoCollectionReasonActivity.this));
+                invoiceAmt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, NoCollectionReasonActivity.this));
 
             }
         }
@@ -202,11 +214,11 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
 
             holder.noCollectionReasonSpnr.setAdapter(collectionReasonAdapter);
 
-            if (mInvioceList.get(holder.getAdapterPosition()).getNoCollectionReasonId()!=null &&
-                    !mInvioceList.get(holder.getAdapterPosition()).getNoCollectionReasonId().isEmpty() ){
+            if (mInvioceList.get(holder.getAdapterPosition()).getNoCollectionReasonId() != null &&
+                    !mInvioceList.get(holder.getAdapterPosition()).getNoCollectionReasonId().isEmpty()) {
 
                 int spinPos = 0;
-                for (ReasonMaster reasonMaster : collectionReasonList){
+                for (ReasonMaster reasonMaster : collectionReasonList) {
                     spinPos = spinPos + 1;
                     if (reasonMaster.getReasonID().equals(mInvioceList.get(holder.getAdapterPosition()).getNoCollectionReasonId())) {
                         holder.noCollectionReasonSpnr.setSelection(spinPos);
@@ -272,7 +284,7 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
-    private void loadInvoiceList(String id){
+    private void loadInvoiceList(String id) {
         try {
             DBUtil db = new DBUtil(NoCollectionReasonActivity.this, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -282,7 +294,7 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
                     " Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as RcvdAmt," +
                     " CDD.ReasonId,CDD.ReasonOthers,Inv.RetailerId FROM InvoiceMaster Inv LEFT JOIN payment ON payment.BillNumber = Inv.InvoiceNo " +
                     " LEFT JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid left join CollectionDueDetails CDD on CDD.InvoiceNo = Inv.InvoiceNo " +
-                    " WHERE inv.Retailerid ='"+id+"'  AND inv.DocStatus ='COL'  GROUP BY Inv.InvoiceNo ORDER BY Inv.InvoiceDate");
+                    " WHERE inv.Retailerid ='" + id + "'  AND inv.DocStatus ='COL'  GROUP BY Inv.InvoiceNo ORDER BY Inv.InvoiceDate");
 
             if (c != null) {
                 while (c.moveToNext()) {
