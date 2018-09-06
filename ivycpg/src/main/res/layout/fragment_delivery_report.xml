@@ -14,14 +14,17 @@
             android:orientation="vertical" >
 
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_header_height"
+                android:background="@color/black_bg1"
                 android:orientation="horizontal" >
 
                 <TextView
                     android:id="@+id/product_name_title"
                     style="?attr/customListTitle"
                     android:layout_width="@dimen/list_product_name_width"
+                    android:gravity="left"
+                    android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:text="@string/product_name" />
 
@@ -29,6 +32,7 @@
                     android:id="@+id/case_qty"
                     style="?attr/customListTitle"
                     android:layout_width="@dimen/list_item_width_large"
+                    android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:tag="item_case"
@@ -37,6 +41,7 @@
                     android:id="@+id/piece_qty"
                     style="?attr/customListTitle"
                     android:layout_width="@dimen/list_item_width_large"
+                    android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:tag="item_piece"
@@ -45,6 +50,7 @@
                     android:id="@+id/outer_qty"
                     style="?attr/customListTitle"
                     android:layout_width="@dimen/list_item_width_large"
+                    android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:tag="item_outer"

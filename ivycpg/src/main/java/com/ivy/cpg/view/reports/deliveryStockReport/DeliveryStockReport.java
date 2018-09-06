@@ -186,7 +186,7 @@ public class DeliveryStockReport extends IvyBaseFragment implements View.OnClick
         TextView tv_outer_qty;
 
         ViewHolder(View view) {
-            ButterKnife.bind(view);
+            ButterKnife.bind(this,view);
         }
 
         DeliveryStockBo deliveryStkBO;

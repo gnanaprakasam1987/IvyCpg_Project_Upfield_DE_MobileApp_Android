@@ -34,6 +34,7 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
     private boolean isAdvancePaymentAvailable;
     private int count;
     private BusinessModel bmodel;
+    private boolean isFromColletion = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
             selectedPosition = bundle.getInt("position");
             isAdvancePaymentAvailable = bundle.getBoolean("IsAdvancePaymentAvailable");
             mSelectedCashMode = bundle.getString("paymode");
+            isFromColletion = bundle.getBoolean("FromCollection",false);
         }
 
         mInvioceList = bmodel.getInvoiceHeaderBO();
@@ -119,6 +121,7 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
                     break;
                 case CN:
                     CreditNoteFragment creditNoteFragment = new CreditNoteFragment();
+                    bundle.putBoolean("FromCollection",isFromColletion);
                     creditNoteFragment.setArguments(bundle);
                     mFragmentList.add(creditNoteFragment);
                     break;

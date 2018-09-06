@@ -562,7 +562,8 @@ public class SalesReturnHelper {
                                 + ","
                                 + QT(bmodel.retailerMasterBO
                                 .getRetailerID()) + ","
-                                + reasonType + "," + QT(bo.getLotNumber()) + "," + product.getPcUomid()
+                                + reasonType + ","
+                                + DatabaseUtils.sqlEscapeString(bo.getLotNumber()) + "," + product.getPcUomid()
                                 + "," + QT(bo.getStatus()) + "," + QT(product.getHsnCode());
 
                         db.insertSQL(

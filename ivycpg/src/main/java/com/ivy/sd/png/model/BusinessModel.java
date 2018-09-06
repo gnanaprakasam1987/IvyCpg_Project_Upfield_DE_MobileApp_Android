@@ -2659,7 +2659,7 @@ public class BusinessModel extends Application {
 
                 }
             } else {
-                formattedValue = SDUtil.format(value, 2, 0);
+                formattedValue = SDUtil.format(value, configurationMasterHelper.VALUE_PRECISION_COUNT, 0);
 
             }
         } catch (Exception ex) {

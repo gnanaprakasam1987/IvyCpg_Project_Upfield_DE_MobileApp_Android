@@ -54,6 +54,14 @@ public class BillPaymentActivity extends IvyBaseActivityNoActionBar implements R
     @Override
     protected void onResumeFragments() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        /*BillPaymentActivityFragment bPAFragment = new BillPaymentActivityFragment();
+
+        boolean isFromCollection = getIntent().getExtras() != null && getIntent().getExtras().getBoolean("FromCollection", false);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("FromCollection",isFromCollection);
+        bPAFragment.setArguments(bundle);*/
+
         ft.replace(R.id.fragment, new BillPaymentActivityFragment());
         ft.commitAllowingStateLoss();
 

@@ -214,4 +214,9 @@
     <string name="selected">selected</string>
     <string name="select_order_type">Select order type</string>
     <string name="withold_title">With Hold Tax</string>
+
+    <string name="no_collection_reason">No collection \nReason</string>
+
+    <string name="invoice_with_no_collection">Invoice With No Collection Reason Found</string>
+
 </resources>
