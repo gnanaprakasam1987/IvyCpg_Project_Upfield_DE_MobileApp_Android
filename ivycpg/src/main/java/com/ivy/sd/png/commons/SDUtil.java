@@ -367,4 +367,15 @@ public class SDUtil {
                 ? df.format(new BigDecimal(value)) : (format(value, 2, 0)));
     }
 
+    public static String getWithoutExponential(String value) {
+
+        if(value.contains("E"))
+            value = df.format(new BigDecimal(value));
+        else if (value.isEmpty())
+            value = "0";
+
+        return value;
+
+    }
+
 }

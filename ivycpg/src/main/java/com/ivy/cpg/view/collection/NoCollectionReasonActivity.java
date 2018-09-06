@@ -79,13 +79,13 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
         findViewById(R.id.done_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                storeReason();
+                saveReason();
             }
         });
 
     }
 
-    private void storeReason() {
+    private void saveReason() {
 
         try {
             DBUtil db = new DBUtil(NoCollectionReasonActivity.this, DataMembers.DB_NAME,
@@ -124,11 +124,10 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
                     }
 
 
-                    columns = "InvoiceNo,ReasonId,ReasonOthers,uid";
+                    columns = "InvoiceNo,ReasonId,uid";
 
                     values = bmodel.QT(invoiceHeaderBO.getInvoiceNo()) + "," +
                             bmodel.QT(invoiceHeaderBO.getNoCollectionReasonId()) + "," +
-                            bmodel.QT(invoiceHeaderBO.getNoCollectionReason() == null ? "" : invoiceHeaderBO.getNoCollectionReason()) + "," +
                             uid;
 
                     db.insertSQL("CollectionDueDetails", columns, values);

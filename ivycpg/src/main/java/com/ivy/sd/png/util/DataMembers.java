@@ -602,7 +602,7 @@ public class DataMembers {
 
 
     private static final String tbl_CollectionDueDetails="CollectionDueDetails";
-    private static final String tbl_CollectionDueDetails_cols="InvoiceNo,ReasonId,ReasonOthers,uid";
+    private static final String tbl_CollectionDueDetails_cols="InvoiceNo,ReasonId,uid";
 
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();

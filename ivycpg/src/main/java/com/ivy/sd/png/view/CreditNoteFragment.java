@@ -196,9 +196,9 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                             mPaymentBO.setAmount(tempCreditNoteValue);
                             currentCollectionValue = tempCreditNoteValue;
 
-                            tempCreditNoteValue = SDUtil.convertToDouble(SDUtil.format(tempCreditNoteValue,
-                                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                                    0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+//                            tempCreditNoteValue = SDUtil.convertToDouble(SDUtil.format(tempCreditNoteValue,
+//                                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+//                                    0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
                             String strCreditNote = tempCreditNoteValue + "";
                             mEnterCreditNoteAmtET.setText(strCreditNote);
@@ -396,9 +396,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                 }
             }
         }
-        mTotalCreditNoteValue = SDUtil.convertToDouble(SDUtil.format(mTotalCreditNoteValue,
-                bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        mTotalCreditNoteValue = SDUtil.convertToDouble(bmodel.formatValue(mTotalCreditNoteValue));
 
         String strCreditValue = mTotalCreditNoteValue+"";
         mEnterCreditNoteAmtET.setText(strCreditValue);
