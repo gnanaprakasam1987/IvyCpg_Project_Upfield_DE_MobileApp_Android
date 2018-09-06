@@ -218,7 +218,7 @@
     <dimen name="mode_top_margin">8dp</dimen>
     <dimen name="collection_total_height">40dp</dimen>
     <dimen name="cheque_no_width">280dp</dimen>
-    <dimen name="cheque_no_height">32dp</dimen>
+    <dimen name="cheque_no_height">42dp</dimen>
     <dimen name="near_expiry_dialog_height">400dp</dimen>
     <dimen name="order_lay_height">32dp</dimen>
     <dimen name="card_elevation">3.2dp</dimen>

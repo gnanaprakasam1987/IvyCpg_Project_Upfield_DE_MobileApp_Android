@@ -1506,8 +1506,8 @@ public class NewOutletHelper {
     }
 
 
-    private Vector<String> loadImgList(String retailerID, DBUtil db) {
-        Vector<String> imgList = new Vector<>();
+    private ArrayList<String> loadImgList(String retailerID, DBUtil db) {
+        ArrayList<String> imgList = new ArrayList<>();
         try {
             Cursor c1;
             String query = "Select ImageName from NewOutletImage where RetailerId=" + bmodel.QT(retailerID);
@@ -2238,19 +2238,19 @@ public class NewOutletHelper {
                     + "," + QT(getNewoutlet().getGstNum())
                     + "," + QT(getNewoutlet().getRfield5())
                     + "," + QT(getNewoutlet().getRfield6())
-                    + "," + QT(getNewoutlet().getTinExpDate())
+                    + "," + (getNewoutlet().getTinExpDate().isEmpty() ? null : QT(getNewoutlet().getTinExpDate()))
                     + "," + QT(getNewoutlet().getPanNo())
                     + "," + QT(getNewoutlet().getFoodLicenseNo())
-                    + "," + QT(getNewoutlet().getFlExpDate())
+                    + "," + (getNewoutlet().getFlExpDate().isEmpty() ? null : QT(getNewoutlet().getFlExpDate()))
                     + "," + QT(getNewoutlet().getDrugLicenseNo())
-                    + "," + QT(getNewoutlet().getDlExpDate())
+                    + "," + (getNewoutlet().getDlExpDate().isEmpty() ? null : QT(getNewoutlet().getDlExpDate()))
                     + "," + QT(getNewoutlet().getrField4())
                     + "," + QT(getNewoutlet().getrField7())
                     + "," + QT(userid + "");
 
 
             db.insertSQL("RetailerMaster", column, value);
-
+            bmodel.setNewlyaddedRetailer(getId());
 
             column = "RetailerID,contactname,ContactName_LName,contactNumber," +
                     "contact_title,contact_title_lovid,IsPrimary,Email,Upload";

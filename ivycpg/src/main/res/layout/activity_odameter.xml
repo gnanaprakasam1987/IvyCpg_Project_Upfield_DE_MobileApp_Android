@@ -178,7 +178,7 @@
                                 android:text="23:5:50"
                                 android:visibility="gone" />
 
-                            <com.ivy.cpg.view.van.CustomDigitalClock
+                            <com.ivy.cpg.view.van.odameter.CustomDigitalClock
                                 android:id="@+id/digitalClock1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -354,7 +354,7 @@
                                 android:text="23:5:50"
                                 android:visibility="gone" />
 
-                            <com.ivy.cpg.view.van.CustomDigitalClock
+                            <com.ivy.cpg.view.van.odameter.CustomDigitalClock
                                 android:id="@+id/digitalClock2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"

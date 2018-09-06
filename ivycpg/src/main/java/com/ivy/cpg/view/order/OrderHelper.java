@@ -65,6 +65,8 @@ public class OrderHelper {
 
     private ArrayList<String> mValidAccumulationSchemes;
 
+    public boolean isQuickCall =  false;
+
 
     private OrderHelper(Context context) {
 
@@ -131,7 +133,7 @@ public class OrderHelper {
      *
      * @param mContext current context
      */
-    public boolean saveOrder(Context mContext,boolean isInvoice) {
+    public boolean saveOrder(Context mContext, boolean isInvoice) {
         DBUtil db = null;
         int isVanSales = 1;
         String uid = null;
@@ -390,12 +392,12 @@ public class OrderHelper {
 
                 String parentHierarchy = "";
                 for (String ids : parentHierarchyIds) {
-                    if(!ids.trim().equals(""))
+                    if (!ids.trim().equals(""))
                         parentHierarchy = parentHierarchy + "/" + ids;
                 }
                 parentHierarchy = parentHierarchy + "/";
 
-                db.updateSQL("update orderheader set ParentHierarchy = "+businessModel.QT(parentHierarchy)+" where orderid ="+uid);
+                db.updateSQL("update orderheader set ParentHierarchy = " + businessModel.QT(parentHierarchy) + " where orderid =" + uid);
 
             }
 
@@ -509,7 +511,7 @@ public class OrderHelper {
                 updateCreditNoteprintList();
 
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
-                salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", false,isInvoice);
+                salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", false, isInvoice);
                 // salesReturnHelper.clearSalesReturnTable(true);
             }
 
@@ -534,7 +536,7 @@ public class OrderHelper {
      * @param productList
      * @return
      */
-    public boolean saveOrder(Context mContext, Vector<ProductMasterBO> productList,boolean isInvoice) {
+    public boolean saveOrder(Context mContext, Vector<ProductMasterBO> productList, boolean isInvoice) {
         DBUtil db = null;
         int isVanSales = 1;
         String uid = null;
@@ -1021,7 +1023,7 @@ public class OrderHelper {
                     updateCreditNoteprintList();
 
                 if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
-                    salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", true,isInvoice);
+                    salesReturnHelper.saveSalesReturn(mContext, uid, "ORDER", true, isInvoice);
                     salesReturnHelper.clearSalesReturnTable(true);
                 }
 
@@ -1811,7 +1813,7 @@ public class OrderHelper {
                     "discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned," +
                     "LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype," +
                     "imgName,creditPeriod,PrintFilePath,timestampid,RemarksType,RField1,RField2," +
-                    "RField3,totalamount,AddressId";
+                    "RField3,totalamount,AddressId,DocStatus";
             StringBuilder sb = new StringBuilder();
             sb.append(businessModel.QT(invoiceId) + ",");
             sb.append(businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -1890,6 +1892,7 @@ public class OrderHelper {
             sb.append("," + getInvoiceTotalValue());
             sb.append("," + (businessModel.getOrderHeaderBO().getAddressID() == -1
                     ? 0 : businessModel.getOrderHeaderBO().getAddressID()));
+            sb.append("," + businessModel.QT("COL"));
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());
@@ -3150,7 +3153,7 @@ public class OrderHelper {
             SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
             if (schemeHelper.IS_SCHEME_ON) {
                 for (SchemeBO schemeBO : schemeHelper.getAppliedSchemeList()) {
-                    if(schemeBO.isQuantityTypeSelected()) {
+                    if (schemeBO.isQuantityTypeSelected()) {
                         if (schemeBO.getFreeProducts() != null) {
                             for (SchemeProductBO freeProductBO : schemeBO.getFreeProducts()) {
                                 if (freeProductBO.getQuantitySelected() > 0) {
@@ -3615,29 +3618,28 @@ public class OrderHelper {
         return line_total_price;
     }
 
-    public boolean returnReplacementAmountValidation(boolean isCashCustomer,boolean isFromOrder,Context context) {
+    public boolean returnReplacementAmountValidation(boolean isCashCustomer, boolean isFromOrder, Context context) {
 
         double totalReturnAmount = 0;
         double totalReplaceAmount = 0;
 
-        SalesReturnHelper salesReturnHelper=SalesReturnHelper.getInstance(context);
-        Vector<ProductMasterBO> list=(!isFromOrder?salesReturnHelper.getSalesReturnProducts():businessModel.productHelper.getProductMaster()) ;
+        SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(context);
+        Vector<ProductMasterBO> list = (!isFromOrder ? salesReturnHelper.getSalesReturnProducts() : businessModel.productHelper.getProductMaster());
 
-        for (ProductMasterBO product : list){
+        for (ProductMasterBO product : list) {
             List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
             if (reasonList != null) {
-                int totalReturnQty=0;
+                int totalReturnQty = 0;
                 for (SalesReturnReasonBO reasonBO : reasonList) {
                     if (reasonBO.getPieceQty() > 0 || reasonBO.getCaseQty() > 0 || reasonBO.getOuterQty() > 0) {
                         //Calculate sales return total qty and price.
                         int totalQty = reasonBO.getPieceQty() + (reasonBO.getCaseQty() * product.getCaseSize()) + (reasonBO.getOuterQty() * product.getOutersize());
 
-                        totalReturnQty+=totalQty;
+                        totalReturnQty += totalQty;
                     }
                 }
-                totalReturnAmount+=(totalReturnQty*product.getSrp());
+                totalReturnAmount += (totalReturnQty * product.getSrp());
             }
-
 
 
             // Calculate replacement qty price.
@@ -3646,12 +3648,12 @@ public class OrderHelper {
         }
 
         //Check for whether the replacement amount and return amount are same, works only for Cash customer
-        if(isCashCustomer) {
+        if (isCashCustomer) {
             if (totalReturnAmount == totalReplaceAmount)
                 return false;
             else
                 return true;
-        }else{
+        } else {
             //Check for whether the replacement amnt is not greater than the return amount, works only for Credit customer
             if (totalReturnAmount >= totalReplaceAmount)
                 return true;
@@ -3660,8 +3662,8 @@ public class OrderHelper {
         }
     }
 
-    public double getTotalReturnValue(LinkedList<ProductMasterBO> productList){
-        double totalReturnAmount=0;
+    public double getTotalReturnValue(LinkedList<ProductMasterBO> productList) {
+        double totalReturnAmount = 0;
         try {
             for (ProductMasterBO product : productList) {
                 List<SalesReturnReasonBO> reasonList = product.getSalesReturnReasonList();
@@ -3679,10 +3681,9 @@ public class OrderHelper {
                 }
 
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
-        return  totalReturnAmount;
+        return totalReturnAmount;
     }
 }

@@ -18,8 +18,8 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
     private int listId;
     private String listName;
 
-    public Vector<String> ImageName = new Vector<>();
-    public Vector<Integer> ImageId = new Vector<>();
+    public ArrayList<String> ImageName = new ArrayList<>();
+    public ArrayList<Integer> ImageId = new ArrayList<>();
 
     private String Market;
     private int channel, subChannel;
@@ -286,19 +286,19 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
     }
 
 
-    public Vector<String> getImageName() {
+    public ArrayList<String> getImageName() {
         return ImageName;
     }
 
-    public void setImageName(Vector<String> imageName) {
+    public void setImageName(ArrayList<java.lang.String> imageName) {
         ImageName = imageName;
     }
 
-    public Vector<Integer> getImageId() {
+    public ArrayList<Integer> getImageId() {
         return ImageId;
     }
 
-    public void setImageId(Vector<Integer> imageId) {
+    public void setImageId(ArrayList<Integer> imageId) {
         ImageId = imageId;
     }
 

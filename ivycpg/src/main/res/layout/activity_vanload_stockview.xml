@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/vanstockfrag"
-        class="com.ivy.cpg.view.van.VanLoadStockViewFragment"
+        class="com.ivy.cpg.view.van.vanstockapply.VanLoadStockViewFragment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 

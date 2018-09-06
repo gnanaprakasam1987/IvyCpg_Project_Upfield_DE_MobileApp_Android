@@ -10,13 +10,10 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
-import com.google.firebase.messaging.RemoteMessage;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -26,34 +23,37 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class NotificationJobService extends JobService {
 
     private static final String TAG = "MyJobService";
     private int notifyId;
+    private BusinessModel bmodel;
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-        Log.d(TAG, "Performing long running task in scheduled job");
 
-        BusinessModel bmodel = (BusinessModel) getApplicationContext();
+        bmodel = (BusinessModel) getApplicationContext();
 
         // Post notification of received message.
+
+        setValues(jobParameters);
+
+        return false;
+    }
+
+    private void setValues(JobParameters jobParameters){
+
         try {
 
             Bundle extras = jobParameters.getExtras();
-            RemoteMessage remoteMessage = null;
-            String str = "", jsonType, jsonMsg;
+            String str="",jsonType, jsonMsg;
             if (extras != null) {
-                remoteMessage = extras.getParcelable("DataPayLoad");
+                str = extras.getString("body");
 
                 Commons.print(TAG + ",Received: " + extras.toString());
             }
 
-            if (remoteMessage == null)
-                return false;
-
-            JSONArray array = new JSONArray(remoteMessage.getData().get("body"));
+            JSONArray array = new JSONArray(str);
             JSONObject jsonObject = new org.json.JSONObject(array
                     .get(0).toString());
             jsonType = jsonObject.getString("Type");
@@ -87,44 +87,6 @@ public class NotificationJobService extends JobService {
             }
         } catch (Exception e) {
             Commons.printException("" + e);
-        }
-
-
-        return false;
-    }
-
-    private void sendNotification(RemoteMessage remoteMessage) {
-        Intent intent = new Intent(this, LoginScreen.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        String channelId = "ChannelId";
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.launchericon)
-                        .setContentTitle(
-                                remoteMessage.getData().get("title") != null ? remoteMessage.getData().get("title") : "Notify")
-                        .setContentText(
-                                remoteMessage.getData().get("body") != null ? remoteMessage.getData().get("body") : "Success")
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (notificationManager != null) {
-            // Since android Oreo notification channel is needed.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(channelId,
-                        "Channel human readable title",
-                        NotificationManager.IMPORTANCE_DEFAULT);
-                notificationManager.createNotificationChannel(channel);
-            }
-
-            notificationManager.notify(notifyId /* ID of notification */, notificationBuilder.build());
         }
     }
 

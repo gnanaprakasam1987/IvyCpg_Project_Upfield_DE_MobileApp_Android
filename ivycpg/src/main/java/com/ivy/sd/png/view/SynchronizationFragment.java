@@ -65,7 +65,7 @@ import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.UploadPresenterImpl;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImagesDownlaod;
-import com.ivy.cpg.view.van.VanUnLoadModuleHelper;
+import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;

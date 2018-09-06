@@ -1364,7 +1364,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
     public boolean SHOW_INVOICE_HISTORY; // PRO06
 
-    private static final String CODE_SALES_DISTRIBUTION = "SALES_DISTRIBUTION_TAGGING";
+    private static final String CODE_SALES_DISTRIBUTION = "SALES_DIST_TAGGING";
     public boolean IS_PRODUCT_DISTRIBUTION;
     public String PRD_DISTRIBUTION_TYPE = "";
 
@@ -1514,6 +1514,13 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DISCOUNT_PRICE_PER = "FUN73";
     public boolean IS_DISCOUNT_PRICE_PER;
     public double DISCOUNT_PRICE_PER = 50;
+
+    private static final String CODE_NAVIGATE_CREDIT_NOTE_SCREEN = "COLL19";
+    public boolean IS_NAVIGATE_CREDIT_NOTE_SCREEN;
+
+    private static final String CODE_NO_COLLECTION_REASON = "COLL18";
+    public boolean SHOW_NO_COLLECTION_REASON;
+
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2648,6 +2655,10 @@ public class ConfigurationMasterHelper {
         this.IS_SR_VALIDATE_BY_RETAILER_TYPE = hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) : false;
         this.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) : false;
         this.IS_INDICATIVE_MASTER= hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
+
+
+        this.IS_NAVIGATE_CREDIT_NOTE_SCREEN= hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) : false;
+        this.SHOW_NO_COLLECTION_REASON= hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) != null ? hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) : false;
     }
 
     private boolean isInOutModule() {
@@ -4914,14 +4925,15 @@ public class ConfigurationMasterHelper {
      * @return menuname
      */
     public String getHomescreentwomenutitle(String menucode) {
+        String menuName="";
         Vector<ConfigureBO> config = getActivityMenu();
         if (config != null) {
             for (int i = 0; i < config.size(); i++) {
                 if (config.get(i).getConfigCode().equals(menucode))
-                    menucode = config.get(i).getMenuName();
+                    menuName = config.get(i).getMenuName();
             }
         }
-        return menucode;
+        return menuName;
 
     }
 

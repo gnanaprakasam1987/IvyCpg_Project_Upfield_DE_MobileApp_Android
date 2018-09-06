@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
 import com.ivy.cpg.view.reports.soho.SalesReturnReportHelperSOHO;
-import com.ivy.cpg.view.van.StockViewActivity;
+import com.ivy.cpg.view.van.stockview.StockViewActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;

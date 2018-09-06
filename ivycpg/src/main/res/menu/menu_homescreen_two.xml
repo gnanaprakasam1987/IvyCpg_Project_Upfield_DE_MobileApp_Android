@@ -29,7 +29,6 @@
         ivydist:showAsAction="always" />
     <item
         android:id="@+id/menu_supplier_selection"
-        android:icon="@drawable/supplier"
         android:orderInCategory="5"
         android:title="SupplierSelection"
         ivydist:showAsAction="always" />

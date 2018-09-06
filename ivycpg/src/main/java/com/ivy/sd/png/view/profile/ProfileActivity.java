@@ -74,11 +74,11 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.CustomMapFragment;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.MapWrapperLayout;
@@ -246,6 +246,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             }
         };
 
+
+        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+            Toast.makeText(this,
+                    getResources().getString(R.string.sessionout_loginagain),
+                    Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
             checkAndRequestPermissionAtRunTime(3);
@@ -585,9 +592,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         /*
-        *
-        * Show dynamic report based on Retailer
-        * */
+         *
+         * Show dynamic report based on Retailer
+         * */
         dynamicReportTitle = bmodel.configurationMasterHelper.getDynamicReportTitle();
 
         if (bmodel.configurationMasterHelper.SHOW_SALES_VALUE_DR) {
@@ -1657,46 +1664,50 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE) {
 
             ArrayList<SupplierMasterBO> mSupplierList = bmodel.downloadSupplierDetails();
-            mSupplierAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.select_dialog_singlechoice, mSupplierList);
+            if (mSupplierList != null && mSupplierList.size() == 1) {
+                SupplierMasterBO supplierBo = mSupplierList.get(0);
+                bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
+                bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                bmodel.updatePriceGroupId(true);
+                showMessage(getString(R.string.distributor_name) + " "
+                        + getString(R.string.selected) + " "
+                        + mSupplierList.get(0).getSupplierName());
+                loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                return;
+            } else {
 
-         /*   mDefaultSupplierSelection = bmodel.getSupplierPosition(mSupplierList);
+                mSupplierAdapter = new ArrayAdapter<>(this,
+                        android.R.layout.select_dialog_singlechoice, mSupplierList);
 
-            if (mSupplierList != null && mSupplierList.size() > 0) {
-                bmodel.getRetailerMasterBO().setSupplierBO(
-                        mSupplierList.get(mDefaultSupplierSelection));
-                bmodel.getRetailerMasterBO().setDistributorId(mSupplierList.get(mDefaultSupplierSelection).getSupplierID());
-            }*/
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(getResources().getString(R.string.select_distributor))
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
-                    .setIcon(null)
-                    .setCancelable(false)
-                    .setTitle(getResources().getString(R.string.select_distributor))
+                        .setSingleChoiceItems(mSupplierAdapter,
+                                0,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
 
-                    .setSingleChoiceItems(mSupplierAdapter,
-                            0,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
+                                        SupplierMasterBO supplierBo = mSupplierAdapter
+                                                .getItem(which);
+                                        bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
+                                        bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                        bmodel.updatePriceGroupId(true);
 
-                                    SupplierMasterBO supplierBo = mSupplierAdapter
-                                            .getItem(which);
-                                    bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
-                                    bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
-                                    bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
-                                    bmodel.updateGroupIdForRetailer();
+                                        dialog.dismiss();
 
-                                    dialog.dismiss();
-
-                                    loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                                        loadHomeScreenTwo(bmodel.getRetailerMasterBO());
 
 
-                                }
-                            });
-            bmodel.applyAlertDialogTheme(builder);
+                                    }
+                                });
+                bmodel.applyAlertDialogTheme(builder);
 
-            return;
+                return;
+            }
         }
 
         loadHomeScreenTwo(bmodel.getRetailerMasterBO());
@@ -2236,19 +2247,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 if (!visitClick && !isFromPlanning && !isFromPlanningSub) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_VISIT"));
-                    finish();
                 } else if (isFromPlanning) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING"));
-                    finish();
 
-                } else if (isFromPlanningSub) {
-                    startActivity(new Intent(ProfileActivity.this,
-                            HomeScreenActivity.class).putExtra("menuCode", "MENU_PLANNING_SUB"));
-                    finish();
-                } else {
-                    finish();
                 }
+                finish();
             }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }

@@ -209,7 +209,9 @@
         android:layout_height="@dimen/footer_height"
         android:layout_gravity="bottom"
         android:background="@color/screen_bg_color"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
 
         <View
             android:layout_width="match_parent"

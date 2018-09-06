@@ -60,7 +60,7 @@ public class DeliveryStockHelper {
                     String sql = "select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid"
                             + ",uomid as orderedUomId,qty as orderedQty from InvoiceDetailUOMWise ID"
                             + " Left join ProductMaster pm on pm.pid=ID.productid"
-                            + " where invoiceid in(select invoiceno from invoicemaster where retailerid in (" + retailerIds + "))";
+                            + " where invoiceid in(select InvoiceNo from InvoiceDeliveryMaster where Retailerid in (" + retailerIds + "))";
 
                     Cursor c = db.selectSQL(sql);
                     if (c.getCount() > 0) {

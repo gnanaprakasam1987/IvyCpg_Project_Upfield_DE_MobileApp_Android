@@ -8,15 +8,13 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 
 public class PlanningVisitActivity extends IvyBaseActivityNoActionBar {
-    private Toolbar toolbar;
-    private VisitFragment fragmentObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning_visit);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -30,16 +28,16 @@ public class PlanningVisitActivity extends IvyBaseActivityNoActionBar {
 
 //        bundle.putString("Newplanningsub", "Planningsub");
         Bundle bundle = new Bundle();
-        if(getIntent().getBooleanExtra("isPlanning",false)) {
+        if (getIntent().getBooleanExtra("isPlanning", false)) {
             bundle.putBoolean("isPlanning", true);
             bundle.putString("From", "Day Planning");
-        }else if(getIntent().getBooleanExtra("isPlanningSub",false)){
-            bundle.putBoolean("isPlanningSub",true);
+        } else if (getIntent().getBooleanExtra("isPlanningSub", false)) {
+            bundle.putBoolean("isPlanningSub", true);
             bundle.putString("Newplanningsub", "Planningsub");
         }
-        fragmentObject = new VisitFragment();
-        fragmentObject .setArguments(bundle);
-        if(fragmentObject!=null){
+        VisitFragment fragmentObject = new VisitFragment();
+        fragmentObject.setArguments(bundle);
+        if (fragmentObject != null) {
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction().add(R.id.content_fragemnt, fragmentObject).commit();
         }

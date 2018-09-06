@@ -35,7 +35,9 @@ public class CreditNoteHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT DISTINCT CN.id,CN.amount,RM.RetailerName,isused FROM CreditNote CN INNER JOIN RetailerMaster RM ON RM.retailerid=CN.retailerid");
+                    .selectSQL("SELECT DISTINCT CN.id,CN.amount,RM.RetailerName,isused " +
+                            "FROM CreditNote CN " +
+                            "INNER JOIN RetailerMaster RM ON RM.retailerid=CN.retailerid");
             if (c != null) {
                 while (c.moveToNext()) {
                     CreditNoteListBO obj = new CreditNoteListBO();

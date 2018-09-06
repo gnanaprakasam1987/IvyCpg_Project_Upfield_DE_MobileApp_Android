@@ -166,7 +166,6 @@ public class TaskFragment extends IvyBaseFragment {
         }
 
         if (IsRetailerwisetask) {
-            setScreenTitle("Task");
             if (bmodel.getRetailerMasterBO() != null)
                 if (bmodel.getRetailerMasterBO().getRetailerID().equals("null")) {
                     mSelectedRetailerID = "0";
@@ -176,9 +175,6 @@ public class TaskFragment extends IvyBaseFragment {
                 }
             else
                 mSelectedRetailerID = "0";
-        } else if (extras != null) {
-            String screenTitle = extras.getString("screentitle");
-            setScreenTitle(screenTitle);
         }
 
         // if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_SERVER_TASK) {
@@ -273,16 +269,23 @@ public class TaskFragment extends IvyBaseFragment {
 
         //Set Screen Title
         try {
-            if (extras == null || !extras.containsKey("screentitle")
-                    || extras.getString("screentitle") == null)
-                setScreenTitle(bmodel.getMenuName("MENU_TASK_NEW"));
-            else
-                setScreenTitle(extras.getString("screentitle"));
-        } catch (Exception e) {
-
-            setScreenTitle(getResources().
-                    getString(R.string.task));
-            Commons.printException(e);
+            String title = "";
+            if (extras != null) {
+                if (extras.containsKey("screentitle")) {
+                    title = extras.getString("screentitle");
+                } else if (IsRetailerwisetask) {
+                    title = bmodel.configurationMasterHelper.getHomescreentwomenutitle("MENU_TASK");
+                } else if (fromHomeScreen) {
+                    title = bmodel.getMenuName("MENU_TASK_NEW");
+                }
+            }
+            if (title.equals(""))
+                title = getResources().getString(R.string.task);
+            setScreenTitle(title);
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+            setScreenTitle(getResources().getString(R.string.task));
         }
     }
 
@@ -393,8 +396,9 @@ public class TaskFragment extends IvyBaseFragment {
                             bmodel.saveModuleCompletion("MENU_TASK");
                             startActivity(new Intent(getActivity(),
                                     HomeScreenTwo.class));
+                            getActivity().finish();
+
                         }
-                        getActivity().finish();
                     }
                 }
             });

@@ -76,6 +76,7 @@ import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.van.LoadManagementHelper;
+import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -86,7 +87,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
@@ -106,7 +106,6 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
-import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
@@ -115,7 +114,6 @@ import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.DeliveryManagementHelper;
 import com.ivy.sd.png.provider.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
@@ -128,7 +126,6 @@ import com.ivy.sd.png.provider.ModuleTimeStampHelper;
 import com.ivy.sd.png.provider.NewOutletAttributeHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
-import com.ivy.sd.png.provider.OrderFullfillmentHelper;
 import com.ivy.sd.png.provider.OrderStatusReportHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PrintHelper;
@@ -140,7 +137,6 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
-import com.ivy.sd.png.provider.StockProposalModuleHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.provider.TaskHelper;
@@ -269,11 +265,9 @@ public class BusinessModel extends Application {
     public DisInvoiceDetailsHelper disInvoiceDetailsHelper;
     public DistTimeStampHeaderHelper distTimeStampHeaderHelper;
     public PrintHelper printHelper;
-    public OrderFullfillmentHelper orderfullfillmenthelper;
     public ProfileHelper profilehelper;
     public MVPHelper mvpHelper;
     public JExcelHelper mJExcelHelper;
-    public DeliveryManagementHelper deliveryManagementHelper;
     public CommonPrintHelper mCommonPrintHelper;
     public DynamicReportHelper dynamicReportHelper;
     public RetailerContractHelper retailerContractHelper;
@@ -431,14 +425,12 @@ public class BusinessModel extends Application {
 
         // Shelf Share Helper
         mRetailerHelper = RetailerHelper.getInstance(this);
-        orderfullfillmenthelper = OrderFullfillmentHelper.getInstance(this);
         mvpHelper = MVPHelper.getInstance(this);
         distributorMasterHelper = DistributorMasterHelper.getInstance(this);
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
         distTimeStampHeaderHelper = DistTimeStampHeaderHelper.getInstance(this);
         profilehelper = ProfileHelper.getInstance(this);
         mJExcelHelper = JExcelHelper.getInstance(this);
-        deliveryManagementHelper = DeliveryManagementHelper.getInstance(this);
         mCommonPrintHelper = CommonPrintHelper.getInstance(this);
         dynamicReportHelper = DynamicReportHelper.getInstance(this);
         teamLeadermasterHelper = TeamLeaderMasterHelper.getInstance(this);
@@ -714,7 +706,6 @@ public class BusinessModel extends Application {
     public IvyAppComponent getComponent() {
         return mApplicationComponent;
     }
-
 
 
     @Override
@@ -1113,7 +1104,7 @@ public class BusinessModel extends Application {
                 if (c.getCount() > 0) {
                     flag = true;
                 }
-            c.close();
+                c.close();
             }
 
             db.closeDB();
@@ -1138,7 +1129,7 @@ public class BusinessModel extends Application {
                     flag = true;
                     getRetailerMasterBO().setIsSurveyDone(true);
                 }
-            c.close();
+                c.close();
             }
 
             db.closeDB();
@@ -1165,7 +1156,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1193,7 +1184,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1223,7 +1214,7 @@ public class BusinessModel extends Application {
                 if (c.moveToNext()) {
                     i += c.getFloat(0);
                 }
-            c.close();
+                c.close();
             }
 
             db.closeDB();
@@ -1233,7 +1224,6 @@ public class BusinessModel extends Application {
 
         return i;
     }
-
 
 
     public double getAcheived() {
@@ -1285,7 +1275,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1310,7 +1300,7 @@ public class BusinessModel extends Application {
                     db.closeDB();
                     return i;
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1915,7 +1905,7 @@ public class BusinessModel extends Application {
                         }
                     }
                 }
-            c.close();
+                c.close();
             }
             db.closeDB();
 
@@ -1948,7 +1938,7 @@ public class BusinessModel extends Application {
                         }
                     }
                 }
-            c.close();
+                c.close();
             }
 
             sql = "SELECT sum(AH.achscore),rm.retailerid  FROM  retailermaster rm"
@@ -2418,10 +2408,6 @@ public class BusinessModel extends Application {
     // // ****************** Daily Report
 
 
-
-
-
-
     public Vector<NonproductivereasonBO> getMissedCallRetailers() {
 
         Vector<NonproductivereasonBO> nonProductiveVector = new Vector<NonproductivereasonBO>();
@@ -2454,7 +2440,7 @@ public class BusinessModel extends Application {
 
                 }
 
-            c.close();
+                c.close();
             }
 
             db.closeDB();
@@ -2725,7 +2711,7 @@ public class BusinessModel extends Application {
 
                 }
             } else {
-                formattedValue = SDUtil.format(value, 2, 0);
+                formattedValue = SDUtil.format(value, configurationMasterHelper.VALUE_PRECISION_COUNT, 0);
 
             }
         } catch (Exception ex) {
@@ -2792,7 +2778,7 @@ public class BusinessModel extends Application {
                 }
             }
             orderDetailCursor.close();
-        db.closeDB();
+            db.closeDB();
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -2922,7 +2908,7 @@ public class BusinessModel extends Application {
                             isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", availability);
 
                 }
-            orderDetailCursor.close();
+                orderDetailCursor.close();
             }
             db.closeDB();
         } catch (Exception e) {
@@ -3190,7 +3176,7 @@ public class BusinessModel extends Application {
                 if (orderDetailCursor.moveToNext()) {
                     orderId = orderDetailCursor.getString(0);
                 }
-            orderDetailCursor.close();
+                orderDetailCursor.close();
             }
             db.deleteSQL(DataMembers.tbl_distributor_order_header, "UId=" + QT(orderId)
                     + " and upload='N'", false);
@@ -3227,7 +3213,7 @@ public class BusinessModel extends Application {
                 if (orderDetailCursor.moveToNext()) {
                     orderId = orderDetailCursor.getString(0);
                 }
-            orderDetailCursor.close();
+                orderDetailCursor.close();
             }
 
             db.deleteSQL(DataMembers.tbl_distributor_closingstock_header, "UId=" + QT(orderId)
@@ -3239,7 +3225,8 @@ public class BusinessModel extends Application {
             Commons.printException("" + e);
         }
     }
-@Deprecated
+
+    @Deprecated
 //this method moved into #NetWorkUitls class
     public boolean isOnline() {
 
@@ -3614,8 +3601,6 @@ public class BusinessModel extends Application {
     public void setOrderHeaderBO(OrderHeader orderHeaderBO) {
         this.orderHeaderBO = orderHeaderBO;
     }
-
-
 
 
     public RetailerMasterBO getRetailerMasterBO() {
@@ -8011,14 +7996,23 @@ public class BusinessModel extends Application {
     }
 
 
-    public void updateGroupIdForRetailer() {
+    public void updatePriceGroupId(boolean isRetailer) {
 
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
+        StringBuilder sb = new StringBuilder();
 
         try {
-            Cursor c = db
-                    .selectSQL("SELECT groupId from RetailerPriceGroup where retailerId=" + getRetailerMasterBO().getRetailerID() + " and distributorId=" + getRetailerMasterBO().getDistributorId());
+            sb.append("SELECT groupId FROM RetailerPriceGroup WHERE");
+
+            if (isRetailer) {
+                sb.append(" retailerId =" + getRetailerMasterBO().getRetailerID() + " AND");
+            }
+
+            sb.append(" distributorId =" + getRetailerMasterBO().getDistributorId());
+
+
+            Cursor c = db.selectSQL(sb.toString());
 
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -8667,6 +8661,15 @@ public class BusinessModel extends Application {
         return "";
     }
 
+    String newlyaddedRetailer = "";
+
+    public String getNewlyaddedRetailer() {
+        return newlyaddedRetailer;
+    }
+
+    public void setNewlyaddedRetailer(String newlyaddedRetailer) {
+        this.newlyaddedRetailer = newlyaddedRetailer;
+    }
 }
 
 

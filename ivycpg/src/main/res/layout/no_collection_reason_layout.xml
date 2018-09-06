@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/screen_title_height"
+    android:layout_margin="@dimen/list_margin"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/invoice_no"
+        style="?attr/customListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_weight="0.35"
+        android:gravity="start|center_vertical"
+        android:text=""
+        android:textColor="@color/Black"
+        android:textSize="@dimen/list_item_primary_text_size" />
+
+    <TextView
+        android:id="@+id/invoice_date"
+        style="?attr/customListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_weight="0.15"
+        android:gravity="start|center_vertical"
+        android:text=""
+        android:textColor="@color/Black"
+        android:textSize="@dimen/list_item_primary_text_size" />
+
+    <TextView
+        android:id="@+id/invoice_amount"
+        style="?attr/customListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_weight="0.15"
+        android:gravity="end|center_vertical"
+        android:text="0"
+        android:textColor="@color/Black"
+        android:textSize="@dimen/list_item_primary_text_size" />
+
+
+    <Spinner
+        android:id="@+id/spinnerNooCollectionReason"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.35"
+        android:paddingLeft="@dimen/_3sdp"
+        android:paddingRight="@dimen/_3sdp"
+        android:background="@null"/>
+
+
+</LinearLayout>

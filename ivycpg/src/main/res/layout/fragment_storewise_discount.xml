@@ -74,10 +74,13 @@
                 android:selectAllOnFocus="true"
                 android:tag="DOT"
                 android:text="0.0"
-                android:textColor="@android:color/black">
+                android:textColor="@android:color/black" />
 
-            </EditText>
-
+            <CheckBox
+                android:id="@+id/cbwithhold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -90,8 +93,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/dimen_10dp"
-        android:layout_height="@dimen/footer_height">
+        android:layout_height="@dimen/footer_height"
+        android:layout_marginTop="@dimen/dimen_10dp">
 
         <Button
             android:id="@+id/btn_done"
