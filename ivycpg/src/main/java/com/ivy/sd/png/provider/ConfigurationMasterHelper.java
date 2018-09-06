@@ -4899,14 +4899,15 @@ public class ConfigurationMasterHelper {
      * @return menuname
      */
     public String getHomescreentwomenutitle(String menucode) {
+        String menuName="";
         Vector<ConfigureBO> config = getActivityMenu();
         if (config != null) {
             for (int i = 0; i < config.size(); i++) {
                 if (config.get(i).getConfigCode().equals(menucode))
-                    menucode = config.get(i).getMenuName();
+                    menuName = config.get(i).getMenuName();
             }
         }
-        return menucode;
+        return menuName;
 
     }
 

@@ -142,6 +142,16 @@ public class SchemeBO {
 
     private boolean isBatchWise;
 
+    public boolean isAccumulationScheme() {
+        return isAccumulationScheme;
+    }
+
+    public void setAccumulationScheme(boolean accumulationScheme) {
+        isAccumulationScheme = accumulationScheme;
+    }
+
+    private boolean isAccumulationScheme;
+
     public int getOrderedProductCount() {
         return orderedProductCount;
     }
