@@ -121,6 +121,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     SubDSelectionDialog subDSelectionDialog;
     private int mSelectedSubId = -1;
+    private static Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -578,7 +579,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
         searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
@@ -654,6 +655,12 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
     }
 
     @Override
