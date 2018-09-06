@@ -4,9 +4,13 @@ import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 
+import java.util.ArrayList;
+
 public interface SellerDashboardContract {
 
     interface SellerDashboardView extends BaseIvyView {
+
+        void updateDashSpinner(ArrayList<String> dashList);
 
     }
 
@@ -16,5 +20,13 @@ public interface SellerDashboardContract {
         void saveModuleCompletion(String menuCode);
 
         void updateTimeStampModuleWise();
+
+        void fetchRouteDashList();
+
+        void fetchSellerDashList();
+
+        void fetchRetailerDashList();
+
+        boolean isSMPBasedDash();
     }
 }

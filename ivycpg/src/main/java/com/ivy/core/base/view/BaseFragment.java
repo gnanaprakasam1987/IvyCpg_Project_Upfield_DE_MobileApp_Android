@@ -28,7 +28,6 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         mUnBinder = ButterKnife.bind(this, view);
         initVariables(view);
 
@@ -38,6 +37,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
         getMessageFromAliens();
 
         setUpViews();
+        super.onViewCreated(view, savedInstanceState);
 
     }
 
@@ -130,6 +130,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mBasePresenter.onDetach();
         try {
             mUnBinder.unbind();
             mUnBinder = null;

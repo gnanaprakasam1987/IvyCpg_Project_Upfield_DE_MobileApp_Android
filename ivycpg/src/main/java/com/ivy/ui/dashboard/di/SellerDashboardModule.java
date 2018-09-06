@@ -4,6 +4,8 @@ import com.ivy.core.di.scope.PerActivity;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashPresenterImpl;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardContractor;
 import com.ivy.ui.dashboard.SellerDashboardContract;
+import com.ivy.ui.dashboard.data.SellerDashboardDataManager;
+import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
 import com.ivy.ui.dashboard.presenter.SellerDashboardPresenterImp;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
@@ -35,6 +37,12 @@ public class SellerDashboardModule {
     SchedulerProvider provideSchedulerProvider() {
         return new AppSchedulerProvider();
     }
+
+    @Provides
+    SellerDashboardDataManager providesSellerDashboardDataManager(SellerDashboardDataManagerImpl sellerDashboardDataManager){
+        return sellerDashboardDataManager;
+    }
+
 
     @Provides
     @PerActivity

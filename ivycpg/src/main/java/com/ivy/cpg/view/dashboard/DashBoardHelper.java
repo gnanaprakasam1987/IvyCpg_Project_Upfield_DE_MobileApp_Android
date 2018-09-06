@@ -16,6 +16,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -935,7 +936,7 @@ public class DashBoardHelper {
             if (!isRetailer)
                 sql = "select distinct interval from SellerKPI";
             else
-                sql = "select distinct interval from RetailerKPI where RetailerId="+bmodel.getRetailerMasterBO().getRetailerID();
+                sql = "select distinct interval from RetailerKPI where RetailerId=" + bmodel.getRetailerMasterBO().getRetailerID();
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -952,6 +953,11 @@ public class DashBoardHelper {
         return dashList;
     }
 
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getRouteDashList()}
+     */
     public ArrayList<String> getRouteDashList() {
 
         ArrayList<String> dashList = null;
@@ -3647,7 +3653,7 @@ public class DashBoardHelper {
 
 
         db.closeDB();
-        return  dailyRep;
+        return dailyRep;
     }
 
     public DailyReportBO getNoOfInvoiceAndValue() {

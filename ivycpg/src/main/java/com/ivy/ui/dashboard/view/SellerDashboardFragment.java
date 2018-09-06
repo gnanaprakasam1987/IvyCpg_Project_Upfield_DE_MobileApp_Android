@@ -1,6 +1,5 @@
 package com.ivy.ui.dashboard.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
@@ -10,26 +9,29 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.di.DaggerSellerDashboardComponent;
-import com.ivy.ui.dashboard.di.SellerDashboardComponent;
 import com.ivy.ui.dashboard.di.SellerDashboardModule;
 import com.ivy.utils.FontUtils;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import me.relex.circleindicator.CircleIndicator;
+
+import static com.ivy.utils.AppUtils.isNullOrEmpty;
 
 public class SellerDashboardFragment extends BaseFragment implements SellerDashboardContract.SellerDashboardView {
 
@@ -63,14 +65,19 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @BindView(R.id.dashboardLv)
     RecyclerView dashboardRecyclerView;
 
-    @BindView(R.id.textView)
+    @BindView(R.id.resultsHeaderTxt)
     TextView spinnerHeaderTxt;
 
-
+    private static final String MONTH = "MONTH";
+    private static final String DAY = "DAY";
+    private static final String P3M = "P3M";
+    private static final String WEEK = "WEEK";
+    private static final String ROUTE = "ROUTE";
 
     private String menuCode;
 
-    private boolean isFromHomeScreenTwo;
+    private boolean isFromRetailer;
+    private String type;
 
     @Override
     public void initializeDi() {
@@ -78,7 +85,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         DaggerSellerDashboardComponent.builder()
                 .ivyAppComponent(((BusinessModel) getActivity().getApplication()).getComponent())
                 .sellerDashboardModule(new SellerDashboardModule(this))
-                .build();
+                .build().inject(this);
 
         setBasePresenter((BasePresenter) presenter);
 
@@ -100,8 +107,22 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             menuCode = bundle.getString("menuCode");
-            isFromHomeScreenTwo = bundle.getBoolean("isFromHomeScreenTwo", false);
+            isFromRetailer = bundle.getBoolean("isFromHomeScreenTwo", false);
+            type = bundle.getString("type");
         }
+
+        getDashSpinnerData();
+
+    }
+
+    private void getDashSpinnerData(){
+
+        if(!isNullOrEmpty(type)&&type.equalsIgnoreCase(ROUTE)){
+            presenter.fetchRouteDashList();
+        }else if(!isFromRetailer){
+            presenter.fetchSellerDashList();
+        }else
+            presenter.fetchRetailerDashList();
 
     }
 
@@ -113,13 +134,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
         spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
 
-        Spinner distibutorSpinner = (Spinner) distributorSpinnerStub.inflate();
-        distibutorSpinner.setVisibility(View.VISIBLE);
-        distibutorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_red));
-
-        Spinner userSpinner = (Spinner) userSpinnerStub.inflate();
-        userSpinner.setVisibility(View.VISIBLE);
-        distibutorSpinner.setBackgroundColor(getResources().getColor(R.color.plano_yes_green));
     }
 
     @Override
@@ -136,7 +150,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (isFromHomeScreenTwo) {
+            if (isFromRetailer) {
                 //update time stamp if previous screen is homescreentwo
                 presenter.updateTimeStampModuleWise();
                 presenter.saveModuleCompletion(menuCode);
@@ -149,4 +163,30 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void updateDashSpinner(ArrayList<String> dashList) {
+        // Creating adapter for spinner
+
+        Spinner dashSpinner = (Spinner) dashSpinnerStub.inflate();
+        dashSpinner.setVisibility(View.VISIBLE);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, dashList);
+
+        dataAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+
+        dashSpinner.setAdapter(dataAdapter);
+
+    }
+
+    private AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
 }
