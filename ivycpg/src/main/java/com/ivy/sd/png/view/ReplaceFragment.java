@@ -625,8 +625,8 @@ public class ReplaceFragment extends IvyBaseFragment {
                 if (sb.getReasonID().equals("0")) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
                     return false;
-                } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
-                        (salesReturnHelper.SHOW_LOTNUMBER && sb.getLotNumber().equals(""))) {//inv n lot num validation done based on their conifguration
+                } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
+                        (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && sb.getLotNumber().equals(""))) {//inv n lot num validation done based on their conifguration
                     Toast.makeText(getActivity(), "Mandatory fields empty!", Toast.LENGTH_SHORT).show();
                     return false;
                 }

@@ -159,7 +159,6 @@ public class ReturnFragment extends IvyBaseFragment {
                 returnList.setSelection(adapter.getCount() - 1);
             }
         });
-
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,10 +167,10 @@ public class ReturnFragment extends IvyBaseFragment {
                     return;
                 }
 
-                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER || salesReturnHelper.SHOW_LOTNUMBER)
+                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY || salesReturnHelper.SHOW_LOTNUMBER_MANDATORY)
                     for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
-                        if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER && sb.getInvoiceno().equals("0"))
-                                || (salesReturnHelper.SHOW_LOTNUMBER && sb.getLotNumber().equals("0"))) {
+                        if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY && sb.getInvoiceno().equals("0"))
+                                || (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && sb.getLotNumber().equals("0"))) {
                             Toast.makeText(getActivity(), getResources().getString(R.string.mandatory_fileds_empty), Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -186,7 +185,7 @@ public class ReturnFragment extends IvyBaseFragment {
                 }
                 removeEmptyRow();
 
-                if (bmodel.configurationMasterHelper.IS_SALES_RETURN_VALIDATE) {
+                if (!bmodel.configurationMasterHelper.IS_SALES_RETURN_VALIDATE) {
                     new validateSalesReturn().execute();
                 } else {
                     Intent intent = new Intent();
@@ -252,9 +251,9 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 invFlag = true;
                 isLot = true;
-                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER)
+                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER || salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY)
                     invFlag = mSelectedInvNos.contains(sb.getInvoiceno());
-                if (salesReturnHelper.SHOW_LOTNUMBER)
+                if (salesReturnHelper.SHOW_LOTNUMBER || salesReturnHelper.SHOW_LOTNUMBER_MANDATORY)
                     isLot = mSelectedLotNos.contains(sb.getLotNumber());
 
                 if (mSelectedReasonIds.contains(sb.getReasonID())
@@ -279,8 +278,8 @@ public class ReturnFragment extends IvyBaseFragment {
                 if (sb.getReasonID().equals("0")) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
                     return false;
-                } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
-                        (salesReturnHelper.SHOW_LOTNUMBER && sb.getLotNumber().equals(""))) {//inv n lot num validation done based on their conifguration
+                } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
+                        (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && sb.getLotNumber().equals(""))) {//inv n lot num validation done based on their conifguration
                     Toast.makeText(getActivity(), "Mandatory fields empty!", Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -337,7 +336,7 @@ public class ReturnFragment extends IvyBaseFragment {
 
     class MyAdapter extends ArrayAdapter<SalesReturnReasonBO> {
         final ArrayList<SalesReturnReasonBO> items;
-        ArrayAdapter<String> mInvoiceAdapter=null;
+        ArrayAdapter<String> mInvoiceAdapter = null;
 
         MyAdapter(ArrayList<SalesReturnReasonBO> items) {
             super(getActivity(), R.layout.row_salesreturn_entry_listitem,
@@ -420,7 +419,7 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 holder.reasonSpinner.setAdapter(holder.spinnerAdapter);
 
-                if(salesReturnHelper.IS_SHOW_SR_INVOICE_NO_HISTORY) {
+                if (salesReturnHelper.IS_SHOW_SR_INVOICE_NO_HISTORY) {
                     ArrayList<String> mInvoiceList = salesReturnHelper.getInvoiceNo(getContext());
                     mInvoiceAdapter = new ArrayAdapter<>(getContext(),
                             R.layout.autocompelete_bluetext_layout, mInvoiceList);
@@ -512,10 +511,14 @@ public class ReturnFragment extends IvyBaseFragment {
                 if (!salesReturnHelper.SHOW_SAL_RET_EXP_DATE)
                     (row.findViewById(R.id.ll_exp)).setVisibility(View.GONE);
 
-                if (!salesReturnHelper.SHOW_LOTNUMBER)
-                    ((LinearLayout) row.findViewById(R.id.ll_lot_no)).setVisibility(View.GONE);
-                if (!salesReturnHelper.SHOW_SR_INVOICE_NUMBER)
-                    ((LinearLayout) row.findViewById(R.id.ll_invoie_no)).setVisibility(View.GONE);
+                if (!salesReturnHelper.SHOW_LOTNUMBER || salesReturnHelper.SHOW_LOTNUMBER_MANDATORY)
+                    (row.findViewById(R.id.ll_lot_no)).setVisibility(View.GONE);
+                if (!salesReturnHelper.SHOW_SR_INVOICE_NUMBER || salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY)
+                    (row.findViewById(R.id.ll_invoie_no)).setVisibility(View.GONE);
+
+                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY)
+                    (row.findViewById(R.id.tvinvmandate)).setVisibility(View.VISIBLE);
+
 
                 if (!salesReturnHelper.SHOW_SR_CATEGORY)
                     holder.categorySpinner.setVisibility(View.GONE);
@@ -626,7 +629,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     @Override
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
-                        if(s.toString().contains("\"")) {
+                        if (s.toString().contains("\"")) {
                             String qty = s.toString().replaceAll("\"", "");
                             holder.invoiceno.setText(qty);
                         }
