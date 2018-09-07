@@ -32,9 +32,7 @@ import org.json.JSONObject;
 import java.util.Iterator;
 import java.util.Vector;
 
-/**
- * Created by ramkumard on 2/5/18
- */
+
 
 @SuppressLint("ValidFragment")
 public class RetailerOTPDialog extends DialogFragment implements View.OnClickListener {
@@ -156,18 +154,12 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
                                 if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
                                         || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
                                         || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
-
                                     return -4;
-
                                 }
-
                             }
-
                         }
 
-
                     }
-
                 } else {
                     if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                         String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());

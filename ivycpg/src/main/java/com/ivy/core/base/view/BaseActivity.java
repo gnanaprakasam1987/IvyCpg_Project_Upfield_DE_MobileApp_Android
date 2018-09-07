@@ -113,9 +113,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     }
 
     @Override
-    public void createNFCManager() {
-
-    }
+    public void createNFCManager() {}
 
     @Override
     public void resumeNFCManager() {

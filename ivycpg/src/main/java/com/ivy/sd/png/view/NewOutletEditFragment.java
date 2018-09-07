@@ -42,9 +42,6 @@ import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
-/**
- * Created by hanifa.m on 5/5/2017.
- */
 
 public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSelectionDialog.ChannelSelectionListener
         , NewOutletEditSortDialog.ShortSelectionListener {

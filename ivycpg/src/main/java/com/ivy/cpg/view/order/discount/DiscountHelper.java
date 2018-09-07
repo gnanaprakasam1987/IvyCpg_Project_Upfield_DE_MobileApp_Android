@@ -546,7 +546,7 @@ public class DiscountHelper {
                 double discountValue = 0;
                 if (storeWiseDiscountBO.getIsPercentage() == 1) {
                     discountValue = totalOrderValue * storeWiseDiscountBO.getDiscount() / 100;
-                } else if (storeWiseDiscountBO.getType() == 0) {
+                } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
                     discountValue = storeWiseDiscountBO.getDiscount();
                 }
 
@@ -953,7 +953,7 @@ public class DiscountHelper {
                         if (schemeBO.isAmountTypeSelected()) {
                             for (SchemeProductBO schemeProductBo : schemeProductList) {
                                 totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
-                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId());
+                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),false);
                             }
                         }
 

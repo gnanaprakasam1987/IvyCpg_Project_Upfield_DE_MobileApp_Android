@@ -247,6 +247,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         };
 
 
+        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+            Toast.makeText(this,
+                    getResources().getString(R.string.sessionout_loginagain),
+                    Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
             checkAndRequestPermissionAtRunTime(3);
         }

@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
+import com.ivy.cpg.view.collection.NoCollectionReasonBo;
 import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.FitScoreDashboardActivity;
@@ -730,6 +732,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         // this dialog will return when mandatory module is not completed otherwise not show
         if (isMandatoryDialogShow && bmodel.configurationMasterHelper.IS_CHECK_MODULE_MANDATORY)
             onCreateDialog(MANDATORY_MODULE);
+
     }
 
 
@@ -1820,6 +1823,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                             if (bmodel.isEdit()) {
+                                OrderHelper.getInstance(this).isQuickCall=false;
                                 Intent intent = new Intent(HomeScreenTwo.this,
                                         OrderSummary.class);
                                 intent.putExtra("ScreenCode", "MENU_ORDER");
@@ -1858,6 +1862,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                         SDUtil.now(SDUtil.DATE_GLOBAL),
                                                         SDUtil.now(SDUtil.TIME),
                                                         menu.getConfigCode());
+                                        OrderHelper.getInstance(this).isQuickCall=false;
                                         Intent i = new Intent(HomeScreenTwo.this,
                                                 StockAndOrder.class);
                                         i.putExtra("OrderFlag", "Nothing");
@@ -1889,6 +1894,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                                     SDUtil.now(SDUtil.TIME),
                                                     menu.getConfigCode());
+                                    OrderHelper.getInstance(this).isQuickCall=false;
                                     Intent i = new Intent(HomeScreenTwo.this,
                                             StockAndOrder.class);
                                     i.putExtra("OrderFlag", "Nothing");
@@ -2234,6 +2240,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             obj.show();
                             obj.setCancelable(false);
                         } else {
+                            OrderHelper.getInstance(this).isQuickCall=false;
                             OrderSummary.mCurrentActivityCode = menu.getConfigCode();
 
                             Intent i = new Intent(HomeScreenTwo.this,
@@ -2782,7 +2789,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
 
         } else if (menu.getConfigCode().equals(MENU_CALL_ANLYS)) {
-            if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
+            if (bmodel.configurationMasterHelper.SHOW_NO_COLLECTION_REASON && !checkInvoiceWithReason()){
+
+                isCreated = false;
+                Toast.makeText(this, getString(R.string.invoice_with_no_collection), Toast.LENGTH_SHORT).show();
+            }
+            else if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
                     || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                     || !canAllowCallAnalysis()) {
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -3839,6 +3851,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     }
 
     private void loadOrderSummaryScreen(String menuConfigCode) {
+        OrderHelper.getInstance(this).isQuickCall=false;
         Intent intent = new Intent(HomeScreenTwo.this,
                 OrderSummary.class);
         if (menuConfigCode.equals(MENU_CATALOG_ORDER)) {
@@ -3967,7 +3980,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     SDUtil.now(SDUtil.DATE_GLOBAL),
                                     SDUtil.now(SDUtil.TIME),
                                     menu);
-
+                    OrderHelper.getInstance(this).isQuickCall=false;
                     Intent intent = new Intent(HomeScreenTwo.this,
                             StockAndOrder.class);
                     startActivity(intent);
@@ -3998,6 +4011,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 //                            Intent intent = new Intent(HomeScreenTwo.this,
 //                                    StockAndOrder.class);
+                OrderHelper.getInstance(this).isQuickCall=false;
+
                 Intent intent;
                 if (menu.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
 //                                bmodel.productHelper
@@ -4679,6 +4694,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             bmodel.productHelper.updateIndicateOrder();
                         }
                         //      setImagefromCamera(mProductID, mTypeID);
+                        OrderHelper.getInstance(HomeScreenTwo.this).isQuickCall=false;
                         if (menuCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
                             Intent i = new Intent(HomeScreenTwo.this,
                                     StockAndOrder.class);
@@ -4963,6 +4979,63 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private boolean checkInvoiceWithReason(){
+        boolean isReasonGiven = true;
+
+        for (NoCollectionReasonBo noCollectionReasonBo : loadInvoiceList(bmodel.getRetailerMasterBO().getRetailerID())){
+
+            if ((noCollectionReasonBo.getNoCollectionReasonId() == null
+                    || noCollectionReasonBo.getNoCollectionReasonId().equals("0") ||
+                    noCollectionReasonBo.getNoCollectionReasonId().isEmpty())
+                    && noCollectionReasonBo.getPaidAmount() == 0){
+
+                isReasonGiven = false;
+                break;
+            }
+        }
+
+        return isReasonGiven;
+    }
+
+    private ArrayList<NoCollectionReasonBo> loadInvoiceList(String id){
+        ArrayList<NoCollectionReasonBo> noCollectionReasonBoList = new ArrayList<>();
+
+        try {
+            DBUtil db = new DBUtil(HomeScreenTwo.this, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt," +
+                    " Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as RcvdAmt," +
+                    " CDD.ReasonId,CDD.ReasonOthers,Inv.RetailerId FROM InvoiceMaster Inv LEFT JOIN payment ON payment.BillNumber = Inv.InvoiceNo " +
+                    " LEFT JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid left join CollectionDueDetails CDD on CDD.InvoiceNo = Inv.InvoiceNo " +
+                    " WHERE inv.Retailerid ='"+id+"'  AND inv.DocStatus ='COL'  GROUP BY Inv.InvoiceNo ORDER BY Inv.InvoiceDate");
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    NoCollectionReasonBo invoiceHeaderBO = new NoCollectionReasonBo();
+                    invoiceHeaderBO.setInvoiceNo(c.getString(0));
+                    invoiceHeaderBO.setInvoiceDate(c.getString(1));
+                    invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
+                    invoiceHeaderBO.setPaidAmount(c.getDouble(3));
+                    invoiceHeaderBO.setNoCollectionReasonId(c.getString(4));
+                    invoiceHeaderBO.setNoCollectionReason(c.getString(5));
+                    invoiceHeaderBO.setRetailerId(c.getString(6));
+
+                    if (invoiceHeaderBO.getPaidAmount() == 0)
+                        noCollectionReasonBoList.add(invoiceHeaderBO);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return noCollectionReasonBoList;
+
     }
 
 

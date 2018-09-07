@@ -182,6 +182,17 @@
     <string name="retailer_contact_menu">Retailer Contact Menu not Available!</string>
     <string name="retailer_contact_list">Contact data not Available!</string>
     <string name="not_able_to_register_visit">Not able to register the visit</string>
+    <string name="outlet">Outlet</string>
+    <string name="contact">Contact</string>
+    <string name="isprimary">Is Primary</string>
+    <string name="contact_title">Contact Title</string>
+    <string name="enter_first_name">Enter Contact FirstName</string>
+    <string name="enter_last_name">Enter Contact LastName</string>
+    <string name="enter_other_name">Enter Contact Other Title</string>
+    <string name="select_contact_title">Select Contact Title</string>
+    <string name="pattern_mismatch">pattern not matched</string>
+    <string name="primary_contact_available">Primary Contact already available!</string>
+    <string name="max_contacts_added">Maximum Contacts already added!</string>
 
     <string name="discount_amt_cannot_be_higher_than_percentage">Discount Amount cannot be Higher than “%1$s” of product price.</string>
     <string name="select_reason_for_price_change">Select Reason for Price Change!</string>
@@ -213,5 +224,11 @@
     <string name="days_to_expire">Days to Expire</string>
     <string name="selected">selected</string>
     <string name="select_order_type">Select order type</string>
+    <string name="withold_title">With Hold Tax</string>
+
+    <string name="no_collection_reason">No collection \nReason</string>
+
+    <string name="invoice_with_no_collection">Invoice With No Collection Reason Found</string>
+
     <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
 </resources>

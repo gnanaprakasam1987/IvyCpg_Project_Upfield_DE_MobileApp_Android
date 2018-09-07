@@ -5,17 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ivy.sd.png.view.profile.ProfileEditActivity">
+    tools:context="com.ivy.ui.profile.edit.view.ProfileEditFragmentNew">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <fragment
+    <!--<fragment
         android:id="@+id/fragment"
-        android:name="com.ivy.sd.png.view.profile.ProfileEditFragment"
+        android:name="com.ivy.ui.profile.edit.view.ProfileEditFragmentNew"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />-->
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
+    <!--com.ivy.ui.profile.edit.view.ProfileEditFragmentNew-->
+    <!--com.ivy.sd.png.view.profile.ProfileEditFragment-->
 </LinearLayout>

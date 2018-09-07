@@ -682,8 +682,7 @@ public class ProfileFragment extends IvyBaseFragment {
             case "PROFILE06": {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
-                outletBO.setValueText(bmodel.channelMasterHelper
-                        .getChannelName(retailerObj.getChannelID() + ""));
+                outletBO.setValueText(bmodel.channelMasterHelper.getChannelName(retailerObj.getChannelID() + ""));
                 finalProfileList.add(outletBO);
                 break;
             }
@@ -1330,10 +1329,10 @@ public class ProfileFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             //updateLocationMasterList();
             bmodel.newOutletHelper.downloadLinkRetailer();
-            bmodel.mRetailerHelper.loadContractData();
             bmodel.newOutletHelper.loadContactTitle();
             bmodel.newOutletHelper.loadContactStatus();
-            //channelMaster = bmodel.channelMasterHelper.getChannelMaster();
+            bmodel.mRetailerHelper.loadContractData();
+
             return true;
         }
     }
@@ -1352,9 +1351,9 @@ public class ProfileFragment extends IvyBaseFragment {
     private void updateRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
         attributeList = new ArrayList<>();
         bmodel.newOutletAttributeHelper.downloadAttributeParentList();
-        bmodel.newOutletAttributeHelper.downloadRetailerAttribute();
+        bmodel.newOutletAttributeHelper.downloadRetailerAttributeChildList();
         ArrayList<NewOutletAttributeBO> childList = bmodel.newOutletAttributeHelper.getAttributeList();
-        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getmAttributeParentList();
         int attribID;
         int tempAttribID;
         int parentID;

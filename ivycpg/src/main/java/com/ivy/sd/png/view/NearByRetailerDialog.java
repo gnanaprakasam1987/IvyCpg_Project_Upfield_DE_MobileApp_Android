@@ -2,6 +2,7 @@ package com.ivy.sd.png.view;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ import java.util.Vector;
 /**
  * Created by rajkumar.s on 01-03-2016.
  */
-public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTextListener{
+public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTextListener {
 
     BusinessModel bmodel;
     ListView listView;
@@ -37,42 +38,37 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
     Context ctx;
     android.support.v7.widget.Toolbar toolbar;
     Vector<RetailerMasterBO> retailersList;
-    Vector<RetailerMasterBO> tempRetailer=new Vector<>();
+    Vector<RetailerMasterBO> tempRetailer = new Vector<>();
     SearchView searchView;
-    public NearByRetailerDialog(Context context, final BusinessModel bmodel,Vector<RetailerMasterBO> retailers,Vector<RetailerMasterBO> mSelectedRetailers) {
+
+    public NearByRetailerDialog(Context context, final BusinessModel bmodel, Vector<RetailerMasterBO> retailers, Vector<RetailerMasterBO> mSelectedRetailers) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.nearby_retailer_dialog);
         this.bmodel = bmodel;
-        // this.bmodel.setContext(bmodel.getActivity());
-        ctx=context;
-        toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
+        ctx = context;
+        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.menu_dialog);
         toolbar.getMenu().findItem(R.id.menu_close).setVisible(false);
         toolbar.getMenu().findItem(R.id.menu_done).setVisible(false);
         toolbar.getMenu().findItem(R.id.search).setVisible(true);
-        searchView= (SearchView) MenuItemCompat.getActionView(toolbar.getMenu()
-                .findItem(R.id.search));
-
-
+        searchView = (SearchView) MenuItemCompat.getActionView(toolbar.getMenu().findItem(R.id.search));
         setSearchTextColour(searchView);
         searchView.setOnQueryTextListener(this);
         searchView.setQueryHint("Search Retailer");
         searchView.setIconifiedByDefault(false);
 
-        mDoneBTN=(Button)findViewById(R.id.btn_done);
+        mDoneBTN = (Button) findViewById(R.id.btn_done);
         mDoneBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Vector<RetailerMasterBO> list=getSelectedRetailers();
-
-                if(list.size()<=bmodel.configurationMasterHelper.VALUE_NEARBY_RETAILER_MAX) {
+                Vector<RetailerMasterBO> list = getSelectedRetailers();
+                if (list.size() <= bmodel.configurationMasterHelper.VALUE_NEARBY_RETAILER_MAX) {
                     NearByRetailerInterface activity = (NearByRetailerInterface) ctx;
                     activity.updateNearByRetailer(list);
                     dismiss();
-                }
-                else{
-                    Toast.makeText(ctx,"Only "+bmodel.configurationMasterHelper.VALUE_NEARBY_RETAILER_MAX+" retailer allowed.",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ctx, "Only " + bmodel.configurationMasterHelper.VALUE_NEARBY_RETAILER_MAX + " retailer allowed.", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -88,12 +84,56 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
         close_btn.setImageResource(R.drawable.ic_clear_red);
         close_btn.setVisibility(View.GONE);
 
-        listView=(ListView)findViewById(R.id.lv_retailers);
+        listView = (ListView) findViewById(R.id.lv_retailers);
         initializeRetailers(retailers, mSelectedRetailers);
-
-
-
     }
+    public NearByRetailerDialog(Context context, final int VALUE_NEARBY_RETAILER_MAX, Vector<RetailerMasterBO> retailers, Vector<RetailerMasterBO> mSelectedRetailers) {
+        super(context);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.nearby_retailer_dialog);
+        ctx = context;
+        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar.inflateMenu(R.menu.menu_dialog);
+        toolbar.getMenu().findItem(R.id.menu_close).setVisible(false);
+        toolbar.getMenu().findItem(R.id.menu_done).setVisible(false);
+        toolbar.getMenu().findItem(R.id.search).setVisible(true);
+        searchView = (SearchView) MenuItemCompat.getActionView(toolbar.getMenu().findItem(R.id.search));
+        setSearchTextColour(searchView);
+        searchView.setOnQueryTextListener(this);
+        searchView.setQueryHint("Search Retailer");
+        searchView.setIconifiedByDefault(false);
+
+        mDoneBTN = (Button) findViewById(R.id.btn_done);
+        mDoneBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Vector<RetailerMasterBO> list = getSelectedRetailers();
+                if (list.size() <= VALUE_NEARBY_RETAILER_MAX) {
+                    NearByRetailerInterface activity = (NearByRetailerInterface) ctx;
+                    activity.updateNearByRetailer(list);
+                    dismiss();
+                } else {
+                    Toast.makeText(ctx, "Only " + VALUE_NEARBY_RETAILER_MAX + " retailer allowed.", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        ImageView searchBtn = (ImageView) searchView
+                .findViewById(R.id.search_button);
+        searchBtn.setImageResource(R.drawable.icon_search);
+
+        // style Clear Btn
+        ImageView close_btn = (ImageView) searchView
+                .findViewById(R.id.search_close_btn);
+        close_btn.setImageResource(R.drawable.ic_clear_red);
+        close_btn.setVisibility(View.GONE);
+
+        listView = (ListView) findViewById(R.id.lv_retailers);
+        initializeRetailers(retailers, mSelectedRetailers);
+    }
+
+
     @Override
     public boolean onQueryTextChange(String text) {
         updateRetailer(text);
@@ -104,7 +144,7 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
     public boolean onQueryTextSubmit(String text) {
 
         if (text.isEmpty()) {
-            MyAdapter adapter=new MyAdapter(retailersList);
+            MyAdapter adapter = new MyAdapter(retailersList);
             listView.setAdapter(adapter);
         } else if (text.length() >= 3) {
             tempRetailer.clear();
@@ -115,7 +155,7 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
                 }
 
             }
-            MyAdapter adapter=new MyAdapter(tempRetailer);
+            MyAdapter adapter = new MyAdapter(tempRetailer);
             listView.setAdapter(adapter);
 
         }
@@ -136,12 +176,12 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
 
     }
 
-    private void initializeRetailers(Vector<RetailerMasterBO> retailers,Vector<RetailerMasterBO> selectedRetailer) {
+    private void initializeRetailers(Vector<RetailerMasterBO> retailers, Vector<RetailerMasterBO> selectedRetailer) {
         if (selectedRetailer != null) {
 
             for (RetailerMasterBO bo : retailers) {
-                for(RetailerMasterBO selectedBo:selectedRetailer){
-                    if(bo.getRetailerID().equals(selectedBo.getRetailerID())){
+                for (RetailerMasterBO selectedBo : selectedRetailer) {
+                    if (bo.getRetailerID().equals(selectedBo.getRetailerID())) {
                         bo.setIsNearBy(true);
                     }
 
@@ -149,25 +189,28 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
             }
         }
 
-        retailersList=retailers;
-        MyAdapter adapter=new MyAdapter(retailersList);
+        retailersList = retailers;
+        MyAdapter adapter = new MyAdapter(retailersList);
         listView.setAdapter(adapter);
 
     }
-    private Vector<RetailerMasterBO> getSelectedRetailers(){
-        Vector<RetailerMasterBO> mSelectedRetailers=new Vector<>();
-        for(RetailerMasterBO bo:retailersList){
-            if(bo.isNearBy()){
+
+    private Vector<RetailerMasterBO> getSelectedRetailers() {
+        Vector<RetailerMasterBO> mSelectedRetailers = new Vector<>();
+        for (RetailerMasterBO bo : retailersList) {
+            if (bo.isNearBy()) {
                 mSelectedRetailers.add(bo);
             }
         }
 
 
-        return  mSelectedRetailers;
+        return mSelectedRetailers;
     }
+
     private class MyAdapter extends ArrayAdapter<RetailerMasterBO> {
 
         Vector<RetailerMasterBO> items;
+
         public MyAdapter(Vector<RetailerMasterBO> items) {
             super(ctx, R.layout.row_nearby_retailers, items);
             this.items = items;
@@ -192,19 +235,18 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
 
             View row = convertView;
             if (row == null) {
-                LayoutInflater inflater =getLayoutInflater();
+                LayoutInflater inflater = getLayoutInflater();
                 row = inflater.inflate(R.layout.row_nearby_retailers,
                         parent, false);
                 holder = new ViewHolder();
                 holder.retailerName = (TextView) row.findViewById(R.id.txt_retailerName);
-                holder.chk=(CheckBox) row.findViewById(R.id.chk);
+                holder.chk = (CheckBox) row.findViewById(R.id.chk);
                 holder.chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if(isChecked) {
+                        if (isChecked) {
                             holder.retailer.setIsNearBy(true);
-                        }
-                        else
+                        } else
                             holder.retailer.setIsNearBy(false);
                     }
                 });
@@ -217,7 +259,7 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
             holder.retailer = (RetailerMasterBO) items.get(position);
             holder.retailerName.setText(holder.retailer.getRetailerName());
 
-            if(holder.retailer.isNearBy())
+            if (holder.retailer.isNearBy())
                 holder.chk.setChecked(true);
             else
                 holder.chk.setChecked(false);
@@ -243,12 +285,13 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
         RetailerMasterBO retailer;
     }
 
-    public interface NearByRetailerInterface{
+    public interface NearByRetailerInterface {
         void updateNearByRetailer(Vector<RetailerMasterBO> list);
     }
-    private void updateRetailer(String text){
 
-        if(retailersList!=null) {
+    private void updateRetailer(String text) {
+
+        if (retailersList != null) {
             if (text.isEmpty()) {
                 MyAdapter adapter = new MyAdapter(retailersList);
                 listView.setAdapter(adapter);
@@ -265,7 +308,7 @@ public class NearByRetailerDialog extends Dialog implements SearchView.OnQueryTe
                 listView.setAdapter(adapter);
 
             }
-        }else{
+        } else {
             MyAdapter adapter = new MyAdapter(new Vector<RetailerMasterBO>());
             listView.setAdapter(adapter);
         }

@@ -200,7 +200,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar mCalendar = null;
     private String mImageName, attachedFilePath = "";
     private Toolbar toolbar;
-
+    private boolean isWihtHoldApplied = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -466,6 +466,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (!bModel.configurationMasterHelper.IS_INVOICE)
                 button_invoice.setVisibility(View.GONE);
 
+            if (orderHelper.isQuickCall)
+                button_invoice.setVisibility(View.GONE);
+
             if (bModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                 if (bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     findViewById(R.id.layoutDelivery).setVisibility(View.GONE);
@@ -662,6 +665,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
                 discountHelper.downloadBillWiseWithHoldDiscount(getApplicationContext());
                 withHoldDiscount = discountHelper.calculateWithHoldDiscount(totalOrderValue);
+                isWihtHoldApplied = true;
             }
 
             // Apply Exclude Item level Tax  in Product
@@ -697,7 +701,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bModel.getOrderHeaderBO() != null) {
                     bModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
                 }
-                totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount,bModel.configurationMasterHelper.VALUE_PRECISION_COUNT,0));
+                totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount, bModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
                 enteredDiscAmtOrPercent = billWiseDiscount;
 
             } else {
@@ -776,6 +780,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             .getSrp())
                             + (productBO.getOrderedOuterQty() * productBO
                             .getOsrp());
+
+                    // Set the calculated flat line values in productBO
+                    totalOrderValue += lineValue;
 
                     productBO.setDiscount_order_value(lineValue);
                     productBO.setSchemeAppliedValue(lineValue);
@@ -900,6 +907,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             menu.findItem(R.id.menu_calculator).setVisible(false);
 
         if ((bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0)
+                || (bModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT && bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 3)
                 || bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT)
             menu.findItem(R.id.menu_store_wise_discount).setVisible(true);
         else
@@ -979,6 +987,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Bundle bundle = new Bundle();
             bundle.putDouble("totalValue", totalOrderValue);
             bundle.putDouble("enteredDiscAmtOrPercent", enteredDiscAmtOrPercent);
+            bundle.putBoolean("isWithHold", isWihtHoldApplied);
             mStoreWiseDiscountDialogFragment.setArguments(bundle);
             mStoreWiseDiscountDialogFragment.show(fm, "Sample Fragment");
             mStoreWiseDiscountDialogFragment.setCancelable(false);
@@ -1277,12 +1286,24 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
     @Override
-    public void onDiscountDismiss(String result, int result1, int result2, int result3) {
+    public void onDiscountDismiss(String result, int result1, int result2, int result3, boolean iswihtHold) {
         if (bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
 
             final double totalValue = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
             text_totalOrderValue.setText(bModel.formatValue(totalValue));
 
+        } else if (bModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT &&
+                bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG &&
+                bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 3) {
+            if ((iswihtHold && !isWihtHoldApplied) || (!iswihtHold && isWihtHoldApplied)) {
+                isWihtHoldApplied = iswihtHold;
+                if (isWihtHoldApplied)
+                    totalOrderValue -= orderHelper.withHoldDiscount;
+                else
+                    totalOrderValue += orderHelper.withHoldDiscount;
+
+                text_totalOrderValue.setText(bModel.formatValue(totalOrderValue));
+            }
         } else if (bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
             try {
                 int f1 = 0;
@@ -1346,15 +1367,17 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                                        Intent i = new Intent(
-                                                OrderSummary.this,
-                                                HomeScreenTwo.class);
-                                        Bundle extras = getIntent().getExtras();
-                                        if (extras != null) {
-                                            i.putExtra("IsMoveNextActivity", bModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                                            i.putExtra("CurrentActivityCode", mCurrentActivityCode);
+                                        if (!orderHelper.isQuickCall) {
+                                            Intent i = new Intent(
+                                                    OrderSummary.this,
+                                                    HomeScreenTwo.class);
+                                            Bundle extras = getIntent().getExtras();
+                                            if (extras != null) {
+                                                i.putExtra("IsMoveNextActivity", bModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                                                i.putExtra("CurrentActivityCode", mCurrentActivityCode);
+                                            }
+                                            startActivity(i);
                                         }
-                                        startActivity(i);
                                         finish();
 
                                     }
@@ -1751,9 +1774,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         signatureName = bModel.getOrderHeaderBO().getSignatureName();
                     }
 
-                    if(bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
-                            &&bModel.getOrderHeaderBO().getOrderValue()<orderHelper.getTotalReturnValue(mOrderedProductList)){
-                        Toast.makeText(this,getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
+                    if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                            && bModel.getOrderHeaderBO().getOrderValue() < orderHelper.getTotalReturnValue(mOrderedProductList)) {
+                        Toast.makeText(this, getResources().getString(R.string.sales_return_value_exceeds_order_value), Toast.LENGTH_LONG).show();
                         isClick = false;
                         return;
                     }
@@ -1771,7 +1794,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         getResources().getString(
                                 R.string.no_products_exists),
                         Toast.LENGTH_SHORT).show();
-                isClick=false;
+                isClick = false;
             }
         }
     }
@@ -1894,9 +1917,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             orderHelper.invoiceDiscount = Double.toString(enteredDiscAmtOrPercent);
 
 
-                            if(bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
-                                    &&bModel.getOrderHeaderBO().getOrderValue()<orderHelper.getTotalReturnValue(mOrderedProductList)){
-                                Toast.makeText(this,getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
+                            if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                                    && bModel.getOrderHeaderBO().getOrderValue() < orderHelper.getTotalReturnValue(mOrderedProductList)) {
+                                Toast.makeText(this, getResources().getString(R.string.sales_return_value_exceeds_order_value), Toast.LENGTH_LONG).show();
                                 isClick = false;
                                 return;
                             }
@@ -2125,7 +2148,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     new MyThread(OrderSummary.this,
                             DataMembers.SAVEORDERANDSTOCK).start();
-                    bModel.saveModuleCompletion("MENU_STK_ORD");
+                    if (!orderHelper.isQuickCall)
+                        bModel.saveModuleCompletion("MENU_STK_ORD");
 
 
                 } else {
@@ -2919,7 +2943,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     alertDialog.dismiss();
                     bModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
 
-                    if (bModel.configurationMasterHelper.SHOW_PRINT_ORDER) {
+                    if (bModel.configurationMasterHelper.SHOW_PRINT_ORDER && !orderHelper.isQuickCall) {
                         showDialog(DIALOG_ORDER_SAVED_WITH_PRINT_OPTION);
                     } else {
                         showDialog(DIALOG_ORDER_SAVED);
@@ -3000,8 +3024,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         msg.getData().getString(TOAST), Toast.LENGTH_SHORT)
                         .show();
                 bModel.productHelper.clearOrderTableChecked();
-                Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
-                startActivity(i);
+                if (!orderHelper.isQuickCall) {
+                    Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
+                    startActivity(i);
+                }
                 finish();
             } else if (msg.what == DataMembers.NOTIFY_DATABASE_NOT_SAVED) {
                 Toast.makeText(OrderSummary.this, "DataBase Restore failed.",
@@ -3107,7 +3133,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
 
-            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName,null);
+            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null);
             if (bModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
@@ -3193,7 +3219,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName,null);
+            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName, null);
 
 
             bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
@@ -3584,7 +3610,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean hasSchemeApplied() {
         for (ProductMasterBO productMasterBO : mOrderedProductList) {
-            if (productMasterBO.getSchemeDiscAmount()>0 || productMasterBO.getProductDiscAmount()>0) {
+            if (productMasterBO.getSchemeDiscAmount() > 0 || productMasterBO.getProductDiscAmount() > 0) {
                 return true;
             }
         }
