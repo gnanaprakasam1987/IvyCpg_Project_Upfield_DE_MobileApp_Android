@@ -771,7 +771,7 @@ public class AssetTrackingHelper {
 
             db.openDataBase();
             String sb = "select distinct  PosmId,Posmdesc from PosmMaster where" +
-                    " TypeLovId in (select listid from StandardListMaster where parentid= " +
+                    " TypeLovId =(select listid from StandardListMaster where listcode = 'BRDASSET' and parentid= " +
                     "(select listid from StandardListmaster where ListCode=" + QT(type) + " and ListType='POSM_TYPE'))";
 
 
