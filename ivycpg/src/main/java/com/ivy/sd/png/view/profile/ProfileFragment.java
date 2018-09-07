@@ -50,6 +50,7 @@ import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -917,7 +918,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE23": {
-                String text = bmodel.mRetailerHelper.getContractExpiryDate();
+                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractExpiryDate(), "MM/dd/yyyy");
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(text);
@@ -981,7 +982,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE33": {
-                String text = bmodel.mRetailerHelper.getContractStartDate() + "";
+                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractStartDate(), "MM/dd/yyyy");
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(text);

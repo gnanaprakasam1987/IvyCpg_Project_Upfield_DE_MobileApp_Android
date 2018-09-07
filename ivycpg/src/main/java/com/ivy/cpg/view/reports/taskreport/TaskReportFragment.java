@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,6 @@ public class TaskReportFragment extends IvyBaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
@@ -99,6 +99,10 @@ public class TaskReportFragment extends IvyBaseFragment {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
                     ((TextView) tabViewChild).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    if (!bmodel.configurationMasterHelper.IS_SELLER_TASK_RPT) {
+                        Display display = getActivity().getWindowManager().getDefaultDisplay();
+                        ((TextView) tabViewChild).setWidth(display.getWidth());
+                    }
                 }
             }
         }
@@ -134,9 +138,7 @@ public class TaskReportFragment extends IvyBaseFragment {
 
     @Override
     public void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
-
     }
 
 }

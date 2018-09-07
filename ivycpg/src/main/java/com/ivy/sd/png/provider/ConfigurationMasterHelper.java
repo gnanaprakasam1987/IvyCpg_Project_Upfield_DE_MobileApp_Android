@@ -5623,7 +5623,7 @@ public class ConfigurationMasterHelper {
     }
 
     public int getMVPTheme() {
-        MVPTheme = R.style.MVPTheme_Blue;
+       // MVPTheme = R.style.MVPTheme_Blue;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
 
