@@ -108,6 +108,11 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         cancelBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         cancelBtn.setOnClickListener(this);
 
+        if (isFromCollection)
+            cancelBtn.setText(getString(R.string.skip));
+        else
+            cancelBtn.setText(getString(R.string.cancel));
+
         isFragmentAlreadyCreated=false;
         ListView creditNoteLV = (ListView) rootView.findViewById(R.id.lv_creditnote);
         mTotalTV=(TextView)rootView.findViewById(R.id.tv_total_amount);
@@ -423,7 +428,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         int i = item.getItemId();
         if (i == android.R.id.home) {
             mPaymentBO.setAmount(preCollectionValue);
-            checkFromCollectionScreen();
+            //checkFromCollectionScreen();
             getActivity().finish();
         }
         return super.onOptionsItemSelected(item);

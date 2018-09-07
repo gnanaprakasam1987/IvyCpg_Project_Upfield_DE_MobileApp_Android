@@ -3,7 +3,7 @@
     android:id="@android:id/text1"
     style="?android:attr/spinnerDropDownItemStyle"
     android:singleLine="true"
-    android:gravity="right|center_vertical"
+    android:gravity="center_horizontal|center_vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:drawablePadding="@dimen/_8sdp"
