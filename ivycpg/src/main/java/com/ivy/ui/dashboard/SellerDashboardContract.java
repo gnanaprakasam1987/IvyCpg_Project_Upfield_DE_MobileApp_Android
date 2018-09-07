@@ -21,12 +21,10 @@ public interface SellerDashboardContract {
 
         void updateTimeStampModuleWise();
 
-        void fetchRouteDashList();
-
-        void fetchSellerDashList();
-
-        void fetchRetailerDashList();
+        void fetchSellerDashList(SellerDashboardConstants.DashBoardType dashBoardType);
 
         boolean isSMPBasedDash();
+
+        boolean shouldShowTrendChart();
     }
 }

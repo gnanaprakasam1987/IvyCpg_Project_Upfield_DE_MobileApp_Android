@@ -19,6 +19,7 @@ import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.di.DaggerSellerDashboardComponent;
 import com.ivy.ui.dashboard.di.SellerDashboardModule;
@@ -68,12 +69,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @BindView(R.id.resultsHeaderTxt)
     TextView spinnerHeaderTxt;
 
-    private static final String MONTH = "MONTH";
-    private static final String DAY = "DAY";
-    private static final String P3M = "P3M";
-    private static final String WEEK = "WEEK";
-    private static final String ROUTE = "ROUTE";
-
     private String menuCode;
 
     private boolean isFromRetailer;
@@ -115,14 +110,13 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     }
 
-    private void getDashSpinnerData(){
-
-        if(!isNullOrEmpty(type)&&type.equalsIgnoreCase(ROUTE)){
-            presenter.fetchRouteDashList();
-        }else if(!isFromRetailer){
-            presenter.fetchSellerDashList();
-        }else
-            presenter.fetchRetailerDashList();
+    private void getDashSpinnerData() {
+        if (!isNullOrEmpty(type) && type.equalsIgnoreCase(SellerDashboardConstants.ROUTE)) {
+            presenter.fetchSellerDashList(SellerDashboardConstants.DashBoardType.ROUTE);
+        } else if (!isFromRetailer) {
+            presenter.fetchSellerDashList(SellerDashboardConstants.DashBoardType.SELLER);
+        } else
+            presenter.fetchSellerDashList(SellerDashboardConstants.DashBoardType.RETAILER);
 
     }
 
@@ -132,7 +126,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         setHasOptionsMenu(true);
         getActivity().invalidateOptionsMenu();
 
-        spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
     }
 
@@ -168,13 +162,15 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     public void updateDashSpinner(ArrayList<String> dashList) {
         // Creating adapter for spinner
 
-        Spinner dashSpinner = (Spinner) dashSpinnerStub.inflate();
-        dashSpinner.setVisibility(View.VISIBLE);
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, dashList);
+        if (!dashList.isEmpty()) {
+            Spinner dashSpinner = (Spinner) dashSpinnerStub.inflate();
+            dashSpinner.setVisibility(View.VISIBLE);
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, dashList);
 
-        dataAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+            dataAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
 
-        dashSpinner.setAdapter(dataAdapter);
+            dashSpinner.setAdapter(dataAdapter);
+        }
 
     }
 

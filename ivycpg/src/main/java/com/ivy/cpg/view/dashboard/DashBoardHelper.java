@@ -593,6 +593,12 @@ public class DashBoardHelper {
         }
     }
 
+
+    @Deprecated
+    /**
+     * @deprecated
+     * @see {@link SellerDashboardDataManagerImpl#getRouteDashboardForInterval(String)}
+     */
     public void loadRouteDashBoard(String interval) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1242,6 +1248,14 @@ public class DashBoardHelper {
     /////////SELLER DAHBOARD///////////
 
 
+    @Deprecated
+    /**
+     *
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getSellerDashboardForInterval(String, String)}
+     * @param userid
+     * @param interval
+     */
     public void loadSellerDashBoard(String userid, String interval) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1315,6 +1329,11 @@ public class DashBoardHelper {
     }
 
     //for Week Dashboard
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getSellerDashboardForWeek(String)}
+     */
     public void loadSellerDashBoardforWeek(String userid) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1377,7 +1396,11 @@ public class DashBoardHelper {
     }
 
     //for P3m Purpose
-
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link com.ivy.ui.dashboard.data.SellerDashboardDataManager#getP3MSellerDashboardData(String)}
+     */
     public void loadSellerDashBoard(String userid) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,

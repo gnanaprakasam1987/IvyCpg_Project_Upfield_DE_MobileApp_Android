@@ -4,18 +4,17 @@ import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 
 import com.ivy.core.base.presenter.BasePresenter;
-import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -68,54 +67,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     @Override
-    public void fetchRouteDashList() {
-        getCompositeDisposable().add(sellerDashboardDataManager.getRouteDashList()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
-                    @Override
-                    public void onNext(ArrayList<String> dashList) {
-                        getIvyView().updateDashSpinner(dashList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                }));
-    }
-
-    @Override
-    public void fetchSellerDashList() {
-        getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashList()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
-                    @Override
-                    public void onNext(ArrayList<String> dashList) {
-                        getIvyView().updateDashSpinner(dashList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                }));
-    }
-
-    @Override
-    public void fetchRetailerDashList() {
-        getCompositeDisposable().add(sellerDashboardDataManager.getRetailerDashList()
+    public void fetchSellerDashList(SellerDashboardConstants.DashBoardType dashBoardType) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getDashList(dashBoardType)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<String>>() {
@@ -139,5 +92,10 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     @Override
     public boolean isSMPBasedDash() {
         return getConfigurationMasterHelper().IS_SMP_BASED_DASH;
+    }
+
+    @Override
+    public boolean shouldShowTrendChart() {
+        return false;
     }
 }
