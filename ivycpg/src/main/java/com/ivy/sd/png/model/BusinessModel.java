@@ -176,6 +176,7 @@ import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.utils.AppUtils;
+import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -351,7 +352,7 @@ public class BusinessModel extends Application {
     String mExportFileLocation;
     public int daySpinnerPositon = 0;
 
-    //
+
     private Vector<RetailerMasterBO> nearByRetailers = new Vector<>();
 
     private String retailerAttributeList;
@@ -360,7 +361,15 @@ public class BusinessModel extends Application {
     public double mSelectedRetailerLatitude;
     public double mSelectedRetailerLongitude;
     public ProductMasterBO selectedPdt;
+
     private ArrayList<NewOutletAttributeBO> attributeList;
+
+    /**
+     * @See {@link  com.ivy.utils.AppUtils;}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#latlongImageFileName}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public String latlongImageFileName;
     private ArrayList<String> orderIdList = new ArrayList<>();
 
@@ -554,6 +563,14 @@ public class BusinessModel extends Application {
     public Vector<StandardListBO> getWeekDay() {
         return slist;
     }
+
+   /* public StoreWiseDiscountBO getDiscountlist() {
+        return discountlist;
+    }
+
+    public void setDiscountlist(StoreWiseDiscountBO discountlist) {
+        this.discountlist = discountlist;
+    }*/
 
     public String getNote() {
         return note;
@@ -854,9 +871,7 @@ public class BusinessModel extends Application {
         String menuName = "";
         try {
 
-            for (ConfigureBO configureBO : configurationMasterHelper
-                    .getConfig()) {
-
+            for (ConfigureBO configureBO : configurationMasterHelper.getConfig()) {
                 if (configureBO.getConfigCode().equals(menuCode)) {
                     menuName = configureBO.getMenuName();
                 }
@@ -1745,6 +1760,12 @@ public class BusinessModel extends Application {
         }
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadAttributeListForRetailer(String)}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void getAttributeListForRetailer() {
 
         DBUtil db = null;
@@ -2580,22 +2601,53 @@ public class BusinessModel extends Application {
         }
     }
 
-    public Vector<RetailerMasterBO> getNearByRetailers() {
-        return nearByRetailers;
-    }
 
-    public void setNearByRetailers(Vector<RetailerMasterBO> nearByRetailers) {
-        this.nearByRetailers = nearByRetailers;
-    }
-
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getRetailerAttribute}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<NewOutletAttributeBO> getRetailerAttribute() {
         return attributeList;
     }
-
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#setRetailerAttribute }
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void setRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
         this.attributeList = list;
     }
 
+
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getNearByRetailers}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    public Vector<RetailerMasterBO> getNearByRetailers() {
+        return nearByRetailers;
+    }
+
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#setNearByRetailers}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    public void setNearByRetailers(Vector<RetailerMasterBO> nearByRetailers) {
+        this.nearByRetailers = nearByRetailers;
+    }
+
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#saveNearByRetailers}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void saveNearByRetailers(String id) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -2690,7 +2742,7 @@ public class BusinessModel extends Application {
 
                 }
             } else {
-                formattedValue = SDUtil.format(value, 2, 0);
+                formattedValue = SDUtil.format(value, configurationMasterHelper.VALUE_PRECISION_COUNT, 0);
 
             }
         } catch (Exception ex) {
@@ -5477,9 +5529,10 @@ public class BusinessModel extends Application {
     }
 
     /**
-     * @return <code>true<code/> if external storage available else <code>false<code/>
-     * @See {{@link AppUtils#isExternalStorageAvailable()}}
-     * @deprecated
+     * @See {@link  com.ivy.utils.AppUtils;}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#isExternalStorageAvailable}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
      */
     public boolean isExternalStorageAvailable() {
 
@@ -7038,6 +7091,11 @@ public class BusinessModel extends Application {
         }
     }
 
+     /* @See {@link com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#validateInput}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public String validateInput(String input) {
         String str = "";
         if (input != null && input != "") {
@@ -8103,6 +8161,12 @@ public class BusinessModel extends Application {
     /**
      * DecodeFile is convert the large size image to fixed size which mentioned
      * above
+     */
+    /**
+     * @See {@link com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
      */
     public Bitmap decodeFile(File f) {
         int IMAGE_MAX_SIZE = 500;

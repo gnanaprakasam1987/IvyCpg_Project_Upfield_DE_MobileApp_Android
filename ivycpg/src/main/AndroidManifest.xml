@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1320"
-    android:versionName="2.132.0.2523">
+    android:versionCode="1330"
+    android:versionName="2.133.0.2523">
 
     <supports-screens
         android:anyDensity="true"
@@ -811,7 +811,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name="com.ivy.cpg.fcmnotification.NotificationJobService"
             android:exported="false">
@@ -820,18 +819,23 @@
             </intent-filter>
         </service>
 
-        <!-- Set custom default icon. This is used when no icon is set for
-        incoming notification messages. -->
+        <!--
+        Set custom default icon. This is used when no icon is set for
+        incoming notification messages.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/launchericon" />
-        <!-- Set color used with incoming notification messages.
-         This is used when no color is set for the incoming  -->
+        <!--
+         Set color used with incoming notification messages.
+         This is used when no color is set for the incoming
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-
+        <activity android:name="com.ivy.cpg.view.collection.NoCollectionReasonActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

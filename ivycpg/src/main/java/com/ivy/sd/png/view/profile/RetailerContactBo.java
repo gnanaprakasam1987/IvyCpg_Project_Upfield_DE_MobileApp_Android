@@ -5,12 +5,24 @@ package com.ivy.sd.png.view.profile;
  */
 public class RetailerContactBo {
 
-    private String title;
-    private String fistname;
-    private String lastname;
-    private String contactNumber;
-    private String contactMail;
+    private String title = "";
+    private String fistname = "";
+    private String lastname ="";
+    private String contactNumber = "";
+    private String contactMail = "";
     private int isPrimary;
+    private String contactTitleLovId = "";
+    private String cpId= "";
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    private String status= "";
 
     public String getTitle() {
         return title;
@@ -58,5 +70,21 @@ public class RetailerContactBo {
 
     public void setIsPrimary(int isPrimary) {
         this.isPrimary = isPrimary;
+    }
+
+    public String getContactTitleLovId() {
+        return contactTitleLovId;
+    }
+
+    public void setContactTitleLovId(String contactTitleLovId) {
+        this.contactTitleLovId = contactTitleLovId;
+    }
+
+    public String getCpId() {
+        return cpId;
+    }
+
+    public void setCpId(String cpId) {
+        this.cpId = cpId;
     }
 }

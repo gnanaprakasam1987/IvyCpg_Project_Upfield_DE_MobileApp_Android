@@ -106,7 +106,11 @@ public class AssetAdapter extends BaseAdapter {
         reason3.setConditionID(Integer.toString(0));
         reason3.setReasonDesc(select_condition);
         mAssetConditionList = assetTrackingHelper.getAssetConditionList();
-        mAssetConditionList.add(0, reason3);
+
+        if (mAssetConditionList.size() > 0) {
+            if (!mAssetConditionList.get(0).getConditionID().equals("0"))
+                mAssetConditionList.add(0, reason3);
+        }
 
         mAssetConditionAdapter = new ArrayAdapter<>(mContext,
                 R.layout.spinner_bluetext_layout, mAssetConditionList);

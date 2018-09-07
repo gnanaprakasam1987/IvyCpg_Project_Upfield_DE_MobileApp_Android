@@ -11,6 +11,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import java.util.Vector;
 
@@ -22,21 +23,7 @@ public class ChannelMasterHelper {
     private Vector<ChannelBO> channelMaster;
     private Vector<RetailerMasterBO> retailerMaster;
 
-    public Vector<RetailerMasterBO> getRetailerMaster() {
-        return retailerMaster;
-    }
-
-    public void setRetailerMaster(Vector<RetailerMasterBO> retailerMaster) {
-        this.retailerMaster = retailerMaster;
-    }
-
     private static ChannelMasterHelper instance = null;
-
-    protected ChannelMasterHelper(Context context) {
-        this.context = context;
-
-        this.bmodel = (BusinessModel) context;
-    }
 
     public static ChannelMasterHelper getInstance(Context context) {
         if (instance == null) {
@@ -45,13 +32,23 @@ public class ChannelMasterHelper {
         return instance;
     }
 
+    protected ChannelMasterHelper(Context context) {
+        this.context = context;
+        this.bmodel = (BusinessModel) context;
+    }
+
+    public Vector<RetailerMasterBO> getRetailerMaster() {
+        return retailerMaster;
+    }
+
+    public void setRetailerMaster(Vector<RetailerMasterBO> retailerMaster) {
+        this.retailerMaster = retailerMaster;
+    }
+
     public void setChannelMaster(Vector<ChannelBO> channelMaster) {
         this.channelMaster = channelMaster;
     }
 
-    public Vector<ChannelBO> getChannelMaster() {
-        return channelMaster;
-    }
 
     /**
      * @param channelID
@@ -76,6 +73,11 @@ public class ChannelMasterHelper {
         return "";
     }
 
+    public Vector<ChannelBO> getChannelMaster() {
+        return channelMaster;
+    }
+
+
     /**
      * @See {@link ChannelDataManagerImpl#fetchChannels()}
      * @deprecated
@@ -94,10 +96,7 @@ public class ChannelMasterHelper {
                     leveid = c.getInt(0);
                 }
             }
-
-
-            c = db
-                    .selectSQL("SELECT chid, chName FROM ChannelHierarchy where levelid=" + leveid);
+            c = db.selectSQL("SELECT chid, chName FROM ChannelHierarchy where levelid=" + leveid);
             if (c != null) {
                 channelMaster = new Vector<ChannelBO>();
                 while (c.moveToNext()) {
@@ -110,7 +109,6 @@ public class ChannelMasterHelper {
             }
             db.closeDB();
         } catch (Exception e) {
-
             Commons.printException(e);
         }
     }
@@ -138,7 +136,10 @@ public class ChannelMasterHelper {
     }
 
 
-
+    /**
+     * @param channelId
+     * @return mapping channelID
+     */
     public String getChannelHierarchyForDiscount(int channelId, Context mContext) {
         String sql, sql1 = "", str = "";
         try {
@@ -161,7 +162,29 @@ public class ChannelMasterHelper {
 
             int loopEnd = mContentLevel - mChildLevel + 1;
 
-            str = getString(channelId, sql1, str, db, loopEnd);
+            for (int i = 2; i <= loopEnd; i++) {
+                sql1 = sql1 + " LM" + i + ".ChId";
+                if (i != loopEnd)
+                    sql1 = sql1 + ",";
+            }
+            sql = "select " + sql1 + "  from ChannelHierarchy LM1";
+            for (int i = 2; i <= loopEnd; i++)
+                sql = sql + " INNER JOIN ChannelHierarchy LM" + i + " ON LM" + (i - 1)
+                        + ".ParentId = LM" + i + ".ChId";
+            sql = sql + " where LM1.ChId=" + channelId;
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    for (int i = 0; i < c.getColumnCount(); i++) {
+                        str = str + c.getString(i);
+                        if (c.getColumnCount() > 1 && i != c.getColumnCount())
+                            str = str + ",";
+                    }
+                    if (str.endsWith(","))
+                        str = str.substring(0, str.length() - 1);
+                }
+                c.close();
+            }
 
             db.closeDB();
         } catch (Exception e) {
@@ -239,6 +262,8 @@ public class ChannelMasterHelper {
             }
             c.close();
         }
+        if (str.length() == 0)
+            str = "0";
         return str;
     }
 

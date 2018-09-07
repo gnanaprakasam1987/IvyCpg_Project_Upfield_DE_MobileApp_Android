@@ -27,6 +27,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+
 public class ConfigurationMasterHelper {
 
     /**
@@ -511,7 +515,14 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PLANO_IMG_COUNT = "PLANO_IMG_COUNT";
     public int PLANO_IMG_COUNT;
 
-    public static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
+    private static final String CODE_RETAILER_CONTACT_COUNT = "MAXCONTACT";
+    public int RETAILER_CONTACT_COUNT = 2; // default two contact
+
+    private static final String CODE_RETAILER_CONTACT_TAB = "CONTACT_TAB";
+    public boolean IS_CONTACT_TAB;
+
+
+    private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
     public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
 
     private static final String CODE_LICENSE_VALIDATION = "ORDB73";
@@ -1505,6 +1516,13 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DISCOUNT_PRICE_PER = "FUN73";
     public boolean IS_DISCOUNT_PRICE_PER;
     public double DISCOUNT_PRICE_PER = 50;
+
+    private static final String CODE_NAVIGATE_CREDIT_NOTE_SCREEN = "COLL19";
+    public boolean IS_NAVIGATE_CREDIT_NOTE_SCREEN;
+
+    private static final String CODE_NO_COLLECTION_REASON = "COLL18";
+    public boolean SHOW_NO_COLLECTION_REASON;
+
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2595,6 +2613,9 @@ public class ConfigurationMasterHelper {
         this.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK = hashMapHHTModuleConfig.get(CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) : false;
 
         this.PLANO_IMG_COUNT = hashMapHHTModuleOrder.get(CODE_PLANO_IMG_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PLANO_IMG_COUNT) : 1;
+        if (hashMapHHTModuleOrder.get(CODE_RETAILER_CONTACT_COUNT) != null) {
+            this.RETAILER_CONTACT_COUNT = hashMapHHTModuleOrder.get(CODE_RETAILER_CONTACT_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_RETAILER_CONTACT_COUNT) : 1;
+        }
 
         this.TASK_OPEN = hashMapHHTModuleOrder.get(CODE_TASK_OPEN) != null ? hashMapHHTModuleOrder.get(CODE_TASK_OPEN) : 0;
         this.TASK_PLANNED = hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) != null ? hashMapHHTModuleOrder.get(CODE_TASK_PLANNED) : -1;
@@ -2628,6 +2649,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_CHECK_PHOTO_MANDATORY = hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_PHOTO_MANDATORY) : false;
         this.IS_CHECK_MODULE_MANDATORY = hashMapHHTModuleConfig.get(CODE_SHOW_MODULE_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_MODULE_MANDATORY) : false;
+        this.IS_CONTACT_TAB = hashMapHHTModuleConfig.get(CODE_RETAILER_CONTACT_TAB) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_CONTACT_TAB) : false;
 
         this.IS_DISCOUNT_PRICE_PER = hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleConfig.get(CODE_DISCOUNT_PRICE_PER) : false;
         this.DISCOUNT_PRICE_PER = hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) != null ? hashMapHHTModuleOrder.get(CODE_DISCOUNT_PRICE_PER) : 50;
@@ -2635,6 +2657,10 @@ public class ConfigurationMasterHelper {
         this.IS_SR_VALIDATE_BY_RETAILER_TYPE = hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) : false;
         this.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) : false;
         this.IS_INDICATIVE_MASTER= hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
+
+
+        this.IS_NAVIGATE_CREDIT_NOTE_SCREEN= hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) : false;
+        this.SHOW_NO_COLLECTION_REASON= hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) != null ? hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) : false;
     }
 
     private boolean isInOutModule() {
@@ -5604,7 +5630,7 @@ public class ConfigurationMasterHelper {
     }
 
     public int getMVPTheme() {
-        MVPTheme = R.style.MVPTheme_Blue;
+       // MVPTheme = R.style.MVPTheme_Blue;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
 
@@ -6290,4 +6316,73 @@ public class ConfigurationMasterHelper {
 
         return title;
     }
+
+
+    public Observable<ArrayList<ConfigureBO>> downloadContactModuleConfig() {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<ConfigureBO>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<ConfigureBO>> subscriber) throws Exception {
+                ArrayList<ConfigureBO> contactConfig = new ArrayList<>();
+                DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                try {
+
+                    SharedPreferences sharedPrefs = PreferenceManager
+                            .getDefaultSharedPreferences(context);
+                    String locale = sharedPrefs.getString("languagePref",
+                            ApplicationConfigs.LANGUAGE);
+                    db.openDataBase();
+
+                    String query = "select HHTCode,MName,RField,hasLink,flag,RField6,MNumber,ifnull(Regex,''),RField1 from "
+                            + DataMembers.tbl_HhtMenuMaster
+                            + " where flag=1" +
+                            " and MenuType= 'RETAILER_CONTACT' and lang=" + bmodel.QT(locale)
+                            + " order by MNumber";
+
+                    Cursor c = db.selectSQL(query);
+                    ConfigureBO con;
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            con = new ConfigureBO();
+                            con.setConfigCode(c.getString(0));
+                            con.setMenuName(c.getString(1));
+                            con.setModule_Order(c.getInt(2));
+                            con.setHasLink(c.getInt(3));
+                            con.setFlag(c.getInt(4));
+                            con.setMenuNumber(c.getString(6));
+                            String str = c.getString(7);
+                            if (str != null && !str.isEmpty()) {
+                                if (str.contains("<") && str.contains(">")) {
+
+                                    String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+                                    if (!minlen.isEmpty()) {
+                                        try {
+                                            con.setMaxLengthNo(SDUtil.convertToInt(minlen));
+                                        } catch (Exception ex) {
+                                            Commons.printException("min len in new outlet helper", ex);
+                                        }
+                                    }
+                                }
+                            }
+                            con.setRegex(c.getString(7));
+                            con.setMandatory(c.getInt(8));
+                            contactConfig.add(con);
+
+                        }
+                        c.close();
+                    }
+                    db.closeDB();
+                    subscriber.onNext(contactConfig);
+                    subscriber.onComplete();
+
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    db.closeDB();
+                    subscriber.onError(e);
+                    subscriber.onComplete();
+                }
+            }
+        });
+    }
+
 }

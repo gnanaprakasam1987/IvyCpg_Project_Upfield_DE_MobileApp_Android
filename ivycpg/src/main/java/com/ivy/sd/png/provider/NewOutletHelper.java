@@ -24,6 +24,9 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.data.ProfileDataManagerImpl;
+
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,10 +85,22 @@ public class NewOutletHelper {
     private MaterialSpinner materialSpinner[] = null;
 
 
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getSelectedPrioProducts}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     private ArrayList<StandardListBO> getSelectedPrioProducts() {
         return selectedPrioProducts;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#setSelectedPrioProducts}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void setSelectedPrioProducts(ArrayList<StandardListBO> selectedPrioProducts) {
         this.selectedPrioProducts = selectedPrioProducts;
     }
@@ -96,10 +111,22 @@ public class NewOutletHelper {
         return retailerTypeList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<NewOutletBO> getContactTitleList() {
         return contactTitleList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<NewOutletBO> getContractStatusList() {
         return contractStatusList;
     }
@@ -208,6 +235,12 @@ public class NewOutletHelper {
         }
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getContactTitle()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void loadContactTitle() {
         NewOutletBO contactTitle;
         contactTitleList = new ArrayList<>();
@@ -231,7 +264,12 @@ public class NewOutletHelper {
             Commons.printException("" + e);
         }
     }
-
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getContactStatus}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void loadContactStatus() {
         NewOutletBO contactStatus;
         contractStatusList = new ArrayList<>();
@@ -261,15 +299,14 @@ public class NewOutletHelper {
      */
     public void updateRetailer() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
             db.openDataBase();
+
             boolean isData;
             String tid;
+            String currentDate= SDUtil.now(SDUtil.DATE_GLOBAL);
             Cursor headerCursor;
-            String currentDate;
-            currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
 
 
             tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -277,8 +314,7 @@ public class NewOutletHelper {
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             // delete Header if exist
-            headerCursor = db
-                    .selectSQL("SELECT Tid FROM RetailerEditHeader"
+            headerCursor = db.selectSQL("SELECT Tid FROM RetailerEditHeader"
                             + " WHERE RetailerId = "
                             + bmodel.getRetailerMasterBO().getRetailerID()
                             + " AND Date = "
@@ -288,29 +324,25 @@ public class NewOutletHelper {
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
-
                 tid = headerCursor.getString(0);
                 headerCursor.close();
-
             }
 
             String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
                     "values (" + bmodel.QT(tid)
                     + "," + bmodel.getRetailerMasterBO().getRetailerID()
                     + "," + bmodel.QT(currentDate) + ")";
-            String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" +
-                    "values (" + bmodel.QT(tid)
-                    + ",";
+
+            String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" + "values (" + bmodel.QT(tid) + ",";
 
             String queryInsert = "";
-            String temRouteQuery = "";
 
             profileEditConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
-            Commons.print("Profile Fragment, " + " Update Retailer List size :"
-                    + profileEditConfig.size());
+            Commons.print("Profile Fragment, " + " Update Retailer List size :" + profileEditConfig.size());
 
             isData = false;
+
             for (ConfigureBO configBO : profileEditConfig) {
 
                 if (configBO.getConfigCode().equalsIgnoreCase("PROFILE02") && configBO.getModule_Order() == 1) {
@@ -325,10 +357,7 @@ public class NewOutletHelper {
                             queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
-
                     }
-
-
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE03") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
                         if (bmodel.getRetailerMasterBO().getAddress1().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
@@ -342,7 +371,6 @@ public class NewOutletHelper {
                             isData = true;
                         }
                     }
-
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE04") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
@@ -869,7 +897,7 @@ public class NewOutletHelper {
                     isData = true;
 
                     ArrayList<NewOutletAttributeBO> attributeList = updateRetailerMasterAttribute(bmodel.getRetailerAttribute());
-                    //    ArrayList<NewOutletAttributeBO> ids = updateRetailerMasterAttribute(bmodel.newOutletAttributeHelper.getEditAttributeList(bmodel.getRetailerMasterBO().getRetailerID()));
+                    //    ArrayList<NewOutletAttributeBO> ids = updateRetailerMasterAttribute(bmodel.newOutletAttributeHelper.downloadEditAttributeList(bmodel.getRetailerMasterBO().getRetailerID()));
                     ArrayList<NewOutletAttributeBO> attList = updateRetailerMasterAttribute(bmodel.getRetailerMasterBO().getAttributeBOArrayList());
 
 
@@ -1002,21 +1030,26 @@ public class NewOutletHelper {
                             || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                         deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                        queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + configBO.getMenuNumber() + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                        queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + configBO.getMenuNumber()
+                                + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                         isData = true;
                     }
 
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE81") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getPanNumber().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1025,14 +1058,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE82") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceNo().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1041,14 +1080,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE84") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getDLNo().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1057,14 +1102,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE83") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getFoodLicenceExpDate().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1073,14 +1124,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE85") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getDLNoExpDate().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1089,14 +1146,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE78") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getEmail().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber())
+                                    + "," + bmodel.getRetailerMasterBO().getAddressid()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1105,14 +1168,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE79") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getMobile().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber()) + ","
+                                    + bmodel.getRetailerMasterBO().getAddressid()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1121,14 +1190,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE86") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getFax().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber()) + ","
+                                    + bmodel.getRetailerMasterBO().getAddressid() + ","
+                                    + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1137,14 +1212,20 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE87") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getRegion().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber()) + ","
+                                    + bmodel.getRetailerMasterBO().getAddressid()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
@@ -1153,43 +1234,46 @@ public class NewOutletHelper {
 
                 } else if (configBO.getConfigCode().equalsIgnoreCase("PROFILE88") && configBO.getModule_Order() == 1) {
                     if (!configBO.getMenuNumber().equals("")) {
-                        if (bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                        if (bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
                             isData = true;
-                        } else if ((!bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber()) && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
-                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+                        } else if ((!bmodel.getRetailerMasterBO().getCountry().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
 
                             deleteQuery(configBO.getConfigCode(), bmodel.getRetailerMasterBO().getRetailerID());
-                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode()) + "," + bmodel.QT(configBO.getMenuNumber()) + "," + bmodel.getRetailerMasterBO().getAddressid() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
+                            queryInsert = insertquery + bmodel.QT(configBO.getConfigCode())
+                                    + "," + bmodel.QT(configBO.getMenuNumber()) + ","
+                                    + bmodel.getRetailerMasterBO().getAddressid()
+                                    + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
                             isData = true;
                         }
 
                     }
-
-
                 }
 
                 if (!queryInsert.equals(""))
                     db.executeQ(queryInsert);
 
-
                 queryInsert = "";
 
             }
+
+
             if (isData) {
+
                 db.deleteSQL(DataMembers.tbl_RetailerEditHeader, " Tid=" + bmodel.QT(tid), false);
-                Cursor c = db
-                        .selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail
-                                + " where Tid=" + bmodel.QT(tid));
-                Cursor c1 = db
-                        .selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest
-                                + " where Tid=" + bmodel.QT(tid));
-                Cursor c2 = db
-                        .selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts
-                                + " where Tid=" + bmodel.QT(tid));
-                Cursor c3 = db
-                        .selectSQL("SELECT status FROM RetailerEditAttribute"
-                                + " where Tid=" + bmodel.QT(tid));
+
+                Cursor c = db.selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail + " where Tid=" + bmodel.QT(tid));
+
+                Cursor c1 = db.selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest + " where Tid=" + bmodel.QT(tid));
+
+                Cursor c2 = db.selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts + " where Tid=" + bmodel.QT(tid));
+
+                Cursor c3 = db.selectSQL("SELECT status FROM RetailerEditAttribute" + " where Tid=" + bmodel.QT(tid));
+
                 if (c.getCount() > 0 || c1.getCount() > 0 || c2.getCount() > 0 || c3.getCount() > 0) {
                     db.executeQ(insertHeader);
                     c.close();
@@ -1197,7 +1281,6 @@ public class NewOutletHelper {
                     c2.close();
                     c3.close();
                 }
-
             }
             db.closeDB();
         } catch (Exception e) {
@@ -1206,12 +1289,19 @@ public class NewOutletHelper {
         }
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#updateRetailerMasterAttribute(ArrayList, ArrayList, ArrayList)}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+
     public ArrayList<NewOutletAttributeBO> updateRetailerMasterAttribute(ArrayList<NewOutletAttributeBO> list) {
 
         //Load Child Attribute list which parent is not zero
         ArrayList<NewOutletAttributeBO> childList = bmodel.newOutletAttributeHelper.getAttributeList();
         //Load Parent Attribute List which Parent id is zero
-        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getmAttributeParentList();
 
         ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
         int attribID;
@@ -1256,12 +1346,24 @@ public class NewOutletHelper {
         return tempList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public HashMap<String, String> getmPreviousProfileChangesList() {
         return mPreviousProfileChangesList;
     }
 
     private HashMap<String, String> mPreviousProfileChangesList;
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void getPreviousProfileChanges(String retailerid) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1277,11 +1379,8 @@ public class NewOutletHelper {
             headerCursor = db
                     .selectSQL("SELECT Tid FROM RetailerEditHeader"
                             + " WHERE RetailerId = "
-                            + bmodel.getRetailerMasterBO().getRetailerID()
-                            + " AND Date = "
-                            + bmodel.QT(currentDate)
-                            + " AND Upload = "
-                            + bmodel.QT("N"));
+                            + bmodel.getRetailerMasterBO().getRetailerID() + " AND Date = "
+                            + bmodel.QT(currentDate) + " AND Upload = " + bmodel.QT("N"));
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
@@ -1289,7 +1388,6 @@ public class NewOutletHelper {
                 headerCursor.close();
 
             }
-
 
             c = db.selectSQL("select code, value from RetailerEditDetail RED INNER JOIN RetailerEditHeader REH ON REH.tid=RED.tid where REH.retailerid=" + retailerid + " and REH.tid=" + bmodel.QT(tid));
             if (c != null) {
@@ -1462,10 +1560,15 @@ public class NewOutletHelper {
     }
 
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#deleteQuery(String, String)}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     private void deleteQuery(String query, String rid) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + bmodel.QT(query) + "and RetailerId=" + rid, false);
             db.closeDB();
@@ -1638,6 +1741,12 @@ public class NewOutletHelper {
      * @author rajesh.k
      * Method to use download location for new retailer creation
      */
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void downloadLocationMaster() {
 
         mLocationListByLevelId = new LinkedHashMap<>();
@@ -1665,34 +1774,25 @@ public class NewOutletHelper {
 
                         if (levelId != c.getInt(4)) {
                             if (levelId != 0) {
-                                mLocationListByLevelId.put(levelId,
-                                        locationList);
-
+                                mLocationListByLevelId.put(levelId, locationList);
                                 locationList = new ArrayList<>();
                                 locationList.add(locationBo);
                                 levelId = c.getInt(4);
 
-
                             } else {
-
                                 locationList.add(locationBo);
                                 levelId = c.getInt(4);
-
                             }
                         } else {
                             locationList.add(locationBo);
                         }
-
                     }
-
                     if (locationList.size() > 0) {
                         mLocationListByLevelId.put(levelId, locationList);
-
                     }
                 }
                 c.close();
             }
-
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -1702,8 +1802,12 @@ public class NewOutletHelper {
         }
 
     }
-
-
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public LinkedHashMap<Integer, ArrayList<LocationBO>> getLocationListByLevId() {
         return mLocationListByLevelId;
     }
@@ -1730,6 +1834,12 @@ public class NewOutletHelper {
         return false;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailerIds(String)}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<String> getNearbyRetailerIds(String retailerId) {
         ArrayList<String> lst = new ArrayList<>();
         try {
@@ -1753,12 +1863,24 @@ public class NewOutletHelper {
         return lst;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailersEditRequest}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public HashMap<String, String> getLstEditRequests() {
         return lstEditRequests;
     }
 
     private final HashMap<String, String> lstEditRequests = new HashMap<>();
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getNearbyRetailersEditRequest}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void getNearbyRetailersEditRequest(int retailerId) {
         lstEditRequests.clear();
         try {
@@ -1864,6 +1986,12 @@ public class NewOutletHelper {
         return priorityproductList;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadPriorityProductsForRetailerUpdate}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public ArrayList<String> downloadPriorityProductsForRetailer(String retailerId) {
         ArrayList<String> priorityproductList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -2068,8 +2196,7 @@ public class NewOutletHelper {
                 }
             }
 
-            if (bmodel.getNearByRetailers() != null
-                    && bmodel.getNearByRetailers().size() > 0) {
+            if (bmodel.getNearByRetailers() != null && bmodel.getNearByRetailers().size() > 0) {
                 bmodel.saveNearByRetailers(getId());
             }
 
@@ -2126,30 +2253,23 @@ public class NewOutletHelper {
             bmodel.setNewlyaddedRetailer(getId());
 
             column = "RetailerID,contactname,ContactName_LName,contactNumber," +
-                    "contact_title,contact_title_lovid,IsPrimary,Upload";
+                    "contact_title,contact_title_lovid,IsPrimary,Email,Upload";
 
-            if (outlet.getContactpersonname() != null && !outlet.getContactpersonname().trim().equals("")) {
-                value = QT(getId())
-                        + "," + QT(outlet.getContactpersonname())
-                        + "," + QT(getNewoutlet().getContactpersonnameLastName())
-                        + "," + QT(outlet.getPhone())
-                        + "," + QT(getNewoutlet().getContact1title())
-                        + "," + getNewoutlet().getContact1titlelovid()
-                        + "," + 1
-                        + "," + QT("N");
-                db.insertSQL("RetailerContact", column, value);
+            if (retailerContactList.size() > 0) {
+                for (RetailerContactBo retailerContactBo : retailerContactList) {
+                    value = QT(getId())
+                            + "," + QT(retailerContactBo.getFistname())
+                            + "," + QT(retailerContactBo.getLastname())
+                            + "," + QT(retailerContactBo.getContactNumber())
+                            + "," + QT(retailerContactBo.getTitle())
+                            + "," + QT(retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") ? "0" : retailerContactBo.getContactTitleLovId())
+                            + "," + retailerContactBo.getIsPrimary()
+                            + "," + QT(retailerContactBo.getContactMail())
+                            + "," + QT("N");
+                    db.insertSQL("RetailerContact", column, value);
+                }
             }
-            if (outlet.getContactpersonname2() != null && !outlet.getContactpersonname2().trim().equals("")) {
-                value = QT(getId())
-                        + "," + QT(outlet.getContactpersonname2())
-                        + "," + QT(getNewoutlet().getContactpersonname2LastName())
-                        + "," + QT(outlet.getPhone2())
-                        + "," + QT(getNewoutlet().getContact2title())
-                        + "," + getNewoutlet().getContact2titlelovid()
-                        + "," + 0
-                        + "," + QT("N");
-                db.insertSQL("RetailerContact", column, value);
-            }
+
 
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
                     + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile";
@@ -2318,23 +2438,31 @@ public class NewOutletHelper {
 
     private String retailerId_edit;
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getLinkRetailer()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void downloadLinkRetailer() {
         try {
             mLinkRetailerList = new Vector<>();
             mLinkRetailerListByDistributorId = new SparseArray<>();
+
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
             String sb = "select Distributorid ,retailerid,name,latitude,longitude,pincode from linkretailermaster " +
                     "order by Distributorid ";
             Cursor c = db.selectSQL(sb);
+
             Vector<RetailerMasterBO> linkRetailerList = new Vector<>();
             int distributorId = 0;
             RetailerMasterBO linkRetailerBO;
+
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     linkRetailerBO = new RetailerMasterBO();
-
                     linkRetailerBO.setDistributorId(c.getInt(0));
                     linkRetailerBO.setRetailerID(c.getString(1));
                     linkRetailerBO.setRetailerName(c.getString(2));
@@ -2342,6 +2470,7 @@ public class NewOutletHelper {
                     linkRetailerBO.setLongitude(c.getDouble(4));
                     linkRetailerBO.setPincode(c.getString(5));
                     mLinkRetailerList.add(linkRetailerBO);
+
                     if (distributorId != linkRetailerBO.getDistributorId()) {
                         if (distributorId != 0) {
                             mLinkRetailerListByDistributorId.put(distributorId, linkRetailerList);
@@ -2356,9 +2485,9 @@ public class NewOutletHelper {
                     } else {
                         linkRetailerList.add(linkRetailerBO);
                     }
-
-
                 }
+
+
                 if (linkRetailerList.size() > 0) {
                     mLinkRetailerListByDistributorId.put(distributorId, linkRetailerList);
                 }
@@ -2373,11 +2502,22 @@ public class NewOutletHelper {
 
 
     }
-
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getLinkRetailer()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public SparseArray<Vector<RetailerMasterBO>> getLinkRetailerListByDistributorId() {
         return mLinkRetailerListByDistributorId;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#getLinkRetailer()}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public Vector<RetailerMasterBO> getLinkRetailerList() {
         return mLinkRetailerList;
     }
@@ -2496,7 +2636,13 @@ public class NewOutletHelper {
         return lst;
     }
 
-    public ArrayList<RetailerFlexBO> downloadRetailerFlexValues(String type) {
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * @since CPG131 replaced by {@link ProfileDataManagerImpl#downloadRetailerFlexValues}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
+    public ArrayList<RetailerFlexBO> downloadRetailerFlexValues( String type) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         ArrayList<RetailerFlexBO> flexValues = new ArrayList<>();
@@ -2521,5 +2667,44 @@ public class NewOutletHelper {
         }
         return flexValues;
     }
+
+    private ArrayList<RetailerContactBo> retailerContactList;
+
+    public ArrayList<RetailerContactBo> getRetailerContactList() {
+        if (retailerContactList == null)
+            return new ArrayList<>();
+        return retailerContactList;
+    }
+
+    public void setRetailerContactList(ArrayList<RetailerContactBo> retailerContactList) {
+        this.retailerContactList = retailerContactList;
+    }
+
+    public ArrayList<StandardListBO> downlaodContactTitle() {
+        StandardListBO contactTitle;
+        ArrayList<StandardListBO> contactTitleList = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTACT_TITLE_TYPE'");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    contactTitle = new StandardListBO();
+                    contactTitle.setListID(c.getString(0));
+                    contactTitle.setListName(c.getString(2));
+                    contactTitleList.add(contactTitle);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return contactTitleList;
+    }
+
 
 }

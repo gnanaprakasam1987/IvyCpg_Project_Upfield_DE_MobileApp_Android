@@ -3,6 +3,8 @@ package com.ivy.sd.png.bo;
 import com.ivy.cpg.view.promotion.PromotionBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 
+
+
 import java.util.ArrayList;
 
 public class StandardListBO {
@@ -22,6 +24,11 @@ public class StandardListBO {
         this.ListID = item.ListID;
         this.listCode = item.listCode;
         this.listName = item.listName;
+    }
+
+    public StandardListBO(String ListID, String listName) {
+        this.ListID = ListID;
+        this.listName = listName;
     }
 
     public StandardListBO() {
@@ -93,7 +100,7 @@ public class StandardListBO {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus( String status) {
         this.status = status;
     }
 

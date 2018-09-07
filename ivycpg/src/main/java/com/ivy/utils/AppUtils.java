@@ -7,10 +7,19 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.res.TypedArray;
 import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.content.FileProvider;
+import android.os.Environment;
+import android.os.StatFs;
+import android.support.v4.content.FileProvider;
+import android.text.Html;
+import android.text.InputFilter;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
@@ -20,8 +29,14 @@ import android.widget.TextView;
 import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenFragment;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.regex.Pattern;
 
 import java.io.File;
 
@@ -30,6 +45,116 @@ public class AppUtils {
 
     private AppUtils() {
 
+    }
+
+    public static void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {
+        try {
+            String fName = (!isLatLongImage) ? "PRO_" : "LATLONG_" + retailerID;
+            File sourceDir = new File(HomeScreenFragment.photoPath);
+            File[] files = sourceDir.listFiles();
+            for (File file : files) {
+                if (file.getName().startsWith(fName) &&
+                        !file.getName().equals(imageName))
+                    file.delete();
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public static String validateInput(String input) {
+        String str = "";
+        if (input != null && input != "") {
+            str = Html.fromHtml(input).toString();
+        }
+        return str;
+    }
+
+    public static boolean isValidRegx(CharSequence target, String regx) {
+
+        if (regx.equals("")) {
+            return true;
+        }
+        String value = regx.replaceAll("\\<.*?\\>", "");
+        return !TextUtils.isEmpty(target) && Pattern.compile(value).matcher(target).matches();
+    }
+
+    public static boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    public static  String latlongImageFileName;
+
+    public static InputFilter getInputFilter(String regex ){
+        InputFilter fil = new InputFilter.LengthFilter(25);
+        if (regex != null && !regex.isEmpty()) {
+            if (regex.contains("<") && regex.contains(">")) {
+                String len = regex.substring(regex.indexOf("<") + 1, regex.indexOf(">"));
+                if (!len.isEmpty()) {
+                    if (len.contains(",")) {
+                        try {
+                            fil = new InputFilter.LengthFilter(SDUtil.convertToInt(len.split(",")[1]));
+                        } catch (Exception ex) {
+                            Commons.printException("regex length split", ex);
+                        }
+                    } else {
+                        fil = new InputFilter.LengthFilter(SDUtil.convertToInt(len));
+                    }
+                }
+            }
+        }
+        return fil;
+    }
+
+
+
+    public static boolean isEmptyString(String text) {
+        return (text == null || text.trim().equals("null") || text.trim()
+                .length() <= 0);
+    }
+
+    public static boolean checkImagePresent(String path) {
+        File f = new File(path);
+        return f.exists();
+    }
+
+
+
+    /**
+     * DecodeFile is convert the large size image to fixed size which mentioned
+     * above
+     */
+    public static  Bitmap decodeFile(File f) {
+        int IMAGE_MAX_SIZE = 500;
+        Bitmap b = null;
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+
+            FileInputStream fis = new FileInputStream(f);
+            BitmapFactory.decodeStream(fis, null, o);
+            fis.close();
+
+            int scale = 1;
+            if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
+                scale = (int) Math.pow(
+                        2,
+                        (int) Math.ceil(Math.log(IMAGE_MAX_SIZE
+                                / (double) Math.max(o.outHeight, o.outWidth))
+                                / Math.log(0.5)));
+            }
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            fis = new FileInputStream(f);
+            b = BitmapFactory.decodeStream(fis, null, o2);
+            fis.close();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return b;
     }
 
     public static String getApplicationVersionName(Context context) {

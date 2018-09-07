@@ -1,10 +1,12 @@
 package com.ivy.sd.png.bo;
 
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class NewOutletBO {
+public class NewOutletBO extends ArrayList<NewOutletBO> {
     private int mSelectedImageIndex = 0;
     private double NewOutletlattitude, NewOutletLongitude;
     private String visitDays;
@@ -169,7 +171,7 @@ public class NewOutletBO {
 
     }
 
-    public NewOutletBO(int locid, String listName) {
+    public NewOutletBO(int locid,  String listName) {
         super();
         this.listName = listName;
         this.listId = locid;

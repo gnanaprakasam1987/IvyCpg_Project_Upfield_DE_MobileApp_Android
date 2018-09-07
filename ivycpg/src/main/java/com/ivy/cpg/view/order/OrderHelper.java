@@ -65,6 +65,8 @@ public class OrderHelper {
 
     private ArrayList<String> mValidAccumulationSchemes;
 
+    public boolean isQuickCall =  false;
+
 
     private OrderHelper(Context context) {
 

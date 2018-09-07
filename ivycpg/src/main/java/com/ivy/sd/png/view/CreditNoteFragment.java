@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -62,6 +63,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
     private LinearLayout bottomLayout;
     private double preCollectionValue, currentCollectionValue;
     private CardView cardViewLayout;
+    private boolean isFromCollection = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
 
         final int creditNotePos=getArguments().getInt("position",0);
         isAdvancePaymentAvailable=getArguments().getBoolean("IsAdvancePaymentAvailable", false);
+        isFromCollection=getArguments().getBoolean("FromCollection", false);
 
         mPaymentList=bmodel.collectionHelper.getCollectionPaymentList();
         mPaymentBO=mPaymentList.get(creditNotePos);
@@ -193,9 +196,9 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                             mPaymentBO.setAmount(tempCreditNoteValue);
                             currentCollectionValue = tempCreditNoteValue;
 
-                            tempCreditNoteValue = SDUtil.convertToDouble(SDUtil.format(tempCreditNoteValue,
-                                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                                    0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+//                            tempCreditNoteValue = SDUtil.convertToDouble(SDUtil.format(tempCreditNoteValue,
+//                                    bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+//                                    0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
                             String strCreditNote = tempCreditNoteValue + "";
                             mEnterCreditNoteAmtET.setText(strCreditNote);
@@ -243,10 +246,13 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         if (btn == applyBtn) {
             mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
             mPaymentBO.setAmount(currentCollectionValue);
+
+            checkFromCollectionScreen();
             getActivity().finish();
 
         } else if (btn == cancelBtn) {
             mPaymentBO.setAmount(preCollectionValue);
+            checkFromCollectionScreen();
             getActivity().finish();
         }
 
@@ -390,9 +396,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                 }
             }
         }
-        mTotalCreditNoteValue = SDUtil.convertToDouble(SDUtil.format(mTotalCreditNoteValue,
-                bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        mTotalCreditNoteValue = SDUtil.convertToDouble(bmodel.formatValue(mTotalCreditNoteValue));
 
         String strCreditValue = mTotalCreditNoteValue+"";
         mEnterCreditNoteAmtET.setText(strCreditValue);
@@ -419,9 +423,21 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         int i = item.getItemId();
         if (i == android.R.id.home) {
             mPaymentBO.setAmount(preCollectionValue);
+            checkFromCollectionScreen();
             getActivity().finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkFromCollectionScreen() {
+        if (isFromCollection){
+            Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
+            bmodel.mSelectedActivityName = "Bill Payment";
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+        }
     }
 
     public void numberPressed(View vw) {

@@ -1005,14 +1005,8 @@ public class DashBoardHelper {
         DashBoardBO temp;
 
         temp = new DashBoardBO();
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.getDefault());
-        cal.set(Calendar.MONTH, mon);
-        String month_name = month_date.format(cal.getTime());
-
-
         temp.setMonthID(month);
-        temp.setMonthName(month_name);
+        temp.setMonthName(MONTH_NAME[mon].substring(0,3));
 
         Commons.print("Month No>>>>," + "" + temp.getMonthID() + " Month Name>>>>" + temp.getMonthName());
 

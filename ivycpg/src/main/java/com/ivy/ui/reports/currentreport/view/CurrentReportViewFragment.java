@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
-import com.ivy.core.di.scope.ActivityContext;
-import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.ui.reports.currentreport.CurrentReportViewAdapter;
 import com.ivy.ui.reports.currentreport.ICurrentReportContract;
@@ -22,9 +20,7 @@ import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.LabelsMasterHelper;
-import com.ivy.sd.png.provider.UserMasterHelper;
-import com.ivy.sd.png.util.Commons;
+
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -60,7 +56,6 @@ public class CurrentReportViewFragment extends BaseFragment implements ICurrentR
     @Inject
     ProductHelper productHelper;
 
-
     @Inject
     ICurrentReportContract.ICurrentReportModelPresenter<ICurrentReportContract.ICurrentReportView> currentReportModelPresenter;
 
@@ -77,8 +72,7 @@ public class CurrentReportViewFragment extends BaseFragment implements ICurrentR
     }
 
     @Override
-    protected void getMessageFromAliens() {
-    }
+    protected void getMessageFromAliens() {}
 
 
     @Override
@@ -94,13 +88,11 @@ public class CurrentReportViewFragment extends BaseFragment implements ICurrentR
         currentReportModelPresenter.getSpinnerData();
     }
 
-
-
-
-
+    
     @Override
     public void initializeDi() {
-        DaggerCurrentReportComponent.builder().currentReportModule(new CurrentReportModule(this, getActivity().getApplication()))
+        DaggerCurrentReportComponent.builder()
+                .currentReportModule(new CurrentReportModule(this, getActivity().getApplication()))
                 .ivyAppComponent(((BusinessModel) getActivity().getApplication()).getComponent()).
                 build().inject(this);
         setBasePresenter((BasePresenter) currentReportModelPresenter);

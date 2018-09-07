@@ -675,9 +675,10 @@ public class SODFragment extends IvyBaseFragment implements
                             for (int i = 0; i < mCategoryForDialog.size(); i++) {
 
                                 SODBO sodbo = mCategoryForDialog.get(i);
-                                sodbo.getLocations().get(mSelectedLocationIndex).setParentTotal(mParentTotal.getText().toString());
-
-                                sodbo.setGap(Integer.toString(0));
+                                if (sodbo.getLocations() != null && sodbo.getLocations().size() > 0) {
+                                    sodbo.getLocations().get(mSelectedLocationIndex).setParentTotal(mParentTotal.getText().toString());
+                                    sodbo.setGap(Integer.toString(0));
+                                }
                             }
                         }
                         calculateTotalValues();
@@ -710,7 +711,7 @@ public class SODFragment extends IvyBaseFragment implements
             for (int i = 0; i < mCategoryForDialog.size(); i++) {
 
                 SODBO sodbo = mCategoryForDialog.get(i);
-                tot = tot + (sodbo.getActual());
+                tot = tot + SDUtil.convertToInt(sodbo.getLocations().get(mSelectedLocationIndex).getActual());
             }
             String strTotal = tot + "";
             mParentTotal.setText(strTotal);
@@ -1230,14 +1231,13 @@ public class SODFragment extends IvyBaseFragment implements
                         if (!"".equals(s)) {
 
                             try {
-                                holder.sodBO.setActual(SDUtil.convertToInt(s
-                                        .toString()));
+                                holder.sodBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
                             } catch (Exception e) {
-                                holder.sodBO.setActual(0);
+                                holder.sodBO.getLocations().get(mSelectedLocationIndex).setActual(Integer.toString(0));
                                 Commons.printException("" + e);
                             }
                         } else {
-                            holder.sodBO.setActual(0);
+                            holder.sodBO.getLocations().get(mSelectedLocationIndex).setActual(Integer.toString(0));
                         }
                         updateTotal();
                     }
@@ -1268,9 +1268,7 @@ public class SODFragment extends IvyBaseFragment implements
             holder.et.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             holder.tv.setText(brand.getProductName());
-
-            String strActual = brand.getActual() + "";
-            holder.et.setText(strActual);
+            holder.et.setText(brand.getLocations().get(mSelectedLocationIndex).getActual());
 
             return row;
         }

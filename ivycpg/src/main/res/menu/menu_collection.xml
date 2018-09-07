@@ -17,5 +17,14 @@
         ivydist:showAsAction="always"
         android:visible="false"/>
 
+    <item
+        android:id="@+id/menu_collection_reason"
+        android:icon="@drawable/ic_action_icon_collection"
+        android:orderInCategory="100"
+        android:title="@string/no_collection_reason"
+        ivydist:showAsAction="always"
+        android:visible="false"/>
+
+
 
 </menu>

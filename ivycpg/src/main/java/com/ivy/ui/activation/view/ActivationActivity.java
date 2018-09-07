@@ -64,7 +64,6 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
                 .build()
                 .inject(this);
 
-
         setBasePresenter((BasePresenter) mActivationPresenter);
 
     }

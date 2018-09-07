@@ -12,28 +12,30 @@
     card_view:cardUseCompatPadding="true"
     card_view:contentPadding="0dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/list_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="@dimen/dimen_10dp">
 
-        <LinearLayout
+
+        <ImageView
+            android:id="@+id/ivIsPrimary"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="@dimen/dimen_5dp">
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen_5dp"
+            android:src="@drawable/ic_tick_enable" />
 
-            <ImageView
-                android:id="@+id/ivIsPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_tick_enable" />
-        </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/ivIsPrimary"
+            android:layout_toLeftOf="@+id/ivIsdelete"
+            android:layout_toRightOf="@+id/ivIsPrimary"
+            android:layout_toStartOf="@+id/ivIsdelete"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:padding="@dimen/dimen_5dp">
@@ -80,5 +82,16 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivIsdelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_delete"
+            android:visibility="gone"
+            card_view:layout_constraintBottom_toBottomOf="parent" />
+
+    </RelativeLayout>
 </android.support.v7.widget.CardView>
