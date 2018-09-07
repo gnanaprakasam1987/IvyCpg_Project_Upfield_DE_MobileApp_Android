@@ -473,7 +473,7 @@ public class AssetTrackingHelper {
                 allMasterSb = allMasterSb + ("and (SBD.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
             }
 
-            sb.append(" GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
+            sb.append(" GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId,SBD.SerialNO ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
             Cursor c = db.selectSQL(sb.toString());
             Cursor c1 = db.selectSQL(allMasterSb);
@@ -771,7 +771,7 @@ public class AssetTrackingHelper {
 
             db.openDataBase();
             String sb = "select distinct  PosmId,Posmdesc from PosmMaster where" +
-                    " TypeLovId=(select listid from StandardListMaster where parentid= " +
+                    " TypeLovId in (select listid from StandardListMaster where parentid= " +
                     "(select listid from StandardListmaster where ListCode=" + QT(type) + " and ListType='POSM_TYPE'))";
 
 
@@ -1005,7 +1005,7 @@ public class AssetTrackingHelper {
             sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
             sb.append(" OR Channelid in (0,");
             sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext));
-            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
+            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId,SBD.SerialNO ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
 
             Cursor c = db.selectSQL(sb.toString());
