@@ -238,7 +238,7 @@ public class ProfileHelper {
                             "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid," +
                             "IM .RField1,IM.RField2,IM.RField3,IM.RField4,IFNULL(POH.volume,''),(ordervalue-(ifnull(POH.PaidAmount,0))) as balAmount" +
                             " FROM P4OrderHistoryMaster POH left join P4OrderHistoryDetail POD ON POD.refid=POH.refid" +
-                            " left join object1 PM ON PM.pid=POD.productid" +
+                            " left join ProductMaster PM ON PM.pid=POD.productid" +
                             " left join StandardListMaster rm on POH.reasonid =  rm.ListId" +
                             " left join InvoiceMaster IM ON  POH.orderid =  IM.InvoiceNo where POH.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID());
             if (c != null) {

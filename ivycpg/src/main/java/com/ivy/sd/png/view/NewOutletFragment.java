@@ -4999,6 +4999,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     surveyHelperNew.setFromHomeScreen(true);
                     surveyHelperNew.downloadModuleId("NEW_RETAILER");
                     surveyHelperNew.downloadQuestionDetails(MENU_NEW_RETAILER);
+                    bmodel.mSelectedActivityName = "Survey";
                     if (screenMode == EDIT || screenMode == VIEW) {
                         surveyHelperNew.loadNewRetailerSurveyAnswers(outlet.getRetailerId());// passing selected retailerid
                         bmodel.newOutletHelper.setRetailerId_edit(outlet.getRetailerId());
