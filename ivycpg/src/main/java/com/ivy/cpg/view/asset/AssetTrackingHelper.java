@@ -448,6 +448,7 @@ public class AssetTrackingHelper {
             sb.append("where  SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
             sb.append(mBusinessModel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
+
             String allMasterSb = sb.toString();
             sb.append(" and AccountId in(0,");
             sb.append(mBusinessModel.getRetailerMasterBO().getAccountid() + ")");
@@ -559,7 +560,7 @@ public class AssetTrackingHelper {
                     }
 
                     assetTrackingBO.setNFCTagId(c1.getString(c1.getColumnIndex("NfcTagId")));
-                    assetTrackingBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                    assetTrackingBO.setParentHierarchy(c1.getString(c.getColumnIndex("ParentHierarchy")));
 
                     mAllAssetTrackingList.add(assetTrackingBO);
 
@@ -584,7 +585,7 @@ public class AssetTrackingHelper {
             c.close();
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
             db.closeDB();
 
         }
@@ -1004,7 +1005,7 @@ public class AssetTrackingHelper {
             sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
             sb.append(" OR Channelid in (0,");
             sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext));
-            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
+            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
 
             Cursor c = db.selectSQL(sb.toString());

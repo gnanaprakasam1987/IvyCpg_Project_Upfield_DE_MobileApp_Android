@@ -2398,6 +2398,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     intent.putExtra("screenTitle", menu.getMenuName());
                     startActivity(intent);
                     isCreated = false;
+                    finish();
                 }
             } else {
                 Toast.makeText(
@@ -3586,6 +3587,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 Intent i = new Intent(this, DeliveryManagement.class);
                 i.putExtra("screentitle", menu.getMenuName());
                 startActivity(i);
+                finish();
             }
 
         } else if (menu.getConfigCode().equals(MENU_LOYALTY_POINTS) && hasLink == 1) {
@@ -3607,6 +3609,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     startActivity(i);
                     isCreated = true;
+                    finish();
                 } else {
                     dataNotMapped();
                     isCreated = false;

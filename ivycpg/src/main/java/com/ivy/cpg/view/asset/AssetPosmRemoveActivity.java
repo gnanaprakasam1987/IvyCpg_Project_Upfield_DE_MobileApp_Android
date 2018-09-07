@@ -25,9 +25,11 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Vector;
 
 public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
@@ -306,45 +308,45 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 	/**
 	 * Removing asset
 	 */
-	private void removeAsset(){
+	private void removeAsset() {
 
-		String mReasonID,mBrandId;
-
-		ArrayList<AssetTrackingBO> lstTemp=new ArrayList<>();
-		lstTemp.addAll(mList);
-
+		String mReasonID, mBrandId;
 		String mSBDId;
 		String mPOSMIdDialog;
 		String mSNODialog;
-		for(int i=0;i<lstTemp.size();i++) {
-			if(lstTemp.get(i).isSelectedToRemove()) {
+		try {
+			Iterator itr = mList.iterator();
+			while (itr.hasNext()) {
+				AssetTrackingBO assetTrackingBO = (AssetTrackingBO) itr.next();
+				if (assetTrackingBO.isSelectedToRemove()) {
 
-				if ("N".equals(lstTemp.get(i).getFlag())) {
-					mPOSMIdDialog = lstTemp.get(i).getPOSM();
-					mSNODialog = lstTemp.get(i).getSNO();
-					mSBDId = lstTemp.get(i).getSBDId();
-					mBrandId = lstTemp.get(i).getBrand();
-					if(!lstTemp.get(i).getReason1ID().equalsIgnoreCase("0")) {
-						mReasonID = lstTemp.get(i).getReason1ID();
+					if ("N".equals(assetTrackingBO.getFlag())) {
+						mPOSMIdDialog = assetTrackingBO.getPOSM();
+						mSNODialog = assetTrackingBO.getSNO();
+						mSBDId = assetTrackingBO.getSBDId();
+						mBrandId = assetTrackingBO.getBrand();
+						if (!assetTrackingBO.getReason1ID().equalsIgnoreCase("0")) {
+							mReasonID = assetTrackingBO.getReason1ID();
+							assetTrackingHelper
+									.saveAddAndDeleteDetails(getApplicationContext(), mPOSMIdDialog,
+											mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName);
+
+							itr.remove();
+						}
+
+					} else {
 						assetTrackingHelper
-                                .saveAddAndDeleteDetails(getApplicationContext(), mPOSMIdDialog,
-                                        mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName);
-
-						mList.remove(i);
+								.deletePosmDetails(getApplicationContext(), assetTrackingBO.getSNO());
+						itr.remove();
 					}
-
-
-				} else {
-					assetTrackingHelper
-                            .deletePosmDetails(getApplicationContext(), lstTemp.get(i)
-                                    .getSNO());
-					mList.remove(i);
+					bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
 				}
-				bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
 			}
-		}
 
-		MyAdapter mSchedule = new MyAdapter(mList);
-		mListView.setAdapter(mSchedule);
+			MyAdapter mSchedule = new MyAdapter(mList);
+			mListView.setAdapter(mSchedule);
+		} catch (Exception e) {
+			Commons.printException(e);
+		}
 	}
 }
