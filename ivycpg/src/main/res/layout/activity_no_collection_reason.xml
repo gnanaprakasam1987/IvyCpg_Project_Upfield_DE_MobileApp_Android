@@ -88,8 +88,6 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/done_btn"
             android:layout_below="@+id/topic_layout"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:layout_marginStart="@dimen/list_margin"
             android:scrollbars="none" />
 
         <Button
