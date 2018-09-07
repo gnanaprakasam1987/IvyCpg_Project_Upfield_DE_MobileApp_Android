@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -221,6 +222,10 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 }
             });
         }
+
+        if (getArguments().getBoolean("IS_NO_COLL_REASON",false) &&
+                !bmodel.collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(),getContext()))
+            showDialog(0);
 
         return rootView;
     }
@@ -1167,6 +1172,46 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 Commons.printException("" + e);
             }
         }
+    }
+
+    protected void showDialog(int id) {
+        switch (id) {
+            case 0:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(
+                                getResources().getString(
+                                        R.string.no_collection_reason))
+                        .setMessage(getResources().getString(
+                                R.string.invoice_with_no_collection))
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+
+                                        Intent intent = new Intent(getActivity(), NoCollectionReasonActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+                                    }
+
+                                })
+                        .setNegativeButton(
+                                getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+
+                                    }
+                                });
+
+                bmodel.applyAlertDialogTheme(builder);
+                break;
+
+        }
+
     }
 
     private boolean isCreditNoteAvailable() {

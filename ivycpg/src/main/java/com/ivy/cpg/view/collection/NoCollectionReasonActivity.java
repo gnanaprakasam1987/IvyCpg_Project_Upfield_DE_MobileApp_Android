@@ -58,10 +58,10 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
 
         setScreenTitle("No Collection Reason");
 
-        ((TextView) findViewById(R.id.invoice_no)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.invoice_date)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.invoice_amount)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.invoice_reason)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        ((TextView) findViewById(R.id.invoice_no)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        ((TextView) findViewById(R.id.invoice_date)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        ((TextView) findViewById(R.id.invoice_amount)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        ((TextView) findViewById(R.id.invoice_reason)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
 
         recyclerView = findViewById(R.id.invoice_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -71,7 +71,7 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
         MyAdapter myAdapter = new MyAdapter();
         recyclerView.setAdapter(myAdapter);
 
-        loadInvoiceList(bmodel.getRetailerMasterBO().getRetailerID());
+        mInvioceList = bmodel.collectionHelper.loadInvoiceList(bmodel.getRetailerMasterBO().getRetailerID(),this);
         loadCollectionReason();
 
         myAdapter.notifyDataSetChanged();
@@ -283,38 +283,4 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
-    private void loadInvoiceList(String id) {
-        try {
-            DBUtil db = new DBUtil(NoCollectionReasonActivity.this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            Cursor c = db.selectSQL("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt," +
-                    " Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as RcvdAmt," +
-                    " CDD.ReasonId,CDD.ReasonOthers,Inv.RetailerId FROM InvoiceMaster Inv LEFT JOIN payment ON payment.BillNumber = Inv.InvoiceNo " +
-                    " LEFT JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid left join CollectionDueDetails CDD on CDD.InvoiceNo = Inv.InvoiceNo " +
-                    " WHERE inv.Retailerid ='" + id + "'  AND inv.DocStatus ='COL'  GROUP BY Inv.InvoiceNo ORDER BY Inv.InvoiceDate");
-
-            if (c != null) {
-                while (c.moveToNext()) {
-                    NoCollectionReasonBo invoiceHeaderBO = new NoCollectionReasonBo();
-                    invoiceHeaderBO.setInvoiceNo(c.getString(0));
-                    invoiceHeaderBO.setInvoiceDate(c.getString(1));
-                    invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
-                    invoiceHeaderBO.setPaidAmount(c.getDouble(3));
-                    invoiceHeaderBO.setNoCollectionReasonId(c.getString(4));
-                    invoiceHeaderBO.setNoCollectionReason(c.getString(5));
-                    invoiceHeaderBO.setRetailerId(c.getString(6));
-
-                    if (invoiceHeaderBO.getPaidAmount() == 0)
-                        mInvioceList.add(invoiceHeaderBO);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-    }
 }

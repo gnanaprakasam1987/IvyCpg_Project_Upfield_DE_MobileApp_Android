@@ -230,4 +230,6 @@
 
     <string name="invoice_with_no_collection">Invoice With No Collection Reason Found</string>
 
+    <string name="skip">Skip</string>
+
 </resources>

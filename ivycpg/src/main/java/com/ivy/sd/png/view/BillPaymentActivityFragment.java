@@ -611,6 +611,10 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                         CollectionScreen.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("screentitle", "MENU_COLLECTION");
+
+                if (bmodel.configurationMasterHelper.SHOW_NO_COLLECTION_REASON)
+                    intent.putExtra("IS_NO_COLL_REASON",true);
+
                 startActivity(intent);
                 getActivity().finish();
             }
