@@ -12,6 +12,8 @@ import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.core.data.db.DBHelperImpl;
 import com.ivy.core.data.db.DbHelper;
+import com.ivy.core.data.distributor.DistributorDataManager;
+import com.ivy.core.data.distributor.DistributorDataManagerImpl;
 import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.label.LabelsDataManagerImpl;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
@@ -22,6 +24,7 @@ import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.core.di.scope.DistributorInfo;
 import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
@@ -181,6 +184,12 @@ public class IvyAppModule {
     @Provides
     protected AppDataProvider providesAppData(AppDataProviderImpl appDataProvider) {
         return appDataProvider;
+    }
+
+    @Provides
+    @DistributorInfo
+    DistributorDataManager providesDistributorManager(DistributorDataManagerImpl distributorDataManager){
+        return distributorDataManager;
     }
 
 

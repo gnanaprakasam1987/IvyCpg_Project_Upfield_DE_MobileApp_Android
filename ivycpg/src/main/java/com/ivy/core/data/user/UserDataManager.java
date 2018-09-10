@@ -35,6 +35,8 @@ public interface UserDataManager extends AppDataManagerContract{
 
     Observable<ArrayList<UserMasterBO>> fetchAllUsers();
 
+    Observable<ArrayList<UserMasterBO>> fetchDashboardUsers();
+
     Observable<ArrayList<UserMasterBO>> fetchBackupSellers();
 
     Single<Boolean> hasProfileImagePath(int userId);

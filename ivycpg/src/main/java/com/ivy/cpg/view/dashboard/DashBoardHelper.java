@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.SparseArray;
 
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.PriorityBo;
@@ -3005,6 +3006,11 @@ public class DashBoardHelper {
         return count;
     }
 
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link UserDataManagerImpl#fetchDashboardUsers()}
+     */
     public ArrayList<UserMasterBO> downloadUserList() {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,

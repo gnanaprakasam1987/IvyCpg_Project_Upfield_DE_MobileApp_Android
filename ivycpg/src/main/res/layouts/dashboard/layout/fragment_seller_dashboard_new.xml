@@ -92,9 +92,9 @@
 
                 <ViewStub
                     android:id="@+id/distributorSpinner"
-                    android:inflatedId="@+id/distributorSpinner"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:inflatedId="@+id/distributorSpinner"
                     android:layout="@layout/view_dashboard_spinner"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -105,9 +105,9 @@
 
                 <ViewStub
                     android:id="@+id/userSpinner"
-                    android:inflatedId="@+id/userSpinner"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:inflatedId="@+id/userSpinner"
                     android:layout="@layout/view_dashboard_spinner"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -117,10 +117,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ViewStub
-                    android:inflatedId="@+id/dashSpinner"
                     android:id="@+id/dashSpinner"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:inflatedId="@+id/dashSpinner"
                     android:layout="@layout/view_dashboard_spinner"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -130,10 +130,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ViewStub
-                    android:inflatedId="@+id/monthSpinner"
                     android:id="@+id/monthSpinner"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:inflatedId="@+id/monthSpinner"
                     android:layout="@layout/view_dashboard_spinner"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -155,10 +155,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ViewStub
-                    android:inflatedId="@+id/routeSpinner"
                     android:id="@+id/routeSpinner"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:inflatedId="@+id/routeSpinner"
                     android:layout="@layout/view_dashboard_spinner"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -166,6 +166,12 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/weekSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <android.support.constraint.Group
+                    android:id="@+id/dashSpinnerGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="dashSpinner,weekSpinner,routeSpinner,userSpinner,resultsHeaderTxt,monthSpinner,distributorSpinner" />
 
             </android.support.constraint.ConstraintLayout>
 
@@ -177,6 +183,7 @@
                 android:layout_marginStart="@dimen/dash_margin"
                 android:background="?mtdDashboardBackground"
                 android:visibility="gone"
+                android:layout="@layout/view_multi_spinner"
                 app:layout_constraintBottom_toTopOf="@+id/dashboardLv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

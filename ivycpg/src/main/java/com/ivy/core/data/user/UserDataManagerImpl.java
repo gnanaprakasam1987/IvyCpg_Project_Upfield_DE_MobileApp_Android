@@ -673,6 +673,40 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
+    public Observable<ArrayList<UserMasterBO>> fetchDashboardUsers() {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() {
+                try {
+                    initDb();
+
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username from usermaster where isDeviceuser!=1 and distributorid!=0";
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+
+                    return userList;
+                } catch (Exception ignored) {
+                }
+
+                shutDownDb();
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
     public Observable<ArrayList<UserMasterBO>> fetchBackupSellers() {
         return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
             @Override
