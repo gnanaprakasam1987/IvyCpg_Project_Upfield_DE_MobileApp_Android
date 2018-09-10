@@ -44,9 +44,10 @@ public class SpecialFilterFragment extends Fragment implements OnItemClickListen
 
     private BusinessModel bmodel;
 
-    public SpecialFilterFragment(){
-        mselectedFilterMap= new HashMap<>();
+    public SpecialFilterFragment() {
+        mselectedFilterMap = new HashMap<>();
     }
+
     public SpecialFilterFragment(HashMap<String, String> selectedfilter) {
         mselectedFilterMap = selectedfilter;
     }
@@ -111,9 +112,10 @@ public class SpecialFilterFragment extends Fragment implements OnItemClickListen
 
 
         List<ConfigureBO> mylist = new ArrayList<>();
-        for (int i = 0; i < specialFilterList.size(); i++) {
-            mylist.add((ConfigureBO) specialFilterList.get(i));
-        }
+        if (specialFilterList != null)
+            for (int i = 0; i < specialFilterList.size(); i++) {
+                mylist.add((ConfigureBO) specialFilterList.get(i));
+            }
 
 
         MyListAdapter myListAdapter = new MyListAdapter(mylist);
