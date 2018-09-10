@@ -2370,6 +2370,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     bmodel.synchronizationHelper.downloadWareHouseStock(warehouseWebApi);
                 } else {
                     Toast.makeText(CatalogOrder.this, getResources().getString(R.string.url_not_mapped), Toast.LENGTH_SHORT).show();
+                    if (alertDialog.isShowing())
+                        alertDialog.dismiss();
                 }
             } else {
                 String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
@@ -2378,6 +2380,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 } else {
                     Toast.makeText(CatalogOrder.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                 }
+                if (alertDialog.isShowing())
+                    alertDialog.dismiss();
             }
         }
     }
