@@ -225,7 +225,6 @@ public class CollectionReportFragmentNew extends IvyBaseFragment implements ICol
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        bModel.configurationMasterHelper.SHOW_PRINT_BUTTON= true;
         if (bModel.configurationMasterHelper.SHOW_PRINT_BUTTON) {
             menu.findItem(R.id.menu_print).setVisible(true);
         } else {
