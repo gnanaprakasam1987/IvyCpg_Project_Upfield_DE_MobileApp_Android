@@ -50,6 +50,7 @@ import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -681,8 +682,7 @@ public class ProfileFragment extends IvyBaseFragment {
             case "PROFILE06": {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
-                outletBO.setValueText(bmodel.channelMasterHelper
-                        .getChannelName(retailerObj.getChannelID() + ""));
+                outletBO.setValueText(bmodel.channelMasterHelper.getChannelName(retailerObj.getChannelID() + ""));
                 finalProfileList.add(outletBO);
                 break;
             }
@@ -918,7 +918,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE23": {
-                String text = bmodel.mRetailerHelper.getContractExpiryDate();
+                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractExpiryDate(), "MM/dd/yyyy");
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(text);
@@ -982,7 +982,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE33": {
-                String text = bmodel.mRetailerHelper.getContractStartDate() + "";
+                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractStartDate(), "MM/dd/yyyy");
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(text);
@@ -1329,10 +1329,10 @@ public class ProfileFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             //updateLocationMasterList();
             bmodel.newOutletHelper.downloadLinkRetailer();
-            bmodel.mRetailerHelper.loadContractData();
             bmodel.newOutletHelper.loadContactTitle();
             bmodel.newOutletHelper.loadContactStatus();
-            //channelMaster = bmodel.channelMasterHelper.getChannelMaster();
+            bmodel.mRetailerHelper.loadContractData();
+
             return true;
         }
     }
@@ -1351,9 +1351,9 @@ public class ProfileFragment extends IvyBaseFragment {
     private void updateRetailerAttribute(ArrayList<NewOutletAttributeBO> list) {
         attributeList = new ArrayList<>();
         bmodel.newOutletAttributeHelper.downloadAttributeParentList();
-        bmodel.newOutletAttributeHelper.downloadRetailerAttribute();
+        bmodel.newOutletAttributeHelper.downloadRetailerAttributeChildList();
         ArrayList<NewOutletAttributeBO> childList = bmodel.newOutletAttributeHelper.getAttributeList();
-        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+        ArrayList<NewOutletAttributeBO> parentList = bmodel.newOutletAttributeHelper.getmAttributeParentList();
         int attribID;
         int tempAttribID;
         int parentID;

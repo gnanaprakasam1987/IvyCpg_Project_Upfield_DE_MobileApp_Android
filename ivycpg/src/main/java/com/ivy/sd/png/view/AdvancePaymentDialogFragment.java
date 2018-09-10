@@ -471,6 +471,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                 newFragment.show(getFragmentManager(), "datePicker1");
             }
         });
+
         mCollectAmtET.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

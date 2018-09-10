@@ -16,9 +16,18 @@ import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.NewOutletHelper;
+import com.ivy.sd.png.provider.RetailerHelper;
+import com.ivy.sd.png.provider.SubChannelMasterHelper;
+import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.edit.di.Profile;
+
+import java.util.Vector;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -69,13 +78,54 @@ public class IvyAppModule {
     @Provides
     @DataBaseInfo
     protected DBUtil providesDBUtil() {
-        return new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        return new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
     }
 
     @Provides
     protected ConfigurationMasterHelper providesConfigurationHelper() {
         return ((BusinessModel) mContext).configurationMasterHelper;
+    }
+
+    @Provides
+    @Profile
+    protected RetailerMasterBO providesRetailerMasterBO() {
+        return ((BusinessModel)mContext).getRetailerMasterBO();
+    }
+
+    @Provides
+    @Profile
+    UserMasterHelper provideUserMasterHelper() {
+        return((BusinessModel)mContext).userMasterHelper;
+    }
+
+    @Provides
+    @Profile
+    ChannelMasterHelper provideChannelMasterHelper() {
+        return((BusinessModel)mContext).channelMasterHelper;
+    }
+
+    @Provides
+    @Profile
+    SubChannelMasterHelper provideSubChannelMasterHelper() {
+        return((BusinessModel)mContext).subChannelMasterHelper;
+    }
+
+    @Provides
+    @Profile
+    RetailerHelper provideRetailerHelper() {
+        return((BusinessModel)mContext).mRetailerHelper;
+    }
+
+
+    @Provides
+    @Profile
+    Vector<RetailerMasterBO> provideRetailerMaster(){
+        return ((BusinessModel)mContext).getRetailerMaster();
+    }
+    @Provides
+    @Profile
+    NewOutletHelper provideNewoutletHelper(){
+        return ((BusinessModel)mContext).newOutletHelper;
     }
 
     @Provides

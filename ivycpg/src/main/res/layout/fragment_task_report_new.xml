@@ -7,16 +7,19 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
-        style="?attr/tablayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@android:color/white"
         app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
         android:minHeight="?attr/actionBarSize"
         app:tabGravity="fill"
         app:tabMode="fixed"
         app:tabMaxWidth="0dp"
+        app:tabPaddingStart="@dimen/dimen_0dp"
+        app:tabPaddingEnd="@dimen/dimen_0dp"
+        app:tabBackground="?attr/colorPrimary"
+        android:background="?attr/colorPrimary"
         app:tabSelectedTextColor="@color/white"
+        app:tabIndicatorHeight="4dp"
         app:tabTextColor="#ddd">
 
         <android.support.design.widget.TabItem

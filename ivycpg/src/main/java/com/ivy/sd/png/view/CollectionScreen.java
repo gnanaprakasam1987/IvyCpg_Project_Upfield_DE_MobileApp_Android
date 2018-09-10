@@ -204,6 +204,11 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
     private void addFragments() {
         mFragmentList = new ArrayList<>();
         mSelectFragment = new CollectionFragmentNew();
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("IS_NO_COLL_REASON",getIntent().getBooleanExtra("IS_NO_COLL_REASON",false));
+        mSelectFragment.setArguments(bundle);
+
         mFragmentList.add(mSelectFragment);
 
         if (bmodel.configurationMasterHelper.SHOW_ADVANCE_PAYMENT) {

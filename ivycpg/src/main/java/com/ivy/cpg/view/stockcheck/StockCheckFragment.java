@@ -1281,22 +1281,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.checkbox_default_color)));
                 }
 
-
-                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
-                    if (holder.productObj.getLocations()
-                            .get(stockCheckPresenter.mSelectedLocationIndex)
-                            .getShelfPiece() > 0 || holder.productObj.getLocations()
-                            .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
-                        holder.mReason.setEnabled(false);
-                        holder.mReason.setSelected(false);
-                        holder.mReason.setSelection(0);
-                    } else {
-                        holder.mReason.setEnabled(true);
-                        holder.mReason.setSelected(true);
-                        holder.mReason.setSelection(stockCheckPresenter.getReasonIndex(holder.productObj
-                                .getReasonID()));
-                    }
-                }
                 if (businessModel.configurationMasterHelper.SHOW_STOCK_FC) {
                     String strFacingQty = holder.productObj.getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getFacingQty() + "";
                     holder.facingQty.setText(strFacingQty);
@@ -1334,6 +1318,22 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         holder.shelfouter.setText(strShelfOuter);
                     } else {
                         holder.shelfouter.setText("");
+                    }
+                }
+
+                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                    if (holder.productObj.getLocations()
+                            .get(stockCheckPresenter.mSelectedLocationIndex)
+                            .getShelfPiece() == 0 || holder.productObj.getLocations()
+                            .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 0) {
+                        holder.mReason.setEnabled(true);
+                        holder.mReason.setSelected(true);
+                        holder.mReason.setSelection(stockCheckPresenter.getReasonIndex(holder.productObj
+                                .getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getReasonId() + ""));
+                    } else {
+                        holder.mReason.setEnabled(false);
+                        holder.mReason.setSelected(false);
+                        holder.mReason.setSelection(0);
                     }
                 }
 

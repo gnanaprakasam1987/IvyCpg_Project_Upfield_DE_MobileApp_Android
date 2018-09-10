@@ -1,6 +1,7 @@
 package com.ivy.sd.png.view;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,7 +33,9 @@ import android.widget.Toast;
 import com.aem.api.AEMPrinter;
 import com.aem.api.AEMScrybeDevice;
 import com.bixolon.printer.BixolonPrinter;
+import com.ivy.cpg.view.collection.NoCollectionReasonActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -132,13 +135,44 @@ public class CollectionFragmentNew extends IvyBaseFragment
                             getResources().getString(R.string.please_select_anyone_invoice_from_list),
                             Toast.LENGTH_SHORT).show();
                 else {
-                    Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
-                    bmodel.mSelectedActivityName = "Bill Payment";
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                }
 
+                    if (bmodel.configurationMasterHelper.IS_NAVIGATE_CREDIT_NOTE_SCREEN &&
+                            mPaymentList != null && mPaymentList.size() > 0) {
+
+                        int pos = 0;
+                        for (PaymentBO paymentBO : mPaymentList) {
+
+                            if (paymentBO.getCashMode().equals("CN")
+                                    && isCreditNoteAvailable()) {
+                                Intent intent = new Intent(getActivity(), PaymentModeActivity.class);
+                                intent.putExtra("position", pos);
+                                intent.putExtra("IsAdvancePaymentAvailable", false);
+                                intent.putExtra("paymode", "" + paymentBO.getCashMode());
+                                intent.putExtra("FromCollection", true);
+                                startActivity(intent);
+                                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+                                break;
+                            } else if (pos == mPaymentList.size() - 1) {
+                                Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
+                                bmodel.mSelectedActivityName = "Bill Payment";
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+                            }
+
+                            pos = pos + 1;
+                        }
+                    }else{
+                        Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
+                        bmodel.mSelectedActivityName = "Bill Payment";
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                    }
+
+                }
 
             }
         });
@@ -188,6 +222,10 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 }
             });
         }
+
+        if (getArguments().getBoolean("IS_NO_COLL_REASON",false) &&
+                !bmodel.collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(),getContext()))
+            showDialog();
 
         return rootView;
     }
@@ -277,6 +315,9 @@ public class CollectionFragmentNew extends IvyBaseFragment
         }
         menu.findItem(R.id.menu_next).setVisible(false);
 
+        if (bmodel.configurationMasterHelper.SHOW_NO_COLLECTION_REASON)
+            menu.findItem(R.id.menu_collection_reason).setVisible(true);
+
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -304,6 +345,12 @@ public class CollectionFragmentNew extends IvyBaseFragment
             } else {
                 Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.advance_payment_cannot_be_reveived), Toast.LENGTH_SHORT).show();
             }
+        }else if(i == R.id.menu_collection_reason){
+            Intent intent = new Intent(getActivity(), NoCollectionReasonActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1125,6 +1172,66 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 Commons.printException("" + e);
             }
         }
+    }
+
+    protected void showDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setIcon(null)
+                .setCancelable(false)
+                .setTitle(
+                        getResources().getString(
+                                R.string.no_collection_reason))
+                .setMessage(getResources().getString(
+                        R.string.invoice_with_no_collection))
+                .setPositiveButton(getResources().getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+
+                                Intent intent = new Intent(getActivity(), NoCollectionReasonActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+                            }
+
+                        })
+                .setNegativeButton(
+                        getResources().getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+
+                            }
+                        });
+
+        bmodel.applyAlertDialogTheme(builder);
+
+
+    }
+
+    private boolean isCreditNoteAvailable() {
+        boolean isAvaiable = false;
+        String modeID = bmodel.getStandardListIdAndType(
+                "CNAP",
+                StandardListMasterConstants.CREDIT_NOTE_TYPE);
+        if (bmodel.collectionHelper.getCreditNoteList() != null) {
+            ArrayList<CreditNoteListBO> mCreditNoteList = new ArrayList<>();
+            for (CreditNoteListBO bo : bmodel.collectionHelper
+                    .getCreditNoteList()) {
+                if (bo.getRetailerId().equals(
+                        bmodel.getRetailerMasterBO().getRetailerID())
+                        && !bo.isUsed() && (!modeID.equals(bo.getTypeId() + "")))
+                    mCreditNoteList.add(bo);
+            }
+            if (mCreditNoteList.size() > 0)
+                isAvaiable = true;
+
+        }
+
+
+        return isAvaiable;
     }
 
 }

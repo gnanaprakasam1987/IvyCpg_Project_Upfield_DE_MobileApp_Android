@@ -348,8 +348,8 @@ public class FitScoreHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("Select distinct A.PName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,'','' " +
-                            "from ProductMaster A inner join PromotionDetail B on A.Pid = B.BrandID " +
+                    .selectSQL("Select distinct A.PromoName,0,case when (ifnull(B.Score,0)>0) then 'Y' else 'N' end,'','' " +
+                            "from PromotionProductMapping A inner join PromotionDetail B on A.PromoId = B.PromotionID " +
                             "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' " +
                             "inner join HHTModuleWeightageMapping HWM ON E.GroupID = HWM.GroupID " +
                             "left join RetailerMaster RM ON RM.subchannelid = HWM.CriteriaId AND HWM.CriteriaType = 'CHANNEL' " +

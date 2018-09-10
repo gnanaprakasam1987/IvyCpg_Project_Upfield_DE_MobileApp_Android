@@ -92,7 +92,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
     }
 
     private void getDataToPopulate() {
-        new CompositeDisposable().add((Disposable)bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID())
+        new CompositeDisposable().add((Disposable)bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(),false)
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribeWith(arrayListObserver()));

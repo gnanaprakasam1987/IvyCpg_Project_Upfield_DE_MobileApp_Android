@@ -105,6 +105,29 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             view.findViewById(R.id.layout_vertical_line).setVisibility(View.GONE);
         }
 
+        /*if (bmodel.configurationMasterHelper.IS_NAVIGATE_CREDIT_NOTE_SCREEN && getArguments()!=null
+                && getArguments().getBoolean("FromCollection",false)) {
+
+            int pos = 0;
+            for (PaymentBO paymentBO : mPaymentList) {
+
+                if (paymentBO.getCashMode().equals("CN")
+                        && isCreditNoteAvailable()) {
+                    Intent intent = new Intent(getActivity(), PaymentModeActivity.class);
+                    intent.putExtra("position", pos);
+                    intent.putExtra("IsAdvancePaymentAvailable", false);
+                    intent.putExtra("paymode", "" + paymentBO.getCashMode());
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+
+                    break;
+
+                }
+
+                pos = pos + 1;
+            }
+        }*/
+
         return view;
     }
 
@@ -266,9 +289,10 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             holder.nameTV.setText(mPaymentList.get(position).getListName());
 
             if (mPaymentList.get(position).getAmount() > 0) {
-                holder.paidLabel.append(holder.paidAmtLabel.getText().toString());
-                holder.paidLabel.append(" " + bmodel.formatValueBasedOnConfig(mPaymentList.get(position).getAmount()) + " paid");
-                holder.paidAmtLabel.setText(holder.paidLabel.toString());
+
+                String paidLabelVal = " " + bmodel.formatValue(mPaymentList.get(position).getAmount()) + " paid";
+
+                holder.paidAmtLabel.setText(paidLabelVal);
             } else {
                 holder.paidAmtLabel.setText("");
             }
@@ -587,6 +611,10 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                         CollectionScreen.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("screentitle", "MENU_COLLECTION");
+
+                if (bmodel.configurationMasterHelper.SHOW_NO_COLLECTION_REASON)
+                    intent.putExtra("IS_NO_COLL_REASON",true);
+
                 startActivity(intent);
                 getActivity().finish();
             }

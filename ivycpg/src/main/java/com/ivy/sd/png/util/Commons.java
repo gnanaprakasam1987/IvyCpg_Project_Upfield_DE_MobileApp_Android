@@ -5,6 +5,8 @@ import android.util.Log;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.model.ApplicationConfigs;
 
+
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -13,12 +15,12 @@ public class Commons {
     public static final int DATE_TIME = 5;
     public static final int DATE = 6;
 
-    public static void print(String message) {
+    public static void print( String message) {
         if (BuildConfig.DEBUG)
             Log.d(ApplicationConfigs.LOG, message);
     }
 
-    public static void printException(String message, Throwable e) {
+    public static void printException( String message, Throwable e) {
         Log.e(ApplicationConfigs.LOG, message, e);
     }
 

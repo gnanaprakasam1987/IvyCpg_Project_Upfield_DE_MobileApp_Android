@@ -114,7 +114,9 @@ import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 
-public class NewOutletFragment extends IvyBaseFragment implements NearByRetailerDialog.NearByRetailerInterface, PrioritySelectionDialog.PrioritySelectionListener {
+public class NewOutletFragment extends IvyBaseFragment
+        implements NearByRetailerDialog.NearByRetailerInterface
+        , PrioritySelectionDialog.PrioritySelectionListener {
     private double lattitude = 0;
     private double longitude = 0;
 
@@ -276,17 +278,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        //Set Screen Title
-        try {
-            if (getArguments().getString("screentitle") == null)
-                setScreenTitle(bmodel.getMenuName("MENU_NEW_RETAILER"));
-            else
-                setScreenTitle(getArguments().getString("screentitle"));
-        } catch (Exception e) {
 
-            setScreenTitle(getResources().getString(R.string.new_retailer));
-            Commons.printException(e);
-        }
 
         if (Build.VERSION.SDK_INT >= 14) {
             Point size = new Point();
@@ -517,8 +509,8 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                         .equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
                     isAttribute = true;
                     bmodel.newOutletAttributeHelper.downloadAttributeParentList();
-                    bmodel.newOutletAttributeHelper.downloadRetailerAttribute();
-                    mAttributeParentList = bmodel.newOutletAttributeHelper.getAttributeParentList();
+                    bmodel.newOutletAttributeHelper.downloadRetailerAttributeChildList();
+                    mAttributeParentList = bmodel.newOutletAttributeHelper.getmAttributeParentList();
                     attribMap = bmodel.newOutletAttributeHelper.getAttribMap();
 
                     bmodel.newOutletAttributeHelper.downloadCommonAttributeList();
@@ -4999,6 +4991,7 @@ public class NewOutletFragment extends IvyBaseFragment implements NearByRetailer
                     surveyHelperNew.setFromHomeScreen(true);
                     surveyHelperNew.downloadModuleId("NEW_RETAILER");
                     surveyHelperNew.downloadQuestionDetails(MENU_NEW_RETAILER);
+                    bmodel.mSelectedActivityName = "Survey";
                     if (screenMode == EDIT || screenMode == VIEW) {
                         surveyHelperNew.loadNewRetailerSurveyAnswers(outlet.getRetailerId());// passing selected retailerid
                         bmodel.newOutletHelper.setRetailerId_edit(outlet.getRetailerId());

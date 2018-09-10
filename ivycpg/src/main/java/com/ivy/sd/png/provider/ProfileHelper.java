@@ -238,7 +238,7 @@ public class ProfileHelper {
                             "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid," +
                             "IM .RField1,IM.RField2,IM.RField3,IM.RField4,IFNULL(POH.volume,''),(ordervalue-(ifnull(POH.PaidAmount,0))) as balAmount" +
                             " FROM P4OrderHistoryMaster POH left join P4OrderHistoryDetail POD ON POD.refid=POH.refid" +
-                            " left join object1 PM ON PM.pid=POD.productid" +
+                            " left join ProductMaster PM ON PM.pid=POD.productid" +
                             " left join StandardListMaster rm on POH.reasonid =  rm.ListId" +
                             " left join InvoiceMaster IM ON  POH.orderid =  IM.InvoiceNo where POH.retailerid=" + bmodel.getRetailerMasterBO().getRetailerID());
             if (c != null) {
@@ -803,13 +803,18 @@ public class ProfileHelper {
         }
     }
 
+
+    /**
+     * @See {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
+     * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#checkProfileImagePath}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public boolean hasProfileImagePath(RetailerMasterBO ret) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" + ret.getRetailerID());
+            Cursor c = db.selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" + ret.getRetailerID());
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {
@@ -826,12 +831,23 @@ public class ProfileHelper {
             return false;
         }
     }
-
+    /**
+     * @See {@link  com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public boolean isImagePresent(String path) {
         File f = new File(path);
         return f.exists();
     }
 
+    /**
+     * @See {@link  com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public Uri getUriFromFile(String path) {
         File f = new File(path);
         if (Build.VERSION.SDK_INT >= 24) {
@@ -842,6 +858,12 @@ public class ProfileHelper {
         }
     }
 
+    /**
+     * @See {@link  com.ivy.utils.AppUtils}
+     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#checkFileExist}
+     * Will be removed from @version CPG133 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {
         try {
             String fName = (!isLatLongImage) ? "PRO_" : "LATLONG_" + retailerID;
@@ -1021,14 +1043,14 @@ public class ProfileHelper {
     }
 
 
-    public Observable<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID) {
+    public Observable<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID, final boolean isEdit) {
         return Observable.create(new ObservableOnSubscribe<ArrayList<RetailerContactBo>>() {
             @Override
             public void subscribe(ObservableEmitter<ArrayList<RetailerContactBo>> subscriber) throws Exception {
                 ArrayList<RetailerContactBo> contactList = new ArrayList<>();
                 try {
-                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,"
-                            + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,"
+                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,RC.contact_title_lovid as contact_title_lovid,"
+                            + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,RC.CPID  as cpid,"
                             + " ifnull(RC.Email,'') as email from RetailerContact RC "
                             + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
                             + " Where RC.RetailerId =" + bmodel.QT(retailerID);
@@ -1044,15 +1066,62 @@ public class ProfileHelper {
                                 retailerContactBo.setTitle(c.getString(c.getColumnIndex("contactTitle")));
                             else
                                 retailerContactBo.setTitle(c.getString(c.getColumnIndex("listName")));
+                            retailerContactBo.setContactTitleLovId(c.getString(c.getColumnIndex("contact_title_lovid")));
                             retailerContactBo.setFistname(c.getString(c.getColumnIndex("cName")));
                             retailerContactBo.setLastname(c.getString(c.getColumnIndex("cLname")));
                             retailerContactBo.setContactNumber(c.getString(c.getColumnIndex("cNumber")));
                             retailerContactBo.setContactMail(c.getString(c.getColumnIndex("email")));
                             retailerContactBo.setIsPrimary(c.getInt(c.getColumnIndex("isPrimary")));
+                            retailerContactBo.setCpId(c.getString(c.getColumnIndex("cpid")));
                             contactList.add(retailerContactBo);
                         }
                         c.close();
                     }
+
+
+                    if(isEdit){
+                        String retailerContactEditQuery = "select ifnull(RC.Contact_Title,'') as contactTitle, ifNull(SM.ListName,'') as listName, RC.Contact_Title_LovId as contact_title_lovid, ifnull(RC.ContactName,'') as cName,ifnull(RC.ContactName_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,Rc.CPId as cpid,Rc.Status as status ,"
+                                + " ifnull(RC.Email,'') as email from RetailerContactEdit RC "
+                                + " Left join StandardListMaster SM on SM.ListId= RC.Contact_Title_LovId "
+                                + " Where RC.RetailerId =" + bmodel.QT(retailerID);
+
+                        Cursor retailerContactEditCurson = db.selectSQL(retailerContactEditQuery);
+                        if (retailerContactEditCurson != null) {
+                            ArrayList<RetailerContactBo> tempList = new ArrayList<>();
+                            while (retailerContactEditCurson.moveToNext()) {
+                                RetailerContactBo retailerContactBo = new RetailerContactBo();
+                                if (retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contactTitle")).length() > 0)
+                                    retailerContactBo.setTitle(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contactTitle")));
+                                else
+                                    retailerContactBo.setTitle(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("listName")));
+                                retailerContactBo.setContactTitleLovId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contact_title_lovid")));
+                                retailerContactBo.setFistname(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cName")));
+                                retailerContactBo.setLastname(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cLname")));
+                                retailerContactBo.setContactNumber(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cNumber")));
+                                retailerContactBo.setContactMail(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("email")));
+                                retailerContactBo.setIsPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("isPrimary")));
+                                retailerContactBo.setStatus(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("status")));
+                                retailerContactBo.setCpId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cpid")));
+                                tempList.add(retailerContactBo);
+                            }
+                            retailerContactEditCurson.close();
+
+                            for (int i = 0; i < contactList.size(); i++) {
+
+                                String parentCpId=contactList.get(i).getCpId();
+
+                                for (int j = 0; j < tempList.size(); j++) {
+
+                                    String editedCpId=tempList.get(j).getCpId();
+
+                                    if(parentCpId.equalsIgnoreCase(editedCpId)){
+                                        contactList.set( i,tempList.get(j));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     db.closeDB();
                     subscriber.onNext(contactList);
                     subscriber.onComplete();
