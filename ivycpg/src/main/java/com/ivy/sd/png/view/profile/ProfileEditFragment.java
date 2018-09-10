@@ -341,10 +341,10 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
 
-        other1_editText_index = profileConfig.size() + 50; //Title edittext one
-        other2_editText_index = profileConfig.size() + 51; //Title edittext two
-        lName1_editText_index = profileConfig.size() + 25;
-        lName2_editText_index = profileConfig.size() + 26;
+        other1_editText_index = profileConfig.size() + 1; //Title edittext one
+        other2_editText_index = profileConfig.size() + 2; //Title edittext two
+        lName1_editText_index = profileConfig.size() + 3;
+        lName2_editText_index = profileConfig.size() + 4;
 
         retailerObj = bmodel.getRetailerMasterBO();
 

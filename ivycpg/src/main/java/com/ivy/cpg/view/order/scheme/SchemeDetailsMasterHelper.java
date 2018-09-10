@@ -901,7 +901,7 @@ public class SchemeDetailsMasterHelper {
     /**
      * Download accumulation schemes
      */
-    public void downloadSchemeHistoryDetails(Context mContext, String retailerId) {
+    public void downloadSchemeHistoryDetails(Context mContext, String retailerId,boolean isOrderEdit,String orderId) {
         ProductMasterBO productBO;
         mSchemeHistoryListBySchemeId = new HashMap<>();
 
@@ -914,9 +914,9 @@ public class SchemeDetailsMasterHelper {
                     + " IFNULL(CaseUOM.Qty,0) as CaseQty,(IFNULL(PieceUOM.value,0)+IFNULL(OuterUOM.value,0)+IFNULL(CaseUOM.value,0)) "
                     + " FROM SchemeAchHistory A"
 
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='PIECE' and rid=" + bModel.QT(retailerId) + ") as PieceUOM ON PieceUOM.Pid = A.pid"
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='MSQ' and rid=" + bModel.QT(retailerId) + ") as OuterUOM ON OuterUOM.Pid = A.pid"
-                    + " LEFT JOIN (SELECT pid, qty,value from SchemeAchHistory where  uom='CASE' and rid=" + bModel.QT(retailerId) + ") as CaseUOM ON CaseUOM .Pid = A.pid"
+                    + " LEFT JOIN (SELECT pid, qty,value,schid from SchemeAchHistory where  uom='PIECE' and rid=" + bModel.QT(retailerId) + ") as PieceUOM ON PieceUOM.Pid = A.pid and PieceUOM.schid=A.schid"
+                    + " LEFT JOIN (SELECT pid, qty,value,schid from SchemeAchHistory where  uom='MSQ' and rid=" + bModel.QT(retailerId) + ") as OuterUOM ON OuterUOM.Pid = A.pid and OuterUOM.schid=A.schid"
+                    + " LEFT JOIN (SELECT pid, qty,value,schid from SchemeAchHistory where  uom='CASE' and rid=" + bModel.QT(retailerId) + ") as CaseUOM ON CaseUOM .Pid = A.pid and CaseUOM.schid=A.schid"
                     + " LEFT JOIN OrderHeader OH on OH.retailerid=" + bModel.QT(retailerId) + " and invoicestatus=1 and OH.upload!='X'"
                     + " LEFT JOIN SchemeDetail SD on SD.parentid=A.schid and OH.orderid=SD.orderid"
                     + " LEFT JOIN SchemeFreeProductDetail SPD on SPD.parentid=A.schid and OH.orderid=SPD.orderid"
@@ -967,7 +967,7 @@ public class SchemeDetailsMasterHelper {
             db.closeDB();
 
             if(mSchemeHistoryListBySchemeId.size()>0)
-                updateLocalOrderQty(mContext,retailerId);
+                updateLocalOrderQty(mContext,retailerId,isOrderEdit,orderId);
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -979,14 +979,17 @@ public class SchemeDetailsMasterHelper {
      * @param mContext Current context
      * @param retailerId Retailer Id
      */
-    private void updateLocalOrderQty(Context mContext, String retailerId){
+    private void updateLocalOrderQty(Context mContext, String retailerId,boolean isOrderEdit,String orderId){
 
         DBUtil db;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String query="select distinct productid,sum(pieceQty),sum(caseQty),sum(outerQty) from orderDetail where upload='N' and retailerId="+retailerId+" group by productId";
+            String query="select distinct ProductID,sum(pieceQty),sum(caseQty),sum(outerQty) from orderDetail where upload='N' and retailerId="+retailerId +" " ;
+            if(isOrderEdit)
+                query+=" and OrderID not in ("+bModel.QT(orderId)+") ";
+            query+= " group by  ProductId";
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {

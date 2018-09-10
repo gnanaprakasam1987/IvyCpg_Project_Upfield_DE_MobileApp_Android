@@ -1121,8 +1121,8 @@ public class CollectionHelper {
                         + "," + bmodel.QT(receiptno)
                         + "," + bmodel.QT(groupDate) + ",0,0"
                         + "," + bmodel.QT(printFilePath)
-                        + "," + bmodel.QT(paymentBO.getBankName())
-                        + "," + bmodel.QT(paymentBO.getBranchName());
+                        + "," + bmodel.QT(paymentBO.getBankName()!=null?paymentBO.getBankName():"")
+                        + "," + bmodel.QT(paymentBO.getBranchName()!=null?paymentBO.getBranchName():"");
                 //+ "," + bmodel.QT(paymentBO.getAccountNumber());
 
                 db.insertSQL(DataMembers.tbl_Payment, columns, values);

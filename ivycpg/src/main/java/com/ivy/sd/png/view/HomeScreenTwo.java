@@ -1809,7 +1809,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             bmodel.orderAndInvoiceHelper.restoreDiscountAmount(bmodel.getRetailerMasterBO().getRetailerID());
 
                             if (schemeHelper.IS_SCHEME_ON_MASTER)
-                                schemeHelper.downloadSchemeHistoryDetails(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());
+                                schemeHelper.downloadSchemeHistoryDetails(getApplicationContext(),bmodel.getRetailerMasterBO().getRetailerID(),false,"");
 
 
                             bmodel.productHelper.downloadInStoreLocations();
@@ -3920,8 +3920,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
             bmodel.productHelper.downloadInStoreLocations();
 
+            OrderHelper orderHelper=OrderHelper.getInstance(this);
             if (schemeHelper.IS_SCHEME_ON_MASTER)
-                schemeHelper.downloadSchemeHistoryDetails(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());
+                schemeHelper.downloadSchemeHistoryDetails(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID(),bmodel.isEdit(),orderHelper.selectedOrderId);
             schemeHelper.downloadOffInvoiceSchemeDetails(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());
 
 
