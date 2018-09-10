@@ -524,6 +524,13 @@ public class DashBoardHelper {
         return wholeNumber;
     }
 
+    /**
+     * @param retailerID
+     * @param interval
+     * @See {@link SellerDashboardDataManagerImpl#getRetailerDashboardForInterval(String, String)}
+     * @deprecated
+     */
+    @Deprecated
     public void loadRetailerDashBoard(String retailerID, String interval) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1006,7 +1013,7 @@ public class DashBoardHelper {
 
         temp = new DashBoardBO();
         temp.setMonthID(month);
-        temp.setMonthName(MONTH_NAME[mon].substring(0,3));
+        temp.setMonthName(MONTH_NAME[mon].substring(0, 3));
 
         Commons.print("Month No>>>>," + "" + temp.getMonthID() + " Month Name>>>>" + temp.getMonthName());
 

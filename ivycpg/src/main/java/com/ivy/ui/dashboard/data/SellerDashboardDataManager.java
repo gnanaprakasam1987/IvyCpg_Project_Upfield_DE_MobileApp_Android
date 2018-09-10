@@ -19,4 +19,6 @@ public interface SellerDashboardDataManager {
 
     Observable<ArrayList<DashBoardBO>> getSellerDashboardForInterval(String userId,String interval);
 
+    Observable<ArrayList<DashBoardBO>> getRetailerDashboardForInterval(String retailerId,String interval);
+
 }

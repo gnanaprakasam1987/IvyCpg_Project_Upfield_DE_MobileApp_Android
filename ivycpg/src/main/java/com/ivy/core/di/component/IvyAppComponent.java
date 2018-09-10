@@ -50,9 +50,6 @@ public interface IvyAppComponent {
 
     DataManager dataManager();
 
-    @DataBaseInfo
-    DBUtil getDBUtil();
-
     @Profile
     RetailerMasterBO retalserMasterBo();
 

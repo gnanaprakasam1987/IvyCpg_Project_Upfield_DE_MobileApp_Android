@@ -315,6 +315,89 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
+    public Observable<ArrayList<DashBoardBO>> getRetailerDashboardForInterval(final String retailerId, final String interval) {
+        return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
+            @Override
+            public ArrayList<DashBoardBO> call() throws Exception {
+                ArrayList<DashBoardBO> dashBoardBOS = new ArrayList<>();
+                try {
+                    initDb();
+
+                    String monthText = "";
+                    if (configurationMasterHelper.IS_KPI_CALENDAR) {
+                        monthText = "RK.IntervalDesc";
+                    } else {
+                        monthText = "IFNULL(strftime('%m', replace(fromdate,'/','-')),0)";
+                    }
+
+                    String sql = "SELECT SLM.ListName,RKD.Target,RKD.Achievement,"
+                            + " ROUND(CASE WHEN (100-((RKD.Achievement*100)/((RKD.Target)*1.0))) < 0"
+                            + " THEN 100 ELSE ((RKD.Achievement*100)/((RKD.Target)*1.0)) END ,2) AS conv_ach_perc"
+                            + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,SLM.ListCode," + monthText + " FROM RetailerKPI RK"
+                            + " inner join RetailerKPIDetail RKD on RKD.KPIID= RK.KPIID"
+                            + " LEFT join RetailerKPIScore RKS on RKD.KPIID= RKS.KPIID and RKD.KPIParamLovId = RKS.KPIParamLovId"
+                            + " inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId"
+                            + " where retailerid =" + retailerId + " and interval= '" + interval + "' "
+                            + " order by DisplaySeq asc";
+                    Cursor c = mDbUtil.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            DashBoardBO sbo = new DashBoardBO();
+                            sbo.setPId(0);
+                            sbo.setText(c.getString(0));
+                            sbo.setKpiTarget(c.getString(1));
+                            sbo.setKpiAcheived(c.getString(2));
+
+                            sbo.setCalculatedPercentage(c.getFloat(3));
+                            if (sbo.getCalculatedPercentage() >= 100) {
+                                sbo.setConvTargetPercentage(0);
+                                sbo.setConvAcheivedPercentage(100);
+                            } else {
+                                sbo.setConvTargetPercentage(100 - sbo
+                                        .getCalculatedPercentage());
+                                sbo.setConvAcheivedPercentage(sbo
+                                        .getCalculatedPercentage());
+                            }
+                            sbo.setKpiScore(c.getString(4));
+                            sbo.setKpiIncentive(c.getString(5));
+                            sbo.setKpiID(c.getInt(6));
+                            sbo.setKpiTypeLovID(c.getInt(7));
+                            sbo.setFlex1(c.getInt(8));
+                            sbo.setCode(c.getString(9));
+                            if (configurationMasterHelper.IS_KPI_CALENDAR) {
+                                sbo.setMonthName(c.getString(10));
+                            } else {
+                                int value = SDUtil.convertToInt(c.getString(10));
+                                if (value > 0 && value <= 12)
+                                    sbo.setMonthName(MONTH_NAME[value - 1]);
+                            }
+
+                            String lovSql = "select count(*) from RetailerKPISKUDetail where KPIParamLovId = " + sbo.getKpiTypeLovID();
+                            Cursor lovCursor = mDbUtil.selectSQL(sql);
+                            if (lovCursor != null) {
+                                while (lovCursor.moveToNext()) {
+                                    sbo.setSubDataCount(c.getInt(0));
+
+                                }
+                                lovCursor.close();
+                            }
+
+                            dashBoardBOS.add(sbo);
+                        }
+                        c.close();
+                    }
+
+                }catch (Exception ignored){
+
+                }
+
+                shutDownDb();
+                return dashBoardBOS;
+            }
+        });
+    }
+
+    @Override
     public Observable<ArrayList<DashBoardBO>> getRouteDashboardForInterval(final String interval) {
         return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
             @Override

@@ -170,13 +170,20 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             dataAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
 
             dashSpinner.setAdapter(dataAdapter);
+            dashSpinner.setOnItemSelectedListener(dashSpinnerSelectedListener);
         }
 
     }
 
-    private AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+    private AdapterView.OnItemSelectedListener dashSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            String selectedInterval = adapterView.getSelectedItem().toString();
+            if(!isFromRetailer){
+                if(selectedInterval.equalsIgnoreCase(SellerDashboardConstants.P3M)){
+
+                }
+            }
 
         }
 

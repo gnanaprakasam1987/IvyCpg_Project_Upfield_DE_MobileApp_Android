@@ -522,7 +522,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_CONTACT_TAB;
 
 
-    private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
+    public static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
     public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
 
     private static final String CODE_LICENSE_VALIDATION = "ORDB73";
