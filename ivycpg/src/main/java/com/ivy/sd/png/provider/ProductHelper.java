@@ -1834,13 +1834,15 @@ public class ProductHelper {
 
     public void clearOrderTableForInitiative() {
         ProductMasterBO product;
-        int siz = productMaster.size();
-        for (int i = 0; i < siz; ++i) {
-            product = productMaster.get(i);
-            product.setOrderedPcsQty(0);
-            product.setOrderedCaseQty(0);
-            product.setOrderedOuterQty(0);
-            product.setFoc(0);
+        if (productMaster != null) {
+            int siz = productMaster.size();
+            for (int i = 0; i < siz; ++i) {
+                product = productMaster.get(i);
+                product.setOrderedPcsQty(0);
+                product.setOrderedCaseQty(0);
+                product.setOrderedOuterQty(0);
+                product.setFoc(0);
+            }
         }
     }
 

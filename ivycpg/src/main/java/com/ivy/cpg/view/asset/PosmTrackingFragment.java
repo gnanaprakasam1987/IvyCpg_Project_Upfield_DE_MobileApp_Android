@@ -1584,7 +1584,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
         if (mAttributeProducts != null && mProductId != 0) {//Both Product and attribute filter selected
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                if (assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
+                if (assetBO.getParentHierarchy()!=null&&assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                     if (ALL.equals(strBarCodeSearch)) {
                         if (mCapturedNFCTag.isEmpty()) {
@@ -1606,7 +1606,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 myList.addAll(mAssetTrackingList);
             } else {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
+                    if (assetBO.getParentHierarchy()!=null&&assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                         if (ALL.equals(strBarCodeSearch)) {
                             if (mCapturedNFCTag.isEmpty()) {

@@ -1116,17 +1116,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             HomeScreenFragment.photoPath,
                             1, mFirstName);
             if (nFilesThere) {
-                File file = new File(HomeScreenFragment.photoPath + "/" + mFirstName);
-                Intent target = new Intent(Intent.ACTION_VIEW);
-                target.setDataAndType(Uri.fromFile(file), "application/pdf");
-                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                Intent intent = Intent.createChooser(target, "Open File");
-                try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    e.printStackTrace();
-                }
-
+                openPdfDeleteDialog(mFirstName);
             } else {
                 String path = HomeScreenFragment.photoPath + "/"
                         + attachedFilePath;
@@ -3626,5 +3616,42 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
 
         return false;
+    }
+
+    private void openPdfDeleteDialog(final String imageNameStarts) {
+
+        final CommonDialog commonDialog = new CommonDialog(getApplicationContext(), //Context
+                this, //Context
+                "", //Title
+                getResources().getString(R.string.word_already) + " " + getResources().getString(R.string.pdf_attached), //Message
+                false, //ToDisplayImage
+                getResources().getString(R.string.yes), //Positive Button
+                getResources().getString(R.string.no), //Negative Button
+                false, //MoveToNextActivity
+                new CommonDialog.PositiveClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+                        invalidateOptionsMenu();
+
+                        bModel.deleteFiles(HomeScreenFragment.photoPath,
+                                imageNameStarts);
+                        bModel.getOrderHeaderBO().setOrderImageName("");
+
+                        String path = HomeScreenFragment.photoPath + "/"
+                                + attachedFilePath;
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setType("application/pdf");
+                        intent.putExtra("path", path);
+                        startActivityForResult(intent, FILE_SELECTION);
+
+                    }
+                }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+                dismiss();
+            }
+        });
+        commonDialog.show();
+        commonDialog.setCancelable(false);
     }
 }
