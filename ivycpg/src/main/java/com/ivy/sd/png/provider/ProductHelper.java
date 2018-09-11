@@ -2058,14 +2058,14 @@ public class ProductHelper {
                             && product.getLocations().get(j).getCockTailQty() == 0
                             && product.getIsListed() == 0
                             && product.getIsDistributed() == 0
-                            && product.getReasonID().equals("0")
+                            && product.getLocations().get(j).getReasonId() == 0
                             && product.getLocations().get(j).getAvailability() < 0)) {
                         if (j == siz1 - 1) {
                             isSkuFilled = false;
                             break loop;
                         }
                     } else {
-                        if (product.getLocations().get(j).getAvailability() == 0 && bmodel.configurationMasterHelper.SHOW_STOCK_RSN && product.getReasonID().equals("0")) {
+                        if (product.getLocations().get(j).getAvailability() == 0 && bmodel.configurationMasterHelper.SHOW_STOCK_RSN && product.getLocations().get(j).getReasonId() == 0) {
                             isSkuFilled = false;
                             break loop;
                         } else {

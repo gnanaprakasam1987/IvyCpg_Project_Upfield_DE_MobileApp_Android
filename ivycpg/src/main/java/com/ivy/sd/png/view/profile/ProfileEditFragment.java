@@ -85,6 +85,7 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
+import com.ivy.utils.FontUtils;
 
 
 import java.io.File;
@@ -2463,7 +2464,7 @@ public class ProfileEditFragment extends IvyBaseFragment
 
         latlongtextview = new TextView(getActivity());
         latlongtextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        latlongtextview.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        latlongtextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         latlongtextview.setText(textvalue);
         latlongtextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
 
