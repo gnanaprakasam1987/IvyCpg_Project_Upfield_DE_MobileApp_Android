@@ -459,7 +459,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     @Override
     public void updateAssets(ArrayList<AssetTrackingBO> mList,boolean isUnMapped,Bundle mBundle) {
         int k = 0;
-        ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
+        /*ScannedUnmappedDialogFragment scannedUnmappedDialogFragment;
 
         if (assetTrackingHelper.SHOW_ASSET_BARCODE) {
             if (isUnMapped) {
@@ -471,7 +471,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
                 Toast.makeText(mBModel, "Asset Already Scanned and Mapped. Waiting for Approval.", Toast.LENGTH_SHORT).show();
                 k = 1;
             }
-        }
+        }*/
 
         updateListView(mList);
 
