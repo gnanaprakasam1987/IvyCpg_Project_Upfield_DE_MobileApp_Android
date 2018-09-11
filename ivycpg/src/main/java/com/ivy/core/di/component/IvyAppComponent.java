@@ -8,6 +8,7 @@ import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.core.data.distributor.DistributorDataManager;
 import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.data.user.UserDataManager;
@@ -16,6 +17,7 @@ import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.core.di.scope.ActivityContext;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.core.di.scope.DistributorInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.core.di.scope.DataBaseInfo;
@@ -70,6 +72,9 @@ public interface IvyAppComponent {
 
     @Profile
     Vector<RetailerMasterBO> getRetailerMaster();
+
+    @DistributorInfo
+    DistributorDataManager distributorDataManager();
 
 
     ConfigurationMasterHelper configurationMasterHelper();

@@ -459,6 +459,85 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
         });
     }
 
+    @Override
+    public Observable<ArrayList<DashBoardBO>> getKPIDashboard(final String userId, final String interval) {
+        return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
+            @Override
+            public ArrayList<DashBoardBO> call() throws Exception {
+                ArrayList<DashBoardBO> dashBoardBOS = new ArrayList<>();
+                try{
+                    initDb();
+                    String sql =
+                            "SELECT SLM.ListName,SUM(SKD.Target),SUM(SKD.Achievement),"
+                                    + " ROUND(CASE WHEN (100-((SUM(SKD.Achievement)*100)/((SUM(SKD.Target))*1.0))) < 0"
+                                    + " THEN 100 ELSE ((SUM(SKD.Achievement)*100)/((SUM(SKD.Target))*1.0)) END ,2) AS conv_ach_perc"
+                                    + ",SUM(SKS.Score),SUM(SKS.Incentive),SK.KPIID,SKD.KPIParamLovId,SLM.Flex1,SLM.ListCode FROM SellerKPI SK"
+                                    + " inner join SellerKPIDetail SKD on SKD.KPIID= SK.KPIID"
+                                    + " LEFT join SellerKPIScore SKS on SKD.KPIID= SKS.KPIID and SKD.KPIParamLovId = SKS.KPIParamLovId"
+                                    + " inner join StandardListMaster SLM on SLM.Listid=SKD.KPIParamLovId"
+                                    + " where userid in ( "
+                                    + userId + ")"
+                                    + " and interval= "
+                                    + QT(interval)
+                                    + " AND "
+                                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                    + " between SK.fromdate and SK.todate "
+                                    + (userId.equals("0") ? " and SK.isSummary=1" : "")
+                                    + " group by SLM.Listid order by DisplaySeq asc";
+                    Cursor c = mDbUtil.selectSQL(sql);
+                    sql = null;
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            DashBoardBO sbo = new DashBoardBO();
+                            sbo.setPId(0);
+                            sbo.setText(c.getString(0));
+                            sbo.setKpiTarget(c.getString(1));
+                            sbo.setKpiAcheived(c.getString(2));
 
 
+                            sbo.setCalculatedPercentage(c.getFloat(3));
+                            if (sbo.getCalculatedPercentage() >= 100) {
+                                sbo.setConvTargetPercentage(0);
+                                sbo.setConvAcheivedPercentage(100);
+                            } else {
+                                sbo.setConvTargetPercentage(100 - sbo
+                                        .getCalculatedPercentage());
+                                sbo.setConvAcheivedPercentage(sbo
+                                        .getCalculatedPercentage());
+                            }
+                            sbo.setKpiScore(c.getString(4));
+                            sbo.setKpiIncentive(c.getString(5));
+                            sbo.setKpiID(c.getInt(6));
+                            sbo.setKpiTypeLovID(c.getInt(7));
+                            sbo.setFlex1(c.getInt(8));
+                            sbo.setCode(c.getString(9));
+                            if (sbo.getCode().equalsIgnoreCase("VAL")) {
+                                String subDataCountSql = "select count(kpiid) from SellerKPISKUDetail"
+                                        + " where KPIParamLovId =" + sbo.getKpiTypeLovID();
+                                Cursor subDataCountCursor = mDbUtil.selectSQL(subDataCountSql);
+                                if (subDataCountCursor != null) {
+                                    while (subDataCountCursor.moveToNext()) {
+                                        sbo.setSubDataCount(subDataCountCursor.getInt(0));
+                                    }
+                                }
+                                assert subDataCountCursor != null;
+                                subDataCountCursor.close();
+                            }
+                            else
+                                sbo.setSubDataCount(0);
+                            dashBoardBOS.add(sbo);
+                        }
+                        c.close();
+                    }
+
+
+                }catch (Exception ignored){
+
+                }
+
+                shutDownDb();
+                return dashBoardBOS;
+            }
+        });
+    }
 }

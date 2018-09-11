@@ -18,6 +18,8 @@ public interface SellerDashboardContract {
 
         void setUpMultiSelectUserSpinner(ArrayList<UserMasterBO> userMasterBOS);
 
+        void setDashboardListAdapter();
+
     }
 
 

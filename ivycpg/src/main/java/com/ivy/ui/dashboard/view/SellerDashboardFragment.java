@@ -98,7 +98,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private SellerDashboardComponent sellerDashboardComponent;
 
-    private String mSelectedDistributorId = ",";
+    private String mSelectedDistributorId = "";
     private String mFilterUser;
 
     @Override
@@ -242,6 +242,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             }
         });
 
+
+    }
+
+    @Override
+    public void setDashboardListAdapter() {
 
     }
 

@@ -2983,7 +2983,6 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
 
             String sql = new String(
                     "select count(kpiid) from SellerKPISKUDetail"

@@ -90,7 +90,8 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                 try {
                     initDb();
                     ArrayList<PhotoCaptureLocationBO> photoCaptureLocationBOS = new ArrayList<>();
-                    String sql1 = "SELECT phototypeid,PC.pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName,SM.ListName,PM.PName,SML.ListName FROM Photocapture PC " +
+                    String sql1 = "SELECT phototypeid,PC.pid,imagepath,FromDate,ToDate,LocId,sku_name,abv,lot_code,seq_num,feedback,imgName,SM.ListName,PM.PName,SML.ListName " +
+                            "FROM Photocapture PC " +
                             "LEFT JOIN StandardListMaster SM ON SM.ListId=phototypeid " +
                             "LEFT JOIN ProductMaster PM ON PM.PID=PC.pid " +
                             "LEFT JOIN StandardListMaster SML ON SML.ListId=LocId " +
