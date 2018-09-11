@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportFragment;
 import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sf.SalesFundamentalHelper;
@@ -29,7 +30,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -454,8 +454,10 @@ public class FilterFiveFragment<E> extends Fragment {
                         }
                     }
 
-                    levelAdapter.notifyDataSetChanged();
-                    productsAdapter.notifyDataSetChanged();
+                    if (levelAdapter != null)
+                        levelAdapter.notifyDataSetChanged();
+                    if (productsAdapter != null)
+                        productsAdapter.notifyDataSetChanged();
 
 
                 }

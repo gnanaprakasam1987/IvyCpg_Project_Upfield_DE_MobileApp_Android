@@ -50,17 +50,17 @@ public class SubChannelMasterHelper {
         SubchannelBO beat;
         int siz = getSubChannelMaster().size();
 
-        if (siz == 0)
-            return null;
+		if(getSubChannelMaster()!=null) {if (siz == 0)
+			return null;
 
-        for (int i = 0; i < siz; ++i) {
-            beat = (SubchannelBO) getSubChannelMaster().get(i);
-            if (subChannel.equals(beat.getSubchannelid() + "")) {
-                return beat.getSubChannelname() + "";
-            }
-        }
-        return "0";
-    }
+		for (int i = 0; i < siz; ++i) {
+			beat = (SubchannelBO) getSubChannelMaster().get(i);
+			if (subChannel.equals(beat.getSubchannelid() + "")) {
+				return beat.getSubChannelname() + "";
+			}
+		}
+		}return "0";
+	}
 
     public int getSubChannelId(String subchannelName) {
         SubchannelBO beat;

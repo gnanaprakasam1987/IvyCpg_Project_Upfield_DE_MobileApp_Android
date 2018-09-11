@@ -25,11 +25,16 @@ public class ActivationDataManagerImpl implements ActivationDataManager {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                URL urlobj = new URL(serverUrl);
-                HttpURLConnection urlConnection = (HttpURLConnection) urlobj.openConnection();
-                int responseCode = urlConnection.getResponseCode();
-                Commons.print("Sync Url Success response code>>>>>>>>>>" + responseCode);
-                return responseCode == HttpURLConnection.HTTP_OK;
+                try {
+                    URL urlobj = new URL(serverUrl);
+                    HttpURLConnection urlConnection = (HttpURLConnection) urlobj.openConnection();
+                    int responseCode = urlConnection.getResponseCode();
+                    Commons.print("Sync Url Success response code>>>>>>>>>>" + responseCode);
+                    return responseCode == HttpURLConnection.HTTP_OK;
+                } catch (Exception e) {
+                    Commons.print("response Code code getting null value");
+                    return false;
+                }
 
             }
         });

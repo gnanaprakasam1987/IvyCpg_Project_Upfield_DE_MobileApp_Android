@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.collection.NoCollectionReasonBo;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BankMasterBO;
@@ -1120,8 +1121,8 @@ public class CollectionHelper {
                         + "," + bmodel.QT(receiptno)
                         + "," + bmodel.QT(groupDate) + ",0,0"
                         + "," + bmodel.QT(printFilePath)
-                        + "," + bmodel.QT(paymentBO.getBankName())
-                        + "," + bmodel.QT(paymentBO.getBranchName());
+                        + "," + bmodel.QT(paymentBO.getBankName()!=null?paymentBO.getBankName():"")
+                        + "," + bmodel.QT(paymentBO.getBranchName()!=null?paymentBO.getBranchName():"");
                 //+ "," + bmodel.QT(paymentBO.getAccountNumber());
 
                 db.insertSQL(DataMembers.tbl_Payment, columns, values);
@@ -1866,5 +1867,62 @@ public class CollectionHelper {
                 return true;
         }
         return false;
+    }
+
+    public ArrayList<NoCollectionReasonBo> loadInvoiceList(String id,Context context) {
+
+        ArrayList<NoCollectionReasonBo> mInvioceList = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt," +
+                    " Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as RcvdAmt," +
+                    " CDD.ReasonId,CDD.ReasonOthers,Inv.RetailerId FROM InvoiceMaster Inv LEFT JOIN payment ON payment.BillNumber = Inv.InvoiceNo " +
+                    " LEFT JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid left join CollectionDueDetails CDD on CDD.InvoiceNo = Inv.InvoiceNo " +
+                    " WHERE inv.Retailerid ='" + id + "'  AND inv.DocStatus ='COL'  GROUP BY Inv.InvoiceNo ORDER BY Inv.InvoiceDate");
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    NoCollectionReasonBo invoiceHeaderBO = new NoCollectionReasonBo();
+                    invoiceHeaderBO.setInvoiceNo(c.getString(0));
+                    invoiceHeaderBO.setInvoiceDate(c.getString(1));
+                    invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
+                    invoiceHeaderBO.setPaidAmount(c.getDouble(3));
+                    invoiceHeaderBO.setNoCollectionReasonId(c.getString(4));
+                    invoiceHeaderBO.setNoCollectionReason(c.getString(5));
+                    invoiceHeaderBO.setRetailerId(c.getString(6));
+
+                    if (invoiceHeaderBO.getPaidAmount() == 0)
+                        mInvioceList.add(invoiceHeaderBO);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return mInvioceList;
+    }
+
+    public boolean checkInvoiceWithReason(String retailId,Context context){
+        boolean isReasonGiven = true;
+
+        for (NoCollectionReasonBo noCollectionReasonBo :
+                bmodel.collectionHelper.loadInvoiceList(retailId,context)){
+
+            if ((noCollectionReasonBo.getNoCollectionReasonId() == null
+                    || noCollectionReasonBo.getNoCollectionReasonId().equals("0") ||
+                    noCollectionReasonBo.getNoCollectionReasonId().isEmpty())
+                    && noCollectionReasonBo.getPaidAmount() == 0){
+
+                isReasonGiven = false;
+                break;
+            }
+        }
+
+        return isReasonGiven;
     }
 }

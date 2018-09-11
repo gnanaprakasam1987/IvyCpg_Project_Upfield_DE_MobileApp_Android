@@ -60,14 +60,16 @@ public class ChannelMasterHelper {
     public String getChannelName(String channelID) {
 
         ChannelBO beat;
-        int siz = channelMaster.size();
-        if (siz == 0)
-            return "";
+        if(channelMaster!=null) {
+            int siz = channelMaster.size();
+            if (siz == 0)
+                return "";
 
-        for (int i = 0; i < siz; ++i) {
-            beat = (ChannelBO) channelMaster.get(i);
-            if (channelID.equals(beat.getChannelId() + "")) {
-                return beat.getChannelName();
+            for (int i = 0; i < siz; ++i) {
+                beat = (ChannelBO) channelMaster.get(i);
+                if (channelID.equals(beat.getChannelId() + "")) {
+                    return beat.getChannelName();
+                }
             }
         }
         return "";

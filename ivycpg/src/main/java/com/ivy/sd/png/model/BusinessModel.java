@@ -1439,7 +1439,7 @@ public class BusinessModel extends Application {
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
                             + " LEFT JOIN RetailerContact RC1 ON RC1.RetailerId = A.RetailerID AND RC1.IsPrimary = 1"
-                            + " LEFT JOIN RetailerContact RC2 ON RC2.RetailerId = A.RetailerID AND RC2.IsPrimary = 0"
+                            + " LEFT JOIN (SELECT RetailerId,contactname,ContactName_LName,ContactNumber,CPID,DOB,contact_title,contact_title_lovid from RetailerContact WHERE IsPrimary=0 LIMIT 1) AS RC2 ON RC2.RetailerId=A.RetailerId"
 
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? " left join SupplierMaster SM ON SM.rid = A.RetailerID" : "")
 

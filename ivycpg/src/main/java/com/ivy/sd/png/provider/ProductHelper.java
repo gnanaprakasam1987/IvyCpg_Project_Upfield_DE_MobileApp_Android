@@ -1019,7 +1019,7 @@ public class ProductHelper {
                     + " A.IsDrug as IsDrug,A.ParentHierarchy as ParentHierarchy,"
                     + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,F.ASRP as asrp,"
                     + " (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
-                    + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom"
+                    + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
                     + " from ProductMaster A";
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -1120,8 +1120,6 @@ public class ProductHelper {
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
                     product.setASRP(c.getInt(c.getColumnIndex("asrp"))); //added by murugan
 
-                    product.setASRP(c.getInt(c.getColumnIndex("asrp"))); //added by murugan
-
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
@@ -1139,6 +1137,7 @@ public class ProductHelper {
                             product.setDefaultUomId(c.getInt(c.getColumnIndex("DefaultUom")));
                         product.setProductWiseUomList(cloneUOMList(uomList, product));
                     }
+                    product.setMarginPrice(c.getString(c.getColumnIndex("marginprice")));
                     productMaster.add(product);
                     productMasterById.put(product.getProductID(), product);
                     genericObjectPair = new GenericObjectPair<>(productMaster, productMasterById);
@@ -1846,13 +1845,15 @@ public class ProductHelper {
 
     public void clearOrderTableForInitiative() {
         ProductMasterBO product;
-        int siz = productMaster.size();
-        for (int i = 0; i < siz; ++i) {
-            product = productMaster.get(i);
-            product.setOrderedPcsQty(0);
-            product.setOrderedCaseQty(0);
-            product.setOrderedOuterQty(0);
-            product.setFoc(0);
+        if (productMaster != null) {
+            int siz = productMaster.size();
+            for (int i = 0; i < siz; ++i) {
+                product = productMaster.get(i);
+                product.setOrderedPcsQty(0);
+                product.setOrderedCaseQty(0);
+                product.setOrderedOuterQty(0);
+                product.setFoc(0);
+            }
         }
     }
 
