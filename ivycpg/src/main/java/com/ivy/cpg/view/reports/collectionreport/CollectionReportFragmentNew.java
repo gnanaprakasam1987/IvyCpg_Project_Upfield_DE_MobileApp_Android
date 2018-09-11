@@ -12,18 +12,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.CollectionReportDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -207,5 +212,42 @@ public class CollectionReportFragmentNew extends IvyBaseFragment implements ICol
     @Override
     public void setAdapter(CollectionFragmentAdapter collectionAdapter) {
         collectionListView.setAdapter(collectionAdapter);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getActivity().getMenuInflater().inflate(R.menu.menu_invoice_report, menu);
+    }
+
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (bModel.configurationMasterHelper.SHOW_PRINT_BUTTON) {
+            menu.findItem(R.id.menu_print).setVisible(true);
+        } else {
+            menu.findItem(R.id.menu_print).setVisible(false);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+
+        CollectionReportHelper reportHelper =  mCollectionReportModelPresenter.getReportHelper();
+        if (i == R.id.menu_print) {
+            if (reportHelper.getParentPaymentList() != null && reportHelper.getParentPaymentList().size() > 0) {
+
+                CollectionReportDialog fragment = new CollectionReportDialog();
+                fragment.setCancelable(false);
+                fragment.show(getFragmentManager(), "CollectionReportFragment");
+                return true;
+            } else {
+                Toast.makeText(getActivity(), getResources().getString(R.string.no_data_print), Toast.LENGTH_SHORT).show();
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
