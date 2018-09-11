@@ -1273,27 +1273,29 @@ public class NewOutletFragment extends IvyBaseFragment
                     // to the control to focus on by summing the "top" position of each view in the hierarchy.
                     int yDistanceToControlsView = 0;
                     View parentView = secificEditText;
-                    while (true) {
-                        if (parentView.equals(scrollview2)) {
-                            break;
+                    if (parentView != null) {
+                        while (true) {
+                            if (parentView.equals(scrollview2)) {
+                                break;
+                            }
+                            yDistanceToControlsView += parentView.getTop();
+                            parentView = (View) parentView.getParent();
                         }
-                        yDistanceToControlsView += parentView.getTop();
-                        parentView = (View) parentView.getParent();
+
+                        // Compute the final position value for the top and bottom of the control in the scroll view.
+                        final int topInScrollView = yDistanceToControlsView + secificEditText.getTop();
+                        final int bottomInScrollView = yDistanceToControlsView + secificEditText.getBottom();
+
+                        // Post the scroll action to happen on the scrollView with the UI thread.
+                        scrollview2.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int height = secificEditText.getHeight();
+                                scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
+
+                            }
+                        });
                     }
-
-                    // Compute the final position value for the top and bottom of the control in the scroll view.
-                    final int topInScrollView = yDistanceToControlsView + secificEditText.getTop();
-                    final int bottomInScrollView = yDistanceToControlsView + secificEditText.getBottom();
-
-                    // Post the scroll action to happen on the scrollView with the UI thread.
-                    scrollview2.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int height = secificEditText.getHeight();
-                            scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
-
-                        }
-                    });
                 }
             }).start();
         } catch (Exception e) {
@@ -1312,27 +1314,29 @@ public class NewOutletFragment extends IvyBaseFragment
                     // to the control to focus on by summing the "top" position of each view in the hierarchy.
                     int yDistanceToControlsView = 0;
                     View parentView = (View) specificSpinner.getParent();
-                    while (true) {
-                        if (parentView.equals(scrollview2)) {
-                            break;
+                    if (parentView != null) {
+                        while (true) {
+                            if (parentView.equals(scrollview2)) {
+                                break;
+                            }
+                            yDistanceToControlsView += parentView.getTop();
+                            parentView = (View) parentView.getParent();
                         }
-                        yDistanceToControlsView += parentView.getTop();
-                        parentView = (View) parentView.getParent();
+
+                        // Compute the final position value for the top and bottom of the control in the scroll view.
+                        final int topInScrollView = yDistanceToControlsView + specificSpinner.getTop();
+                        final int bottomInScrollView = yDistanceToControlsView + specificSpinner.getBottom();
+
+                        // Post the scroll action to happen on the scrollView with the UI thread.
+                        scrollview2.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int height = specificSpinner.getHeight();
+                                scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
+
+                            }
+                        });
                     }
-
-                    // Compute the final position value for the top and bottom of the control in the scroll view.
-                    final int topInScrollView = yDistanceToControlsView + specificSpinner.getTop();
-                    final int bottomInScrollView = yDistanceToControlsView + specificSpinner.getBottom();
-
-                    // Post the scroll action to happen on the scrollView with the UI thread.
-                    scrollview2.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int height = specificSpinner.getHeight();
-                            scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
-
-                        }
-                    });
                 }
             }).start();
         } catch (Exception e) {

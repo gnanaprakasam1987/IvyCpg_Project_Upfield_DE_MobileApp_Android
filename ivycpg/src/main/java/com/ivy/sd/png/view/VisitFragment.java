@@ -239,8 +239,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             }
         });
 
-
-        if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES
+        if (bmodel.configurationMasterHelper.SUBD_RETAILER_SELECTION)
+            fab.setVisibility(View.GONE);
+        else if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES
                 || bmodel.configurationMasterHelper.IS_NEARBY
                 || bmodel.configurationMasterHelper.SHOW_MISSED_RETAILER
                 || bmodel.configurationMasterHelper.IS_ADHOC) {
@@ -249,10 +250,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             fab.setVisibility(View.GONE);
         }
 
-        if (bmodel.configurationMasterHelper.SUBD_RETAILER_SELECTION)
-            fab.setVisibility(View.GONE);
-        else
-            fab.setVisibility(View.VISIBLE);
+
+
 
         /* Show/Hide the "all route filter" **/
         if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
