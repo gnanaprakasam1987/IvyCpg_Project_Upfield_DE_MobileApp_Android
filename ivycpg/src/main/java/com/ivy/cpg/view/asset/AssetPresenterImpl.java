@@ -183,7 +183,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
         Bundle bundle = null;
         boolean isUnmapped = false;
-        if (mAssetTrackingHelper.SHOW_ASSET_BARCODE) {
+        /*if (mAssetTrackingHelper.SHOW_ASSET_BARCODE) {
             if (mAllAssetTrackingList != null
                     && mAllAssetTrackingList.size() > 0) {
                 bundle = new Bundle();
@@ -206,7 +206,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                     }
                 }
             }
-        }
+        }*/
 
 
         mAssetView.updateAssets(mAssetList, isUnmapped, bundle);
