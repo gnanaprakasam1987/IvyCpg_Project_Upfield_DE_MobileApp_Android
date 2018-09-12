@@ -320,9 +320,12 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bmodel.hasStockCheck(bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER)) {
+                if (bmodel.hasCombinedStkChecked()) {
                     onNextButtonClick();
-                }
+                } else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.no_data_tosave)
+                            , Toast.LENGTH_LONG).show();
             }
         });
 
@@ -1146,7 +1149,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
 
     private void onNextButtonClick() {
-        if (bmodel.hasStockCheck(bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER)) {
+        if (bmodel.hasCombinedStkChecked()) {
             new SaveAsyncTask().execute();
         } else {
             mDialog1(1);

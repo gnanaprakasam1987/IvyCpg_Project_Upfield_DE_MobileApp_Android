@@ -3093,6 +3093,14 @@ public class BusinessModel extends Application {
             product = productHelper.getProductMasterBOById(productid);
         }
 
+        if (!this.configurationMasterHelper.SHOW_STOCK_SP)
+            shelfpqty = -1;
+        if (!this.configurationMasterHelper.SHOW_STOCK_SC)
+            shelfcqty = -1;
+        if (!this.configurationMasterHelper.SHOW_SHELF_OUTER)
+            shelfoqty = -1;
+        if (!this.configurationMasterHelper.SHOW_STOCK_CB)
+            availability = -1;
 
         if (product != null && product.getOwn() == isOwn) {
             for (int j = 0; j < product.getLocations().size(); j++) {
@@ -4541,17 +4549,17 @@ public class BusinessModel extends Application {
 
             int siz1 = product.getLocations().size();
             for (int j = 0; j < siz1; j++) {
-                if (product.getLocations().get(j).getShelfPiece() > -1
-                        || product.getLocations().get(j).getShelfCase() > -1
-                        || product.getLocations().get(j).getShelfOuter() > -1
+                if ((this.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
+                        || (this.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
+                        || (this.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
+                        || (this.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)
                         || product.getLocations().get(j).getWHPiece() > 0
                         || product.getLocations().get(j).getWHCase() > 0
                         || product.getLocations().get(j).getWHOuter() > 0
                         || product.getLocations().get(j).getCockTailQty() > 0
                         || product.getIsListed() > 0
                         || product.getIsDistributed() > 0
-                        || product.getLocations().get(j).getReasonId() != 0
-                        || product.getLocations().get(j).getAvailability() > -1)
+                        || product.getLocations().get(j).getReasonId() != 0)
                     return true;
             }
         }
@@ -4570,11 +4578,11 @@ public class BusinessModel extends Application {
             int siz1 = product.getLocations().size();
             for (int j = 0; j < siz1; j++) {
                 if (product.getIsFocusBrand() == 1 || product.getIsFocusBrand() == 2) {
-                    if (product.getLocations().get(j).getShelfPiece() == -1
-                            && product.getLocations().get(j).getShelfCase() == -1
-                            && product.getLocations().get(j).getShelfOuter() == -1
-                            && product.getLocations().get(j).getAvailability() == 0
-                            && product.getReasonID().equals("0"))
+                    if ((this.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() == -1)
+                            && (this.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() == -1)
+                            && (this.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() == -1)
+                            && (this.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() == 0)
+                            && product.getLocations().get(j).getReasonId() == 0)
                         return false;
                 }
             }
@@ -4648,9 +4656,10 @@ public class BusinessModel extends Application {
 
                 int siz1 = product.getLocations().size();
                 for (int j = 0; j < siz1; j++) {
-                    if (product.getLocations().get(j).getShelfPiece() > -1
-                            || product.getLocations().get(j).getShelfCase() > -1
-                            || product.getLocations().get(j).getShelfOuter() > -1
+                    if ((this.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
+                            || (this.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
+                            || (this.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
+                            || (this.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)
                             || product.getLocations().get(j).getWHPiece() > 0
                             || product.getLocations().get(j).getWHCase() > 0
                             || product.getLocations().get(j).getWHOuter() > 0
@@ -4658,7 +4667,6 @@ public class BusinessModel extends Application {
                             || product.getLocations().get(j).getCockTailQty() > 0
                             || product.getLocations().get(j).getFacingQty() > 0
                             || product.getLocations().get(j).getAudit() != 2
-                            || product.getLocations().get(j).getAvailability() > -1
                             || product.getLocations().get(j).getReasonId() != 0) {
 
                         int count = product.getLocations().get(j)
