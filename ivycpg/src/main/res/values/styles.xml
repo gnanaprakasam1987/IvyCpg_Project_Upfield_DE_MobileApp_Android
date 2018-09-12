@@ -1013,7 +1013,6 @@ negative button and neutral button -->
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/list_item_values_text_color</item>
         <item name="android:textSize">@dimen/list_primary</item>
-        <item name="android:cursorVisible">false</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:textColorHighlight">?attr/accentcolor</item>
     </style>

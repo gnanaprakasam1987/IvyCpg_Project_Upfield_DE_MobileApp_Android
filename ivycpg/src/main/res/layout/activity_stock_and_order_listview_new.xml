@@ -128,7 +128,7 @@
                     android:layout_height="match_parent"
                     android:maxLines="1"
                     android:tag="allocation"
-                    android:text="@string/allocation"/>
+                    android:text="@string/allocation" />
 
                 <TextView
                     style="?attr/customListItemSecondary"
@@ -733,9 +733,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:gravity="center"
-
-                        />
+                        android:gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout

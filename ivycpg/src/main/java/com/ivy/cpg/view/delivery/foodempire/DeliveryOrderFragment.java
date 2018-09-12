@@ -472,6 +472,8 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                         }
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.caseQty.setSelection(qty.length());
 
                         if (!"".equals(qty)) {
 
@@ -602,8 +604,9 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                             holder.caseQty.setInputType(InputType.TYPE_NULL);
                             holder.caseQty.onTouchEvent(event);
                             holder.caseQty.setInputType(inType);
-                            holder.caseQty.selectAll();
                             holder.caseQty.requestFocus();
+                            if (holder.caseQty.getText().length() > 0)
+                                holder.caseQty.setSelection(holder.caseQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -621,6 +624,8 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                         }
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.pcsQty.setSelection(qty.length());
                         if (!"".equals(qty)) {
 
                             float totalQty = SDUtil.convertToInt(qty)
@@ -748,8 +753,9 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                             holder.pcsQty.setInputType(InputType.TYPE_NULL);
                             holder.pcsQty.onTouchEvent(event);
                             holder.pcsQty.setInputType(inType);
-                            holder.pcsQty.selectAll();
                             holder.pcsQty.requestFocus();
+                            if (holder.pcsQty.getText().length() > 0)
+                                holder.pcsQty.setSelection(holder.pcsQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -770,6 +776,8 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.outerQty.setSelection(qty.length());
                         if (!"".equals(qty)) {
 
                             float totalQty = (SDUtil.convertToInt(qty) * holder.productObj
@@ -901,8 +909,9 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                             holder.outerQty.setInputType(InputType.TYPE_NULL);
                             holder.outerQty.onTouchEvent(event);
                             holder.outerQty.setInputType(inType);
-                            holder.outerQty.selectAll();
                             holder.outerQty.requestFocus();
+                            if (holder.outerQty.getText().length() > 0)
+                                holder.outerQty.setSelection(holder.outerQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;

@@ -879,7 +879,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_DEVIATION;
     public boolean SHOW_STORE_WISE_DISCOUNT_DLG;
     public boolean SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
-    public int BILL_WISE_DISCOUNT = 0; // if 0 show discount in dialog /1 apply all bill discount
+    public int BILL_WISE_DISCOUNT = 0; // if 0 show discount in dialog /1 apply all bill discount / 3 with hold tax optional
     public boolean SHOW_STOCK_PRO_CREDIT_VALIDATION;
     public boolean SHOW_SALES_RETURN_IN_INVOICE;
     public boolean SHOW_CREDIT_INVOICE_COUNT;

@@ -155,7 +155,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private String imageName = "";
     private String calledBy;
 
-    private boolean isMapView = false;
     private boolean isdrawRoute = false;
     private boolean mNFCValidationPassed;
     private boolean mLocationConfirmationPassed;
@@ -1189,22 +1188,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             Vector<ConfigureBO> profileConfig = bmodel.configurationMasterHelper.getProfileModuleConfig();
             for (ConfigureBO conBo : profileConfig) {
                 if (conBo.getConfigCode().equals("PROFILE08") && conBo.isFlag() == 1) {
-                    isMapView = true;
                     retailerLat = retailerObj.getLatitude();
 
                 } else if (conBo.getConfigCode().equals("PROFILE31") && conBo.isFlag() == 1) {
-                    isMapView = true;
                     retailerLng = retailerObj.getLongitude();
                 } else if (conBo.getConfigCode().equals("PROFILE21") && conBo.isFlag() == 1) {
                     isNonVisitReason = true;
                 }
             }
-            if (!isMapView) {
-                View mapFrag = findViewById(R.id.profile_map);
-                mapFrag.setVisibility(View.GONE);
-                retailerCodeTxt.setVisibility(View.GONE);
-            }
-
 
             if (fromHomeClick) {
                 bottomView.setVisibility(View.GONE);
@@ -1228,10 +1219,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             isClicked = false;
 
-            if (visitClick && isMapView)
+            if (visitClick)
                 getMapView();
 
-            else if (fromHomeClick && isMapView)
+            else if (fromHomeClick)
                 loadStoreLocMapView(retailerLat, retailerLng);
         }
     }

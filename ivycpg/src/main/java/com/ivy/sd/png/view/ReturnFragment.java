@@ -159,7 +159,6 @@ public class ReturnFragment extends IvyBaseFragment {
                 returnList.setSelection(adapter.getCount() - 1);
             }
         });
-
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,10 +167,10 @@ public class ReturnFragment extends IvyBaseFragment {
                     return;
                 }
 
-                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER || salesReturnHelper.SHOW_LOTNUMBER)
+                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY || salesReturnHelper.SHOW_LOTNUMBER_MANDATORY)
                     for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
-                        if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER && sb.getInvoiceno().equals("0"))
-                                || (salesReturnHelper.SHOW_LOTNUMBER && sb.getLotNumber().equals("0"))) {
+                        if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY && sb.getInvoiceno().equals("0"))
+                                || (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && sb.getLotNumber().equals("0"))) {
                             Toast.makeText(getActivity(), getResources().getString(R.string.mandatory_fileds_empty), Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -252,9 +251,9 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 invFlag = true;
                 isLot = true;
-                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER)
+                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER || salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY)
                     invFlag = mSelectedInvNos.contains(sb.getInvoiceno());
-                if (salesReturnHelper.SHOW_LOTNUMBER)
+                if (salesReturnHelper.SHOW_LOTNUMBER || salesReturnHelper.SHOW_LOTNUMBER_MANDATORY)
                     isLot = mSelectedLotNos.contains(sb.getLotNumber());
 
                 if (mSelectedReasonIds.contains(sb.getReasonID())
@@ -279,8 +278,8 @@ public class ReturnFragment extends IvyBaseFragment {
                 if (sb.getReasonID().equals("0")) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
                     return false;
-                } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
-                        (salesReturnHelper.SHOW_LOTNUMBER && sb.getLotNumber().equals(""))) {//inv n lot num validation done based on their conifguration
+                } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
+                        (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && sb.getLotNumber().equals(""))) {//inv n lot num validation done based on their conifguration
                     Toast.makeText(getActivity(), "Mandatory fields empty!", Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -337,7 +336,7 @@ public class ReturnFragment extends IvyBaseFragment {
 
     class MyAdapter extends ArrayAdapter<SalesReturnReasonBO> {
         final ArrayList<SalesReturnReasonBO> items;
-        ArrayAdapter<String> mInvoiceAdapter=null;
+        ArrayAdapter<String> mInvoiceAdapter = null;
 
         MyAdapter(ArrayList<SalesReturnReasonBO> items) {
             super(getActivity(), R.layout.row_salesreturn_entry_listitem,
@@ -420,7 +419,7 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 holder.reasonSpinner.setAdapter(holder.spinnerAdapter);
 
-                if(salesReturnHelper.IS_SHOW_SR_INVOICE_NO_HISTORY) {
+                if (salesReturnHelper.IS_SHOW_SR_INVOICE_NO_HISTORY) {
                     ArrayList<String> mInvoiceList = salesReturnHelper.getInvoiceNo(getContext());
                     mInvoiceAdapter = new ArrayAdapter<>(getContext(),
                             R.layout.autocompelete_bluetext_layout, mInvoiceList);
@@ -512,10 +511,14 @@ public class ReturnFragment extends IvyBaseFragment {
                 if (!salesReturnHelper.SHOW_SAL_RET_EXP_DATE)
                     (row.findViewById(R.id.ll_exp)).setVisibility(View.GONE);
 
-                if (!salesReturnHelper.SHOW_LOTNUMBER)
-                    ((LinearLayout) row.findViewById(R.id.ll_lot_no)).setVisibility(View.GONE);
-                if (!salesReturnHelper.SHOW_SR_INVOICE_NUMBER)
-                    ((LinearLayout) row.findViewById(R.id.ll_invoie_no)).setVisibility(View.GONE);
+                if (!salesReturnHelper.SHOW_LOTNUMBER || salesReturnHelper.SHOW_LOTNUMBER_MANDATORY)
+                    (row.findViewById(R.id.ll_lot_no)).setVisibility(View.GONE);
+                if (!salesReturnHelper.SHOW_SR_INVOICE_NUMBER || salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY)
+                    (row.findViewById(R.id.ll_invoie_no)).setVisibility(View.GONE);
+
+                if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY)
+                    (row.findViewById(R.id.tvinvmandate)).setVisibility(View.VISIBLE);
+
 
                 if (!salesReturnHelper.SHOW_SR_CATEGORY)
                     holder.categorySpinner.setVisibility(View.GONE);
@@ -542,7 +545,8 @@ public class ReturnFragment extends IvyBaseFragment {
                             return;
                         }
                         String qty = s.toString();
-
+                        if (qty.length() > 0)
+                            holder.outerQty.setSelection(qty.length());
                         if (!"".equals(qty)) {
                             holder.reasonBO.setOuterQty(SDUtil
                                     .convertToInt(qty));
@@ -554,6 +558,9 @@ public class ReturnFragment extends IvyBaseFragment {
                     public void afterTextChanged(Editable s) {
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.pieceQty.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
                             holder.reasonBO.setPieceQty(SDUtil
                                     .convertToInt(qty));
@@ -581,6 +588,8 @@ public class ReturnFragment extends IvyBaseFragment {
                         }
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.caseQty.setSelection(qty.length());
 
                         if (!"".equals(qty)) {
                             holder.reasonBO.setCaseQty(SDUtil
@@ -602,6 +611,9 @@ public class ReturnFragment extends IvyBaseFragment {
                 holder.oldMrp.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.oldMrp.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
 
                             holder.reasonBO.setOldMrp(SDUtil
@@ -626,8 +638,10 @@ public class ReturnFragment extends IvyBaseFragment {
                     @Override
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
-                        if(s.toString().contains("\"")) {
+                        if (s.toString().contains("\"")) {
                             String qty = s.toString().replaceAll("\"", "");
+                            if (qty.length() > 0)
+                                holder.invoiceno.setSelection(qty.length());
                             holder.invoiceno.setText(qty);
                         }
                     }
@@ -665,6 +679,8 @@ public class ReturnFragment extends IvyBaseFragment {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.srpedit.setSelection(qty.length());
                         if (!"".equals(qty)
                                 && productMasterBO.getSrp() != SDUtil
                                 .convertToFloat(qty)) {
@@ -692,6 +708,9 @@ public class ReturnFragment extends IvyBaseFragment {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.lotNumber.setSelection(qty.length());
+
                         if (!"".equals(qty)
                                 && !"0".equals(qty)) {
                             holder.reasonBO.setLotNumber(qty);
@@ -709,8 +728,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.outerQty.setInputType(InputType.TYPE_NULL);
                         holder.outerQty.onTouchEvent(event);
                         holder.outerQty.setInputType(inType);
-                        holder.outerQty.selectAll();
                         holder.outerQty.requestFocus();
+                        if (holder.outerQty.getText().length() > 0)
+                            holder.outerQty.setSelection(holder.outerQty.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mSelectedET.getWindowToken(), 0);
                         return true;
@@ -725,8 +745,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.caseQty.setInputType(InputType.TYPE_NULL);
                         holder.caseQty.onTouchEvent(event);
                         holder.caseQty.setInputType(inType);
-                        holder.caseQty.selectAll();
                         holder.caseQty.requestFocus();
+                        if (holder.caseQty.getText().length() > 0)
+                            holder.caseQty.setSelection(holder.caseQty.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mSelectedET.getWindowToken(), 0);
                         return true;
@@ -741,8 +762,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.pieceQty.setInputType(InputType.TYPE_NULL);
                         holder.pieceQty.onTouchEvent(event);
                         holder.pieceQty.setInputType(inType);
-                        holder.pieceQty.selectAll();
                         holder.pieceQty.requestFocus();
+                        if (holder.pieceQty.getText().length() > 0)
+                            holder.pieceQty.setSelection(holder.pieceQty.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mSelectedET.getWindowToken(), 0);
                         return true;
@@ -758,8 +780,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.oldMrp.setInputType(InputType.TYPE_NULL);
                         holder.oldMrp.onTouchEvent(event);
                         holder.oldMrp.setInputType(inType);
-                        holder.oldMrp.selectAll();
                         holder.oldMrp.requestFocus();
+                        if (holder.oldMrp.getText().length() > 0)
+                            holder.oldMrp.setSelection(holder.oldMrp.getText().length());
 
                         return true;
                     }
@@ -776,8 +799,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.srpedit.setInputType(InputType.TYPE_NULL);
                         holder.srpedit.onTouchEvent(event);
                         holder.srpedit.setInputType(inType);
-                        holder.srpedit.selectAll();
                         holder.srpedit.requestFocus();
+                        if (holder.srpedit.getText().length() > 0)
+                            holder.srpedit.setSelection(holder.srpedit.getText().length());
 
                         return true;
                     }
@@ -791,9 +815,10 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.invoiceno.setInputType(InputType.TYPE_NULL);
                         holder.invoiceno.onTouchEvent(event);
                         holder.invoiceno.setInputType(inType);
-                        holder.invoiceno.selectAll();
                         holder.invoiceno.requestFocus();
                         holder.invoiceno.showDropDown();
+                        if (holder.invoiceno.getText().length() > 0)
+                            holder.invoiceno.setSelection(holder.invoiceno.getText().length());
                         inputManager.showSoftInput(
                                 holder.invoiceno, InputMethodManager.SHOW_FORCED);
                         return true;

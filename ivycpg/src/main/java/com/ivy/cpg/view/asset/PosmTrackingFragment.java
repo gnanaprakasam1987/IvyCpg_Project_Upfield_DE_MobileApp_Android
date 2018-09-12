@@ -667,6 +667,11 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.availQtyET.setSelection(qty.length());
+                        if (qty.length() > 0)
+                            holder.availQtyET.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
                             int mAvailQty = SDUtil.convertToInt(holder.availQtyET
                                     .getText().toString());
@@ -726,8 +731,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                         holder.availQtyET.setInputType(InputType.TYPE_NULL);
                         holder.availQtyET.onTouchEvent(arg1);
                         holder.availQtyET.setInputType(inType);
-                        holder.availQtyET.selectAll();
                         holder.availQtyET.requestFocus();
+                        if (holder.availQtyET.getText().length() > 0)
+                            holder.availQtyET.setSelection(holder.availQtyET.getText().length());
                         return true;
                     }
                 });
@@ -744,8 +750,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                                 holder.execQtyET.setInputType(InputType.TYPE_NULL);
                                 holder.execQtyET.onTouchEvent(motionEvent);
                                 holder.execQtyET.setInputType(inType);
-                                holder.execQtyET.selectAll();
                                 holder.execQtyET.requestFocus();
+                                if (holder.execQtyET.getText().length() > 0)
+                                    holder.execQtyET.setSelection(holder.execQtyET .getText().length());
                                 view.performClick();
                                 break;
                             default:
@@ -771,6 +778,11 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.compQtyET.setSelection(qty.length());
+
+                        if (qty.length() > 0)
+                            holder.compQtyET.setSelection(qty.length());
                         if (!"".equals(qty)) {
                             int mAvailQty = SDUtil.convertToInt(holder.compQtyET
                                     .getText().toString());
@@ -788,8 +800,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                         holder.compQtyET.setInputType(InputType.TYPE_NULL);
                         holder.compQtyET.onTouchEvent(arg1);
                         holder.compQtyET.setInputType(inType);
-                        holder.compQtyET.selectAll();
                         holder.compQtyET.requestFocus();
+                        if (holder.compQtyET.getText().length() > 0)
+                            holder.compQtyET.setSelection(holder.compQtyET.getText().length());
                         return true;
                     }
                 });

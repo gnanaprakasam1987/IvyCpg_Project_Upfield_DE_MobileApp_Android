@@ -55,7 +55,6 @@ public class ReportHelper {
     private String webViewPlanUrl = "";
 
 
-
     private ArrayList<SyncStatusBO> mSyncStatusBOList;
 
 
@@ -203,9 +202,6 @@ public class ReportHelper {
 
         return tot;
     }
-
-
-
 
 
     /**
@@ -532,9 +528,6 @@ public class ReportHelper {
         }
         return retailers;
     }
-
-
-
 
 
     public ArrayList<String> getLstCollectionGroups() {
@@ -2058,5 +2051,32 @@ public class ReportHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Check wheather the payment done for any retailers.
+     *
+     * @return
+     */
+    public boolean hasPayment() {
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT count(uid) from Payment");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    if (c.getInt(0) > 0)
+                        return true;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return false;
     }
 }
