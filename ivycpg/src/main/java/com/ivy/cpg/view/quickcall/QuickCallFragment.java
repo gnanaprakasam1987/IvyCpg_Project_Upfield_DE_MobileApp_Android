@@ -429,8 +429,10 @@ public class QuickCallFragment extends IvyBaseFragment {
 
             bmodel.productHelper.downloadInStoreLocations();
             SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getActivity());
-            if (schemeHelper.IS_SCHEME_ON_MASTER)
-                schemeHelper.downloadSchemeHistoryDetails(getActivity(), bmodel.getRetailerMasterBO().getRetailerID());
+            if (schemeHelper.IS_SCHEME_ON_MASTER) {
+                OrderHelper orderHelper=OrderHelper.getInstance(getActivity());
+                schemeHelper.downloadSchemeHistoryDetails(getActivity(), bmodel.getRetailerMasterBO().getRetailerID(), bmodel.isEdit(), orderHelper.selectedOrderId);
+            }
             schemeHelper.downloadOffInvoiceSchemeDetails(getActivity(), bmodel.getRetailerMasterBO().getRetailerID());
 
 
