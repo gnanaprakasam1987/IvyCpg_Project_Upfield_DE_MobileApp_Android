@@ -68,9 +68,9 @@ public class FitScoreChartFragment extends Fragment {
         view.findViewById(R.id.color_rep_orange).setBackgroundColor(Color.rgb(119, 147, 60));
 
         lnrPreviousScore = (LinearLayout) view.findViewById(R.id.lnrPreviousScore);
-        if (!Module.equalsIgnoreCase("ALL")) {
+        //if (!Module.equalsIgnoreCase("ALL")) {
             lnrPreviousScore.setVisibility(View.GONE);
-        }
+        //}
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
